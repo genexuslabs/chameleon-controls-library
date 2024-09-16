@@ -35,8 +35,10 @@ import {
   RadioGroupModel
 } from "../../../components";
 import {
-  defineControlMarkupWithUIModel,
-  defineControlMarkupWithoutUIModel
+  defineControlMarkupWithUIModelReact,
+  defineControlMarkupWithUIModelStencil,
+  defineControlMarkupWithoutUIModelReact,
+  defineControlMarkupWithoutUIModelStencil
 } from "./utils";
 import { registryProperty } from "../../../common/registry-properties";
 import { getImagePathCallbackImage } from "./image/models";
@@ -70,6 +72,7 @@ import {
   languageDirectionModel,
   MAIN_SECTION,
   MAIN_WIDGET,
+  USAGE_REACT,
   USAGE_STENCIL_JS
 } from "./renders";
 import { findComponentMetadataUsingURLHash } from "./pages";
@@ -441,14 +444,52 @@ export class ChShowcase {
           language="typescript"
           value={
             this.#showcaseStory.markupWithUIModel
-              ? defineControlMarkupWithUIModel(
+              ? defineControlMarkupWithUIModelStencil(
                   this.#showcaseStory.markupWithUIModel.uiModel(),
                   this.#showcaseStory.markupWithUIModel.uiModelType,
-                  this.#showcaseStory.markupWithUIModel.render()
+                  this.#showcaseStory.markupWithUIModel.render.stencil(
+                    this.designSystem
+                  )
                 )
-              : defineControlMarkupWithoutUIModel(
+              : defineControlMarkupWithoutUIModelStencil(
                   this.#showcaseStory.markupWithoutUIModel
-                    ? this.#showcaseStory.markupWithoutUIModel()
+                    ? this.#showcaseStory.markupWithoutUIModel.stencil(
+                        this.designSystem
+                      )
+                    : "To be defined"
+                )
+          }
+        ></ch-code>
+      </div>
+    ),
+    [USAGE_REACT]: () => (
+      <div key={USAGE_REACT} slot={USAGE_REACT} class="card card-markup">
+        <button
+          class="button-tertiary button-icon-only copy-button icon-mask"
+          title="Copy markup"
+          type="button"
+          onClick={this.#handleCopyMarkup}
+          ref={el => (this.#copyButtonRef = el)}
+        ></button>
+        <ch-code
+          key={USAGE_REACT}
+          slot={USAGE_REACT}
+          class="code"
+          language="typescript"
+          value={
+            this.#showcaseStory.markupWithUIModel
+              ? defineControlMarkupWithUIModelReact(
+                  this.#showcaseStory.markupWithUIModel.uiModel(),
+                  this.#showcaseStory.markupWithUIModel.uiModelType,
+                  this.#showcaseStory.markupWithUIModel.render.react(
+                    this.designSystem
+                  )
+                )
+              : defineControlMarkupWithoutUIModelReact(
+                  this.#showcaseStory.markupWithoutUIModel
+                    ? this.#showcaseStory.markupWithoutUIModel.react(
+                        this.designSystem
+                      )
                     : "To be defined"
                 )
           }

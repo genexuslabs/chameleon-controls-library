@@ -1,5 +1,10 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplateFrameWork,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
 import {
   disabledModel1,
   disabledModel4,
@@ -15,7 +20,11 @@ import {
   lazyLoadTreeItemsCallback,
   preferencesModel
 } from "../tree-view/models";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import {
+  insertSpacesAtTheBeginningExceptForTheFirstLine,
+  renderShowcaseProperties,
+  showcaseTemplateClassProperty
+} from "../utils";
 
 const state: Partial<HTMLChTabRenderElement> = {};
 const renderedItems = new Set(["item1"]);
@@ -178,9 +187,54 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
           type: "enum"
         },
         {
+          id: "contain",
+          caption: "Contain",
+          value: "none",
+          values: [
+            { caption: "style", value: "style" },
+            { caption: "none", value: "none" },
+            { caption: "size", value: "size" },
+            { caption: "inline-size", value: "inline-size" },
+            { caption: "layout", value: "layout" },
+            { caption: "paint", value: "paint" },
+            { caption: "content", value: "content" },
+            { caption: "strict", value: "strict" }
+          ],
+          type: "enum"
+        },
+        {
+          id: "overflow",
+          caption: "Overflow",
+          value: "visible",
+          values: [
+            { caption: "visible", value: "visible" },
+            { caption: "hidden", value: "hidden" },
+            { caption: "clip", value: "clip" },
+            { caption: "scroll", value: "scroll" },
+            { caption: "auto", value: "auto" },
+            { caption: "visible hidden", value: "visible hidden" },
+            { caption: "visible clip", value: "visible clip" },
+            { caption: "visible scroll", value: "visible scroll" },
+            { caption: "visible auto", value: "visible auto" },
+            { caption: "hidden visible", value: "hidden visible" },
+            { caption: "hidden clip", value: "hidden clip" },
+            { caption: "hidden scroll", value: "hidden scroll" },
+            { caption: "hidden auto", value: "hidden auto" },
+            { caption: "clip visible", value: "clip visible" },
+            { caption: "clip hidden", value: "clip hidden" },
+            { caption: "clip scroll", value: "clip scroll" },
+            { caption: "clip auto", value: "clip auto" },
+            { caption: "auto visible", value: "auto visible" },
+            { caption: "auto hidden", value: "auto hidden" },
+            { caption: "auto clip", value: "auto clip" },
+            { caption: "auto scroll", value: "auto scroll" }
+          ],
+          type: "enum"
+        },
+        {
           id: "accessibleName",
           caption: "Accessible Name",
-          value: "",
+          value: undefined,
           type: "string"
         },
         {
@@ -204,7 +258,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
         {
           id: "dragOutside",
           caption: "Drag Outside",
-          value: true,
+          value: false,
           type: "boolean"
         },
         {
@@ -213,7 +267,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
           value: true,
           type: "boolean"
         },
-
         {
           id: "showCaptions",
           caption: "Show Captions",
@@ -225,55 +278,124 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
           caption: "Sortable",
           value: false,
           type: "boolean"
+        },
+        {
+          id: "tabButtonHidden",
+          caption: "Tab Button Hidden",
+          value: false,
+          type: "boolean"
         }
       ]
     }
   ];
+
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChTabRenderElement>[] =
+  [
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    {
+      name: "class",
+      fixed: true,
+      value: "tab",
+      type: "string"
+    },
+    { name: "closeButton", defaultValue: false, type: "boolean" },
+    {
+      name: "closeButtonAccessibleName",
+      defaultValue: "Close",
+      type: "string"
+    },
+    { name: "contain", defaultValue: "none", type: "string" },
+    { name: "direction", defaultValue: "block", type: "string" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "dragOutside", defaultValue: false, type: "boolean" },
+    { name: "expanded", defaultValue: true, type: "boolean" },
+    { name: "model", fixed: true, value: "controlUIModel", type: "function" },
+    { name: "overflow", defaultValue: "visible", type: "string" },
+    { name: "selectedId", defaultValue: undefined, type: "string" },
+    { name: "showCaptions", defaultValue: true, type: "boolean" },
+    { name: "sortable", defaultValue: false, type: "boolean" },
+    { name: "tabButtonHidden", defaultValue: false, type: "boolean" },
+    {
+      name: "itemClose",
+      fixed: true,
+      value: "handleItemClose",
+      type: "event"
+    },
+    {
+      name: "selectedItemChange",
+      fixed: true,
+      value: "handleSelectedItemChange",
+      type: "event"
+    },
+    {
+      name: "itemDragStart",
+      fixed: true,
+      value: "handleItemDragStart",
+      type: "event"
+    }
+  ];
+
+const lightDOMMarkup = (
+  framework: ShowcaseTemplateFrameWork
+) => `{renderedItems.has("item1") && (
+  <div slot="item1">
+    Content of the item 1
+    <label>
+      Any text
+      <input ${showcaseTemplateClassProperty(
+        framework,
+        "form-input"
+      )} type="text" />
+    </label>
+  </div>
+)}
+
+{renderedItems.has("item2") && (
+  <div slot="item2">Content of the item 2</div>
+)}
+
+{renderedItems.has("item3") && (
+  <div slot="item3">Content of the item 3</div>
+)}
+
+{renderedItems.has("item4") && (
+  <div slot="item4">Content of the item 4</div>
+)}`;
+
+const lightDOMMarkupReact = insertSpacesAtTheBeginningExceptForTheFirstLine(
+  lightDOMMarkup("react"),
+  8
+);
+
+const lightDOMMarkupStencil = insertSpacesAtTheBeginningExceptForTheFirstLine(
+  lightDOMMarkup("stencil"),
+  10
+);
 
 export const tabShowcaseStory: ShowcaseStory<HTMLChTabRenderElement> = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
     uiModel: () => state.model,
     uiModelType: "TabModel",
-    render: () => `<ch-tab-render
-          accessibleName="${state.accessibleName}"
-          class="tab"${renderBooleanPropertyOrEmpty("closeButton", state)}
-          direction="${state.direction}"${renderBooleanPropertyOrEmpty(
-      "disabled",
-      state
-    )}${renderBooleanPropertyOrEmpty(
-      "dragOutside",
-      state
-    )}${renderBooleanPropertyOrEmpty("expanded", state)}
-          model={this.#controlUIModel}
-          selectedId="${state.selectedId}"${renderBooleanPropertyOrEmpty(
-      "sortable",
-      state
-    )}${renderBooleanPropertyOrEmpty("showCaptions", state)}
-          onSelectedItemChange={this.#handleSelectedItemChange}
+    render: {
+      react: () => `<ChTabRender${renderShowcaseProperties(
+        state,
+        "react",
+        showcasePropertiesInfo
+      )}
+      >
+        ${lightDOMMarkupReact}
+      </ChTabRender>`,
+
+      stencil: () => `<ch-tab-render${renderShowcaseProperties(
+        state,
+        "stencil",
+        showcasePropertiesInfo
+      )}
         >
-          {renderedItems.has("item1") && (
-            <div slot="item1">
-              Content of the item 1
-              <label>
-                Any text
-                <input type="text" />
-              </label>
-            </div>
-          )}
-
-          {renderedItems.has("item2") && (
-            <div slot="item2">Content of the item 2</div>
-          )}
-
-          {renderedItems.has("item3") && (
-            <div slot="item3">Content of the item 3</div>
-          )}
-
-          {renderedItems.has("item4") && (
-            <div slot="item4">Content of the item 4</div>
-          )}   
+          ${lightDOMMarkupStencil}
         </ch-tab-render>`
+    }
   },
   render: render,
   state: state

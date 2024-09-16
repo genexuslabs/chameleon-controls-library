@@ -26,9 +26,9 @@ export type ShowcaseStory<T extends ShowcaseStoryClass> = {
   markupWithUIModel?: {
     uiModel: () => any[] | { [key: string]: any };
     uiModelType: string;
-    render: () => string;
+    render: ShowcaseTemplateRender;
   };
-  markupWithoutUIModel?: () => string;
+  markupWithoutUIModel?: ShowcaseTemplateRender;
   properties: ShowcaseRenderProperties<T>;
   state: Partial<T>;
 };
@@ -58,6 +58,10 @@ export type ShowcaseCustomStory = {
 };
 
 export type ShowcaseRender = (designSystem: "mercury" | "unanimo") => any;
+export type ShowcaseTemplateRender = {
+  stencil: (designSystem: "mercury" | "unanimo") => string;
+  react: (designSystem: "mercury" | "unanimo") => string;
+};
 
 export type ShowcaseRenderProperties<T extends { [key in string]: any }> =
   ShowcaseRenderPropertyGroup<T>[];
@@ -191,4 +195,36 @@ export type ChameleonCustomStories = {
   paginator: ShowcaseCustomStory;
   shortcuts: ShowcaseCustomStory;
   "tabular-grid": ShowcaseCustomStory;
+};
+
+export type ShowcaseTemplateFrameWork = "react" | "stencil";
+
+export type ShowcaseTemplatePropertyInfo<
+  Dictionary extends { [key in string]: any }
+> =
+  | ShowcaseTemplatePropertyInfoVariable<Dictionary, keyof Dictionary>
+  | ShowcaseTemplatePropertyInfoFixed;
+
+export type ShowcaseTemplatePropertyInfoVariable<
+  Dictionary extends { [key in string]: any },
+  T extends keyof Dictionary
+> = {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  name: T | (string & {});
+  defaultValue: Dictionary[T];
+  fixed?: false;
+  type: "boolean" | "number" | "string" | "string-template";
+};
+
+export type ShowcaseTemplatePropertyInfoFixed = {
+  name: string;
+  value: any;
+  fixed: true;
+  type:
+    | "boolean"
+    | "event"
+    | "function"
+    | "number"
+    | "string"
+    | "string-template";
 };

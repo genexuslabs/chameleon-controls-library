@@ -433,6 +433,15 @@ export class ChPopover {
   }
 
   /**
+   * Popovers that have the `"auto"` state can be "light dismissed" by
+   * selecting outside the popover area, and generally only allow one popover
+   * to be displayed on-screen at a time. By contrast, `"manual"` popovers must
+   * always be explicitly hidden, but allow for use cases such as nested
+   * popovers in menus.
+   */
+  @Prop({ attribute: "popover" }) readonly mode: "auto" | "manual" = "auto";
+
+  /**
    * Specifies how the popover behaves when the content overflows the window
    * size.
    *   - "overflow": The control won't implement any behavior if the content overflows.
@@ -441,15 +450,6 @@ export class ChPopover {
   @Prop({ reflect: true }) readonly overflowBehavior:
     | "overflow"
     | "add-scroll" = "overflow";
-
-  /**
-   * Popovers that have the `"auto"` state can be "light dismissed" by
-   * selecting outside the popover area, and generally only allow one popover
-   * to be displayed on-screen at a time. By contrast, `"manual"` popovers must
-   * always be explicitly hidden, but allow for use cases such as nested
-   * popovers in menus.
-   */
-  @Prop({ attribute: "popover" }) readonly mode: "auto" | "manual" = "auto";
 
   /**
    * Specifies an alternate position to try when the control overflows the

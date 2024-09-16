@@ -1,7 +1,11 @@
 import { forceUpdate, h } from "@stencil/core";
 import { ChBarcodeScannerCustomEvent } from "../../../../components";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChBarcodeScannerElement> = {};
 let barcodeScannerRef: HTMLChBarcodeScannerElement;
@@ -52,21 +56,49 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChBarcodeScannerEle
           value: 200,
           type: "number"
         },
+        {
+          id: "readDebounce",
+          caption: "Read Debounce",
+          value: 200,
+          type: "number"
+        },
         { id: "scanning", caption: "Scanning", value: true, type: "boolean" }
       ]
+    }
+  ];
+
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChBarcodeScannerElement>[] =
+  [
+    { name: "barcodeBoxWidth", defaultValue: 200, type: "number" },
+    { name: "barcodeBoxHeight", defaultValue: 200, type: "number" },
+    { name: "readDebounce", defaultValue: 200, type: "number" },
+    { name: "scanning", defaultValue: true, type: "boolean" },
+    {
+      name: "read",
+      fixed: true,
+      value: "handleRead",
+      type: "event"
     }
   ];
 
 export const barcodeScannerShowcaseStory: ShowcaseStory<HTMLChBarcodeScannerElement> =
   {
     properties: showcaseRenderProperties,
-    markupWithoutUIModel: () => `<ch-barcode-scanner
-          barcodeBoxWidth={${state.barcodeBoxWidth}}
-          barcodeBoxHeight={${
-            state.barcodeBoxHeight
-          }}${renderBooleanPropertyOrEmpty("scanning", state)}
-          onRead={this.#handleRead}
-        ></ch-barcode-scanner>`,
+    markupWithoutUIModel: {
+      react: () => `<ChBarcodeScanner${renderShowcaseProperties(
+        state,
+        "react",
+        showcasePropertiesInfo
+      )}
+      ></ChBarcodeScanner>`,
+
+      stencil: () => `<ch-barcode-scanner${renderShowcaseProperties(
+        state,
+        "stencil",
+        showcasePropertiesInfo
+      )}
+        ></ch-barcode-scanner>`
+    },
     render: render,
     state: state
   };

@@ -1,6 +1,13 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import {
+  renderShowcaseProperties,
+  showcaseTemplateClassProperty
+} from "../utils";
 
 const state: Partial<HTMLChEditElement> = {};
 const formRefs: {
@@ -156,7 +163,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         id: "value",
         columnSpan: 2,
         caption: "Value",
-        value: "",
+        value: undefined,
         type: "string"
       },
       {
@@ -212,7 +219,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         id: "picture",
         columnSpan: 2,
         caption: "Picture",
-        value: "",
+        value: undefined,
         type: "string"
       },
       {
@@ -325,47 +332,98 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         id: "triggerButtonAccessibleName",
         caption: "Trigger Button Accessible Name",
         columnSpan: 2,
-        value: "",
+        value: undefined,
         type: "string"
       }
     ]
   }
 ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] =
+  [
+    {
+      name: "id",
+      fixed: true,
+      value: "first-name",
+      type: "string"
+    },
+    {
+      name: "name",
+      fixed: true,
+      value: "first-name",
+      type: "string"
+    },
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    { name: "autocomplete", defaultValue: undefined, type: "string" },
+    { name: "autocomplete", defaultValue: undefined, type: "string" },
+    { name: "autoGrow", defaultValue: false, type: "boolean" },
+    {
+      name: "class",
+      fixed: true,
+      value: "form-input",
+      type: "string"
+    },
+    { name: "debounce", defaultValue: 0, type: "number" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    {
+      name: "getImagePathCallback",
+      fixed: true,
+      value: "getImagePathCallback",
+      type: "function"
+    },
+    { name: "maxLength", defaultValue: undefined, type: "number" },
+    { name: "mode", defaultValue: undefined, type: "string" },
+    { name: "multiline", defaultValue: false, type: "boolean" },
+    { name: "pattern", defaultValue: undefined, type: "string" },
+    { name: "picture", defaultValue: undefined, type: "string" },
+    { name: "placeholder", defaultValue: undefined, type: "string" },
+    { name: "readonly", defaultValue: false, type: "boolean" },
+    { name: "spellcheck", defaultValue: false, type: "boolean" },
+    { name: "showTrigger", defaultValue: false, type: "boolean" },
+    { name: "startImgSrc", defaultValue: undefined, type: "string" },
+    { name: "startImgType", defaultValue: "background", type: "string" },
+    {
+      name: "triggerButtonAccessibleName",
+      defaultValue: undefined,
+      type: "string"
+    },
+    { name: "type", defaultValue: "text", type: "string" },
+    { name: "value", defaultValue: undefined, type: "string" },
+    {
+      name: "input",
+      fixed: true,
+      value: "handleInput",
+      type: "event"
+    }
+  ];
+
 export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel:
-    () => `<label class="form-input__label" htmlFor="first-name">
+  markupWithoutUIModel: {
+    react: () => `<label ${showcaseTemplateClassProperty(
+      "react",
+      "form-input__label"
+    )} htmlFor="first-name">
+        First name
+      </label>
+
+      <ChEdit${renderShowcaseProperties(state, "react", showcasePropertiesInfo)}
+      ></ChEdit>`,
+
+    stencil: () => `<label ${showcaseTemplateClassProperty(
+      "stencil",
+      "form-input__label"
+    )} htmlFor="first-name">
           First name
         </label>
 
-        <ch-edit
-          id="first-name"
-          name="First name"
-          accessibleName="${state.accessibleName}"
-          autocapitalize="${state.autocapitalize}"
-          autocomplete="${state.autocomplete}"
-          class="form-input"${renderBooleanPropertyOrEmpty("disabled", state)}
-          debounce={${state.debounce}}
-          getImagePathCallback={getImagePathCallback}
-          maxLength={${state.maxLength}}
-          mode="${state.mode}"${renderBooleanPropertyOrEmpty(
-      "multiline",
-      state
-    )}
-          pattern="${state.pattern}"
-          placeholder="${state.placeholder}"
-          picture="${state.picture}"
-          value="${state.value}"
-          spellcheck="${state.spellcheck}"
-          startImgSrc="${state.startImgSrc}"
-          startImgType="${state.startImgType}"
-          type="${state.type}"
-          triggerButtonAccessibleName="${
-            state.triggerButtonAccessibleName
-          }"${renderBooleanPropertyOrEmpty("readonly", state)}
-          onInput={this.#handleValueChange}
-        ></ch-edit>`,
+        <ch-edit${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
+        ></ch-edit>`
+  },
   render: render,
   state: state
 };

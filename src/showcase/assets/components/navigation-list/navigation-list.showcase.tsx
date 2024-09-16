@@ -1,8 +1,12 @@
 import { h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
 import { unanimoShowcase } from "./models";
 import { ChNavigationListRenderCustomEvent } from "../../../../components";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import { renderShowcaseProperties } from "../utils";
 import { NavigationListHyperlinkClickEvent } from "../../../../components/navigation-list/types";
 
 const state: Partial<HTMLChNavigationListRenderElement> = {};
@@ -107,29 +111,63 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChNavigationListRen
     }
   ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChNavigationListRenderElement>[] =
+  [
+    { name: "autoGrow", defaultValue: false, type: "boolean" },
+    {
+      name: "class",
+      fixed: true,
+      value: "navigation-list navigation-list-secondary",
+      type: "string"
+    },
+    { name: "expandableButton", defaultValue: "decorative", type: "string" },
+    { name: "expandableButtonPosition", defaultValue: "start", type: "string" },
+    { name: "expanded", defaultValue: true, type: "boolean" },
+    { name: "model", fixed: true, value: "controlUIModel", type: "function" },
+    {
+      name: "selectedLink",
+      fixed: true,
+      value: "selectedLink",
+      type: "function"
+    },
+    { name: "selectedLinkIndicator", defaultValue: false, type: "boolean" },
+    { name: "showCaptionOnCollapse", defaultValue: "inline", type: "string" },
+    { name: "tooltipDelay", defaultValue: 100, type: "number" },
+    {
+      name: "buttonClick",
+      fixed: true,
+      value: "handleButtonClick",
+      type: "event"
+    },
+    {
+      name: "hyperlinkClick",
+      fixed: true,
+      value: "handleHyperlinkClick",
+      type: "event"
+    }
+  ];
+
 export const navigationListShowcaseStory: ShowcaseStory<HTMLChNavigationListRenderElement> =
   {
     properties: showcaseRenderProperties,
     markupWithUIModel: {
       uiModel: () => state.model,
       uiModelType: "NavigationListModel",
-      render: () => `<ch-navigation-list-render${renderBooleanPropertyOrEmpty(
-        "autoGrow",
-        state
-      )}
-          expandableButton="${state.expandableButton}"
-          expandableButtonPosition="${state.expandableButtonPosition}"
-          class="navigation-list navigation-list-secondary"${renderBooleanPropertyOrEmpty(
-            "expanded",
-            state
-          )}
-          model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
-            "selectedLinkIndicator",
-            state
-          )}
-          showCaptionOnCollapse="${state.showCaptionOnCollapse}"
-          tooltipDelay={${state.tooltipDelay}}
+      render: {
+        react: () => `<ChNavigationListRender${renderShowcaseProperties(
+          state,
+          "react",
+          showcasePropertiesInfo
+        )}
+      ></ChNavigationListRender>`,
+
+        stencil: () => `<ch-navigation-list-render${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
         ></ch-navigation-list-render>`
+      }
     },
     render: render,
     state: state

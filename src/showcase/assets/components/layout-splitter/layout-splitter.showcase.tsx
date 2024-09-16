@@ -1,5 +1,10 @@
 import { h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplateFrameWork,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
 import {
   layout1,
   layout2,
@@ -10,6 +15,11 @@ import {
   layout7,
   layout8
 } from "./models";
+import {
+  insertSpacesAtTheBeginningExceptForTheFirstLine,
+  renderShowcaseProperties,
+  showcaseTemplateClassProperty
+} from "../utils";
 
 const state: Partial<HTMLChLayoutSplitterElement> = {};
 
@@ -95,38 +105,89 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChLayoutSplitterEle
     }
   ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChLayoutSplitterElement>[] =
+  [
+    { name: "class", fixed: true, value: "layout-splitter", type: "string" },
+    { name: "model", fixed: true, value: "controlUIModel", type: "function" }
+  ];
+
+const lightDOMMarkup = (
+  framework: ShowcaseTemplateFrameWork
+) => `<div slot="start-component">
+  Start
+  <input ${showcaseTemplateClassProperty(
+    framework,
+    "form-input"
+  )} type="text" />
+</div>
+
+<div slot="end-component">
+  End
+  <input ${showcaseTemplateClassProperty(
+    framework,
+    "form-input"
+  )} type="text" />
+</div>
+
+<div slot="end-end-component">
+  End End
+  <input ${showcaseTemplateClassProperty(
+    framework,
+    "form-input"
+  )} type="text" />
+</div>
+
+<div slot="center-2-component">
+  Center 2
+  <input ${showcaseTemplateClassProperty(
+    framework,
+    "form-input"
+  )} type="text" />
+</div>
+
+<div slot="center-component">
+  Center
+  <input ${showcaseTemplateClassProperty(
+    framework,
+    "form-input"
+  )} type="text" />
+</div>`;
+
+const lightDOMMarkupReact = insertSpacesAtTheBeginningExceptForTheFirstLine(
+  lightDOMMarkup("react"),
+  8
+);
+
+const lightDOMMarkupStencil = insertSpacesAtTheBeginningExceptForTheFirstLine(
+  lightDOMMarkup("stencil"),
+  10
+);
+
 export const layoutSplitterShowcaseStory: ShowcaseStory<HTMLChLayoutSplitterElement> =
   {
     properties: showcaseRenderProperties,
     markupWithUIModel: {
       uiModel: () => state.model,
       uiModelType: "LayoutSplitterModel",
-      render: () => `<ch-layout-splitter model={this.#controlUIModel}>
-          <div slot="start-component">
-            Start
-            <input class="form-input" type="text" />
-          </div>
+      render: {
+        react: () => `<ChLayoutSplitter${renderShowcaseProperties(
+          state,
+          "react",
+          showcasePropertiesInfo
+        )}
+      >
+        ${lightDOMMarkupReact}
+      </ChLayoutSplitter>`,
 
-          <div slot="end-component">
-            End
-            <input class="form-input" type="text" />
-          </div>
-
-          <div slot="end-end-component">
-            End End
-            <input class="form-input" type="text" />
-          </div>
-
-          <div slot="center-2-component">
-            Center 2
-            <input class="form-input" type="text" />
-          </div>
-
-          <div slot="center-component">
-            Center
-            <input class="form-input" type="text" />
-          </div>
+        stencil: () => `<ch-layout-splitter${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
+        >
+          ${lightDOMMarkupStencil}
         </ch-layout-splitter>`
+      }
     },
     render: render,
     state: state

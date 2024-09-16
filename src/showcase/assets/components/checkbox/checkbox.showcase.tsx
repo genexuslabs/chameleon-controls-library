@@ -1,6 +1,10 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChCheckboxElement> = {};
 const formRefs: {
@@ -162,23 +166,37 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCheckboxElement> 
     }
   ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCheckboxElement>[] =
+  [
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    { name: "class", fixed: true, value: "checkbox", type: "string" },
+    { name: "caption", defaultValue: undefined, type: "string" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "checkedValue", defaultValue: undefined, type: "string" },
+    { name: "indeterminate", defaultValue: false, type: "boolean" },
+    { name: "readonly", defaultValue: false, type: "boolean" },
+    { name: "value", defaultValue: undefined, type: "string" },
+    { name: "unCheckedValue", defaultValue: undefined, type: "string" },
+    { name: "input", fixed: true, value: "handleValueChange", type: "event" }
+  ];
+
 export const checkboxShowcaseStory: ShowcaseStory<HTMLChCheckboxElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: () => `<ch-checkbox
-          accessibleName="${state.accessibleName}"
-          class="checkbox"
-          caption="${state.caption}"
-          checkedValue="${state.checkedValue}"${renderBooleanPropertyOrEmpty(
-    "disabled",
-    state
-  )}${renderBooleanPropertyOrEmpty("indeterminate", state)}
-          value="${state.value}"${renderBooleanPropertyOrEmpty(
-    "readonly",
-    state
-  )}
-          unCheckedValue="${state.unCheckedValue}"
-          onInput={this.#handleValueChange}
-        ></ch-checkbox>`,
+  markupWithoutUIModel: {
+    react: () => `<ChCheckbox${renderShowcaseProperties(
+      state,
+      "react",
+      showcasePropertiesInfo
+    )}
+      ></ChCheckbox>`,
+
+    stencil: () => `<ch-checkbox${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcasePropertiesInfo
+    )}
+        ></ch-checkbox>`
+  },
   render: render,
   state: state
 };

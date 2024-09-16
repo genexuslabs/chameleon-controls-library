@@ -163,7 +163,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChRadioGroupRenderE
 const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChRadioGroupRenderElement>[] =
   [
     { name: "class", fixed: true, value: "radio-group", type: "string" },
-    { name: "direction", defaultValue: "horizontal", type: "boolean" },
+    { name: "direction", defaultValue: "horizontal", type: "string" },
     { name: "disabled", defaultValue: false, type: "boolean" },
     { name: "model", fixed: true, value: "controlUIModel", type: "function" },
     { name: "value", defaultValue: undefined, type: "string" },

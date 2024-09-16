@@ -9,17 +9,10 @@ aside {
   color: var(--text__on-secondary);
 }
 
-.light .mercury {
+.mercury {
   aside,
   header {
-    background-color: var(--mer-color__elevation--04);
-  }
-}
-
-.dark .mercury {
-  aside,
-  header {
-    background-color: var(--mer-color__elevation--01);
+    background-color: var(--mer-surface__elevation--01);
   }
 }
 

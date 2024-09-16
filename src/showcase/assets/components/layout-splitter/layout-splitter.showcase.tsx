@@ -29,21 +29,23 @@ const render = () => (
       slot="start-component"
       class="components"
       style={{
-        "background-color": "var(--colors-foundation__purple--10)"
+        "background-color":
+          "var(--colors-foundation__purple--10, var(--mer-color__neutral-gray--900))"
       }}
     >
-      Start
-      <input class="form-input" type="text" />
+      <label htmlFor="start">Start</label>
+      <ch-edit id="start" class="form-input" type="text"></ch-edit>
     </div>
     <div
       slot="end-component"
       class="components"
       style={{
-        "background-color": "var(--colors-foundation__orange--200)"
+        "background-color":
+          "var(--colors-foundation__orange--200, var(--mer-color__tinted-red--60))"
       }}
     >
-      End
-      <input class="form-input" type="text" />
+      <label htmlFor="end">End</label>
+      <ch-edit id="end" class="form-input" type="text"></ch-edit>
     </div>
 
     <div
@@ -54,28 +56,32 @@ const render = () => (
           "color-mix(in srgb, var(--icon__error),transparent 60%)"
       }}
     >
-      End End
-      <input class="form-input" type="text" />
+      <label htmlFor="end-end">End End</label>
+      <ch-edit id="end-end" class="form-input" type="text"></ch-edit>
     </div>
 
     <div
       slot="center-2-component"
       class="components"
-      style={{ "background-color": "var(--accents__disabled)" }}
+      style={{
+        "background-color":
+          "var(--accents__disabled, var(--mer-color__neutral-gray--700))"
+      }}
     >
-      Center 2
-      <input class="form-input" type="text" />
+      <label htmlFor="center-2">Center 2</label>
+      <ch-edit id="center-2" class="form-input" type="text"></ch-edit>
     </div>
 
     <div
       slot="center-component"
       class="components"
       style={{
-        "background-color": "var(--alert-warning__background-color)"
+        "background-color":
+          "var(--alert-warning__background-color, var(--mer-color__neutral-gray--600))"
       }}
     >
-      Center
-      <input class="form-input" type="text" />
+      <label htmlFor="center">Center</label>
+      <ch-edit id="center" class="form-input" type="text"></ch-edit>
     </div>
   </ch-layout-splitter>
 );
@@ -99,7 +105,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChLayoutSplitterEle
             { caption: "Layout 7", value: layout7 },
             { caption: "Layout 8", value: layout8 }
           ],
-          value: layout2
+          value: layout7
         }
       ]
     }
@@ -114,43 +120,43 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChLayoutSplitterE
 const lightDOMMarkup = (
   framework: ShowcaseTemplateFrameWork
 ) => `<div slot="start-component">
-  Start
-  <input ${showcaseTemplateClassProperty(
+  <label htmlFor="start">Start</label>
+  <ch-edit id="start" ${showcaseTemplateClassProperty(
     framework,
     "form-input"
-  )} type="text" />
+  )} type="text"></ch-edit>
 </div>
 
 <div slot="end-component">
-  End
-  <input ${showcaseTemplateClassProperty(
+  <label htmlFor="end">End</label>
+  <ch-edit id="end" ${showcaseTemplateClassProperty(
     framework,
     "form-input"
-  )} type="text" />
+  )} type="text"></ch-edit>
 </div>
 
 <div slot="end-end-component">
-  End End
-  <input ${showcaseTemplateClassProperty(
+  <label htmlFor="end-end">End End</label>
+  <ch-edit id="end-end" ${showcaseTemplateClassProperty(
     framework,
     "form-input"
-  )} type="text" />
+  )} type="text"></ch-edit>
 </div>
 
 <div slot="center-2-component">
-  Center 2
-  <input ${showcaseTemplateClassProperty(
+  <label htmlFor="center-2">Center 2</label>
+  <ch-edit id="center-2" ${showcaseTemplateClassProperty(
     framework,
     "form-input"
-  )} type="text" />
+  )} type="text"></ch-edit>
 </div>
 
 <div slot="center-component">
-  Center
-  <input ${showcaseTemplateClassProperty(
+  <label htmlFor="center">Center</label>
+  <ch-edit id="center" ${showcaseTemplateClassProperty(
     framework,
     "form-input"
-  )} type="text" />
+  )} type="text"></ch-edit>
 </div>`;
 
 const lightDOMMarkupReact = insertSpacesAtTheBeginningExceptForTheFirstLine(

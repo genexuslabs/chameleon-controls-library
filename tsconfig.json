@@ -22,6 +22,6 @@
     "noUnusedParameters": true
     // "strict": true
   },
-  "include": ["src", "stencil.config.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "src/common/monaco/output/"]
 }

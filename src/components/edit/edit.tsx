@@ -140,7 +140,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * If disabled, it will not fire any user interaction related event
    * (for example, click event).
    */
-  @Prop() readonly disabled: boolean = false;
+  @Prop({ reflect: true }) readonly disabled: boolean = false;
 
   /**
    * This property specifies a callback that is executed when the path for an

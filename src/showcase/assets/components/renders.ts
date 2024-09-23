@@ -67,7 +67,7 @@ export const flexibleLayoutPlaygroundConfiguration: FlexibleLayoutModel = {
     },
     {
       id: CONFIGURATION_WIDGET,
-      size: "350px",
+      size: "356px",
       minSize: "250px",
       type: "single-content",
       widget: { id: CONFIGURATION_WIDGET, name: null }

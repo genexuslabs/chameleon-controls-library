@@ -1036,9 +1036,13 @@ export namespace Components {
          */
         "pattern": string;
         /**
-          * Specifies a picture to apply for the value of the control. Only works if `type === "Text"` and `mode === "numeric"`.
+          * Specifies a picture to apply for the value of the control. Only works if not `multiline`.
          */
         "picture"?: string;
+        /**
+          * Specifies the callback to execute when the picture must computed for the new value.
+         */
+        "pictureCallback"?: (value: any, picture: string) => string;
         /**
           * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
          */
@@ -7115,9 +7119,13 @@ declare namespace LocalJSX {
          */
         "pattern"?: string;
         /**
-          * Specifies a picture to apply for the value of the control. Only works if `type === "Text"` and `mode === "numeric"`.
+          * Specifies a picture to apply for the value of the control. Only works if not `multiline`.
          */
         "picture"?: string;
+        /**
+          * Specifies the callback to execute when the picture must computed for the new value.
+         */
+        "pictureCallback"?: (value: any, picture: string) => string;
         /**
           * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
          */

@@ -10,9 +10,6 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { formatNumericField } from "@genexus/web-standard-functions/dist/lib-esm/numeric/formatNumericField";
-import { formatNumericFieldBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/bigNumber/formatNumericField";
-import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/types/gxbignumber";
 
 import {
   AccessibleNameComponent,
@@ -79,6 +76,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   #startImage: GxImageMultiStateStart | undefined;
 
   #debounceId: NodeJS.Timeout | undefined;
+  #shouldComputePictureValue = false;
 
   // Refs
   // TODO: StencilJS issue. We have to use two refs because StencilJS does not,
@@ -187,6 +185,26 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly pattern: string = undefined;
 
   /**
+   * Specifies a picture to apply for the value of the control. Only works if
+   * not `multiline`.
+   */
+  @Prop() readonly picture?: string;
+  @Watch("picture")
+  pictureChanged() {
+    this.#shouldComputePictureValue = true;
+  }
+
+  /**
+   * Specifies the callback to execute when the picture must computed for the
+   * new value.
+   */
+  @Prop() readonly pictureCallback?: (value: any, picture: string) => string;
+  @Watch("pictureCallback")
+  pictureCallbackChanged() {
+    this.#shouldComputePictureValue = true;
+  }
+
+  /**
    * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder)
    * attribute for `input` elements.
    */
@@ -254,7 +272,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop({ mutable: true }) value: string;
   @Watch("value")
   valueChanged(newValue: string) {
-    this.#computePictureValue(newValue);
+    this.#shouldComputePictureValue = true;
 
     if (!this.#getInputRef()) {
       return;
@@ -277,12 +295,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     // Update form value
     this.internals.setFormValue(newValue);
   }
-
-  /**
-   * Specifies a picture to apply for the value of the control. Only works if
-   * `type === "Text"` and `mode === "numeric"`.
-   */
-  @Prop() readonly picture?: string;
 
   /**
    * The `change` event is emitted when a change to the element's value is
@@ -376,23 +388,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   // - - - - - - - - - - - - - - - - - - - - - -
   //                  Pictures
   // - - - - - - - - - - - - - - - - - - - - - -
-  #hasPictureApplied = () =>
-    this.picture &&
-    this.type === "text" &&
-    (this.mode === "numeric" || this.mode === "decimal");
+  #hasPictureApplied = () => this.picture && !!this.pictureCallback;
 
   #computePictureValue(value: string | number) {
-    if (!this.#hasPictureApplied()) {
-      return;
-    }
-
-    if (typeof value === "number") {
-      this.pictureValue = formatNumericField(value, this.picture).trim();
-    } else {
-      this.pictureValue = formatNumericFieldBigNumber(
-        value as any as GxBigNumber,
-        this.picture
-      ).trim();
+    if (this.#hasPictureApplied()) {
+      this.pictureValue = this.pictureCallback(value, this.picture).trim();
     }
   }
 
@@ -420,6 +420,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     // Get external aria-label
     if (labels?.length > 0) {
       this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
+    }
+  }
+
+  componentWillUpdate() {
+    if (this.#shouldComputePictureValue) {
+      this.#shouldComputePictureValue = false;
+      this.#computePictureValue(this.value);
     }
   }
 

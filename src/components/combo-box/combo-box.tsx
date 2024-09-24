@@ -1243,11 +1243,8 @@ export class ChComboBoxRender
   }
 
   disconnectedCallback() {
-    if (this.#resizeObserver) {
-      this.#resizeObserver.disconnect();
-      this.#resizeObserver = undefined; // Free the memory
-    }
-
+    this.#resizeObserver?.disconnect();
+    this.#resizeObserver = undefined; // Free the memory
     this.#borderSizeRAF = undefined; // Free the memory
   }
 
@@ -1284,14 +1281,15 @@ export class ChComboBoxRender
           "ch-combo-box--suggest": filtersAreApplied
         }}
         onKeyDown={
-          !mobileDevice && comboBoxIsInteractive
-            ? this.#handleExpandedChangeWithKeyBoard
-            : null
+          !mobileDevice &&
+          comboBoxIsInteractive &&
+          this.#handleExpandedChangeWithKeyBoard
         }
         onClick={
-          !mobileDevice && filtersAreApplied && comboBoxIsInteractive
-            ? this.#focusInnerInputWhenFiltersApplied
-            : null
+          !mobileDevice &&
+          filtersAreApplied &&
+          comboBoxIsInteractive &&
+          this.#focusInnerInputWhenFiltersApplied
         }
       >
         {mobileDevice
@@ -1316,9 +1314,9 @@ export class ChComboBoxRender
                 }}
                 style={customVars}
                 onClickCapture={
-                  !filtersAreApplied && comboBoxIsInteractive
-                    ? this.#handleExpandedChange
-                    : null
+                  !filtersAreApplied &&
+                  comboBoxIsInteractive &&
+                  this.#handleExpandedChange
                 }
                 ref={el => (this.#maskRef = el)}
               >
@@ -1354,14 +1352,15 @@ export class ChComboBoxRender
                       : this.#getCaptionUsingValue(this.currentSelectedValue)
                   }
                   onClickCapture={
-                    filtersAreApplied && !this.expanded && comboBoxIsInteractive
-                      ? this.#displayPopoverWhenFiltersApplied
-                      : null
+                    filtersAreApplied &&
+                    !this.expanded &&
+                    comboBoxIsInteractive &&
+                    this.#displayPopoverWhenFiltersApplied
                   }
                   onInputCapture={
-                    filtersAreApplied && comboBoxIsInteractive
-                      ? this.#handleInputFilterChange
-                      : null
+                    filtersAreApplied &&
+                    comboBoxIsInteractive &&
+                    this.#handleInputFilterChange
                   }
                   ref={el => (this.#inputRef = el)}
                 ></input>
@@ -1386,9 +1385,9 @@ export class ChComboBoxRender
                   overflowBehavior="add-scroll"
                   positionTry="flip-block"
                   onPopoverClosed={
-                    this.expanded && comboBoxIsInteractive
-                      ? this.#handlePopoverClose
-                      : null
+                    this.expanded &&
+                    comboBoxIsInteractive &&
+                    this.#handlePopoverClose
                   }
                 >
                   {this.model.map(

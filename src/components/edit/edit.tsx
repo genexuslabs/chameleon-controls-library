@@ -171,7 +171,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   /**
    * Controls if the element accepts multiline text.
    */
-  @Prop() readonly multiline: boolean;
+  @Prop() readonly multiline: boolean = false;
 
   /**
    * This property specifies the `name` of the control when used in a form.
@@ -215,7 +215,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
    * attribute for `input` elements.
    */
-  @Prop() readonly readonly: boolean;
+  @Prop() readonly readonly: boolean = false;
 
   /**
    * If true, a trigger button is shown next to the edit field. The button can
@@ -228,7 +228,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Specifies whether the element may be checked for spelling errors
    */
   // eslint-disable-next-line @stencil-community/reserved-member-names
-  @Prop() readonly spellcheck: boolean;
+  @Prop() readonly spellcheck: boolean = false;
 
   /**
    * Specifies the source of the start image.

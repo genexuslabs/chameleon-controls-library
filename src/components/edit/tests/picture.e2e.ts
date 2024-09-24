@@ -1,6 +1,5 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { EditType } from "../types";
-import { delayTest } from "../../../testing/utils.e2e";
 
 const FORM_ENTRY = "edit";
 

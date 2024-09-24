@@ -24,6 +24,18 @@ describe("[ch-edit][default]", () => {
     expect(textareaRef).toBeNull();
   });
 
+  it("should have multiline = false by default", async () => {
+    expect(await editRef.getProperty("multiline")).toBe(false);
+  });
+
+  it("should have readonly = false by default", async () => {
+    expect(await editRef.getProperty("readonly")).toBe(false);
+  });
+
+  it("should have spellcheck = false by default", async () => {
+    expect(await editRef.getProperty("spellcheck")).toBe(false);
+  });
+
   it("should render an input element when multiline = false", async () => {
     await page.setContent(`<ch-edit multiline="false"></ch-edit>`);
     await page.waitForChanges();

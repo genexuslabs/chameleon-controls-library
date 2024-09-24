@@ -25,10 +25,10 @@ const getTestDescription = (
   const readonlyCaption = readonly ? "[readonly]" : "[editable]";
 
   if (multiline) {
-    return `[ch-edit]${readonlyCaption}[disabled][multiline]`;
+    return `[ch-edit][disabled][multiline]${readonlyCaption}`;
   }
 
-  return `[ch-edit]${readonlyCaption}[disabled][default][type=\"${type}\"]`;
+  return `[ch-edit][disabled][default][type=\"${type}\"]${readonlyCaption}`;
 };
 
 const testDisabled = (

@@ -5,6 +5,7 @@ import {
   newE2EPage
 } from "@stencil/core/testing";
 import { simpleModelComboBox1 } from "../../../showcase/assets/components/combo-box/models";
+import { ComboBoxSuggestOptions } from "../types";
 
 const FORM_ENTRY = "combo-box";
 
@@ -49,11 +50,18 @@ const mouseClickToPuppeteerMouseOptions = {
 
 const DEFAULT_CURRENT_VALUE = undefined;
 const DEFAULT_EVENT_INPUT_RECEIVED_TIMES = 1;
+const STRICT_FILTERS: ComboBoxSuggestOptions = { strict: true };
 
-const testKeyboard = (expanded: boolean, confirmKey?: ConfirmKeys) => {
+const testKeyboard = (
+  expanded: boolean,
+  confirmKey?: ConfirmKeys,
+  strict?: boolean
+) => {
   const testDescription = `[ch-combo-box-render][keyboard][combo-box][${
     expanded ? "expanded" : "collapsed"
-  }]${expanded ? `[closing with "${confirmKey}"]` : ""}` as const;
+  }]${expanded ? `[closing with "${confirmKey}"]` : ""}${
+    strict ? "[strict]" : ""
+  }` as const;
 
   describe(testDescription, () => {
     let page: E2EPage;
@@ -146,6 +154,11 @@ const testKeyboard = (expanded: boolean, confirmKey?: ConfirmKeys) => {
       });
       comboBoxRef = await page.find("ch-combo-box-render");
       await comboBoxRef.setProperty("model", simpleModelComboBox1);
+
+      if (strict) {
+        await comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
+      }
+
       await page.waitForChanges();
       inputEventSpy = await comboBoxRef.spyOnEvent("input");
 
@@ -297,8 +310,11 @@ const keysToConfirmClose: ConfirmKeys[] = [
   // "MiddleMouseClick",
   // "RightMouseClick"
 ];
+const strictValues = [false, true];
 
-keysToConfirmClose.forEach(keyToConfirmClose =>
-  testKeyboard(true, keyToConfirmClose)
-);
+strictValues.forEach(strict => {
+  keysToConfirmClose.forEach(keyToConfirmClose =>
+    testKeyboard(true, keyToConfirmClose, strict)
+  );
+});
 testKeyboard(false);

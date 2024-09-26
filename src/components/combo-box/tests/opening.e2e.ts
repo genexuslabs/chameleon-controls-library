@@ -1,5 +1,6 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { simpleModelComboBox1 } from "../../../showcase/assets/components/combo-box/models";
+import { ComboBoxSuggestOptions } from "../types";
 
 const FORM_ENTRY = "combo-box";
 
@@ -72,10 +73,12 @@ const COMBO_BOX_KEYS_TO_CLOSE: KeyToPress[] = [
   "Tab"
 ];
 
-const testOpeningClosing = (suggest: boolean) => {
+const STRICT_FILTERS: ComboBoxSuggestOptions = { strict: true };
+
+const testOpeningClosing = (suggest: boolean, strict?: true) => {
   const testDescription = `[ch-combo-box-render][opening/closing][${
     suggest ? "suggest" : "combo-box"
-  }]`;
+  }]${strict ? "[strict]" : ""}`;
 
   describe(testDescription, () => {
     let page: E2EPage;
@@ -116,6 +119,10 @@ const testOpeningClosing = (suggest: boolean) => {
       });
       comboBoxRef = await page.find("ch-combo-box-render");
       await comboBoxRef.setProperty("model", simpleModelComboBox1);
+
+      if (strict) {
+        await comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
+      }
       await page.waitForChanges();
     });
 
@@ -235,3 +242,4 @@ const testOpeningClosing = (suggest: boolean) => {
 
 testOpeningClosing(false);
 testOpeningClosing(true);
+testOpeningClosing(true, true);

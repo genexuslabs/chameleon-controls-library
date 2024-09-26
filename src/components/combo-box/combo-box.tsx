@@ -75,6 +75,12 @@ type KeyDownWithFiltersEvents =
 type ImmediateFilter = "immediate" | "debounced" | undefined;
 
 /**
+ * @status experimental
+ *
+ * The ch-combo-box-render is an input widget that has an associated popup. The
+ * popup enables users to choose a value for the input from a collection.
+ *  - Items are only rendered when the popup is displayed.
+ *
  * @part ... - ...
  */
 @Component({

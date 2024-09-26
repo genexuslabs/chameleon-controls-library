@@ -814,6 +814,7 @@ export class ChComboBoxRender
       return itemGroup.items != null ? (
         <div
           key={`__group__${item.value}`}
+          // TODO: This should be placed in the button
           aria-controls={itemGroup.expandable ? `${index}__content` : null}
           aria-expanded={
             itemGroup.expandable ? (!!itemGroup.expanded).toString() : null
@@ -825,6 +826,7 @@ export class ChComboBoxRender
         >
           {itemGroup.expandable ? (
             <button
+              // TODO: Add ID
               class={{
                 // eslint-disable-next-line camelcase
                 group__header: true,
@@ -832,8 +834,7 @@ export class ChComboBoxRender
                 "group--collapsed": !itemGroup.expanded
               }}
               part={`group__header expandable${isDisabled ? " disabled" : ""} ${
-                // TODO: Fix this bug
-                this.expanded ? "expanded" : "collapsed"
+                itemGroup.expanded ? "expanded" : "collapsed"
               }`}
               style={customVars}
               disabled={isDisabled}

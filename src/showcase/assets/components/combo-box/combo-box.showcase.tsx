@@ -8,7 +8,7 @@ import {
 import {
   comboBoxFilterChange,
   dataTypeInGeneXus,
-  simpleModel1,
+  simpleModelComboBox1,
   smallModel
 } from "./models";
 import {
@@ -143,11 +143,11 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
           accessibleName: "Model",
           type: "enum",
           values: [
-            { caption: "Simple Model", value: simpleModel1 },
+            { caption: "Simple Model", value: simpleModelComboBox1 },
             { caption: "Small Model", value: smallModel },
             { caption: "Data Type Model in GeneXus", value: dataTypeInGeneXus }
           ],
-          value: simpleModel1
+          value: simpleModelComboBox1
         }
       ]
     },

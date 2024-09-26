@@ -8,7 +8,7 @@ import {
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 
-export const simpleModel1: ComboBoxModel = [
+export const simpleModelComboBox1: ComboBoxModel = [
   { value: "Value 1", caption: "Label for the value 1" },
   {
     value: "Value 2",

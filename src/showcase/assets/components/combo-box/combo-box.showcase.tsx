@@ -54,7 +54,6 @@ const render = () => (
         placeholder={state.placeholder}
         class="combo-box"
         disabled={state.disabled}
-        destroyItemsOnClose={state.destroyItemsOnClose}
         filter={state.filter}
         popoverInlineAlign={state.popoverInlineAlign}
         model={
@@ -84,7 +83,6 @@ const render = () => (
         placeholder={state.placeholder}
         class="combo-box"
         disabled={state.disabled}
-        destroyItemsOnClose={state.destroyItemsOnClose}
         filter={state.filter}
         popoverInlineAlign={state.popoverInlineAlign}
         model={
@@ -115,7 +113,6 @@ const render = () => (
           placeholder={state.placeholder}
           class="combo-box"
           disabled={state.disabled}
-          destroyItemsOnClose={state.destroyItemsOnClose}
           filter={state.filter}
           popoverInlineAlign={state.popoverInlineAlign}
           model={
@@ -193,12 +190,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
               caption: "outside-end"
             }
           ]
-        },
-        {
-          id: "destroyItemsOnClose",
-          caption: "Destroy Items On Close",
-          value: false,
-          type: "boolean"
         },
         {
           id: "resizable",

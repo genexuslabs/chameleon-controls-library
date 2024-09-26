@@ -88,7 +88,6 @@ export class ChComboBoxRender
 {
   #accessibleNameFromExternalLabel: string | undefined;
   #popoverId: string | undefined;
-  #firstExpanded = false;
 
   /**
    * This variable is used to emulate the behavior of the native select. The
@@ -298,8 +297,6 @@ export class ChComboBoxRender
   @State() expanded = false;
   @Watch("expanded")
   handleExpandedChange(newExpandedValue: boolean) {
-    this.#firstExpanded = true;
-
     if (newExpandedValue && !mobileDevice) {
       this.#focusSelectAfterNextRender = true;
 
@@ -329,15 +326,6 @@ export class ChComboBoxRender
    * (for example, click event).
    */
   @Prop() readonly disabled: boolean = false;
-
-  /**
-   * Specifies whether the items should not stay rendered in the DOM if the
-   * control is closed.
-   * `true` to destroy the rendered items when the control is closed.
-   * Note: By default, the control does not rendered the items until the first
-   * expansion. The same applies if the control have groups.
-   */
-  @Prop() readonly destroyItemsOnClose: boolean = false;
 
   /**
    * This property lets you determine the expression that will be applied to the
@@ -815,7 +803,7 @@ export class ChComboBoxRender
       // to propagate the disabled state in the child buttons
       const isDisabled = disabled ?? item.disabled;
       const itemGroup = item as ComboBoxItemGroup;
-      const canAddListeners = !isDisabled && this.expanded;
+      const canAddListeners = !isDisabled;
 
       return itemGroup.items != null ? (
         <div
@@ -1067,7 +1055,6 @@ export class ChComboBoxRender
   render() {
     const filtersAreApplied = this.suggest;
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
-    const destroyRender = this.destroyItemsOnClose && !this.expanded;
 
     const currentItemInInput: ComboBoxItemModel | undefined =
       this.#valueToItemInfo.get(
@@ -1182,7 +1169,7 @@ export class ChComboBoxRender
                 ></input>
               </div>,
 
-              this.#firstExpanded && !destroyRender && (
+              this.expanded && (
                 <ch-popover
                   key="popover"
                   id="popover"
@@ -1206,9 +1193,14 @@ export class ChComboBoxRender
                     this.#handlePopoverClose
                   }
                 >
-                  {this.model.map(
-                    this.#customItemRender(false, undefined, filtersAreApplied)
-                  )}
+                  {this.expanded &&
+                    this.model.map(
+                      this.#customItemRender(
+                        false,
+                        undefined,
+                        filtersAreApplied
+                      )
+                    )}
                 </ch-popover>
               )
             ]}

@@ -34,7 +34,8 @@ import { focusComposedPath } from "../common/helpers";
 import { filterSubModel } from "./helpers";
 import {
   findComboBoxLargestValue,
-  getComboBoxItemImageCustomVars
+  getComboBoxItemImageCustomVars,
+  mapValuesToItemInfo
 } from "./utils";
 import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
 
@@ -358,7 +359,11 @@ export class ChComboBoxRender
   @Watch("model")
   modelChanged(newModel: ComboBoxModel) {
     this.#findLargestValue(this.model);
-    this.#mapValuesToItemInfo(newModel);
+    mapValuesToItemInfo(
+      newModel,
+      this.#valueToItemInfo,
+      this.#itemCaptionToItemValue
+    );
     this.#checkIfCurrentSelectedValueIsNoLongerValid();
   }
 
@@ -402,7 +407,7 @@ export class ChComboBoxRender
    */
   @Prop() readonly suggest: boolean = false;
   @Watch("suggest")
-  filterTypeChanged() {
+  suggestChanged() {
     this.#scheduleFilterProcessing("immediate");
   }
 
@@ -485,7 +490,6 @@ export class ChComboBoxRender
     if (modelIsAlreadyFiltered) {
       return;
     }
-
     this.#displayedValues.clear();
 
     const filterOptions: ComboBoxSuggestInfo = {
@@ -495,7 +499,6 @@ export class ChComboBoxRender
 
     for (let index = 0; index < this.model.length; index++) {
       const item = this.model[index];
-
       filterSubModel(item, filterOptions, this.#displayedValues);
     }
 
@@ -534,59 +537,6 @@ export class ChComboBoxRender
     else {
       this.#filterFunction(modelIsAlreadyFiltered);
     }
-  };
-
-  #mapValuesToItemInfo = (model: ComboBoxModel) => {
-    this.#valueToItemInfo.clear();
-    this.#itemCaptionToItemValue.clear();
-
-    if (model == null) {
-      return;
-    }
-
-    model.forEach((item, firstLevelIndex) => {
-      const itemGroup = item as ComboBoxItemGroup;
-      const subItems = itemGroup.items;
-
-      if (subItems != null) {
-        // First level item
-        this.#valueToItemInfo.set(itemGroup.value, {
-          item: itemGroup,
-          index: {
-            type: "first-level",
-            firstLevelIndex: firstLevelIndex
-          },
-          firstExpanded: itemGroup.expandable && !!itemGroup.expanded
-        });
-
-        this.#itemCaptionToItemValue.set(itemGroup.caption, itemGroup.value);
-
-        // Second level items
-        subItems.forEach((subItem, secondLevelIndex) => {
-          this.#valueToItemInfo.set(subItem.value, {
-            item: subItem,
-            index: {
-              type: "nested",
-              firstLevelIndex: firstLevelIndex,
-              secondLevelIndex: secondLevelIndex
-            }
-          });
-
-          this.#itemCaptionToItemValue.set(subItem.caption, subItem.value);
-        });
-      }
-      // First level item
-      else {
-        this.#valueToItemInfo.set(item.value, {
-          item: item,
-          index: {
-            type: "first-level",
-            firstLevelIndex: firstLevelIndex
-          }
-        });
-        this.#itemCaptionToItemValue.set(item.caption, item.value);
-      }
-    });
   };
 
   #checkIfCurrentSelectedValueIsNoLongerValid = () => {
@@ -888,6 +838,7 @@ export class ChComboBoxRender
                 "group--collapsed": !itemGroup.expanded
               }}
               part={`group__header expandable${isDisabled ? " disabled" : ""} ${
+                // TODO: Fix this bug
                 this.expanded ? "expanded" : "collapsed"
               }`}
               style={customVars}
@@ -1025,7 +976,11 @@ export class ChComboBoxRender
   connectedCallback() {
     this.#popoverId ??= `ch-combo-box-popover-${autoId++}`;
     this.#findLargestValue(this.model);
-    this.#mapValuesToItemInfo(this.model);
+    mapValuesToItemInfo(
+      this.model,
+      this.#valueToItemInfo,
+      this.#itemCaptionToItemValue
+    );
 
     this.internals.setFormValue(this.value);
     this.currentSelectedValue = this.value;

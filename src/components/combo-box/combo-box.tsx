@@ -606,7 +606,7 @@ export class ChComboBoxRender
     insideAGroup: boolean,
     isDisabled: boolean
   ) =>
-    `item${insideAGroup ? " nested" : ""}${
+    `item ${item.value}${insideAGroup ? " nested" : ""}${
       isDisabled ? ` ${DISABLED_PART}` : ""
     }${item.value === this.currentSelectedValue ? ` ${SELECTED_PART}` : ""}`;
 
@@ -896,6 +896,7 @@ export class ChComboBoxRender
         <button
           key={item.value}
           role="option"
+          // TODO: This should be a string
           aria-selected={item.value === this.currentSelectedValue}
           tabindex="-1"
           class={

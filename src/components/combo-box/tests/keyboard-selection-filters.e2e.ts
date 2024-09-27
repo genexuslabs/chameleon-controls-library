@@ -6,7 +6,6 @@ import {
 } from "@stencil/core/testing";
 import { dataTypeInGeneXus } from "../../../showcase/assets/components/combo-box/models";
 import { ComboBoxSuggestOptions } from "../types";
-import { delayTest } from "../../../testing/utils.e2e";
 
 const FORM_ENTRY = "combo-box";
 
@@ -14,18 +13,6 @@ const getTemplate = () => `<button>Dummy button</button>
       <form>
         <ch-combo-box-render suggest name="${FORM_ENTRY}"></ch-combo-box-render>
       </form>`;
-
-type OptionsToClose = {
-  formValueBeforeClose?: string | undefined;
-  eventInputReceivedTimes?: number;
-  cancelClose?: boolean;
-};
-
-type Options = {
-  confirmClose?: boolean;
-  currentValue?: string | undefined;
-  eventInputReceivedTimes?: number;
-};
 
 type KeyToPress =
   | "ArrowDown"
@@ -109,6 +96,15 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
       expect(filterChangeEventSpy).toHaveReceivedEventDetail(detail);
     };
 
+    const getRenderedItems = (): Promise<{ caption: string }[]> =>
+      page.evaluate(() =>
+        [
+          ...document
+            .querySelector("ch-combo-box-render")
+            .shadowRoot.querySelectorAll("[role='option']")
+        ].map(el => ({ caption: el.textContent }))
+      );
+
     const closeComboBoxAndCheckValues = async (options: {
       formValueBeforeClose: string;
       formValueAfterClose: string;
@@ -147,15 +143,6 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
         options.eventInputReceivedTimes ?? DEFAULT_EVENT_INPUT_RECEIVED_TIMES
       );
     };
-
-    const getRenderedItems = (): Promise<{ caption: string }[]> =>
-      page.evaluate(() =>
-        [
-          ...document
-            .querySelector("ch-combo-box-render")
-            .shadowRoot.querySelectorAll("[role='option']")
-        ].map(el => ({ caption: el.textContent }))
-      );
 
     beforeEach(async () => {
       page = await newE2EPage({
@@ -224,6 +211,40 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
         confirmKey
       });
     });
+
+    it.skip("should display all items when clearing the input", async () => {
+      const allRenderedItems = await getRenderedItems();
+
+      await pressFilterKey("B", "B");
+      await pressNavigationKey("ArrowDown");
+      await pressFilterKey("Backspace", "");
+      await page.waitForChanges();
+
+      await closeComboBoxAndCheckValues({
+        formValueBeforeClose: undefined,
+        formValueAfterClose: "Blob",
+        expectedRenderedItems: allRenderedItems,
+        confirmKey
+      });
+    });
+
+    if (strict) {
+      it("should rollback the change, because the caption does not map to an item", async () => {
+        await comboBoxRef.setProperty("value", "Blob");
+        await page.waitForChanges();
+
+        await pressFilterKey("b", "b");
+        // await pressFilterKey("b", "Blobb");
+        await closeComboBoxAndCheckValues({
+          formValueBeforeClose: "Blob",
+          formValueAfterClose: "Blob",
+          expectedRenderedItems: [
+            // { caption: "Boolean" }
+          ],
+          confirmKey
+        });
+      });
+    }
 
     // // When there are filters, the "Home" key only moves the cursor of the input
     // // TODO: Fix this test
@@ -367,46 +388,46 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
   });
 };
 
-// const keysToConfirmClose: ConfirmKeys[] = [
-//   "Enter",
-//   "Escape",
-
-//   // TODO: Fix this test
-//   // "NumpadEnter",
-
-//   "Tab",
-//   "LeftMouseClick"
-
-//   // TODO: Fix this test
-//   // "MiddleMouseClick",
-//   // "RightMouseClick"
-// ];
-// const strictValues = [false, true];
-
-// strictValues.forEach(strict => {
-//   keysToConfirmClose.forEach(keyToConfirmClose =>
-//     testKeyboard(keyToConfirmClose, strict)
-//   );
-// });
-
 const keysToConfirmClose: ConfirmKeys[] = [
-  "Enter"
-  // "Escape",
+  "Enter",
+  "Escape",
 
   // TODO: Fix this test
   // "NumpadEnter",
 
-  // "Tab",
-  // "LeftMouseClick"
+  "Tab",
+  "LeftMouseClick"
 
   // TODO: Fix this test
   // "MiddleMouseClick",
   // "RightMouseClick"
 ];
-const strictValues = [true];
+const strictValues = [false, true];
 
 strictValues.forEach(strict => {
   keysToConfirmClose.forEach(keyToConfirmClose =>
     testKeyboard(keyToConfirmClose, strict)
   );
 });
+
+// const keysToConfirmClose: ConfirmKeys[] = [
+//   "Enter"
+//   // "Escape",
+
+//   // TODO: Fix this test
+//   // "NumpadEnter",
+
+//   // "Tab",
+//   // "LeftMouseClick"
+
+//   // TODO: Fix this test
+//   // "MiddleMouseClick",
+//   // "RightMouseClick"
+// ];
+// const strictValues = [true];
+
+// strictValues.forEach(strict => {
+//   keysToConfirmClose.forEach(keyToConfirmClose =>
+//     testKeyboard(keyToConfirmClose, strict)
+//   );
+// });

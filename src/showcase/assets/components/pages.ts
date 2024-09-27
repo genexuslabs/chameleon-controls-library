@@ -121,6 +121,11 @@ export const showcasePages: NavigationListModel = [
             metadata: STABLE
           },
           {
+            link: { url: "#tabular-grid-render" },
+            caption: "Tabular Grid Render",
+            metadata: EXPERIMENTAL
+          },
+          {
             link: { url: "#tree-view" },
             caption: "Tree View",
             metadata: DEVELOPER_PREVIEW

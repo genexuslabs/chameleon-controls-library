@@ -86,7 +86,25 @@ export const simpleModelComboBox1: ComboBoxModel = [
       { value: "Value 9.4", caption: "Label for the value 9.4" }
     ]
   },
-  { value: "Value 10", caption: "Label for the value 10" }
+  { value: "Value 10", caption: "Label for the value 10" },
+  {
+    value: "Value 11",
+    caption: "Label for the value 11",
+    expandable: true,
+    expanded: true,
+    disabled: true,
+    items: [
+      { value: "Value 11.1", caption: "Label for the value 11.1" },
+      { value: "Value 11.2", caption: "Label for the value 11.2" },
+      {
+        value: "Value 11.3",
+        caption: "Label for the value 11.3",
+        disabled: false
+      },
+      { value: "Value 11.4", caption: "Label for the value 11.4" }
+    ]
+  },
+  { value: "Value 12", caption: "Label for the value 12" }
 ];
 
 export const smallModel: ComboBoxModel = [

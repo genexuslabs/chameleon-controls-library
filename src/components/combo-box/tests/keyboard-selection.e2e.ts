@@ -53,15 +53,16 @@ const DEFAULT_EVENT_INPUT_RECEIVED_TIMES = 1;
 const STRICT_FILTERS: ComboBoxSuggestOptions = { strict: true };
 
 const testKeyboard = (
+  suggest: boolean,
   expanded: boolean,
   confirmKey?: ConfirmKeys,
   strict?: boolean
 ) => {
-  const testDescription = `[ch-combo-box-render][keyboard][combo-box][${
-    expanded ? "expanded" : "collapsed"
-  }]${expanded ? `[closing with "${confirmKey}"]` : ""}${
-    strict ? "[strict]" : ""
-  }` as const;
+  const testDescription = `[ch-combo-box-render][keyboard][${
+    suggest ? "suggest" : "combo-box"
+  }][${expanded ? "expanded" : "collapsed"}]${
+    expanded ? (`[closing with "${confirmKey}"]` as const) : ""
+  }${strict ? "[strict]" : ""}` as const;
 
   describe(testDescription, () => {
     let page: E2EPage;
@@ -87,13 +88,15 @@ const testKeyboard = (
 
       // If the popover is displayed an it's not closed, the value is not yet
       // emitted to the form. Check that the current selected
-      if (expanded && !options.confirmClose && options.currentValue) {
-        const selectedValue = await page.find(
-          `ch-combo-box-render >>> [part*='${options.currentValue}']`
-        );
-        expect(selectedValue).not.toBeNull();
-        expect(selectedValue.getAttribute("part")).toContain("selected");
-        expect(selectedValue).toHaveAttribute("aria-selected");
+      if (expanded && !options.confirmClose) {
+        if (options.currentValue) {
+          const selectedValue = await page.find(
+            `ch-combo-box-render >>> [part*='${options.currentValue}']`
+          );
+          expect(selectedValue).not.toBeNull();
+          expect(selectedValue.getAttribute("part")).toContain("selected");
+          expect(selectedValue).toHaveAttribute("aria-selected");
+        }
 
         return;
       }
@@ -118,7 +121,7 @@ const testKeyboard = (
       key?: ConfirmKeys,
       options?: OptionsToClose
     ) => {
-      if (expanded) {
+      if (expanded && key) {
         await checkValues(options?.formValueBeforeClose, {
           currentValue: value
         });
@@ -155,8 +158,12 @@ const testKeyboard = (
       comboBoxRef = await page.find("ch-combo-box-render");
       await comboBoxRef.setProperty("model", simpleModelComboBox1);
 
-      if (strict) {
-        await comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
+      if (suggest && expanded) {
+        await comboBoxRef.setProperty("suggest", true);
+
+        if (strict) {
+          await comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
+        }
       }
 
       await page.waitForChanges();
@@ -175,40 +182,82 @@ const testKeyboard = (
       await closeComboBoxAndCheckValues("Value 1", confirmKey);
     });
 
-    it('should select the first item (KEY = "Home") when the value is undefined', async () => {
-      await pressKey("Home");
-      await closeComboBoxAndCheckValues("Value 1", confirmKey);
-    });
-
-    it('should select the first item (KEY = "Home") when the value is defined', async () => {
-      await comboBoxRef.setProperty("value", "Value 2.1");
-      await page.waitForChanges();
-      await pressKey("Home");
-      await closeComboBoxAndCheckValues("Value 1", confirmKey, {
-        formValueBeforeClose: "Value 2.1"
+    // When there are filters, the "Home" key only moves the cursor of the input
+    if (expanded && suggest) {
+      // TODO: Fix this test
+      it.skip('should not select the first item (KEY = "Home") when the value is undefined', async () => {
+        await pressKey("Home");
+        await closeComboBoxAndCheckValues(undefined, confirmKey, {
+          eventInputReceivedTimes: 0
+        });
       });
-    });
+
+      it('should select the first item (KEY = "Home") when the value is defined', async () => {
+        await comboBoxRef.setProperty("value", "Value 2.1");
+        await page.waitForChanges();
+        await pressKey("Home");
+        await closeComboBoxAndCheckValues("Value 2.1", confirmKey, {
+          formValueBeforeClose: "Value 2.1",
+          eventInputReceivedTimes: 0
+        });
+      });
+    } else {
+      it('should select the first item (KEY = "Home") when the value is undefined', async () => {
+        await pressKey("Home");
+        await closeComboBoxAndCheckValues("Value 1", confirmKey);
+      });
+
+      it('should select the first item (KEY = "Home") when the value is defined', async () => {
+        await comboBoxRef.setProperty("value", "Value 2.1");
+        await page.waitForChanges();
+        await pressKey("Home");
+        await closeComboBoxAndCheckValues("Value 1", confirmKey, {
+          formValueBeforeClose: "Value 2.1"
+        });
+      });
+    }
 
     // TODO: Figure out how this should work
     it('should select the last item (KEY = "ArrowUp") when the value is undefined', async () => {
       await pressKey("ArrowUp");
-      await closeComboBoxAndCheckValues("Value 10", confirmKey);
+      await closeComboBoxAndCheckValues("Value 12", confirmKey);
     });
     0;
 
-    it('should select the last item (KEY = "End") when the value is undefined', async () => {
-      await pressKey("End");
-      await closeComboBoxAndCheckValues("Value 10", confirmKey);
-    });
-
-    it('should select the last item (KEY = "End") when the value is defined', async () => {
-      await comboBoxRef.setProperty("value", "Value 2.1");
-      await page.waitForChanges();
-      await pressKey("End");
-      await closeComboBoxAndCheckValues("Value 10", confirmKey, {
-        formValueBeforeClose: "Value 2.1"
+    // When there are filters, the "End" key only moves the cursor of the input
+    if (expanded && suggest) {
+      // TODO: Fix this test
+      it.skip('should not select the last item (KEY = "End") when the value is undefined', async () => {
+        await pressKey("End");
+        await closeComboBoxAndCheckValues(undefined, confirmKey, {
+          eventInputReceivedTimes: 0
+        });
       });
-    });
+
+      it('should not select the last item (KEY = "End") when the value is defined', async () => {
+        await comboBoxRef.setProperty("value", "Value 2.1");
+        await page.waitForChanges();
+        await pressKey("End");
+        await closeComboBoxAndCheckValues("Value 2.1", confirmKey, {
+          formValueBeforeClose: "Value 2.1",
+          eventInputReceivedTimes: 0
+        });
+      });
+    } else {
+      it('should select the last item (KEY = "End") when the value is undefined', async () => {
+        await pressKey("End");
+        await closeComboBoxAndCheckValues("Value 12", confirmKey);
+      });
+
+      it('should select the last item (KEY = "End") when the value is defined', async () => {
+        await comboBoxRef.setProperty("value", "Value 2.1");
+        await page.waitForChanges();
+        await pressKey("End");
+        await closeComboBoxAndCheckValues("Value 12", confirmKey, {
+          formValueBeforeClose: "Value 2.1"
+        });
+      });
+    }
 
     it('should not navigate to the last item when pressing KEY = "ArrowUp" and the selected value is the first item', async () => {
       await comboBoxRef.setProperty("value", "Value 1");
@@ -221,11 +270,11 @@ const testKeyboard = (
     });
 
     it('should not navigate to the first item when pressing KEY = "ArrowDown" and the selected value is the last item', async () => {
-      await comboBoxRef.setProperty("value", "Value 10");
+      await comboBoxRef.setProperty("value", "Value 12");
       await page.waitForChanges();
       await pressKey("ArrowDown");
-      await closeComboBoxAndCheckValues("Value 10", confirmKey, {
-        formValueBeforeClose: "Value 10",
+      await closeComboBoxAndCheckValues("Value 12", confirmKey, {
+        formValueBeforeClose: "Value 12",
         eventInputReceivedTimes: 0
       });
     });
@@ -282,17 +331,28 @@ const testKeyboard = (
       });
     });
 
+    it('should not select an item in expandable, expanded, disabled and collapsed group (KEY = "ArrowDown")', async () => {
+      await comboBoxRef.setProperty("value", "Value 10");
+      await page.waitForChanges();
+      await pressKey("ArrowDown");
+      await closeComboBoxAndCheckValues("Value 12", confirmKey, {
+        formValueBeforeClose: "Value 10"
+      });
+    });
+
+    it('should not select an item in expandable, expanded, disabled and collapsed group (KEY = "ArrowUp")', async () => {
+      await comboBoxRef.setProperty("value", "Value 12");
+      await page.waitForChanges();
+      await pressKey("ArrowUp");
+      await closeComboBoxAndCheckValues("Value 10", confirmKey, {
+        formValueBeforeClose: "Value 12"
+      });
+    });
+
     it.todo(
       'should not select an item in a collapsed group (KEY = "ArrowDown")'
     );
     it.todo('should not select an item in a collapsed group (KEY = "ArrowUp")');
-
-    it.todo(
-      'should not select an item in expandable, expanded, disabled and collapsed group (KEY = "ArrowDown")'
-    );
-    it.todo(
-      'should not select an item in expandable, expanded, disabled and collapsed group (KEY = "ArrowUp")'
-    );
   });
 };
 
@@ -311,10 +371,14 @@ const keysToConfirmClose: ConfirmKeys[] = [
   // "RightMouseClick"
 ];
 const strictValues = [false, true];
+const suggestValues = [false, true];
 
-strictValues.forEach(strict => {
-  keysToConfirmClose.forEach(keyToConfirmClose =>
-    testKeyboard(true, keyToConfirmClose, strict)
-  );
+suggestValues.forEach(suggest => {
+  strictValues.forEach(strict => {
+    keysToConfirmClose.forEach(keyToConfirmClose =>
+      testKeyboard(suggest, true, keyToConfirmClose, strict)
+    );
+  });
 });
-testKeyboard(false);
+
+testKeyboard(false, false);

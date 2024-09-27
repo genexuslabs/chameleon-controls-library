@@ -182,6 +182,7 @@ const testKeyboard = (
       }
     });
 
+    // TODO: This test should fail with suggest and (Escape Key or MouseClick)
     it('should select the first item (KEY = "ArrowDown") when the value is undefined', async () => {
       await pressKey("ArrowDown");
       await closeComboBoxAndCheckValues("Value 1", confirmKey);

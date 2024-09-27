@@ -51,6 +51,7 @@ import { GridLocalization as GridLocalization1 } from "./components/tabular-grid
 import { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, TabularGridRowClickedEvent, TabularGridRowContextMenuEvent, TabularGridRowPressedEvent, TabularGridSelectionChangedEvent } from "./components/tabular-grid/tabular-grid-types";
 import { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
 import { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
+import { TabularGridModel } from "./components/tabular-grid-render/types";
 import { SelectorCategoryData } from "./deprecated-components/test/test-suggest/test-suggest";
 import { ChThemeLoadedEvent, ThemeModel } from "./components/theme/theme-types";
 import { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
@@ -111,6 +112,7 @@ export { GridLocalization as GridLocalization1 } from "./components/tabular-grid
 export { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, TabularGridRowClickedEvent, TabularGridRowContextMenuEvent, TabularGridRowPressedEvent, TabularGridSelectionChangedEvent } from "./components/tabular-grid/tabular-grid-types";
 export { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
 export { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
+export { TabularGridModel } from "./components/tabular-grid-render/types";
 export { SelectorCategoryData } from "./deprecated-components/test/test-suggest/test-suggest";
 export { ChThemeLoadedEvent, ThemeModel } from "./components/theme/theme-types";
 export { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
@@ -3196,6 +3198,12 @@ export namespace Components {
          */
         "status": TabularGridInfiniteScrollState;
     }
+    interface ChTabularGridRender {
+        /**
+          * Specifies the content of the tabular grid control.
+         */
+        "model": TabularGridModel;
+    }
     /**
      * The `ch-tabular-grid-row-actions` component represents a group row actions.
      */
@@ -5713,6 +5721,12 @@ declare global {
         prototype: HTMLChTabularGridInfiniteScrollElement;
         new (): HTMLChTabularGridInfiniteScrollElement;
     };
+    interface HTMLChTabularGridRenderElement extends Components.ChTabularGridRender, HTMLStencilElement {
+    }
+    var HTMLChTabularGridRenderElement: {
+        prototype: HTMLChTabularGridRenderElement;
+        new (): HTMLChTabularGridRenderElement;
+    };
     interface HTMLChTabularGridRowActionsElementEventMap {
         "rowActionOpened": any;
     }
@@ -6157,6 +6171,7 @@ declare global {
         "ch-tabular-grid-column-settings": HTMLChTabularGridColumnSettingsElement;
         "ch-tabular-grid-columnset": HTMLChTabularGridColumnsetElement;
         "ch-tabular-grid-infinite-scroll": HTMLChTabularGridInfiniteScrollElement;
+        "ch-tabular-grid-render": HTMLChTabularGridRenderElement;
         "ch-tabular-grid-row-actions": HTMLChTabularGridRowActionsElement;
         "ch-tabular-grid-rowset-empty": HTMLChTabularGridRowsetEmptyElement;
         "ch-tabular-grid-rowset-legend": HTMLChTabularGridRowsetLegendElement;
@@ -9351,6 +9366,12 @@ declare namespace LocalJSX {
          */
         "status"?: TabularGridInfiniteScrollState;
     }
+    interface ChTabularGridRender {
+        /**
+          * Specifies the content of the tabular grid control.
+         */
+        "model"?: TabularGridModel;
+    }
     /**
      * The `ch-tabular-grid-row-actions` component represents a group row actions.
      */
@@ -10233,6 +10254,7 @@ declare namespace LocalJSX {
         "ch-tabular-grid-column-settings": ChTabularGridColumnSettings;
         "ch-tabular-grid-columnset": ChTabularGridColumnset;
         "ch-tabular-grid-infinite-scroll": ChTabularGridInfiniteScroll;
+        "ch-tabular-grid-render": ChTabularGridRender;
         "ch-tabular-grid-row-actions": ChTabularGridRowActions;
         "ch-tabular-grid-rowset-empty": ChTabularGridRowsetEmpty;
         "ch-tabular-grid-rowset-legend": ChTabularGridRowsetLegend;
@@ -10570,6 +10592,7 @@ declare module "@stencil/core" {
              * The 'ch-tabular-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-tabular-grid' component
              */
             "ch-tabular-grid-infinite-scroll": LocalJSX.ChTabularGridInfiniteScroll & JSXBase.HTMLAttributes<HTMLChTabularGridInfiniteScrollElement>;
+            "ch-tabular-grid-render": LocalJSX.ChTabularGridRender & JSXBase.HTMLAttributes<HTMLChTabularGridRenderElement>;
             /**
              * The `ch-tabular-grid-row-actions` component represents a group row actions.
              */

@@ -318,6 +318,10 @@ Type: `Promise<void>`
 
 ## Dependencies
 
+### Used by
+
+ - [ch-tabular-grid-render](../tabular-grid-render)
+
 ### Depends on
 
 - [ch-tabular-grid-settings](settings)
@@ -330,6 +334,7 @@ graph TD;
   ch-tabular-grid --> ch-tabular-grid-settings-columns
   ch-tabular-grid-settings --> ch-window
   ch-window --> ch-window-close
+  ch-tabular-grid-render --> ch-tabular-grid
   style ch-tabular-grid fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

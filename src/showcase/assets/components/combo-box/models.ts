@@ -117,111 +117,111 @@ export const smallModel: ComboBoxModel = [
 
 export const dataTypeInGeneXus: ComboBoxModel = [
   {
-    value: "Basics",
+    value: "_Basics",
     caption: "Basics",
     expandable: true,
     expanded: true,
     items: [
-      { value: "Audio", caption: "Audio" },
-      { value: "Blob", caption: "Blob" },
-      { value: "BlobFile", caption: "BlobFile" },
-      { value: "Boolean", caption: "Boolean" },
-      { value: "Character", caption: "Character" },
-      { value: "Date", caption: "Date" },
-      { value: "DateTime", caption: "DateTime" },
-      { value: "Geography", caption: "Geography" },
-      { value: "GeoLine", caption: "GeoLine" },
-      { value: "GeoPoint", caption: "GeoPoint" },
-      { value: "GeoPolygon", caption: "GeoPolygon" },
-      { value: "GUID", caption: "GUID" },
-      { value: "Image", caption: "Image" },
-      { value: "LongVarChar", caption: "LongVarChar" },
-      { value: "Numeric", caption: "Numeric" },
-      { value: "VarChar", caption: "VarChar" },
-      { value: "Video", caption: "Video" }
+      { value: "_Audio", caption: "Audio" },
+      { value: "_Blob", caption: "Blob" },
+      { value: "_BlobFile", caption: "BlobFile" },
+      { value: "_Boolean", caption: "Boolean" },
+      { value: "_Character", caption: "Character" },
+      { value: "_Date", caption: "Date" },
+      { value: "_DateTime", caption: "DateTime" },
+      { value: "_Geography", caption: "Geography" },
+      { value: "_GeoLine", caption: "GeoLine" },
+      { value: "_GeoPoint", caption: "GeoPoint" },
+      { value: "_GeoPolygon", caption: "GeoPolygon" },
+      { value: "_GUID", caption: "GUID" },
+      { value: "_Image", caption: "Image" },
+      { value: "_LongVarChar", caption: "LongVarChar" },
+      { value: "_Numeric", caption: "Numeric" },
+      { value: "_VarChar", caption: "VarChar" },
+      { value: "_Video", caption: "Video" }
     ]
   },
   {
-    value: "Extended Types",
+    value: "_Extended Types",
     caption: "Extended Types",
     expandable: true,
     items: [
-      { value: "Cache", caption: "Cache" },
-      { value: "ContentInfo", caption: "ContentInfo" },
-      { value: "Cookie", caption: "Cookie" },
+      { value: "_Cache", caption: "Cache" },
+      { value: "_ContentInfo", caption: "ContentInfo" },
+      { value: "_Cookie", caption: "Cookie" },
       {
-        value: "CryptoAsymmetricEncrypt",
+        value: "_CryptoAsymmetricEncrypt",
         caption: "CryptoAsymmetricEncrypt"
       },
-      { value: "CryptoCertificate", caption: "CryptoCertificate" },
-      { value: "CryptoHash", caption: "CryptoHash" },
-      { value: "CryptoSign", caption: "CryptoSign" },
-      { value: "CryptoSignXml", caption: "CryptoSignXml" },
+      { value: "_CryptoCertificate", caption: "CryptoCertificate" },
+      { value: "_CryptoHash", caption: "CryptoHash" },
+      { value: "_CryptoSign", caption: "CryptoSign" },
+      { value: "_CryptoSignXml", caption: "CryptoSignXml" },
       {
-        value: "CryptoSymmetricEncrypt",
+        value: "_CryptoSymmetricEncrypt",
         caption: "CryptoSymmetricEncrypt"
       },
-      { value: "DBConnection", caption: "DBConnection" },
-      { value: "Directory", caption: "Directory" },
-      { value: "ExcelDocument", caption: "ExcelDocument" },
-      { value: "Expression", caption: "Expression" },
-      { value: "File", caption: "File" },
-      { value: "HttpClient", caption: "HttpClient" },
-      { value: "HttpRequest", caption: "HttpRequest" },
-      { value: "HttpResponse", caption: "HttpResponse" }
+      { value: "_DBConnection", caption: "DBConnection" },
+      { value: "_Directory", caption: "Directory" },
+      { value: "_ExcelDocument", caption: "ExcelDocument" },
+      { value: "_Expression", caption: "Expression" },
+      { value: "_File", caption: "File" },
+      { value: "_HttpClient", caption: "HttpClient" },
+      { value: "_HttpRequest", caption: "HttpRequest" },
+      { value: "_HttpResponse", caption: "HttpResponse" }
     ]
   },
   {
-    value: "Structured Data Types",
+    value: "_Structured Data Types",
     caption: "Structured Data Types",
     expandable: true,
     items: [
       {
-        value: "GeneXus.Common.AnalyticsKeyValue",
+        value: "_GeneXus.Common.AnalyticsKeyValue",
         caption: "AnalyticsKeyValue, GeneXus.Common"
       },
       {
-        value: "GeneXus.Common.AnalyticsKeyPurchase",
+        value: "_GeneXus.Common.AnalyticsKeyPurchase",
         caption: "AnalyticsKeyPurchase, GeneXus.Common"
       },
       {
-        value: "GeneXus.Common.AnalyticsKeyPurchase.Item",
+        value: "_GeneXus.Common.AnalyticsKeyPurchase.Item",
         caption: "AnalyticsKeyPurchase.Item, GeneXus.Common"
       },
       {
-        value: "GeneXus.SD.Media.AudioPlayerCustomAction",
+        value: "_GeneXus.SD.Media.AudioPlayerCustomAction",
         caption: "AudioPlayerCustomAction, GeneXus.SD.Media"
       },
       {
-        value: "GeneXus.SD.Media.AudioPlayerSettings",
+        value: "_GeneXus.SD.Media.AudioPlayerSettings",
         caption: "AudioPlayerSettings, GeneXus.SD.Media"
       },
       {
-        value: "GeneXus.SD.BeaconInfo",
+        value: "_GeneXus.SD.BeaconInfo",
         caption: "BeaconInfo, GeneXus.SD"
       },
       {
-        value: "GeneXus.SD.BeaconProximityAlert",
+        value: "_GeneXus.SD.BeaconProximityAlert",
         caption: "BeaconProximityAlert, GeneXus.SD"
       },
       {
-        value: "GeneXus.SD.BeaconRegion",
+        value: "_GeneXus.SD.BeaconRegion",
         caption: "BeaconRegion, GeneXus.SD"
       },
       {
-        value: "GeneXus.SD.BeaconState",
+        value: "_GeneXus.SD.BeaconState",
         caption: "BeaconState, GeneXus.SD"
       },
       {
-        value: "GeneXus.SD.CardInformation",
+        value: "_GeneXus.SD.CardInformation",
         caption: "CardInformation, GeneXus.SD"
       },
       {
-        value: "GeneXus.Common.Notifications.Configuration",
+        value: "_GeneXus.Common.Notifications.Configuration",
         caption: "Configuration, GeneXus.Common.Notifications"
       },
       {
-        value: "GeneXus.Common.Notifications.ConfigurationProperty",
+        value: "_GeneXus.Common.Notifications.ConfigurationProperty",
         caption: "ConfigurationProperty, GeneXus.Common.Notifications"
       }
     ]

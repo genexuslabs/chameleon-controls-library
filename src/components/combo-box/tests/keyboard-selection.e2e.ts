@@ -68,6 +68,7 @@ const testKeyboard = (
     let page: E2EPage;
     let comboBoxRef: E2EElement;
     let inputEventSpy: EventSpy;
+    let filterEventSpy: EventSpy;
 
     const checkValues = async (
       formValue: string | undefined,
@@ -109,6 +110,9 @@ const testKeyboard = (
         );
         expect(inputEventSpy).toHaveReceivedEventDetail(formValue);
       }
+
+      // None of the test of this suite triggers filters
+      expect(filterEventSpy).toHaveReceivedEventTimes(0);
     };
 
     const pressKey = async (key: KeyToPress) => {
@@ -156,6 +160,8 @@ const testKeyboard = (
         failOnConsoleError: true
       });
       comboBoxRef = await page.find("ch-combo-box-render");
+      inputEventSpy = await comboBoxRef.spyOnEvent("input");
+      filterEventSpy = await comboBoxRef.spyOnEvent("filter");
       await comboBoxRef.setProperty("model", simpleModelComboBox1);
 
       if (suggest && expanded) {
@@ -167,7 +173,6 @@ const testKeyboard = (
       }
 
       await page.waitForChanges();
-      inputEventSpy = await comboBoxRef.spyOnEvent("input");
 
       if (expanded) {
         await page.click("ch-combo-box-render");

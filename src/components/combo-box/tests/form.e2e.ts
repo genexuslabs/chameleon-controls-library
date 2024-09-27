@@ -1,6 +1,6 @@
 import { performFormTests } from "../../../testing/form.e2e";
 
-describe("[ch-combo-box-render][form]", () => {
+describe("[ch-combo-box-render][form][combo-box]", () => {
   performFormTests({
     formElementTagName: "ch-combo-box-render",
     hasReadonlySupport: false,

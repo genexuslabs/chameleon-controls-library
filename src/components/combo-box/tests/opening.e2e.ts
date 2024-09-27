@@ -73,6 +73,12 @@ const COMBO_BOX_KEYS_TO_CLOSE: KeyToPress[] = [
   "Tab"
 ];
 
+const COMBO_BOX_KEYS_TO_CLOSE_AND_RETURN_FOCUS: KeyToPress[] = [
+  "Enter",
+  "Escape"
+  // "NumpadEnter",
+];
+
 const STRICT_FILTERS: ComboBoxSuggestOptions = { strict: true };
 
 const testOpeningClosing = (suggest: boolean, strict?: true) => {
@@ -90,12 +96,12 @@ const testOpeningClosing = (suggest: boolean, strict?: true) => {
       ? SUGGEST_KEYS_TO_OPEN
       : COMBO_BOX_KEYS_TO_OPEN;
 
-    const keysToNotClose: KeyToPress[] = suggest
-      ? COMBO_BOX_KEYS_TO_NOT_CLOSE
-      : COMBO_BOX_KEYS_TO_NOT_CLOSE;
-    const keysToClose: KeyToPress[] = suggest
-      ? COMBO_BOX_KEYS_TO_CLOSE
-      : COMBO_BOX_KEYS_TO_CLOSE;
+    const keysToNotClose: KeyToPress[] = COMBO_BOX_KEYS_TO_NOT_CLOSE;
+
+    // TODO: Add Mouse click in the test
+    const keysToClose: KeyToPress[] = COMBO_BOX_KEYS_TO_CLOSE;
+    const keysToCloseAndReturnFocus: KeyToPress[] =
+      COMBO_BOX_KEYS_TO_CLOSE_AND_RETURN_FOCUS;
 
     const checkPopoverDefined = async (shouldBeDefined: boolean) => {
       const popoverRef = await page.find("ch-combo-box-render >>> ch-popover");
@@ -184,12 +190,47 @@ const testOpeningClosing = (suggest: boolean, strict?: true) => {
       });
     });
 
+    // TODO: Enter key should not emit the input event if the selection was not updated.
+    // TODO: Should we add a property to configure if the combo-box should close with enter when the selection is not updated?
     keysToClose.forEach(key => {
       it(`should close the popover when pressing KEY = "${key}"`, async () => {
         await page.click("ch-combo-box-render");
         await page.waitForChanges();
         await pressKey(key);
         await checkPopoverDefined(false);
+      });
+    });
+
+    keysToCloseAndReturnFocus.forEach(key => {
+      it(`should close the popover when pressing KEY = "${key}" and return the focus to the combo-box`, async () => {
+        await page.click("ch-combo-box-render");
+        await page.waitForChanges();
+        await pressKey(key);
+        await checkPopoverDefined(false);
+
+        const focusedElementTagName = await page.evaluate(() =>
+          document
+            .querySelector("ch-combo-box-render")
+            .shadowRoot.activeElement?.tagName.toLowerCase()
+        );
+        expect(focusedElementTagName).toBe("input");
+      });
+    });
+
+    keysToCloseAndReturnFocus.forEach(key => {
+      it(`should close the popover when pressing KEY = "${key}" and return the focus to the combo-box even if the selection is updated`, async () => {
+        await page.click("ch-combo-box-render");
+        await page.waitForChanges();
+        await pressKey("ArrowDown");
+        await pressKey(key);
+        await checkPopoverDefined(false);
+
+        const focusedElementTagName = await page.evaluate(() =>
+          document
+            .querySelector("ch-combo-box-render")
+            .shadowRoot.activeElement?.tagName.toLowerCase()
+        );
+        expect(focusedElementTagName).toBe("input");
       });
     });
 

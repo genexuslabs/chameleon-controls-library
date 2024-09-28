@@ -1189,26 +1189,19 @@ export class ChComboBoxRender
                   blockAlign="outside-end"
                   inlineAlign={this.popoverInlineAlign}
                   closeOnClickOutside
-                  hidden={!this.expanded}
+                  hidden={false}
                   popover="manual"
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
                   overflowBehavior="add-scroll"
                   positionTry="flip-block"
                   onPopoverClosed={
-                    this.expanded &&
-                    comboBoxIsInteractive &&
-                    this.#handlePopoverClose
+                    comboBoxIsInteractive && this.#handlePopoverClose
                   }
                 >
-                  {this.expanded &&
-                    this.model.map(
-                      this.#customItemRender(
-                        false,
-                        undefined,
-                        filtersAreApplied
-                      )
-                    )}
+                  {this.model.map(
+                    this.#customItemRender(false, undefined, filtersAreApplied)
+                  )}
                 </ch-popover>
               )
             ]}

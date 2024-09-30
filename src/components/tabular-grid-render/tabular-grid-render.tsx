@@ -31,80 +31,65 @@ export class ChTabularGridRender {
     this.#modelVersion++;
   }
 
-  renderGrid(
+  #renderGrid = (
     columns: TabularGridColumnModel[],
     rowsets: TabularGridRowsetModel[]
-  ) {
-    return (
-      <ch-tabular-grid key={this.#modelVersion} class="tabular-grid">
-        {this.renderColumns(columns)}
-        {this.renderRowsets(rowsets)}
-      </ch-tabular-grid>
-    );
-  }
+  ) => (
+    <ch-tabular-grid key={this.#modelVersion} class="tabular-grid">
+      {this.#renderColumns(columns)}
+      {this.#renderRowsets(rowsets)}
+    </ch-tabular-grid>
+  );
 
-  renderColumns(columns: TabularGridColumnModel[]) {
-    return (
-      <ch-tabular-grid-columnset class="tabular-grid-column-set">
-        {columns.map(column => this.renderColumn(column))}
-      </ch-tabular-grid-columnset>
-    );
-  }
+  #renderColumns = (columns: TabularGridColumnModel[]) => (
+    <ch-tabular-grid-columnset class="tabular-grid-column-set">
+      {columns.map(column => this.#renderColumn(column))}
+    </ch-tabular-grid-columnset>
+  );
 
-  renderColumn(column: TabularGridColumnModel) {
-    return (
-      <ch-tabular-grid-column
-        class="tabular-grid-column"
-        columnName={column.name}
-        settingable={false}
-      ></ch-tabular-grid-column>
-    );
-  }
+  #renderColumn = (column: TabularGridColumnModel) => (
+    <ch-tabular-grid-column
+      class="tabular-grid-column"
+      columnName={column.name}
+      settingable={false}
+    ></ch-tabular-grid-column>
+  );
 
-  renderRowsets(rowsets: TabularGridRowsetModel[]) {
-    return rowsets.map(rowset => this.renderRowset(rowset));
-  }
+  #renderRowsets = (rowsets: TabularGridRowsetModel[]) =>
+    rowsets.map(rowset => this.#renderRowset(rowset));
 
-  renderRowset(rowset: TabularGridRowsetModel) {
-    return (
-      <ch-tabular-grid-rowset class="tabular-grid-rowset">
-        {rowset.legend && this.renderRowsetLegend(rowset.legend)}
-        {rowset.rows.map(row => this.renderRow(row))}
-        {rowset.rowsets && this.renderRowsets(rowset.rowsets)}
-      </ch-tabular-grid-rowset>
-    );
-  }
+  #renderRowset = (rowset: TabularGridRowsetModel) => (
+    <ch-tabular-grid-rowset class="tabular-grid-rowset">
+      {rowset.legend && this.#renderRowsetLegend(rowset.legend)}
+      {rowset.rows.map(row => this.#renderRow(row))}
+      {rowset.rowsets && this.#renderRowsets(rowset.rowsets)}
+    </ch-tabular-grid-rowset>
+  );
 
-  renderRowsetLegend(legend: TabularGridRowsetLegendModel) {
-    return (
-      <ch-tabular-grid-rowset-legend class="tabular-grid-rowset-legend">
-        {legend.name}
-      </ch-tabular-grid-rowset-legend>
-    );
-  }
+  #renderRowsetLegend = (legend: TabularGridRowsetLegendModel) => (
+    <ch-tabular-grid-rowset-legend class="tabular-grid-rowset-legend">
+      {legend.name}
+    </ch-tabular-grid-rowset-legend>
+  );
 
-  renderRow(row: TabularGridRowModel) {
-    return (
-      <ch-tabular-grid-row class="tabular-grid-row">
-        {row.cells.map(cell => this.renderCell(cell))}
-        {row.rows && this.renderRowset({ rows: row.rows })}
-      </ch-tabular-grid-row>
-    );
-  }
+  #renderRow = (row: TabularGridRowModel) => (
+    <ch-tabular-grid-row class="tabular-grid-row">
+      {row.cells.map(cell => this.#renderCell(cell))}
+      {row.rows && this.#renderRowset({ rows: row.rows })}
+    </ch-tabular-grid-row>
+  );
 
-  renderCell(cell: TabularGridCellModel) {
-    return (
-      <ch-tabular-grid-cell class="tabular-grid-cell">
-        {cell.text}
-      </ch-tabular-grid-cell>
-    );
-  }
+  #renderCell = (cell: TabularGridCellModel) => (
+    <ch-tabular-grid-cell class="tabular-grid-cell">
+      {cell.text}
+    </ch-tabular-grid-cell>
+  );
 
   render() {
     return (
       <Host>
         <ch-theme model={THEME}></ch-theme>
-        {this.model && this.renderGrid(this.model.columns, this.model.rowsets)}
+        {this.model && this.#renderGrid(this.model.columns, this.model.rowsets)}
       </Host>
     );
   }

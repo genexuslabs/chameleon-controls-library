@@ -46,18 +46,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabularGridRender
 const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChTabularGridRenderElement>[] =
   [{ name: "model", fixed: true, value: "controlUIModel", type: "function" }];
 
-const lightDOMMarkup = (_framework: ShowcaseTemplateFrameWork) => ``;
-
-const lightDOMMarkupReact = insertSpacesAtTheBeginningExceptForTheFirstLine(
-  lightDOMMarkup("react"),
-  8
-);
-
-const lightDOMMarkupStencil = insertSpacesAtTheBeginningExceptForTheFirstLine(
-  lightDOMMarkup("stencil"),
-  10
-);
-
 export const tabularGridRenderShowcaseStory: ShowcaseStory<HTMLChTabularGridRenderElement> =
   {
     properties: showcaseRenderProperties,
@@ -71,7 +59,6 @@ export const tabularGridRenderShowcaseStory: ShowcaseStory<HTMLChTabularGridRend
           showcasePropertiesInfo
         )}
         >
-          ${lightDOMMarkupReact}
         </ChTabularGridRender>`,
 
         stencil: () => `<ch-tabular-grid-render${renderShowcaseProperties(
@@ -80,7 +67,6 @@ export const tabularGridRenderShowcaseStory: ShowcaseStory<HTMLChTabularGridRend
           showcasePropertiesInfo
         )}
           >
-            ${lightDOMMarkupStencil}
           </ch-tabular-grid-render>`
       }
     },

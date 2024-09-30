@@ -2,13 +2,9 @@ import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
-  ShowcaseTemplateFrameWork,
   ShowcaseTemplatePropertyInfo
 } from "../types";
-import {
-  insertSpacesAtTheBeginningExceptForTheFirstLine,
-  renderShowcaseProperties
-} from "../utils";
+import { renderShowcaseProperties } from "../utils";
 import {
   basicModel,
   groupModel,

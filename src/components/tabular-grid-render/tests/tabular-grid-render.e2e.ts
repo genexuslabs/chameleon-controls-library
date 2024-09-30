@@ -16,6 +16,6 @@ describe("[ch-tabular-grid-render]", () => {
   });
 
   it("should have Shadow DOM", async () => {
-    expect(tabularGridRef.shadowRoot).toBeDefined();
+    expect(tabularGridRef.shadowRoot).toBeTruthy();
   });
 });

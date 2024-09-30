@@ -72,7 +72,7 @@ export const tabularGridRenderShowcaseStory: ShowcaseStory<HTMLChTabularGridRend
         )}
         >
           ${lightDOMMarkupReact}
-        </ChTabRender>`,
+        </ChTabularGridRender>`,
 
         stencil: () => `<ch-tabular-grid-render${renderShowcaseProperties(
           state,
@@ -81,7 +81,7 @@ export const tabularGridRenderShowcaseStory: ShowcaseStory<HTMLChTabularGridRend
         )}
           >
             ${lightDOMMarkupStencil}
-          </ch-tab-render>`
+          </ch-tabular-grid-render>`
       }
     },
     render: render,

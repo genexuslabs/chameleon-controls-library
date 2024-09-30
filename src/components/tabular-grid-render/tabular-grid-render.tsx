@@ -43,7 +43,7 @@ export class ChTabularGridRender {
 
   #renderColumns = (columns: TabularGridColumnModel[]) => (
     <ch-tabular-grid-columnset class="tabular-grid-column-set">
-      {columns.map(column => this.#renderColumn(column))}
+      {columns.map(this.#renderColumn)}
     </ch-tabular-grid-columnset>
   );
 
@@ -56,7 +56,7 @@ export class ChTabularGridRender {
   );
 
   #renderRowsets = (rowsets: TabularGridRowsetModel[]) =>
-    rowsets.map(rowset => this.#renderRowset(rowset));
+    rowsets.map(this.#renderRowset);
 
   #renderRowset = (rowset: TabularGridRowsetModel) => (
     <ch-tabular-grid-rowset class="tabular-grid-rowset">
@@ -74,7 +74,7 @@ export class ChTabularGridRender {
 
   #renderRow = (row: TabularGridRowModel) => (
     <ch-tabular-grid-row class="tabular-grid-row">
-      {row.cells.map(cell => this.#renderCell(cell))}
+      {row.cells.map(this.#renderCell)}
       {row.rows && this.#renderRowset({ rows: row.rows })}
     </ch-tabular-grid-row>
   );

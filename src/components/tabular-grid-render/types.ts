@@ -13,6 +13,7 @@ export type TabularGridColumnModel = {
   caption: string;
 
   accessibleName?: string;
+  captionHidden?: boolean;
   freeze?: TabularGridColumnFreeze;
   hidden?: boolean;
 

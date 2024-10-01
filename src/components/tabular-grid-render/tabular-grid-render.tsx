@@ -66,8 +66,8 @@ export class ChTabularGridRender {
     <ch-tabular-grid-column
       class="tabular-grid-column"
       columnId={column.id}
-      columnName={column.caption || column.accessibleName}
-      columnNameHidden={column.caption ? false : true}
+      columnName={column.caption}
+      columnNameHidden={column.captionHidden}
       columnTooltip={column.tooltip}
       order={column.order}
       size={column.size}

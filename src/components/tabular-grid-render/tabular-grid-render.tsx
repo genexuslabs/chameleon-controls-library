@@ -18,7 +18,7 @@ const ARIA_SORT_MAP = {
   undefined: "none",
   asc: "ascending",
   desc: "descending"
-};
+} as const;
 
 @Component({
   tag: "ch-tabular-grid-render",

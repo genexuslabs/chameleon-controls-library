@@ -4,7 +4,7 @@ export type TabularGridModel = {
 };
 
 export type TabularGridColumnModel = {
-  name: string;
+  caption: string;
 };
 
 export type TabularGridRowsetModel = {
@@ -14,7 +14,7 @@ export type TabularGridRowsetModel = {
 };
 
 export type TabularGridRowsetLegendModel = {
-  name: string;
+  caption: string;
 };
 
 export type TabularGridRowModel = {

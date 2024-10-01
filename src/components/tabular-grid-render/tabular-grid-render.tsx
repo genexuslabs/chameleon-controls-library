@@ -50,7 +50,7 @@ export class ChTabularGridRender {
   #renderColumn = (column: TabularGridColumnModel) => (
     <ch-tabular-grid-column
       class="tabular-grid-column"
-      columnName={column.name}
+      columnName={column.caption}
       settingable={false}
     ></ch-tabular-grid-column>
   );
@@ -74,7 +74,7 @@ export class ChTabularGridRender {
 
   #renderRowsetLegend = (legend: TabularGridRowsetLegendModel) => (
     <ch-tabular-grid-rowset-legend class="tabular-grid-rowset-legend">
-      {legend.name}
+      {legend.caption}
     </ch-tabular-grid-rowset-legend>
   );
 

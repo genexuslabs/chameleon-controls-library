@@ -14,6 +14,12 @@ const THEME: ThemeModel = {
   url: "https://unpkg.com/@genexus/mercury@0.8.9/dist/bundles/css/components/tabular-grid.css"
 };
 
+const ARIA_SORT_MAP = {
+  undefined: "none",
+  asc: "ascending",
+  desc: "descending"
+} as const;
+
 @Component({
   tag: "ch-tabular-grid-render",
   styleUrl: "tabular-grid-render.scss",
@@ -21,6 +27,21 @@ const THEME: ThemeModel = {
 })
 export class ChTabularGridRender {
   #modelVersion = 0;
+
+  /**
+   * Determines if the columns can be hidden by the user
+   */
+  @Prop() readonly columnHideable: boolean = true;
+
+  /**
+   *  Determines if the columns can be resized by the user.
+   */
+  @Prop() readonly columnResizable: boolean = true;
+
+  /**
+   * Determines if the columns can be sorted by the user.
+   */
+  @Prop() readonly columnSortable: boolean = true;
 
   /**
    * Specifies the content of the tabular grid control.
@@ -49,8 +70,22 @@ export class ChTabularGridRender {
 
   #renderColumn = (column: TabularGridColumnModel) => (
     <ch-tabular-grid-column
+      role="columnheader"
+      aria-label={column.accessibleName}
+      aria-sort={ARIA_SORT_MAP[column.sortDirection]}
       class="tabular-grid-column"
-      columnName={column.name}
+      columnId={column.id}
+      columnName={column.caption}
+      columnNameHidden={column.captionHidden}
+      columnTooltip={column.tooltip}
+      order={column.order}
+      size={column.size}
+      resizable={column.resizable ?? this.columnResizable}
+      sortable={column.sortable ?? this.columnSortable}
+      sortDirection={column.sortDirection}
+      hidden={column.hidden}
+      hideable={column.hideable ?? this.columnHideable}
+      freeze={column.freeze}
       settingable={false}
     ></ch-tabular-grid-column>
   );
@@ -65,7 +100,7 @@ export class ChTabularGridRender {
     legend?: TabularGridRowsetLegendModel,
     rowsets?: TabularGridRowsetModel[]
   ) => (
-    <ch-tabular-grid-rowset class="tabular-grid-rowset">
+    <ch-tabular-grid-rowset role="rowgroup" class="tabular-grid-rowset">
       {legend && this.#renderRowsetLegend(legend)}
       {rows.map(this.#renderRow)}
       {rowsets && this.#renderRowsets(rowsets)}
@@ -73,27 +108,34 @@ export class ChTabularGridRender {
   );
 
   #renderRowsetLegend = (legend: TabularGridRowsetLegendModel) => (
-    <ch-tabular-grid-rowset-legend class="tabular-grid-rowset-legend">
-      {legend.name}
+    <ch-tabular-grid-rowset-legend
+      aria-label={legend.accessibleName}
+      class="tabular-grid-rowset-legend"
+    >
+      {legend.caption}
     </ch-tabular-grid-rowset-legend>
   );
 
   #renderRow = (row: TabularGridRowModel) => (
-    <ch-tabular-grid-row class="tabular-grid-row">
+    <ch-tabular-grid-row role="row" class="tabular-grid-row">
       {row.cells.map(this.#renderCell)}
       {row.rows && this.#renderRowset(row.rows)}
     </ch-tabular-grid-row>
   );
 
-  #renderCell = (cell: TabularGridCellModel) => (
-    <ch-tabular-grid-cell class="tabular-grid-cell">
+  #renderCell = (cell: TabularGridCellModel, index: number) => (
+    <ch-tabular-grid-cell
+      role="gridcell"
+      aria-colindex={++index}
+      class="tabular-grid-cell"
+    >
       {cell.text}
     </ch-tabular-grid-cell>
   );
 
   render() {
     return (
-      <Host>
+      <Host role="grid">
         <ch-theme model={THEME}></ch-theme>
         {this.model && this.#renderGrid(this.model.columns, this.model.rowsets)}
       </Host>

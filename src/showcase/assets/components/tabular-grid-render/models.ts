@@ -6,40 +6,50 @@ import {
 
 const columnsCountry: TabularGridColumnModel[] = [
   {
-    name: "Code"
+    id: "code",
+    caption: "Code"
   },
   {
-    name: "Name"
+    id: "name",
+    caption: "Name"
   },
   {
-    name: "Population"
+    id: "population",
+    caption: "Population"
   },
   {
-    name: "Language"
+    id: "lang",
+    caption: "Language"
   }
 ];
 
 const columnsTreeGrid: TabularGridColumnModel[] = [
   {
-    name: "Name"
+    id: "name",
+    caption: "Name"
   },
   {
-    name: "Type"
+    id: "type",
+    caption: "Type"
   },
   {
-    name: "Description"
+    id: "desc",
+    caption: "Description"
   },
   {
-    name: "Collection"
+    id: "collection",
+    caption: "Collection"
   }
 ];
 
 const columnsPropertyGrid: TabularGridColumnModel[] = [
   {
-    name: "Property"
+    id: "name",
+    caption: "Property"
   },
   {
-    name: "Value"
+    id: "value",
+    caption: "Value"
   }
 ];
 
@@ -173,11 +183,11 @@ export const groupModel: TabularGridModel = {
   columns: columnsCountry,
   rowsets: [
     {
-      legend: { name: "América del Norte" },
+      legend: { caption: "América del Norte" },
       rows: [rowCountryCA, rowCountryMX, rowCountryUS]
     },
     {
-      legend: { name: "América del Sur" },
+      legend: { caption: "América del Sur" },
       rows: [
         rowCountryAR,
         rowCountryBO,
@@ -336,7 +346,7 @@ export const propertyGridModel: TabularGridModel = {
       ]
     },
     {
-      legend: { name: "Url" },
+      legend: { caption: "Url" },
       rows: [
         {
           cells: [{ text: "Url amigable" }, { text: "productos" }],
@@ -348,7 +358,7 @@ export const propertyGridModel: TabularGridModel = {
       ],
       rowsets: [
         {
-          legend: { name: "Permalink" },
+          legend: { caption: "Permalink" },
           rows: [
             { cells: [{ text: "Id" }, { text: "Found" }] },
             { cells: [{ text: "Guid" }, { text: "abcdef-peodfg-293845-3947" }] }

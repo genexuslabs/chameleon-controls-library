@@ -3200,6 +3200,18 @@ export namespace Components {
     }
     interface ChTabularGridRender {
         /**
+          * Determines if the columns can be hidden by the user
+         */
+        "columnHideable": boolean;
+        /**
+          * Determines if the columns can be resized by the user.
+         */
+        "columnResizable": boolean;
+        /**
+          * Determines if the columns can be sorted by the user.
+         */
+        "columnSortable": boolean;
+        /**
           * Specifies the content of the tabular grid control.
          */
         "model": TabularGridModel;
@@ -9367,6 +9379,18 @@ declare namespace LocalJSX {
         "status"?: TabularGridInfiniteScrollState;
     }
     interface ChTabularGridRender {
+        /**
+          * Determines if the columns can be hidden by the user
+         */
+        "columnHideable"?: boolean;
+        /**
+          * Determines if the columns can be resized by the user.
+         */
+        "columnResizable"?: boolean;
+        /**
+          * Determines if the columns can be sorted by the user.
+         */
+        "columnSortable"?: boolean;
         /**
           * Specifies the content of the tabular grid control.
          */

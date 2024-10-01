@@ -23,6 +23,21 @@ export class ChTabularGridRender {
   #modelVersion = 0;
 
   /**
+   * Determines if the columns can be hidden by the user
+   */
+  @Prop() readonly columnHideable: boolean = true;
+
+  /**
+   *  Determines if the columns can be resized by the user.
+   */
+  @Prop() readonly columnResizable: boolean = true;
+
+  /**
+   * Determines if the columns can be sorted by the user.
+   */
+  @Prop() readonly columnSortable: boolean = true;
+
+  /**
    * Specifies the content of the tabular grid control.
    */
   @Prop() readonly model: TabularGridModel;
@@ -51,7 +66,17 @@ export class ChTabularGridRender {
     <ch-tabular-grid-column
       class="tabular-grid-column"
       columnId={column.id}
-      columnName={column.caption}
+      columnName={column.caption || column.accessibleName}
+      columnNameHidden={column.caption ? false : true}
+      columnTooltip={column.tooltip}
+      order={column.order}
+      size={column.size}
+      resizable={column.resizable ?? this.columnResizable}
+      sortable={column.sortable ?? this.columnSortable}
+      sortDirection={column.sortDirection}
+      hidden={column.hidden}
+      hideable={column.hideable ?? this.columnHideable}
+      freeze={column.freeze}
       settingable={false}
     ></ch-tabular-grid-column>
   );

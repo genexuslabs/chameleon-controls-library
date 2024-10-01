@@ -54,6 +54,7 @@ export type TabularGridRowsetModel = {
 
 export type TabularGridRowsetLegendModel = {
   caption: string;
+  accessibleName?: string;
 };
 
 export type TabularGridRowModel = {

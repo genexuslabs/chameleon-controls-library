@@ -182,6 +182,7 @@ export type ChameleonStories = {
   slider: ShowcaseStory<HTMLChSliderElement>;
   switch: ShowcaseStory<HTMLChSwitchElement>;
   tab: ShowcaseStory<HTMLChTabRenderElement>;
+  "tabular-grid-render": ShowcaseStory<HTMLChTabularGridRenderElement>;
   textblock: ShowcaseStory<HTMLChTextblockElement>;
   tooltip: ShowcaseStory<HTMLChTooltipElement>;
   "tree-view": ShowcaseStory<HTMLChTreeViewRenderElement>;

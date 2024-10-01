@@ -77,6 +77,10 @@ The `ch-tabular-grid-column` component represents a grid column.
 
 ## Dependencies
 
+### Used by
+
+ - [ch-tabular-grid-render](../../tabular-grid-render)
+
 ### Depends on
 
 - [ch-tabular-grid-column-settings](settings)
@@ -89,6 +93,7 @@ graph TD;
   ch-tabular-grid-column --> ch-tabular-grid-column-resize
   ch-tabular-grid-column-settings --> ch-window
   ch-window --> ch-window-close
+  ch-tabular-grid-render --> ch-tabular-grid-column
   style ch-tabular-grid-column fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

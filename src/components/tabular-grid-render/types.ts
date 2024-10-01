@@ -4,6 +4,7 @@ export type TabularGridModel = {
 };
 
 export type TabularGridColumnModel = {
+  id: string;
   caption: string;
 };
 

@@ -50,6 +50,7 @@ export class ChTabularGridRender {
   #renderColumn = (column: TabularGridColumnModel) => (
     <ch-tabular-grid-column
       class="tabular-grid-column"
+      columnId={column.id}
       columnName={column.caption}
       settingable={false}
     ></ch-tabular-grid-column>

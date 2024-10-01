@@ -6,39 +6,49 @@ import {
 
 const columnsCountry: TabularGridColumnModel[] = [
   {
+    id: "code",
     caption: "Code"
   },
   {
+    id: "name",
     caption: "Name"
   },
   {
+    id: "population",
     caption: "Population"
   },
   {
+    id: "lang",
     caption: "Language"
   }
 ];
 
 const columnsTreeGrid: TabularGridColumnModel[] = [
   {
+    id: "name",
     caption: "Name"
   },
   {
+    id: "type",
     caption: "Type"
   },
   {
+    id: "desc",
     caption: "Description"
   },
   {
+    id: "collection",
     caption: "Collection"
   }
 ];
 
 const columnsPropertyGrid: TabularGridColumnModel[] = [
   {
+    id: "name",
     caption: "Property"
   },
   {
+    id: "value",
     caption: "Value"
   }
 ];

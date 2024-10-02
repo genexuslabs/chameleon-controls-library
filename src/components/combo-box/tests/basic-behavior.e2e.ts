@@ -5,11 +5,38 @@ import {
   newE2EPage
 } from "@stencil/core/testing";
 import { DEFAULT_DECORATIVE_SIZE } from "../../../testing/constants.e2e";
-import { simpleModelComboBox1 } from "../../../showcase/assets/components/combo-box/models";
+import {
+  dataTypeInGeneXus,
+  simpleModelComboBox1
+} from "../../../showcase/assets/components/combo-box/models";
 import { ComboBoxSuggestOptions } from "../types";
 
 const FORM_ENTRY = "combo-box";
 const STRICT_FILTERS: ComboBoxSuggestOptions = { strict: true };
+
+const SIMPLE_MODEL_ALL_CAPTIONS = [
+  { caption: "Label for the value 1" },
+  { caption: "Label for the value 2.1" },
+  { caption: "Label for the value 2.2" },
+  { caption: "Label for the value 3" },
+  { caption: "Label for the value 4" },
+  { caption: "Label for the value 5.1" },
+  { caption: "Label for the value 5.2" },
+  { caption: "Label for the value 5.3" },
+  { caption: "Label for the value 5.4" },
+  { caption: "Label for the value 6.1" },
+  { caption: "Label for the value 6.2" },
+  { caption: "Label for the value 6.3" },
+  { caption: "Label for the value 6.4" },
+  { caption: "Label for the value 7" },
+  { caption: "Label for the value 8" },
+  { caption: "Label for the value 10" },
+  { caption: "Label for the value 11.1" },
+  { caption: "Label for the value 11.2" },
+  { caption: "Label for the value 11.3" },
+  { caption: "Label for the value 11.4" },
+  { caption: "Label for the value 12" }
+] as const;
 
 const testBehavior = (suggest: boolean, strict?: boolean) => {
   const getTemplate = () => `<button>Dummy button</button>
@@ -19,14 +46,14 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
   }></ch-combo-box-render>
         </form>`;
 
-  const testDescription =
-    `[ch-combo-box-render][behavior][suggest and filters][${
-      suggest ? "suggest" : "combo-box"
-    }]${suggest && strict ? "[strict]" : ""}` as const;
+  const testDescription = `[ch-combo-box-render][behavior][${
+    suggest ? "suggest" : "combo-box"
+  }]${suggest && strict ? "[strict]" : ""}` as const;
 
   describe(testDescription, () => {
     let page: E2EPage;
     let comboBoxRef: E2EElement;
+    let inputRef: E2EElement;
     let inputEventSpy: EventSpy;
 
     const getRenderedItems = (): Promise<{ caption: string }[]> =>
@@ -45,6 +72,7 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
       });
       comboBoxRef = await page.find("ch-combo-box-render");
       inputEventSpy = await comboBoxRef.spyOnEvent("input");
+      inputRef = await page.find("ch-combo-box-render >>> input");
 
       if (strict) {
         comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
@@ -63,10 +91,74 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
       comboBoxRef.setProperty("value", "Value 1");
       await page.waitForChanges();
 
-      const inputRef = await page.find("ch-combo-box-render >>> input");
-
       expect(await inputRef.getProperty("value")).toBe("Label for the value 1");
       expect(inputEventSpy).toHaveReceivedEventTimes(0);
+    });
+
+    // TODO: Check the value in the form
+    it("should properly display the selected caption when updating the model in the interface", async () => {
+      comboBoxRef.setProperty("value", "Value 1");
+      await page.waitForChanges();
+      expect(await inputRef.getProperty("value")).toBe("");
+
+      comboBoxRef.setProperty("model", simpleModelComboBox1);
+      await page.waitForChanges();
+      expect(await inputRef.getProperty("value")).toBe("Label for the value 1");
+
+      expect(inputEventSpy).toHaveReceivedEventTimes(0);
+    });
+
+    it("should properly display the selected caption when updating the value and model in the interface", async () => {
+      comboBoxRef.setProperty("model", simpleModelComboBox1);
+      comboBoxRef.setProperty("value", "Value 1");
+      await page.waitForChanges();
+      expect(await inputRef.getProperty("value")).toBe("Label for the value 1");
+
+      comboBoxRef.setProperty("value", "_Blob");
+      await page.waitForChanges();
+      expect(await inputRef.getProperty("value")).toBe("");
+
+      comboBoxRef.setProperty("model", dataTypeInGeneXus);
+      await page.waitForChanges();
+      expect(await inputRef.getProperty("value")).toBe("Blob");
+
+      comboBoxRef.setProperty("value", "Value 2");
+      await page.waitForChanges();
+      expect(await inputRef.getProperty("value")).toBe("");
+
+      comboBoxRef.setProperty("model", simpleModelComboBox1);
+      await page.waitForChanges();
+      // TODO: GROUPS MUST NOT BE SELECTABLE
+      expect(await inputRef.getProperty("value")).toBe(
+        "Label for the value 222 (not expandable)"
+      );
+
+      expect(inputEventSpy).toHaveReceivedEventTimes(0);
+    });
+
+    it.skip("should update the rendered items when setting the value in the interface", async () => {
+      // Expand the combo-box
+      await page.click("ch-combo-box-render");
+
+      comboBoxRef.setProperty("value", "Value 3");
+      await page.waitForChanges();
+      let renderedItems = await getRenderedItems();
+      expect(renderedItems).toEqual([]);
+
+      comboBoxRef.setProperty("model", simpleModelComboBox1);
+      await page.waitForChanges();
+      renderedItems = await getRenderedItems();
+
+      expect(renderedItems).toEqual(
+        suggest
+          ? // For some reason this does not work well
+            [
+              {
+                caption: "Label for the value 3"
+              }
+            ]
+          : SIMPLE_MODEL_ALL_CAPTIONS
+      );
     });
 
     // The picker is not visible by default when using suggest

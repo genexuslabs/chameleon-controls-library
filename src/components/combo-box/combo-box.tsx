@@ -342,6 +342,10 @@ export class ChComboBoxRender
       this.#itemCaptionToItemValue
     );
     this.#checkIfCurrentSelectedValueIsNoLongerValid();
+
+    // This must be the last operation, since it needs to wait for the UI Model
+    // Map to be updated (#valueToItemInfo)
+    this.#setValueInForm(this.value);
   }
 
   /**
@@ -419,15 +423,7 @@ export class ChComboBoxRender
   @Prop({ mutable: true }) value?: string;
   @Watch("value")
   valueChange(newValue: string) {
-    this.currentSelectedValue = newValue;
-    this.#currentValueCaption = this.#getCaptionUsingValue(newValue);
-
-    // Update the filter property is there are no filters applied. TODO: USE @State FOR FILTER PROPERTY?
-    if (!this.suggest) {
-      this.filter = this.#currentValueCaption;
-    }
-    // Update form value
-    this.internals.setFormValue(newValue);
+    this.#setValueInForm(newValue);
   }
 
   /**
@@ -695,6 +691,17 @@ export class ChComboBoxRender
 
   #isModelAlreadyFiltered = () => this.suggestOptions.alreadyProcessed === true;
 
+  #setValueInForm = (value: string) => {
+    this.currentSelectedValue = value;
+    this.#currentValueCaption = this.#getCaptionUsingValue(value);
+
+    // Update the filter property is there are no filters applied. TODO: USE @State FOR FILTER PROPERTY?
+    this.filter = this.#currentValueCaption;
+
+    // Update form value
+    this.internals.setFormValue(value);
+  };
+
   #customItemRender =
     (
       insideAGroup: boolean,
@@ -873,7 +880,7 @@ export class ChComboBoxRender
     <select
       aria-label={this.#accessibleNameFromExternalLabel ?? this.accessibleName}
       disabled={this.disabled}
-      onChange={!this.disabled ? this.#handleSelectChange : null}
+      onChange={!this.disabled && this.#handleSelectChange}
       ref={el => (this.#selectRef = el)}
     >
       {!this.currentSelectedValue && (
@@ -894,11 +901,7 @@ export class ChComboBoxRender
       this.#itemCaptionToItemValue
     );
 
-    this.internals.setFormValue(this.value);
-    this.currentSelectedValue = this.value;
-
-    this.#currentValueCaption = this.#getCaptionUsingValue(this.value);
-    this.filter = this.#currentValueCaption;
+    this.#setValueInForm(this.value);
 
     const labels = this.internals.labels;
 

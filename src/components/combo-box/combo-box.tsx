@@ -27,7 +27,6 @@ import {
 } from "./types";
 import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserved-names";
-import { SyncWithRAF } from "../../common/sync-with-frames";
 import { ChPopoverCustomEvent } from "../../components";
 import { ChPopoverAlign } from "../popover/types";
 import { focusComposedPath } from "../common/helpers";
@@ -35,7 +34,8 @@ import { filterSubModel } from "./helpers";
 import {
   findComboBoxLargestValue,
   getComboBoxItemImageCustomVars,
-  mapValuesToItemInfo
+  mapValuesToItemInfo,
+  popoverWasClicked
 } from "./utils";
 import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
 
@@ -43,18 +43,9 @@ const SELECTED_PART = "selected";
 const DISABLED_PART = "disabled";
 
 const SELECTED_ITEM_SELECTOR = `button[part*='${SELECTED_PART}']`;
-
-const COMBO_BOX_MASK_BLOCK_START = "--ch-combo-box-mask-block-start";
-const COMBO_BOX_MASK_BLOCK_END = "--ch-combo-box-mask-block-end";
-const COMBO_BOX_MASK_INLINE_START = "--ch-combo-box-mask-inline-start";
-const COMBO_BOX_MASK_INLINE_END = "--ch-combo-box-mask-inline-end";
-
 const mobileDevice = isMobileDevice();
 
 let autoId = 0;
-
-const negateBorderValue = (borderSize: string) =>
-  borderSize === "0px" ? "0px" : `-${borderSize}`;
 
 // Keys
 type KeyDownNoFiltersEvents =
@@ -85,7 +76,7 @@ type ImmediateFilter = "immediate" | "debounced" | undefined;
  */
 @Component({
   formAssociated: true,
-  shadow: true,
+  shadow: { delegatesFocus: true },
   styleUrl: "combo-box.scss",
   tag: "ch-combo-box-render"
 })
@@ -107,14 +98,6 @@ export class ChComboBoxRender
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #currentValueCaption: string;
-
-  #borderSizeRAF: SyncWithRAF | undefined;
-  #resizeObserver: ResizeObserver | undefined;
-
-  #lastMaskInlineStart = undefined;
-  #lastMaskInlineEnd = undefined;
-  #lastMaskBlockStart = undefined;
-  #lastMaskBlockEnd = undefined;
 
   #valueToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
 
@@ -287,7 +270,7 @@ export class ChComboBoxRender
   };
 
   // Refs
-  #maskRef: HTMLDivElement;
+  // #maskRef: HTMLDivElement;
   #inputRef: HTMLInputElement;
   #selectRef: HTMLSelectElement | undefined;
 
@@ -610,73 +593,6 @@ export class ChComboBoxRender
       isDisabled ? ` ${DISABLED_PART}` : ""
     }${item.value === this.currentSelectedValue ? ` ${SELECTED_PART}` : ""}`;
 
-  #setResizeObserver = () => {
-    this.#borderSizeRAF = new SyncWithRAF();
-    this.#resizeObserver = new ResizeObserver(this.#updateBorderSizeRAF);
-
-    // Observe the size of the edges to know if the border
-    this.#resizeObserver.observe(this.el, { box: "border-box" });
-    this.#resizeObserver.observe(this.#maskRef ?? this.#selectRef);
-  };
-
-  #updateBorderSizeRAF = () =>
-    this.#borderSizeRAF.perform(this.#updateBorderSize);
-
-  #updateBorderSize = () => {
-    // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
-    const computedStyle = getComputedStyle(this.el);
-
-    const negatedBorderInlineStartWidth = negateBorderValue(
-      computedStyle.borderInlineStartWidth
-    );
-    const negatedBorderInlineEndWidth = negateBorderValue(
-      computedStyle.borderInlineEndWidth
-    );
-    const negatedBorderBlockStartWidth = negateBorderValue(
-      computedStyle.borderBlockStartWidth
-    );
-    const negatedBorderBlockEndWidth = negateBorderValue(
-      computedStyle.borderBlockEndWidth
-    );
-
-    if (
-      this.#lastMaskInlineStart === negatedBorderInlineStartWidth &&
-      this.#lastMaskInlineEnd === negatedBorderInlineEndWidth &&
-      this.#lastMaskBlockStart === negatedBorderBlockStartWidth &&
-      this.#lastMaskBlockEnd === negatedBorderBlockEndWidth
-    ) {
-      return;
-    }
-
-    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-    this.el.style.setProperty(
-      COMBO_BOX_MASK_INLINE_START,
-      negatedBorderInlineStartWidth
-    );
-
-    this.el.style.setProperty(
-      COMBO_BOX_MASK_INLINE_END,
-      negatedBorderInlineEndWidth
-    );
-
-    this.el.style.setProperty(
-      COMBO_BOX_MASK_BLOCK_START,
-      negatedBorderBlockStartWidth
-    );
-
-    this.el.style.setProperty(
-      COMBO_BOX_MASK_BLOCK_END,
-      negatedBorderBlockEndWidth
-    );
-
-    // Store borders to avoid an extra call from the resize observer due to
-    // the size of the mask is updated
-    this.#lastMaskInlineStart = negatedBorderInlineStartWidth;
-    this.#lastMaskInlineEnd = negatedBorderInlineEndWidth;
-    this.#lastMaskBlockStart = negatedBorderBlockStartWidth;
-    this.#lastMaskBlockEnd = negatedBorderBlockEndWidth;
-  };
-
   #handleSelectChange = (event: Event) => {
     event.preventDefault();
 
@@ -685,11 +601,6 @@ export class ChComboBoxRender
 
     // Emit event
     this.input.emit(this.value);
-  };
-
-  #handleExpandedChange = (event: MouseEvent) => {
-    event.stopPropagation();
-    this.expanded = !this.expanded;
   };
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
@@ -742,14 +653,19 @@ export class ChComboBoxRender
     this.filter = this.#inputRef.value;
   };
 
-  #displayPopoverWhenFiltersApplied = (event: MouseEvent) => {
-    event.stopPropagation();
-    this.expanded = true;
-  };
+  #displayPopover = (event: MouseEvent) => {
+    const clickWasPerformedInALabel = event.detail === 0;
 
-  #focusInnerInputWhenFiltersApplied = (event: MouseEvent) => {
+    // TODO: Add a unit test for this case (clicking on the popover should not
+    // close the popover)
+    if (
+      clickWasPerformedInALabel ||
+      (this.expanded && popoverWasClicked(event))
+    ) {
+      return;
+    }
     event.stopPropagation();
-    this.#inputRef.focus();
+    this.expanded = !this.expanded;
   };
 
   #updateCurrentSelectedValue = (itemValue: string) => (event: MouseEvent) => {
@@ -1022,10 +938,6 @@ export class ChComboBoxRender
     }
   }
 
-  componentDidLoad() {
-    this.#setResizeObserver();
-  }
-
   componentDidRender() {
     // Focus the input when there are filters and the control is expanded
     if (this.suggest && this.expanded) {
@@ -1054,14 +966,9 @@ export class ChComboBoxRender
     }
   }
 
-  disconnectedCallback() {
-    this.#resizeObserver?.disconnect();
-    this.#resizeObserver = undefined; // Free the memory
-    this.#borderSizeRAF = undefined; // Free the memory
-  }
-
   render() {
     const filtersAreApplied = this.suggest;
+    const disableTextSelection = !this.disabled && !filtersAreApplied;
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
 
     const currentItemInInput: ComboBoxItemModel | undefined =
@@ -1082,13 +989,9 @@ export class ChComboBoxRender
 
     return (
       <Host
-        // Make the host focusable since the input is disabled when there are no
-        // filters
-        tabindex={
-          !mobileDevice && !filtersAreApplied && !this.disabled ? "0" : null
-        }
         class={{
           "ch-disabled": this.disabled,
+          "ch-combo-box--normal": !filtersAreApplied,
           "ch-combo-box--suggest": filtersAreApplied
         }}
         onKeyDown={
@@ -1096,11 +999,10 @@ export class ChComboBoxRender
           comboBoxIsInteractive &&
           this.#handleExpandedChangeWithKeyBoard
         }
-        onClick={
-          !mobileDevice &&
-          filtersAreApplied &&
+        onClickCapture={
           comboBoxIsInteractive &&
-          this.#focusInnerInputWhenFiltersApplied
+          (!filtersAreApplied || !this.expanded) &&
+          this.#displayPopover
         }
       >
         {mobileDevice
@@ -1111,48 +1013,33 @@ export class ChComboBoxRender
               </span>,
 
               <div
-                key="mask"
-                // This mask is used to capture click events that must open the
-                // popover. If we capture click events in the Host, clicking external
-                // label would open the combo-box's window
+                key="combobox"
+                role="combobox"
+                aria-label={
+                  this.#accessibleNameFromExternalLabel ?? this.accessibleName
+                }
+                tabindex={disableTextSelection ? "0" : null}
                 class={{
-                  mask: true,
-                  "mask--no-filters": !filtersAreApplied,
+                  "input-container": true,
 
                   [`start-img-type--${
                     currentItemInInput?.startImgType ?? "background"
                   } img--start`]: hasStartImg
                 }}
                 style={customVars}
-                onClickCapture={
-                  !filtersAreApplied &&
-                  comboBoxIsInteractive &&
-                  this.#handleExpandedChange
-                }
-                ref={el => (this.#maskRef = el)}
               >
                 <input
-                  // We must place the input inside the mask, otherwise it
-                  // won't stretch to the Host size
-                  key="combobox"
-                  role="combobox"
                   aria-controls="popover"
                   // This reset is necessary, since we use "disabled" to
                   // disallow the focus and text selection in the input when
                   // the combo-box has no filters
-                  aria-disabled={
-                    !this.disabled && !filtersAreApplied ? "false" : null
-                  }
+                  aria-disabled={disableTextSelection ? "false" : null}
                   aria-expanded={this.expanded.toString()}
                   aria-haspopup="true"
-                  aria-label={
-                    this.#accessibleNameFromExternalLabel ?? this.accessibleName
-                  }
                   autocomplete="off"
                   class={{
                     value: true,
-                    "value--readonly": !filtersAreApplied,
-                    "value--start-img": hasStartImg
+                    "value--readonly": !filtersAreApplied
                   }}
                   disabled={this.disabled || !filtersAreApplied}
                   placeholder={this.placeholder}
@@ -1161,12 +1048,6 @@ export class ChComboBoxRender
                     filtersAreApplied
                       ? this.filter
                       : this.#getCaptionUsingValue(this.currentSelectedValue)
-                  }
-                  onClickCapture={
-                    filtersAreApplied &&
-                    !this.expanded &&
-                    comboBoxIsInteractive &&
-                    this.#displayPopoverWhenFiltersApplied
                   }
                   onInputCapture={
                     filtersAreApplied &&

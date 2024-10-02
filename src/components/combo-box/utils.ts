@@ -1,3 +1,4 @@
+import { ChameleonControlsTagName } from "../../common/types";
 import {
   ComboBoxItemGroup,
   ComboBoxItemModel,
@@ -102,4 +103,26 @@ export const mapValuesToItemInfo = (
       itemCaptionToItemValue.set(item.caption, item.value);
     }
   });
+};
+
+export const popoverWasClicked = (event: Event) => {
+  const composedPath = event.composedPath();
+
+  for (let index = 0; index < composedPath.length; index++) {
+    const element = composedPath[index] as HTMLElement;
+    const elementName = element.tagName?.toLowerCase();
+
+    if (elementName === ("ch-popover" satisfies ChameleonControlsTagName)) {
+      return true;
+    }
+    // The ch-popover tag does not exists in the path. There is no need to
+    // check the rest of the path
+    if (
+      elementName === ("ch-combo-box-render" satisfies ChameleonControlsTagName)
+    ) {
+      return false;
+    }
+  }
+
+  return false;
 };

@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { Fragment, h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -15,7 +15,21 @@ import {
 const state: Partial<HTMLChTabularGridRenderElement> = {};
 
 const render = () => (
-  <ch-tabular-grid-render model={state.model}></ch-tabular-grid-render>
+  <ch-tabular-grid-render model={state.model} theme="showcase-tabular-grid">
+    <ch-theme
+      model={{
+        name: "showcase-tabular-grid-icons",
+        url: "https://unpkg.com/@genexus/mercury@0.8.9/dist/bundles/css/base/icons.css",
+        themeBaseUrl: "https://unpkg.com/@genexus/mercury@0.8.9/dist/"
+      }}
+    ></ch-theme>
+    <ch-theme
+      model={{
+        name: "showcase-tabular-grid",
+        url: "https://unpkg.com/@genexus/mercury@0.8.9/dist/bundles/css/components/tabular-grid.css"
+      }}
+    ></ch-theme>
+  </ch-tabular-grid-render>
 );
 
 const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabularGridRenderElement> =

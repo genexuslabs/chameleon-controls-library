@@ -3215,6 +3215,10 @@ export namespace Components {
           * Specifies the content of the tabular grid control.
          */
         "model": TabularGridModel;
+        /**
+          * Determines if the columns can be hidden by the user
+         */
+        "theme": string;
     }
     /**
      * The `ch-tabular-grid-row-actions` component represents a group row actions.
@@ -9395,6 +9399,10 @@ declare namespace LocalJSX {
           * Specifies the content of the tabular grid control.
          */
         "model"?: TabularGridModel;
+        /**
+          * Determines if the columns can be hidden by the user
+         */
+        "theme"?: string;
     }
     /**
      * The `ch-tabular-grid-row-actions` component represents a group row actions.

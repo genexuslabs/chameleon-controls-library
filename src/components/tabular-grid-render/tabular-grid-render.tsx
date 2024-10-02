@@ -9,11 +9,6 @@ import {
 } from "./types";
 import { ThemeModel } from "../theme/theme-types";
 
-const THEME: ThemeModel = {
-  name: "grid",
-  url: "https://unpkg.com/@genexus/mercury@0.8.9/dist/bundles/css/components/tabular-grid.css"
-};
-
 const ARIA_SORT_MAP = {
   undefined: "none",
   asc: "ascending",
@@ -51,6 +46,11 @@ export class ChTabularGridRender {
   modelChanged() {
     this.#modelVersion++;
   }
+
+  /**
+   * Determines if the columns can be hidden by the user
+   */
+  @Prop() readonly theme: string;
 
   #renderGrid = (
     columns: TabularGridColumnModel[],
@@ -136,7 +136,7 @@ export class ChTabularGridRender {
   render() {
     return (
       <Host role="grid">
-        <ch-theme model={THEME}></ch-theme>
+        {this.theme && <ch-theme model={{ name: this.theme }}></ch-theme>}
         {this.model && this.#renderGrid(this.model.columns, this.model.rowsets)}
       </Host>
     );

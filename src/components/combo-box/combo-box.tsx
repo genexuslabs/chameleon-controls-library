@@ -441,6 +441,9 @@ export class ChComboBoxRender
    */
   @Event() input: EventEmitter<string>;
 
+  // TODO: Add change event
+  // @Event() change: EventEmitter<string>;
+
   #findLargestValue = (model: ComboBoxModel) => {
     this.#largestValue = findComboBoxLargestValue(model);
   };
@@ -640,7 +643,10 @@ export class ChComboBoxRender
       this.el.focus();
     }
 
-    // this.#checkAndEmitValueChange();
+    // TODO: Add suggest cases
+    if (!this.suggest) {
+      this.#checkAndEmitValueChangeWithNoFilter();
+    }
   };
 
   #handleInputFilterChange = (event: InputEvent) => {
@@ -678,7 +684,9 @@ export class ChComboBoxRender
     // Update current filter, even if no filters are applied. With this, if the
     // suggest property is updated at runtime, the current selected caption
     // won't change
+    // TODO: There is no need for this assignment
     this.filter = this.#getCaptionUsingValue(itemValue);
+
     this.#checkAndEmitValueChangeWithNoFilter();
   };
 

@@ -86,6 +86,8 @@ const testOpeningClosing = (suggest: boolean, strict?: true) => {
     suggest ? "suggest" : "combo-box"
   }]${strict ? "[strict]" : ""}`;
 
+  const focusableElementTagName = suggest ? "input" : "div";
+
   describe(testDescription, () => {
     let page: E2EPage;
     let comboBoxRef: E2EElement;
@@ -213,7 +215,7 @@ const testOpeningClosing = (suggest: boolean, strict?: true) => {
             .querySelector("ch-combo-box-render")
             .shadowRoot.activeElement?.tagName.toLowerCase()
         );
-        expect(focusedElementTagName).toBe("input");
+        expect(focusedElementTagName).toBe(focusableElementTagName);
       });
     });
 
@@ -230,7 +232,7 @@ const testOpeningClosing = (suggest: boolean, strict?: true) => {
             .querySelector("ch-combo-box-render")
             .shadowRoot.activeElement?.tagName.toLowerCase()
         );
-        expect(focusedElementTagName).toBe("input");
+        expect(focusedElementTagName).toBe(focusableElementTagName);
       });
     });
 

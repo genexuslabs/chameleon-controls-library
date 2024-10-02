@@ -152,11 +152,11 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
       comboBoxRef = await page.find("ch-combo-box-render");
       inputEventSpy = await comboBoxRef.spyOnEvent("input");
       filterChangeEventSpy = await comboBoxRef.spyOnEvent("filterChange");
-      await comboBoxRef.setProperty("model", dataTypeInGeneXus);
-      await comboBoxRef.setProperty("suggestDebounce", 0);
+      comboBoxRef.setProperty("model", dataTypeInGeneXus);
+      comboBoxRef.setProperty("suggestDebounce", 0);
 
       if (strict) {
-        await comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
+        comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
       }
       await page.waitForChanges();
       await page.click("ch-combo-box-render");
@@ -185,7 +185,7 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
       await pressNavigationKey("ArrowDown");
       await closeComboBoxAndCheckValues({
         formValueBeforeClose: undefined,
-        formValueAfterClose: "Blob",
+        formValueAfterClose: "_Blob",
         expectedRenderedItems: [
           { caption: "Blob" },
           { caption: "BlobFile" }
@@ -202,7 +202,7 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
       await pressNavigationKey("ArrowUp");
       await closeComboBoxAndCheckValues({
         formValueBeforeClose: undefined,
-        formValueAfterClose: "BlobFile",
+        formValueAfterClose: "_BlobFile",
         expectedRenderedItems: [
           { caption: "Blob" },
           { caption: "BlobFile" }
@@ -222,7 +222,7 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
 
       await closeComboBoxAndCheckValues({
         formValueBeforeClose: undefined,
-        formValueAfterClose: "Blob",
+        formValueAfterClose: "_Blob",
         expectedRenderedItems: allRenderedItems,
         confirmKey
       });
@@ -230,14 +230,14 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
 
     if (strict) {
       it("should rollback the change, because the caption does not map to an item", async () => {
-        await comboBoxRef.setProperty("value", "Blob");
+        await comboBoxRef.setProperty("value", "_Blob");
         await page.waitForChanges();
 
         await pressFilterKey("b", "b");
         // await pressFilterKey("b", "Blobb");
         await closeComboBoxAndCheckValues({
-          formValueBeforeClose: "Blob",
-          formValueAfterClose: "Blob",
+          formValueBeforeClose: "_Blob",
+          formValueAfterClose: "_Blob",
           expectedRenderedItems: [
             // { caption: "Boolean" }
           ],

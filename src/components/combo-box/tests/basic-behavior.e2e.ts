@@ -47,28 +47,25 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
       inputEventSpy = await comboBoxRef.spyOnEvent("input");
 
       if (strict) {
-        await comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
+        comboBoxRef.setProperty("suggestOptions", STRICT_FILTERS);
       }
       await page.waitForChanges();
     });
 
-    it('should not have an aria-hidden="true" attribute the mask', async () => {
-      const maskRef = comboBoxRef.shadowRoot.querySelector(".mask");
+    it('should not have an aria-hidden="true" attribute the input-container', async () => {
+      const maskRef = comboBoxRef.shadowRoot.querySelector(".input-container");
       expect(maskRef).not.toHaveAttribute("aria-hidden");
     });
 
     it("should properly display the selected caption when updating the value in the interface", async () => {
-      await comboBoxRef.setProperty("model", simpleModelComboBox1);
+      comboBoxRef.setProperty("model", simpleModelComboBox1);
       await page.waitForChanges();
-      await comboBoxRef.setProperty("value", "_Blob");
+      comboBoxRef.setProperty("value", "Value 1");
       await page.waitForChanges();
 
-      const renderedItems = await getRenderedItems();
-      expect(renderedItems).toEqual([
-        { caption: "Blob" },
-        { caption: "BlobFile" }
-      ]);
+      const inputRef = await page.find("ch-combo-box-render >>> input");
 
+      expect(await inputRef.getProperty("value")).toBe("Label for the value 1");
       expect(inputEventSpy).toHaveReceivedEventTimes(0);
     });
 

@@ -987,6 +987,11 @@ export class ChComboBoxRender
       false
     );
 
+    // TODO: UNIT TESTS.
+    // - Clicking the combo-box with JS should not open the popover
+    // - User click must open the combo-box
+    // - Clicking the combo-box's label should not open the popover
+
     return (
       <Host
         class={{
@@ -1063,7 +1068,7 @@ export class ChComboBoxRender
                   key="popover"
                   id="popover"
                   role="listbox"
-                  aria-hidden="false"
+                  aria-hidden="false" // TODO: Remove this and add a unit test
                   part="window"
                   actionById
                   actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it

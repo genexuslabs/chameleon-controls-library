@@ -5,7 +5,7 @@ import { delayTest } from "../../../testing/utils.e2e";
 // Increase/adjust these values if CI tests fail
 const NO_DEBOUNCE_THRESHOLD_TIME = 140;
 const DEBOUNCE_VALUE = 180;
-const WAIT_FOR_DEBOUNCE_VALUE = DEBOUNCE_VALUE + 20;
+const WAIT_FOR_DEBOUNCE_VALUE = DEBOUNCE_VALUE + 30;
 
 const getTestDescription = (multiline: boolean, type?: EditType) => {
   if (multiline) {

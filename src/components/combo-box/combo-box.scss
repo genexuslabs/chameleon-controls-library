@@ -95,47 +95,59 @@
    */
   --ch-combo-box-separation-y: var(--ch-combo-box-separation);
 
-  --ch-combo-box-mask-inline-start: 0px;
-  --ch-combo-box-mask-inline-end: 0px;
-  --ch-combo-box-mask-block-start: 0px;
-  --ch-combo-box-mask-block-end: 0px;
-
   display: inline-grid;
   grid-template-columns: 1fr max-content;
+  grid-template-rows: max-content 1fr;
   align-items: center;
-  position: relative;
-
-  // Remove outline of the focus state. This selector must not have higher
-  // specificity, since it should be overridden by the class applied to the control
-  outline: unset;
-
-  // Remove text selection on double click
-  user-select: none;
 
   &::after {
-    content: "";
-    justify-self: flex-end;
+    grid-row: 1 / 3;
+    grid-column: 2;
     inline-size: var(--ch-combo-box__picker-size);
     block-size: var(--ch-combo-box__picker-size);
     -webkit-mask: var(--ch-combo-box__picker) 50% 50% /
       var(--ch-combo-box__picker-image-size)
       var(--ch-combo-box__picker-image-size) no-repeat;
+    margin-inline-start: var(--ch-combo-box-item-gap);
     background-color: var(--ch-combo-box__picker-color);
     pointer-events: none;
   }
+}
+
+:host(.ch-combo-box--normal) {
+  cursor: pointer;
+  // Remove text selection on double click
+  user-select: none;
+
+  &::after {
+    content: "";
+  }
+}
+
+:host(.ch-combo-box--suggest) {
+  --ch-combo-box__picker-size: 0px;
+  cursor: text;
 }
 
 :host(.ch-disabled) {
   pointer-events: none;
 }
 
-:host(.ch-combo-box--suggest) {
-  --ch-combo-box__picker-size: 0px;
+.input-container {
+  grid-row: 2 / 3;
+
+  // Remove outline of the focus state.
+  outline: unset;
 }
 
 .invisible-text {
   visibility: hidden;
   pointer-events: none;
+  block-size: 0;
+
+  // TODO: Add a unit test to verify that the input does not overflows the
+  // combo-box when it has a reduced width (for example, 120px)
+  overflow: hidden;
 }
 
 select {
@@ -145,50 +157,17 @@ select {
   overflow: hidden;
 }
 
-.mask,
-select {
-  position: absolute;
-  inset-inline: var(--ch-combo-box-mask-inline-start)
-    var(--ch-combo-box-mask-inline-end);
-  inset-block: var(--ch-combo-box-mask-block-start)
-    var(--ch-combo-box-mask-block-end);
-}
-
-.mask {
-  cursor: text;
-
-  &--no-filters {
-    cursor: pointer;
-  }
-}
-
-.mask,
-.value {
-  padding: inherit;
-  border: inherit;
-  border-color: transparent;
-}
-
 .value {
   display: inline-grid;
   align-items: center;
-  position: absolute;
-  inset-inline: var(--ch-combo-box-mask-inline-start)
-    var(--ch-combo-box-mask-inline-end);
-  inset-block: var(--ch-combo-box-mask-block-start)
-    var(--ch-combo-box-mask-block-end);
 
-  margin-inline-end: var(--ch-combo-box__picker-size);
+  // TODO: Add a unit test to verify that the input does not overflows the
+  // combo-box when it has a reduced width (for example, 120px)
+  inline-size: 100%;
 
   &--readonly {
     pointer-events: none;
     text-overflow: ellipsis;
-  }
-
-  &--start-img {
-    margin-inline-start: calc(
-      var(--ch-combo-box-item__image-size) + var(--ch-combo-box-item-gap)
-    );
   }
 }
 
@@ -212,7 +191,7 @@ ch-popover {
 .leaf,
 .group__header,
 .group__header-caption,
-.mask {
+.input-container {
   display: flex;
   gap: var(--ch-combo-box-item-gap);
   align-items: center;

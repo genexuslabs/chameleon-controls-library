@@ -28,7 +28,8 @@ const formElementTemplate = (
   value?: string
 ) =>
   options.externalLabel
-    ? `<label for="element">${EXTERNAL_LABEL_TEXT}</label>
+    ? `<button>Dummy button</button>
+      <label for="element">${EXTERNAL_LABEL_TEXT}</label>
         <${tagName}
           ${additionalAttributes}
           id="element"
@@ -41,7 +42,8 @@ const formElementTemplate = (
           ${value ? `value="${value}"` : ""}
         >
         </${tagName}>`
-    : `<label>
+    : `<button>Dummy button</button>
+      <label>
         ${EXTERNAL_LABEL_TEXT}
         
         <${tagName}
@@ -63,21 +65,28 @@ export const performFormTests = (
     formElementTagName: ChameleonControlsTagName;
     hasReadonlySupport: boolean;
     hasAutoFocusSupport?: boolean;
+    hasTextSelectionSupport?: boolean | undefined;
     pressEnterToConfirmValue?: boolean;
     focusIsOnHostElement?: boolean;
     valueCanBeUpdatedByTheUser?: boolean;
   },
-  inputSelector: string = "input"
+  inputSelector: string = "input",
+  ariaLabelSelector?: string
 ) => {
   const {
     formElementTagName,
     hasReadonlySupport,
     hasAutoFocusSupport,
+    hasTextSelectionSupport,
     additionalAttributes,
     focusIsOnHostElement,
     pressEnterToConfirmValue,
     valueCanBeUpdatedByTheUser
   } = testOptions;
+
+  const ariaLabelElementSelector = focusIsOnHostElement
+    ? formElementTagName
+    : `${formElementTagName} >>> ${ariaLabelSelector ?? inputSelector}`;
 
   const focusableElementSelector = focusIsOnHostElement
     ? formElementTagName
@@ -86,32 +95,36 @@ export const performFormTests = (
   const getInputRef = async (page: E2EPage) =>
     await page.find(`${formElementTagName} >>> ${inputSelector}`);
 
+  const getAriaLabelElementRef = async (page: E2EPage) =>
+    await page.find(ariaLabelElementSelector);
+
   it("should render the input element (inputSelector)", async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      formElementTemplate(formElementTagName, additionalAttributes, {
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: formElementTemplate(formElementTagName, additionalAttributes, {
         externalLabel: true,
         accessibleName: false
       })
-    );
-
+    });
     const inputRef = await getInputRef(page);
     expect(inputRef).toBeDefined();
   });
 
   it(`should label the ${inputSelector} with the external label (for and id)`, async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      formElementTemplate(formElementTagName, additionalAttributes, {
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: formElementTemplate(formElementTagName, additionalAttributes, {
         externalLabel: true,
         accessibleName: false
       })
+    });
+    const ariaLabelElementRef = await getAriaLabelElementRef(page);
+
+    expect(ariaLabelElementRef).toHaveAttribute("aria-label");
+    expect(ariaLabelElementRef).toEqualAttribute(
+      "aria-label",
+      EXTERNAL_LABEL_TEXT
     );
-
-    const inputRef = await getInputRef(page);
-
-    expect(inputRef).toHaveAttribute("aria-label");
-    expect(inputRef).toEqualAttribute("aria-label", EXTERNAL_LABEL_TEXT);
   });
 
   it(`should label the ${inputSelector} with the parent label`, async () => {
@@ -122,67 +135,78 @@ export const performFormTests = (
         accessibleName: false
       })
     );
+    const ariaLabelElementRef = await getAriaLabelElementRef(page);
 
-    const inputRef = await getInputRef(page);
-
-    expect(inputRef).toHaveAttribute("aria-label");
-    expect(inputRef).toEqualAttribute("aria-label", EXTERNAL_LABEL_TEXT);
+    expect(ariaLabelElementRef).toHaveAttribute("aria-label");
+    expect(ariaLabelElementRef).toEqualAttribute(
+      "aria-label",
+      EXTERNAL_LABEL_TEXT
+    );
   });
 
   it("should use the external label instead of the accessibleName property", async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      formElementTemplate(formElementTagName, additionalAttributes, {
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: formElementTemplate(formElementTagName, additionalAttributes, {
         externalLabel: true,
         accessibleName: true
       })
+    });
+    const ariaLabelElementRef = await getAriaLabelElementRef(page);
+
+    expect(ariaLabelElementRef).toHaveAttribute("aria-label");
+    expect(ariaLabelElementRef).toEqualAttribute(
+      "aria-label",
+      EXTERNAL_LABEL_TEXT
     );
-
-    const inputRef = await getInputRef(page);
-
-    expect(inputRef).toHaveAttribute("aria-label");
-    expect(inputRef).toEqualAttribute("aria-label", EXTERNAL_LABEL_TEXT);
-    expect(inputRef).not.toEqualAttribute("aria-label", ACCESSIBLE_NAME);
+    expect(ariaLabelElementRef).not.toEqualAttribute(
+      "aria-label",
+      ACCESSIBLE_NAME
+    );
   });
 
   it("should use the parent label instead of the accessibleName property", async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      formElementTemplate(formElementTagName, additionalAttributes, {
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: formElementTemplate(formElementTagName, additionalAttributes, {
         externalLabel: false,
         accessibleName: true
       })
+    });
+    const ariaLabelElementRef = await getAriaLabelElementRef(page);
+
+    expect(ariaLabelElementRef).toHaveAttribute("aria-label");
+    expect(ariaLabelElementRef).toEqualAttribute(
+      "aria-label",
+      EXTERNAL_LABEL_TEXT
     );
-
-    const inputRef = await getInputRef(page);
-
-    expect(inputRef).toHaveAttribute("aria-label");
-    expect(inputRef).toEqualAttribute("aria-label", EXTERNAL_LABEL_TEXT);
-    expect(inputRef).not.toEqualAttribute("aria-label", ACCESSIBLE_NAME);
+    expect(ariaLabelElementRef).not.toEqualAttribute(
+      "aria-label",
+      ACCESSIBLE_NAME
+    );
   });
 
   it("should use the accessibleName if there is no label defined", async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      `<${formElementTagName} ${additionalAttributes} accessible-name="${ACCESSIBLE_NAME}"></${formElementTagName}>`
-    );
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: `<${formElementTagName} ${additionalAttributes} accessible-name="${ACCESSIBLE_NAME}"></${formElementTagName}>`
+    });
+    const ariaLabelElementRef = await getAriaLabelElementRef(page);
 
-    const inputRef = await getInputRef(page);
-
-    expect(inputRef).toHaveAttribute("aria-label");
-    expect(inputRef).toEqualAttribute("aria-label", ACCESSIBLE_NAME);
+    expect(ariaLabelElementRef).toHaveAttribute("aria-label");
+    expect(ariaLabelElementRef).toEqualAttribute("aria-label", ACCESSIBLE_NAME);
   });
 
   it("the form value for the element should be undefined if no value is set", async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      `<form>
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: `<form>
         ${formElementTemplate(formElementTagName, additionalAttributes, {
           externalLabel: true,
           accessibleName: true
         })}
       </form>`
-    );
+    });
 
     const formValues = await page.evaluate(() => {
       const formElement = document.querySelector("form") as HTMLFormElement;
@@ -194,9 +218,9 @@ export const performFormTests = (
   });
 
   it("the form value for the element should be defined if a value is set as an attribute of the tag", async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      `<form>
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: `<form>
         ${formElementTemplate(
           formElementTagName,
           additionalAttributes,
@@ -204,24 +228,25 @@ export const performFormTests = (
           INITIAL_VALUE
         )}
       </form>`
-    );
+    });
+
     const formValues = await getFormValues(page);
 
     expect(formValues[FORM_NAME]).toBe(INITIAL_VALUE);
   });
 
   it("the form value for the element should be updated if the value binding is updated at runtime", async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      `<form>
-        ${formElementTemplate(
-          formElementTagName,
-          additionalAttributes,
-          { externalLabel: true, accessibleName: true },
-          INITIAL_VALUE
-        )}
-      </form>`
-    );
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: `<form>
+      ${formElementTemplate(
+        formElementTagName,
+        additionalAttributes,
+        { externalLabel: true, accessibleName: true },
+        INITIAL_VALUE
+      )}
+    </form>`
+    });
     let formValues = await getFormValues(page);
 
     expect(formValues[FORM_NAME]).toBe(INITIAL_VALUE);
@@ -237,15 +262,15 @@ export const performFormTests = (
 
   if (valueCanBeUpdatedByTheUser) {
     it("the form value for the element should be updated if the value is updated by the user", async () => {
-      const page = await newE2EPage({ failOnConsoleError: true });
-      await page.setContent(
-        `<form>
+      const page = await newE2EPage({
+        failOnConsoleError: true,
+        html: `<form>
         ${formElementTemplate(formElementTagName, additionalAttributes, {
           externalLabel: true,
           accessibleName: true
         })}
       </form>`
-      );
+      });
       let formValues = await getFormValues(page);
 
       expect(formValues[FORM_NAME]).toBeUndefined();
@@ -267,14 +292,13 @@ export const performFormTests = (
   }
 
   it("should focus the element when clicking on the external label", async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      formElementTemplate(formElementTagName, additionalAttributes, {
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: formElementTemplate(formElementTagName, additionalAttributes, {
         externalLabel: true,
         accessibleName: false
       })
-    );
-
+    });
     await page.click("label");
 
     const inputIsFocused = await isActiveElement(
@@ -285,7 +309,7 @@ export const performFormTests = (
     expect(inputIsFocused).toBe(true);
   });
 
-  const performFocusTest = (options: {
+  const getTextSuffixDescription = (options: {
     externalLabel: boolean;
     accessibleName: boolean;
     disabled?: boolean;
@@ -314,15 +338,31 @@ export const performFormTests = (
         : " and having parent label";
     }
 
-    const description = options.disabled
-      ? `should not focus the element when clicking on the ${clickedElement} ${optionsString}`
-      : `should focus the element when clicking on the ${clickedElement} ${optionsString}`;
+    return `${clickedElement} ${optionsString}`;
+  };
 
-    it(description, async () => {
-      const page = await newE2EPage({ failOnConsoleError: true });
-      await page.setContent(
-        formElementTemplate(formElementTagName, additionalAttributes, options)
-      );
+  const performFocusTest = (options: {
+    externalLabel: boolean;
+    accessibleName: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
+    clickOnLabel: boolean;
+  }) => {
+    const suffixDescription = getTextSuffixDescription(options);
+
+    const descriptionLabel = options.disabled
+      ? `should not focus the element when clicking on the ${suffixDescription}`
+      : `should focus the element when clicking on the ${suffixDescription}`;
+
+    it(descriptionLabel, async () => {
+      const page = await newE2EPage({
+        failOnConsoleError: true,
+        html: formElementTemplate(
+          formElementTagName,
+          additionalAttributes,
+          options
+        )
+      });
 
       if (options.clickOnLabel) {
         await page.click("label");
@@ -363,15 +403,75 @@ export const performFormTests = (
     });
   });
 
+  const performTextSelectionTest = (options: {
+    externalLabel: boolean;
+    accessibleName: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
+    clickOnLabel: boolean;
+  }) => {
+    const suffixDescription = getTextSuffixDescription(options);
+
+    const canSelectText = !options.disabled && hasTextSelectionSupport;
+
+    const descriptionTextSelection = canSelectText
+      ? `should select the element text when clicking on the ${suffixDescription}`
+      : `should not select the element text when clicking on the ${suffixDescription}`;
+
+    // TODO: Fix this test
+    it.skip(descriptionTextSelection, async () => {
+      const page = await newE2EPage({ failOnConsoleError: true });
+      await page.setContent(
+        formElementTemplate(formElementTagName, additionalAttributes, options)
+      );
+      await page.waitForChanges();
+
+      // Select event does not bubbles, so we have to spy the input ref
+      const inputRef = await getInputRef(page);
+      const selectEventSpy = await inputRef.spyOnEvent("select");
+
+      if (options.clickOnLabel) {
+        await page.click("label");
+      } else {
+        await page.click(formElementTagName);
+      }
+
+      if (canSelectText) {
+        expect(selectEventSpy).toHaveReceivedEventTimes(1);
+      } else {
+        expect(selectEventSpy).toHaveReceivedEventTimes(0);
+      }
+    });
+  };
+
+  if (hasTextSelectionSupport !== undefined) {
+    [false, true].forEach(disabled => {
+      [true, false].forEach(clickOnLabel => {
+        [true, false].forEach(externalLabel => {
+          [true, false].forEach(accessibleName => {
+            readonlyValues.forEach(readonly =>
+              performTextSelectionTest({
+                externalLabel,
+                accessibleName,
+                clickOnLabel,
+                disabled,
+                readonly
+              })
+            );
+          });
+        });
+      });
+    });
+  }
+
   it(`should focus the ${inputSelector} when programmatically calling focus() on the Host`, async () => {
-    const page = await newE2EPage({ failOnConsoleError: true });
-    await page.setContent(
-      formElementTemplate(formElementTagName, additionalAttributes, {
+    const page = await newE2EPage({
+      failOnConsoleError: true,
+      html: formElementTemplate(formElementTagName, additionalAttributes, {
         externalLabel: true,
         accessibleName: false
       })
-    );
-
+    });
     await page.focus(formElementTagName);
 
     const inputIsFocused = await isActiveElement(
@@ -391,7 +491,7 @@ export const performFormTests = (
 
       const inputIsFocused = await isActiveElement(
         page,
-        focusableElementSelector
+        ariaLabelElementSelector
       );
       expect(inputIsFocused).toBe(true);
     });
@@ -404,7 +504,7 @@ export const performFormTests = (
 
       let inputIsFocused = await isActiveElement(
         page,
-        focusableElementSelector
+        ariaLabelElementSelector
       );
       expect(inputIsFocused).toBe(false);
       await page.setContent(
@@ -412,7 +512,7 @@ export const performFormTests = (
       );
       await page.waitForChanges();
 
-      inputIsFocused = await isActiveElement(page, focusableElementSelector);
+      inputIsFocused = await isActiveElement(page, ariaLabelElementSelector);
       expect(inputIsFocused).toBe(true);
     });
   }

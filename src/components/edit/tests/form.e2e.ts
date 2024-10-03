@@ -5,6 +5,7 @@ describe("[ch-edit][form][multiline = false]", () => {
     formElementTagName: "ch-edit",
     hasReadonlySupport: true,
     hasAutoFocusSupport: true,
+    hasTextSelectionSupport: true,
     valueCanBeUpdatedByTheUser: true
   });
 });

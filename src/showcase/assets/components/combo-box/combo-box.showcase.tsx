@@ -8,7 +8,7 @@ import {
 import {
   comboBoxFilterChange,
   dataTypeInGeneXus,
-  simpleModel1,
+  simpleModelComboBox1,
   smallModel
 } from "./models";
 import {
@@ -54,7 +54,6 @@ const render = () => (
         placeholder={state.placeholder}
         class="combo-box"
         disabled={state.disabled}
-        destroyItemsOnClose={state.destroyItemsOnClose}
         filter={state.filter}
         popoverInlineAlign={state.popoverInlineAlign}
         model={
@@ -84,7 +83,6 @@ const render = () => (
         placeholder={state.placeholder}
         class="combo-box"
         disabled={state.disabled}
-        destroyItemsOnClose={state.destroyItemsOnClose}
         filter={state.filter}
         popoverInlineAlign={state.popoverInlineAlign}
         model={
@@ -115,7 +113,6 @@ const render = () => (
           placeholder={state.placeholder}
           class="combo-box"
           disabled={state.disabled}
-          destroyItemsOnClose={state.destroyItemsOnClose}
           filter={state.filter}
           popoverInlineAlign={state.popoverInlineAlign}
           model={
@@ -146,11 +143,11 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
           accessibleName: "Model",
           type: "enum",
           values: [
-            { caption: "Simple Model", value: simpleModel1 },
+            { caption: "Simple Model", value: simpleModelComboBox1 },
             { caption: "Small Model", value: smallModel },
             { caption: "Data Type Model in GeneXus", value: dataTypeInGeneXus }
           ],
-          value: simpleModel1
+          value: simpleModelComboBox1
         }
       ]
     },
@@ -193,12 +190,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
               caption: "outside-end"
             }
           ]
-        },
-        {
-          id: "destroyItemsOnClose",
-          caption: "Destroy Items On Close",
-          value: false,
-          type: "boolean"
         },
         {
           id: "resizable",

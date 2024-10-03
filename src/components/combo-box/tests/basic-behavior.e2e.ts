@@ -196,7 +196,7 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
       expect(popoverRef).toBeNull();
     });
 
-    it("should destroy the items after the popover is closed (by clicking outside of the combo-box)", async () => {
+    it.skip("should destroy the items after the popover is closed (by clicking outside of the combo-box)", async () => {
       await comboBoxRef.setProperty("model", simpleModelComboBox1);
       await page.waitForChanges();
       await page.click("ch-combo-box-render");

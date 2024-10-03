@@ -9,6 +9,9 @@ export const config: Config = {
       esmLoaderPath: "../loader",
       copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
     },
+    // dist-custom-elements output target is required for the React output target.
+    // It generates the dist/components folder
+    { type: "dist-custom-elements" },
     {
       type: "docs-readme"
     },

@@ -8,6 +8,7 @@ import {
   renderShowcaseProperties,
   showcaseTemplateClassProperty
 } from "../utils";
+import { dummyPictureCallback } from "./models";
 
 const state: Partial<HTMLChEditElement> = {};
 const formRefs: {
@@ -63,6 +64,7 @@ const render = () => (
           pattern={state.pattern}
           placeholder={state.placeholder}
           picture={state.picture}
+          pictureCallback={dummyPictureCallback}
           value={state.value}
           showTrigger={state.showTrigger}
           spellcheck={state.spellcheck}
@@ -100,6 +102,7 @@ const render = () => (
           pattern={state.pattern}
           placeholder={state.placeholder}
           picture={state.picture}
+          pictureCallback={dummyPictureCallback}
           value={state.value}
           showTrigger={state.showTrigger}
           spellcheck={state.spellcheck}
@@ -137,6 +140,7 @@ const render = () => (
             pattern={state.pattern}
             placeholder={state.placeholder}
             picture={state.picture}
+            pictureCallback={dummyPictureCallback}
             value={state.value}
             showTrigger={state.showTrigger}
             spellcheck={state.spellcheck}
@@ -354,7 +358,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
       type: "string"
     },
     { name: "accessibleName", defaultValue: undefined, type: "string" },
-    { name: "autocomplete", defaultValue: undefined, type: "string" },
+    { name: "autocapitalize", defaultValue: undefined, type: "string" },
     { name: "autocomplete", defaultValue: undefined, type: "string" },
     { name: "autoGrow", defaultValue: false, type: "boolean" },
     {
@@ -376,6 +380,12 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
     { name: "multiline", defaultValue: false, type: "boolean" },
     { name: "pattern", defaultValue: undefined, type: "string" },
     { name: "picture", defaultValue: undefined, type: "string" },
+    {
+      name: "pictureCallback",
+      fixed: true,
+      value: "pictureCallback",
+      type: "function"
+    },
     { name: "placeholder", defaultValue: undefined, type: "string" },
     { name: "readonly", defaultValue: false, type: "boolean" },
     { name: "spellcheck", defaultValue: false, type: "boolean" },

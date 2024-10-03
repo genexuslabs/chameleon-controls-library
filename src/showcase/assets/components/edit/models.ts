@@ -31,3 +31,11 @@ export const getImagePathCallbackEdit = (
     disabled: "var(--icon-stencil-disabled)"
   };
 };
+
+export const dummyPictureCallback = (value: any, picture: string): string => {
+  if (Number.isInteger(Number(value)) && picture.includes("$")) {
+    return `$ ${Number(value).toLocaleString()}`;
+  }
+
+  return `dummy ${value}`;
+};

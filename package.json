@@ -1,6 +1,6 @@
 {
   "name": "@genexus/chameleon-controls-library",
-  "version": "6.0.0-next.37",
+  "version": "6.0.0-next.38",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -41,11 +41,7 @@
     "qr-creator": "^1.0.0",
     "stencil-click-outside": "^1.8.0"
   },
-  "peerDependencies": {
-    "@genexus/web-standard-functions": ">= 0.65.0"
-  },
   "devDependencies": {
-    "@genexus/web-standard-functions": ">= 0.65.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@stencil-community/eslint-plugin": "~0.7.1",
     "@stencil/core": "~4.16.0",

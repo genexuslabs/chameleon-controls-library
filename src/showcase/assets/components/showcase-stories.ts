@@ -27,6 +27,7 @@ import { sliderShowcaseStory } from "./slider/slider.showcase";
 import { switchShowcaseStory } from "./switch/switch.showcase";
 import { tabShowcaseStory } from "./tab/tab.showcase";
 import { tabularGridShowcaseStory } from "./tabular-grid/tabular-grid.showcase";
+import { tabularGridRenderShowcaseStory } from "./tabular-grid-render/tabular-grid-render.showcase";
 import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
@@ -55,6 +56,7 @@ export const showcaseStories = {
   slider: sliderShowcaseStory,
   switch: switchShowcaseStory,
   tab: tabShowcaseStory,
+  "tabular-grid-render": tabularGridRenderShowcaseStory,
   textblock: textBlockShowcaseStory,
   tooltip: tooltipShowcaseStory,
   "tree-view": treeViewShowcaseStory

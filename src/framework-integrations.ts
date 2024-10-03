@@ -1,6 +1,6 @@
 import type { ChameleonControlsTagName } from "./common/types";
 
-// This object must include all Chameleon's components
+// This object must include all Chameleon's components.
 const chameleonComponents: {
   [key in ChameleonControlsTagName &
     ("gx-grid-chameleon" | "gx-grid-chameleon-column-filter")]: 0;

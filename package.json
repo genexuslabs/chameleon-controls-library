@@ -17,8 +17,9 @@
     "loader/"
   ],
   "scripts": {
-    "build": "npm run build.monaco && npm run build.light",
+    "build": "npm run build.monaco && npm run build.light && npm run build.extras",
     "build.light": "stencil build --docs",
+    "build.extras": "tsc --project tsconfig-collection.json && node copy-files.mjs",
     "build.monaco": "vite build",
     "generate": "stencil generate",
     "prettier": "prettier src/**/*.{tsx,ts,jsx,js,css,json,md} --write",
@@ -29,7 +30,7 @@
     "test.spec": "stencil test --spec --coverage --no-cache",
     "test.watch": "stencil test --spec --e2e --watchAll --maxWorkers=1",
     "validate": "npm run lint && npm run test && npm run build",
-    "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug"
+    "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug && npm run build.extras"
   },
   "license": "MIT",
   "dependencies": {

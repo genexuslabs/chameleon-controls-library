@@ -24,6 +24,19 @@ The `ch-tabular-grid-rowset-legend` component represents a caption for the `ch-t
 | `"selector-label"` |             |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-tabular-grid-render](../../../tabular-grid-render)
+
+### Graph
+```mermaid
+graph TD;
+  ch-tabular-grid-render --> ch-tabular-grid-rowset-legend
+  style ch-tabular-grid-rowset-legend fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

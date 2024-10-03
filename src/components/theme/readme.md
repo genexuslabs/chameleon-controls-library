@@ -34,11 +34,13 @@ either in the Document or in a Shadow-Root.
 ### Used by
 
  - [ch-markdown-viewer](../markdown-viewer)
+ - [ch-tabular-grid-render](../tabular-grid-render)
 
 ### Graph
 ```mermaid
 graph TD;
   ch-markdown-viewer --> ch-theme
+  ch-tabular-grid-render --> ch-theme
   style ch-theme fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

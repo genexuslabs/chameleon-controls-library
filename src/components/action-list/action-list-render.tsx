@@ -701,7 +701,10 @@ export class ChActionListRender {
   #handleItemClick = (event: PointerEvent) => {
     const actionListItemOrGroup = getActionListOrGroupItemFromEvent(event);
 
-    if (!actionListItemOrGroup) {
+    if (
+      !actionListItemOrGroup ||
+      (actionListItemOrGroup as HTMLChActionListItemElement).editing
+    ) {
       return;
     }
     const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
@@ -730,7 +733,10 @@ export class ChActionListRender {
   #handleItemSelection = (event: PointerEvent) => {
     const actionListItemOrGroup = getActionListOrGroupItemFromEvent(event);
 
-    if (!actionListItemOrGroup) {
+    if (
+      !actionListItemOrGroup ||
+      (actionListItemOrGroup as HTMLChActionListItemElement).editing
+    ) {
       return;
     }
     const itemId = actionListItemOrGroup.id;

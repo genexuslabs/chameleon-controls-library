@@ -737,15 +737,17 @@ export namespace Components {
          */
         "yamlSchemaUri": string;
     }
+    /**
+     * @status experimental
+     * The ch-combo-box-render is an input widget that has an associated popup. The
+     * popup enables users to choose a value for the input from a collection.
+     * - Items are only rendered when the popup is displayed.
+     */
     interface ChComboBoxRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
         "accessibleName"?: string;
-        /**
-          * Specifies whether the items should not stay rendered in the DOM if the control is closed. `true` to destroy the rendered items when the control is closed. Note: By default, the control does not rendered the items until the first expansion. The same applies if the control have groups.
-         */
-        "destroyItemsOnClose": boolean;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -4481,6 +4483,12 @@ declare global {
         "filterChange": string;
         "input": string;
     }
+    /**
+     * @status experimental
+     * The ch-combo-box-render is an input widget that has an associated popup. The
+     * popup enables users to choose a value for the input from a collection.
+     * - Items are only rendered when the popup is displayed.
+     */
     interface HTMLChComboBoxRenderElement extends Components.ChComboBoxRender, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChComboBoxRenderElementEventMap>(type: K, listener: (this: HTMLChComboBoxRenderElement, ev: ChComboBoxRenderCustomEvent<HTMLChComboBoxRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -6804,15 +6812,17 @@ declare namespace LocalJSX {
          */
         "yamlSchemaUri"?: string;
     }
+    /**
+     * @status experimental
+     * The ch-combo-box-render is an input widget that has an associated popup. The
+     * popup enables users to choose a value for the input from a collection.
+     * - Items are only rendered when the popup is displayed.
+     */
     interface ChComboBoxRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
         "accessibleName"?: string;
-        /**
-          * Specifies whether the items should not stay rendered in the DOM if the control is closed. `true` to destroy the rendered items when the control is closed. Note: By default, the control does not rendered the items until the first expansion. The same applies if the control have groups.
-         */
-        "destroyItemsOnClose"?: boolean;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -10299,6 +10309,12 @@ declare module "@stencil/core" {
             "ch-code": LocalJSX.ChCode & JSXBase.HTMLAttributes<HTMLChCodeElement>;
             "ch-code-diff-editor": LocalJSX.ChCodeDiffEditor & JSXBase.HTMLAttributes<HTMLChCodeDiffEditorElement>;
             "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
+            /**
+             * @status experimental
+             * The ch-combo-box-render is an input widget that has an associated popup. The
+             * popup enables users to choose a value for the input from a collection.
+             * - Items are only rendered when the popup is displayed.
+             */
             "ch-combo-box-render": LocalJSX.ChComboBoxRender & JSXBase.HTMLAttributes<HTMLChComboBoxRenderElement>;
             /**
              * The `ch-dialog` component represents a modal or non-modal dialog box or other

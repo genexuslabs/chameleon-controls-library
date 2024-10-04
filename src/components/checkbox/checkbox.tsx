@@ -175,8 +175,10 @@ export class ChCheckBox
   /**
    * The `input` event is emitted when a change to the element's value is
    * committed by the user.
+   *
+   * It contains the new value of the control.
    */
-  @Event() input: EventEmitter;
+  @Event() input: EventEmitter<string>;
 
   #computeImage = (): GxImageMultiStateStart | null => {
     if (!this.startImgSrc) {
@@ -200,33 +202,37 @@ export class ChCheckBox
       : null;
   };
 
-  #stopClickPropagation = (event: UIEvent) => {
-    event.stopPropagation();
-  };
-
   #handleChange = (event: UIEvent) => {
     event.stopPropagation();
+    this.#updateCheckedValueAndEmitEvent(this.#inputRef.checked);
 
-    const inputRef = event.target as HTMLInputElement;
-    const checked = inputRef.checked;
-    const value = checked ? this.checkedValue : this.unCheckedValue;
-
-    this.value = value;
-    inputRef.value = value; // Update input's value before emitting the event
-
-    // When the checked value is updated by the user, the control must no
-    // longer be indeterminate
-    this.indeterminate = false;
-
-    this.input.emit(event);
-
+    // TODO: What's the need for this implementation in GeneXus
     if (this.highlightable) {
       this.click.emit();
     }
   };
 
-  #handleHostClick = () => {
-    this.#inputRef.click();
+  #updateCheckedValueAndEmitEvent = (checked: boolean) => {
+    const value = checked ? this.checkedValue : this.unCheckedValue;
+
+    this.value = value;
+    this.#inputRef.value = value; // Update input's value before emitting the event
+
+    // When the checked value is updated by the user, the control must no
+    // longer be indeterminate
+    this.indeterminate = false;
+
+    this.input.emit(value);
+  };
+
+  #handleHostClick = (event: MouseEvent) => {
+    const clickWasPerformedInAExternalLabel = event.detail === 0;
+
+    if (clickWasPerformedInAExternalLabel) {
+      this.#updateCheckedValueAndEmitEvent(!this.#inputRef.checked);
+    } else {
+      event.stopPropagation();
+    }
   };
 
   connectedCallback() {
@@ -270,7 +276,7 @@ export class ChCheckBox
           [startImageClasses]: !!startImageClasses
         }}
         style={this.#startImage?.styles ?? undefined}
-        onClick={canAddListeners ? this.#handleHostClick : null}
+        onClickCapture={canAddListeners && this.#handleHostClick}
       >
         <div
           class="container"
@@ -290,8 +296,7 @@ export class ChCheckBox
             disabled={this.disabled || this.readonly}
             indeterminate={this.indeterminate}
             value={this.value}
-            onClick={canAddListeners ? this.#stopClickPropagation : null}
-            onInput={canAddListeners ? this.#handleChange : null}
+            onInput={canAddListeners && this.#handleChange}
             ref={el => (this.#inputRef = el)}
           />
           <div
@@ -311,7 +316,6 @@ export class ChCheckBox
             class="label"
             part={`${CHECKBOX_PARTS_DICTIONARY.LABEL} ${additionalParts}`}
             htmlFor={CHECKBOX_ID}
-            onClick={canAddListeners ? this.#stopClickPropagation : null}
           >
             {this.caption}
           </label>

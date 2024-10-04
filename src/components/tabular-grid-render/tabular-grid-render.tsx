@@ -1,13 +1,16 @@
 import { Component, Host, Prop, Watch, h } from "@stencil/core";
 import {
-  TabularGridCellModel,
-  TabularGridColumnModel,
+  TabularGridCellItemModel,
+  TabularGridColumnItemModel,
+  TabularGridColumnsModel,
   TabularGridModel,
-  TabularGridRowModel,
-  TabularGridRowsetLegendModel,
-  TabularGridRowsetModel
+  TabularGridRowItemModel,
+  TabularGridRowsetItemGroupModel,
+  TabularGridRowsetItemSimpleModel,
+  TabularGridRowsetsGroupModel,
+  TabularGridRowsetsModel,
+  TabularGridRowsModel
 } from "./types";
-import { ThemeModel } from "../theme/theme-types";
 
 const ARIA_SORT_MAP = {
   undefined: "none",
@@ -48,13 +51,25 @@ export class ChTabularGridRender {
   }
 
   /**
-   * Determines if the columns can be hidden by the user
+   * TODO: Remove this property
    */
   @Prop() readonly theme: string;
 
+  #isRowsetItemSimpleModel = (
+    rowset: any
+  ): rowset is TabularGridRowsetItemSimpleModel => {
+    return rowset && !("id" in rowset);
+  };
+
+  #isRowsetItemGroupModel = (
+    rowset: any
+  ): rowset is TabularGridRowsetItemGroupModel => {
+    return rowset && "id" in rowset;
+  };
+
   #renderGrid = (
-    columns: TabularGridColumnModel[],
-    rowsets: TabularGridRowsetModel[]
+    columns: TabularGridColumnsModel,
+    rowsets: TabularGridRowsetsModel
   ) => (
     <ch-tabular-grid key={this.#modelVersion} class="tabular-grid">
       {this.#renderColumns(columns)}
@@ -62,13 +77,13 @@ export class ChTabularGridRender {
     </ch-tabular-grid>
   );
 
-  #renderColumns = (columns: TabularGridColumnModel[]) => (
+  #renderColumns = (columns: TabularGridColumnsModel) => (
     <ch-tabular-grid-columnset class="tabular-grid-column-set">
       {columns.map(this.#renderColumn)}
     </ch-tabular-grid-columnset>
   );
 
-  #renderColumn = (column: TabularGridColumnModel) => (
+  #renderColumn = (column: TabularGridColumnItemModel) => (
     <ch-tabular-grid-column
       role="columnheader"
       aria-label={column.accessibleName}
@@ -90,48 +105,65 @@ export class ChTabularGridRender {
     ></ch-tabular-grid-column>
   );
 
-  #renderRowsets = (rowsets: TabularGridRowsetModel[]) =>
-    rowsets.map(rowset =>
-      this.#renderRowset(rowset.rows, rowset.legend, rowset.rowsets)
-    );
+  #renderRowsets = (rowsets: TabularGridRowsetsModel) => {
+    const normalizedModel = Array.isArray(rowsets) ? rowsets : [rowsets];
 
-  #renderRowset = (
-    rows: TabularGridRowModel[],
-    legend?: TabularGridRowsetLegendModel,
-    rowsets?: TabularGridRowsetModel[]
+    return normalizedModel.map(rowset => {
+      if (this.#isRowsetItemSimpleModel(rowset)) {
+        return this.#renderRowsetSimple(rowset.rows, rowset.rowsets);
+      } else if (this.#isRowsetItemGroupModel(rowset)) {
+        return this.#renderRowsetGroup(rowset);
+      }
+    });
+  };
+
+  #renderRowsetSimple = (
+    rows: TabularGridRowsModel,
+    rowsets?: TabularGridRowsetsGroupModel
   ) => (
     <ch-tabular-grid-rowset role="rowgroup" class="tabular-grid-rowset">
-      {legend && this.#renderRowsetLegend(legend)}
       {rows.map(this.#renderRow)}
-      {rowsets && this.#renderRowsets(rowsets)}
+      {rowsets && rowsets.map(this.#renderRowsetGroup)}
     </ch-tabular-grid-rowset>
   );
 
-  #renderRowsetLegend = (legend: TabularGridRowsetLegendModel) => (
-    <ch-tabular-grid-rowset-legend
-      aria-label={legend.accessibleName}
-      class="tabular-grid-rowset-legend"
+  #renderRowsetGroup = (rowset: TabularGridRowsetItemGroupModel) => (
+    <ch-tabular-grid-rowset
+      rowsetId={rowset.id}
+      role="rowgroup"
+      class="tabular-grid-rowset"
     >
-      {legend.caption}
-    </ch-tabular-grid-rowset-legend>
+      <ch-tabular-grid-rowset-legend
+        aria-label={rowset.accessibleName}
+        class="tabular-grid-rowset-legend"
+      >
+        {rowset.caption}
+      </ch-tabular-grid-rowset-legend>
+
+      {rowset.rows.map(this.#renderRow)}
+      {rowset.rowsets && rowset.rowsets.map(this.#renderRowsetGroup)}
+    </ch-tabular-grid-rowset>
   );
 
-  #renderRow = (row: TabularGridRowModel) => (
-    <ch-tabular-grid-row role="row" class="tabular-grid-row">
+  #renderRow = (row: TabularGridRowItemModel) => (
+    <ch-tabular-grid-row rowid={row.id} role="row" class="tabular-grid-row">
       {row.cells.map(this.#renderCell)}
-      {row.rows && this.#renderRowset(row.rows)}
+      {row.rows && this.#renderRowsetSimple(row.rows)}
     </ch-tabular-grid-row>
   );
 
-  #renderCell = (cell: TabularGridCellModel, index: number) => (
-    <ch-tabular-grid-cell
-      role="gridcell"
-      aria-colindex={++index}
-      class="tabular-grid-cell"
-    >
-      {cell.text}
-    </ch-tabular-grid-cell>
-  );
+  #renderCell = (cell: TabularGridCellItemModel, index: number) => {
+    return (
+      <ch-tabular-grid-cell
+        cellid={cell.id}
+        role="gridcell"
+        aria-colindex={++index}
+        class="tabular-grid-cell"
+      >
+        {cell.text}
+      </ch-tabular-grid-cell>
+    );
+  };
 
   render() {
     return (

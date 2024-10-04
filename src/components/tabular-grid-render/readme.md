@@ -13,7 +13,7 @@
 | `columnResizable` | `column-resizable` | Determines if the columns can be resized by the user. | `boolean`                                                                 | `true`      |
 | `columnSortable`  | `column-sortable`  | Determines if the columns can be sorted by the user.  | `boolean`                                                                 | `true`      |
 | `model`           | --                 | Specifies the content of the tabular grid control.    | `{ columns: TabularGridColumnsModel; rowsets: TabularGridRowsetsModel; }` | `undefined` |
-| `theme`           | `theme`            | Determines if the columns can be hidden by the user   | `string`                                                                  | `undefined` |
+| `theme`           | `theme`            | TODO: Remove this property                            | `string`                                                                  | `undefined` |
 
 
 ## Dependencies

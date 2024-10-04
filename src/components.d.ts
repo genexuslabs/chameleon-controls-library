@@ -3224,7 +3224,7 @@ export namespace Components {
          */
         "model": TabularGridModel;
         /**
-          * Determines if the columns can be hidden by the user
+          * TODO: Remove this property
          */
         "theme": string;
     }
@@ -9420,7 +9420,7 @@ declare namespace LocalJSX {
          */
         "model"?: TabularGridModel;
         /**
-          * Determines if the columns can be hidden by the user
+          * TODO: Remove this property
          */
         "theme"?: string;
     }

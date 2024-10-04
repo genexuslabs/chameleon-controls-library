@@ -4,14 +4,17 @@ import {
 } from "../tabular-grid/column/tabular-grid-column-types";
 
 export type TabularGridModel = {
-  columns: TabularGridColumnModel[];
-  rowsets: TabularGridRowsetModel[];
+  columns: TabularGridColumnsModel;
+  rowsets: TabularGridRowsetsModel;
 };
 
-export type TabularGridColumnModel = {
+export type TabularGridColumnsModel = TabularGridColumnItemModel[];
+
+export type TabularGridColumnItemModel = {
   id: string;
   caption: string;
 
+  parts?: string;
   accessibleName?: string;
   captionHidden?: boolean;
   freeze?: TabularGridColumnFreeze;
@@ -46,22 +49,39 @@ export type TabularGridColumnModel = {
   tooltip?: string;
 };
 
-export type TabularGridRowsetModel = {
-  legend?: TabularGridRowsetLegendModel;
-  rows: TabularGridRowModel[];
-  rowsets?: TabularGridRowsetModel[];
+export type TabularGridRowsetsModel =
+  | TabularGridRowsetItemSimpleModel
+  | [TabularGridRowsetItemSimpleModel, ...TabularGridRowsetsGroupModel]
+  | TabularGridRowsetsGroupModel;
+
+export type TabularGridRowsetItemSimpleModel = {
+  rows: TabularGridRowsModel;
+  rowsets?: TabularGridRowsetsGroupModel;
 };
 
-export type TabularGridRowsetLegendModel = {
-  caption: string;
-  accessibleName?: string;
+export type TabularGridRowsetsGroupModel = TabularGridRowsetItemGroupModel[];
+
+export type TabularGridRowsetItemGroupModel =
+  TabularGridRowsetItemSimpleModel & {
+    id: string;
+    caption: string;
+    accessibleName?: string;
+    parts?: string;
+  };
+
+export type TabularGridRowsModel = TabularGridRowItemModel[];
+
+export type TabularGridRowItemModel = {
+  id: string;
+  cells: TabularGridCellsModel;
+  rows?: TabularGridRowsModel;
+  parts?: string;
 };
 
-export type TabularGridRowModel = {
-  cells: TabularGridCellModel[];
-  rows?: TabularGridRowModel[];
-};
+export type TabularGridCellsModel = TabularGridCellItemModel[];
 
-export type TabularGridCellModel = {
+export type TabularGridCellItemModel = {
   text: string;
+  id?: string;
+  parts?: string;
 };

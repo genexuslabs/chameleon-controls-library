@@ -1,10 +1,10 @@
 import {
-  TabularGridColumnItemModel,
+  TabularGridColumnsModel,
   TabularGridModel,
   TabularGridRowItemModel
 } from "../../../../components/tabular-grid-render/types";
 
-const columnsCountry: TabularGridColumnItemModel[] = [
+const columnsCountry: TabularGridColumnsModel = [
   {
     id: "code",
     caption: "Code",
@@ -24,7 +24,7 @@ const columnsCountry: TabularGridColumnItemModel[] = [
   }
 ];
 
-const columnsTreeGrid: TabularGridColumnItemModel[] = [
+const columnsTreeGrid: TabularGridColumnsModel = [
   {
     id: "name",
     caption: "Name"
@@ -43,7 +43,7 @@ const columnsTreeGrid: TabularGridColumnItemModel[] = [
   }
 ];
 
-const columnsPropertyGrid: TabularGridColumnItemModel[] = [
+const columnsPropertyGrid: TabularGridColumnsModel = [
   {
     id: "name",
     caption: "Property"

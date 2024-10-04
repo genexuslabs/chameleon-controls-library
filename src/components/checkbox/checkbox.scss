@@ -55,14 +55,6 @@ $option-checked-color: currentColor;
    */
   --ch-checkbox__background-image-size: 100%;
 
-  // Base image
-  --ch-start-img: var(--ch-start-img--base);
-
-  display: inline-grid;
-  grid-auto-columns: max-content;
-  grid-auto-flow: column;
-  align-items: center;
-
   // Avoid zooming on double tap
   touch-action: manipulation;
 
@@ -72,6 +64,14 @@ $option-checked-color: currentColor;
   // Necessary to implement to focus delegation to the input when clicking on
   // external labels
   pointer-events: none;
+}
+
+:host,
+.label {
+  display: inline-grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  align-items: center;
 }
 
 :host(.ch-checkbox--actionable) :is(.input, .label) {
@@ -133,33 +133,36 @@ $option-checked-color: currentColor;
 }
 
 .label {
+  // Base image
+  --ch-start-img: var(--ch-start-img--base);
+
   display: inline-grid;
   max-inline-size: max-content;
+  gap: inherit;
 }
 
 // - - - - - - - - - - - - - - - - - - - -
 //                 Images
 // - - - - - - - - - - - - - - - - - - - -
-:host(.start-img--hover:hover) {
+.start-img--hover:hover {
   --ch-start-img: var(--ch-start-img--hover);
 }
 
 // TODO: Add unit test for checking the hover state when disabled=true and the
 // mouse is over an external label
-:host(.start-img--active:active) {
+.start-img--active:active {
   --ch-start-img: var(--ch-start-img--active);
 }
 
-:host(.start-img--focus:focus) {
+.start-img--focus:focus {
   --ch-start-img: var(--ch-start-img--focus);
 }
 
-:host(.start-img--disabled.ch-disabled) {
-  pointer-events: none;
+:host(.ch-disabled) > .start-img--disabled {
   --ch-start-img: var(--ch-start-img--disabled);
 }
 
-:host(.ch-checkbox-pseudo-img--start)::before {
+.pseudo-img--start::before {
   content: "";
   display: block;
   inline-size: var(--ch-checkbox__image-size);
@@ -169,13 +172,13 @@ $option-checked-color: currentColor;
 }
 
 // Background
-:host(.ch-checkbox-start-img-type--background)::before {
+.start-img-type--background::before {
   background: no-repeat center / var(--ch-checkbox__background-image-size)
     var(--ch-start-img);
 }
 
 // Mask
-:host(.ch-checkbox-start-img-type--mask)::before {
+.start-img-type--mask::before {
   -webkit-mask: no-repeat center / var(--ch-checkbox__background-image-size)
     var(--ch-start-img);
   background-color: currentColor;

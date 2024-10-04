@@ -79,6 +79,7 @@ import { findComponentMetadataUsingURLHash } from "./pages";
 
 registryProperty("getImagePathCallback", {
   "ch-accordion-render": getAccordionPathCallbackEdit,
+  "ch-checkbox": getImagePathCallbackEdit,
   "ch-edit": getImagePathCallbackEdit,
   "ch-image": getImagePathCallbackImage,
   "ch-tree-view-render": getImagePathCallbackTreeView

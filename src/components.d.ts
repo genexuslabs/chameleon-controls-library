@@ -628,6 +628,12 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
           * True to highlight control when an action is fired.
          */
         "highlightable": boolean;
@@ -643,6 +649,14 @@ export namespace Components {
           * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
          */
         "readonly": boolean;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgSrc": string;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgType": Exclude<ImageRender, "img">;
         /**
           * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
          */
@@ -4456,7 +4470,7 @@ declare global {
     };
     interface HTMLChCheckboxElementEventMap {
         "click": any;
-        "input": any;
+        "input": string;
     }
     /**
      * @status developer-preview
@@ -6730,6 +6744,12 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
           * True to highlight control when an action is fired.
          */
         "highlightable"?: boolean;
@@ -6746,13 +6766,21 @@ declare namespace LocalJSX {
          */
         "onClick"?: (event: ChCheckboxCustomEvent<any>) => void;
         /**
-          * The `input` event is emitted when a change to the element's value is committed by the user.
+          * The `input` event is emitted when a change to the element's value is committed by the user.  It contains the new value of the control.
          */
-        "onInput"?: (event: ChCheckboxCustomEvent<any>) => void;
+        "onInput"?: (event: ChCheckboxCustomEvent<string>) => void;
         /**
           * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
          */
         "readonly"?: boolean;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgSrc"?: string;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgType"?: Exclude<ImageRender, "img">;
         /**
           * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
          */

@@ -55,6 +55,8 @@ const render = () => (
           disabled={state.disabled}
           indeterminate={state.indeterminate}
           readonly={state.readonly}
+          startImgSrc={state.startImgSrc}
+          startImgType={state.startImgType}
           value={state.value}
           onInput={handleValueInput("form-checkbox-1", "checkbox-1")}
         ></ch-checkbox>
@@ -80,6 +82,8 @@ const render = () => (
           disabled={state.disabled}
           indeterminate={state.indeterminate}
           readonly={state.readonly}
+          startImgSrc={state.startImgSrc}
+          startImgType={state.startImgType}
           value={state.value}
           onInput={handleValueInput("form-checkbox-2", "checkbox-2")}
         ></ch-checkbox>
@@ -105,6 +109,8 @@ const render = () => (
             disabled={state.disabled}
             indeterminate={state.indeterminate}
             readonly={state.readonly}
+            startImgSrc={state.startImgSrc}
+            startImgType={state.startImgType}
             value={state.value}
             onInput={handleValueInput("form-checkbox-3", "checkbox-3")}
           ></ch-checkbox>
@@ -131,6 +137,22 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCheckboxElement> 
           caption: "Caption",
           value: "Option",
           type: "string"
+        },
+        {
+          id: "startImgSrc",
+          caption: "Start Image Src",
+          value: "folder",
+          type: "string"
+        },
+        {
+          id: "startImgType",
+          caption: "Start Image Type",
+          type: "enum",
+          values: [
+            { caption: "Background", value: "background" },
+            { caption: "Mask", value: "mask" }
+          ],
+          value: "background"
         },
         {
           id: "checkedValue",
@@ -175,6 +197,8 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCheckboxElement
     { name: "checkedValue", defaultValue: undefined, type: "string" },
     { name: "indeterminate", defaultValue: false, type: "boolean" },
     { name: "readonly", defaultValue: false, type: "boolean" },
+    { name: "startImgSrc", defaultValue: undefined, type: "string" },
+    { name: "startImgType", defaultValue: "background", type: "string" },
     { name: "value", defaultValue: undefined, type: "string" },
     { name: "unCheckedValue", defaultValue: undefined, type: "string" },
     { name: "input", fixed: true, value: "handleValueChange", type: "event" }

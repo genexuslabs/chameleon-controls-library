@@ -145,6 +145,7 @@ export type ChameleonControls = {
 export type ChameleonImagePathCallbackControlsTagName = Extract<
   ChameleonControlsTagName,
   | "ch-accordion-render"
+  | "ch-checkbox"
   | "ch-edit"
   | "ch-image"
   | "ch-navigation-list-render"

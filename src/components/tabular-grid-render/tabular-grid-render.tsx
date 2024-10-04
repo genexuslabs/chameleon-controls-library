@@ -78,13 +78,14 @@ export class ChTabularGridRender {
   );
 
   #renderColumns = (columns: TabularGridColumnsModel) => (
-    <ch-tabular-grid-columnset class="tabular-grid-column-set">
+    <ch-tabular-grid-columnset parts={true} class="tabular-grid-column-set">
       {columns.map(this.#renderColumn)}
     </ch-tabular-grid-columnset>
   );
 
   #renderColumn = (column: TabularGridColumnItemModel) => (
     <ch-tabular-grid-column
+      parts={column.parts ?? true}
       role="columnheader"
       aria-label={column.accessibleName}
       aria-sort={ARIA_SORT_MAP[column.sortDirection]}
@@ -134,6 +135,7 @@ export class ChTabularGridRender {
       class="tabular-grid-rowset"
     >
       <ch-tabular-grid-rowset-legend
+        parts={rowset.parts ?? true}
         aria-label={rowset.accessibleName}
         class="tabular-grid-rowset-legend"
       >
@@ -146,7 +148,16 @@ export class ChTabularGridRender {
   );
 
   #renderRow = (row: TabularGridRowItemModel) => (
-    <ch-tabular-grid-row rowid={row.id} role="row" class="tabular-grid-row">
+    <ch-tabular-grid-row
+      rowid={row.id}
+      ref={(el: any) => {
+        if (el) {
+          el.parts = row.parts ?? true;
+        }
+      }}
+      role="row"
+      class="tabular-grid-row"
+    >
       {row.cells.map(this.#renderCell)}
       {row.rows && this.#renderRowsetSimple(row.rows)}
     </ch-tabular-grid-row>
@@ -156,6 +167,11 @@ export class ChTabularGridRender {
     return (
       <ch-tabular-grid-cell
         cellid={cell.id}
+        ref={(el: any) => {
+          if (el) {
+            el.parts = cell.parts ?? true;
+          }
+        }}
         role="gridcell"
         aria-colindex={++index}
         class="tabular-grid-cell"

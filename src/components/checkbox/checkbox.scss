@@ -41,8 +41,26 @@ $option-checked-color: currentColor;
    */
   --ch-checkbox__option-image-size: 100%;
 
+  /**
+   * @prop --ch-checkbox__image-size:
+   * Specifies the box size that contains the start image of the control.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-checkbox__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-checkbox__background-image-size:
+   * Specifies the size of the start image of the control.
+   * @default 100%
+   */
+  --ch-checkbox__background-image-size: 100%;
+
+  // Base image
+  --ch-start-img: var(--ch-start-img--base);
+
   display: inline-grid;
-  grid-template-columns: max-content 1fr;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
   align-items: center;
 
   // Avoid zooming on double tap
@@ -71,6 +89,10 @@ $option-checked-color: currentColor;
   position: relative;
   inline-size: var(--ch-checkbox__container-size);
   block-size: var(--ch-checkbox__container-size);
+
+  // TODO: Add a unit test for this
+  // Place the option before the icon
+  order: -1;
 }
 
 .input {
@@ -113,4 +135,48 @@ $option-checked-color: currentColor;
 .label {
   display: inline-grid;
   max-inline-size: max-content;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+:host(.start-img--hover:hover) {
+  --ch-start-img: var(--ch-start-img--hover);
+}
+
+// TODO: Add unit test for checking the hover state when disabled=true and the
+// mouse is over an external label
+:host(.start-img--active:active) {
+  --ch-start-img: var(--ch-start-img--active);
+}
+
+:host(.start-img--focus:focus) {
+  --ch-start-img: var(--ch-start-img--focus);
+}
+
+:host(.start-img--disabled.ch-disabled) {
+  pointer-events: none;
+  --ch-start-img: var(--ch-start-img--disabled);
+}
+
+:host(.ch-checkbox-pseudo-img--start)::before {
+  content: "";
+  display: block;
+  inline-size: var(--ch-checkbox__image-size);
+  // Necessary to properly size the image, due to the Host has display: flex
+  min-inline-size: var(--ch-checkbox__image-size);
+  block-size: var(--ch-checkbox__image-size);
+}
+
+// Background
+:host(.ch-checkbox-start-img-type--background)::before {
+  background: no-repeat center / var(--ch-checkbox__background-image-size)
+    var(--ch-start-img);
+}
+
+// Mask
+:host(.ch-checkbox-start-img-type--mask)::before {
+  -webkit-mask: no-repeat center / var(--ch-checkbox__background-image-size)
+    var(--ch-start-img);
+  background-color: currentColor;
 }

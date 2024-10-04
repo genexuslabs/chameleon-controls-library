@@ -18,6 +18,16 @@ import {
   DisableableComponent,
   FormComponent
 } from "../../common/interfaces";
+import {
+  GxImageMultiState,
+  GxImageMultiStateStart,
+  ImageRender
+} from "../../common/types";
+import { updateDirectionInImageCustomVar } from "../../common/utils";
+import {
+  DEFAULT_GET_IMAGE_PATH_CALLBACK,
+  getControlRegisterProperty
+} from "../../common/registry-properties";
 
 const CHECKBOX_ID = "checkbox";
 
@@ -60,6 +70,9 @@ export class ChCheckBox
   implements AccessibleNameComponent, DisableableComponent, FormComponent
 {
   #accessibleNameFromExternalLabel: string | undefined;
+  #startImage: GxImageMultiStateStart | undefined;
+
+  // Refs
   #inputRef: HTMLInputElement;
 
   @AttachInternals() internals: ElementInternals;
@@ -89,6 +102,18 @@ export class ChCheckBox
   @Prop() readonly disabled: boolean = false;
 
   /**
+   * This property specifies a callback that is executed when the path for an
+   * startImgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+  @Watch("getImagePathCallback")
+  getImagePathCallbackChanged() {
+    this.#startImage = this.#computeImage();
+  }
+
+  /**
    * True to highlight control when an action is fired.
    */
   @Prop() readonly highlightable: boolean = false;
@@ -109,6 +134,20 @@ export class ChCheckBox
    * attribute for `input` elements.
    */
   @Prop() readonly readonly: boolean = false;
+
+  /**
+   * Specifies the source of the start image.
+   */
+  @Prop() readonly startImgSrc: string;
+  @Watch("startImgSrc")
+  startImgSrcChanged() {
+    this.#startImage = this.#computeImage();
+  }
+
+  /**
+   * Specifies the source of the start image.
+   */
+  @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
 
   /**
    * The value when the switch is 'off'. If you want to not add the value when
@@ -138,6 +177,28 @@ export class ChCheckBox
    * committed by the user.
    */
   @Event() input: EventEmitter;
+
+  #computeImage = (): GxImageMultiStateStart | null => {
+    if (!this.startImgSrc) {
+      return null;
+    }
+    const getImagePathCallback =
+      this.getImagePathCallback ??
+      getControlRegisterProperty("getImagePathCallback", "ch-checkbox") ??
+      DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
+    if (!getImagePathCallback) {
+      return null;
+    }
+    const img = getImagePathCallback(this.startImgSrc);
+
+    return img
+      ? (updateDirectionInImageCustomVar(
+          img,
+          "start"
+        ) as GxImageMultiStateStart)
+      : null;
+  };
 
   #stopClickPropagation = (event: UIEvent) => {
     event.stopPropagation();
@@ -169,6 +230,8 @@ export class ChCheckBox
   };
 
   connectedCallback() {
+    this.#startImage = this.#computeImage();
+
     // Set initial value to unchecked if empty
     this.value ||= this.unCheckedValue;
 
@@ -187,6 +250,7 @@ export class ChCheckBox
     const checked = this.value === this.checkedValue;
 
     const additionalParts = PARTS(checked, this.indeterminate, this.disabled);
+    const startImageClasses = this.#startImage?.classes;
 
     const accessibleName =
       this.accessibleName ?? this.#accessibleNameFromExternalLabel;
@@ -199,8 +263,13 @@ export class ChCheckBox
           [DISABLED_CLASS]: this.disabled,
           "ch-checkbox--actionable":
             (!this.readonly && !this.disabled) ||
-            (this.readonly && this.highlightable)
+            (this.readonly && this.highlightable),
+
+          [`ch-checkbox-start-img-type--${this.startImgType} ch-checkbox-pseudo-img--start`]:
+            !!this.#startImage,
+          [startImageClasses]: !!startImageClasses
         }}
+        style={this.#startImage?.styles ?? undefined}
         onClick={canAddListeners ? this.#handleHostClick : null}
       >
         <div

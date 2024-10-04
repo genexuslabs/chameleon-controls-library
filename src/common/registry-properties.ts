@@ -1,6 +1,7 @@
 import {
   ChameleonImagePathCallbackControls,
-  ChameleonImagePathCallbackControlsTagName
+  ChameleonImagePathCallbackControlsTagName,
+  GxImageMultiState
 } from "./types";
 
 export type RegistryGetImagePathCallback = {
@@ -47,3 +48,7 @@ export const getControlRegisterProperty = <
   controlName: Control
 ): RegisterProperty[PropName][Control] | undefined =>
   registerMapping[propertyName][controlName];
+
+export const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
+  imageSrc: string
+) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });

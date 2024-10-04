@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "declaration": true,
+    "emitDeclarationOnly": false,
     "lib": ["DOM", "ES2022", "DOM.Iterable"],
     "module": "esnext",
     "target": "ES2022",
     "moduleResolution": "node",
-    "jsx": "react",
-    "jsxFactory": "h",
+    "noEmitOnError": false,
 
     // Linting
     "allowUnreachableCode": false,
@@ -19,9 +16,12 @@
     // "noImplicitAny": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
     // "strict": true
+
+    "typeRoots": ["src/components.d.ts", "src/common/types.ts"],
+    "outDir": "./dist/collection/"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "src/common/monaco/output/"]
+  "exclude": ["node_modules"],
+  "include": ["src/index.ts"]
 }

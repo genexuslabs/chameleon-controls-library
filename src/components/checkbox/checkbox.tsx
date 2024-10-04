@@ -1,6 +1,7 @@
 import {
   AttachInternals,
   Component,
+  Element,
   Event,
   EventEmitter,
   Host,
@@ -18,8 +19,16 @@ import {
   DisableableComponent,
   FormComponent
 } from "../../common/interfaces";
-
-const CHECKBOX_ID = "checkbox";
+import {
+  GxImageMultiState,
+  GxImageMultiStateStart,
+  ImageRender
+} from "../../common/types";
+import { updateDirectionInImageCustomVar } from "../../common/utils";
+import {
+  DEFAULT_GET_IMAGE_PATH_CALLBACK,
+  getControlRegisterProperty
+} from "../../common/registry-properties";
 
 const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   if (indeterminate) {
@@ -60,9 +69,14 @@ export class ChCheckBox
   implements AccessibleNameComponent, DisableableComponent, FormComponent
 {
   #accessibleNameFromExternalLabel: string | undefined;
+  #startImage: GxImageMultiStateStart | undefined;
+
+  // Refs
   #inputRef: HTMLInputElement;
 
   @AttachInternals() internals: ElementInternals;
+
+  @Element() el!: HTMLChCheckboxElement;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -89,6 +103,18 @@ export class ChCheckBox
   @Prop() readonly disabled: boolean = false;
 
   /**
+   * This property specifies a callback that is executed when the path for an
+   * startImgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+  @Watch("getImagePathCallback")
+  getImagePathCallbackChanged() {
+    this.#startImage = this.#computeImage();
+  }
+
+  /**
    * True to highlight control when an action is fired.
    */
   @Prop() readonly highlightable: boolean = false;
@@ -109,6 +135,20 @@ export class ChCheckBox
    * attribute for `input` elements.
    */
   @Prop() readonly readonly: boolean = false;
+
+  /**
+   * Specifies the source of the start image.
+   */
+  @Prop() readonly startImgSrc: string;
+  @Watch("startImgSrc")
+  startImgSrcChanged() {
+    this.#startImage = this.#computeImage();
+  }
+
+  /**
+   * Specifies the source of the start image.
+   */
+  @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
 
   /**
    * The value when the switch is 'off'. If you want to not add the value when
@@ -136,39 +176,122 @@ export class ChCheckBox
   /**
    * The `input` event is emitted when a change to the element's value is
    * committed by the user.
+   *
+   * It contains the new value of the control.
    */
-  @Event() input: EventEmitter;
+  @Event() input: EventEmitter<string>;
 
-  #stopClickPropagation = (event: UIEvent) => {
-    event.stopPropagation();
+  #computeImage = (): GxImageMultiStateStart | null => {
+    if (!this.startImgSrc) {
+      return null;
+    }
+    const getImagePathCallback =
+      this.getImagePathCallback ??
+      getControlRegisterProperty("getImagePathCallback", "ch-checkbox") ??
+      DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
+    if (!getImagePathCallback) {
+      return null;
+    }
+    const img = getImagePathCallback(this.startImgSrc);
+
+    return img
+      ? (updateDirectionInImageCustomVar(
+          img,
+          "start"
+        ) as GxImageMultiStateStart)
+      : null;
   };
 
   #handleChange = (event: UIEvent) => {
     event.stopPropagation();
+    this.#updateCheckedValueAndEmitEvent(this.#getInputRef().checked);
 
-    const inputRef = event.target as HTMLInputElement;
-    const checked = inputRef.checked;
-    const value = checked ? this.checkedValue : this.unCheckedValue;
-
-    this.value = value;
-    inputRef.value = value; // Update input's value before emitting the event
-
-    // When the checked value is updated by the user, the control must no
-    // longer be indeterminate
-    this.indeterminate = false;
-
-    this.input.emit(event);
-
+    // TODO: What's the need for this implementation in GeneXus
     if (this.highlightable) {
       this.click.emit();
     }
   };
 
-  #handleHostClick = () => {
-    this.#inputRef.click();
+  #handleHostClick = (event: MouseEvent) => {
+    const clickWasPerformedInAExternalLabel = event.detail === 0;
+
+    if (!clickWasPerformedInAExternalLabel) {
+      event.stopPropagation();
+      return;
+    }
+
+    // When the internal label is clicked it provokes a click in the input with
+    // event.detail === 0
+    if (event.composedPath()[0] !== this.#getInputRef()) {
+      this.#updateCheckedValueAndEmitEvent(!this.#getInputRef().checked);
+    }
+  };
+
+  #updateCheckedValueAndEmitEvent = (checked: boolean) => {
+    const value = checked ? this.checkedValue : this.unCheckedValue;
+
+    this.value = value;
+    this.#getInputRef().value = value; // Update input's value before emitting the event
+
+    // When the checked value is updated by the user, the control must no
+    // longer be indeterminate
+    this.indeterminate = false;
+
+    this.input.emit(value);
+  };
+
+  // TODO: There is a bug in StencilJS where we can't use the same variable for
+  // conditional rendered refs
+  #getInputRef = () =>
+    this.#inputRef ?? this.el.shadowRoot.querySelector("input")!;
+
+  #renderOption = (
+    canAddListeners: boolean,
+    checked: boolean,
+    additionalParts: string
+  ) => {
+    const accessibleName =
+      this.accessibleName ?? this.#accessibleNameFromExternalLabel;
+
+    return (
+      <div
+        class="container"
+        part={`${CHECKBOX_PARTS_DICTIONARY.CONTAINER} ${additionalParts}`}
+      >
+        <input
+          aria-label={
+            accessibleName?.trim() !== "" && accessibleName !== this.caption
+              ? accessibleName
+              : null
+          }
+          class="input"
+          part={`${CHECKBOX_PARTS_DICTIONARY.INPUT} ${additionalParts}`}
+          type="checkbox"
+          checked={checked}
+          disabled={this.disabled || this.readonly}
+          indeterminate={this.indeterminate}
+          value={this.value}
+          onInput={canAddListeners && this.#handleChange}
+          ref={el => (this.#inputRef = el)}
+        />
+        <div
+          class={{
+            option: true,
+            "option--not-displayed": !checked && !this.indeterminate,
+            "option--checked": checked && !this.indeterminate,
+            "option--indeterminate": this.indeterminate
+          }}
+          part={`${CHECKBOX_PARTS_DICTIONARY.OPTION} ${additionalParts}`}
+          aria-hidden="true"
+        ></div>
+      </div>
+    );
   };
 
   connectedCallback() {
+    this.#startImage = this.#computeImage();
+
     // Set initial value to unchecked if empty
     this.value ||= this.unCheckedValue;
 
@@ -187,11 +310,10 @@ export class ChCheckBox
     const checked = this.value === this.checkedValue;
 
     const additionalParts = PARTS(checked, this.indeterminate, this.disabled);
-
-    const accessibleName =
-      this.accessibleName ?? this.#accessibleNameFromExternalLabel;
+    const startImageClasses = this.#startImage?.classes;
 
     const canAddListeners = !this.disabled && !this.readonly;
+    const hasStartImageStyles = !!this.#startImage?.styles;
 
     return (
       <Host
@@ -201,51 +323,26 @@ export class ChCheckBox
             (!this.readonly && !this.disabled) ||
             (this.readonly && this.highlightable)
         }}
-        onClick={canAddListeners ? this.#handleHostClick : null}
+        onClickCapture={canAddListeners && this.#handleHostClick}
       >
-        <div
-          class="container"
-          part={`${CHECKBOX_PARTS_DICTIONARY.CONTAINER} ${additionalParts}`}
-        >
-          <input
-            id={this.caption ? CHECKBOX_ID : null}
-            aria-label={
-              accessibleName?.trim() !== "" && accessibleName !== this.caption
-                ? accessibleName
-                : null
-            }
-            class="input"
-            part={`${CHECKBOX_PARTS_DICTIONARY.INPUT} ${additionalParts}`}
-            type="checkbox"
-            checked={checked}
-            disabled={this.disabled || this.readonly}
-            indeterminate={this.indeterminate}
-            value={this.value}
-            onClick={canAddListeners ? this.#stopClickPropagation : null}
-            onInput={canAddListeners ? this.#handleChange : null}
-            ref={el => (this.#inputRef = el)}
-          />
-          <div
-            class={{
-              option: true,
-              "option--not-displayed": !checked && !this.indeterminate,
-              "option--checked": checked && !this.indeterminate,
-              "option--indeterminate": this.indeterminate
-            }}
-            part={`${CHECKBOX_PARTS_DICTIONARY.OPTION} ${additionalParts}`}
-            aria-hidden="true"
-          ></div>
-        </div>
-
-        {this.caption && (
+        {this.caption || hasStartImageStyles ? (
           <label
-            class="label"
+            class={{
+              label: true,
+
+              [startImageClasses]: !!startImageClasses,
+              [`start-img-type--${this.startImgType} pseudo-img--start`]:
+                hasStartImageStyles
+            }}
             part={`${CHECKBOX_PARTS_DICTIONARY.LABEL} ${additionalParts}`}
-            htmlFor={CHECKBOX_ID}
-            onClick={canAddListeners ? this.#stopClickPropagation : null}
+            style={hasStartImageStyles ? this.#startImage!.styles : undefined}
           >
+            {this.#renderOption(canAddListeners, checked, additionalParts)}
+
             {this.caption}
           </label>
+        ) : (
+          this.#renderOption(canAddListeners, checked, additionalParts)
         )}
       </Host>
     );

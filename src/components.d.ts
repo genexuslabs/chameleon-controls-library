@@ -628,6 +628,12 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
           * True to highlight control when an action is fired.
          */
         "highlightable": boolean;
@@ -643,6 +649,14 @@ export namespace Components {
           * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
          */
         "readonly": boolean;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgSrc": string;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgType": Exclude<ImageRender, "img">;
         /**
           * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
          */
@@ -739,15 +753,17 @@ export namespace Components {
          */
         "yamlSchemaUri": string;
     }
+    /**
+     * @status experimental
+     * The ch-combo-box-render is an input widget that has an associated popup. The
+     * popup enables users to choose a value for the input from a collection.
+     * - Items are only rendered when the popup is displayed.
+     */
     interface ChComboBoxRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
         "accessibleName"?: string;
-        /**
-          * Specifies whether the items should not stay rendered in the DOM if the control is closed. `true` to destroy the rendered items when the control is closed. Note: By default, the control does not rendered the items until the first expansion. The same applies if the control have groups.
-         */
-        "destroyItemsOnClose": boolean;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -4470,7 +4486,7 @@ declare global {
     };
     interface HTMLChCheckboxElementEventMap {
         "click": any;
-        "input": any;
+        "input": string;
     }
     /**
      * @status developer-preview
@@ -4517,6 +4533,12 @@ declare global {
         "filterChange": string;
         "input": string;
     }
+    /**
+     * @status experimental
+     * The ch-combo-box-render is an input widget that has an associated popup. The
+     * popup enables users to choose a value for the input from a collection.
+     * - Items are only rendered when the popup is displayed.
+     */
     interface HTMLChComboBoxRenderElement extends Components.ChComboBoxRender, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChComboBoxRenderElementEventMap>(type: K, listener: (this: HTMLChComboBoxRenderElement, ev: ChComboBoxRenderCustomEvent<HTMLChComboBoxRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -6738,6 +6760,12 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
           * True to highlight control when an action is fired.
          */
         "highlightable"?: boolean;
@@ -6754,13 +6782,21 @@ declare namespace LocalJSX {
          */
         "onClick"?: (event: ChCheckboxCustomEvent<any>) => void;
         /**
-          * The `input` event is emitted when a change to the element's value is committed by the user.
+          * The `input` event is emitted when a change to the element's value is committed by the user.  It contains the new value of the control.
          */
-        "onInput"?: (event: ChCheckboxCustomEvent<any>) => void;
+        "onInput"?: (event: ChCheckboxCustomEvent<string>) => void;
         /**
           * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
          */
         "readonly"?: boolean;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgSrc"?: string;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgType"?: Exclude<ImageRender, "img">;
         /**
           * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
          */
@@ -6847,15 +6883,17 @@ declare namespace LocalJSX {
          */
         "yamlSchemaUri"?: string;
     }
+    /**
+     * @status experimental
+     * The ch-combo-box-render is an input widget that has an associated popup. The
+     * popup enables users to choose a value for the input from a collection.
+     * - Items are only rendered when the popup is displayed.
+     */
     interface ChComboBoxRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
         "accessibleName"?: string;
-        /**
-          * Specifies whether the items should not stay rendered in the DOM if the control is closed. `true` to destroy the rendered items when the control is closed. Note: By default, the control does not rendered the items until the first expansion. The same applies if the control have groups.
-         */
-        "destroyItemsOnClose"?: boolean;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -10377,6 +10415,12 @@ declare module "@stencil/core" {
             "ch-code": LocalJSX.ChCode & JSXBase.HTMLAttributes<HTMLChCodeElement>;
             "ch-code-diff-editor": LocalJSX.ChCodeDiffEditor & JSXBase.HTMLAttributes<HTMLChCodeDiffEditorElement>;
             "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
+            /**
+             * @status experimental
+             * The ch-combo-box-render is an input widget that has an associated popup. The
+             * popup enables users to choose a value for the input from a collection.
+             * - Items are only rendered when the popup is displayed.
+             */
             "ch-combo-box-render": LocalJSX.ChComboBoxRender & JSXBase.HTMLAttributes<HTMLChComboBoxRenderElement>;
             /**
              * The `ch-dialog` component represents a modal or non-modal dialog box or other

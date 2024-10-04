@@ -16,6 +16,7 @@ export const KEY_CODES = {
   ESCAPE: "Escape",
   F2: "F2",
   HOME: "Home",
+  NUMPAD_ENTER: "NumpadEnter",
   SPACE: "Space",
   TAB: "Tab"
 } as const;

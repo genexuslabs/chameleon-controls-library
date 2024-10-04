@@ -3093,6 +3093,10 @@ export namespace Components {
          */
         "order": number;
         /**
+          * A boolean or string that controls the parts applied to the column. - When `true`, it automatically applies the part names "column" and the column's unique ID. - When a string is provided, it appends that string to the default part names "column" and the column's ID.
+         */
+        "parts": boolean | string;
+        /**
           * A number indicating the physical order of the column (i.e. its position in the DOM).
          */
         "physicalOrder": number;
@@ -3184,6 +3188,10 @@ export namespace Components {
      * The `ch-tabular-grid-columnset` component represents a group of columns.
      */
     interface ChTabularGridColumnset {
+        /**
+          * A boolean or string that controls the parts applied to the column. - When `true`, it automatically applies the part names "column" and the column's unique ID. - When a string is provided, it appends that string to the default part names "column" and the column's ID.
+         */
+        "parts": boolean | string;
     }
     /**
      * The 'ch-tabular-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-tabular-grid' component
@@ -3262,6 +3270,10 @@ export namespace Components {
      * The `ch-tabular-grid-rowset-legend` component represents a caption for the `ch-tabular-grid-rowset` element.
      */
     interface ChTabularGridRowsetLegend {
+        /**
+          * A boolean or string that controls the parts applied to the legend. - When `true`, it automatically applies the part names "column" and the column's unique ID. - When a string is provided, it appends that string to the default part names "column" and the column's ID.
+         */
+        "parts": boolean | string;
     }
     /**
      * The `ch-tabular-grid-settings` component represents a settings window for a grid component.
@@ -9265,6 +9277,10 @@ declare namespace LocalJSX {
          */
         "order"?: number;
         /**
+          * A boolean or string that controls the parts applied to the column. - When `true`, it automatically applies the part names "column" and the column's unique ID. - When a string is provided, it appends that string to the default part names "column" and the column's ID.
+         */
+        "parts"?: boolean | string;
+        /**
           * A number indicating the physical order of the column (i.e. its position in the DOM).
          */
         "physicalOrder"?: number;
@@ -9368,6 +9384,10 @@ declare namespace LocalJSX {
      * The `ch-tabular-grid-columnset` component represents a group of columns.
      */
     interface ChTabularGridColumnset {
+        /**
+          * A boolean or string that controls the parts applied to the column. - When `true`, it automatically applies the part names "column" and the column's unique ID. - When a string is provided, it appends that string to the default part names "column" and the column's ID.
+         */
+        "parts"?: boolean | string;
     }
     /**
      * The 'ch-tabular-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-tabular-grid' component
@@ -9438,6 +9458,10 @@ declare namespace LocalJSX {
           * Event emitted when the legend is clicked.
          */
         "onRowsetLegendClicked"?: (event: ChTabularGridRowsetLegendCustomEvent<CustomEvent>) => void;
+        /**
+          * A boolean or string that controls the parts applied to the legend. - When `true`, it automatically applies the part names "column" and the column's unique ID. - When a string is provided, it appends that string to the default part names "column" and the column's ID.
+         */
+        "parts"?: boolean | string;
     }
     /**
      * The `ch-tabular-grid-settings` component represents a settings window for a grid component.

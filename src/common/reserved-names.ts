@@ -334,6 +334,17 @@ export const SWITCH_PARTS_DICTIONARY = {
 export const SWITCH_EXPORT_PARTS = joinParts(SWITCH_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
+//             Tabular Grid view Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const TABULAR_GRID_PARTS_DICTIONARY = {
+  COLUMNSET: "columnset",
+  COLUMN: "column",
+  ROWSET_LEGEND: "rowset-legend",
+  ROW: "row",
+  CELL: "cell"
+};
+
+// - - - - - - - - - - - - - - - - - - - -
 //             Tree view Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {

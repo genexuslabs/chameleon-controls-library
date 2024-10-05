@@ -9,7 +9,11 @@ export type CanvasPositionLimit = {
   scaleUpperBound: number;
 };
 
-export type CanvasGridSettings = {
+export type CanvasGridSettings =
+  | CanvasGridSettingsMesh
+  | CanvasGridSettingsDots;
+
+type CanvasGridSettingsBase = {
   color: string;
   size: number;
 
@@ -17,6 +21,15 @@ export type CanvasGridSettings = {
    * Specifies at which scale value the grid is visible.
    */
   minimumScale?: number;
+};
+
+export type CanvasGridSettingsMesh = CanvasGridSettingsBase & {
+  type: "mesh";
+};
+
+export type CanvasGridSettingsDots = CanvasGridSettingsBase & {
+  dotSize?: number;
+  type: "dots";
 };
 
 export type CanvasModel = CanvasItemModel[];

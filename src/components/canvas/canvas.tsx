@@ -9,6 +9,7 @@ import { SyncWithRAF } from "../../common/sync-with-frames";
 import { drawCanvas } from "./draw/draw";
 import { handleCanvasWheel } from "./handlers/wheel";
 import {
+  DEFAULT_GRID_SETTINGS_TYPE,
   DEFAULT_SCALE_LOWER_BOUND_LIMIT,
   DEFAULT_SCALE_UPPER_BOUND_LIMIT,
   getLimitedScaleValue
@@ -94,7 +95,8 @@ export class ChCanvas {
    */
   @Prop() readonly gridSettings: CanvasGridSettings = {
     size: 50,
-    color: "#000"
+    color: "#000",
+    type: DEFAULT_GRID_SETTINGS_TYPE
   };
   @Watch("gridSettings")
   gridSettingsChanged() {

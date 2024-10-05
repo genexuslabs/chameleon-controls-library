@@ -32,12 +32,14 @@ import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 import { ChameleonCustomStories, ChameleonStories } from "./types";
+import { canvasShowcaseStory } from "./canvas/canvas.showcase";
 
 export const showcaseStories = {
   accordion: accordionShowcaseStory,
   "action-group": actionGroupShowcaseStory,
   "action-list": actionListShowcaseStory,
   "barcode-scanner": barcodeScannerShowcaseStory,
+  canvas: canvasShowcaseStory,
   checkbox: checkboxShowcaseStory,
   chat: chatShowcaseStory,
   code: codeShowcaseStory,

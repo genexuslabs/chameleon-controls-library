@@ -162,6 +162,7 @@ export type ChameleonStories = {
   "action-group": ShowcaseStory<HTMLChActionGroupRenderElement>;
   "action-list": ShowcaseStory<HTMLChActionListRenderElement>;
   "barcode-scanner": ShowcaseStory<HTMLChBarcodeScannerElement>;
+  canvas: ShowcaseStory<HTMLChCanvasElement>;
   checkbox: ShowcaseStory<HTMLChCheckboxElement>;
   chat: ShowcaseStory<HTMLChChatElement>;
   code: ShowcaseStory<HTMLChCodeElement>;

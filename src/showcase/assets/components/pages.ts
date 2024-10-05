@@ -201,13 +201,18 @@ export const showcasePages: NavigationListModel = [
           "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/image.svg')",
         startImgType: "mask",
         items: [
-          { link: { url: "#image" }, caption: "Image", metadata: EXPERIMENTAL },
-          { link: { url: "#qr" }, caption: "QR", metadata: DEVELOPER_PREVIEW },
           {
             link: { url: "#barcode-scanner" },
             caption: "Barcode Scanner",
             metadata: EXPERIMENTAL
-          }
+          },
+          {
+            link: { url: "#canvas" },
+            caption: "Canvas",
+            metadata: EXPERIMENTAL
+          },
+          { link: { url: "#image" }, caption: "Image", metadata: EXPERIMENTAL },
+          { link: { url: "#qr" }, caption: "QR", metadata: DEVELOPER_PREVIEW }
         ]
       },
 

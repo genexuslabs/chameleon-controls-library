@@ -4,6 +4,11 @@ export type CanvasPosition = {
   scale: number;
 };
 
+export type CanvasPositionLimit = {
+  scaleLowerBound: number;
+  scaleUpperBound: number;
+};
+
 export type CanvasGridSettings = {
   color: string;
   size: number;

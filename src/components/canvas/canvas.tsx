@@ -1,8 +1,18 @@
 import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
-import { CanvasGridSettings, CanvasModel, CanvasPosition } from "./types";
+import {
+  CanvasGridSettings,
+  CanvasModel,
+  CanvasPosition,
+  CanvasPositionLimit
+} from "./types";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { drawCanvas } from "./draw/draw";
 import { handleCanvasWheel } from "./handlers/wheel";
+import {
+  DEFAULT_SCALE_LOWER_BOUND_LIMIT,
+  DEFAULT_SCALE_UPPER_BOUND_LIMIT,
+  getLimitedScaleValue
+} from "./utils";
 
 @Component({
   shadow: true,
@@ -44,13 +54,29 @@ export class ChCanvas {
   /**
    * Specifies the position of the context (originX, originY and scale).
    */
-  @Prop() readonly contextPosition?: CanvasPosition = {
+  @Prop() readonly contextPosition: CanvasPosition = {
     scale: 1,
     originX: 0,
     originY: 0
   };
   @Watch("contextPosition")
   contextPositionChanged() {
+    this.#shouldUpdateCanvasDraw = true;
+  }
+
+  /**
+   * Specifies the value limits for the `contextPosition` property.
+   */
+  @Prop() readonly contextPositionLimit?: CanvasPositionLimit = {
+    scaleLowerBound: DEFAULT_SCALE_LOWER_BOUND_LIMIT,
+    scaleUpperBound: DEFAULT_SCALE_UPPER_BOUND_LIMIT
+  };
+  @Watch("contextPositionLimit")
+  contextPositionLimitChanged() {
+    this.contextPosition.scale = getLimitedScaleValue(
+      this.contextPosition.scale,
+      this.el
+    );
     this.#shouldUpdateCanvasDraw = true;
   }
 

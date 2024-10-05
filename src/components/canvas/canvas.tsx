@@ -138,7 +138,7 @@ export class ChCanvas {
 
   componentDidLoad() {
     this.#canvasContext = this.#canvasRef.getContext("2d");
-    this.#drawCanvas();
+    this.#updateCanvasSize();
   }
 
   disconnectedCallback() {
@@ -156,8 +156,8 @@ export class ChCanvas {
       <Host>
         <canvas
           aria-label={this.accessibleName}
-          width={this.#canvasWidth}
-          height={this.#canvasHeight}
+          // Don't add the width and height bindings using the #canvasWidth and
+          // #canvasHeight variables
           onMouseDown={!this.dragging && this.#handleMouseDown}
           onMouseMove={this.dragging && this.#handleMouseMove}
           onMouseUp={this.dragging && this.#handleCancelDrag}

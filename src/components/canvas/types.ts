@@ -4,6 +4,16 @@ export type CanvasPosition = {
   scale: number;
 };
 
+export type CanvasGridSettings = {
+  color: string;
+  size: number;
+
+  /**
+   * Specifies at which scale value the grid is visible.
+   */
+  minimumScale?: number;
+};
+
 export type CanvasModel = CanvasItemModel[];
 
 export type CanvasItemModel = CanvasItemCircleModel | CanvasItemRectModel;

@@ -1,5 +1,5 @@
 import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
-import { CanvasModel, CanvasPosition } from "./types";
+import { CanvasGridSettings, CanvasModel, CanvasPosition } from "./types";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { drawCanvas } from "./draw/draw";
 import { handleCanvasWheel } from "./handlers/wheel";
@@ -55,6 +55,27 @@ export class ChCanvas {
   }
 
   /**
+   * Specifies if a grid must be displayed as a background for the canvas.
+   */
+  @Prop() readonly drawGrid?: boolean = false;
+  @Watch("drawGrid")
+  drawGridChanged() {
+    this.#shouldUpdateCanvasDraw = true;
+  }
+
+  /**
+   *
+   */
+  @Prop() readonly gridSettings: CanvasGridSettings = {
+    size: 50,
+    color: "#000"
+  };
+  @Watch("gridSettings")
+  gridSettingsChanged() {
+    this.#shouldUpdateCanvasDraw = true;
+  }
+
+  /**
    * Specifies the model of control.
    */
   @Prop() readonly model: CanvasModel;
@@ -80,9 +101,8 @@ export class ChCanvas {
 
   #drawCanvas = () =>
     drawCanvas(
+      this.el,
       this.#canvasContext,
-      this.contextPosition,
-      this.model,
       this.#canvasWidth,
       this.#canvasHeight
     );

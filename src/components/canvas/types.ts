@@ -1,3 +1,9 @@
+export type CanvasPosition = {
+  originX: number;
+  originY: number;
+  scale: number;
+};
+
 export type CanvasModel = CanvasItemModel[];
 
 export type CanvasItemModel = CanvasItemCircleModel | CanvasItemRectModel;

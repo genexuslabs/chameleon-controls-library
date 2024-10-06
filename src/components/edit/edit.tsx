@@ -479,9 +479,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 spellcheck={this.spellcheck}
                 value={this.value}
                 // Event listeners
-                onChange={canAddListeners ? this.#handleChange : null}
-                onInput={canAddListeners ? this.#handleValueChanging : null}
-                onAnimationStart={canAddListeners ? this.#handleAutoFill : null}
+                onChange={canAddListeners && this.#handleChange}
+                onInput={canAddListeners && this.#handleValueChanging}
+                onAnimationStart={canAddListeners && this.#handleAutoFill}
                 ref={el => (this.#textareaRef = el)}
               ></textarea>,
 
@@ -523,22 +523,20 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                     : this.value
                 }
                 // Event listeners
-                onAnimationStart={canAddListeners ? this.#handleAutoFill : null}
-                onChange={canAddListeners ? this.#handleChange : null}
-                onInput={canAddListeners ? this.#handleValueChanging : null}
+                onAnimationStart={canAddListeners && this.#handleAutoFill}
+                onChange={canAddListeners && this.#handleChange}
+                onInput={canAddListeners && this.#handleValueChanging}
                 onFocus={
                   canAddListeners &&
                   shouldDisplayPicture &&
-                  !this.isFocusOnControl
-                    ? this.#showPictureOnFocus
-                    : null
+                  !this.isFocusOnControl &&
+                  this.#showPictureOnFocus
                 }
                 onBlur={
                   canAddListeners &&
                   shouldDisplayPicture &&
-                  this.isFocusOnControl
-                    ? this.#removePictureOnBlur
-                    : null
+                  this.isFocusOnControl &&
+                  this.#removePictureOnBlur
                 }
                 ref={el => (this.#inputRef = el)}
               />,
@@ -553,7 +551,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                   part="trigger-button"
                   type="button"
                   disabled={this.disabled}
-                  onClick={canAddListeners ? this.#handleTriggerClick : null}
+                  onClick={canAddListeners && this.#handleTriggerClick}
                 >
                   <slot name="trigger-content" />
                 </button>

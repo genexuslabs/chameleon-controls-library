@@ -515,7 +515,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 placeholder={this.placeholder}
                 readOnly={this.readonly}
                 spellcheck={this.spellcheck}
-                step={DATE_TYPES.includes(this.type) ? "1" : undefined}
+                step={isDateType ? "1" : undefined}
                 type={this.type}
                 value={
                   shouldDisplayPicture && !this.isFocusOnControl

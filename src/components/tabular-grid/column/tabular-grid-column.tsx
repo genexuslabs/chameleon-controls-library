@@ -391,12 +391,13 @@ export class ChTabularGridColumn {
     return (
       <Host
         part={
-          this.parts &&
-          tokenMap({
-            [TABULAR_GRID_PARTS_DICTIONARY.COLUMN]: true,
-            [this.columnId]: true,
-            [this.parts.toString()]: typeof this.parts === "string"
-          })
+          this.parts
+            ? tokenMap({
+                [TABULAR_GRID_PARTS_DICTIONARY.COLUMN]: true,
+                [this.columnId]: true,
+                [this.parts.toString()]: typeof this.parts === "string"
+              })
+            : null
         }
       >
         <ul class="bar" part="bar">

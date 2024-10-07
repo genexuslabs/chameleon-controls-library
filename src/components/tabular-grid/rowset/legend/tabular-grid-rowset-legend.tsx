@@ -49,12 +49,13 @@ export class ChTabularGridRowsetLegend {
     return (
       <Host
         part={
-          this.parts &&
-          tokenMap({
-            [TABULAR_GRID_PARTS_DICTIONARY.ROWSET_LEGEND]: true,
-            [this.#getRowsetId()]: !!this.#getRowsetId(),
-            [this.parts.toString()]: typeof this.parts === "string"
-          })
+          this.parts
+            ? tokenMap({
+                [TABULAR_GRID_PARTS_DICTIONARY.ROWSET_LEGEND]: true,
+                [this.#getRowsetId()]: !!this.#getRowsetId(),
+                [this.parts.toString()]: typeof this.parts === "string"
+              })
+            : null
         }
       >
         <div part="caret"></div>

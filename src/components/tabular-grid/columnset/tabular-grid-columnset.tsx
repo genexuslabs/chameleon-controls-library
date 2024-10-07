@@ -40,11 +40,12 @@ export class ChTabularGridColumnset {
     return (
       <Host
         part={
-          this.parts &&
-          tokenMap({
-            [TABULAR_GRID_PARTS_DICTIONARY.COLUMNSET]: true,
-            [this.parts.toString()]: typeof this.parts === "string"
-          })
+          this.parts
+            ? tokenMap({
+                [TABULAR_GRID_PARTS_DICTIONARY.COLUMNSET]: true,
+                [this.parts.toString()]: typeof this.parts === "string"
+              })
+            : null
         }
       ></Host>
     );

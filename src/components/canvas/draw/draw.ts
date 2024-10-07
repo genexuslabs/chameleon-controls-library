@@ -1,9 +1,11 @@
+import { CanvasItemModel } from "../types";
 import { drawGrid } from "./draw-grid";
 import { drawCanvasItems } from "./draw-items";
 
 export const drawCanvas = (
   canvasRef: HTMLChCanvasElement,
   context: CanvasRenderingContext2D,
+  itemOver: CanvasItemModel | null,
   width: number,
   height: number
 ) => {
@@ -17,7 +19,7 @@ export const drawCanvas = (
     drawGrid(canvasRef, context, width, height);
   }
 
-  drawCanvasItems(context, canvasRef.model);
+  drawCanvasItems(context, canvasRef.model, itemOver);
 
   context.restore();
 };

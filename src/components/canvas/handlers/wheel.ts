@@ -6,9 +6,10 @@ export const handleCanvasWheel = (
 ) => {
   // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
 
-  const { x, y } = getMousePosition(event, canvasRef.getBoundingClientRect());
-  const mouseX = x;
-  const mouseY = y;
+  const { mouseX, mouseY } = getMousePosition(
+    canvasRef.getBoundingClientRect(),
+    event
+  );
   const currentScale = canvasRef.contextPosition.scale;
   const delta = event.deltaY < 0 ? 1 : -1;
   let newScale = currentScale * (delta > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);

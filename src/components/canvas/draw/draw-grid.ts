@@ -2,11 +2,12 @@ import { CanvasGridSettings, CanvasGridSettingsDots } from "../types";
 import {
   DEFAULT_GRID_SETTINGS_DOT_SIZE,
   DEFAULT_GRID_SETTINGS_SIZE,
-  DEFAULT_GRID_SETTINGS_TYPE
+  DEFAULT_GRID_SETTINGS_TYPE,
+  getCanvasBounds
 } from "../utils";
 
 const DEFAULT_GRID_COLOR = "#000";
-const DEFAULT_MINIMUM_SCALE_LEVEL = 0.0625;
+const DEFAULT_MINIMUM_SCALE_LEVEL = 0.25;
 
 const drawGridTypeDictionary = {
   dots: (canvasRef, context, options) => {
@@ -70,7 +71,7 @@ export const drawGrid = (
   canvasWidth: number,
   canvasHeight: number
 ) => {
-  const { originX, originY, scale } = canvasRef.contextPosition;
+  const { scale } = canvasRef.contextPosition;
 
   if (
     scale < (canvasRef.gridSettings.minimumScale ?? DEFAULT_MINIMUM_SCALE_LEVEL)
@@ -84,10 +85,11 @@ export const drawGrid = (
       : DEFAULT_GRID_SETTINGS_SIZE;
 
   // Compute current bounds depending on the scale and translation
-  const startX = -originX / scale;
-  const startY = -originY / scale;
-  const endX = startX + canvasWidth / scale;
-  const endY = startY + canvasHeight / scale;
+  const { startX, startY, endX, endY } = getCanvasBounds(
+    canvasRef,
+    canvasWidth,
+    canvasHeight
+  );
 
   // Adjusts the start of lines to the nearest multiple of the grid size
   const firstLineX = Math.floor(startX / gridSize) * gridSize;

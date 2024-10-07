@@ -1,6 +1,7 @@
 import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
 import {
   CanvasGridSettings,
+  CanvasItemModel,
   CanvasModel,
   CanvasPosition,
   CanvasPositionLimit
@@ -14,6 +15,7 @@ import {
   DEFAULT_SCALE_UPPER_BOUND_LIMIT,
   getLimitedScaleValue
 } from "./utils";
+import { handleMouseMoveWithoutDrag } from "./handlers/mouse-move";
 
 @Component({
   shadow: true,
@@ -30,11 +32,13 @@ export class ChCanvas {
   #canvasHeight: number;
 
   #shouldUpdateCanvasDraw: boolean = false;
+  #itemOver: CanvasItemModel | null = null;
 
   // Events
   #dragStartX: number;
   #dragStartY: number;
-  #lastMouseMoveEvent: MouseEvent;
+  #lastMouseMoveDragEvent: MouseEvent;
+  #lastMouseMoveWithoutDragEvent: MouseEvent;
   #lastWheelEvent: WheelEvent;
 
   // Refs
@@ -44,6 +48,7 @@ export class ChCanvas {
   @Element() el!: HTMLChCanvasElement;
 
   @State() dragging = false;
+  @State() hoveringItem = false;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -131,6 +136,7 @@ export class ChCanvas {
     drawCanvas(
       this.el,
       this.#canvasContext,
+      this.#itemOver,
       this.#canvasWidth,
       this.#canvasHeight
     );
@@ -157,15 +163,33 @@ export class ChCanvas {
     this.#dragStartY = event.clientY - this.contextPosition.originY;
   };
 
-  #handleMouseMove = (event: MouseEvent) => {
-    this.#lastMouseMoveEvent = event;
+  #handleMouseMoveDragging = (event: MouseEvent) => {
+    this.#lastMouseMoveDragEvent = event;
     this.#syncWithRAFMouseMove.perform(() => {
       this.contextPosition.originX =
-        this.#lastMouseMoveEvent.clientX - this.#dragStartX;
+        this.#lastMouseMoveDragEvent.clientX - this.#dragStartX;
       this.contextPosition.originY =
-        this.#lastMouseMoveEvent.clientY - this.#dragStartY;
+        this.#lastMouseMoveDragEvent.clientY - this.#dragStartY;
 
       this.#drawCanvas();
+    });
+  };
+
+  #handleMouseMoveWithoutDrag = (event: MouseEvent) => {
+    this.#lastMouseMoveWithoutDragEvent = event;
+
+    this.#syncWithRAFMouseMove.perform(() => {
+      const newItemOver = handleMouseMoveWithoutDrag(
+        this.el,
+        this.#lastMouseMoveWithoutDragEvent
+      );
+
+      this.hoveringItem = newItemOver !== null;
+
+      if (this.#itemOver !== newItemOver) {
+        this.#itemOver = newItemOver;
+        this.#drawCanvas();
+      }
     });
   };
 
@@ -204,10 +228,15 @@ export class ChCanvas {
       <Host>
         <canvas
           aria-label={this.accessibleName}
+          class={this.hoveringItem ? "hovering-item" : null}
           // Don't add the width and height bindings using the #canvasWidth and
           // #canvasHeight variables
           onMouseDown={!this.dragging && this.#handleMouseDown}
-          onMouseMove={this.dragging && this.#handleMouseMove}
+          onMouseMove={
+            this.dragging
+              ? this.#handleMouseMoveDragging
+              : this.#handleMouseMoveWithoutDrag
+          }
           onMouseUp={this.dragging && this.#handleCancelDrag}
           onMouseLeave={this.dragging && this.#handleCancelDrag}
           onWheel={!this.dragging && this.#handleWheel}

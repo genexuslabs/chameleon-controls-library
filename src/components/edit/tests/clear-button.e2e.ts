@@ -215,6 +215,10 @@ const testWithDebounce = (multiline: boolean, type?: EditType) => {
       it.todo(
         "should debounce the input event clicking the clear button if debounce > 0"
       );
+
+      it.todo(
+        "should not display the native close button when the value is set"
+      );
     } else {
       it("should not display the clear button when the value is set", async () => {
         editRef.setProperty("value", getValueByType());

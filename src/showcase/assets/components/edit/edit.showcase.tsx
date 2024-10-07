@@ -327,6 +327,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "boolean"
       },
       {
+        id: "clearSearchButtonAccessibleName",
+        caption: "Clear Search Button Accessible Name",
+        columnSpan: 2,
+        value: "Clear search",
+        type: "string"
+      },
+      {
         id: "showTrigger",
         caption: "Show Trigger",
         value: false,
@@ -365,6 +372,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
       name: "class",
       fixed: true,
       value: "form-input",
+      type: "string"
+    },
+    {
+      name: "clearSearchButtonAccessibleName",
+      defaultValue: "Clear search",
       type: "string"
     },
     { name: "debounce", defaultValue: 0, type: "number" },

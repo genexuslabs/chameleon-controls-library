@@ -357,7 +357,7 @@ export default class HTMLChTabularGridCellElement extends HTMLElement {
   }
 
   #defineProperties = () => {
-    this.#parts = this["parts"];
+    this.#parts = (this as any).parts;
     Object.defineProperty(this, "parts", {
       get: () => {
         return this.#parts;

@@ -268,7 +268,7 @@ export default class HTMLChTabularGridRowElement
   }
 
   #defineProperties = () => {
-    this.#parts = this["parts"];
+    this.#parts = (this as any).parts;
     Object.defineProperty(this, "parts", {
       get: () => this.#parts,
       set: value => {

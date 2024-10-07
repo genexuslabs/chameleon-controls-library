@@ -21,6 +21,7 @@
 ### Depends on
 
 - [ch-segmented-control-render](../../../components/segmented-control)
+- [ch-edit](../../../components/edit)
 - [ch-navigation-list-render](../../../components/navigation-list)
 - [ch-code](../../../components/code)
 - [ch-checkbox](../../../components/checkbox)
@@ -32,6 +33,7 @@
 ```mermaid
 graph TD;
   ch-showcase --> ch-segmented-control-render
+  ch-showcase --> ch-edit
   ch-showcase --> ch-navigation-list-render
   ch-showcase --> ch-code
   ch-showcase --> ch-checkbox

@@ -388,12 +388,12 @@ export class ChShowcase {
     ),
     [ASIDE_WIDGET]: () => (
       <aside key={ASIDE_WIDGET} slot={ASIDE_WIDGET} class="ch-showcase__aside">
-        <input
-          type="search"
+        <ch-edit
+          accessibleName="Search"
           class="form-input form-input-search sidebar__search-input"
-          aria-label="Search"
           placeholder="Search"
-        />
+          type="search"
+        ></ch-edit>
 
         <ch-navigation-list-render
           class="navigation-list navigation-list-primary"

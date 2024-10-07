@@ -230,6 +230,22 @@ export const ACTION_GROUP_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
+//               Edit Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const EDIT_PARTS_DICTIONARY = {
+  DATE_PLACEHOLDER: "date-placeholder",
+  CLEAR_BUTTON: "clear-button",
+
+  DISABLED: "disabled" // CLEAR_BUTTON
+} as const;
+
+export const EDIT_EXPORT_PARTS = joinParts(EDIT_PARTS_DICTIONARY);
+
+export const EDIT_HOST_PARTS = {
+  EMPTY_VALUE: "ch-edit--empty-value"
+} as const;
+
+// - - - - - - - - - - - - - - - - - - - -
 //             Dropdown Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const DROPDOWN_PARTS_DICTIONARY = {
@@ -393,6 +409,6 @@ export const TREE_VIEW_PARTS_DICTIONARY = {
 
   // - - - - - - - - States - - - - - - - -
   DRAG_ENTER: "drag-enter" // ITEM
-};
+} as const;
 
 export const TREE_VIEW_EXPORT_PARTS = joinParts(TREE_VIEW_PARTS_DICTIONARY);

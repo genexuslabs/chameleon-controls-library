@@ -343,7 +343,7 @@ export const TABULAR_GRID_PARTS_DICTIONARY = {
   ROWSET_LEGEND: "rowset-legend",
   ROW: "row",
   CELL: "cell"
-};
+} as const;
 
 // - - - - - - - - - - - - - - - - - - - -
 //             Tree view Parts

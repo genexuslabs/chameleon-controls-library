@@ -459,6 +459,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   render() {
     const isDateType = DATE_TYPES.includes(this.type);
+    const showDatePLaceholder = isDateType && this.placeholder && !this.value;
     const shouldDisplayPicture = this.#hasPictureApplied();
     const canAddListeners = !this.disabled && !this.readonly;
 
@@ -525,7 +526,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 autoComplete={this.autocomplete}
                 class={{
                   "content autofill": true,
-                  "null-date": isDateType && !this.value
+                  "null-date": showDatePLaceholder
                 }}
                 disabled={this.disabled}
                 inputMode={this.mode}
@@ -578,8 +579,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 </button>
               ),
 
-              // Implements a non-native placeholder for date types
-              isDateType && !this.value && (
+              // Implements a non-native placeholder for date types. TODO: Add unit tests for this
+              showDatePLaceholder && (
                 <div
                   aria-hidden="true"
                   class="date-placeholder"

@@ -1020,6 +1020,10 @@ export namespace Components {
          */
         "autocomplete": "on" | "off";
         /**
+          * This property lets you specify the label for the clear search button. Important for accessibility.  Only works if `type = "search"` and `multiline = false`.
+         */
+        "clearSearchButtonAccessibleName": string;
+        /**
           * Specifies a debounce for the input event.
          */
         "debounce"?: number;
@@ -4599,7 +4603,7 @@ declare global {
     };
     interface HTMLChEditElementEventMap {
         "change": any;
-        "input": InputEvent;
+        "input": string;
         "triggerClick": any;
     }
     /**
@@ -7154,6 +7158,10 @@ declare namespace LocalJSX {
          */
         "autocomplete"?: "on" | "off";
         /**
+          * This property lets you specify the label for the clear search button. Important for accessibility.  Only works if `type = "search"` and `multiline = false`.
+         */
+        "clearSearchButtonAccessibleName"?: string;
+        /**
           * Specifies a debounce for the input event.
          */
         "debounce"?: number;
@@ -7190,7 +7198,7 @@ declare namespace LocalJSX {
         /**
           * Fired synchronously when the value is changed. This event is debounced by the `debounce` property.
          */
-        "onInput"?: (event: ChEditCustomEvent<InputEvent>) => void;
+        "onInput"?: (event: ChEditCustomEvent<string>) => void;
         /**
           * Fired when the trigger button is clicked.
          */

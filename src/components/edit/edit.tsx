@@ -16,14 +16,18 @@ import {
   DisableableComponent
 } from "../../common/interfaces";
 
-import { DISABLED_CLASS } from "../../common/reserved-names";
+import {
+  DISABLED_CLASS,
+  EDIT_HOST_PARTS,
+  EDIT_PARTS_DICTIONARY
+} from "../../common/reserved-names";
 import { EditInputMode, EditType } from "./types";
 import {
   GxImageMultiState,
   GxImageMultiStateStart,
   ImageRender
 } from "../../common/types";
-import { updateDirectionInImageCustomVar } from "../../common/utils";
+import { tokenMap, updateDirectionInImageCustomVar } from "../../common/utils";
 import { getControlRegisterProperty } from "../../common/registry-properties";
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
@@ -129,6 +133,14 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * adjust to its content size.
    */
   @Prop() readonly autoGrow: boolean = false;
+
+  /**
+   * This property lets you specify the label for the clear search button.
+   * Important for accessibility.
+   *
+   * Only works if `type = "search"` and `multiline = false`.
+   */
+  @Prop() readonly clearSearchButtonAccessibleName: string = "Clear search";
 
   /**
    * Specifies a debounce for the input event.
@@ -309,7 +321,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Fired synchronously when the value is changed.
    * This event is debounced by the `debounce` property.
    */
-  @Event() input: EventEmitter<InputEvent>;
+  @Event() input: EventEmitter<string>;
 
   /**
    * Fired when the trigger button is clicked.
@@ -346,6 +358,20 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   #getValueFromEvent = (event: InputEvent): string =>
     (event.target as HTMLInputElement).value;
 
+  #setValueAndEmitInputEventWithDebounce = (valueToEmit: string) => {
+    clearTimeout(this.#debounceId);
+
+    if (this.debounce > 0) {
+      this.#debounceId = setTimeout(() => {
+        this.value = valueToEmit;
+        this.input.emit(valueToEmit);
+      }, this.debounce);
+    } else {
+      this.value = valueToEmit;
+      this.input.emit(valueToEmit);
+    }
+  };
+
   #handleAutoFill = (event: AnimationEvent) => {
     this.autoFilled = event.animationName === AUTOFILL_START_ANIMATION_NAME;
   };
@@ -364,18 +390,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       return;
     }
 
-    clearTimeout(this.#debounceId);
-    const newValue = this.#getValueFromEvent(event);
-
-    if (this.debounce > 0) {
-      this.#debounceId = setTimeout(() => {
-        this.value = newValue;
-        this.input.emit(event);
-      }, this.debounce);
-    } else {
-      this.value = newValue;
-      this.input.emit(event);
-    }
+    this.#setValueAndEmitInputEventWithDebounce(this.#getValueFromEvent(event));
   };
 
   #handleTriggerClick = (event: UIEvent) => {
@@ -383,6 +398,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       event.stopPropagation();
     }
     this.triggerClick.emit(event);
+  };
+
+  #clearValue = (event: PointerEvent) => {
+    event.stopPropagation();
+    this.#setValueAndEmitInputEventWithDebounce("");
+
+    requestAnimationFrame(() => this.el.focus());
   };
 
   // - - - - - - - - - - - - - - - - - - - - - -
@@ -438,6 +460,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   render() {
     const isDateType = DATE_TYPES.includes(this.type);
+    const showDatePLaceholder = isDateType && this.placeholder && !this.value;
     const shouldDisplayPicture = this.#hasPictureApplied();
     const canAddListeners = !this.disabled && !this.readonly;
 
@@ -455,6 +478,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
           [DISABLED_CLASS]: this.disabled
         }}
+        part={!this.value ? EDIT_HOST_PARTS.EMPTY_VALUE : null}
         style={this.#startImage?.styles ?? undefined}
         // Alignment
         data-text-align=""
@@ -479,9 +503,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 spellcheck={this.spellcheck}
                 value={this.value}
                 // Event listeners
-                onChange={canAddListeners ? this.#handleChange : null}
-                onInput={canAddListeners ? this.#handleValueChanging : null}
-                onAnimationStart={canAddListeners ? this.#handleAutoFill : null}
+                onChange={canAddListeners && this.#handleChange}
+                onInput={canAddListeners && this.#handleValueChanging}
+                onAnimationStart={canAddListeners && this.#handleAutoFill}
                 ref={el => (this.#textareaRef = el)}
               ></textarea>,
 
@@ -504,7 +528,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 autoComplete={this.autocomplete}
                 class={{
                   "content autofill": true,
-                  "null-date": isDateType && !this.value
+                  "null-date": showDatePLaceholder
                 }}
                 disabled={this.disabled}
                 inputMode={this.mode}
@@ -515,7 +539,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 placeholder={this.placeholder}
                 readOnly={this.readonly}
                 spellcheck={this.spellcheck}
-                step={DATE_TYPES.includes(this.type) ? "1" : undefined}
+                step={isDateType ? "1" : undefined}
                 type={this.type}
                 value={
                   shouldDisplayPicture && !this.isFocusOnControl
@@ -523,22 +547,20 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                     : this.value
                 }
                 // Event listeners
-                onAnimationStart={canAddListeners ? this.#handleAutoFill : null}
-                onChange={canAddListeners ? this.#handleChange : null}
-                onInput={canAddListeners ? this.#handleValueChanging : null}
+                onAnimationStart={canAddListeners && this.#handleAutoFill}
+                onChange={canAddListeners && this.#handleChange}
+                onInput={canAddListeners && this.#handleValueChanging}
                 onFocus={
                   canAddListeners &&
                   shouldDisplayPicture &&
-                  !this.isFocusOnControl
-                    ? this.#showPictureOnFocus
-                    : null
+                  !this.isFocusOnControl &&
+                  this.#showPictureOnFocus
                 }
                 onBlur={
                   canAddListeners &&
                   shouldDisplayPicture &&
-                  this.isFocusOnControl
-                    ? this.#removePictureOnBlur
-                    : null
+                  this.isFocusOnControl &&
+                  this.#removePictureOnBlur
                 }
                 ref={el => (this.#inputRef = el)}
               />,
@@ -553,21 +575,34 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                   part="trigger-button"
                   type="button"
                   disabled={this.disabled}
-                  onClick={canAddListeners ? this.#handleTriggerClick : null}
+                  onClick={canAddListeners && this.#handleTriggerClick}
                 >
                   <slot name="trigger-content" />
                 </button>
               ),
 
-              // Implements a non-native placeholder for date types
-              isDateType && !this.value && (
+              // Implements a non-native placeholder for date types. TODO: Add unit tests for this
+              showDatePLaceholder && (
                 <div
                   aria-hidden="true"
                   class="date-placeholder"
-                  part="date-placeholder"
+                  part={EDIT_PARTS_DICTIONARY.DATE_PLACEHOLDER}
                 >
                   {this.placeholder}
                 </div>
+              ),
+
+              this.type === "search" && !!this.value && (
+                <button
+                  aria-label={this.clearSearchButtonAccessibleName}
+                  class="clear-button"
+                  part={tokenMap({
+                    [EDIT_PARTS_DICTIONARY.CLEAR_BUTTON]: true,
+                    [EDIT_PARTS_DICTIONARY.DISABLED]: this.disabled
+                  })}
+                  type="button"
+                  onClick={!this.disabled && this.#clearValue}
+                ></button>
               )
             ]}
       </Host>

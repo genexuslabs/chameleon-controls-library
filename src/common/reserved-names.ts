@@ -230,6 +230,18 @@ export const ACTION_GROUP_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
+//               Edit Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const EDIT_PARTS_DICTIONARY = {
+  DATE_PLACEHOLDER: "date-placeholder",
+  CLEAR_BUTTON: "clear-button",
+
+  DISABLED: "disabled" // CLEAR_BUTTON
+} as const;
+
+export const EDIT_EXPORT_PARTS = joinParts(EDIT_PARTS_DICTIONARY);
+
+// - - - - - - - - - - - - - - - - - - - -
 //             Dropdown Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const DROPDOWN_PARTS_DICTIONARY = {

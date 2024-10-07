@@ -108,7 +108,8 @@ export class ChTabularGridRender {
     return normalizedModel.map(rowset => {
       if (this.#isRowsetItemSimpleModel(rowset)) {
         return this.#renderRowsetSimple(rowset.rows, rowset.rowsets);
-      } else if (this.#isRowsetItemGroupModel(rowset)) {
+      }
+      if (this.#isRowsetItemGroupModel(rowset)) {
         return this.#renderRowsetGroup(rowset);
       }
     });

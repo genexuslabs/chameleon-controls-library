@@ -18,6 +18,7 @@ import {
 
 import {
   DISABLED_CLASS,
+  EDIT_HOST_PARTS,
   EDIT_PARTS_DICTIONARY
 } from "../../common/reserved-names";
 import { EditInputMode, EditType } from "./types";
@@ -477,6 +478,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
           [DISABLED_CLASS]: this.disabled
         }}
+        part={!this.value ? EDIT_HOST_PARTS.EMPTY_VALUE : null}
         style={this.#startImage?.styles ?? undefined}
         // Alignment
         data-text-align=""

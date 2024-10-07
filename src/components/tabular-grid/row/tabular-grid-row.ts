@@ -281,7 +281,7 @@ export default class HTMLChTabularGridRowElement
   };
 
   #renderAttributes = () => {
-    this.#parts &&
+    if (this.#parts) {
       this.setAttribute(
         "part",
         tokenMap({
@@ -290,6 +290,7 @@ export default class HTMLChTabularGridRowElement
           [this.#parts.toString()]: typeof this.#parts === "string"
         })
       );
+    }
   };
 }
 

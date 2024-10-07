@@ -57,15 +57,11 @@ export class ChTabularGridRender {
 
   #isRowsetItemSimpleModel = (
     rowset: any
-  ): rowset is TabularGridRowsetItemSimpleModel => {
-    return rowset && !("id" in rowset);
-  };
+  ): rowset is TabularGridRowsetItemSimpleModel => rowset && !("id" in rowset);
 
   #isRowsetItemGroupModel = (
     rowset: any
-  ): rowset is TabularGridRowsetItemGroupModel => {
-    return rowset && "id" in rowset;
-  };
+  ): rowset is TabularGridRowsetItemGroupModel => rowset && "id" in rowset;
 
   #renderGrid = (
     columns: TabularGridColumnsModel,

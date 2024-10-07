@@ -181,7 +181,7 @@ export class ChTabularGridRender {
   render() {
     return (
       <Host role="grid">
-        {this.theme && <ch-theme model={{ name: this.theme }}></ch-theme>}
+        {this.theme && <ch-theme model={this.theme}></ch-theme>}
         {this.model && this.#renderGrid(this.model.columns, this.model.rowsets)}
       </Host>
     );

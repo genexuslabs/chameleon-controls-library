@@ -147,6 +147,10 @@ export class ChTabularGridRender {
   #renderRow = (row: TabularGridRowItemModel) => (
     <ch-tabular-grid-row
       rowid={row.id}
+      /**
+       * TODO: Replace the temporary workaround of using "ref={}" to assign the property instead of the attribute.
+       * Use "parts={row.parts ?? true}" when <ch-tabular-grid-row> correctly declare the JSX property.
+       */
       ref={(el: any) => {
         if (el) {
           el.parts = row.parts ?? true;
@@ -164,6 +168,10 @@ export class ChTabularGridRender {
     return (
       <ch-tabular-grid-cell
         cellid={cell.id}
+        /**
+         * TODO: Replace the temporary workaround of using "ref={}" to assign the property instead of the attribute.
+         * Use "parts={row.parts ?? true}" when <ch-tabular-grid-cell> correctly declare the JSX property.
+         */
         ref={(el: any) => {
           if (el) {
             el.parts = cell.parts ?? true;

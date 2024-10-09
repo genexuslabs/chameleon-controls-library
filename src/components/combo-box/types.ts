@@ -7,7 +7,6 @@ export type ComboBoxItemModel = ComboBoxItemGroup | ComboBoxItemLeaf;
 export type ComboBoxItemModelExtended = {
   item: ComboBoxItemModel;
   index: ComboBoxSelectedIndex;
-  firstExpanded?: boolean;
 };
 
 export type ComboBoxSelectedIndex =
@@ -25,7 +24,7 @@ export type ComboBoxSelectedIndex =
     };
 
 export type ComboBoxItemLeaf = {
-  caption: string;
+  caption?: string;
   disabled?: boolean;
   endImgSrc?: string;
   endImgType?: Exclude<ImageRender, "img">;

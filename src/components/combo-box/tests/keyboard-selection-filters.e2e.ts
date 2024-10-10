@@ -49,7 +49,6 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
     let page: E2EPage;
     let comboBoxRef: E2EElement;
     let inputEventSpy: EventSpy;
-    let filterChangeEventSpy: EventSpy;
 
     const checkFormValue = async (formValue: string | undefined) => {
       expect(await comboBoxRef.getProperty("value")).toBe(formValue);
@@ -93,7 +92,7 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
     const pressFilterKey = async (keyToPress: string, eventDetail: string) => {
       await comboBoxRef.press(keyToPress);
       await page.waitForChanges();
-      expect(filterChangeEventSpy).toHaveReceivedEventDetail(eventDetail);
+      expect(inputEventSpy).toHaveReceivedEventDetail(eventDetail);
     };
 
     const getRenderedItems = (): Promise<{ caption: string }[]> =>
@@ -151,7 +150,6 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
       });
       comboBoxRef = await page.find("ch-combo-box-render");
       inputEventSpy = await comboBoxRef.spyOnEvent("input");
-      filterChangeEventSpy = await comboBoxRef.spyOnEvent("filterChange");
       comboBoxRef.setProperty("model", dataTypeInGeneXus);
       comboBoxRef.setProperty("suggestDebounce", 0);
 
@@ -184,14 +182,15 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
       await pressFilterKey("o", "Blo");
       await pressNavigationKey("ArrowDown");
       await closeComboBoxAndCheckValues({
-        formValueBeforeClose: undefined,
-        formValueAfterClose: "_Blob",
+        formValueBeforeClose: "Blo",
+        formValueAfterClose: "Blob",
         expectedRenderedItems: [
           { caption: "Blob" },
           { caption: "BlobFile" }
           // { caption: "Boolean" }
         ],
-        confirmKey
+        confirmKey,
+        eventInputReceivedTimes: 4
       });
     });
 
@@ -201,14 +200,15 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
       await pressFilterKey("o", "Blo");
       await pressNavigationKey("ArrowUp");
       await closeComboBoxAndCheckValues({
-        formValueBeforeClose: undefined,
-        formValueAfterClose: "_BlobFile",
+        formValueBeforeClose: "Blo",
+        formValueAfterClose: "BlobFile",
         expectedRenderedItems: [
           { caption: "Blob" },
           { caption: "BlobFile" }
           // { caption: "Boolean" }
         ],
-        confirmKey
+        confirmKey,
+        eventInputReceivedTimes: 4
       });
     });
 
@@ -230,17 +230,18 @@ const testKeyboard = (confirmKey?: ConfirmKeys, strict?: boolean) => {
 
     if (strict) {
       it.skip("should rollback the change, because the caption does not map to an item", async () => {
-        await comboBoxRef.setProperty("value", "_Blob");
+        await comboBoxRef.setProperty("value", "Blob");
         await page.waitForChanges();
 
         await pressFilterKey("b", "Blobb");
         await closeComboBoxAndCheckValues({
-          formValueBeforeClose: "_Blob",
-          formValueAfterClose: "_Blob",
+          formValueBeforeClose: "Blobb",
+          formValueAfterClose: "Blob",
           expectedRenderedItems: [
             // { caption: "Boolean" }
           ],
-          confirmKey
+          confirmKey,
+          eventInputReceivedTimes: 2
         });
       });
     }

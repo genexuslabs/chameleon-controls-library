@@ -91,7 +91,9 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
       comboBoxRef.setProperty("value", "Value 1");
       await page.waitForChanges();
 
-      expect(await inputRef.getProperty("value")).toBe("Label for the value 1");
+      expect(await inputRef.getProperty("value")).toBe(
+        suggest ? "Value 1" : "Label for the value 1"
+      );
       expect(inputEventSpy).toHaveReceivedEventTimes(0);
     });
 
@@ -99,11 +101,15 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
     it("should properly display the selected caption when updating the model in the interface", async () => {
       comboBoxRef.setProperty("value", "Value 1");
       await page.waitForChanges();
-      expect(await inputRef.getProperty("value")).toBe("");
+      expect(await inputRef.getProperty("value")).toBe(
+        suggest ? "Value 1" : ""
+      );
 
       comboBoxRef.setProperty("model", simpleModelComboBox1);
       await page.waitForChanges();
-      expect(await inputRef.getProperty("value")).toBe("Label for the value 1");
+      expect(await inputRef.getProperty("value")).toBe(
+        suggest ? "Value 1" : "Label for the value 1"
+      );
 
       expect(inputEventSpy).toHaveReceivedEventTimes(0);
     });
@@ -112,25 +118,31 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
       comboBoxRef.setProperty("model", simpleModelComboBox1);
       comboBoxRef.setProperty("value", "Value 1");
       await page.waitForChanges();
-      expect(await inputRef.getProperty("value")).toBe("Label for the value 1");
+      expect(await inputRef.getProperty("value")).toBe(
+        suggest ? "Value 1" : "Label for the value 1"
+      );
 
       comboBoxRef.setProperty("value", "_Blob");
       await page.waitForChanges();
-      expect(await inputRef.getProperty("value")).toBe("");
+      expect(await inputRef.getProperty("value")).toBe(suggest ? "_Blob" : "");
 
       comboBoxRef.setProperty("model", dataTypeInGeneXus);
       await page.waitForChanges();
-      expect(await inputRef.getProperty("value")).toBe("Blob");
+      expect(await inputRef.getProperty("value")).toBe(
+        suggest ? "_Blob" : "Blob"
+      );
 
       comboBoxRef.setProperty("value", "Value 2");
       await page.waitForChanges();
-      expect(await inputRef.getProperty("value")).toBe("");
+      expect(await inputRef.getProperty("value")).toBe(
+        suggest ? "Value 2" : ""
+      );
 
       comboBoxRef.setProperty("model", simpleModelComboBox1);
       await page.waitForChanges();
       // TODO: GROUPS MUST NOT BE SELECTABLE
       expect(await inputRef.getProperty("value")).toBe(
-        "Label for the value 222 (not expandable)"
+        suggest ? "Value 2" : "Label for the value 222 (not expandable)"
       );
 
       expect(inputEventSpy).toHaveReceivedEventTimes(0);

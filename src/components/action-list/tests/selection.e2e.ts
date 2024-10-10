@@ -16,7 +16,7 @@ describe("[ch-action-list-render][selection]", () => {
   });
 
   it("should have a shadowRoot", () => {
-    expect(actionListRef.shadowRoot).not.toBeNull();
+    expect(actionListRef.shadowRoot).toBeTruthy();
   });
 
   it('should work with selection="single" by default', async () => {

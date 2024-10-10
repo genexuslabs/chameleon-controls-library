@@ -79,6 +79,7 @@ export const customComboBoxItemRender =
         role="group"
         class="group"
         part={tokenMap({
+          [item.value]: true,
           [COMBO_BOX_PARTS_DICTIONARY.GROUP]: true,
           [COMBO_BOX_PARTS_DICTIONARY.DISABLED]: isDisabled
         })}
@@ -93,6 +94,7 @@ export const customComboBoxItemRender =
               "group--collapsed": !itemGroup.expanded
             }}
             part={tokenMap({
+              [item.value]: true,
               [COMBO_BOX_PARTS_DICTIONARY.GROUP_HEADER]: true,
               [COMBO_BOX_PARTS_DICTIONARY.EXPANDABLE]: true,
               [COMBO_BOX_PARTS_DICTIONARY.DISABLED]: isDisabled,
@@ -109,7 +111,7 @@ export const customComboBoxItemRender =
                 [`start-img-type--${startImgType} img--start`]: hasStartImg,
                 [`end-img-type--${endImgType} img--end`]: hasEndImg
               }}
-              part={COMBO_BOX_PARTS_DICTIONARY.GROUP_HEADER_CAPTION}
+              part={`${COMBO_BOX_PARTS_DICTIONARY.GROUP_HEADER_CAPTION} ${item.value}`}
             >
               {item.caption ?? item.value}
             </span>
@@ -124,6 +126,7 @@ export const customComboBoxItemRender =
               [`end-img-type--${endImgType} img--end`]: hasEndImg
             }}
             part={tokenMap({
+              [item.value]: true,
               [COMBO_BOX_PARTS_DICTIONARY.GROUP_HEADER]: true,
               [COMBO_BOX_PARTS_DICTIONARY.DISABLED]: isDisabled
             })}
@@ -142,7 +145,7 @@ export const customComboBoxItemRender =
             "group__content--collapsed":
               itemGroup.expandable && !itemGroup.expanded
           }}
-          part={COMBO_BOX_PARTS_DICTIONARY.GROUP_CONTENT}
+          part={`${COMBO_BOX_PARTS_DICTIONARY.GROUP_CONTENT} ${item.value}`}
         >
           {(!itemGroup.expandable || itemGroup.expanded) &&
             itemGroup.items.map(
@@ -175,8 +178,8 @@ export const customComboBoxItemRender =
             : undefined
         }
         part={tokenMap({
-          [COMBO_BOX_PARTS_DICTIONARY.ITEM]: true,
           [item.value]: true,
+          [COMBO_BOX_PARTS_DICTIONARY.ITEM]: true,
           [COMBO_BOX_PARTS_DICTIONARY.NESTED]: insideAGroup,
           [COMBO_BOX_PARTS_DICTIONARY.DISABLED]: isDisabled,
           [COMBO_BOX_PARTS_DICTIONARY.SELECTED]: isActiveDescendant

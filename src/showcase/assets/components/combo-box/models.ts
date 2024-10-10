@@ -288,13 +288,12 @@ const filterCaption = (
   item: ComboBoxItemModel,
   filterInfo: ComboBoxSuggestInfo
 ) =>
-  filterInfo.filter
-    ? filterWithString(
-        item.caption ?? "",
-        filterInfo.filter,
-        filterInfo.options
-      )
-    : true;
+  !filterInfo.filter ||
+  filterWithString(
+    item.caption ?? item.value,
+    filterInfo.filter,
+    filterInfo.options
+  );
 
 const computeFilter = (
   item: ComboBoxItemModel,

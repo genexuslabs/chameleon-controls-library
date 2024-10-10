@@ -153,8 +153,8 @@
 select {
   all: unset;
   display: grid;
-  opacity: 0;
   overflow: hidden;
+  grid-row: 2 / 3;
 }
 
 .value {

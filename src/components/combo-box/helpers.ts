@@ -27,13 +27,12 @@ const filterCaption = (
   item: ComboBoxItemModel,
   filterInfo: ComboBoxSuggestInfo
 ) =>
-  filterInfo.filter
-    ? filterWithString(
-        item.caption ?? "",
-        filterInfo.filter,
-        filterInfo.options
-      )
-    : true;
+  !filterInfo.filter ||
+  filterWithString(
+    item.caption ?? item.value,
+    filterInfo.filter,
+    filterInfo.options
+  );
 
 const computeFilter = (
   item: ComboBoxItemModel,
@@ -46,7 +45,7 @@ const computeFilter = (
 export const filterSubModel = (
   item: ComboBoxItemModel,
   filterInfo: ComboBoxSuggestInfo,
-  displayedValues: Set<string>
+  displayedValues: Set<ComboBoxItemModel>
 ): boolean => {
   // Check if a subitem is rendered
   let aSubItemIsRendered = false;
@@ -71,7 +70,7 @@ export const filterSubModel = (
 
   // Update selected and checkbox items
   if (satisfiesFilter) {
-    displayedValues.add(item.value);
+    displayedValues.add(item);
   }
 
   return satisfiesFilter;

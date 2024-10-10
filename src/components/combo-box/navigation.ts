@@ -1,5 +1,6 @@
 import {
   ComboBoxItemGroup,
+  ComboBoxItemModel,
   ComboBoxItemModelExtended,
   ComboBoxModel,
   ComboBoxSelectedIndex
@@ -14,14 +15,15 @@ const isValidIndex = (array: any, index: number) =>
 
 export const findSelectedIndex = (
   valueToItemInfo: Map<string, ComboBoxItemModelExtended>,
-  selectedValue: string | undefined
+  activeDescendant: ComboBoxItemModel | undefined
 ): ComboBoxSelectedIndex => {
-  if (!selectedValue) {
+  if (!activeDescendant) {
     return SELECTED_VALUE_DOES_NOT_EXISTS;
   }
 
   return (
-    valueToItemInfo.get(selectedValue)?.index ?? SELECTED_VALUE_DOES_NOT_EXISTS
+    valueToItemInfo.get(activeDescendant.value)?.index ??
+    SELECTED_VALUE_DOES_NOT_EXISTS
   );
 };
 
@@ -30,7 +32,7 @@ export const findNextSelectedIndex = (
   currentIndex: ComboBoxSelectedIndex,
   increment: 1 | -1,
   hasFilters: boolean,
-  displayedValues: Set<string>
+  displayedValues: Set<ComboBoxItemModel>
 ): ComboBoxSelectedIndex => {
   if (currentIndex.type === "not-exists") {
     return SELECTED_VALUE_DOES_NOT_EXISTS;
@@ -47,7 +49,7 @@ export const findNextSelectedIndex = (
       isValidIndex(firstLevelItemItems, secondLevelIndex) &&
       (firstLevelItemItems[secondLevelIndex].disabled ||
         (hasFilters &&
-          !displayedValues.has(firstLevelItemItems[secondLevelIndex].value)))
+          !displayedValues.has(firstLevelItemItems[secondLevelIndex])))
     ) {
       secondLevelIndex += increment;
     }
@@ -72,7 +74,7 @@ export const findNextSelectedIndex = (
   while (
     isValidIndex(model, nextFirstLevelIndex) &&
     (model[nextFirstLevelIndex].disabled ||
-      (hasFilters && !displayedValues.has(model[nextFirstLevelIndex].value)))
+      (hasFilters && !displayedValues.has(model[nextFirstLevelIndex])))
   ) {
     nextFirstLevelIndex += increment;
   }

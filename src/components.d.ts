@@ -769,10 +769,6 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
-          * This property lets you determine the expression that will be applied to the filter. Only works if `suggest === true`.
-         */
-        "filter": string;
-        /**
           * Specifies the items of the control
          */
         "model": ComboBoxModel;
@@ -780,6 +776,10 @@ export namespace Components {
           * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
          */
         "multiple": boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
         /**
           * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
          */
@@ -797,15 +797,15 @@ export namespace Components {
          */
         "resizable": boolean;
         /**
-          * This property lets you specify if the control behaves like a suggest. If `true` the combo-box value will be editable an displayed items will be filtered according to the input's value.                                                                         |
+          * This property lets you specify if the control behaves like a suggest. If `true` the combo-box value will be editable an displayed items will be filtered according to the input's value.
          */
         "suggest": boolean;
         /**
-          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `suggest === true`.
+          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `value` property between this range, reset the timeout to process the value. Only works if `suggest === true`.
          */
         "suggestDebounce": number;
         /**
-          * This property lets you determine the options that will be applied to the filter.
+          * This property lets you determine the options that will be applied to the suggest.
          */
         "suggestOptions": ComboBoxSuggestOptions;
         /**
@@ -4534,7 +4534,6 @@ declare global {
         new (): HTMLChCodeEditorElement;
     };
     interface HTMLChComboBoxRenderElementEventMap {
-        "filterChange": string;
         "input": string;
     }
     /**
@@ -6903,10 +6902,6 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
-          * This property lets you determine the expression that will be applied to the filter. Only works if `suggest === true`.
-         */
-        "filter"?: string;
-        /**
           * Specifies the items of the control
          */
         "model"?: ComboBoxModel;
@@ -6915,11 +6910,11 @@ declare namespace LocalJSX {
          */
         "multiple"?: boolean;
         /**
-          * Emitted when a change to the element's filter is committed by the user. Only applies if `suggest === true`. It contains the information about the new filter value.  This event is debounced by the `suggestDebounce` value.
+          * This property specifies the `name` of the control when used in a form.
          */
-        "onFilterChange"?: (event: ChComboBoxRenderCustomEvent<string>) => void;
+        "name"?: string;
         /**
-          * The `input` event is emitted when a change to the element's value is committed by the user.
+          * The `input` event is emitted when a change to the element's value is committed by the user.  If `suggest = true`, this event is debounced by the `suggestDebounce` value.
          */
         "onInput"?: (event: ChComboBoxRenderCustomEvent<string>) => void;
         /**
@@ -6939,15 +6934,15 @@ declare namespace LocalJSX {
          */
         "resizable"?: boolean;
         /**
-          * This property lets you specify if the control behaves like a suggest. If `true` the combo-box value will be editable an displayed items will be filtered according to the input's value.                                                                         |
+          * This property lets you specify if the control behaves like a suggest. If `true` the combo-box value will be editable an displayed items will be filtered according to the input's value.
          */
         "suggest"?: boolean;
         /**
-          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `suggest === true`.
+          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `value` property between this range, reset the timeout to process the value. Only works if `suggest === true`.
          */
         "suggestDebounce"?: number;
         /**
-          * This property lets you determine the options that will be applied to the filter.
+          * This property lets you determine the options that will be applied to the suggest.
          */
         "suggestOptions"?: ComboBoxSuggestOptions;
         /**

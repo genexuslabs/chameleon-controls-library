@@ -800,6 +800,8 @@ export class ChComboBoxRender
           "ch-combo-box--normal": !filtersAreApplied,
           "ch-combo-box--suggest": filtersAreApplied
         }}
+        // TODO: Add unit tests for this feature
+        part={this.#getCurrentValueMapping()?.item.value}
         onKeyDown={
           !mobileDevice &&
           comboBoxIsInteractive &&

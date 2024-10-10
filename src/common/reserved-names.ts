@@ -230,6 +230,27 @@ export const ACTION_GROUP_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
+//             Combo Box Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const COMBO_BOX_PARTS_DICTIONARY = {
+  EXPANDABLE: "expandable",
+  GROUP: "group",
+  GROUP_HEADER: "group__header",
+  GROUP_HEADER_CAPTION: "group__header-caption",
+  GROUP_CONTENT: "group__content",
+  ITEM: "item",
+  SECTION: "section",
+
+  DISABLED: "disabled", // GROUP, EXPANDABLE
+  EXPANDED: "expanded", // GROUP_HEADER, EXPANDABLE
+  COLLAPSED: "collapsed", // GROUP_HEADER, EXPANDABLE
+  NESTED: "nested", // ITEM
+  SELECTED: "selected" // ITEM
+} as const;
+
+export const COMBO_BOX_EXPORT_PARTS = joinParts(COMBO_BOX_PARTS_DICTIONARY);
+
+// - - - - - - - - - - - - - - - - - - - -
 //               Edit Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const EDIT_PARTS_DICTIONARY = {

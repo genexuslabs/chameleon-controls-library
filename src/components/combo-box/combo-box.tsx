@@ -475,7 +475,7 @@ export class ChComboBoxRender
     const activeDescendant = this.activeDescendant;
 
     // TODO: Should we debounce this event?
-    if (activeDescendant.value !== this.value) {
+    if (activeDescendant?.value !== this.value) {
       // Clear last debounce
       clearTimeout(this.#queuedInputValueUpdate);
 

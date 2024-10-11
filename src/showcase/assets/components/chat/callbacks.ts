@@ -143,8 +143,8 @@ function dummyStreaming(
 
 export const chatCallbacks: ChatInternalCallbacks = {
   clear: () => new Promise(resolve => resolve()),
-  sendChatToLLM: sendChatToLLM,
-  uploadImage: () => new Promise(resolve => resolve("")),
+  sendChat: sendChatToLLM,
+  uploadFile: () => new Promise(resolve => resolve("")),
   stopGeneratingAnswer: () => {
     clearTimeout(timeOut);
 

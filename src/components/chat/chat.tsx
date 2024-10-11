@@ -5,27 +5,43 @@ import {
   Method,
   Prop,
   State,
+  Watch,
   forceUpdate,
   h
 } from "@stencil/core";
 import {
   ChVirtualScrollerCustomEvent,
+  DropdownModel,
   VirtualScrollVirtualItems
 } from "../../components";
 import {
-  ChatContentImages,
+  ChatContentFiles,
   ChatInternalCallbacks,
+  ChatInternalFileToUpload,
   ChatMessage,
   ChatMessageByRole,
   ChatMessageByRoleNoId
 } from "./types";
 import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
-import { removeElement } from "../../common/array";
+import { removeIndex } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
 import { adoptCommonThemes } from "../../common/theme";
 import { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 import { tokenMap } from "../../common/utils";
+import {
+  MimeTypeFile,
+  MimeTypeFormatMap,
+  MimeTypeImage,
+  MimeTypes,
+  MimeTypeVideo
+} from "../../common/mime-type/mime-types";
+import {
+  getFileExtension,
+  getMimeTypeFormat
+} from "../../common/mime-type/mime-type-mapping";
+import { getMessageContent, removeDuplicatedSelectedFiles } from "./utils";
+import { handleFilesChanged } from "./upload-files-utils";
 
 const ENTER_KEY = "Enter";
 
@@ -38,14 +54,28 @@ const ENTER_KEY = "Enter";
   shadow: true
 })
 export class ChChat {
+  #errorWhenUploadingImages = false;
+
+  // Allocated at runtime to save memory
+  #fileFormatToUpload:
+    | Map<
+        keyof MimeTypeFormatMap,
+        MimeTypeFile[] | MimeTypeImage[] | MimeTypeVideo[]
+      >
+    | undefined;
+  #fileFormatCount: number = 0;
+  #fileFormatPart: keyof MimeTypeFormatMap | undefined;
+  #pickFileFormatDropdown: DropdownModel | undefined;
+
+  // Refs
   #editRef!: HTMLChEditElement;
   #scrollRef: HTMLChSmartGridElement | undefined;
   #virtualScrollRef: HTMLChVirtualScrollerElement | undefined;
 
   @Element() el!: HTMLChChatElement;
 
-  @State() imagesToUpload: { src: string; file: File }[] = [];
-  @State() uploadingImagesToTheServer = 0;
+  @State() filesToUpload: ChatInternalFileToUpload[] = [];
+  @State() remainingFilesToUpload = 0;
   @State() virtualItems: ChatMessage[] = [];
 
   /**
@@ -76,12 +106,6 @@ export class ChChat {
   @Prop() readonly hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement };
 
   /**
-   * Specifies if the control can render a button to load images from the file
-   * system.
-   */
-  @Prop() readonly imageUpload: boolean = false;
-
-  /**
    * Specifies if the chat is used in a mobile device.
    */
   @Prop() readonly isMobile!: boolean;
@@ -106,6 +130,32 @@ export class ChChat {
    * Specifies the literals required in the control.
    */
   @Prop() readonly translations!: ChatTranslations;
+
+  /**
+   * Specifies if the control can render a button to load images from the file
+   * system.
+   */
+  @Prop() readonly upload: boolean = false;
+
+  /**
+   * Specifies the maximum number of file that can be uploaded at a time.
+   */
+  @Prop() readonly uploadMaxFileCount?: number = 10;
+
+  /**
+   * Specifies the maximum file size to for each file to upload.
+   * Measure in bytes
+   */
+  @Prop() readonly uploadMaxFileSize?: number | undefined;
+
+  /**
+   * Specifies the supported mime types to upload. Only works if upload = true
+   */
+  @Prop() readonly supportedMimeTypes?: MimeTypes[] = [];
+  @Watch("supportedMimeTypes")
+  supportedMimeTypesChanged(newMimeTypes?: MimeTypes[]) {
+    this.#setSupportedFileFormats(newMimeTypes);
+  }
 
   /**
    * This property allows us to implement custom rendering of chat items.
@@ -188,12 +238,57 @@ export class ChChat {
     }
   };
 
-  #getMessageContent = (
-    message: ChatMessageByRoleNoId<"system" | "assistant">
-  ) =>
-    typeof message.content === "string"
-      ? message.content
-      : message.content.message;
+  #setSupportedFileFormats = (supportedMimeTypes: MimeTypes[] | undefined) => {
+    this.#fileFormatCount = 0;
+    this.fileFormatSelected = undefined;
+
+    if (!this.upload || supportedMimeTypes == null) {
+      this.#fileFormatToUpload = undefined;
+      return;
+    }
+
+    this.#fileFormatToUpload = new Map();
+
+    supportedMimeTypes.forEach(mimeType => {
+      const mimeTypeFormat = getMimeTypeFormat(mimeType);
+
+      // The file format already exists for the mime type
+      if (this.#fileFormatToUpload!.has(mimeTypeFormat)) {
+        const mimeTypesInFormat =
+          this.#fileFormatToUpload!.get(mimeTypeFormat)!;
+        (mimeTypesInFormat as any[]).push(mimeType);
+      }
+      // Add the file format
+      else {
+        this.#fileFormatToUpload!.set(mimeTypeFormat, [mimeType] as any[]);
+        this.#fileFormatCount++;
+      }
+    });
+
+    if (this.#fileFormatCount > 1) {
+      this.#fileFormatPart = undefined;
+      this.#pickFileFormatDropdown = [];
+
+      if (this.#fileFormatToUpload.has("file")) {
+        this.#addFileFormatToDropdown("file");
+      }
+
+      if (this.#fileFormatToUpload.has("image")) {
+        this.#addFileFormatToDropdown("image");
+      }
+
+      if (this.#fileFormatToUpload.has("audio")) {
+        this.#addFileFormatToDropdown("audio");
+      }
+
+      if (this.#fileFormatToUpload.has("video")) {
+        this.#addFileFormatToDropdown("video");
+      }
+    } else {
+      this.#fileFormatPart = [...this.#fileFormatToUpload.keys()][0];
+      this.#pickFileFormatDropdown = undefined;
+    }
+  };
 
   #updateMessage = (
     messageIndex: number,
@@ -203,9 +298,9 @@ export class ChChat {
     if (mode === "concat") {
       // Temporal store for the new message
       const newMessageContent =
-        this.#getMessageContent(
+        getMessageContent(
           this.items[messageIndex] as ChatMessageByRole<"system" | "assistant">
-        ) + this.#getMessageContent(message);
+        ) + getMessageContent(message);
 
       // Reuse the message ref to correctly update the message content
       if (typeof message.content === "string") {
@@ -250,77 +345,92 @@ export class ChChat {
       this.loadingState === "initial" ||
       this.loadingState === "loading" ||
       this.generatingResponse ||
-      this.uploadingImagesToTheServer > 0
+      this.remainingFilesToUpload > 0
     ) {
       return;
     }
 
+    const messageId = `${new Date().getTime()}`;
+
     // Message without resources
-    if (!this.imageUpload || this.imagesToUpload.length === 0) {
+    if (!this.upload || this.filesToUpload.length === 0) {
       const userMessageToAdd: ChatMessageByRole<"user"> = {
-        id: `${new Date().getTime()}`,
+        id: messageId,
         role: "user",
         content: this.#editRef.value
       };
 
       await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.callbacks.sendChatToLLM(this.items);
+      this.callbacks.sendChat(this.items);
 
       // Queue a new re-render
       forceUpdate(this);
       return;
     }
 
-    this.uploadingImagesToTheServer = this.imagesToUpload.length;
+    this.remainingFilesToUpload = this.filesToUpload.length;
 
-    const userContent: ChatContentImages = [
-      { type: "text", text: this.#editRef.value }
-    ] as ChatContentImages;
+    const userContent: ChatContentFiles = {
+      message: this.#editRef.value,
+      files: []
+    };
 
-    this.imagesToUpload.forEach((imageToUpload, index) => {
-      // Add the image with empty src, since it's not in the server yet
-      userContent.push({
-        type: "image_url",
-        image_url: { url: "" }
+    this.filesToUpload.forEach((fileToUpload, index) => {
+      // Add the file with empty src, since it's not in the server yet
+      userContent.files!.push({
+        mimeType: fileToUpload.file.type as MimeTypes,
+        caption: fileToUpload.caption,
+        url: ""
       });
 
-      // Upload the image to the server asynchronously
+      // Upload the file to the server asynchronously
       this.callbacks
-        .uploadImage(imageToUpload.file)
-        .then(imageSrc => {
-          userContent[index + 1] = {
-            type: "image_url",
-            image_url: { url: imageSrc }
-          };
-
-          // Queue a new re-render
-          this.uploadingImagesToTheServer--;
-
-          if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks.sendChatToLLM(this.items);
+        .uploadFile(fileToUpload.file)
+        .then(uploadedFile => {
+          if (!this.#errorWhenUploadingImages) {
+            userContent.files![index].caption = uploadedFile.caption;
+            userContent.files![index].url = uploadedFile.url;
           }
+
+          this.#sendChatAfterImageUploadingIsCompleted();
         })
-        .catch(() => {
-          // console.log("Reject...", reason);
-          // TODO: Error uploading the image
-
-          this.uploadingImagesToTheServer--;
-
-          if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks.sendChatToLLM(this.items);
+        .catch((errorMessage: GxEAIErrorMessage) => {
+          // First time that an images errors. Replace the user message with
+          // the error message
+          if (!this.#errorWhenUploadingImages) {
+            this.items[this.items.length - 1] = {
+              id: messageId,
+              role: "error",
+              content: errorMessage
+            };
           }
+
+          this.#errorWhenUploadingImages = true;
+          this.#sendChatAfterImageUploadingIsCompleted();
         });
     });
 
     const userMessageToAdd: ChatMessageByRole<"user"> = {
-      id: `${new Date().getTime()}`,
+      id: messageId,
       role: "user",
       content: userContent
     };
     await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
 
     // Free the memory
-    this.imagesToUpload = [];
+    this.filesToUpload = [];
+  };
+
+  #sendChatAfterImageUploadingIsCompleted = () => {
+    // Queue a new re-render
+    this.remainingFilesToUpload--;
+
+    if (this.remainingFilesToUpload === 0) {
+      if (!this.#errorWhenUploadingImages) {
+        this.callbacks.sendChat(this.items);
+      }
+      this.#errorWhenUploadingImages = false;
+    }
   };
 
   #handleStopGenerating = (event: MouseEvent) => {
@@ -329,17 +439,24 @@ export class ChChat {
     this.callbacks.stopGeneratingAnswer!();
   };
 
-  // #handleFilesChanged = (event: ImagePickerCustomEvent<FileList | null>) => {
-  //   this.imagesToUpload =
-  //     event.detail === null
-  //       ? []
-  //       : [...event.detail].map(imageFile => ({
-  //           file: imageFile,
-  //           src: URL.createObjectURL(imageFile)
-  //         }));
-  // };
+  #handleDropdownItemClick = (_: UIEvent, __: string, itemId: string) => {
+    this.fileFormatSelected = itemId as keyof MimeTypeFormatMap;
 
-  #removeUploadedImage = (index: number) => (event: MouseEvent) => {
+    requestAnimationFrame(() => this.#filerPickerRef?.click());
+  };
+
+  #handleFilesChanged = (event: GxEaiFilePickerCustomEvent<FileList | null>) =>
+    handleFilesChanged(
+      this.filesToUpload,
+      this.uploadMaxFileSize,
+      this.uploadMaxFileCount,
+      this.callbacks.showMaxFileCountForUploadError,
+      this.callbacks.showMaxFileSizeForUploadError,
+      this,
+      event
+    );
+
+  #removeUploadedFile = (index: number) => (event: MouseEvent) => {
     const buttonToRemove = event.target as HTMLButtonElement;
     const nextFocusedButton = (buttonToRemove.nextElementSibling ??
       buttonToRemove.previousElementSibling) as HTMLButtonElement;
@@ -350,12 +467,19 @@ export class ChChat {
     }
 
     // TODO: Remove the file from the image-picker reference
-    removeElement(this.imagesToUpload, index);
+    removeIndex(this.filesToUpload, index);
+
+    // There is no need to filter the file type to select, since there are no
+    // files selected
+    if (this.filesToUpload.length === 0) {
+      this.fileFormatSelected = undefined;
+    }
+
     forceUpdate(this);
   };
 
-  #removeImageResource = (imageFile: string) => () => {
-    URL.revokeObjectURL(imageFile); // Free the memory
+  #removeImageResource = (fileObjectURL: string) => () => {
+    URL.revokeObjectURL(fileObjectURL); // Free the memory
   };
 
   #virtualItemsChanged = (
@@ -475,7 +599,7 @@ export class ChChat {
         <div
           class={{
             "send-container": true,
-            "send-container--file-uploading": this.imageUpload
+            "send-container--file-uploading": this.upload
           }}
           part="send-container"
         >
@@ -499,9 +623,9 @@ export class ChChat {
           )} */}
 
           <div class="send-input-wrapper" part="send-input-wrapper">
-            {this.imagesToUpload.length > 0 && (
+            {this.filesToUpload.length > 0 && (
               <div class="images-to-upload" part="images-to-upload">
-                {this.imagesToUpload.map((imageFile, index) => (
+                {this.filesToUpload.map((imageFile, index) => (
                   <button
                     key={imageFile.src}
                     aria-label={accessibleName.removeUploadedImage}

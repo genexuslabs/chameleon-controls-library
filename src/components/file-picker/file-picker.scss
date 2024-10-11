@@ -1,0 +1,15 @@
+:host {
+  display: inline-grid;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+input {
+  all: unset;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}

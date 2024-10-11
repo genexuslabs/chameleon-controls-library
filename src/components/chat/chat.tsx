@@ -36,14 +36,18 @@ import {
   MimeTypes,
   MimeTypeVideo
 } from "../../common/mime-type/mime-types";
-import {
-  getFileExtension,
-  getMimeTypeFormat
-} from "../../common/mime-type/mime-type-mapping";
-import { getMessageContent, removeDuplicatedSelectedFiles } from "./utils";
+import { getMimeTypeFormat } from "../../common/mime-type/mime-type-mapping";
+import { getMessageContent } from "./utils";
 import { handleFilesChanged } from "./upload-files-utils";
 
 const ENTER_KEY = "Enter";
+
+const mimeTypeFormatToIconPathMapping = {
+  audio: "./assets/icons/audio.svg",
+  file: "./assets/icons/projects.svg",
+  image: "./assets/icons/image-gallery.svg",
+  video: "./assets/icons/video.svg"
+} as const satisfies { [key in keyof MimeTypeFormatMap]: string };
 
 /**
  * TODO: Add description
@@ -69,12 +73,14 @@ export class ChChat {
 
   // Refs
   #editRef!: HTMLChEditElement;
+  #filerPickerRef: HTMLChFilePickerElement | undefined;
   #scrollRef: HTMLChSmartGridElement | undefined;
   #virtualScrollRef: HTMLChVirtualScrollerElement | undefined;
 
   @Element() el!: HTMLChChatElement;
 
   @State() filesToUpload: ChatInternalFileToUpload[] = [];
+  @State() fileFormatSelected: keyof MimeTypeFormatMap | undefined;
   @State() remainingFilesToUpload = 0;
   @State() virtualItems: ChatMessage[] = [];
 
@@ -290,6 +296,15 @@ export class ChChat {
     }
   };
 
+  #addFileFormatToDropdown = (mimeTypeFormat: keyof MimeTypeFormatMap) => {
+    this.#pickFileFormatDropdown!.push({
+      id: mimeTypeFormat,
+      caption: this.translations.text[mimeTypeFormat],
+      startImgSrc: mimeTypeFormatToIconPathMapping[mimeTypeFormat],
+      startImgType: "mask"
+    });
+  };
+
   #updateMessage = (
     messageIndex: number,
     message: ChatMessageByRoleNoId<"system" | "assistant">,
@@ -394,7 +409,8 @@ export class ChChat {
 
           this.#sendChatAfterImageUploadingIsCompleted();
         })
-        .catch((errorMessage: GxEAIErrorMessage) => {
+        .catch((errorMessage: any) => {
+          // .catch((errorMessage: GxEAIErrorMessage) => {
           // First time that an images errors. Replace the user message with
           // the error message
           if (!this.#errorWhenUploadingImages) {
@@ -445,7 +461,7 @@ export class ChChat {
     requestAnimationFrame(() => this.#filerPickerRef?.click());
   };
 
-  #handleFilesChanged = (event: GxEaiFilePickerCustomEvent<FileList | null>) =>
+  #handleFilesChanged = (event: ChFilePickerCustomEvent<FileList | null>) =>
     handleFilesChanged(
       this.filesToUpload,
       this.uploadMaxFileSize,
@@ -478,8 +494,43 @@ export class ChChat {
     forceUpdate(this);
   };
 
+  #getRemoveUploadedFileAccessibleName = (
+    mimeTypeFormat: keyof MimeTypeFormatMap
+  ) => {
+    const accessibleName = this.translations.accessibleName;
+
+    if (mimeTypeFormat === "image") {
+      return accessibleName.removeUploadedImage;
+    }
+
+    if (mimeTypeFormat === "file") {
+      return accessibleName.removeUploadedFile;
+    }
+
+    if (mimeTypeFormat === "audio") {
+      return accessibleName.removeUploadedAudio;
+    }
+
+    return accessibleName.removeUploadedVideo;
+  };
+
   #removeImageResource = (fileObjectURL: string) => () => {
     URL.revokeObjectURL(fileObjectURL); // Free the memory
+  };
+
+  #getImagePickerParts = () => {
+    if (this.#fileFormatCount === 1) {
+      return `${this.#fileFormatPart}-picker picker`;
+    }
+
+    if (
+      this.fileFormatSelected !== undefined &&
+      this.filesToUpload.length > 0
+    ) {
+      return `${this.fileFormatSelected}-picker picker`;
+    }
+
+    return undefined;
   };
 
   #virtualItemsChanged = (
@@ -542,42 +593,19 @@ export class ChChat {
   #loadMoreItems = () => {
     this.loadingState = "loading";
 
-    // WA to test
-    setTimeout(() => {
-      const totalItems = this.items.length;
-
-      const newItems: ChatMessage[] = Array.from({ length: 20 }, (_, index) =>
-        index % 2 === 0
-          ? {
-              id: `index: ${index - totalItems}`,
-              role: "user",
-              content:
-                `index: ${index - totalItems}` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n`
-            }
-          : {
-              id: `index: ${index - totalItems}`,
-              role: "assistant",
-              content:
-                `\nindex: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n` +
-                `index: ${index - totalItems}\n`
-            }
-      );
-
-      this.#virtualScrollRef.addItems("start", ...newItems);
-
-      this.loadingState = "more-data-to-fetch";
-    }, 10);
+    this.callbacks
+      .loadMoreItems(this.items)
+      .then(result => {
+        if (result.items.length > 0) {
+          this.#virtualScrollRef.addItems("start", result.items);
+        }
+        this.loadingState = result.morePages
+          ? "more-data-to-fetch"
+          : "all-records-loaded";
+      })
+      .catch(() => {
+        this.loadingState = "more-data-to-fetch";
+      });
   };
 
   connectedCallback() {
@@ -613,6 +641,38 @@ export class ChChat {
               {accessibleName.stopGeneratingAnswerButton}
             </button>
           )}
+
+          {this.upload &&
+            this.#fileFormatCount !== 0 && [
+              this.#fileFormatCount > 1 && this.filesToUpload.length === 0 && (
+                <ch-dropdown-render
+                  part="dropdown-picker"
+                  buttonAccessibleName={accessibleName.filePicker}
+                  itemClickCallback={
+                    !this.disabled ? this.#handleDropdownItemClick : undefined
+                  }
+                  model={this.#pickFileFormatDropdown}
+                  position="InsideStart_OutsideStart"
+                ></ch-dropdown-render>
+              ),
+
+              <ch-file-picker
+                part={this.#getImagePickerParts()}
+                style={
+                  this.#fileFormatCount > 1 && this.filesToUpload.length === 0
+                    ? { display: "none" }
+                    : undefined
+                }
+                acceptFilter={this.fileFormatSelected}
+                fileFormat={this.#fileFormatPart}
+                supportedMimeTypes={this.supportedMimeTypes!}
+                translations={this.translations}
+                uploadMaxFileCount={this.uploadMaxFileCount}
+                onFilesChanged={this.#handleFilesChanged}
+                ref={el => (this.#filerPickerRef = el)}
+              ></ch-file-picker>
+            ]}
+
           {/* 
           {this.imageUpload && (
             <gx-eai-image-picker
@@ -625,23 +685,52 @@ export class ChChat {
           <div class="send-input-wrapper" part="send-input-wrapper">
             {this.filesToUpload.length > 0 && (
               <div class="images-to-upload" part="images-to-upload">
-                {this.filesToUpload.map((imageFile, index) => (
+                {this.filesToUpload.map((file, index) => (
                   <button
-                    key={imageFile.src}
-                    aria-label={accessibleName.removeUploadedImage}
-                    title={accessibleName.removeUploadedImage}
-                    part="remove-image-to-upload-button"
+                    key={file.key}
+                    aria-label={this.#getRemoveUploadedFileAccessibleName(
+                      file.mimeTypeFormat
+                    )}
+                    title={this.#getRemoveUploadedFileAccessibleName(
+                      file.mimeTypeFormat
+                    )}
+                    class={
+                      file.mimeTypeFormat !== "image"
+                        ? "remove-file-to-upload-button"
+                        : undefined
+                    }
+                    part={
+                      file.mimeTypeFormat === "image"
+                        ? "remove-image-to-upload-button"
+                        : `remove-file-to-upload-button ${file.mimeTypeFormat}`
+                    }
                     type="button"
-                    onClick={this.#removeUploadedImage(index)}
+                    onClick={this.#removeUploadedFile(index)}
                   >
-                    <img
-                      part="image-to-upload"
-                      aria-hidden="true"
-                      src={imageFile.src}
-                      alt=""
-                      loading="lazy"
-                      onLoad={this.#removeImageResource(imageFile.src)}
-                    ></img>
+                    {file.src ? (
+                      <img
+                        part="image-to-upload"
+                        src={file.src}
+                        alt={file.caption}
+                        loading="lazy"
+                        onLoad={this.#removeImageResource(file.src)}
+                      ></img>
+                    ) : (
+                      [
+                        <span
+                          class="file-to-upload__caption"
+                          part="file-to-upload__caption"
+                        >
+                          {file.caption}
+                        </span>,
+                        <span
+                          class="file-to-upload__extension"
+                          part="file-to-upload__extension"
+                        >
+                          {file.extension}
+                        </span>
+                      ]
+                    )}
                   </button>
                 ))}
               </div>

@@ -145,7 +145,7 @@ export class ChVirtualScroller implements ComponentInterface {
    * the virtual scroll would behave unexpectedly when new items are added.
    */
   @Method()
-  async addItems(position: "start" | "end", ...items: SmartGridModel) {
+  async addItems(position: "start" | "end", items: SmartGridModel) {
     if (position === "start") {
       this.items.unshift(...items);
 

@@ -135,7 +135,9 @@ export type ChatInternalCallbacks = {
    * threshold. It receives the current array of messages and return a promise
    * containing the new messages that will be added at the top of the chat.
    */
-  loadMoreItems: (chat: ChatMessage[]) => Promise<ChatMessage[]>;
+  loadMoreItems: (
+    chat: ChatMessage[]
+  ) => Promise<{ items: ChatMessage[]; morePages: boolean }>;
 
   /**
    * Specifies a callback to execute when the user adds a new message to the

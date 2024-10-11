@@ -36,7 +36,7 @@ export const handleFilesChanged = (
   showMaxFileCountForUploadError: (maxFileCount: number) => void,
   showMaxFileSizeForUploadError: (maxFileSize: number) => void,
   chChatClassRef: ChChat,
-  event: GxEaiFilePickerCustomEvent<FileList | null>
+  event: ChFilePickerCustomEvent<FileList | null>
 ) => {
   const keyPrefix = new Date().getTime();
 

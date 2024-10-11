@@ -167,6 +167,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   }
 
   /**
+   * Specifies a set of parts to use in the Host element (`ch-edit`).
+   */
+  @Prop() readonly hostParts?: string;
+
+  /**
    * This property defines the maximum string length that the user can enter
    * into the control.
    */
@@ -478,7 +483,12 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
           [DISABLED_CLASS]: this.disabled
         }}
-        part={!this.value ? EDIT_HOST_PARTS.EMPTY_VALUE : null}
+        // TODO: Add unit tests for this feature, since it breaks custom parts
+        // rendered outside of the ch-edit render() method
+        part={tokenMap({
+          [EDIT_HOST_PARTS.EMPTY_VALUE]: !this.value,
+          [this.hostParts]: !!this.hostParts
+        })}
         style={this.#startImage?.styles ?? undefined}
         // Alignment
         data-text-align=""

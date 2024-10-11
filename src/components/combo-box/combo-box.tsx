@@ -24,7 +24,7 @@ import {
   ComboBoxSelectedIndex,
   ComboBoxItemModelExtended
 } from "./types";
-import { isMobileDevice } from "../../common/utils";
+import { isMobileDevice, tokenMap } from "../../common/utils";
 import {
   COMBO_BOX_PARTS_DICTIONARY,
   KEY_CODES
@@ -306,6 +306,11 @@ export class ChComboBoxRender
    * (for example, click event).
    */
   @Prop() readonly disabled: boolean = false;
+
+  /**
+   * Specifies a set of parts to use in the Host element (`ch-combo-box-render`).
+   */
+  @Prop() readonly hostParts?: string;
 
   /**
    * Specifies the items of the control
@@ -793,6 +798,9 @@ export class ChComboBoxRender
     // - User click must open the combo-box
     // - Clicking the combo-box's label should not open the popover
 
+    // TODO: Add unit tests for this feature.
+    const currentValueMapping = this.#getCurrentValueMapping()?.item.value;
+
     return (
       <Host
         class={{
@@ -800,8 +808,12 @@ export class ChComboBoxRender
           "ch-combo-box--normal": !filtersAreApplied,
           "ch-combo-box--suggest": filtersAreApplied
         }}
-        // TODO: Add unit tests for this feature
-        part={this.#getCurrentValueMapping()?.item.value}
+        // TODO: Add unit tests for this feature, since it breaks custom parts
+        // rendered outside of the ch-combo-box-render render() method
+        part={tokenMap({
+          [currentValueMapping]: !!currentValueMapping,
+          [this.hostParts]: !!this.hostParts
+        })}
         onKeyDown={
           !mobileDevice &&
           comboBoxIsInteractive &&

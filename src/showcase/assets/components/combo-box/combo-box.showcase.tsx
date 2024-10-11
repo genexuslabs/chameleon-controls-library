@@ -237,6 +237,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
           ]
         },
         {
+          id: "hostParts",
+          caption: "Host Parts",
+          value: undefined,
+          type: "string"
+        },
+        {
           id: "resizable",
           caption: "Resizable",
           value: false,
@@ -313,6 +319,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChComboBoxRenderE
     { name: "class", fixed: true, value: "combo-box", type: "string" },
     { name: "disabled", defaultValue: false, type: "boolean" },
     { name: "filter", defaultValue: undefined, type: "string" },
+    { name: "hostParts", defaultValue: undefined, type: "string" },
     { name: "model", fixed: true, value: "controlUIModel", type: "string" },
     { name: "placeholder", defaultValue: undefined, type: "string" },
     { name: "readonly", defaultValue: false, type: "boolean" },

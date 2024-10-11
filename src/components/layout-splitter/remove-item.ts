@@ -1,4 +1,4 @@
-import { removeElement } from "../../common/array";
+import { removeIndex } from "../../common/array";
 import {
   GroupExtended,
   ItemExtended,
@@ -146,7 +146,7 @@ export const removeItem = (
   // TODO: Add recursive removal
 
   itemsToRemove.forEach(itemToRemove => {
-    removeElement(itemToRemove[0], itemToRemove[1]);
+    removeIndex(itemToRemove[0], itemToRemove[1]);
     itemsInfo.delete(itemToRemove[2]);
   });
 

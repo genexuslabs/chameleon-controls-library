@@ -54,7 +54,7 @@ import {
 } from "./utils";
 import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
-import { insertIntoIndex, removeElement } from "../../common/array";
+import { insertIntoIndex, removeIndex } from "../../common/array";
 import {
   getControlRegisterProperty,
   registryControlProperty
@@ -1266,7 +1266,7 @@ export class ChTreeViewRender {
 
       // Remove the UI model from the previous parent. The equality function
       // must be by index, not by object reference
-      removeElement(oldParentItem.items, oldIndex);
+      removeIndex(oldParentItem.items, oldIndex);
 
       // The item must be inserted in a specific position, because the dropMode
       // has "before" and "after" enabled

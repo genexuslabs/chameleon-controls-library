@@ -42,7 +42,7 @@ import {
   PAGE_ID,
   SELECTED_PART
 } from "./utils";
-import { insertIntoIndex, removeElement } from "../../common/array";
+import { insertIntoIndex, removeIndex } from "../../common/array";
 import {
   focusComposedPath,
   MouseEventButton,
@@ -678,7 +678,7 @@ export class ChTabRender implements DraggableView {
 
     // Move the item to the new position
     if (anItemWasReordered) {
-      const itemToInsert = removeElement(this.model, this.draggedElementIndex);
+      const itemToInsert = removeIndex(this.model, this.draggedElementIndex);
       insertIntoIndex(this.model, itemToInsert, this.draggedElementNewIndex);
 
       // Update last selected index

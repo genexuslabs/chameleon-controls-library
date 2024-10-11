@@ -28,7 +28,7 @@ import {
   FlexibleLayoutLeafConfigurationTabbed
 } from "./internal/flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../components";
-import { removeElement } from "../../common/array";
+import { removeIndex } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
 import { CssContainProperty, CssOverflowProperty } from "../../common/types";
 
@@ -598,7 +598,7 @@ export class ChFlexibleLayoutRender {
     skipRenderRemoval = false
   ) => {
     // Remove the item from the view
-    const widgetInfo = removeElement(leafInfo.widgets, itemIndex);
+    const widgetInfo = removeIndex(leafInfo.widgets, itemIndex);
     this.#flexibleLayoutRef.removeItemPageInView(leafInfo.id, widgetInfo.id);
 
     // Remove the item from the flexible-layout-render to optimize resources

@@ -1,5 +1,5 @@
 import { forceUpdate } from "@stencil/core";
-import { removeElement } from "../../common/array";
+import { removeIndex } from "../../common/array";
 import {
   TreeViewItemModel,
   TreeViewItemModelExtended,
@@ -53,7 +53,7 @@ export const removeTreeViewItems = (
       atLeastOneElement ||= flattenedTreeModel.delete(itemId);
       atLeastOneCheckbox ||= flattenedCheckboxTreeModel.delete(itemId);
       atLeastOneSelected ||= selectedItems.delete(itemId);
-      removeElement(
+      removeIndex(
         parentArray,
         parentArray.findIndex(element => element.id === itemId)
       );

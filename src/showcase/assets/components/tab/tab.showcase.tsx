@@ -55,11 +55,13 @@ const render = () => (
         accessibleName={state.accessibleName}
         closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
+        contain={state.contain}
         direction={state.direction}
         disabled={state.disabled}
         dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
+        overflow={state.overflow}
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
         sortable={state.sortable}
@@ -103,11 +105,13 @@ const render = () => (
         accessibleName={state.accessibleName}
         closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
+        contain={state.contain}
         direction={state.direction}
         disabled={state.disabled}
         dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
+        overflow={state.overflow}
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
         sortable={state.sortable}

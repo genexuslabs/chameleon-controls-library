@@ -79,7 +79,8 @@ export class ChMarkdownViewer {
       allowDangerousHtml: true, // Allow dangerous in this version
       codeRender: this.renderCode,
       lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
-      rawHTML: this.rawHtml
+      rawHTML: this.rawHtml,
+      showIndicator: this.showIndicator
     });
   }
 

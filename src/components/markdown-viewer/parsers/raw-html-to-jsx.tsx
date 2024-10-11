@@ -2,6 +2,7 @@ import { h } from "@stencil/core";
 import { fromHTMLStringToHast } from "@genexus/markdown-parser/dist/parse-html.js";
 // import { Root, RootContent, RootContentMap } from "hast";
 import { Element as HElement, Root, RootContentMap } from "hast";
+import { LAST_NESTED_CHILD_CLASS } from "./markdown-to-jsx";
 
 const tagsToSanitize = new Set([
   "base",
@@ -45,10 +46,14 @@ const getStyleObjectFromString = (
 };
 
 const renderDictionary: {
-  [key in keyof RootContentMap]: (element: RootContentMap[key]) => any;
+  [key in keyof RootContentMap]: (
+    element: RootContentMap[key],
+    showIndicator: boolean,
+    lastElementChild: HElement | undefined
+  ) => any;
 } = {
   comment: () => "",
-  element: element => {
+  element: (element, showIndicator, lastElementChild) => {
     const properties = element.properties;
 
     // Minimal sanitization
@@ -84,9 +89,17 @@ const renderDictionary: {
       delete properties.htmlFor;
     }
 
+    // Indicator for streaming
+    const isLastElementChild = showIndicator && element === lastElementChild;
+    if (isLastElementChild) {
+      properties.class = properties.class
+        ? `${properties.class} ${LAST_NESTED_CHILD_CLASS}`
+        : LAST_NESTED_CHILD_CLASS;
+    }
+
     return (
       <element.tagName {...properties}>
-        {renderChildren(element)}
+        {renderChildren(element, showIndicator, lastElementChild)}
       </element.tagName>
     );
   },
@@ -94,18 +107,41 @@ const renderDictionary: {
   doctype: () => ""
 };
 
-function renderChildren(element: Root | HElement) {
-  return element.children.map(child => renderDictionary[child.type](child));
+function renderChildren(
+  element: Root | HElement,
+  showIndicator: boolean,
+  lastElementChild: HElement | undefined
+) {
+  return element.children.map(child =>
+    renderDictionary[child.type](child, showIndicator, lastElementChild)
+  );
 }
+
+const findLastNestedChild = (elementWithChildren: HElement) => {
+  const lastChild = elementWithChildren.children.at(-1) as HElement;
+
+  // The last element have children. We must check its sub children
+  if (lastChild.children?.length > 0) {
+    return findLastNestedChild(lastChild);
+  }
+
+  return elementWithChildren;
+};
 
 export const rawHTMLToJSX = (
   htmlString: string,
-  allowDangerousHtml: boolean
+  allowDangerousHtml: boolean,
+  showIndicator: boolean
 ) => {
   const hast: Root = fromHTMLStringToHast(htmlString, allowDangerousHtml, {
     fragment: true
   });
 
+  const lastElementChild =
+    hast.children.at(-1).type === "element"
+      ? findLastNestedChild(hast.children.at(-1) as HElement)
+      : undefined;
+
   // Render the hast as JSX
-  return renderChildren(hast);
+  return renderChildren(hast, showIndicator, lastElementChild);
 };

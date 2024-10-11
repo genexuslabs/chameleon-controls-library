@@ -4,6 +4,7 @@ import { markdownReadmeModel } from "./models";
 
 let initialMarkdown = markdownReadmeModel;
 let rawHTMLEnabled = "false";
+let showIndicator = "false";
 
 let checkboxRef: HTMLChCheckboxElement;
 let textareaRef: HTMLTextAreaElement;
@@ -23,6 +24,7 @@ const handleValueChange = () => {
 
 const handleCheckboxValueChange = () => {
   rawHTMLEnabled = checkboxRef.value;
+  showIndicator = checkboxRef.value;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
@@ -39,6 +41,14 @@ const render: ShowcaseRender = designSystem => (
     <div class="markdown-test-properties">
       <ch-checkbox
         caption="Raw HTML enabled"
+        class="checkbox"
+        checkedValue="true"
+        onInput={handleCheckboxValueChange}
+        ref={el => (checkboxRef = el)}
+      ></ch-checkbox>
+
+      <ch-checkbox
+        caption="Show indicator"
         class="checkbox"
         checkedValue="true"
         onInput={handleCheckboxValueChange}
@@ -63,6 +73,7 @@ const render: ShowcaseRender = designSystem => (
       }
       value={initialMarkdown}
       rawHtml={rawHTMLEnabled === "true"}
+      showIndicator={showIndicator === "true"}
     ></ch-markdown-viewer>
   </div>
 );

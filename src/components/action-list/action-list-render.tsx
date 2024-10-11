@@ -32,7 +32,7 @@ import {
   ActionListCaptionChangeEventDetail,
   ActionListFixedChangeEventDetail
 } from "./internal/action-list-item/types";
-import { removeElement } from "../../common/array";
+import { removeIndex } from "../../common/array";
 import { mouseEventModifierKey } from "../common/helpers";
 import { actionListKeyboardNavigation } from "./keyboard-navigation";
 import {
@@ -830,7 +830,7 @@ export class ChActionListRender {
     if (itemToRemoveIndex > -1) {
       // Remove the UI model from the previous parent. The equality function
       // must be by index, not by object reference
-      removeElement(parentArray, itemToRemoveIndex);
+      removeIndex(parentArray, itemToRemoveIndex);
     }
 
     this.#flattenedModel.delete(itemToRemoveId);

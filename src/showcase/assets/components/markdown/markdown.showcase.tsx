@@ -4,8 +4,10 @@ import { markdownReadmeModel } from "./models";
 
 let initialMarkdown = markdownReadmeModel;
 let rawHTMLEnabled = "false";
+let showIndicator = "false";
 
-let checkboxRef: HTMLChCheckboxElement;
+let checkboxRawHTMLRef: HTMLChCheckboxElement;
+let checkboxIndicatorRef: HTMLChCheckboxElement;
 let textareaRef: HTMLTextAreaElement;
 
 const handleValueChange = () => {
@@ -22,12 +24,13 @@ const handleValueChange = () => {
 };
 
 const handleCheckboxValueChange = () => {
-  rawHTMLEnabled = checkboxRef.value;
+  rawHTMLEnabled = checkboxRawHTMLRef.value;
+  showIndicator = checkboxIndicatorRef.value;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = checkboxRef.closest("ch-showcase");
+  const showcaseRef = checkboxRawHTMLRef.closest("ch-showcase");
 
   if (showcaseRef) {
     forceUpdate(showcaseRef);
@@ -42,7 +45,15 @@ const render: ShowcaseRender = designSystem => (
         class="checkbox"
         checkedValue="true"
         onInput={handleCheckboxValueChange}
-        ref={el => (checkboxRef = el)}
+        ref={el => (checkboxRawHTMLRef = el)}
+      ></ch-checkbox>
+
+      <ch-checkbox
+        caption="Show indicator"
+        class="checkbox"
+        checkedValue="true"
+        onInput={handleCheckboxValueChange}
+        ref={el => (checkboxIndicatorRef = el)}
       ></ch-checkbox>
     </div>
 
@@ -63,6 +74,7 @@ const render: ShowcaseRender = designSystem => (
       }
       value={initialMarkdown}
       rawHtml={rawHTMLEnabled === "true"}
+      showIndicator={showIndicator === "true"}
     ></ch-markdown-viewer>
   </div>
 );

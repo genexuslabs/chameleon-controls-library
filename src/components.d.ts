@@ -769,6 +769,10 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
+          * Specifies a set of parts to use in the Host element (`ch-combo-box-render`).
+         */
+        "hostParts"?: string;
+        /**
           * Specifies the items of the control
          */
         "model": ComboBoxModel;
@@ -1037,6 +1041,10 @@ export namespace Components {
         "getImagePathCallback"?: (
     imageSrc: string
   ) => GxImageMultiState | undefined;
+        /**
+          * Specifies a set of parts to use in the Host element (`ch-edit`).
+         */
+        "hostParts"?: string;
         /**
           * This property defines the maximum string length that the user can enter into the control.
          */
@@ -6902,6 +6910,10 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * Specifies a set of parts to use in the Host element (`ch-combo-box-render`).
+         */
+        "hostParts"?: string;
+        /**
           * Specifies the items of the control
          */
         "model"?: ComboBoxModel;
@@ -7170,6 +7182,10 @@ declare namespace LocalJSX {
         "getImagePathCallback"?: (
     imageSrc: string
   ) => GxImageMultiState | undefined;
+        /**
+          * Specifies a set of parts to use in the Host element (`ch-edit`).
+         */
+        "hostParts"?: string;
         /**
           * This property defines the maximum string length that the user can enter into the control.
          */

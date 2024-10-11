@@ -282,6 +282,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         value: "background"
       },
       {
+        id: "hostParts",
+        caption: "Host Parts",
+        value: undefined,
+        type: "string"
+      },
+      {
         id: "autocapitalize",
         caption: "Auto Capitalize",
         columnSpan: 2,
@@ -387,6 +393,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
       value: "getImagePathCallback",
       type: "function"
     },
+    { name: "hostParts", defaultValue: undefined, type: "string" },
     { name: "maxLength", defaultValue: undefined, type: "number" },
     { name: "mode", defaultValue: undefined, type: "string" },
     { name: "multiline", defaultValue: false, type: "boolean" },

@@ -1,5 +1,5 @@
 import { h } from "@stencil/core";
-import { AlignType, Code, Root, Table } from "mdast";
+import { AlignType, Code, Html, Root, Table } from "mdast";
 import { markdownToMdAST } from "@genexus/markdown-parser";
 
 import {
@@ -26,9 +26,9 @@ export const LAST_NESTED_CHILD_CLASS = "last-nested-child";
 
 // Lazy load the code parser implementation
 let HTMLToJSX: typeof rawHTMLToJSX;
-let lastNestedChild: Root | ElementsWithChildren | Code;
+let lastNestedChild: Root | ElementsWithChildren | Code | Html;
 
-const isLastNestedChildClass = (element: ElementsWithChildren | Code) =>
+const isLastNestedChildClass = (element: ElementsWithChildren | Code | Html) =>
   element === lastNestedChild;
 
 const checkAndGetLastNestedChildClass = (
@@ -226,7 +226,12 @@ export const renderDictionary: {
     }
 
     return metadata.rawHTML
-      ? HTMLToJSX(element.value, metadata.allowDangerousHtml)
+      ? HTMLToJSX(
+          element.value,
+          metadata.allowDangerousHtml,
+          // TODO: Add unit tests for these cases
+          metadata.showIndicator && isLastNestedChildClass(element)
+        )
       : element.value;
   },
 
@@ -347,7 +352,7 @@ const findLastNestedChild = (
     return findLastNestedChild(lastChild as ElementsWithChildren);
   }
 
-  if (lastChild.type === "code") {
+  if (lastChild.type === "code" || lastChild.type === "html") {
     return lastChild;
   }
 

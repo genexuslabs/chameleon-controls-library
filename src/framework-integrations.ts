@@ -26,6 +26,7 @@ const chameleonComponents: {
   "ch-dropdown": 0,
   "ch-dropdown-render": 0,
   "ch-edit": 0,
+  "ch-file-picker": 0,
   "ch-flexible-layout": 0,
   "ch-flexible-layout-render": 0,
   "ch-form-checkbox": 0,

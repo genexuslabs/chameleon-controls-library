@@ -37,7 +37,8 @@ import { mouseEventModifierKey } from "../common/helpers";
 import { actionListKeyboardNavigation } from "./keyboard-navigation";
 import {
   ACTION_LIST_ITEM_TAG,
-  getActionListOrGroupItemFromEvent
+  getActionListOrGroupItemFromEvent,
+  getParentArray
 } from "./utils";
 import { updateItemProperty } from "./update-item-property";
 import { actionListDefaultTranslations } from "./translations";
@@ -587,7 +588,7 @@ export class ChActionListRender {
     this.modifyItemCaptionCallback(itemId, newCaption)
       .then(() => {
         // Sort items in parent model
-        this.#sortModel(this.#getParentArray(itemUIModel));
+        this.#sortModel(getParentArray(itemUIModel));
 
         // Update filters
         // this.#scheduleFilterProcessing();
@@ -631,7 +632,7 @@ export class ChActionListRender {
     itemInfo.fixed = newFixedValue;
 
     // Sort items in parent model
-    this.#sortModel(this.#getParentArray(itemUIModel));
+    this.#sortModel(getParentArray(itemUIModel));
 
     // Queue a re-render to update the fixed binding and the order of the items
     forceUpdate(this);
@@ -655,10 +656,6 @@ export class ChActionListRender {
       }
     );
   }
-
-  #getParentArray = (itemUIModel: ActionListItemModelExtended) =>
-    (itemUIModel as ActionListItemModelExtendedRoot).root ??
-    (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items;
 
   #getItemOrGroupInfo = (itemId: string) =>
     this.#flattenedModel.get(itemId).item as

@@ -13,8 +13,16 @@ import {
 } from "./callbacks";
 import { mercuryChatMessageRender } from "./mercury-code-render";
 import { renderShowcaseProperties } from "../utils";
+import { MimeTypes } from "../../../../common/mime-type/mime-types";
 
 const state: Partial<HTMLChChatElement> = {};
+
+const supportedMimeTypes: MimeTypes[] = [
+  "application/javascript",
+  "image/svg+xml",
+  "image/png",
+  "image/jpeg"
+];
 
 const render: ShowcaseRender = designSystem => (
   <ch-chat
@@ -34,7 +42,9 @@ const render: ShowcaseRender = designSystem => (
     }
     isMobile={false}
     items={state.items}
+    supportedMimeTypes={supportedMimeTypes}
     translations={chatTranslations}
+    upload={state.upload}
   ></ch-chat>
 );
 
@@ -54,6 +64,17 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         ],
         value: longChatRecord,
         type: "enum"
+      }
+    ]
+  },
+  {
+    caption: "Upload",
+    properties: [
+      {
+        id: "upload",
+        caption: "Upload",
+        type: "boolean",
+        value: false
       }
     ]
   }
@@ -78,6 +99,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       fixed: true,
       value: "controlUIModel",
       type: "function"
+    },
+    {
+      name: "upload",
+      defaultValue: false,
+      type: "boolean"
     }
   ];
 

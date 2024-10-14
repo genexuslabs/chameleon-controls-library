@@ -155,19 +155,19 @@ export type ChatInternalCallbacks = {
    * Displays a notification when the user tried to upload more file than the
    * maximum allowed by the assistant.
    */
-  showMaxFileCountForUploadError: (maxFileCount: number) => void;
+  showMaxFileCountForUploadError?: (maxFileCount: number) => void;
 
   /**
    * Displays a notification when the user tried to upload a file that weights
    * more than the maximum allowed by the assistant.
    */
-  showMaxFileSizeForUploadError: (maxFileSize: number) => void;
+  showMaxFileSizeForUploadError?: (maxFileSize: number) => void;
 
   /**
    * Given the file, it uploads the file to the server and returns the URL of
    * the public file that will be used in the user chat message.
    */
-  uploadFile: (file: File) => Promise<{ caption: string; url: string }>;
+  uploadFile?: (file: File) => Promise<{ caption: string; url: string }>;
 };
 
 export type ChatInternalFileToUpload = {

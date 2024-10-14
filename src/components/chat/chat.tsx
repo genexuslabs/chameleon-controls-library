@@ -10,6 +10,7 @@ import {
   h
 } from "@stencil/core";
 import {
+  ChFilePickerCustomEvent,
   ChVirtualScrollerCustomEvent,
   DropdownModel,
   VirtualScrollVirtualItems
@@ -240,7 +241,7 @@ export class ChChat {
       this.items.push(message);
       forceUpdate(this);
     } else {
-      await this.#virtualScrollRef.addItems("end", message);
+      await this.#virtualScrollRef.addItems("end", [message]);
     }
   };
 
@@ -737,9 +738,9 @@ export class ChChat {
             )}
 
             <ch-edit
-              part="send-input"
               accessibleName={accessibleName.sendInput}
               autoGrow
+              hostParts="send-input"
               multiline
               placeholder={this.translations.placeholder.sendInput}
               onKeyDown={this.#sendMessageKeyboard}

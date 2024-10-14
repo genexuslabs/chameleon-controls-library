@@ -118,12 +118,14 @@ function dummyStreaming(
             files: streamingCompleted
               ? [
                   {
+                    caption: "Mars Exploration Contract",
                     url: "https://next.genexus.ai",
-                    caption: "Mars Exploration Contract"
+                    mimeType: "text/html"
                   },
                   {
+                    caption: "Venus Exploration Contract",
                     url: "https://gx-chameleon.netlify.app",
-                    caption: "Venus Exploration Contract"
+                    mimeType: "text/html"
                   }
                 ]
               : undefined
@@ -143,8 +145,32 @@ function dummyStreaming(
 
 export const chatCallbacks: ChatInternalCallbacks = {
   clear: () => new Promise(resolve => resolve()),
+  loadMoreItems: () =>
+    new Promise(resolve =>
+      setTimeout(() => {
+        resolve({ items: [], morePages: false });
+      }, 250)
+    ),
   sendChat: sendChatToLLM,
-  uploadFile: () => new Promise(resolve => resolve("")),
+  uploadFile: (file: File) => {
+    const fileSrc = URL.createObjectURL(file);
+
+    setTimeout(() => {
+      URL.revokeObjectURL(fileSrc); // Avoid memory leaks in the mock
+    }, 4500);
+
+    return new Promise(
+      resolve =>
+        setTimeout(
+          () =>
+            resolve({
+              caption: `${Math.random() * 1000}-${file.name}`,
+              url: fileSrc
+            }),
+          2500 + (file.size % 1000)
+        ) // (imageFile.size % 1000) is a dummy way to make the upload time "more real"
+    );
+  },
   stopGeneratingAnswer: () => {
     clearTimeout(timeOut);
 
@@ -166,23 +192,34 @@ export const chatCallbacks: ChatInternalCallbacks = {
 
 export const chatTranslations: ChatTranslations = {
   accessibleName: {
-    chat: "Chat",
-    clearChat: "Clear chat",
+    audioPicker: "Select audios",
+    clearConversation: "Clear conversation",
     copyResponseButton: "Copy assistant response",
     downloadCodeButton: "Download code",
+    filePicker: "Select files",
     imagePicker: "Select images",
+    regenerateAnswerButton: "Regenerate Answer",
+    removeUploadedAudio: "Remove uploaded audio",
+    removeUploadedFile: "Remove uploaded file",
     removeUploadedImage: "Remove uploaded image",
+    removeUploadedVideo: "Remove uploaded video",
     sendButton: "Send",
     sendInput: "Message",
-    stopGeneratingAnswerButton: "Stop generating answer"
+    stopGeneratingAnswerButton: "Stop generating answer",
+    videoPicker: "Select videos"
   },
   placeholder: {
     sendInput: "Ask me a question..."
   },
   text: {
+    audio: "Audio",
     copyCodeButton: "Copy code",
+    file: "File",
+    image: "Image",
+    page: "Page",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
-    sourceFiles: "Source files:"
+    sourceFiles: "Source files:",
+    video: "Video"
   }
 };
 

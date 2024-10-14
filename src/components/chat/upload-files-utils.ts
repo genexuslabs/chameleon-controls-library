@@ -6,6 +6,7 @@ import {
 import { MimeTypes } from "../../common/mime-type/mime-types";
 import { ChChat } from "./chat";
 import { ChatInternalFileToUpload } from "./types";
+import { ChFilePickerCustomEvent } from "../../components";
 
 export const removeDuplicatedSelectedFiles = (
   newSelectedFiles: File[],

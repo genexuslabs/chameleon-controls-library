@@ -1,97 +1,26 @@
 import { h } from "@stencil/core";
-import { ChatContentFile, ChatMessageByRole } from "./types";
-import { ChatTranslations } from "./translations";
-import { copyToTheClipboard } from "../../common/utils";
 import {
-  MarkdownViewerCodeRender,
-  MarkdownViewerCodeRenderOptions
-} from "../markdown-viewer/parsers/types";
+  ChatContentFile,
+  ChatContentFiles,
+  ChatMessageAssistantStatus,
+  ChatMessageByRole
+} from "./types";
+import { copyToTheClipboard } from "../../common/utils";
 import {
   getFileExtension,
   getMimeTypeFormat
 } from "../../common/mime-type/mime-type-mapping";
+import { defaultChatCodeRender } from "./default-code-render";
 
 const copy = (text: string) => () => copyToTheClipboard(text);
 
 const getAriaBusyValue = (
-  status?: "complete" | "waiting" | "streaming" | undefined
+  status?: ChatMessageAssistantStatus | undefined
 ): "true" | "false" =>
   status === "complete" || status === undefined ? "false" : "true";
 
-const getAssistantParts = (
-  status?: "complete" | "waiting" | "streaming" | undefined
-) => (status ? `assistant-content ${status}` : "assistant-content");
-
-const downloadCode =
-  (
-    options: MarkdownViewerCodeRenderOptions,
-    hyperlinkRef: { anchor: HTMLAnchorElement }
-  ) =>
-  () => {
-    // Create the blob variable on the click event
-    const blob = new Blob([options.plainText], { type: "text/plain" });
-
-    // Create blob object
-    const url = window.URL.createObjectURL(blob);
-
-    hyperlinkRef.anchor.href = url;
-    hyperlinkRef.anchor.download = "Answer.txt";
-    hyperlinkRef.anchor.click(); // Download the blob
-
-    // Remove the blob object to free the memory
-    setTimeout(() => {
-      window.URL.revokeObjectURL(url);
-    });
-  };
-
-const defaultCodeRender =
-  (
-    chatRef: HTMLChChatElement,
-    translations: ChatTranslations
-  ): MarkdownViewerCodeRender =>
-  (options: MarkdownViewerCodeRenderOptions): any =>
-    (
-      <div>
-        <div class="code-block__header" part="code-block__header">
-          {options.language}
-
-          <div
-            class="code-block__header-actions"
-            part="code-block__header-actions"
-          >
-            <button
-              aria-label={
-                chatRef.isMobile ? translations.text.copyCodeButton : undefined
-              }
-              class="code-block__copy-code-button"
-              part="code-block__copy-code-button"
-              type="button"
-              onClick={copy(options.plainText)}
-            >
-              {!chatRef.isMobile && translations.text.copyCodeButton}
-            </button>
-
-            {chatRef.hyperlinkToDownloadFile && (
-              <button
-                aria-label={translations.accessibleName.downloadCodeButton}
-                title={translations.accessibleName.downloadCodeButton}
-                class="code-block__download-code-button"
-                part="code-block__download-code-button"
-                onClick={downloadCode(options, chatRef.hyperlinkToDownloadFile)}
-              ></button>
-            )}
-          </div>
-        </div>
-
-        <ch-code
-          class="code-block__content"
-          language={options.language}
-          lastNestedChildClass={options.lastNestedChildClass}
-          showIndicator={options.showIndicator}
-          value={options.plainText}
-        ></ch-code>
-      </div>
-    );
+const getAssistantParts = (status?: ChatMessageAssistantStatus | undefined) =>
+  status ? `assistant-content ${status}` : "assistant-content";
 
 const userContentRender = {
   audio: (file: ChatContentFile) =>
@@ -169,19 +98,43 @@ const renderUserMessage = (userMessage: ChatMessageByRole<"user">) =>
     </div>
   );
 
+const markdownRender = (
+  chatRef: HTMLChChatElement,
+  content: string,
+  showIndicator: boolean,
+  callbacks?: {
+    copyCode?: (content: string) => void;
+    downloadCode?: (plainCode: string) => void;
+  }
+) => (
+  <ch-markdown-viewer
+    renderCode={
+      chatRef.renderCode ??
+      defaultChatCodeRender(chatRef, showIndicator, callbacks)
+    }
+    showIndicator={showIndicator}
+    theme={chatRef.markdownTheme}
+    value={content}
+  ></ch-markdown-viewer>
+);
+
 const renderDefaultAssistantMessage = (
   chatRef: HTMLChChatElement,
-  messageModel: ChatMessageByRole<"assistant">
+  messageModel: ChatMessageByRole<"assistant">,
+  callbacks?: {
+    copyCode?: (content: string) => void;
+    downloadCode?: (plainCode: string) => void;
+  }
 ) => {
   const messageContent =
     typeof messageModel.content === "string"
       ? messageModel.content
       : messageModel.content.message;
 
-  const files =
-    (messageModel.content as ChatAssistantContentFiles).files ?? null;
+  const files = (messageModel.content as ChatContentFiles).files ?? null;
 
   const translations = chatRef.translations;
+  const showIndicator = messageModel.status === "streaming";
 
   return (
     <div
@@ -200,14 +153,7 @@ const renderDefaultAssistantMessage = (
         </div>
       ) : (
         [
-          <ch-markdown-viewer
-            renderCode={
-              chatRef.renderCode ?? defaultCodeRender(chatRef, translations)
-            }
-            showIndicator={messageModel.status === "streaming"}
-            theme={chatRef.markdownTheme}
-            value={messageContent}
-          ></ch-markdown-viewer>,
+          markdownRender(chatRef, messageContent, showIndicator, callbacks),
 
           files && (
             <div class="assistant-files" part="assistant-files">
@@ -239,15 +185,7 @@ const renderDefaultAssistantMessage = (
 const renderErrorMessage = (
   chatRef: HTMLChChatElement,
   messageModel: ChatMessageByRole<"error">
-) => (
-  <ch-markdown-viewer
-    renderCode={
-      chatRef.renderCode ?? defaultCodeRender(chatRef, chatRef.translations)
-    }
-    theme={chatRef.markdownTheme}
-    value={messageModel.content}
-  ></ch-markdown-viewer>
-);
+) => markdownRender(chatRef, messageModel.content, false);
 
 export const defaultChatRender =
   (chatRef: HTMLChChatElement) =>

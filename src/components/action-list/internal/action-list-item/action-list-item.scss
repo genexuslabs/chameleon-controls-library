@@ -17,6 +17,7 @@
     "stretch-start block-end stretch-end" max-content / max-content 1fr max-content;
 }
 
+// TODO: Fix "inline-caption: start" items support
 .align-container {
   display: grid;
   grid-auto-flow: column;

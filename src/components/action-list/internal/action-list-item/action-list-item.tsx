@@ -32,10 +32,21 @@ import {
   ActionListFixedChangeEventDetail,
   ActionListItemActionTypeBlockInfo
 } from "./types";
-import { tokenMap } from "../../../../common/utils";
+import {
+  tokenMap,
+  updateDirectionInImageCustomVar
+} from "../../../../common/utils";
 import { computeExportParts } from "./compute-exportparts";
 import { computeActionTypeBlocks } from "./compute-editing-sections";
 import { ActionListTranslations } from "../../translations";
+import {
+  GxImageMultiState,
+  GxImageMultiStateStart
+} from "../../../../common/types";
+import {
+  DEFAULT_GET_IMAGE_PATH_CALLBACK,
+  getControlRegisterProperty
+} from "../../../../common/registry-properties";
 
 const ACTION_TYPE_PARTS = {
   fix: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_FIX,
@@ -164,6 +175,14 @@ export class ChActionListItem {
    *
    */
   @Prop() readonly fixed?: boolean = false;
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * imgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: (
+    item: ActionListItemAdditionalBase
+  ) => GxImageMultiState | undefined;
 
   /**
    * `true` if the checkbox's value is indeterminate.
@@ -306,11 +325,15 @@ export class ChActionListItem {
     item: ActionListItemAdditionalBase | ActionListItemAdditionalAction
   ) => {
     const additionalAction = item as ActionListItemAdditionalAction;
-    const hasImage = !!item.imageSrc;
-    const hasPseudoImage = hasImage && item.imageType !== "background";
+    const hasImage = !!item.imgSrc;
+    const hasPseudoImage = hasImage && item.imgType !== "img";
     const pseudoImageStartClass = hasPseudoImage
-      ? startPseudoImageTypeDictionary[item.imageType ?? "background"]
+      ? startPseudoImageTypeDictionary[item.imgType ?? "background"]
       : null;
+    const computedPseudoImage = hasPseudoImage
+      ? this.#getComputedImage(additionalAction)
+      : null;
+
     const imageTag =
       hasImage &&
       renderImg(
@@ -318,8 +341,8 @@ export class ChActionListItem {
         item.part
           ? `${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM} ${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE} ${item.part}`
           : `${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM} ${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE}`,
-        item.imageSrc,
-        item.imageType
+        item.imgSrc,
+        item.imgType
       );
 
     const action = additionalAction.action;
@@ -336,6 +359,10 @@ export class ChActionListItem {
           class={{
             "additional-item": true,
             [pseudoImageStartClass]: hasPseudoImage && actionTypeIsCustom,
+
+            // TODO: Add support for these classes
+            [computedPseudoImage?.classes]:
+              hasPseudoImage && actionTypeIsCustom && !!computedPseudoImage,
             "show-on-mouse-hover":
               (actionTypeIsFix && !this.fixed) ||
               (!actionTypeIsFix && action.showOnHover),
@@ -363,7 +390,7 @@ export class ChActionListItem {
           })}
           style={
             hasPseudoImage && actionTypeIsCustom
-              ? { "--ch-start-img": `url(${item.imageSrc})` }
+              ? computedPseudoImage?.styles
               : null
           }
           disabled={this.disabled}
@@ -389,8 +416,9 @@ export class ChActionListItem {
         <span
           key={additionalAction.id ?? null}
           class={{
-            "additional-item": true,
-            [pseudoImageStartClass]: !!pseudoImageStartClass
+            "additional-item not-actionable": true,
+            [pseudoImageStartClass]: !!pseudoImageStartClass,
+            [computedPseudoImage?.classes]: !!computedPseudoImage
           }}
           part={tokenMap({
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
@@ -403,11 +431,7 @@ export class ChActionListItem {
 
             [item.part]: !!item.part
           })}
-          style={
-            hasPseudoImage
-              ? { "--ch-start-img": `url(${item.imageSrc})` }
-              : null
-          }
+          style={hasPseudoImage && computedPseudoImage?.styles}
         >
           {imageTag}
           {item.caption}
@@ -420,9 +444,11 @@ export class ChActionListItem {
       return (
         <div
           aria-hidden="true"
-          class={`additional-item ${
-            imageTypeDictionary[item.imageType ?? "background"]
-          }`}
+          class={{
+            "additional-item not-actionable": true,
+            [imageTypeDictionary[item.imgType ?? "background"]]: true,
+            [computedPseudoImage?.classes]: !!computedPseudoImage
+          }}
           part={tokenMap({
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE]: true,
@@ -434,7 +460,7 @@ export class ChActionListItem {
 
             [item.part]: !!item.part
           })}
-          style={{ "--ch-img": `url(${item.imageSrc})` }}
+          style={hasPseudoImage && computedPseudoImage?.styles}
         ></div>
       );
     }
@@ -650,6 +676,33 @@ export class ChActionListItem {
 
     this.editing = false;
     this.deleting = false;
+  };
+
+  #getComputedImage = (
+    additionalItem: ActionListItemAdditionalBase
+  ): GxImageMultiStateStart | null => {
+    if (!additionalItem.imgSrc) {
+      return null;
+    }
+
+    // TODO: If we migrate this component to Lit, we should improve the
+    // efficiency of this lookup
+    const getImagePathCallback =
+      this.getImagePathCallback ??
+      getControlRegisterProperty(
+        "getImagePathCallback",
+        "ch-action-list-render"
+      ) ??
+      DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
+    const img = getImagePathCallback(additionalItem.imgSrc);
+
+    return img
+      ? (updateDirectionInImageCustomVar(
+          img,
+          "start"
+        ) as GxImageMultiStateStart)
+      : null;
   };
 
   connectedCallback() {

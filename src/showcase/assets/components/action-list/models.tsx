@@ -1,9 +1,13 @@
+import { GxImageMultiState } from "../../../../common/types";
 import {
+  ActionListItemAdditionalBase,
   ActionListItemAdditionalInformation,
   ActionListModel
 } from "../../../../components/action-list/types";
 import { h } from "@stencil/core";
 
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 const chatIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/chat.svg";
@@ -15,6 +19,35 @@ const deleteIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/delete.svg";
 
 let acceptModification = true;
+
+export const getActionListPathCallback = (
+  additionalItem: ActionListItemAdditionalBase
+): GxImageMultiState => {
+  if (additionalItem.imgSrc === MODULE_ICON) {
+    return {
+      base: "var(--icon-module-base)",
+      active: "var(--icon-module-active)",
+      hover: "var(--icon-module-hover)",
+      disabled: "var(--icon-module-disabled)"
+    };
+  }
+
+  if (additionalItem.imgSrc === FOLDER_ICON) {
+    return {
+      base: "var(--icon-folder-base)",
+      active: "var(--icon-folder-active)",
+      hover: "var(--icon-folder-hover)",
+      disabled: "var(--icon-folder-disabled)"
+    };
+  }
+
+  return {
+    base: "var(--icon-stencil-base)",
+    active: "var(--icon-stencil-active)",
+    hover: "var(--icon-stencil-hover)",
+    disabled: "var(--icon-stencil-disabled)"
+  };
+};
 
 export const modifyItemCaptionCallback = () =>
   new Promise<void>((resolve, reject) => {
@@ -36,7 +69,7 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imgSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
           { caption: "Nicolás Cámera" },
           { caption: "6 days ago" }
@@ -56,7 +89,7 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imgSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
           { caption: "Nicolás Cámera" },
           { caption: "6 days ago" }
@@ -73,7 +106,7 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imgSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
           { caption: "Nicolás Cámera" },
           { caption: "6 days ago" }
@@ -89,8 +122,7 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            imageSrc:
-              "https://avatars.githubusercontent.com/u/49991370?s=96&v=4"
+            imgSrc: "https://avatars.githubusercontent.com/u/49991370?s=96&v=4"
           },
           { caption: "Daniel Mariño" },
           { caption: "7 days ago" }
@@ -113,7 +145,7 @@ export const GitHubChangesModel: ActionListModel = [
           { caption: "src\\common\\", part: "github-changes-directory" },
           { caption: "renders.tsx", part: "github-changes-file" }
         ],
-        end: [{ imageSrc: "new" }]
+        end: [{ imgSrc: "new" }]
       }
     }
   },
@@ -135,7 +167,7 @@ export const GitHubChangesModel: ActionListModel = [
             part: "github-changes-file"
           }
         ],
-        end: [{ imageSrc: "modified" }]
+        end: [{ imgSrc: "modified" }]
       }
     }
   },
@@ -157,7 +189,7 @@ export const GitHubChangesModel: ActionListModel = [
             part: "github-changes-file"
           }
         ],
-        end: [{ imageSrc: "new" }]
+        end: [{ imgSrc: "new" }]
       }
     }
   },
@@ -180,7 +212,7 @@ export const GitHubChangesModel: ActionListModel = [
             part: "github-changes-file"
           }
         ],
-        end: [{ imageSrc: "new" }]
+        end: [{ imgSrc: "new" }]
       }
     }
   },
@@ -203,7 +235,7 @@ export const GitHubChangesModel: ActionListModel = [
             part: "github-changes-file"
           }
         ],
-        end: [{ imageSrc: "new" }]
+        end: [{ imgSrc: "new" }]
       }
     }
   }
@@ -359,7 +391,7 @@ export const recentKBs: ActionListModel = [
     caption: "TestIDEWeb",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -369,7 +401,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularVisualTests",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -379,7 +411,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularPlayground",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -389,7 +421,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularAccessibility",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -399,7 +431,7 @@ export const recentKBs: ActionListModel = [
     caption: "UnanimoShowcase",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   }
@@ -419,7 +451,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Attribute/Variable",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -429,7 +461,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Button",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -439,7 +471,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Component",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -449,7 +481,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Image",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -459,7 +491,7 @@ export const panelToolbox: ActionListModel = [
         caption: "TextBlock",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -469,7 +501,7 @@ export const panelToolbox: ActionListModel = [
         caption: "User Control",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       }
@@ -479,14 +511,17 @@ export const panelToolbox: ActionListModel = [
 
 const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
   "stretch-start": {
-    center: [{ imageSrc: chatIconPath, imageType: "mask" }]
+    center: [{ imgSrc: chatIconPath }]
+  },
+  "inline-caption": {
+    start: [{ imgSrc: chatIconPath, caption: "Status" }]
   },
   "stretch-end": {
     center: [
       {
         accessibleName: "Edit caption",
-        imageSrc: editIconPath,
-        imageType: "mask",
+        imgSrc: editIconPath,
+        imgType: "mask",
         action: {
           type: "modify",
           showOnHover: true
@@ -494,8 +529,8 @@ const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
       },
       {
         accessibleName: "Delete item",
-        imageSrc: deleteIconPath,
-        imageType: "mask",
+        imgSrc: deleteIconPath,
+        imgType: "mask",
         action: {
           type: "remove",
           showOnHover: true
@@ -503,7 +538,7 @@ const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
       },
       {
         accessibleName: "Pin item",
-        imageType: "mask",
+        imgType: "mask",
         action: {
           type: "fix"
         }
@@ -568,7 +603,7 @@ export const GxEAINotifications: ActionListModel = [
     type: "actionable",
     caption: "Project Name",
     additionalInformation: {
-      "inline-caption": { end: [{ imageSrc: redDotIconPath }] },
+      "inline-caption": { end: [{ imgSrc: redDotIconPath }] },
       "block-end": {
         start: [
           { caption: "Ticket #ID Finalized" },
@@ -967,9 +1002,9 @@ const ticketAdditionalInfo = (
       {
         caption: priority,
         part: "priority",
-        imageSrc:
+        imgSrc:
           "https://unpkg.com/@genexus/mercury@latest/dist/assets/icons/system/light/success.svg#enabled",
-        imageType: "mask"
+        imgType: "mask"
       }
     ]
   }

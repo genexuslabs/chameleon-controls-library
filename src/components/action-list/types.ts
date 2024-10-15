@@ -98,8 +98,12 @@ export type ActionListItemAdditionalItem =
 export type ActionListItemAdditionalBase = {
   id?: string;
   caption?: string;
-  imageSrc?: string;
-  imageType?: ImageRender;
+  imgSrc?: string;
+
+  /**
+   * Specifies how the image will be rendered. Defaults to `"background"`.
+   */
+  imgType?: ImageRender;
   part?: string;
 };
 

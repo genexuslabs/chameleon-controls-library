@@ -306,10 +306,10 @@ export class ChActionListItem {
     item: ActionListItemAdditionalBase | ActionListItemAdditionalAction
   ) => {
     const additionalAction = item as ActionListItemAdditionalAction;
-    const hasImage = !!item.imageSrc;
-    const hasPseudoImage = hasImage && item.imageType !== "background";
+    const hasImage = !!item.imgSrc;
+    const hasPseudoImage = hasImage && item.imgType !== "background";
     const pseudoImageStartClass = hasPseudoImage
-      ? startPseudoImageTypeDictionary[item.imageType ?? "background"]
+      ? startPseudoImageTypeDictionary[item.imgType ?? "background"]
       : null;
     const imageTag =
       hasImage &&
@@ -318,8 +318,8 @@ export class ChActionListItem {
         item.part
           ? `${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM} ${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE} ${item.part}`
           : `${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM} ${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE}`,
-        item.imageSrc,
-        item.imageType
+        item.imgSrc,
+        item.imgType
       );
 
     const action = additionalAction.action;
@@ -363,7 +363,7 @@ export class ChActionListItem {
           })}
           style={
             hasPseudoImage && actionTypeIsCustom
-              ? { "--ch-start-img": `url(${item.imageSrc})` }
+              ? { "--ch-start-img": `url(${item.imgSrc})` }
               : null
           }
           disabled={this.disabled}
@@ -404,9 +404,7 @@ export class ChActionListItem {
             [item.part]: !!item.part
           })}
           style={
-            hasPseudoImage
-              ? { "--ch-start-img": `url(${item.imageSrc})` }
-              : null
+            hasPseudoImage ? { "--ch-start-img": `url(${item.imgSrc})` } : null
           }
         >
           {imageTag}
@@ -421,7 +419,7 @@ export class ChActionListItem {
         <div
           aria-hidden="true"
           class={`additional-item ${
-            imageTypeDictionary[item.imageType ?? "background"]
+            imageTypeDictionary[item.imgType ?? "background"]
           }`}
           part={tokenMap({
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
@@ -434,7 +432,7 @@ export class ChActionListItem {
 
             [item.part]: !!item.part
           })}
-          style={{ "--ch-img": `url(${item.imageSrc})` }}
+          style={{ "--ch-img": `url(${item.imgSrc})` }}
         ></div>
       );
     }

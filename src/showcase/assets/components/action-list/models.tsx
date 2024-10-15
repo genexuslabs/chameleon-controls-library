@@ -1,9 +1,13 @@
+import { GxImageMultiState } from "../../../../common/types";
 import {
+  ActionListItemAdditionalBase,
   ActionListItemAdditionalInformation,
   ActionListModel
 } from "../../../../components/action-list/types";
 import { h } from "@stencil/core";
 
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 const chatIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/chat.svg";
@@ -15,6 +19,35 @@ const deleteIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/delete.svg";
 
 let acceptModification = true;
+
+export const getActionListPathCallback = (
+  additionalItem: ActionListItemAdditionalBase
+): GxImageMultiState => {
+  if (additionalItem.imgSrc === MODULE_ICON) {
+    return {
+      base: "var(--icon-module-base)",
+      active: "var(--icon-module-active)",
+      hover: "var(--icon-module-hover)",
+      disabled: "var(--icon-module-disabled)"
+    };
+  }
+
+  if (additionalItem.imgSrc === FOLDER_ICON) {
+    return {
+      base: "var(--icon-folder-base)",
+      active: "var(--icon-folder-active)",
+      hover: "var(--icon-folder-hover)",
+      disabled: "var(--icon-folder-disabled)"
+    };
+  }
+
+  return {
+    base: "var(--icon-stencil-base)",
+    active: "var(--icon-stencil-active)",
+    hover: "var(--icon-stencil-hover)",
+    disabled: "var(--icon-stencil-disabled)"
+  };
+};
 
 export const modifyItemCaptionCallback = () =>
   new Promise<void>((resolve, reject) => {
@@ -478,7 +511,10 @@ export const panelToolbox: ActionListModel = [
 
 const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
   "stretch-start": {
-    center: [{ imgSrc: chatIconPath, imgType: "mask" }]
+    center: [{ imgSrc: chatIconPath }]
+  },
+  "inline-caption": {
+    start: [{ imgSrc: chatIconPath, caption: "Status" }]
   },
   "stretch-end": {
     center: [

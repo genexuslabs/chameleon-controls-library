@@ -41,10 +41,11 @@ import {
   defineControlMarkupWithoutUIModelStencil
 } from "./utils";
 import { registryProperty } from "../../../common/registry-properties";
-import { getImagePathCallbackImage } from "./image/models";
+import { getActionListPathCallback } from "./action-list/models";
+import { getAccordionPathCallback } from "./accordion/models";
 import { getImagePathCallbackEdit } from "./edit/models";
+import { getImagePathCallbackImage } from "./image/models";
 import { getImagePathCallbackTreeView } from "./tree-view/models";
-import { getAccordionPathCallbackEdit } from "./accordion/models";
 
 import {
   getDesignSystem,
@@ -78,7 +79,8 @@ import {
 import { findComponentMetadataUsingURLHash } from "./pages";
 
 registryProperty("getImagePathCallback", {
-  "ch-accordion-render": getAccordionPathCallbackEdit,
+  "ch-action-list-render": getActionListPathCallback,
+  "ch-accordion-render": getAccordionPathCallback,
   "ch-checkbox": getImagePathCallbackEdit,
   "ch-edit": getImagePathCallbackEdit,
   "ch-image": getImagePathCallbackImage,

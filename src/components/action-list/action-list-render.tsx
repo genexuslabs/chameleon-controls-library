@@ -15,6 +15,7 @@ import {
 } from "@stencil/core";
 import {
   ActionListItemActionable,
+  ActionListItemAdditionalBase,
   ActionListItemGroup,
   ActionListItemModel,
   ActionListItemModelExtended,
@@ -26,7 +27,8 @@ import {
 } from "./types";
 import {
   ActionListTranslations,
-  ChActionListItemCustomEvent
+  ChActionListItemCustomEvent,
+  GxImageMultiState
 } from "../../components";
 import {
   ActionListCaptionChangeEventDetail,
@@ -87,6 +89,7 @@ const renderMapping: {
       }
       editable={itemModel.editable ?? actionListRenderState.editableItems}
       fixed={itemModel.fixed}
+      getImagePathCallback={actionListRenderState.getImagePathCallback}
       metadata={itemModel.metadata}
       nested={nested}
       nestedExpandable={nestedExpandable}
@@ -247,6 +250,14 @@ export class ChActionListRender {
     itemInfo: ActionListItemActionable,
     newFixedValue: boolean
   ) => Promise<boolean>;
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * imgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: (
+    additionalItem: ActionListItemAdditionalBase
+  ) => GxImageMultiState | undefined;
 
   /**
    * This property lets you define the model of the control.

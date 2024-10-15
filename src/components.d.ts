@@ -10,10 +10,10 @@ import { AccordionItemExpandedChangeEvent, AccordionModel } from "./components/a
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
-import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
+import { ActionListItemActionable, ActionListItemAdditionalBase, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 import { ActionListTranslations } from "./components/action-list/translations";
 import { ActionListCaptionChangeEventDetail, ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-import { ActionListTranslations as ActionListTranslations1, NavigationListModel as NavigationListModel1 } from "./components";
+import { ActionListTranslations as ActionListTranslations1, GxImageMultiState as GxImageMultiState1, NavigationListModel as NavigationListModel1 } from "./components";
 import { ChatInternalCallbacks, ChatMessage, ChatMessageByRole, ChatMessageByRoleNoId } from "./components/chat/types";
 import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 import { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
@@ -71,10 +71,10 @@ export { AccordionItemExpandedChangeEvent, AccordionModel } from "./components/a
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
-export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
+export { ActionListItemActionable, ActionListItemAdditionalBase, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 export { ActionListTranslations } from "./components/action-list/translations";
 export { ActionListCaptionChangeEventDetail, ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-export { ActionListTranslations as ActionListTranslations1, NavigationListModel as NavigationListModel1 } from "./components";
+export { ActionListTranslations as ActionListTranslations1, GxImageMultiState as GxImageMultiState1, NavigationListModel as NavigationListModel1 } from "./components";
 export { ChatInternalCallbacks, ChatMessage, ChatMessageByRole, ChatMessageByRoleNoId } from "./components/chat/types";
 export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 export { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
@@ -344,6 +344,12 @@ export namespace Components {
         "editing": boolean;
         "fixed"?: boolean;
         /**
+          * This property specifies a callback that is executed when the path for an imgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    item: ActionListItemAdditionalBase
+  ) => GxImageMultiState | undefined;
+        /**
           * `true` if the checkbox's value is indeterminate.
          */
         "indeterminate": boolean;
@@ -408,6 +414,12 @@ export namespace Components {
     itemInfo: ActionListItemActionable,
     newFixedValue: boolean
   ) => Promise<boolean>;
+        /**
+          * This property specifies a callback that is executed when the path for an imgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    additionalItem: ActionListItemAdditionalBase
+  ) => GxImageMultiState1 | undefined;
         /**
           * Given a list of ids, it returns an array of the items that exists in the given list.
          */
@@ -6491,6 +6503,12 @@ declare namespace LocalJSX {
         "editing"?: boolean;
         "fixed"?: boolean;
         /**
+          * This property specifies a callback that is executed when the path for an imgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    item: ActionListItemAdditionalBase
+  ) => GxImageMultiState | undefined;
+        /**
           * `true` if the checkbox's value is indeterminate.
          */
         "indeterminate"?: boolean;
@@ -6567,6 +6585,12 @@ declare namespace LocalJSX {
     itemInfo: ActionListItemActionable,
     newFixedValue: boolean
   ) => Promise<boolean>;
+        /**
+          * This property specifies a callback that is executed when the path for an imgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    additionalItem: ActionListItemAdditionalBase
+  ) => GxImageMultiState1 | undefined;
         /**
           * This property lets you define the model of the control.
          */

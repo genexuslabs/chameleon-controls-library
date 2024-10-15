@@ -43,6 +43,7 @@ import {
 import { updateItemProperty } from "./update-item-property";
 import { actionListDefaultTranslations } from "./translations";
 import { setActionListSelectedItems } from "./selections";
+import { flattenActionListUIModel } from "./flatten-model";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -872,50 +873,8 @@ export class ChActionListRender {
     }
   };
 
-  #flattenUIModel = (model: ActionListModel) => {
-    this.#flattenedModel.clear();
-
-    if (!model) {
-      return;
-    }
-
-    // Traditional for loop is the faster "for"
-    for (let index = 0; index < model.length; index++) {
-      const itemInfo = model[index];
-
-      // Group
-      if (itemInfo.type === "group") {
-        this.#flattenedModel.set(itemInfo.id, { item: itemInfo, root: model });
-        this.#flattenSubUIModel(itemInfo.items, itemInfo);
-      }
-      // Actionable
-      else if (itemInfo.type === "actionable") {
-        this.#flattenedModel.set(itemInfo.id, { item: itemInfo, root: model });
-      }
-    }
-
-    this.#sortModel(model);
-  };
-
-  #flattenSubUIModel = (
-    model: ActionListItemActionable[],
-    parentItem: ActionListItemGroup
-  ) => {
-    if (!model) {
-      return;
-    }
-
-    // Traditional for loop is the faster "for"
-    for (let index = 0; index < model.length; index++) {
-      const itemInfo = model[index];
-      this.#flattenedModel.set(itemInfo.id, {
-        item: itemInfo,
-        parentItem: parentItem
-      });
-    }
-
-    this.#sortModel(model);
-  };
+  #flattenUIModel = (model: ActionListModel) =>
+    flattenActionListUIModel(model, this.#flattenedModel, this.#sortModel);
 
   // #processAdditionalItemParts = () => {
   //   this.#additionalItemsParts = undefined;

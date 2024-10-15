@@ -34,17 +34,22 @@ import {
 } from "./internal/action-list-item/types";
 import { mouseEventModifierKey } from "../common/helpers";
 import { removeElement } from "../../common/array";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
 import { adoptCommonThemes } from "../../common/theme";
 import { actionListKeyboardNavigation } from "./keyboard-navigation";
 import {
   ACTION_LIST_ITEM_TAG,
+  getActionListItemOrGroupInfo,
   getActionListOrGroupItemFromEvent,
   getParentArray
 } from "./utils";
 import { updateItemProperty } from "./update-item-property";
 import { actionListDefaultTranslations } from "./translations";
-import { setActionListSelectedItems } from "./selections";
-import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import {
+  selectedItemsChangeShouldBeEmitted,
+  setActionListSelectedItems
+} from "./selections";
+import { flattenActionListUIModel } from "./flatten-model";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -341,18 +346,6 @@ export class ChActionListRender {
     newCaption: string
   ) => Promise<void>;
 
-  // /**
-  //  * Set this attribute if you want to allow multi selection of the items.
-  //  */
-  // @Prop() readonly multiSelection: boolean = false;
-  // @Watch("multiSelection")
-  // multiSelectionChanged(newMultiSelection: boolean) {
-  //   // MultiSelection is disabled. We must select the last updated item
-  //   if (!newMultiSelection) {
-  //     this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
-  //   }
-  // }
-
   /**
    * This property allows us to implement custom rendering of tree items.
    */
@@ -540,25 +533,16 @@ export class ChActionListRender {
       this.#sortModel(parentArray);
     }
 
-    // MultiSelection is disabled. We must select the last updated item
-    if (this.selection === "single") {
-      if (newSelectedItems.size > 1) {
-        this.#selectedItems = newSelectedItems;
-        this.#removeAllSelectedItemsExceptForTheLast();
-      }
-      // TODO: Add a unit test for this
-      // Different sizes or same size but different selected element
-      else if (
-        this.#selectedItems.size !== newSelectedItems.size ||
-        (this.#selectedItems.size === 1 &&
-          newSelectedItems.size === 1 &&
-          [...this.#selectedItems.keys()][0] !==
-            [...newSelectedItems.keys()][0])
-      ) {
-        this.#selectedItems = newSelectedItems;
-        forceUpdate(this);
-        this.#emitSelectedItemsChange();
-      }
+    if (
+      selectedItemsChangeShouldBeEmitted(
+        this.#selectedItems,
+        newSelectedItems,
+        this.#flattenedModel,
+        this.selection
+      )
+    ) {
+      this.#selectedItems = newSelectedItems;
+      this.#emitSelectedItemsChange();
     }
 
     forceUpdate(this);
@@ -668,9 +652,7 @@ export class ChActionListRender {
   }
 
   #getItemOrGroupInfo = (itemId: string) =>
-    this.#flattenedModel.get(itemId).item as
-      | ActionListItemActionable
-      | ActionListItemGroup;
+    getActionListItemOrGroupInfo(itemId, this.#flattenedModel);
 
   #updateAndEmitSelectedItems = (selection: "single" | "multiple" | "none") => {
     if (selection === "none") {
@@ -679,40 +661,30 @@ export class ChActionListRender {
     }
     // Create the set to allocate the selected items, if necessary
     else {
+      // First render. Do not check to emit selectedItemsChange event.
       if (!this.#selectedItems) {
         this.#selectedItems = new Set();
 
         // TODO: Add a unit test for "?? []"
         setActionListSelectedItems(this.model ?? [], this.#selectedItems);
+        return;
       }
 
-      if (selection === "single") {
-        this.#removeAllSelectedItemsExceptForTheLast();
+      const newSelectedItems = new Set<string>();
+      setActionListSelectedItems(this.model ?? [], newSelectedItems);
+
+      if (
+        selectedItemsChangeShouldBeEmitted(
+          this.#selectedItems,
+          newSelectedItems,
+          this.#flattenedModel,
+          this.selection
+        )
+      ) {
+        this.#selectedItems = newSelectedItems;
+        forceUpdate(this);
+        this.#emitSelectedItemsChange();
       }
-    }
-  };
-
-  #removeAllSelectedItemsExceptForTheLast = () => {
-    const selectedItems = this.#selectedItems;
-
-    if (selectedItems.size > 1) {
-      const selectedItemsArray = [...selectedItems.values()];
-      const lastItemIndex = selectedItems.size - 1;
-
-      // Deselect all items except the last
-      for (let index = 0; index < lastItemIndex; index++) {
-        const itemId = selectedItemsArray[index];
-
-        this.#getItemOrGroupInfo(itemId).selected = false;
-      }
-
-      // Create a new Set with only the last item
-      selectedItems.clear();
-      selectedItems.add(selectedItemsArray[lastItemIndex]);
-
-      forceUpdate(this);
-      this.#emitSelectedItemsChange();
-      // this.#scheduleSelectedItemsChange();
     }
   };
 
@@ -874,50 +846,8 @@ export class ChActionListRender {
     }
   };
 
-  #flattenUIModel = (model: ActionListModel) => {
-    this.#flattenedModel.clear();
-
-    if (!model) {
-      return;
-    }
-
-    // Traditional for loop is the faster "for"
-    for (let index = 0; index < model.length; index++) {
-      const itemInfo = model[index];
-
-      // Group
-      if (itemInfo.type === "group") {
-        this.#flattenedModel.set(itemInfo.id, { item: itemInfo, root: model });
-        this.#flattenSubUIModel(itemInfo.items, itemInfo);
-      }
-      // Actionable
-      else if (itemInfo.type === "actionable") {
-        this.#flattenedModel.set(itemInfo.id, { item: itemInfo, root: model });
-      }
-    }
-
-    this.#sortModel(model);
-  };
-
-  #flattenSubUIModel = (
-    model: ActionListItemActionable[],
-    parentItem: ActionListItemGroup
-  ) => {
-    if (!model) {
-      return;
-    }
-
-    // Traditional for loop is the faster "for"
-    for (let index = 0; index < model.length; index++) {
-      const itemInfo = model[index];
-      this.#flattenedModel.set(itemInfo.id, {
-        item: itemInfo,
-        parentItem: parentItem
-      });
-    }
-
-    this.#sortModel(model);
-  };
+  #flattenUIModel = (model: ActionListModel) =>
+    flattenActionListUIModel(model, this.#flattenedModel, this.#sortModel);
 
   // #processAdditionalItemParts = () => {
   //   this.#additionalItemsParts = undefined;

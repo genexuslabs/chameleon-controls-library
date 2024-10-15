@@ -359,6 +359,8 @@ export class ChActionListItem {
           class={{
             "additional-item": true,
             [pseudoImageStartClass]: hasPseudoImage && actionTypeIsCustom,
+
+            // TODO: Add support for these classes
             [computedPseudoImage?.classes]:
               hasPseudoImage && actionTypeIsCustom && !!computedPseudoImage,
             "show-on-mouse-hover":

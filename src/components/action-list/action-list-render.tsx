@@ -32,8 +32,9 @@ import {
   ActionListCaptionChangeEventDetail,
   ActionListFixedChangeEventDetail
 } from "./internal/action-list-item/types";
-import { removeElement } from "../../common/array";
 import { mouseEventModifierKey } from "../common/helpers";
+import { removeElement } from "../../common/array";
+import { adoptCommonThemes } from "../../common/theme";
 import { actionListKeyboardNavigation } from "./keyboard-navigation";
 import {
   ACTION_LIST_ITEM_TAG,
@@ -43,6 +44,7 @@ import {
 import { updateItemProperty } from "./update-item-property";
 import { actionListDefaultTranslations } from "./translations";
 import { setActionListSelectedItems } from "./selections";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -924,6 +926,7 @@ export class ChActionListRender {
   // }
 
   connectedCallback() {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
     this.#flattenUIModel(this.model);
 
     this.#updateAndEmitSelectedItems(this.selection);
@@ -943,6 +946,7 @@ export class ChActionListRender {
     return (
       <Host
         aria-multiselectable={this.selection === "multiple" ? "true" : null}
+        class={SCROLLABLE_CLASS}
         onClick={
           this.selection === "none"
             ? this.#handleItemClick

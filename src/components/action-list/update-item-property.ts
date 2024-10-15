@@ -1,15 +1,16 @@
 import {
   ActionListItemModel,
   ActionListItemModelExtended,
-  ActionListItemModelExtendedGroup,
-  ActionListItemModelExtendedRoot,
   ActionListItemType,
   ActionListModel
 } from "./types";
+import { getParentArray } from "./utils";
 
 export const updateItemProperty = (
   itemId: string,
-  properties: Partial<ActionListItemModel> & { type: ActionListItemType },
+  propertiesToUpdate: Partial<ActionListItemModel> & {
+    type: ActionListItemType;
+  },
   flattenedTreeModel: Map<string, ActionListItemModelExtended>,
   newSelectedItems: Set<string>
 ): ActionListModel | undefined => {
@@ -19,29 +20,30 @@ export const updateItemProperty = (
   }
   const itemInfo = itemUIModel.item;
 
-  if (properties.type !== itemInfo.type) {
+  // Types doesn't match
+  if (propertiesToUpdate.type !== itemInfo.type) {
     return undefined;
   }
 
-  Object.keys(properties).forEach(propertyName => {
-    if (properties[propertyName] !== undefined) {
-      itemInfo[propertyName] = properties[propertyName];
-    }
-  });
+  // Update properties
+  for (const propertyName in propertiesToUpdate) {
+    const propertyValue = propertiesToUpdate[propertyName];
 
-  if (properties.type === "separator") {
+    if (propertyValue !== undefined) {
+      itemInfo[propertyName] = propertyValue;
+    }
+  }
+
+  if (propertiesToUpdate.type === "separator") {
     return undefined;
   }
 
   // Accumulate selection/deselection
-  if (properties.selected) {
+  if (propertiesToUpdate.selected) {
     newSelectedItems.add(itemId);
-  } else if (properties.selected === false) {
+  } else if (propertiesToUpdate.selected === false) {
     newSelectedItems.delete(itemId);
   }
 
-  return (
-    (itemUIModel as ActionListItemModelExtendedRoot).root ??
-    (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items
-  );
+  return getParentArray(itemUIModel);
 };

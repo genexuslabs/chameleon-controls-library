@@ -42,6 +42,7 @@ import {
 } from "./utils";
 import { updateItemProperty } from "./update-item-property";
 import { actionListDefaultTranslations } from "./translations";
+import { setActionListSelectedItems } from "./selections";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -191,7 +192,9 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
 export class ChActionListRender {
   #flattenedModel: Map<string, ActionListItemModelExtended> = new Map();
   // #additionalItemsParts: Set<string> | undefined;
-  #selectedItems: Set<string> | undefined;
+  #selectedItems: Set<string> | undefined = undefined;
+
+  #shouldUpdateModelAndSelection = false;
 
   @Element() el: HTMLChActionListRenderElement;
 
@@ -243,8 +246,8 @@ export class ChActionListRender {
    */
   @Prop() readonly model: ActionListModel = [];
   @Watch("model")
-  modelChanged(newModel: ActionListModel) {
-    this.#flattenUIModel(newModel);
+  modelChanged() {
+    this.#shouldUpdateModelAndSelection = true;
   }
 
   // /**
@@ -373,19 +376,8 @@ export class ChActionListRender {
    */
   @Prop() readonly selection: "single" | "multiple" | "none" = "none";
   @Watch("selection")
-  selectionChanged(newValue: "single" | "multiple" | "none") {
-    if (newValue === "none") {
-      this.#removeAllSelectedItems();
-      this.#selectedItems = undefined;
-    }
-    // Create the set to allocate the selected items, if necessary
-    else {
-      this.#selectedItems ??= new Set();
-
-      if (newValue === "single") {
-        this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
-      }
-    }
+  selectionChanged() {
+    this.#shouldUpdateModelAndSelection = true;
   }
 
   /**
@@ -548,7 +540,23 @@ export class ChActionListRender {
 
     // MultiSelection is disabled. We must select the last updated item
     if (this.selection === "single") {
-      this.#removeAllSelectedItemsExceptForTheLast(newSelectedItems);
+      if (newSelectedItems.size > 1) {
+        this.#selectedItems = newSelectedItems;
+        this.#removeAllSelectedItemsExceptForTheLast();
+      }
+      // TODO: Add a unit test for this
+      // Different sizes or same size but different selected element
+      else if (
+        this.#selectedItems.size !== newSelectedItems.size ||
+        (this.#selectedItems.size === 1 &&
+          newSelectedItems.size === 1 &&
+          [...this.#selectedItems.keys()][0] !==
+            [...newSelectedItems.keys()][0])
+      ) {
+        this.#selectedItems = newSelectedItems;
+        forceUpdate(this);
+        this.#emitSelectedItemsChange();
+      }
     }
 
     forceUpdate(this);
@@ -662,12 +670,32 @@ export class ChActionListRender {
       | ActionListItemActionable
       | ActionListItemGroup;
 
-  #removeAllSelectedItemsExceptForTheLast = (
-    currentSelectedItems: Set<string>
-  ) => {
-    if (currentSelectedItems.size > 1) {
-      const selectedItemsArray = [...currentSelectedItems.values()];
-      const lastItemIndex = currentSelectedItems.size - 1;
+  #updateAndEmitSelectedItems = (selection: "single" | "multiple" | "none") => {
+    if (selection === "none") {
+      this.#removeAllSelectedItems();
+      this.#selectedItems = undefined;
+    }
+    // Create the set to allocate the selected items, if necessary
+    else {
+      if (!this.#selectedItems) {
+        this.#selectedItems = new Set();
+
+        // TODO: Add a unit test for "?? []"
+        setActionListSelectedItems(this.model ?? [], this.#selectedItems);
+      }
+
+      if (selection === "single") {
+        this.#removeAllSelectedItemsExceptForTheLast();
+      }
+    }
+  };
+
+  #removeAllSelectedItemsExceptForTheLast = () => {
+    const selectedItems = this.#selectedItems;
+
+    if (selectedItems.size > 1) {
+      const selectedItemsArray = [...selectedItems.values()];
+      const lastItemIndex = selectedItems.size - 1;
 
       // Deselect all items except the last
       for (let index = 0; index < lastItemIndex; index++) {
@@ -677,8 +705,8 @@ export class ChActionListRender {
       }
 
       // Create a new Set with only the last item
-      currentSelectedItems.clear();
-      currentSelectedItems.add(selectedItemsArray[lastItemIndex]);
+      selectedItems.clear();
+      selectedItems.add(selectedItemsArray[lastItemIndex]);
 
       forceUpdate(this);
       this.#emitSelectedItemsChange();
@@ -687,12 +715,14 @@ export class ChActionListRender {
   };
 
   #removeAllSelectedItems = () => {
-    this.#selectedItems.forEach(selectedItemId => {
-      const selectedItemInfo = this.#getItemOrGroupInfo(selectedItemId);
-      selectedItemInfo.selected = false;
-    });
+    if (this.#selectedItems) {
+      this.#selectedItems.forEach(selectedItemId => {
+        const selectedItemInfo = this.#getItemOrGroupInfo(selectedItemId);
+        selectedItemInfo.selected = false;
+      });
 
-    this.#selectedItems.clear();
+      this.#selectedItems.clear();
+    }
   };
 
   #handleItemClick = (event: PointerEvent) => {
@@ -894,12 +924,19 @@ export class ChActionListRender {
   // }
 
   connectedCallback() {
-    if (this.selection !== "none") {
-      this.#selectedItems = new Set();
-    }
-
     this.#flattenUIModel(this.model);
+
+    this.#updateAndEmitSelectedItems(this.selection);
     this.el.setAttribute("role", "list");
+  }
+
+  componentWillUpdate() {
+    if (this.#shouldUpdateModelAndSelection) {
+      this.#shouldUpdateModelAndSelection = false;
+
+      this.#flattenUIModel(this.model);
+      this.#updateAndEmitSelectedItems(this.selection);
+    }
   }
 
   render() {

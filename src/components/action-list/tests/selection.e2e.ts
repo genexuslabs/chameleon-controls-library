@@ -12,12 +12,13 @@ import {
 } from "../types";
 
 const FIRST_ITEM_ID = "2023 employee contracts";
+const FIRST_ITEM_ID2 = "2023 employee contracts 2";
 
 const actionListModelSimple: ActionListModel = [
   {
     id: FIRST_ITEM_ID,
     type: "actionable",
-    caption: "2023 employee contracts"
+    caption: FIRST_ITEM_ID
   },
   {
     id: "Investors reports",
@@ -30,14 +31,14 @@ const actionListModelSimple: ActionListModel = [
 const actionListModelSimpleEventSpyDetail = [
   {
     item: {
-      caption: "2023 employee contracts",
+      caption: FIRST_ITEM_ID,
       id: FIRST_ITEM_ID,
       selected: true,
       type: "actionable"
     },
     root: [
       {
-        caption: "2023 employee contracts",
+        caption: FIRST_ITEM_ID,
         id: FIRST_ITEM_ID,
         selected: true,
         type: "actionable"
@@ -45,6 +46,45 @@ const actionListModelSimpleEventSpyDetail = [
       {
         caption: "Investors reports",
         id: "Investors reports",
+        selected: false,
+        type: "actionable"
+      }
+    ]
+  }
+];
+
+const actionListModelSimple2: ActionListModel = [
+  {
+    id: FIRST_ITEM_ID2,
+    type: "actionable",
+    caption: FIRST_ITEM_ID2
+  },
+  {
+    id: "Investors reports 2",
+    type: "actionable",
+    caption: "Investors reports 2",
+    selected: true
+  }
+];
+
+const actionListModelSimple2EventSpyDetail = [
+  {
+    item: {
+      caption: FIRST_ITEM_ID2,
+      id: FIRST_ITEM_ID2,
+      selected: true,
+      type: "actionable"
+    },
+    root: [
+      {
+        caption: FIRST_ITEM_ID2,
+        id: FIRST_ITEM_ID2,
+        selected: true,
+        type: "actionable"
+      },
+      {
+        caption: "Investors reports 2",
+        id: "Investors reports 2",
         selected: false,
         type: "actionable"
       }
@@ -133,4 +173,36 @@ describe("[ch-action-list-render][selection]", () => {
 
   selectionTests(true);
   selectionTests(false);
+
+  it('should work selection="single" after updating the model', async () => {
+    actionListRef.setProperty("model", actionListModelSimple2);
+    actionListRef.setProperty("selection", "single");
+    await page.waitForChanges();
+
+    let actionListItemRef = await page.find(
+      `ch-action-list-render >>> [id='${FIRST_ITEM_ID2}'] >>> button`
+    );
+    await actionListItemRef.press("Space");
+    expect(selectedItemsChangeEventSpy).toHaveReceivedEventDetail(
+      actionListModelSimple2EventSpyDetail
+    );
+
+    selectedItemsChangeEventSpy = await actionListRef.spyOnEvent(
+      "selectedItemsChange"
+    );
+
+    // Update the model
+    actionListRef.setProperty("model", actionListModelSimple);
+    await page.waitForChanges();
+
+    // Click other item
+    actionListItemRef = await page.find(
+      `ch-action-list-render >>> [id='${FIRST_ITEM_ID}'] >>> button`
+    );
+    await actionListItemRef.press("Space");
+    await page.waitForChanges();
+    expect(selectedItemsChangeEventSpy).toHaveReceivedEventDetail(
+      actionListModelSimpleEventSpyDetail
+    );
+  });
 });

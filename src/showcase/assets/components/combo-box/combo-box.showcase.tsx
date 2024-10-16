@@ -307,6 +307,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
               type: "boolean"
             },
             {
+              id: "renderActiveItemIconOnExpand",
+              caption: "Render Active Item Icon On Expand",
+              value: false,
+              type: "boolean"
+            },
+            {
               id: "strict",
               caption: "Strict filter",
               value: false,

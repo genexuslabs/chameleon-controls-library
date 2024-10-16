@@ -7,23 +7,6 @@ import {
   ComboBoxModel
 } from "./types";
 
-export const getComboBoxItemImageCustomVars = (
-  item: ComboBoxItemModel,
-  hasImages: boolean,
-  hasStartImg: boolean,
-  hasEndImg: boolean
-) =>
-  hasImages
-    ? {
-        "--ch-combo-box-item-start-img": hasStartImg
-          ? `url("${item.startImgSrc}")`
-          : null,
-        "--ch-combo-box-item-end-img": hasEndImg
-          ? `url("${item.endImgSrc}")`
-          : null
-      }
-    : undefined;
-
 export const findComboBoxLargestValue = (model: ComboBoxModel): string => {
   let largestValue = "";
   let largestValueLength = 0;

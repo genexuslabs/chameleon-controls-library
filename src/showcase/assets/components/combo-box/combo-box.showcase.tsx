@@ -9,6 +9,7 @@ import {
   comboBoxFilterChange,
   dataTypeInGeneXus,
   simpleModelComboBox1,
+  simpleModelComboBoxWithIcons,
   smallModel
 } from "./models";
 import {
@@ -183,6 +184,10 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
           type: "enum",
           values: [
             { caption: "Simple Model", value: simpleModelComboBox1 },
+            {
+              caption: "Simple Model with icons",
+              value: simpleModelComboBoxWithIcons
+            },
             { caption: "Small Model", value: smallModel },
             { caption: "Data Type Model in GeneXus", value: dataTypeInGeneXus }
           ],
@@ -298,6 +303,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
             {
               id: "hideMatchesAndShowNonMatches",
               caption: "Hide matches and show non-matches",
+              value: false,
+              type: "boolean"
+            },
+            {
+              id: "renderActiveItemIconOnExpand",
+              caption: "Render Active Item Icon On Expand",
               value: false,
               type: "boolean"
             },

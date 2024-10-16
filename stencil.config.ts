@@ -13,9 +13,6 @@ export const config: Config = {
     // It generates the dist/components folder
     { type: "dist-custom-elements" },
     {
-      type: "docs-readme"
-    },
-    {
       type: "www",
       serviceWorker: null,
       copy: [

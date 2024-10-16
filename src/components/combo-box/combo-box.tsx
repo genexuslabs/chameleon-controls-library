@@ -19,6 +19,7 @@ import {
   ComboBoxSuggestOptions,
   ComboBoxItemModel,
   ComboBoxItemGroup,
+  ComboBoxItemLeaf,
   ComboBoxSuggestInfo,
   ComboBoxModel,
   ComboBoxSelectedIndex,
@@ -29,7 +30,7 @@ import {
   COMBO_BOX_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
-import { ChPopoverCustomEvent } from "../../components";
+import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
 import { ChPopoverAlign } from "../popover/types";
 import { focusComposedPath } from "../common/helpers";
 import { filterSubModel } from "./helpers";
@@ -306,6 +307,15 @@ export class ChComboBoxRender
    * (for example, click event).
    */
   @Prop() readonly disabled: boolean = false;
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * imgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: (
+    item: ComboBoxItemLeaf,
+    iconDirection: "start" | "end"
+  ) => GxImageMultiState | undefined;
 
   /**
    * Specifies a set of parts to use in the Host element (`ch-combo-box-render`).

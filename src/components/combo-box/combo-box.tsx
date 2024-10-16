@@ -25,14 +25,15 @@ import {
   ComboBoxSelectedIndex,
   ComboBoxItemModelExtended
 } from "./types";
-import { isMobileDevice, tokenMap } from "../../common/utils";
+import { focusComposedPath } from "../common/helpers";
 import {
   COMBO_BOX_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
-import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
+import { GxImageMultiState } from "../../common/types";
+import { isMobileDevice, tokenMap } from "../../common/utils";
 import { ChPopoverAlign } from "../popover/types";
-import { focusComposedPath } from "../common/helpers";
+import { ChPopoverCustomEvent } from "../../components";
 import { filterSubModel } from "./helpers";
 import {
   comboBoxActiveDescendantIsRendered,

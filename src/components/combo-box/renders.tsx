@@ -1,6 +1,10 @@
 import { h } from "@stencil/core";
-import { ComboBoxItemGroup, ComboBoxItemModel, ComboBoxModel } from "./types";
-import { getComboBoxItemImageCustomVars } from "./utils";
+import {
+  ComboBoxItemGroup,
+  ComboBoxItemImagesModel,
+  ComboBoxItemModel,
+  ComboBoxModel
+} from "./types";
 import { tokenMap } from "../../common/utils";
 import { COMBO_BOX_PARTS_DICTIONARY } from "../../common/reserved-names";
 
@@ -28,6 +32,22 @@ export const getComboBoxItemUIModel = (
   return itemFirstLevel;
 };
 
+// TODO: Add a unit test for these cases
+const getItemImageStyle = (images: ComboBoxItemImagesModel | undefined) => {
+  if (!images) {
+    return undefined;
+  }
+
+  if (images.start && images.end) {
+    return {
+      ...images.start.styles,
+      ...images.end.styles
+    };
+  }
+
+  return images.start?.styles ?? images.end.styles;
+};
+
 export const customComboBoxItemRender =
   (
     insideAGroup: boolean,
@@ -35,6 +55,7 @@ export const customComboBoxItemRender =
     checkToDisplayValue: boolean,
     activeDescendantValue: ComboBoxItemModel | undefined,
     displayedValues: Set<ComboBoxItemModel> | undefined,
+    itemImages: Map<string, ComboBoxItemImagesModel>,
     parentIndex: string
   ) =>
   (item: ComboBoxItemModel, index: number) => {
@@ -46,18 +67,23 @@ export const customComboBoxItemRender =
       return;
     }
 
-    const hasStartImg = !!item.startImgSrc;
-    const hasEndImg = !!item.endImgSrc;
-    const hasImages = hasStartImg || hasEndImg;
-    const startImgType = item.startImgType ?? "background";
-    const endImgType = item.endImgType ?? "background";
+    const images: ComboBoxItemImagesModel | undefined =
+      !!item.startImgSrc || !!item.endImgSrc
+        ? itemImages.get(item.value)
+        : undefined;
+    const hasStartImg = !!images?.start;
+    const hasEndImg = !!images?.end;
 
-    const customVars = getComboBoxItemImageCustomVars(
-      item,
-      hasImages,
-      hasStartImg,
-      hasEndImg
-    );
+    const startImgClasses = hasStartImg
+      ? `img--start start-img-type--${item.startImgType ?? "background"} ${
+          images.start.classes
+        }`
+      : undefined;
+    const endImgClasses = hasEndImg
+      ? `img--end end-img-type--${item.endImgType ?? "background"} ${
+          images.end.classes
+        }`
+      : undefined;
 
     // This variable inherits the disabled state from group parents. Useful
     // to propagate the disabled state in the child buttons
@@ -91,7 +117,8 @@ export const customComboBoxItemRender =
               // eslint-disable-next-line camelcase
               group__header: true,
               "group--expandable": true,
-              "group--collapsed": !itemGroup.expanded
+              "group--collapsed": !itemGroup.expanded,
+              disabled: isDisabled
             }}
             part={tokenMap({
               [item.value]: true,
@@ -101,15 +128,15 @@ export const customComboBoxItemRender =
               [COMBO_BOX_PARTS_DICTIONARY.EXPANDED]: itemGroup.expanded,
               [COMBO_BOX_PARTS_DICTIONARY.COLLAPSED]: !itemGroup.expanded
             })}
-            style={customVars}
+            style={getItemImageStyle(images)}
             disabled={isDisabled}
             type="button"
           >
             <span
               class={{
                 "group__header-caption": true,
-                [`start-img-type--${startImgType} img--start`]: hasStartImg,
-                [`end-img-type--${endImgType} img--end`]: hasEndImg
+                [startImgClasses]: hasStartImg,
+                [endImgClasses]: hasEndImg
               }}
               part={`${COMBO_BOX_PARTS_DICTIONARY.GROUP_HEADER_CAPTION} ${item.value}`}
             >
@@ -122,15 +149,17 @@ export const customComboBoxItemRender =
             class={{
               // eslint-disable-next-line camelcase
               group__header: true,
-              [`start-img-type--${startImgType} img--start`]: hasStartImg,
-              [`end-img-type--${endImgType} img--end`]: hasEndImg
+              disabled: isDisabled,
+
+              [startImgClasses]: hasStartImg,
+              [endImgClasses]: hasEndImg
             }}
             part={tokenMap({
               [item.value]: true,
               [COMBO_BOX_PARTS_DICTIONARY.GROUP_HEADER]: true,
               [COMBO_BOX_PARTS_DICTIONARY.DISABLED]: isDisabled
             })}
-            style={customVars}
+            style={getItemImageStyle(images)}
           >
             {item.caption ?? item.value}
           </span>
@@ -155,6 +184,7 @@ export const customComboBoxItemRender =
                 checkToDisplayValue,
                 activeDescendantValue,
                 displayedValues,
+                itemImages,
                 itemIndex
               )
             )}
@@ -168,15 +198,14 @@ export const customComboBoxItemRender =
         // TODO: This should be a string
         aria-selected={isActiveDescendant}
         tabindex="-1"
-        class={
-          hasImages
-            ? {
-                leaf: true,
-                [`start-img-type--${startImgType} img--start`]: hasStartImg,
-                [`end-img-type--${endImgType} img--end`]: hasEndImg
-              }
-            : undefined
-        }
+        class={{
+          leaf: true,
+          disabled: isDisabled,
+          selected: isActiveDescendant,
+
+          [startImgClasses]: hasStartImg,
+          [endImgClasses]: hasEndImg
+        }}
         part={tokenMap({
           [item.value]: true,
           [COMBO_BOX_PARTS_DICTIONARY.ITEM]: true,
@@ -184,7 +213,7 @@ export const customComboBoxItemRender =
           [COMBO_BOX_PARTS_DICTIONARY.DISABLED]: isDisabled,
           [COMBO_BOX_PARTS_DICTIONARY.SELECTED]: isActiveDescendant
         })}
-        style={customVars}
+        style={getItemImageStyle(images)}
         disabled={isDisabled}
         type="button"
       >

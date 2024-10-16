@@ -19,18 +19,18 @@ import {
   ComboBoxSuggestOptions,
   ComboBoxItemModel,
   ComboBoxItemGroup,
-  ComboBoxItemLeaf,
   ComboBoxSuggestInfo,
   ComboBoxModel,
   ComboBoxSelectedIndex,
-  ComboBoxItemModelExtended
+  ComboBoxItemModelExtended,
+  ComboBoxItemImagesModel,
+  ComboBoxImagePathCallback
 } from "./types";
 import { focusComposedPath } from "../common/helpers";
 import {
   COMBO_BOX_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
-import { GxImageMultiState } from "../../common/types";
 import { isMobileDevice, tokenMap } from "../../common/utils";
 import { ChPopoverAlign } from "../popover/types";
 import { ChPopoverCustomEvent } from "../../components";
@@ -39,12 +39,12 @@ import {
   comboBoxActiveDescendantIsRendered,
   findComboBoxLargestValue,
   getComboBoxItemFromMouseEvent,
-  getComboBoxItemImageCustomVars,
   mapValuesToItemInfo,
   popoverWasClicked
 } from "./utils";
 import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
 import { customComboBoxItemRender, nativeItemRender } from "./renders";
+import { getComboBoxImages } from "./leaf-images";
 
 const SELECTED_ITEM_SELECTOR = `button[part*='${COMBO_BOX_PARTS_DICTIONARY.SELECTED}']`;
 const mobileDevice = isMobileDevice();
@@ -101,6 +101,7 @@ export class ChComboBoxRender
 
   #valueToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
   #captionToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
+  #itemImages: Map<string, ComboBoxItemImagesModel> | undefined;
 
   // Filters info
   #applyFilters = false;
@@ -277,7 +278,10 @@ export class ChComboBoxRender
   @Watch("expanded")
   handleExpandedChange(newExpandedValue: boolean) {
     if (newExpandedValue && !mobileDevice) {
-      // this.#focusSelectAfterNextRender = true;
+      this.#itemImages = getComboBoxImages(
+        this.model,
+        this.getImagePathCallback
+      );
 
       // Sync the active descendant when expanding the combo-box
       this.#syncActiveDescendant();
@@ -288,6 +292,10 @@ export class ChComboBoxRender
       if (this.suggest) {
         this.#scheduleFilterProcessing();
       }
+    }
+    // Free the memory, since the combo-box does not won't render any images
+    else {
+      this.#itemImages = undefined;
     }
   }
 
@@ -313,10 +321,7 @@ export class ChComboBoxRender
    * This property specifies a callback that is executed when the path for an
    * imgSrc needs to be resolved.
    */
-  @Prop() readonly getImagePathCallback?: (
-    item: ComboBoxItemLeaf,
-    iconDirection: "start" | "end"
-  ) => GxImageMultiState | undefined;
+  @Prop() readonly getImagePathCallback?: ComboBoxImagePathCallback;
 
   /**
    * Specifies a set of parts to use in the Host element (`ch-combo-box-render`).
@@ -797,12 +802,12 @@ export class ChComboBoxRender
 
     const hasStartImg = currentItemInInput && !!currentItemInInput.startImgSrc;
 
-    const customVars = getComboBoxItemImageCustomVars(
-      currentItemInInput,
-      hasStartImg,
-      hasStartImg,
-      false
-    );
+    // const customVars = getComboBoxItemImageCustomVars(
+    //   currentItemInInput,
+    //   hasStartImg,
+    //   hasStartImg,
+    //   false
+    // );
 
     // TODO: UNIT TESTS.
     // - Clicking the combo-box with JS should not open the popover
@@ -857,7 +862,7 @@ export class ChComboBoxRender
                     currentItemInInput?.startImgType ?? "background"
                   } img--start`]: hasStartImg
                 }}
-                style={customVars}
+                // style={customVars}
               >
                 <input
                   aria-controls="popover"
@@ -918,6 +923,7 @@ export class ChComboBoxRender
                       filtersAreApplied && !this.#isModelAlreadyFiltered(),
                       this.activeDescendant,
                       this.#displayedValues,
+                      this.#itemImages,
                       ""
                     )
                   )}

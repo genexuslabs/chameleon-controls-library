@@ -1,4 +1,9 @@
-import { ImageRender } from "../../common/types";
+import {
+  GxImageMultiState,
+  GxImageMultiStateEnd,
+  GxImageMultiStateStart,
+  ImageRender
+} from "../../common/types";
 
 export type ComboBoxModel = ComboBoxItemModel[];
 
@@ -7,6 +12,11 @@ export type ComboBoxItemModel = ComboBoxItemGroup | ComboBoxItemLeaf;
 export type ComboBoxItemModelExtended = {
   item: ComboBoxItemModel;
   index: ComboBoxSelectedIndex;
+};
+
+export type ComboBoxItemImagesModel = {
+  start?: GxImageMultiStateStart;
+  end?: GxImageMultiStateEnd;
 };
 
 export type ComboBoxSelectedIndex =
@@ -51,6 +61,7 @@ export type ComboBoxSuggestOptions = {
 
   /**
    * When applying a new filter, expand the matches.
+   * @status Not yet implemented.
    */
   autoExpand?: boolean;
 
@@ -67,6 +78,7 @@ export type ComboBoxSuggestOptions = {
 
   /**
    * Only works if `regularExpression` is not used.
+   * @status Not yet implemented.
    */
   highlightMatchedItems?: boolean;
 
@@ -91,3 +103,8 @@ export type ComboBoxSuggestInfo = {
   filter: string;
   options: ComboBoxSuggestOptions;
 };
+
+export type ComboBoxImagePathCallback = (
+  item: ComboBoxItemModel,
+  iconDirection: "start" | "end"
+) => GxImageMultiState | undefined;

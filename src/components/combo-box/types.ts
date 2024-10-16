@@ -94,6 +94,15 @@ export type ComboBoxSuggestOptions = {
   regularExpression?: boolean;
 
   /**
+   * Determine whether the icon for the selected item is displayed in the
+   * combo-box, even when the popover is expanded.
+   * By default, the combo-box does not render the active item icon when the
+   * combo-box is expanded in suggest mode, as it may have a negative impact on
+   * the user experience.
+   */
+  renderActiveItemIconOnExpand?: boolean;
+
+  /**
    *
    */
   strict?: boolean;

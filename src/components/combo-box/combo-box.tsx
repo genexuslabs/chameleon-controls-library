@@ -715,6 +715,10 @@ export class ChComboBoxRender
   };
 
   #isModelAlreadyFiltered = () => this.suggestOptions.alreadyProcessed === true;
+  #shouldRenderActiveItemIcon = () =>
+    !this.suggest ||
+    !this.expanded ||
+    this.suggestOptions.renderActiveItemIconOnExpand;
 
   #setValueInForm = (value: string) => {
     // TODO: Add a unit test for this case
@@ -812,16 +816,17 @@ export class ChComboBoxRender
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
 
     const currentItemInInput: ComboBoxItemModel | undefined = filtersAreApplied
-      ? this.#valueToItemInfo.get(this.value)?.item
+      ? this.#getCurrentValueMapping()?.item
       : this.activeDescendant;
 
-    const computedImage = currentItemInInput?.startImgSrc
-      ? (computeComboBoxItemImage(
-          currentItemInInput,
-          "start",
-          this.#getActualImagePathCallback()
-        ) as GxImageMultiStateStart | undefined)
-      : undefined;
+    const computedImage =
+      currentItemInInput?.startImgSrc && this.#shouldRenderActiveItemIcon()
+        ? (computeComboBoxItemImage(
+            currentItemInInput,
+            "start",
+            this.#getActualImagePathCallback()
+          ) as GxImageMultiStateStart | undefined)
+        : undefined;
 
     const startImgClasses = computedImage
       ? `img--start start-img-type--${

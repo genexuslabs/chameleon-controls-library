@@ -33,7 +33,9 @@ export const getComboBoxItemUIModel = (
 };
 
 // TODO: Add a unit test for these cases
-const getItemImageStyle = (images: ComboBoxItemImagesModel | undefined) => {
+export const getComboBoxItemImageStyle = (
+  images: ComboBoxItemImagesModel | undefined
+) => {
   if (!images) {
     return undefined;
   }
@@ -128,7 +130,7 @@ export const customComboBoxItemRender =
               [COMBO_BOX_PARTS_DICTIONARY.EXPANDED]: itemGroup.expanded,
               [COMBO_BOX_PARTS_DICTIONARY.COLLAPSED]: !itemGroup.expanded
             })}
-            style={getItemImageStyle(images)}
+            style={getComboBoxItemImageStyle(images)}
             disabled={isDisabled}
             type="button"
           >
@@ -159,7 +161,7 @@ export const customComboBoxItemRender =
               [COMBO_BOX_PARTS_DICTIONARY.GROUP_HEADER]: true,
               [COMBO_BOX_PARTS_DICTIONARY.DISABLED]: isDisabled
             })}
-            style={getItemImageStyle(images)}
+            style={getComboBoxItemImageStyle(images)}
           >
             {item.caption ?? item.value}
           </span>
@@ -213,7 +215,7 @@ export const customComboBoxItemRender =
           [COMBO_BOX_PARTS_DICTIONARY.DISABLED]: isDisabled,
           [COMBO_BOX_PARTS_DICTIONARY.SELECTED]: isActiveDescendant
         })}
-        style={getItemImageStyle(images)}
+        style={getComboBoxItemImageStyle(images)}
         disabled={isDisabled}
         type="button"
       >

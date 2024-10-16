@@ -249,6 +249,7 @@ ch-popover {
     --ch-combo-box-item-start-img: var(--ch-start-img--selected);
   }
 
+  // Group header
   .group__header:hover > &.start-img--hover {
     --ch-combo-box-item-start-img: var(--ch-start-img--hover);
   }
@@ -257,8 +258,19 @@ ch-popover {
     --ch-combo-box-item-start-img: var(--ch-start-img--active);
   }
 
+  // Icon on the Host
+  :host(:focus) &.input-container.start-img--focus {
+    --ch-combo-box-item-start-img: var(--ch-start-img--focus);
+  }
+
+  :host(:not(.ch-disabled):hover) &.input-container.start-img--hover {
+    --ch-combo-box-item-start-img: var(--ch-start-img--hover);
+  }
+
+  // Disabled
   &.disabled.start-img--disabled,
-  .disabled > &.start-img--disabled {
+  .disabled > &.start-img--disabled,
+  :host(.ch-disabled) &.start-img--disabled {
     --ch-combo-box-item-start-img: var(--ch-start-img--disabled);
   }
 }

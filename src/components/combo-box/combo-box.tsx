@@ -33,7 +33,7 @@ import {
 } from "../../common/reserved-names";
 import { isMobileDevice, tokenMap } from "../../common/utils";
 import { ChPopoverAlign } from "../popover/types";
-import { ChPopoverCustomEvent } from "../../components";
+import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
 import { filterSubModel } from "./helpers";
 import {
   comboBoxActiveDescendantIsRendered,
@@ -44,10 +44,20 @@ import {
 } from "./utils";
 import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
 import { customComboBoxItemRender, nativeItemRender } from "./renders";
-import { getComboBoxImages } from "./leaf-images";
+import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
+import { getControlRegisterProperty } from "../../common/registry-properties";
+import { GxImageMultiStateStart } from "../../common/types";
 
 const SELECTED_ITEM_SELECTOR = `button[part*='${COMBO_BOX_PARTS_DICTIONARY.SELECTED}']`;
 const mobileDevice = isMobileDevice();
+
+const DEFAULT_GET_IMAGE_PATH_CALLBACK = (
+  itemUIModel: ComboBoxItemModel,
+  iconDirection: "start" | "end"
+): GxImageMultiState => ({
+  base:
+    iconDirection === "start" ? itemUIModel.startImgSrc : itemUIModel.endImgSrc
+});
 
 // Keys
 type KeyDownNoFiltersEvents =
@@ -280,7 +290,7 @@ export class ChComboBoxRender
     if (newExpandedValue && !mobileDevice) {
       this.#itemImages = getComboBoxImages(
         this.model,
-        this.getImagePathCallback
+        this.#getActualImagePathCallback()
       );
 
       // Sync the active descendant when expanding the combo-box
@@ -448,6 +458,11 @@ export class ChComboBoxRender
   #findLargestValue = (model: ComboBoxModel) => {
     this.#largestValue = findComboBoxLargestValue(model);
   };
+
+  #getActualImagePathCallback = () =>
+    this.getImagePathCallback ??
+    getControlRegisterProperty("getImagePathCallback", "ch-combo-box-render") ??
+    DEFAULT_GET_IMAGE_PATH_CALLBACK;
 
   #scheduleFilterProcessing = () => {
     this.#applyFilters = true;
@@ -800,14 +815,19 @@ export class ChComboBoxRender
       ? this.#valueToItemInfo.get(this.value)?.item
       : this.activeDescendant;
 
-    const hasStartImg = currentItemInInput && !!currentItemInInput.startImgSrc;
+    const computedImage = currentItemInInput?.startImgSrc
+      ? (computeComboBoxItemImage(
+          currentItemInInput,
+          "start",
+          this.#getActualImagePathCallback()
+        ) as GxImageMultiStateStart | undefined)
+      : undefined;
 
-    // const customVars = getComboBoxItemImageCustomVars(
-    //   currentItemInInput,
-    //   hasStartImg,
-    //   hasStartImg,
-    //   false
-    // );
+    const startImgClasses = computedImage
+      ? `img--start start-img-type--${
+          currentItemInInput.startImgType ?? "background"
+        } ${computedImage.classes}`
+      : undefined;
 
     // TODO: UNIT TESTS.
     // - Clicking the combo-box with JS should not open the popover
@@ -858,11 +878,12 @@ export class ChComboBoxRender
                 class={{
                   "input-container": true,
 
-                  [`start-img-type--${
-                    currentItemInInput?.startImgType ?? "background"
-                  } img--start`]: hasStartImg
+                  // TODO: Fix disabled styling when the group parent is disabled, but the option leaf isn't.
+                  // Class for disabled images. Used when the combo-box or selected item are disabled
+                  disabled: this.disabled || currentItemInInput?.disabled,
+                  [startImgClasses]: !!startImgClasses
                 }}
-                // style={customVars}
+                style={computedImage?.styles}
               >
                 <input
                   aria-controls="popover"

@@ -1,6 +1,4 @@
-import { getControlRegisterProperty } from "../../common/registry-properties";
 import {
-  GxImageMultiState,
   GxImageMultiStateEnd,
   GxImageMultiStateStart
 } from "../../common/types";
@@ -13,15 +11,7 @@ import {
   ComboBoxModel
 } from "./types";
 
-const DEFAULT_GET_IMAGE_PATH_CALLBACK = (
-  itemUIModel: ComboBoxItemModel,
-  iconDirection: "start" | "end"
-): GxImageMultiState => ({
-  base:
-    iconDirection === "start" ? itemUIModel.startImgSrc : itemUIModel.endImgSrc
-});
-
-const computeImage = (
+export const computeComboBoxItemImage = (
   itemUIModel: ComboBoxItemModel,
   iconDirection: "start" | "end",
   getImagePathCallback: ComboBoxImagePathCallback
@@ -45,7 +35,7 @@ const setComboBoxImagesForMap = (
 
     // startImgSrc
     if (itemUIModel.startImgSrc) {
-      const computedImage = computeImage(
+      const computedImage = computeComboBoxItemImage(
         itemUIModel,
         "start",
         getImagePathCallback
@@ -56,7 +46,7 @@ const setComboBoxImagesForMap = (
 
     // endImgSrc
     if (itemUIModel.endImgSrc) {
-      const computedImage = computeImage(
+      const computedImage = computeComboBoxItemImage(
         itemUIModel,
         "end",
         getImagePathCallback
@@ -92,13 +82,7 @@ export const getComboBoxImages = (
     return undefined;
   }
   const itemImages: Map<string, ComboBoxItemImagesModel> = new Map();
-
-  const actualCallback =
-    getImagePathCallback ??
-    getControlRegisterProperty("getImagePathCallback", "ch-combo-box-render") ??
-    DEFAULT_GET_IMAGE_PATH_CALLBACK;
-
-  setComboBoxImagesForMap(model, actualCallback, itemImages);
+  setComboBoxImagesForMap(model, getImagePathCallback, itemImages);
 
   return itemImages;
 };

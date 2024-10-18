@@ -1,6 +1,5 @@
 export type ChatTranslations = {
   accessibleName: {
-    chat: string;
     clearChat: string;
     copyResponseButton: string;
     downloadCodeButton: string;

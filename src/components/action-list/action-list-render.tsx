@@ -14,8 +14,8 @@ import {
   // EventEmitter
 } from "@stencil/core";
 import {
+  ActionListImagePathCallback,
   ActionListItemActionable,
-  ActionListItemAdditionalBase,
   ActionListItemGroup,
   ActionListItemModel,
   ActionListItemModelExtended,
@@ -27,8 +27,7 @@ import {
 } from "./types";
 import {
   ActionListTranslations,
-  ChActionListItemCustomEvent,
-  GxImageMultiState
+  ChActionListItemCustomEvent
 } from "../../components";
 import {
   ActionListCaptionChangeEventDetail,
@@ -255,9 +254,7 @@ export class ChActionListRender {
    * This property specifies a callback that is executed when the path for an
    * imgSrc needs to be resolved.
    */
-  @Prop() readonly getImagePathCallback?: (
-    additionalItem: ActionListItemAdditionalBase
-  ) => GxImageMultiState | undefined;
+  @Prop() readonly getImagePathCallback?: ActionListImagePathCallback;
 
   /**
    * This property lets you define the model of the control.

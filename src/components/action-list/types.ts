@@ -1,4 +1,4 @@
-import { ImageRender } from "../../common/types";
+import { GxImageMultiState, ImageRender } from "../../common/types";
 // import { ChActionListRender } from "./action-list-render";
 
 export type ActionListModel = ActionListItemModel[];
@@ -175,7 +175,6 @@ export type ActionListItemSeparator = {
   type: ActionListItemTypeSeparator;
 };
 
-// export type ActionListImagePathCallback = (
-//   imgSrc: string,
-//   treeState: ChActionListRender
-// ) => string;
+export type ActionListImagePathCallback = (
+  additionalItem: ActionListItemAdditionalBase
+) => GxImageMultiState | undefined;

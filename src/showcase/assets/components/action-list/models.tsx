@@ -145,7 +145,7 @@ export const GitHubChangesModel: ActionListModel = [
           { caption: "src\\common\\", part: "github-changes-directory" },
           { caption: "renders.tsx", part: "github-changes-file" }
         ],
-        end: [{ imgSrc: "new" }]
+        end: [{ imgSrc: MODULE_ICON }]
       }
     }
   },

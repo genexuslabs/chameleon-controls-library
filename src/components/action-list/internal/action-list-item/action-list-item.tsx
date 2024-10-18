@@ -9,6 +9,7 @@ import {
   h
 } from "@stencil/core";
 import {
+  ActionListImagePathCallback,
   ActionListItemAdditionalAction,
   ActionListItemAdditionalBase,
   ActionListItemAdditionalCustom,
@@ -687,7 +688,7 @@ export class ChActionListItem {
 
     // TODO: If we migrate this component to Lit, we should improve the
     // efficiency of this lookup
-    const getImagePathCallback =
+    const getImagePathCallback: ActionListImagePathCallback =
       this.getImagePathCallback ??
       getControlRegisterProperty(
         "getImagePathCallback",
@@ -695,7 +696,7 @@ export class ChActionListItem {
       ) ??
       DEFAULT_GET_IMAGE_PATH_CALLBACK;
 
-    const img = getImagePathCallback(additionalItem.imgSrc);
+    const img = getImagePathCallback(additionalItem);
 
     return img
       ? (updateDirectionInImageCustomVar(

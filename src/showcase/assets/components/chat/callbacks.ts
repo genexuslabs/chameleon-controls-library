@@ -166,7 +166,6 @@ export const chatCallbacks: ChatInternalCallbacks = {
 
 export const chatTranslations: ChatTranslations = {
   accessibleName: {
-    chat: "Chat",
     clearChat: "Clear chat",
     copyResponseButton: "Copy assistant response",
     downloadCodeButton: "Download code",

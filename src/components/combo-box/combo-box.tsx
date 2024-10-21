@@ -288,10 +288,7 @@ export class ChComboBoxRender
   @Watch("expanded")
   handleExpandedChange(newExpandedValue: boolean) {
     if (newExpandedValue && !mobileDevice) {
-      this.#itemImages = getComboBoxImages(
-        this.model,
-        this.#getActualImagePathCallback()
-      );
+      this.#setComboBoxIcons();
 
       // Sync the active descendant when expanding the combo-box
       this.#syncActiveDescendant();
@@ -350,6 +347,14 @@ export class ChComboBoxRender
       this.#valueToItemInfo,
       this.#captionToItemInfo
     );
+
+    // TODO: Add a unit test for this
+    // The model can change when the combo-box is expanded by having server
+    // filters. In this case, we need to re-compute the icons
+    if (this.expanded) {
+      this.#setComboBoxIcons();
+    }
+
     // this.#checkIfCurrentSelectedValueIsNoLongerValid();
 
     // This must be the last operation, since it needs to wait for the UI Model
@@ -463,6 +468,13 @@ export class ChComboBoxRender
     this.getImagePathCallback ??
     getControlRegisterProperty("getImagePathCallback", "ch-combo-box-render") ??
     DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
+  #setComboBoxIcons = () => {
+    this.#itemImages = getComboBoxImages(
+      this.model,
+      this.#getActualImagePathCallback()
+    );
+  };
 
   #scheduleFilterProcessing = () => {
     this.#applyFilters = true;

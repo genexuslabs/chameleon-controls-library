@@ -457,8 +457,17 @@ export class ChComboBoxRender
    */
   @Event() input: EventEmitter<string>;
 
-  // TODO: Add change event
-  // @Event() change: EventEmitter<string>;
+  /**
+   * The `input` event is emitted when a change to the element's value is
+   * committed by the user.
+   *  - In normal mode (suggest = false), it is emitted after each input event.
+   *
+   *  - In suggest mode (suggest = true), it is emitted after the popover is closed
+   * and a new value is committed by the user.
+   *
+   * This event is NOT debounced by the `suggestDebounce` value.
+   */
+  @Event() change: EventEmitter<string>;
 
   #findLargestValue = (model: ComboBoxModel) => {
     this.#largestValue = findComboBoxLargestValue(model);
@@ -535,7 +544,8 @@ export class ChComboBoxRender
       this.input.emit(this.value);
 
       // Emit change event
-      // this.change.emit(this.value);
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
   };
 
@@ -560,6 +570,8 @@ export class ChComboBoxRender
     if (!this.suggestOptions?.strict) {
       // TODO: Should we update the #lastConfirmedValue?
 
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
       return;
     }
 
@@ -568,6 +580,9 @@ export class ChComboBoxRender
 
     if (inputValueMatches) {
       // TODO: Do we have to emit the change event?
+
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
     // Revert change because the input value does not match any item value
     else {
@@ -579,6 +594,9 @@ export class ChComboBoxRender
       // Emit filter change event to recover the previous state.
       // TODO: Should we debounce this event?
       this.input.emit(this.value);
+
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
   };
 
@@ -592,6 +610,8 @@ export class ChComboBoxRender
 
     // Emit event
     this.input.emit(this.value);
+
+    // TODO: Prevent change event in the native select
   };
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
@@ -649,8 +669,18 @@ export class ChComboBoxRender
         // TODO: Should we debounce this event?
         this.input.emit(this.value);
       }
+
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     } else {
       this.#checkAndEmitValueChangeWithNoFilter();
+    }
+  };
+
+  #emitChangeEvent = () => {
+    // TODO: Add a unit test for this
+    if (!this.suggest || this.value !== this.#lastConfirmedValue) {
+      this.change.emit(this.value);
     }
   };
 

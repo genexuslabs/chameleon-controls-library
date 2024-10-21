@@ -41,9 +41,15 @@ const formValues = {
   "combo-box-3": ""
 };
 
+const changeValues = {
+  "combo-box-1": "",
+  "combo-box-2": "",
+  "combo-box-3": ""
+};
+
 // TODO: There is an issue when setting suggest, items are already filtered, string filter and the input equals to "data"
 
-const handleFilterChange =
+const handleInputChange =
   (formId: keyof typeof formRefs, comboBoxId: keyof typeof formValues) =>
   (event: ChComboBoxRenderCustomEvent<string> | InputEvent) => {
     formValues[comboBoxId] = Object.fromEntries(new FormData(formRefs[formId]))[
@@ -70,8 +76,26 @@ const handleFilterChange =
     }
   };
 
+const handleChangeEvent =
+  (comboBoxId: string) => (event: ChComboBoxRenderCustomEvent<string>) => {
+    changeValues[comboBoxId] = event.detail;
+
+    console.log("HOLAAAA");
+
+    // TODO: Until we support external slots in the ch-flexible-layout-render,
+    // this is a hack to update the render of the widget and thus re-render the
+    // combo-box updating the displayed items
+    const showcaseRef = (
+      event as ChComboBoxRenderCustomEvent<string>
+    ).target.closest("ch-showcase");
+
+    if (showcaseRef) {
+      forceUpdate(showcaseRef);
+    }
+  };
+
 const render = () => (
-  <div class="checkbox-test-main-wrapper">
+  <div class="combo-box-test-main-wrapper">
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">No label</legend>
       <form
@@ -96,10 +120,12 @@ const render = () => (
           suggestDebounce={state.suggestDebounce}
           suggestOptions={state.suggestOptions}
           value={state.value}
-          onInput={handleFilterChange("form-combo-box-1", "combo-box-1")}
+          onInput={handleInputChange("form-combo-box-1", "combo-box-1")}
+          onChange={handleChangeEvent("combo-box-1")}
         ></ch-combo-box-render>
       </form>
       Form value: {formValues["combo-box-1"]}
+      <p>Change event value: {changeValues["combo-box-1"]}</p>
     </fieldset>
 
     <fieldset class="fieldset-test">
@@ -129,10 +155,12 @@ const render = () => (
           suggestDebounce={state.suggestDebounce}
           suggestOptions={state.suggestOptions}
           value={state.value}
-          onInput={handleFilterChange("form-combo-box-2", "combo-box-2")}
+          onInput={handleInputChange("form-combo-box-2", "combo-box-2")}
+          onChange={handleChangeEvent("combo-box-2")}
         ></ch-combo-box-render>
       </form>
       Form value: {formValues["combo-box-2"]}
+      <p>Change event value: {changeValues["combo-box-2"]}</p>
     </fieldset>
 
     <fieldset class="fieldset-test">
@@ -164,11 +192,13 @@ const render = () => (
             suggestDebounce={state.suggestDebounce}
             suggestOptions={state.suggestOptions}
             value={state.value}
-            onInput={handleFilterChange("form-combo-box-3", "combo-box-3")}
+            onInput={handleInputChange("form-combo-box-3", "combo-box-3")}
+            onChange={handleChangeEvent("combo-box-3")}
           ></ch-combo-box-render>
         </label>
       </form>
       Form value: {formValues["combo-box-3"]}
+      <p>Change event value: {changeValues["combo-box-3"]}</p>
     </fieldset>
   </div>
 );

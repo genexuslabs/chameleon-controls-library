@@ -677,12 +677,10 @@ export class ChComboBoxRender
     }
   };
 
-  #emitChangeEvent = () => {
+  #emitChangeEvent = () =>
     // TODO: Add a unit test for this
-    if (!this.suggest || this.value !== this.#lastConfirmedValue) {
-      this.change.emit(this.value);
-    }
-  };
+    // TODO: Don't emit the event if the value didn't change
+    this.change.emit(this.value);
 
   #handleInputFilterChange = (event: InputEvent) => {
     event.stopPropagation();

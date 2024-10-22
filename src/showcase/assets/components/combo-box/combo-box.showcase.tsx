@@ -80,8 +80,6 @@ const handleChangeEvent =
   (comboBoxId: string) => (event: ChComboBoxRenderCustomEvent<string>) => {
     changeValues[comboBoxId] = event.detail;
 
-    console.log("HOLAAAA");
-
     // TODO: Until we support external slots in the ch-flexible-layout-render,
     // this is a hack to update the render of the widget and thus re-render the
     // combo-box updating the displayed items

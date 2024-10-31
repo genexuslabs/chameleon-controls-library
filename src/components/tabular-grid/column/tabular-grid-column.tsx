@@ -20,6 +20,8 @@ import {
   TabularGridColumnFreeze,
   TabularGridColumnSortDirection
 } from "./tabular-grid-column-types";
+import { tokenMap } from "../../../common/utils";
+import { TABULAR_GRID_PARTS_DICTIONARY } from "../../../common/reserved-names";
 
 /**
  * The `ch-tabular-grid-column` component represents a grid column.
@@ -165,6 +167,13 @@ export class ChTabularGridColumn {
       order: this.order
     });
   }
+
+  /**
+   * A boolean or string that controls the parts applied to the column.
+   * - When `true`, it automatically applies the part names "column" and the column's unique ID.
+   * - When a string is provided, it appends that string to the default part names "column" and the column's ID.
+   */
+  @Prop() readonly parts: boolean | string;
 
   /**
    * A number indicating the physical order of the column (i.e. its position in the DOM).
@@ -380,7 +389,17 @@ export class ChTabularGridColumn {
 
   render() {
     return (
-      <Host>
+      <Host
+        part={
+          this.parts
+            ? tokenMap({
+                [TABULAR_GRID_PARTS_DICTIONARY.COLUMN]: true,
+                [this.columnId]: true,
+                [this.parts.toString()]: typeof this.parts === "string"
+              })
+            : null
+        }
+      >
         <ul class="bar" part="bar">
           {this.renderSelector()}
           {this.renderName()}

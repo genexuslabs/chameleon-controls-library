@@ -1,6 +1,9 @@
 import {
   ActionListItemActionable,
   ActionListItemGroup,
+  ActionListItemModelExtended,
+  ActionListItemModelExtendedGroup,
+  ActionListItemModelExtendedRoot,
   ActionListModel
 } from "./types";
 
@@ -37,3 +40,15 @@ export const getActionListOrGroupItemIndex = (
     (el: ActionListItemActionable | ActionListItemGroup) =>
       el.id && el.id === item.id
   );
+
+export const getParentArray = (itemUIModel: ActionListItemModelExtended) =>
+  (itemUIModel as ActionListItemModelExtendedRoot).root ??
+  (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items;
+
+export const getActionListItemOrGroupInfo = (
+  itemId: string,
+  flattenedModel: Map<string, ActionListItemModelExtended>
+) =>
+  flattenedModel.get(itemId).item as
+    | ActionListItemActionable
+    | ActionListItemGroup;

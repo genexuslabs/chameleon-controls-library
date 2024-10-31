@@ -1,5 +1,7 @@
 import { ITabularGridCollapsible } from "../tabular-grid-types";
 import HTMLChTabularGridCellElement from "../cell/tabular-grid-cell";
+import { tokenMap } from "../../../common/utils";
+import { TABULAR_GRID_PARTS_DICTIONARY } from "../../../common/reserved-names";
 
 /**
  * The `ch-tabular-grid-row` component represents a grid row.
@@ -9,6 +11,7 @@ export default class HTMLChTabularGridRowElement
   implements ITabularGridCollapsible
 {
   private parentGrid: HTMLChTabularGridElement;
+  #parts: boolean | string;
 
   static get observedAttributes() {
     return ["selected", "marked"];
@@ -16,6 +19,7 @@ export default class HTMLChTabularGridRowElement
 
   constructor() {
     super();
+    this.#defineProperties();
   }
 
   connectedCallback() {
@@ -24,6 +28,8 @@ export default class HTMLChTabularGridRowElement
     if (this.selected || this.marked) {
       this.grid.syncRowState(this);
     }
+
+    this.#renderAttributes();
   }
 
   attributeChangedCallback(name: string, _oldValue: string, value: string) {
@@ -260,6 +266,32 @@ export default class HTMLChTabularGridRowElement
     this.parentGrid = this.closest("ch-tabular-grid");
     return this.parentGrid;
   }
+
+  #defineProperties = () => {
+    this.#parts = (this as any).parts;
+    Object.defineProperty(this, "parts", {
+      get: () => this.#parts,
+      set: value => {
+        this.#parts = value;
+        this.#renderAttributes();
+      },
+      enumerable: true,
+      configurable: true
+    });
+  };
+
+  #renderAttributes = () => {
+    if (this.#parts) {
+      this.setAttribute(
+        "part",
+        tokenMap({
+          [TABULAR_GRID_PARTS_DICTIONARY.ROW]: true,
+          [this.rowId]: true,
+          [this.#parts.toString()]: typeof this.#parts === "string"
+        })
+      );
+    }
+  };
 }
 
 if (!customElements.get("ch-tabular-grid-row")) {

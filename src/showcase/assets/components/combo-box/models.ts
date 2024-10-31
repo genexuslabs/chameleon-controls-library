@@ -1,3 +1,4 @@
+import { GxImageMultiState } from "../../../../common/types";
 import {
   ComboBoxSuggestInfo,
   ComboBoxSuggestOptions,
@@ -7,6 +8,41 @@ import {
 } from "../../../../components/combo-box/types";
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
+
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
+
+export const getComboBoxImagePathCallback = (
+  comboBoxItem: ComboBoxItemModel
+): GxImageMultiState | undefined => {
+  if ((comboBoxItem.startImgSrc ?? comboBoxItem.endImgSrc) === MODULE_ICON) {
+    return {
+      base: "var(--icon-module-base)",
+      active: "var(--icon-module-active)",
+      hover: "var(--icon-module-hover)",
+      disabled: "var(--icon-module-disabled)",
+      selected: "var(--icon-stencil-hover)"
+    };
+  }
+
+  if ((comboBoxItem.startImgSrc ?? comboBoxItem.endImgSrc) === FOLDER_ICON) {
+    return {
+      base: "var(--icon-folder-base)",
+      active: "var(--icon-folder-active)",
+      hover: "var(--icon-folder-hover)",
+      disabled: "var(--icon-folder-disabled)",
+      selected: "var(--icon-stencil-hover)"
+    };
+  }
+
+  return {
+    base: "var(--icon-stencil-base)",
+    active: "var(--icon-stencil-active)",
+    hover: "var(--icon-stencil-hover)",
+    disabled: "var(--icon-stencil-disabled)",
+    selected: "var(--icon-folder-active)"
+  };
+};
 
 export const simpleModelComboBox1: ComboBoxModel = [
   { value: "Value 1", caption: "Label for the value 1" },
@@ -105,6 +141,144 @@ export const simpleModelComboBox1: ComboBoxModel = [
     ]
   },
   { value: "Value 12", caption: "Label for the value 12" }
+];
+
+export const simpleModelComboBoxWithIcons: ComboBoxModel = [
+  { value: "Value 1", caption: "Label for the value 1" },
+  {
+    value: "Value 2",
+    caption: "Label for the value 222 (not expandable)",
+    endImgSrc: MODULE_ICON,
+    items: [
+      { value: "Value 2.1", caption: "Label for the value 2.1" },
+      { value: "Value 2.2", caption: "Label for the value 2.2" }
+    ]
+  },
+  {
+    value: "Value 3",
+    caption: "Label for the value 3",
+    disabled: true,
+    startImgSrc: FOLDER_ICON,
+    endImgSrc: MODULE_ICON
+  },
+  { value: "Value 4", caption: "Label for the value 4" },
+  {
+    value: "Value 5",
+    caption: "Label for the value 5",
+    disabled: true,
+    expandable: true,
+    startImgSrc: FOLDER_ICON,
+    expanded: true,
+    items: [
+      { value: "Value 5.1", caption: "Label for the value 5.1" },
+      {
+        value: "Value 5.2",
+        caption: "Label for the value 5.2",
+        startImgSrc: FOLDER_ICON
+      },
+
+      {
+        value: "Value 5.3",
+        caption: "Label for the value 5.3",
+        endImgSrc: MODULE_ICON,
+        disabled: false
+      },
+      { value: "Value 5.4", caption: "Label for the value 5.4" }
+    ]
+  },
+  {
+    value: "Value 6",
+    caption: "Label for the value 6",
+    expandable: true,
+    expanded: true,
+    startImgSrc: FOLDER_ICON,
+    endImgSrc: MODULE_ICON,
+    items: [
+      {
+        value: "Value 6.1",
+        caption: "Label for the value 6.1",
+        disabled: true
+      },
+      {
+        value: "Value 6.2",
+        caption: "Label for the value 6.2",
+        disabled: true
+      },
+      {
+        value: "Value 6.3",
+        caption: "Label for the value 6.3",
+        disabled: false
+      },
+      { value: "Value 6.4", caption: "Label for the value 6.4" }
+    ]
+  },
+  {
+    value: "Value 7",
+    caption: "Label for the value 7",
+    disabled: true
+  },
+
+  {
+    value: "Value 8",
+    caption: "Label for the value 8",
+    startImgSrc: FOLDER_ICON
+  },
+  {
+    value: "Value 9",
+    caption: "Label for the value 9",
+    expandable: true,
+    items: [
+      {
+        value: "Value 9.1",
+        caption: "Label for the value 9.1",
+        startImgSrc: FOLDER_ICON,
+        endImgSrc: MODULE_ICON
+      },
+      {
+        value: "Value 9.2",
+        caption: "Label for the value 9.2",
+        endImgSrc: MODULE_ICON
+      },
+      {
+        value: "Value 9.3",
+        caption: "Label for the value 9.3",
+        disabled: false
+      },
+      {
+        value: "Value 9.4",
+        caption: "Label for the value 9.4",
+        startImgSrc: FOLDER_ICON
+      }
+    ]
+  },
+  {
+    value: "Value 10",
+    caption: "Label for the value 10",
+    endImgSrc: MODULE_ICON
+  },
+  {
+    value: "Value 11",
+    caption: "Label for the value 11",
+    expandable: true,
+    expanded: true,
+    disabled: true,
+    items: [
+      { value: "Value 11.1", caption: "Label for the value 11.1" },
+      { value: "Value 11.2", caption: "Label for the value 11.2" },
+      {
+        value: "Value 11.3",
+        caption: "Label for the value 11.3",
+        disabled: false
+      },
+      { value: "Value 11.4", caption: "Label for the value 11.4" }
+    ]
+  },
+  {
+    value: "Value 12",
+    caption: "Label for the value 12",
+    startImgSrc: FOLDER_ICON,
+    endImgSrc: MODULE_ICON
+  }
 ];
 
 export const smallModel: ComboBoxModel = [
@@ -288,13 +462,12 @@ const filterCaption = (
   item: ComboBoxItemModel,
   filterInfo: ComboBoxSuggestInfo
 ) =>
-  filterInfo.filter
-    ? filterWithString(
-        item.caption ?? "",
-        filterInfo.filter,
-        filterInfo.options
-      )
-    : true;
+  !filterInfo.filter ||
+  filterWithString(
+    item.caption ?? item.value,
+    filterInfo.filter,
+    filterInfo.options
+  );
 
 const computeFilter = (
   item: ComboBoxItemModel,

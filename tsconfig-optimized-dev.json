@@ -1,0 +1,48 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
+  "watchOptions": {
+    "excludeFiles": [
+      "src/deprecated-components/*",
+      "src/components/**/tests/*",
+      "src/testing/"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "loader",
+    "dist",
+    "coverage",
+    ".stencil",
+    "www",
+    "src/framework-integrations.ts",
+    "src/common/monaco/output/",
+
+    "src/components/**/tests/*",
+    "src/testing/",
+
+    "src/deprecated-components/accordion/",
+    "src/deprecated-components/form-checkbox/",
+    "src/deprecated-components/icon/",
+    "src/deprecated-components/markdown/",
+    "src/deprecated-components/select/",
+    "src/deprecated-components/select-item/",
+    "src/deprecated-components/sidebar-menu/",
+    "src/deprecated-components/sidebar-menu-list/",
+    "src/deprecated-components/sidebar-menu-list-item/",
+    "src/deprecated-components/step-list/",
+    "src/deprecated-components/step-list-item/",
+    "src/deprecated-components/style/",
+    "src/deprecated-components/suggest/",
+    "src/deprecated-components/test/",
+    "src/deprecated-components/tree/",
+    "src/deprecated-components/tree-item/"
+    // "src/deprecated-components/window/"
+
+    // "src/components/code-editor/",
+    // "src/components/code-diff-editor/",
+    // "src/components/gx-grid/"
+  ]
+}

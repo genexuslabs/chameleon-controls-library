@@ -285,6 +285,7 @@ export const performFormTests = (
       if (pressEnterToConfirmValue) {
         await inputRef.press("Enter");
       }
+      await page.waitForChanges();
 
       formValues = await getFormValues(page);
       expect(formValues[FORM_NAME]).toBe("Hello");

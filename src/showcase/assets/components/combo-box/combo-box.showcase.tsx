@@ -9,6 +9,7 @@ import {
   comboBoxFilterChange,
   dataTypeInGeneXus,
   simpleModelComboBox1,
+  simpleModelComboBoxWithIcons,
   smallModel
 } from "./models";
 import {
@@ -19,101 +20,92 @@ import { ChComboBoxRenderCustomEvent } from "../../../../components";
 import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChComboBoxRenderElement> = {};
-let itemsFilteredByTheServer: ComboBoxItemModel[] = [];
+let itemsFilteredByTheServer: ComboBoxItemModel[] = comboBoxFilterChange({
+  filter: "",
+  options: { alreadyProcessed: true }
+});
+
+const formRefs: {
+  [key in "form-combo-box-1" | "form-combo-box-2" | "form-combo-box-3"]:
+    | HTMLFormElement
+    | undefined;
+} = {
+  "form-combo-box-1": undefined,
+  "form-combo-box-2": undefined,
+  "form-combo-box-3": undefined
+};
+
+const formValues = {
+  "combo-box-1": "",
+  "combo-box-2": "",
+  "combo-box-3": ""
+};
+
+const changeValues = {
+  "combo-box-1": "",
+  "combo-box-2": "",
+  "combo-box-3": ""
+};
 
 // TODO: There is an issue when setting suggest, items are already filtered, string filter and the input equals to "data"
 
-const handleFilterChange = (event: ChComboBoxRenderCustomEvent<string>) => {
-  // Filters on the client
-  if (state.suggestOptions.alreadyProcessed !== true) {
-    return;
-  }
+const handleInputChange =
+  (formId: keyof typeof formRefs, comboBoxId: keyof typeof formValues) =>
+  (event: ChComboBoxRenderCustomEvent<string> | InputEvent) => {
+    formValues[comboBoxId] = Object.fromEntries(new FormData(formRefs[formId]))[
+      comboBoxId
+    ] as string;
 
-  itemsFilteredByTheServer = comboBoxFilterChange({
-    filter: event.detail,
-    options: state.suggestOptions
-  });
+    // Filters on the client
+    if (state.suggestOptions.alreadyProcessed) {
+      itemsFilteredByTheServer = comboBoxFilterChange({
+        filter: (event as ChComboBoxRenderCustomEvent<string>).detail,
+        options: { alreadyProcessed: true }
+      });
+    }
 
-  // TODO: Until we support external slots in the ch-flexible-layout-render,
-  // this is a hack to update the render of the widget and thus re-render the
-  // combo-box updating the displayed items
-  const showcaseRef = event.target.closest("ch-showcase");
+    // TODO: Until we support external slots in the ch-flexible-layout-render,
+    // this is a hack to update the render of the widget and thus re-render the
+    // combo-box updating the displayed items
+    const showcaseRef = (
+      event as ChComboBoxRenderCustomEvent<string>
+    ).target.closest("ch-showcase");
 
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
-};
+    if (showcaseRef) {
+      forceUpdate(showcaseRef);
+    }
+  };
+
+const handleChangeEvent =
+  (comboBoxId: string) => (event: ChComboBoxRenderCustomEvent<string>) => {
+    changeValues[comboBoxId] = event.detail;
+
+    // TODO: Until we support external slots in the ch-flexible-layout-render,
+    // this is a hack to update the render of the widget and thus re-render the
+    // combo-box updating the displayed items
+    const showcaseRef = (
+      event as ChComboBoxRenderCustomEvent<string>
+    ).target.closest("ch-showcase");
+
+    if (showcaseRef) {
+      forceUpdate(showcaseRef);
+    }
+  };
 
 const render = () => (
-  <div class="checkbox-test-main-wrapper">
+  <div class="combo-box-test-main-wrapper">
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">No label</legend>
-
-      <ch-combo-box-render
-        accessibleName={state.accessibleName}
-        placeholder={state.placeholder}
-        class="combo-box"
-        disabled={state.disabled}
-        filter={state.filter}
-        popoverInlineAlign={state.popoverInlineAlign}
-        model={
-          state.suggestOptions.alreadyProcessed === true && state.suggest
-            ? itemsFilteredByTheServer
-            : state.model
-        }
-        readonly={state.readonly}
-        resizable={state.readonly}
-        suggest={state.suggest}
-        suggestDebounce={state.suggestDebounce}
-        suggestOptions={state.suggestOptions}
-        value={state.value}
-        onFilterChange={handleFilterChange}
-      ></ch-combo-box-render>
-    </fieldset>
-
-    <fieldset class="fieldset-test">
-      <legend class="heading-4 field-legend-test">Label with HTML for</legend>
-
-      <label class="form-input__label" htmlFor="checkbox-2">
-        Label for combo-box 2
-      </label>
-      <ch-combo-box-render
-        id="checkbox-2"
-        accessibleName={state.accessibleName}
-        placeholder={state.placeholder}
-        class="combo-box"
-        disabled={state.disabled}
-        filter={state.filter}
-        popoverInlineAlign={state.popoverInlineAlign}
-        model={
-          state.suggestOptions.alreadyProcessed === true && state.suggest
-            ? itemsFilteredByTheServer
-            : state.model
-        }
-        readonly={state.readonly}
-        resizable={state.readonly}
-        suggest={state.suggest}
-        suggestDebounce={state.suggestDebounce}
-        suggestOptions={state.suggestOptions}
-        value={state.value}
-        onFilterChange={handleFilterChange}
-      ></ch-combo-box-render>
-    </fieldset>
-
-    <fieldset class="fieldset-test">
-      <legend class="heading-4 field-legend-test">
-        Component inside label
-      </legend>
-
-      <label class="form-input__label" htmlFor="checkbox-3">
-        Label for combo-box 3
+      <form
+        id="form-combo-box-1"
+        ref={el => (formRefs["form-combo-box-1"] = el)}
+      >
         <ch-combo-box-render
-          id="checkbox-3"
           accessibleName={state.accessibleName}
           placeholder={state.placeholder}
           class="combo-box"
+          name="combo-box-1"
           disabled={state.disabled}
-          filter={state.filter}
           popoverInlineAlign={state.popoverInlineAlign}
           model={
             state.suggestOptions.alreadyProcessed === true && state.suggest
@@ -121,14 +113,90 @@ const render = () => (
               : state.model
           }
           readonly={state.readonly}
-          resizable={state.resizable}
+          resizable={state.readonly}
           suggest={state.suggest}
           suggestDebounce={state.suggestDebounce}
           suggestOptions={state.suggestOptions}
           value={state.value}
-          onFilterChange={handleFilterChange}
+          onInput={handleInputChange("form-combo-box-1", "combo-box-1")}
+          onChange={handleChangeEvent("combo-box-1")}
         ></ch-combo-box-render>
-      </label>
+      </form>
+      Form value: {formValues["combo-box-1"]}
+      <p>Change event value: {changeValues["combo-box-1"]}</p>
+    </fieldset>
+
+    <fieldset class="fieldset-test">
+      <legend class="heading-4 field-legend-test">Label with HTML for</legend>
+      <form
+        id="form-combo-box-2"
+        ref={el => (formRefs["form-combo-box-2"] = el)}
+      >
+        <label class="form-input__label" htmlFor="combo-box-2">
+          Label for combo-box 2
+        </label>
+        <ch-combo-box-render
+          id="combo-box-2"
+          name="combo-box-2"
+          accessibleName={state.accessibleName}
+          placeholder={state.placeholder}
+          class="combo-box"
+          disabled={state.disabled}
+          model={
+            state.suggestOptions.alreadyProcessed === true && state.suggest
+              ? itemsFilteredByTheServer
+              : state.model
+          }
+          readonly={state.readonly}
+          resizable={state.readonly}
+          suggest={state.suggest}
+          suggestDebounce={state.suggestDebounce}
+          suggestOptions={state.suggestOptions}
+          value={state.value}
+          onInput={handleInputChange("form-combo-box-2", "combo-box-2")}
+          onChange={handleChangeEvent("combo-box-2")}
+        ></ch-combo-box-render>
+      </form>
+      Form value: {formValues["combo-box-2"]}
+      <p>Change event value: {changeValues["combo-box-2"]}</p>
+    </fieldset>
+
+    <fieldset class="fieldset-test">
+      <legend class="heading-4 field-legend-test">
+        Component inside label
+      </legend>
+      <form
+        id="form-combo-box-3"
+        ref={el => (formRefs["form-combo-box-3"] = el)}
+      >
+        <label class="form-input__label" htmlFor="combo-box-3">
+          Label for combo-box 3
+          <ch-combo-box-render
+            id="combo-box-3"
+            name="combo-box-3"
+            accessibleName={state.accessibleName}
+            placeholder={state.placeholder}
+            class="combo-box"
+            disabled={state.disabled}
+            popoverInlineAlign={state.popoverInlineAlign}
+            model={
+              state.suggestOptions.alreadyProcessed === true && state.suggest
+                ? itemsFilteredByTheServer
+                : state.model
+            }
+            readonly={state.readonly}
+            resizable={state.resizable}
+            suggest={state.suggest}
+            suggestDebounce={state.suggestDebounce}
+            suggestOptions={state.suggestOptions}
+            value={state.value}
+            onInput={handleInputChange("form-combo-box-3", "combo-box-3")}
+            onChange={handleChangeEvent("combo-box-3")}
+          ></ch-combo-box-render>
+        </label>
+      </form>
+      Form value: {formValues["combo-box-3"]}
+      <p>Change event value: {changeValues["combo-box-3"]}</p>
     </fieldset>
   </div>
 );
@@ -144,10 +212,20 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
           type: "enum",
           values: [
             { caption: "Simple Model", value: simpleModelComboBox1 },
+            {
+              caption: "Simple Model with icons",
+              value: simpleModelComboBoxWithIcons
+            },
             { caption: "Small Model", value: smallModel },
             { caption: "Data Type Model in GeneXus", value: dataTypeInGeneXus }
           ],
           value: simpleModelComboBox1
+        },
+        {
+          id: "value",
+          caption: "Value",
+          value: "Value 1",
+          type: "string"
         }
       ]
     },
@@ -192,6 +270,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
           ]
         },
         {
+          id: "hostParts",
+          caption: "Host Parts",
+          value: undefined,
+          type: "string"
+        },
+        {
           id: "resizable",
           caption: "Resizable",
           value: false,
@@ -219,12 +303,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
           caption: "Suggest",
           value: false,
           type: "boolean"
-        },
-        {
-          id: "filter",
-          caption: "Filter",
-          value: undefined,
-          type: "string"
         },
         {
           id: "suggestDebounce",
@@ -257,6 +335,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
               type: "boolean"
             },
             {
+              id: "renderActiveItemIconOnExpand",
+              caption: "Render Active Item Icon On Expand",
+              value: false,
+              type: "boolean"
+            },
+            {
               id: "strict",
               caption: "Strict filter",
               value: false,
@@ -274,6 +358,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChComboBoxRenderE
     { name: "class", fixed: true, value: "combo-box", type: "string" },
     { name: "disabled", defaultValue: false, type: "boolean" },
     { name: "filter", defaultValue: undefined, type: "string" },
+    { name: "hostParts", defaultValue: undefined, type: "string" },
     { name: "model", fixed: true, value: "controlUIModel", type: "string" },
     { name: "placeholder", defaultValue: undefined, type: "string" },
     { name: "readonly", defaultValue: false, type: "boolean" },

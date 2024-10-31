@@ -236,6 +236,11 @@ legend {
   grid-auto-rows: 128px;
 }
 
+.combo-box-test-main-wrapper {
+  display: grid;
+  grid-auto-rows: 156px;
+}
+
 .image-test-main-wrapper {
   display: grid;
   grid-template-columns: max-content max-content max-content max-content;

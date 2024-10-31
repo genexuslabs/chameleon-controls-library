@@ -295,6 +295,13 @@ export const updateDirectionInImageCustomVar = <T extends "start" | "end">(
       );
       states += " start-img--hover";
     }
+    if (image.selected) {
+      startImg["--ch-start-img--selected"] = formatImagePath(
+        image.selected,
+        imageType
+      );
+      states += " start-img--selected";
+    }
     if (image.disabled) {
       startImg["--ch-start-img--disabled"] = formatImagePath(
         image.disabled,
@@ -322,6 +329,13 @@ export const updateDirectionInImageCustomVar = <T extends "start" | "end">(
   if (image.hover) {
     endImg["--ch-end-img--hover"] = formatImagePath(image.hover, imageType);
     states += " end-img--hover";
+  }
+  if (image.selected) {
+    endImg["--ch-end-img--selected"] = formatImagePath(
+      image.selected,
+      imageType
+    );
+    states += " end-img--selected";
   }
   if (image.disabled) {
     endImg["--ch-end-img--disabled"] = formatImagePath(

@@ -10,6 +10,12 @@ export default class HTMLChTabularGridRowsetElement
   private computedLevel = 0;
   private grid: HTMLChTabularGridElement;
 
+  rowsetId: string;
+
+  static get observedAttributes() {
+    return ["rowsetid"];
+  }
+
   constructor() {
     super();
   }
@@ -20,6 +26,12 @@ export default class HTMLChTabularGridRowsetElement
       this.rowsetLegendClickedHandler
     );
     this.defineLevel();
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string, value: string) {
+    if (name === "rowsetid") {
+      this.rowsetId = value;
+    }
   }
 
   /**

@@ -15,7 +15,7 @@ describe("[ch-combo-box-render][form][suggest]", () => {
   performFormTests(
     {
       formElementTagName: "ch-combo-box-render",
-      additionalAttributes: "suggest",
+      additionalAttributes: 'suggest suggest-debounce="0"',
       hasReadonlySupport: false,
       // hasTextSelectionSupport: false,
       pressEnterToConfirmValue: true,

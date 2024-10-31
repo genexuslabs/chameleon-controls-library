@@ -39,7 +39,7 @@ export const accordionWithExpandedSizeModel: AccordionModel = [
   }
 ];
 
-export const getAccordionPathCallbackEdit = (
+export const getAccordionPathCallback = (
   startImgSrc: string
 ): GxImageMultiState => {
   if (startImgSrc === MODULE_ICON) {

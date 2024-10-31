@@ -79,6 +79,7 @@ log.txt
 .sass-cache/
 .versions/
 $RECYCLE.BIN/
+components.d.ts
 
 .DS_Store
 Thumbs.db

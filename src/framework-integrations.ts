@@ -2,8 +2,9 @@ import type { ChameleonControlsTagName } from "./common/types";
 
 // This object must include all Chameleon's components.
 const chameleonComponents: {
-  [key in ChameleonControlsTagName &
-    ("gx-grid-chameleon" | "gx-grid-chameleon-column-filter")]: 0;
+  [key in
+    | ChameleonControlsTagName
+    | ("gx-grid-chameleon" | "gx-grid-chameleon-column-filter")]: 0;
 } = {
   "ch-accordion": 0,
   "ch-accordion-render": 0,
@@ -96,6 +97,7 @@ const chameleonComponents: {
   "ch-tabular-grid-column-settings": 0,
   "ch-tabular-grid-columnset": 0,
   "ch-tabular-grid-infinite-scroll": 0,
+  "ch-tabular-grid-render": 0,
   "ch-tabular-grid-row-actions": 0,
   "ch-tabular-grid-rowset-empty": 0,
   "ch-tabular-grid-rowset-legend": 0,
@@ -193,3 +195,5 @@ export const reactOutputExcludedComponents = Object.keys(
   chameleonComponent =>
     !reactOutputComponentWrappers.has(chameleonComponent as any)
 );
+
+export const allChameleonComponents = Object.keys(chameleonComponents);

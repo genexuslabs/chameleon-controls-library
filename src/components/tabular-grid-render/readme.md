@@ -1,19 +1,16 @@
 # ch-tabular-grid-render
 
-
-
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
-| Property          | Attribute          | Description                                           | Type                                                                        | Default     |
-| ----------------- | ------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------- | ----------- |
-| `columnHideable`  | `column-hideable`  | Determines if the columns can be hidden by the user   | `boolean`                                                                   | `true`      |
-| `columnResizable` | `column-resizable` | Determines if the columns can be resized by the user. | `boolean`                                                                   | `true`      |
-| `columnSortable`  | `column-sortable`  | Determines if the columns can be sorted by the user.  | `boolean`                                                                   | `true`      |
-| `model`           | --                 | Specifies the content of the tabular grid control.    | `{ columns: TabularGridColumnModel[]; rowsets: TabularGridRowsetModel[]; }` | `undefined` |
-
+| Property          | Attribute          | Description                                           | Type                                                                      | Default     |
+| ----------------- | ------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------- | ----------- |
+| `columnHideable`  | `column-hideable`  | Determines if the columns can be hidden by the user   | `boolean`                                                                 | `true`      |
+| `columnResizable` | `column-resizable` | Determines if the columns can be resized by the user. | `boolean`                                                                 | `true`      |
+| `columnSortable`  | `column-sortable`  | Determines if the columns can be sorted by the user.  | `boolean`                                                                 | `true`      |
+| `model`           | --                 | Specifies the content of the tabular grid control.    | `{ columns: TabularGridColumnsModel; rowsets: TabularGridRowsetsModel; }` | `undefined` |
+| `theme`           | `theme`            | TODO: Remove this property                            | `string`                                                                  | `undefined` |
 
 ## Dependencies
 
@@ -26,6 +23,7 @@
 - [ch-theme](../theme)
 
 ### Graph
+
 ```mermaid
 graph TD;
   ch-tabular-grid-render --> ch-tabular-grid
@@ -43,6 +41,6 @@ graph TD;
   style ch-tabular-grid-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_

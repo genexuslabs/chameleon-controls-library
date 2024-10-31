@@ -153,8 +153,8 @@
 select {
   all: unset;
   display: grid;
-  opacity: 0;
   overflow: hidden;
+  grid-row: 2 / 3;
 }
 
 .value {
@@ -195,6 +195,7 @@ ch-popover {
   display: flex;
   gap: var(--ch-combo-box-item-gap);
   align-items: center;
+  flex: 1; // Necessary to properly align the end image in expandable groups
 }
 
 .group {
@@ -237,30 +238,89 @@ ch-popover {
   inline-size: var(--ch-combo-box-item__image-size);
   block-size: var(--ch-combo-box-item__image-size);
   min-inline-size: var(--ch-combo-box-item__image-size);
+  pointer-events: none; // TODO: Add a unit test for this
 }
 
 .img--start {
-  --ch-combo-box-item-img: var(--ch-combo-box-item-start-img);
+  --ch-combo-box-item-start-img: var(--ch-start-img--base);
+
+  // Leafs (role="option") only supports selected and disabled state.
+  &.selected.start-img--selected {
+    --ch-combo-box-item-start-img: var(--ch-start-img--selected);
+  }
+
+  // Group header
+  .group__header:hover > &.start-img--hover {
+    --ch-combo-box-item-start-img: var(--ch-start-img--hover);
+  }
+
+  .group__header:active > &.start-img--active {
+    --ch-combo-box-item-start-img: var(--ch-start-img--active);
+  }
+
+  // Icon on the Host
+  :host(:focus) &.input-container.start-img--focus {
+    --ch-combo-box-item-start-img: var(--ch-start-img--focus);
+  }
+
+  :host(:not(.ch-disabled):hover) &.input-container.start-img--hover {
+    --ch-combo-box-item-start-img: var(--ch-start-img--hover);
+  }
+
+  // Disabled
+  &.disabled.start-img--disabled,
+  .disabled > &.start-img--disabled,
+  :host(.ch-disabled) &.start-img--disabled {
+    --ch-combo-box-item-start-img: var(--ch-start-img--disabled);
+  }
 }
 
 .img--end {
-  --ch-combo-box-item-img: var(--ch-combo-box-item-end-img);
+  --ch-combo-box-item-end-img: var(--ch-end-img--base);
 
   &::after {
     margin-inline-start: auto;
   }
+
+  // Leafs (role="option") only supports selected and disabled state.
+  &.selected.end-img--selected {
+    --ch-combo-box-item-end-img: var(--ch-end-img--selected);
+  }
+
+  .group__header:hover > &.end-img--hover {
+    --ch-combo-box-item-end-img: var(--ch-end-img--hover);
+  }
+
+  .group__header:active > &.end-img--active {
+    --ch-combo-box-item-end-img: var(--ch-end-img--active);
+  }
+
+  &.disabled.end-img--disabled,
+  .disabled > &.end-img--disabled {
+    --ch-combo-box-item-end-img: var(--ch-end-img--disabled);
+  }
 }
 
-.start-img-type--background::before,
+.start-img-type--background::before {
+  background: no-repeat center / var(--ch-combo-box-item__background-image-size)
+    var(--ch-combo-box-item-start-img);
+}
+
 .end-img-type--background::after {
   background: no-repeat center / var(--ch-combo-box-item__background-image-size)
-    var(--ch-combo-box-item-img);
+    var(--ch-combo-box-item-end-img);
 }
 
-.start-img-type--mask::before,
-.end-img-type--mask::after {
-  -webkit-mask: var(--ch-combo-box-item-img) 50% 50% /
+.start-img-type--mask::before {
+  -webkit-mask: no-repeat center /
     var(--ch-combo-box-item__background-image-size)
-    var(--ch-combo-box-item__background-image-size) no-repeat;
+    var(--ch-combo-box-item-start-img);
+  background-color: currentColor;
+}
+
+.end-img-type--mask::after {
+  -webkit-mask: no-repeat center /
+    var(--ch-combo-box-item__background-image-size)
+    var(--ch-combo-box-item-end-img);
   background-color: currentColor;
 }

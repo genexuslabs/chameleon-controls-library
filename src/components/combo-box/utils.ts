@@ -1,27 +1,11 @@
 import { ChameleonControlsTagName } from "../../common/types";
+import { getComboBoxItemUIModel } from "./renders";
 import {
   ComboBoxItemGroup,
   ComboBoxItemModel,
   ComboBoxItemModelExtended,
   ComboBoxModel
 } from "./types";
-
-export const getComboBoxItemImageCustomVars = (
-  item: ComboBoxItemModel,
-  hasImages: boolean,
-  hasStartImg: boolean,
-  hasEndImg: boolean
-) =>
-  hasImages
-    ? {
-        "--ch-combo-box-item-start-img": hasStartImg
-          ? `url("${item.startImgSrc}")`
-          : null,
-        "--ch-combo-box-item-end-img": hasEndImg
-          ? `url("${item.endImgSrc}")`
-          : null
-      }
-    : undefined;
 
 export const findComboBoxLargestValue = (model: ComboBoxModel): string => {
   let largestValue = "";
@@ -51,57 +35,47 @@ export const findComboBoxLargestValue = (model: ComboBoxModel): string => {
 export const mapValuesToItemInfo = (
   model: ComboBoxModel,
   valueToItemInfo: Map<string, ComboBoxItemModelExtended>,
-  itemCaptionToItemValue: Map<string, string>
+  captionToItemInfo: Map<string, ComboBoxItemModelExtended>
 ) => {
   valueToItemInfo.clear();
-  itemCaptionToItemValue.clear();
+  captionToItemInfo.clear();
 
   if (model == null) {
     return;
   }
 
-  model.forEach((item, firstLevelIndex) => {
-    const itemGroup = item as ComboBoxItemGroup;
-    const subItems = itemGroup.items;
+  model.forEach((item: ComboBoxItemGroup, firstLevelIndex: number) => {
+    const firstLevelItemInfo: ComboBoxItemModelExtended = {
+      item: item,
+      index: {
+        type: "first-level",
+        firstLevelIndex: firstLevelIndex
+      }
+    };
 
-    if (subItems != null) {
-      // First level item
-      valueToItemInfo.set(itemGroup.value, {
-        item: itemGroup,
-        index: {
-          type: "first-level",
-          firstLevelIndex: firstLevelIndex
-        },
-        firstExpanded: itemGroup.expandable && !!itemGroup.expanded
-      });
-
-      itemCaptionToItemValue.set(itemGroup.caption, itemGroup.value);
-
-      // Second level items
-      subItems.forEach((subItem, secondLevelIndex) => {
-        valueToItemInfo.set(subItem.value, {
-          item: subItem,
-          index: {
-            type: "nested",
-            firstLevelIndex: firstLevelIndex,
-            secondLevelIndex: secondLevelIndex
-          }
-        });
-
-        itemCaptionToItemValue.set(subItem.caption, subItem.value);
-      });
-    }
     // First level item
-    else {
-      valueToItemInfo.set(item.value, {
-        item: item,
-        index: {
-          type: "first-level",
-          firstLevelIndex: firstLevelIndex
-        }
-      });
-      itemCaptionToItemValue.set(item.caption, item.value);
+    valueToItemInfo.set(item.value, firstLevelItemInfo);
+    if (item.caption) {
+      captionToItemInfo.set(item.caption, firstLevelItemInfo);
     }
+
+    // Second level items
+    item.items?.forEach((subItem, secondLevelIndex) => {
+      const secondLevelItemInfo: ComboBoxItemModelExtended = {
+        item: subItem,
+        index: {
+          type: "nested",
+          firstLevelIndex: firstLevelIndex,
+          secondLevelIndex: secondLevelIndex
+        }
+      };
+
+      valueToItemInfo.set(subItem.value, secondLevelItemInfo);
+
+      if (subItem.caption) {
+        captionToItemInfo.set(subItem.caption, secondLevelItemInfo);
+      }
+    });
   });
 };
 
@@ -121,6 +95,77 @@ export const popoverWasClicked = (event: Event) => {
       elementName === ("ch-combo-box-render" satisfies ChameleonControlsTagName)
     ) {
       return false;
+    }
+  }
+
+  return false;
+};
+
+export const getComboBoxItemFromMouseEvent = (
+  event: MouseEvent,
+  model: ComboBoxModel
+): ComboBoxItemModel | undefined => {
+  event.stopPropagation();
+
+  let elementTarget = event.target as HTMLButtonElement;
+
+  // Expandable button case
+  if (elementTarget.tagName?.toLowerCase() === "span") {
+    elementTarget = elementTarget.parentElement as HTMLButtonElement;
+  }
+
+  if (elementTarget.tagName?.toLowerCase() !== "button") {
+    return undefined;
+  }
+  const itemIndex = elementTarget.id;
+  return getComboBoxItemUIModel(itemIndex, model);
+};
+
+// TODO: Add a unit test for this check
+const isActiveDescendant = (
+  item: ComboBoxItemModel | undefined,
+  activeDescendant: ComboBoxItemModel
+) =>
+  item &&
+  (item.value === activeDescendant.value ||
+    (item.caption && item.caption === activeDescendant.caption));
+
+const checkIfSecondLevelModelContainsActiveDescendant = (
+  activeDescendant: ComboBoxItemModel | undefined,
+  model: ComboBoxModel
+) => {
+  for (let secondIndex = 0; secondIndex < model.length; secondIndex++) {
+    const secondLevelItem = model[secondIndex];
+
+    if (isActiveDescendant(secondLevelItem, activeDescendant)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const comboBoxActiveDescendantIsRendered = (
+  activeDescendant: ComboBoxItemModel | undefined,
+  model: ComboBoxModel | undefined
+) => {
+  if (!activeDescendant || !model) {
+    return false;
+  }
+
+  for (let firstIndex = 0; firstIndex < model.length; firstIndex++) {
+    const firstLevelItem = model[firstIndex] as ComboBoxItemGroup;
+
+    if (isActiveDescendant(firstLevelItem, activeDescendant)) {
+      return true;
+    }
+    if (
+      firstLevelItem.items != null &&
+      checkIfSecondLevelModelContainsActiveDescendant(
+        activeDescendant,
+        firstLevelItem.items
+      )
+    ) {
+      return true;
     }
   }
 

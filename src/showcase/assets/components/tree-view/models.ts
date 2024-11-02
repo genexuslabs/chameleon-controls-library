@@ -26,6 +26,11 @@ const KB_EXPLORER_ORDER = {
   images: 8
 };
 
+const constructMetadata = (
+  objectType: keyof typeof KB_EXPLORER_ORDER,
+  caption: string
+) => JSON.stringify({ objectType, caption });
+
 const FIRST_LEVEL_SIZE = 10;
 const SECOND_LEVEL_SIZE = 20;
 const THIRD_LEVEL_SIZE = 20;
@@ -267,6 +272,107 @@ export const fileSystemModel: TreeViewItemModel[] = [
   }
 ];
 
+const kbExplorerModel_RootModule: TreeViewItemModel[] = [
+  {
+    id: "Root_Module.IDE",
+    caption: "IDE",
+    startImgSrc: MODULE_ICON,
+    metadata: constructMetadata("module", "IDE"),
+    order: KB_EXPLORER_ORDER.module
+  },
+  {
+    id: "Root_Module.BL",
+    caption: "BL",
+    startImgSrc: MODULE_ICON,
+    metadata: constructMetadata("module", "BL"),
+    order: KB_EXPLORER_ORDER.module
+  },
+  {
+    id: "Root_Module.General",
+    caption: "General",
+    startImgSrc: MODULE_ICON,
+    lazy: true,
+    metadata: constructMetadata("module", "General"),
+    order: KB_EXPLORER_ORDER.module
+  },
+  {
+    id: "Root_Module.AWS_internal",
+    caption: "AWS_internal",
+    startImgSrc: MODULE_ICON,
+    metadata: constructMetadata("module", "AWS_internal"),
+    order: KB_EXPLORER_ORDER.module
+  },
+  {
+    id: "Root_Module.DataModel",
+    caption: "DataModel",
+    startImgSrc: FOLDER_ICON,
+    metadata: constructMetadata("folder", "DataModel"),
+    order: KB_EXPLORER_ORDER.folder
+  },
+  {
+    id: "Root_Module.Back",
+    caption: "Back",
+    startImgSrc: FOLDER_ICON,
+    metadata: constructMetadata("folder", "Back"),
+    order: KB_EXPLORER_ORDER.folder
+  },
+  {
+    id: "Root_Module.Tests",
+    caption: "Tests",
+    startImgSrc: FOLDER_ICON,
+    metadata: constructMetadata("folder", "Tests"),
+    order: KB_EXPLORER_ORDER.folder
+  },
+  {
+    id: "Root_Module.Images",
+    caption: "Images",
+    dragDisabled: true,
+    dropDisabled: true,
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}image.svg`,
+    metadata: constructMetadata("images", "Images"),
+    order: KB_EXPLORER_ORDER.images
+  },
+  {
+    id: "Root_Module.GXNext",
+    caption: "GXNext",
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}dso.svg`,
+    metadata: constructMetadata("dso", "GXNext"),
+    order: KB_EXPLORER_ORDER.dso
+  },
+  {
+    id: "Root_Module.GeneXusNext",
+    caption: "GeneXusNext",
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}dso.svg`,
+    metadata: constructMetadata("dso", "GeneXusNext"),
+    order: KB_EXPLORER_ORDER.dso
+  },
+  {
+    id: "Root_Module.Files",
+    caption: "Files",
+    editable: false,
+    dragDisabled: true,
+    dropDisabled: true,
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}file.svg`,
+    metadata: constructMetadata("files", "Files"),
+    order: KB_EXPLORER_ORDER.files
+  },
+  {
+    id: "Root_Module.Domain",
+    caption: "Domain",
+    editable: false,
+    dragDisabled: true,
+    dropDisabled: true,
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}domain.svg`,
+    metadata: constructMetadata("domain", "Domain"),
+    order: KB_EXPLORER_ORDER.domain
+  }
+];
+
 const kbExplorer_root: TreeViewItemModel[] = [
   {
     id: "Main_Programs",
@@ -284,8 +390,8 @@ const kbExplorer_root: TreeViewItemModel[] = [
     editable: false,
     startImgSrc: MODULE_ICON,
     dragDisabled: true,
-    lazy: true,
-    order: 1
+    order: 1,
+    items: kbExplorerModel_RootModule
   },
   {
     id: "References",
@@ -342,7 +448,7 @@ const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
     startImgType: "img",
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
-    metadata: "Panel",
+    metadata: constructMetadata("sdPanel", "Prompt"),
     order: KB_EXPLORER_ORDER.sdPanel
   },
   {
@@ -351,6 +457,7 @@ const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
+    metadata: constructMetadata("api", "ApiHealthCheck"),
     startImgSrc: `${ASSETS_PREFIX}api.svg`,
     order: KB_EXPLORER_ORDER.api
   },
@@ -361,6 +468,7 @@ const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
     dropDisabled: true,
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}web-panel.svg`,
+    metadata: constructMetadata("webPanel", "BackHome"),
     order: KB_EXPLORER_ORDER.webPanel
   },
   {
@@ -370,6 +478,7 @@ const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
     dropDisabled: true,
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}web-panel.svg`,
+    metadata: constructMetadata("webPanel", "Login"),
     order: KB_EXPLORER_ORDER.webPanel
   },
   {
@@ -379,6 +488,7 @@ const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
     dropDisabled: true,
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}api.svg`,
+    metadata: constructMetadata("api", "ProvisioningServices"),
     order: KB_EXPLORER_ORDER.api
   },
   {
@@ -388,96 +498,8 @@ const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
     dropDisabled: true,
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}procedure.svg`,
+    metadata: constructMetadata("procedure", "VersionCheck"),
     order: KB_EXPLORER_ORDER.procedure
-  }
-];
-
-const kbExplorerModel_RootModule: TreeViewItemModel[] = [
-  {
-    id: "Root_Module.IDE",
-    caption: "IDE",
-    startImgSrc: MODULE_ICON,
-    order: KB_EXPLORER_ORDER.module
-  },
-  {
-    id: "Root_Module.BL",
-    caption: "BL",
-    startImgSrc: MODULE_ICON,
-    order: KB_EXPLORER_ORDER.module
-  },
-  {
-    id: "Root_Module.General",
-    caption: "General",
-    startImgSrc: MODULE_ICON,
-    lazy: true,
-    order: KB_EXPLORER_ORDER.module
-  },
-  {
-    id: "Root_Module.AWS_internal",
-    caption: "AWS_internal",
-    startImgSrc: MODULE_ICON,
-    order: KB_EXPLORER_ORDER.module
-  },
-  {
-    id: "Root_Module.DataModel",
-    caption: "DataModel",
-    startImgSrc: FOLDER_ICON,
-    order: KB_EXPLORER_ORDER.folder
-  },
-  {
-    id: "Root_Module.Back",
-    caption: "Back",
-    startImgSrc: FOLDER_ICON,
-    order: KB_EXPLORER_ORDER.folder
-  },
-  {
-    id: "Root_Module.Tests",
-    caption: "Tests",
-    startImgSrc: FOLDER_ICON,
-    order: KB_EXPLORER_ORDER.folder
-  },
-  {
-    id: "Root_Module.Images",
-    caption: "Images",
-    dragDisabled: true,
-    dropDisabled: true,
-    leaf: true,
-    startImgSrc: `${ASSETS_PREFIX}image.svg`,
-    order: KB_EXPLORER_ORDER.images
-  },
-  {
-    id: "Root_Module.GXNext",
-    caption: "GXNext",
-    leaf: true,
-    startImgSrc: `${ASSETS_PREFIX}dso.svg`,
-    order: KB_EXPLORER_ORDER.dso
-  },
-  {
-    id: "Root_Module.GeneXusNext",
-    caption: "GeneXusNext",
-    leaf: true,
-    startImgSrc: `${ASSETS_PREFIX}dso.svg`,
-    order: KB_EXPLORER_ORDER.dso
-  },
-  {
-    id: "Root_Module.Files",
-    caption: "Files",
-    editable: false,
-    dragDisabled: true,
-    dropDisabled: true,
-    leaf: true,
-    startImgSrc: `${ASSETS_PREFIX}file.svg`,
-    order: KB_EXPLORER_ORDER.files
-  },
-  {
-    id: "Root_Module.Domain",
-    caption: "Domain",
-    editable: false,
-    dragDisabled: true,
-    dropDisabled: true,
-    leaf: true,
-    startImgSrc: `${ASSETS_PREFIX}domain.svg`,
-    order: KB_EXPLORER_ORDER.domain
   }
 ];
 

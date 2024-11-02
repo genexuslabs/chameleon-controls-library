@@ -91,11 +91,6 @@ export type TreeViewFilterOptions = {
    * Only works if `regularExpression !== true`
    */
   matchCase?: boolean;
-
-  /**
-   * Determine whether the filter works as a regular expression.
-   */
-  regularExpression?: boolean;
 };
 
 export type TreeViewFilterType =
@@ -107,7 +102,7 @@ export type TreeViewFilterType =
   | "none";
 
 export type TreeViewFilterInfo = {
-  filter: string;
+  filter: string | RegExp | undefined;
   filterOptions: TreeViewFilterOptions;
   filterSet: Set<string>;
   defaultCheckbox: boolean;

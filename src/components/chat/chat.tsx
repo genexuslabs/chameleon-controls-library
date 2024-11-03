@@ -51,7 +51,7 @@ export class ChChat {
   /**
    * Specifies the callbacks required in the control.
    */
-  @Prop() readonly callbacks!: ChatInternalCallbacks;
+  @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
 
   /**
    * This property allows us to implement custom rendering for the code blocks.
@@ -66,7 +66,7 @@ export class ChChat {
   /**
    * `true` if a response for the assistant is being generated.
    */
-  @Prop() readonly generatingResponse!: boolean;
+  @Prop() readonly generatingResponse?: boolean = false;
 
   /**
    * Specifies an object containing an HTMLAnchorElement reference. Use this
@@ -84,7 +84,7 @@ export class ChChat {
   /**
    * Specifies if the chat is used in a mobile device.
    */
-  @Prop() readonly isMobile!: boolean;
+  @Prop() readonly isMobile?: boolean = false;
 
   /**
    * Specifies the items that the chat will display.
@@ -94,7 +94,7 @@ export class ChChat {
   /**
    * Specifies if the chat is waiting for the data to be loaded.
    */
-  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
+  @Prop({ mutable: true }) loadingState?: SmartGridDataState = "initial";
 
   /**
    * Specifies the theme to be used for rendering the markdown.
@@ -105,7 +105,26 @@ export class ChChat {
   /**
    * Specifies the literals required in the control.
    */
-  @Prop() readonly translations!: ChatTranslations;
+  @Prop() readonly translations: ChatTranslations = {
+    accessibleName: {
+      clearChat: "Clear chat",
+      copyResponseButton: "Copy assistant response",
+      downloadCodeButton: "Download code",
+      imagePicker: "Select images",
+      removeUploadedImage: "Remove uploaded image",
+      sendButton: "Send",
+      sendInput: "Message",
+      stopGeneratingAnswerButton: "Stop generating answer"
+    },
+    placeholder: {
+      sendInput: "Ask me a question..."
+    },
+    text: {
+      copyCodeButton: "Copy code",
+      processing: `Processing...`,
+      sourceFiles: "Source files:"
+    }
+  };
 
   /**
    * This property allows us to implement custom rendering of chat items.
@@ -264,7 +283,7 @@ export class ChChat {
       };
 
       await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.callbacks.sendChatToLLM(this.items);
+      this.callbacks?.sendChatToLLM(this.items);
 
       // Queue a new re-render
       forceUpdate(this);
@@ -286,7 +305,7 @@ export class ChChat {
 
       // Upload the image to the server asynchronously
       this.callbacks
-        .uploadImage(imageToUpload.file)
+        ?.uploadImage(imageToUpload.file)
         .then(imageSrc => {
           userContent[index + 1] = {
             type: "image_url",
@@ -297,7 +316,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks.sendChatToLLM(this.items);
+            this.callbacks?.sendChatToLLM(this.items);
           }
         })
         .catch(() => {
@@ -307,7 +326,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks.sendChatToLLM(this.items);
+            this.callbacks?.sendChatToLLM(this.items);
           }
         });
     });
@@ -326,7 +345,7 @@ export class ChChat {
   #handleStopGenerating = (event: MouseEvent) => {
     event.stopPropagation();
 
-    this.callbacks.stopGeneratingAnswer!();
+    this.callbacks?.stopGeneratingAnswer!();
   };
 
   // #handleFilesChanged = (event: ImagePickerCustomEvent<FileList | null>) => {
@@ -479,7 +498,7 @@ export class ChChat {
           }}
           part="send-container"
         >
-          {this.generatingResponse && this.callbacks.stopGeneratingAnswer && (
+          {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
             <button
               class="stop-generating-answer-button"
               part="stop-generating-answer-button"

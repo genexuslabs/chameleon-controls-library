@@ -109,10 +109,9 @@ export class ChVirtualScroller implements ComponentInterface {
    */
   @Prop() readonly items!: SmartGridModel | undefined;
   @Watch("items")
-  itemsChanged(newItems: SmartGridModel, oldItems: SmartGridModel) {
-    if (emptyItems(oldItems)) {
-      this.#updateViewportItemsOnInitialRender(newItems);
-    }
+  itemsChanged(newItems: SmartGridModel) {
+    this.#resetVirtualScrollerState();
+    this.#setViewportItemsOnInitialRender(newItems);
   }
 
   /**
@@ -335,7 +334,27 @@ export class ChVirtualScroller implements ComponentInterface {
     });
   };
 
-  #updateViewportItemsOnInitialRender = (items: SmartGridModel) => {
+  #resetVirtualScrollerState = () => {
+    this.#virtualStartSize = 0;
+    this.#virtualEndSize = 0;
+
+    // Render the last items when the scroll is inverted
+    if (this.inverseLoading) {
+      const lastIndex = this.items.length - 1;
+
+      this.#startIndex = lastIndex;
+      this.#endIndex = lastIndex;
+    } else {
+      this.#startIndex = 0;
+      this.#endIndex = 0;
+    }
+
+    if (this.mode === "virtual-scroll") {
+      this.#virtualSizes = new Map();
+    }
+  };
+
+  #setViewportItemsOnInitialRender = (items: SmartGridModel) => {
     if (emptyItems(items)) {
       this.#emitVirtualItemsChange();
       return;
@@ -472,22 +491,12 @@ export class ChVirtualScroller implements ComponentInterface {
     // Listen for the render of the smart cells
     this.el.addEventListener("smartCellDidLoad", this.#handleRenderedCell);
 
-    if (this.mode === "virtual-scroll") {
-      this.#virtualSizes = new Map();
-    }
-
-    // Render the last items when the scroll is inverted
-    if (this.inverseLoading) {
-      const lastIndex = this.items.length - 1;
-
-      this.#startIndex = lastIndex;
-      this.#endIndex = lastIndex;
-    }
+    this.#resetVirtualScrollerState();
   }
 
   componentDidLoad(): void {
     this.#smartGrid = this.el.closest("ch-smart-grid");
-    this.#updateViewportItemsOnInitialRender(this.items);
+    this.#setViewportItemsOnInitialRender(this.items);
   }
 
   disconnectedCallback(): void {

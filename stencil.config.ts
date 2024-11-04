@@ -32,7 +32,12 @@ export const config: Config = {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
     verbose: true,
     browserHeadless: "new",
-    testPathIgnorePatterns: ["node_modules/", "src/testing/", "dist/"]
+    testPathIgnorePatterns: [
+      "node_modules/",
+      "src/testing/",
+      "dist/",
+      "src/components/tree-view/tests/utils.e2e.ts"
+    ]
   },
   bundles: [
     {

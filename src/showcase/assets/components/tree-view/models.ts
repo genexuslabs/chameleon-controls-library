@@ -27,9 +27,12 @@ const KB_EXPLORER_ORDER = {
 };
 
 const constructMetadata = (
-  objectType: keyof typeof KB_EXPLORER_ORDER,
+  objectType: keyof typeof KB_EXPLORER_ORDER | undefined,
   caption: string
-) => JSON.stringify({ objectType, caption });
+) =>
+  objectType
+    ? JSON.stringify({ objectType, caption })
+    : JSON.stringify({ caption });
 
 const FIRST_LEVEL_SIZE = 10;
 const SECOND_LEVEL_SIZE = 20;
@@ -382,7 +385,8 @@ const kbExplorer_root: TreeViewItemModel[] = [
     dragDisabled: true,
     dropDisabled: true,
     lazy: true,
-    order: 0
+    order: 0,
+    metadata: constructMetadata(undefined, "Main Programs")
   },
   {
     id: "Root_Module",
@@ -391,7 +395,8 @@ const kbExplorer_root: TreeViewItemModel[] = [
     startImgSrc: MODULE_ICON,
     dragDisabled: true,
     order: 1,
-    items: kbExplorerModel_RootModule
+    items: kbExplorerModel_RootModule,
+    metadata: constructMetadata(undefined, "Root Module")
   },
   {
     id: "References",
@@ -400,7 +405,8 @@ const kbExplorer_root: TreeViewItemModel[] = [
     startImgSrc: `${ASSETS_PREFIX}references.svg`,
     dragDisabled: true,
     dropDisabled: true,
-    order: 2
+    order: 2,
+    metadata: constructMetadata(undefined, "References")
   },
   {
     id: "Customization",
@@ -410,7 +416,8 @@ const kbExplorer_root: TreeViewItemModel[] = [
     dragDisabled: true,
     dropDisabled: true,
     lazy: true,
-    order: 3
+    order: 3,
+    metadata: constructMetadata(undefined, "Customization")
   },
   {
     id: "Documentation",
@@ -420,7 +427,8 @@ const kbExplorer_root: TreeViewItemModel[] = [
     startImgSrc: `${ASSETS_PREFIX}document.svg`,
     dragDisabled: true,
     dropDisabled: true,
-    order: 4
+    order: 4,
+    metadata: constructMetadata(undefined, "Documentation")
   }
 ];
 
@@ -511,7 +519,8 @@ const kbExplorerModel_Customization: TreeViewItemModel[] = [
     dropDisabled: true,
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}file.svg`,
-    order: KB_EXPLORER_ORDER.files
+    order: KB_EXPLORER_ORDER.files,
+    metadata: constructMetadata("files", "Files")
   },
   {
     id: "Customization.Images",
@@ -520,7 +529,8 @@ const kbExplorerModel_Customization: TreeViewItemModel[] = [
     dropDisabled: true,
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}image.svg`,
-    order: KB_EXPLORER_ORDER.images
+    order: KB_EXPLORER_ORDER.images,
+    metadata: constructMetadata("images", "Images")
   },
   {
     id: "Customization.Localization",
@@ -529,7 +539,8 @@ const kbExplorerModel_Customization: TreeViewItemModel[] = [
     dropDisabled: true,
     lazy: true,
     startImgSrc: `${ASSETS_PREFIX}lenguage.svg`,
-    order: KB_EXPLORER_ORDER.localization
+    order: KB_EXPLORER_ORDER.localization,
+    metadata: constructMetadata("localization", "Customization.Localization")
   }
 ];
 
@@ -1129,48 +1140,60 @@ const modelLazyUpdated2: TreeViewItemModel[] = [
   }
 ];
 
-export const lazyLoadTreeItemsCallback: LazyLoadTreeItemsCallback = modelId =>
-  new Promise(resolve => {
-    let lazyModel =
-      modelId === "lazy-loaded-2" ? modelLazyUpdated2 : modelLazyUpdated1;
+const lazyLoadCallback =
+  (delay: number): LazyLoadTreeItemsCallback =>
+  modelId =>
+    new Promise(resolve => {
+      let lazyModel =
+        modelId === "lazy-loaded-2" ? modelLazyUpdated2 : modelLazyUpdated1;
 
-    if (modelId.startsWith("item-")) {
-      lazyModel = [];
+      if (modelId.startsWith("item-")) {
+        lazyModel = [];
 
-      for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
-        const subModelId = modelId + "-" + j;
-        const subModelItems = [];
+        for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
+          const subModelId = modelId + "-" + j;
+          const subModelItems = [];
 
-        for (let k = 0; k < THIRD_LEVEL_SIZE; k++) {
-          subModelItems.push({
-            id: subModelId + "-" + k,
-            caption: subModelId + "-" + k,
-            leaf: true,
-            startImgSrc: `${ASSETS_PREFIX}file.svg`
+          for (let k = 0; k < THIRD_LEVEL_SIZE; k++) {
+            subModelItems.push({
+              id: subModelId + "-" + k,
+              caption: subModelId + "-" + k,
+              leaf: true,
+              startImgSrc: `${ASSETS_PREFIX}file.svg`
+            });
+          }
+
+          lazyModel.push({
+            id: subModelId,
+            caption: subModelId,
+            expanded: true,
+            leaf: false,
+            startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+            items: subModelItems
           });
         }
-
-        lazyModel.push({
-          id: subModelId,
-          caption: subModelId,
-          expanded: true,
-          leaf: false,
-          startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
-          items: subModelItems
-        });
       }
-    }
 
-    const lazyModelResultFromDictionary = lazyLoadItemsDictionary[modelId];
+      const lazyModelResultFromDictionary = lazyLoadItemsDictionary[modelId];
 
-    if (lazyModelResultFromDictionary) {
-      lazyModel = lazyModelResultFromDictionary;
-    }
+      if (lazyModelResultFromDictionary) {
+        lazyModel = lazyModelResultFromDictionary;
+      }
 
-    setTimeout(() => {
-      resolve(structuredClone(lazyModel));
-    }, 500); // Resolves or rejects after 500ms second
-  });
+      if (delay > 0) {
+        setTimeout(() => {
+          resolve(structuredClone(lazyModel));
+        }, delay); // Resolves or rejects after 500ms second
+      } else {
+        resolve(structuredClone(lazyModel));
+      }
+    });
+
+export const lazyLoadTreeItemsCallback: LazyLoadTreeItemsCallback =
+  lazyLoadCallback(500);
+
+export const lazyLoadTreeItemsCallbackNoDebounce: LazyLoadTreeItemsCallback =
+  lazyLoadCallback(0);
 
 export const disabledItemsModel = [
   {

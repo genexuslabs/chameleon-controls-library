@@ -787,7 +787,7 @@ export class ChTreeViewRender {
     this.#scheduleCheckedItemsChange();
 
     // Update filters
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
 
     // Force re-render
     forceUpdate(this);
@@ -1373,7 +1373,7 @@ export class ChTreeViewRender {
     this.#flattenSubModel(this.#rootNode);
 
     // Re-sync filters
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
 
     // The model was updated at runtime, so we need to update the references
     // Re-sync selected items
@@ -1528,6 +1528,8 @@ export class ChTreeViewRender {
 
       this.#checkIfThereAreDifferentItemsWithCheckbox(itemsWithCheckbox);
       this.#validateCheckedAndSelectedItems();
+      // Reset immediate filters, since there are not any filters to process
+      this.#immediateFilter = undefined;
 
       return;
     }

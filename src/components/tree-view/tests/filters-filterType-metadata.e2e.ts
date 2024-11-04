@@ -3,26 +3,9 @@ import {
   kbExplorerModel,
   lazyLoadTreeItemsCallback
 } from "../../../showcase/assets/components/tree-view/models";
+import { TREE_VIEW_NODE_RENDER } from "./utils.e2e";
 
-const ITEM_EXPORT_PARTS =
-  "item__action,item__checkbox,item__checkbox-container,item__checkbox-input,item__checkbox-option,item__downloading,item__edit-caption,item__expandable-button,item__group,item__header,item__img,item__line,disabled,expanded,collapsed,expand-button,even-level,odd-level,last-line,lazy-loaded,start-img,end-img,editing,not-editing,selected,not-selected,checked,unchecked,indeterminate,drag-enter";
-
-const TREE_VIEW_NODE = <T extends string>(children: T) =>
-  `<ch-tree-view class="not-dragging-item hydrated" exportparts="drag-preview">${children}</ch-tree-view>` as const;
-
-const TREE_VIEW_ITEM_NODE = <T extends string>(
-  options: { id: string; level: number; class?: string },
-  children?: T
-) =>
-  `<ch-tree-view-item id="${options.id}" role="treeitem" aria-level="${
-    options.level
-  }" exportparts="${ITEM_EXPORT_PARTS}" class="${
-    options.class ? options.class + " " : ""
-  }hydrated" part="item" style="--level: ${options.level - 1};">${
-    children ?? ""
-  }</ch-tree-view-item>` as const;
-
-describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
+describe('[ch-tree-view-render][filters][filterType="metadata"]', () => {
   let page: E2EPage;
   let treeViewRef: E2EElement;
 
@@ -131,7 +114,7 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
 
     const filteredHTML = await getTreeViewRenderedContent();
 
-    expect(filteredHTML).toEqual(TREE_VIEW_NODE(""));
+    expect(filteredHTML).toEqual(TREE_VIEW_NODE_RENDER([]));
   });
 
   it("should render the items that match the filter (string 1)", async () => {
@@ -142,18 +125,22 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
     const filteredHTML = await getTreeViewRenderedContent();
 
     expect(filteredHTML).toEqual(
-      TREE_VIEW_NODE(
-        TREE_VIEW_ITEM_NODE(
-          { id: "root", level: 1 },
-          TREE_VIEW_ITEM_NODE(
-            { id: "Root_Module", level: 2 },
-            TREE_VIEW_ITEM_NODE({ id: "Root_Module.AWS_internal", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.BL", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.General", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.IDE", level: 3 })
-          )
-        )
-      )
+      TREE_VIEW_NODE_RENDER([
+        {
+          id: "root",
+          children: [
+            {
+              id: "Root_Module",
+              children: [
+                "Root_Module.AWS_internal",
+                "Root_Module.BL",
+                "Root_Module.General",
+                "Root_Module.IDE"
+              ]
+            }
+          ]
+        }
+      ])
     );
   });
 
@@ -165,15 +152,12 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
     const filteredHTML = await getTreeViewRenderedContent();
 
     expect(filteredHTML).toEqual(
-      TREE_VIEW_NODE(
-        TREE_VIEW_ITEM_NODE(
-          { id: "root", level: 1 },
-          TREE_VIEW_ITEM_NODE(
-            { id: "Root_Module", level: 2 },
-            TREE_VIEW_ITEM_NODE({ id: "Root_Module.BL", level: 3 })
-          )
-        )
-      )
+      TREE_VIEW_NODE_RENDER([
+        {
+          id: "root",
+          children: [{ id: "Root_Module", children: ["Root_Module.BL"] }]
+        }
+      ])
     );
   });
 
@@ -185,18 +169,22 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
     const filteredHTML = await getTreeViewRenderedContent();
 
     expect(filteredHTML).toEqual(
-      TREE_VIEW_NODE(
-        TREE_VIEW_ITEM_NODE(
-          { id: "root", level: 1 },
-          TREE_VIEW_ITEM_NODE(
-            { id: "Root_Module", level: 2 },
-            TREE_VIEW_ITEM_NODE({ id: "Root_Module.AWS_internal", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.BL", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.General", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.IDE", level: 3 })
-          )
-        )
-      )
+      TREE_VIEW_NODE_RENDER([
+        {
+          id: "root",
+          children: [
+            {
+              id: "Root_Module",
+              children: [
+                "Root_Module.AWS_internal",
+                "Root_Module.BL",
+                "Root_Module.General",
+                "Root_Module.IDE"
+              ]
+            }
+          ]
+        }
+      ])
     );
   });
 
@@ -208,15 +196,12 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
     const filteredHTML = await getTreeViewRenderedContent();
 
     expect(filteredHTML).toEqual(
-      TREE_VIEW_NODE(
-        TREE_VIEW_ITEM_NODE(
-          { id: "root", level: 1 },
-          TREE_VIEW_ITEM_NODE(
-            { id: "Root_Module", level: 2 },
-            TREE_VIEW_ITEM_NODE({ id: "Root_Module.BL", level: 3 })
-          )
-        )
-      )
+      TREE_VIEW_NODE_RENDER([
+        {
+          id: "root",
+          children: [{ id: "Root_Module", children: ["Root_Module.BL"] }]
+        }
+      ])
     );
   });
 
@@ -228,16 +213,17 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
     const filteredHTML = await getTreeViewRenderedContent();
 
     expect(filteredHTML).toEqual(
-      TREE_VIEW_NODE(
-        TREE_VIEW_ITEM_NODE(
-          { id: "root", level: 1 },
-          TREE_VIEW_ITEM_NODE(
-            { id: "Root_Module", level: 2 },
-            TREE_VIEW_ITEM_NODE({ id: "Root_Module.AWS_internal", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.General", level: 3 })
-          )
-        )
-      )
+      TREE_VIEW_NODE_RENDER([
+        {
+          id: "root",
+          children: [
+            {
+              id: "Root_Module",
+              children: ["Root_Module.AWS_internal", "Root_Module.General"]
+            }
+          ]
+        }
+      ])
     );
   });
 
@@ -249,21 +235,25 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
     const filteredHTML = await getTreeViewRenderedContent();
 
     expect(filteredHTML).toEqual(
-      TREE_VIEW_NODE(
-        TREE_VIEW_ITEM_NODE(
-          { id: "root", level: 1 },
-          TREE_VIEW_ITEM_NODE(
-            { id: "Root_Module", level: 2 },
-            TREE_VIEW_ITEM_NODE({ id: "Root_Module.AWS_internal", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.BL", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.General", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.IDE", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.Back", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.DataModel", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.Tests", level: 3 })
-          )
-        )
-      )
+      TREE_VIEW_NODE_RENDER([
+        {
+          id: "root",
+          children: [
+            {
+              id: "Root_Module",
+              children: [
+                "Root_Module.AWS_internal",
+                "Root_Module.BL",
+                "Root_Module.General",
+                "Root_Module.IDE",
+                "Root_Module.Back",
+                "Root_Module.DataModel",
+                "Root_Module.Tests"
+              ]
+            }
+          ]
+        }
+      ])
     );
   });
 
@@ -275,17 +265,21 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
     const filteredHTML = await getTreeViewRenderedContent();
 
     expect(filteredHTML).toEqual(
-      TREE_VIEW_NODE(
-        TREE_VIEW_ITEM_NODE(
-          { id: "root", level: 1 },
-          TREE_VIEW_ITEM_NODE(
-            { id: "Root_Module", level: 2 },
-            TREE_VIEW_ITEM_NODE({ id: "Root_Module.AWS_internal", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.General", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.DataModel", level: 3 })
-          )
-        )
-      )
+      TREE_VIEW_NODE_RENDER([
+        {
+          id: "root",
+          children: [
+            {
+              id: "Root_Module",
+              children: [
+                "Root_Module.AWS_internal",
+                "Root_Module.General",
+                "Root_Module.DataModel"
+              ]
+            }
+          ]
+        }
+      ])
     );
   });
 
@@ -299,17 +293,21 @@ describe('[ch-tree-view-render][filters][filter-type="metadata"]', () => {
     let filteredHTML = await getTreeViewRenderedContent();
 
     expect(filteredHTML).toEqual(
-      TREE_VIEW_NODE(
-        TREE_VIEW_ITEM_NODE(
-          { id: "root", level: 1 },
-          TREE_VIEW_ITEM_NODE(
-            { id: "Root_Module", level: 2 },
-            TREE_VIEW_ITEM_NODE({ id: "Root_Module.AWS_internal", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.General", level: 3 }) +
-              TREE_VIEW_ITEM_NODE({ id: "Root_Module.DataModel", level: 3 })
-          )
-        )
-      )
+      TREE_VIEW_NODE_RENDER([
+        {
+          id: "root",
+          children: [
+            {
+              id: "Root_Module",
+              children: [
+                "Root_Module.AWS_internal",
+                "Root_Module.General",
+                "Root_Module.DataModel"
+              ]
+            }
+          ]
+        }
+      ])
     );
 
     treeViewRef.setProperty("filterType", "none");

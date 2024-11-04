@@ -11,7 +11,7 @@ const ITEM_EXPORT_PARTS =
 const TREE_VIEW_NODE = (children: string) =>
   `<ch-tree-view class="not-dragging-item hydrated" exportparts="drag-preview">${children}</ch-tree-view>`;
 
-describe('[ch-tree-view-render][filters][filter-type="list"]', () => {
+describe('[ch-tree-view-render][filters][filterType="list"]', () => {
   let page: E2EPage;
   let treeViewRef: E2EElement;
 

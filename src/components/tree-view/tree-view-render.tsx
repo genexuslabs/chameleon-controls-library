@@ -787,7 +787,7 @@ export class ChTreeViewRender {
     this.#scheduleCheckedItemsChange();
 
     // Update filters
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
 
     // Force re-render
     forceUpdate(this);

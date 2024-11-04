@@ -22,13 +22,6 @@ describe("[ch-tree-view-render][filters][filterDebounce]", () => {
   let page: E2EPage;
   let treeViewRef: E2EElement;
 
-  // It does not serialize correctly setting a RegExp as a property, so we have
-  // to evaluate the page
-  const setRegExp = (stringRegex: string) =>
-    page.evaluate(regex => {
-      document.querySelector("ch-tree-view-render").filter = new RegExp(regex);
-    }, stringRegex);
-
   const getTreeViewRenderedContent = () =>
     page.evaluate(() =>
       document

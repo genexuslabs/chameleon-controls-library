@@ -545,8 +545,8 @@ export class ChChat {
             <ch-edit
               accessibleName={accessibleName.sendInput}
               autoGrow
-              multiline
               hostParts="send-input"
+              multiline
               placeholder={this.translations.placeholder.sendInput}
               onKeyDown={this.#sendMessageKeyboard}
               ref={el => (this.#editRef = el as HTMLChEditElement)}

@@ -33,7 +33,7 @@ describe("[ch-chat][ch-edit]", () => {
     expect(editRef).toEqualAttribute("part", EDIT_EMPTY_PARTS);
   });
 
-  it(`the ch-edit should have the "${EDIT_WITH_VALUE_PARTS}" part after pressing a character`, async () => {
+  it(`the ch-edit should have the "${EDIT_WITH_VALUE_PARTS}" part after pressing a key`, async () => {
     await textareaRef.press("h");
     await page.waitForChanges();
     await setEditRef();

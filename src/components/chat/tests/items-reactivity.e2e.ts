@@ -2,10 +2,10 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { ChatMessage } from "../types";
 
 const INITIAL_LOAD_RENDERED_CONTENT =
-  '<div class="loading-chat" slot="empty-chat"></div><div class="send-container" part="send-container"><div class="send-input-wrapper" part="send-input-wrapper"><ch-edit part="ch-edit--empty-value send-input" class="ch-edit--cursor-text ch-edit--multiline hydrated" data-text-align=""></ch-edit></div><button aria-label="Send" title="Send" class="send-or-audio-button" part="send-button" type="button"></button></div>';
+  '<div class="loading-chat" slot="empty-chat"></div><div class="send-container" part="send-container"><div class="send-input-wrapper" part="send-input-wrapper"><ch-edit class="ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit></div><button aria-label="Send" title="Send" class="send-or-audio-button" part="send-button" type="button"></button></div>';
 
 const EMPTY_RENDERED_CONTENT =
-  '<slot name="empty-chat"></slot><div class="send-container" part="send-container"><div class="send-input-wrapper" part="send-input-wrapper"><ch-edit part="ch-edit--empty-value send-input" class="ch-edit--cursor-text ch-edit--multiline hydrated" data-text-align=""></ch-edit></div><button aria-label="Send" title="Send" class="send-or-audio-button" part="send-button" type="button"></button></div>';
+  '<slot name="empty-chat"></slot><div class="send-container" part="send-container"><div class="send-input-wrapper" part="send-input-wrapper"><ch-edit class="ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit></div><button aria-label="Send" title="Send" class="send-or-audio-button" part="send-button" type="button"></button></div>';
 
 const chatModel1: ChatMessage[] = [
   {

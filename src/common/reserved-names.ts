@@ -420,6 +420,7 @@ export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
 
   EDITING: "editing", // HEADER, ACTION
   NOT_EDITING: "not-editing", // HEADER, ACTION
+  LEVEL_0_LEAF: "level-0-leaf", // HEADER
 
   SELECTED: "selected", // HEADER
   NOT_SELECTED: "not-selected", // HEADER

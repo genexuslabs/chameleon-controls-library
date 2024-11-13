@@ -6,8 +6,8 @@ type TreeViewNodeTest =
     }
   | string;
 
-const ITEM_EXPORT_PARTS =
-  "item__action,item__checkbox,item__checkbox-container,item__checkbox-input,item__checkbox-option,item__downloading,item__edit-caption,item__expandable-button,item__group,item__header,item__img,item__line,disabled,expanded,collapsed,expand-button,even-level,odd-level,last-line,lazy-loaded,start-img,end-img,editing,not-editing,selected,not-selected,checked,unchecked,indeterminate,drag-enter";
+export const ITEM_EXPORT_PARTS =
+  "item__action,item__checkbox,item__checkbox-container,item__checkbox-input,item__checkbox-option,item__downloading,item__edit-caption,item__expandable-button,item__group,item__header,item__img,item__line,disabled,expanded,collapsed,expand-button,even-level,odd-level,last-line,lazy-loaded,start-img,end-img,editing,not-editing,level-0-leaf,selected,not-selected,checked,unchecked,indeterminate,drag-enter";
 
 const TREE_VIEW_NODE = (children: string) =>
   `<ch-tree-view class="not-dragging-item hydrated" exportparts="drag-preview">${children}</ch-tree-view>` as const;

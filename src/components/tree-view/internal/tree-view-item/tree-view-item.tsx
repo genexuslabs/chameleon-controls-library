@@ -1138,6 +1138,11 @@ export class ChTreeViewItem {
               ? TREE_VIEW_ITEM_PARTS_DICTIONARY.EDITING
               : TREE_VIEW_ITEM_PARTS_DICTIONARY.NOT_EDITING]: true,
             [levelPart]: canShowLines,
+
+            // TODO: Add unit test
+            // Undocumented. Only used for implementation purposes
+            [TREE_VIEW_ITEM_PARTS_DICTIONARY.LEVEL_0_LEAF]:
+              !canShowLines && this.leaf && this.expandableButton !== "no",
             [this.parts]: hasParts
           })}
           style={

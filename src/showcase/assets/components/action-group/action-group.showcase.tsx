@@ -7,7 +7,7 @@ const state: Partial<HTMLChActionGroupRenderElement> = {};
 const render = () => (
   <div class="action-group-test-main-wrapper">
     <div class="fieldset-test">
-      <legend class="form-input__label field-legend-test">Primary</legend>
+      <legend class="label field-legend-test">Primary</legend>
 
       <ch-action-group-render
         cssClass="dropdown-primary"
@@ -17,7 +17,7 @@ const render = () => (
     </div>
 
     <div class="fieldset-test">
-      <legend class="form-input__label field-legend-test">Secondary</legend>
+      <legend class="label field-legend-test">Secondary</legend>
 
       <ch-action-group-render
         cssClass="dropdown-secondary"

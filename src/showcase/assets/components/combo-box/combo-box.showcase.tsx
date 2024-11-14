@@ -132,7 +132,7 @@ const render = () => (
         id="form-combo-box-2"
         ref={el => (formRefs["form-combo-box-2"] = el)}
       >
-        <label class="form-input__label" htmlFor="combo-box-2">
+        <label class="label" htmlFor="combo-box-2">
           Label for combo-box 2
         </label>
         <ch-combo-box-render
@@ -169,7 +169,7 @@ const render = () => (
         id="form-combo-box-3"
         ref={el => (formRefs["form-combo-box-3"] = el)}
       >
-        <label class="form-input__label" htmlFor="combo-box-3">
+        <label class="label" htmlFor="combo-box-3">
           Label for combo-box 3
           <ch-combo-box-render
             id="combo-box-3"

@@ -253,7 +253,7 @@ legend {
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing--m, var(--mer-spacing--xs));
 
-  textarea.form-input {
+  textarea.input {
     block-size: 100%;
     max-block-size: unset;
     contain: size;
@@ -347,7 +347,7 @@ ch-showcase ch-flexible-layout-render {
     margin-inline: calc(var(--spacing--l, var(--mer-spacing--md)) * -1);
   }
 
-  textarea.form-input {
+  textarea.input {
     min-block-size: 32px;
     block-size: 200px;
     max-block-size: unset;

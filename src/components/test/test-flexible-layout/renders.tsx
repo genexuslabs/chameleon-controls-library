@@ -503,7 +503,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   [STRUCT_EDITOR]: () => (
     <div slot={STRUCT_EDITOR} key={STRUCT_EDITOR}>
       Grid render...
-      <ch-edit class="form-input" accessibleName="Name" type="text"></ch-edit>
+      <ch-edit class="input" accessibleName="Name" type="text"></ch-edit>
       <ch-grid>
         <ch-grid-columnset>
           <ch-grid-column
@@ -631,18 +631,14 @@ export const layoutRenders: FlexibleLayoutRenders = {
   [ATTRS_CONTAINERS_AND_OTHERS]: () => (
     <div slot={ATTRS_CONTAINERS_AND_OTHERS} key={ATTRS_CONTAINERS_AND_OTHERS}>
       Panel AttrsContainersAndOthers
-      <ch-edit
-        class="form-input"
-        accessibleName="Panel name"
-        type="text"
-      ></ch-edit>
+      <ch-edit class="input" accessibleName="Panel name" type="text"></ch-edit>
     </div>
   ),
   [PROPERTIES]: () => (
     <div slot={PROPERTIES} key={PROPERTIES}>
       Properties render...
       <ch-edit
-        class="form-input"
+        class="input"
         accessibleName="Property name"
         type="text"
       ></ch-edit>

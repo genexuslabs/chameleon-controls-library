@@ -61,7 +61,7 @@ const render = () => [
     onDialogClosed={handleClose}
   >
     <label htmlFor="some-input">Any data</label>
-    <input id="some-input" class="form-input" type="text" />
+    <input id="some-input" class="input" type="text" />
 
     <button class="button-primary">button</button>
     <p>
@@ -229,7 +229,7 @@ const lightDOMMarkup = (
 ) => `<label htmlFor="some-input">Any data</label>
 <input id="some-input" ${showcaseTemplateClassProperty(
   framework,
-  "form-input"
+  "input"
 )} type="text" />
 
 <button ${showcaseTemplateClassProperty(

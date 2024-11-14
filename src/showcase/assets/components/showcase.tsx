@@ -394,7 +394,7 @@ export class ChShowcase {
       <aside key={ASIDE_WIDGET} slot={ASIDE_WIDGET} class="ch-showcase__aside">
         <ch-edit
           accessibleName="Search"
-          class="form-input form-input-search sidebar__search-input"
+          class="input input-search sidebar__search-input"
           placeholder="Search"
           type="search"
         ></ch-edit>
@@ -796,7 +796,7 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
@@ -825,14 +825,14 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <input
           id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
-          class="form-input"
+          class="input"
           type="text"
           value={property.value?.toString()}
           onInput={this.#showcaseStoryInput.get(propertyGroupId)}
@@ -854,14 +854,14 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <input
           id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
-          class="form-input"
+          class="input"
           type="number"
           value={property.value?.toString()}
           onInput={this.#showcaseStoryInputNumber.get(propertyGroupId)}
@@ -890,7 +890,7 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
@@ -919,14 +919,14 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <textarea
           id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
-          class="form-input"
+          class="input"
           value={property.value.toString()}
           onInput={this.#showcaseStoryInput.get(propertyGroupId)}
         ></textarea>

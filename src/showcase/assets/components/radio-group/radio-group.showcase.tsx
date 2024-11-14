@@ -68,7 +68,7 @@ const render = () => (
         id="form-radio-group-2"
         ref={el => (formRefs["form-radio-group-2"] = el)}
       >
-        <label class="form-input__label" htmlFor="radio-group-2">
+        <label class="label" htmlFor="radio-group-2">
           Label for switch 2
         </label>
 
@@ -94,7 +94,7 @@ const render = () => (
         id="form-radio-group-3"
         ref={el => (formRefs["form-radio-group-3"] = el)}
       >
-        <label class="form-input__label" htmlFor="radio-group-3">
+        <label class="label" htmlFor="radio-group-3">
           Label for switch 3
           <ch-radio-group-render
             id="radio-group-3"

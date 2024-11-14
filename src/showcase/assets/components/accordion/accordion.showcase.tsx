@@ -87,7 +87,7 @@ const render = () => (
       Custom header
       <input
         aria-label="Search"
-        class="form-input"
+        class="input"
         type="text"
         placeholder="Search..."
       />
@@ -151,7 +151,7 @@ const lightDOMInputPropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLInputElement
     {
       name: "class",
       fixed: true,
-      value: "form-input",
+      value: "input",
       type: "string"
     },
     { name: "placeholder", fixed: true, value: "Search...", type: "string" },

@@ -63,7 +63,7 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
       <form id="form-switch-2" ref={el => (formRefs["form-switch-2"] = el)}>
-        <label class="form-input__label" htmlFor="switch-2">
+        <label class="label" htmlFor="switch-2">
           Label for switch 2
         </label>
 
@@ -89,7 +89,7 @@ const render = () => (
         Component inside label
       </legend>
       <form id="form-switch-3" ref={el => (formRefs["form-switch-3"] = el)}>
-        <label class="form-input__label" htmlFor="switch-3">
+        <label class="label" htmlFor="switch-3">
           Label for switch 3
           <ch-switch
             id="switch-3"

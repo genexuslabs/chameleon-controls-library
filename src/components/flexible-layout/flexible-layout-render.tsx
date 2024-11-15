@@ -2,6 +2,7 @@ import {
   Component,
   Event,
   EventEmitter,
+  Host,
   Method,
   Prop,
   Watch,
@@ -28,7 +29,7 @@ import {
   FlexibleLayoutLeafConfigurationTabbed,
   FlexibleLayoutRenderedWidgets
 } from "./internal/flexible-layout/types";
-import { ChFlexibleLayoutCustomEvent } from "../../components";
+import { ChFlexibleLayoutCustomEvent, ThemeModel } from "../../components";
 import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
 import { CssContainProperty, CssOverflowProperty } from "../../common/types";
@@ -149,6 +150,12 @@ export class ChFlexibleLayoutRender {
    * ch-flexible-layout-render by default by projecting a slot.
    */
   @Prop() readonly slottedWidgets: boolean = false;
+
+  /**
+   * Specifies the theme to be used for rendering the control.
+   * If `undefined`, no theme will be applied.
+   */
+  @Prop() readonly theme: ThemeModel | undefined;
 
   /**
    * Emitted when the user pressed the close button in a widget.
@@ -880,23 +887,27 @@ export class ChFlexibleLayoutRender {
     }
 
     return (
-      <ch-flexible-layout
-        class={this.cssClass || null}
-        closeButton={this.closeButton}
-        contain={this.contain}
-        dragOutside={this.dragOutside}
-        model={this.model}
-        layoutSplitterParts={this.#layoutSplitterParts}
-        itemsInfo={this.#itemsInfo}
-        overflow={this.overflow}
-        sortable={this.sortable}
-        onViewItemClose={this.#handleLeafWidgetClose}
-        onViewItemReorder={this.#handleLeafWidgetReorder}
-        onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}
-        ref={el => (this.#flexibleLayoutRef = el)}
-      >
-        {[...this.#renderedWidgets.values()].map(this.#renderWidget)}
-      </ch-flexible-layout>
+      <Host>
+        {this.theme && <ch-theme model={this.theme}></ch-theme>}
+
+        <ch-flexible-layout
+          class={this.cssClass || null}
+          closeButton={this.closeButton}
+          contain={this.contain}
+          dragOutside={this.dragOutside}
+          model={this.model}
+          layoutSplitterParts={this.#layoutSplitterParts}
+          itemsInfo={this.#itemsInfo}
+          overflow={this.overflow}
+          sortable={this.sortable}
+          onViewItemClose={this.#handleLeafWidgetClose}
+          onViewItemReorder={this.#handleLeafWidgetReorder}
+          onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}
+          ref={el => (this.#flexibleLayoutRef = el)}
+        >
+          {[...this.#renderedWidgets.values()].map(this.#renderWidget)}
+        </ch-flexible-layout>
+      </Host>
     );
   }
 }

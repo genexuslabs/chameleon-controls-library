@@ -197,15 +197,7 @@ describe("[ch-theme]", () => {
     // TODO: Add implementation
   });
 
-  it.skip("should adopt the stylesheet defined by another ch-theme", async () => {
-    // TODO: Add implementation
-  });
-
-  it.skip("should reuse the stylesheet defined by another ch-theme", async () => {
-    // TODO: Add implementation
-  });
-
-  it.skip("should not duplicate the stylesheet adoption when another ch-theme loads the same CSS", async () => {
-    // TODO: Add implementation
-  });
+  it.todo(
+    "should not hide the UI when all stylesheets are already loaded by another ch-theme"
+  );
 });

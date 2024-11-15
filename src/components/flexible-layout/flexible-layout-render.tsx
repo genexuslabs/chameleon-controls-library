@@ -61,7 +61,7 @@ const GENERATE_GUID = () => {
 };
 
 @Component({
-  shadow: false,
+  shadow: true,
   styleUrl: "flexible-layout-render.scss",
   tag: "ch-flexible-layout-render"
 })
@@ -141,6 +141,12 @@ export class ChFlexibleLayoutRender {
    * If `false`, the tab buttons can not be dragged out either.
    */
   @Prop() readonly sortable: boolean = false;
+
+  /**
+   * Specifies whether widgets are rendered outside of the
+   * ch-flexible-layout-render by default by projecting a slot.
+   */
+  @Prop() readonly slottedWidgets: boolean = false;
 
   /**
    * Emitted when the user pressed the close button in a widget.
@@ -612,7 +618,7 @@ export class ChFlexibleLayoutRender {
       return;
     }
 
-    // Remove the item from the flexible-layout-render to optimize resources
+    // Remove the item from the ch-flexible-layout-render to optimize resources
     this.#renderedWidgets.delete(widgetInfo.id);
     this.#widgetsInfo.delete(widgetInfo.id);
   };
@@ -781,13 +787,17 @@ export class ChFlexibleLayoutRender {
 
   #renderWidget = (widgetId: string) => {
     const widgetInfo = this.#widgetsInfo.get(widgetId).info;
-    const widgetRender = this.renders[widgetInfo.renderId ?? widgetId];
+
+    if (widgetInfo.slot ?? this.slottedWidgets) {
+      return <slot key={widgetId} name={widgetId} slot={widgetId} />;
+    }
+
+    const renderId = widgetInfo.renderId ?? widgetId;
+    const widgetRender = this.renders[renderId];
 
     if (!widgetRender) {
       console.error(
-        `Could not find a render for the "${widgetId}" widget. The render "${
-          widgetInfo.renderId ?? widgetId
-        }" does not exists in the "renders" property.`
+        `Could not find a render for the "${widgetId}" widget. The render "${renderId}" does not exists in the "renders" property.`
       );
       return;
     }

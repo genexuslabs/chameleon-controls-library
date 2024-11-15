@@ -300,6 +300,11 @@ export type FlexibleLayoutWidgetCloseInfo = {
   viewId: string;
 };
 
+export type FlexibleLayoutRenderedWidgets = {
+  rendered: string[];
+  slotted: string[];
+};
+
 export type DroppableArea =
   | "block-start"
   | "block-end"

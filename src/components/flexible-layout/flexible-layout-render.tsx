@@ -25,7 +25,8 @@ import {
   FlexibleLayoutLeafType,
   FlexibleLayoutWidgetExtended,
   FlexibleLayoutWidgetCloseInfo,
-  FlexibleLayoutLeafConfigurationTabbed
+  FlexibleLayoutLeafConfigurationTabbed,
+  FlexibleLayoutRenderedWidgets
 } from "./internal/flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
@@ -72,6 +73,7 @@ export class ChFlexibleLayoutRender {
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #renderedWidgets: Set<string> = new Set();
+  #lastRenderedWidgets = new Set();
 
   #widgetsInfo: Map<string, FlexibleLayoutWidgetExtended> = new Map();
 
@@ -152,6 +154,14 @@ export class ChFlexibleLayoutRender {
    * Emitted when the user pressed the close button in a widget.
    */
   @Event() widgetClose: EventEmitter<FlexibleLayoutWidgetCloseInfo>;
+
+  /**
+   * Emitted every time the rendered widgets changes. It contains the detail
+   * of which widgets are rendered inside the `ch-flexible-layout-render`
+   * (`rendered` member) and those widgets that are rendered in an slot
+   * (`slotted` member).
+   */
+  @Event() renderedWidgetsChange: EventEmitter<FlexibleLayoutRenderedWidgets>;
 
   /**
    * Add a view with widgets to render. The view will take the half space of
@@ -788,7 +798,7 @@ export class ChFlexibleLayoutRender {
   #renderWidget = (widgetId: string) => {
     const widgetInfo = this.#widgetsInfo.get(widgetId).info;
 
-    if (widgetInfo.slot ?? this.slottedWidgets) {
+    if (this.#widgetIsSlotted(widgetInfo)) {
       return <slot key={widgetId} name={widgetId} slot={widgetId} />;
     }
 
@@ -815,8 +825,52 @@ export class ChFlexibleLayoutRender {
     );
   };
 
+  #widgetIsSlotted = (widgetInfo: FlexibleLayoutWidget) =>
+    widgetInfo.slot ?? this.slottedWidgets;
+
+  #checkToEmitRenderedWidgetsChange = () => {
+    if (
+      this.#lastRenderedWidgets.size === this.#renderedWidgets.size &&
+      this.#lastRenderedWidgets.size === 0
+    ) {
+      return;
+    }
+
+    // If the Sets have different sizes, we can ensure that the event must be
+    // emitted. If not, we should check if both Sets have the same items.
+    let shouldEmitRenderedWidgetsChange =
+      this.#lastRenderedWidgets.size !== this.#renderedWidgets.size;
+    const rendered: string[] = [];
+    const slotted: string[] = [];
+
+    // In the same loop, prepare the event detail while checking to emit the event
+    this.#renderedWidgets.forEach(widgetId => {
+      const widgetInfo = this.#widgetsInfo.get(widgetId)!.info;
+
+      if (this.#widgetIsSlotted(widgetInfo)) {
+        slotted.push(widgetId);
+      } else {
+        rendered.push(widgetId);
+      }
+
+      shouldEmitRenderedWidgetsChange ||=
+        !this.#lastRenderedWidgets.has(widgetId);
+    });
+
+    if (shouldEmitRenderedWidgetsChange) {
+      this.renderedWidgetsChange.emit({ rendered, slotted });
+    }
+
+    // Update the Set using the new rendered widgets, without sharing the reference
+    this.#lastRenderedWidgets = new Set(this.#renderedWidgets);
+  };
+
   componentWillLoad() {
     this.#updateFlexibleModels(this.model);
+  }
+
+  componentDidRender() {
+    this.#checkToEmitRenderedWidgetsChange();
   }
 
   render() {

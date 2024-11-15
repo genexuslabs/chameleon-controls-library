@@ -1,4 +1,9 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import {
+  E2EElement,
+  E2EPage,
+  EventSpy,
+  newE2EPage
+} from "@stencil/core/testing";
 import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
 
 const TEST1_ID = "Test";
@@ -22,6 +27,7 @@ const FLEXIBLE_LAYOUT_RENDERED_CONTENT = (children: string) =>
 describe("[ch-flexible-layout-render][slots]", () => {
   let page: E2EPage;
   let flexibleLayoutRef: E2EElement;
+  let renderedWidgetsChangeSpy: EventSpy;
 
   const getRenderedContent = () =>
     page.evaluate(
@@ -35,11 +41,13 @@ describe("[ch-flexible-layout-render][slots]", () => {
       failOnConsoleError: true
     });
     flexibleLayoutRef = await page.find("ch-flexible-layout-render");
+    renderedWidgetsChangeSpy = await flexibleLayoutRef.spyOnEvent(
+      "renderedWidgetsChange"
+    );
   });
 
   it('should render an slot when the model only contains an item with "slot: true"', async () => {
     flexibleLayoutRef.setProperty("model", ITEM_WITH_SLOT_MODEL);
-    await page.waitForChanges();
     await page.waitForChanges();
 
     expect(await getRenderedContent()).toBe(
@@ -47,5 +55,10 @@ describe("[ch-flexible-layout-render][slots]", () => {
         `<slot name="${TEST1_ID}" slot="${TEST1_ID}"></slot>`
       )
     );
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
+      rendered: [],
+      slotted: [TEST1_ID]
+    });
   });
 });

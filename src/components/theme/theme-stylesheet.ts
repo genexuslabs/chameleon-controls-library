@@ -1,4 +1,9 @@
-import { Theme, ThemeItemModel } from "./theme-types";
+import {
+  Theme,
+  ThemeItemModel,
+  ThemeItemModelStyleSheet,
+  ThemeItemModelUrl
+} from "./theme-types";
 
 const THEMES = new Map<string, Promise<Theme>>();
 const PROMISE_RESOLVER = new Map<string, ThemePromiseResolver>();
@@ -14,10 +19,26 @@ type ThemePromiseResolver = {
   isLoading: boolean;
 };
 
+const createStyleSheetFromString = (
+  baseUrl: string | undefined,
+  cssText: string
+) => new CSSStyleSheet().replace(applyBaseUrl(baseUrl, cssText));
+
 export async function getTheme(
   themeModel: ThemeItemModel,
   timeout: number
 ): Promise<Theme> {
+  // If it has an inlined styleSheet, directly resolve the promise
+  if ((themeModel as ThemeItemModelStyleSheet).styleSheet) {
+    return Promise.resolve({
+      name: themeModel.name,
+      styleSheet: await createStyleSheetFromString(
+        themeModel.themeBaseUrl,
+        (themeModel as ThemeItemModelStyleSheet).styleSheet
+      )
+    });
+  }
+
   const promise =
     THEMES.get(themeModel.name) ??
     THEMES.set(
@@ -25,7 +46,8 @@ export async function getTheme(
       createThemePromise(themeModel.name, timeout)
     ).get(themeModel.name);
 
-  if (themeModel.url) {
+  // TODO: Check if this works properly with inline stylesheets
+  if ((themeModel as ThemeItemModelUrl).url) {
     instanceTheme(themeModel);
   }
 
@@ -66,7 +88,7 @@ function disposeResolver(resolver: ThemePromiseResolver) {
   PROMISE_RESOLVER.delete(resolver.name);
 }
 
-async function instanceTheme(themeModel: ThemeItemModel) {
+async function instanceTheme(themeModel: ThemeItemModelUrl) {
   const resolver = PROMISE_RESOLVER.get(themeModel.name);
 
   if (resolver && !resolver.isLoading) {
@@ -89,9 +111,7 @@ async function loadThemeStyleSheet(
   baseUrl: string
 ): Promise<CSSStyleSheet> {
   try {
-    return new CSSStyleSheet().replace(
-      applyBaseUrl(baseUrl, await requestStyleSheet(url))
-    );
+    return createStyleSheetFromString(baseUrl, await requestStyleSheet(url));
   } catch (error) {
     throw new Error(`Failed to load theme stylesheet: ${error}`);
   }
@@ -110,7 +130,7 @@ async function requestStyleSheet(url: string): Promise<string> {
   }
 }
 
-function applyBaseUrl(baseUrl: string, cssText: string): string {
+function applyBaseUrl(baseUrl: string | undefined, cssText: string): string {
   if (baseUrl) {
     return cssText.replace(BASEURL_REGEX, `$1${baseUrl}$2`);
   }

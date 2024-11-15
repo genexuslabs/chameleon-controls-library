@@ -1,10 +1,19 @@
 export type ThemeModel = string | string[] | ThemeItemModel | ThemeItemModel[];
 
-export type ThemeItemModel = {
+export type ThemeItemBaseModel = {
   name: string;
-  url?: string;
   themeBaseUrl?: string;
   attachStyleSheet?: boolean;
+};
+
+export type ThemeItemModel = ThemeItemModelUrl | ThemeItemModelStyleSheet;
+
+export type ThemeItemModelUrl = ThemeItemBaseModel & {
+  url?: string;
+};
+
+export type ThemeItemModelStyleSheet = ThemeItemBaseModel & {
+  styleSheet: string;
 };
 
 export type Theme = {

@@ -12,6 +12,7 @@ import {
   ChThemeLoadedEvent,
   Theme,
   ThemeItemModel,
+  ThemeItemModelUrl,
   ThemeModel
 } from "./theme-types";
 import { getTheme } from "./theme-stylesheet";
@@ -130,7 +131,7 @@ export class ChTheme {
       item => item.name === theme.name
     );
 
-    if (themeItemModel.url) {
+    if ((themeItemModel as ThemeItemModelUrl).url) {
       return themeItemModel.attachStyleSheet ?? this.attachStyleSheets;
     }
     return true;

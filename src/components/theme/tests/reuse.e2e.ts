@@ -6,6 +6,7 @@ import {
 } from "@stencil/core/testing";
 import { ChThemeLoadedEvent, ThemeModel } from "../theme-types";
 import {
+  checkThemeValues,
   CSS_CONTENT,
   CSS_NAME,
   CSS_URL,
@@ -28,11 +29,6 @@ describe("[ch-theme][reuse]", () => {
     await page.waitForChanges();
   };
 
-  const getDocumentAdoptedStyleSheets = () =>
-    page.evaluate(() =>
-      document.adoptedStyleSheets.map(sheet => sheet.cssRules[0].cssText)
-    );
-
   const getMarkdownViewerAdoptedStyleSheets = () =>
     page.evaluate(() =>
       document
@@ -44,22 +40,13 @@ describe("[ch-theme][reuse]", () => {
     successModelsToCheck: string[],
     styleSheetsToCheck: string[],
     spy: 1 | 2 = 1
-  ) => {
-    const adoptedStyleSheets = await getDocumentAdoptedStyleSheets();
-    expect(adoptedStyleSheets).toEqual(styleSheetsToCheck);
-
-    if (spy === 1) {
-      expect(themeLoaded1Spy).toHaveReceivedEventTimes(1);
-      expect(themeLoaded1Spy).toHaveReceivedEventDetail({
-        success: successModelsToCheck
-      } satisfies ChThemeLoadedEvent);
-    } else {
-      expect(themeLoaded2Spy).toHaveReceivedEventTimes(1);
-      expect(themeLoaded2Spy).toHaveReceivedEventDetail({
-        success: successModelsToCheck
-      } satisfies ChThemeLoadedEvent);
-    }
-  };
+  ) =>
+    checkThemeValues(
+      page,
+      spy === 1 ? themeLoaded1Spy : themeLoaded2Spy,
+      successModelsToCheck,
+      styleSheetsToCheck
+    );
 
   beforeEach(async () => {
     page = await newE2EPage({

@@ -1,35 +1,31 @@
-import { E2EPage, newE2EPage } from "@stencil/core/testing";
+import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { ChThemeCustomEvent } from "../../../components";
 import { ChThemeLoadedEvent } from "../theme-types";
 import { delayTest } from "../../../testing/utils.e2e";
 
 const TIMEOUT = 500;
-const DELAY = TIMEOUT + 220;
+const TIMEOUT_DELAY = TIMEOUT + 220;
 
-describe("[ch-theme]", () => {
+describe("[ch-theme][basic]", () => {
   let page: E2EPage;
+  let themeRef: E2EElement;
 
   beforeEach(async () => {
-    page = await newE2EPage();
+    page = await newE2EPage({ html: `<ch-theme></ch-theme>` });
+    themeRef = await page.find("ch-theme");
   });
 
   it("should always be hidden", async () => {
-    await page.setContent(`<ch-theme></ch-theme>`);
-    const themeRef = await page.find("ch-theme");
-
     expect((await themeRef.getComputedStyle()).display).toEqual("none");
   });
 
   it("should not have Shadow DOM", async () => {
-    await page.setContent(`<ch-theme></ch-theme>`);
-    const themeRef = await page.find("ch-theme");
-
-    expect(themeRef.shadowRoot).toBeNull();
+    expect(themeRef.shadowRoot).toBeFalsy();
   });
 
   it("should hide the root node if avoidFlashOfUnstyledContent is set", async () => {
     await page.setContent(`<ch-theme model="dummy"></ch-theme>`);
-    const themeRef = await page.find("ch-theme");
+    themeRef = await page.find("ch-theme");
 
     expect(themeRef.innerHTML).toBe(
       "<style>:host,html{visibility:hidden !important}</style>"
@@ -40,17 +36,17 @@ describe("[ch-theme]", () => {
     await page.setContent(
       `<ch-theme avoid-flash-of-unstyled-content="false" model="url"></ch-theme>`
     );
-    const themeRef = await page.find("ch-theme");
+    themeRef = await page.find("ch-theme");
 
     expect(themeRef.innerHTML).toBe("");
   });
 
   it("should not fire the themeLoaded event if the model is undefined", async () => {
     await page.setContent(`<ch-theme timeout="${TIMEOUT}"></ch-theme>`);
-    const themeRef = await page.find("ch-theme");
+    themeRef = await page.find("ch-theme");
 
     const themeLoadedSpy = await themeRef.spyOnEvent("themeLoaded");
-    await delayTest(DELAY);
+    await delayTest(TIMEOUT_DELAY);
 
     expect(themeLoadedSpy).not.toHaveReceivedEvent();
   });
@@ -64,15 +60,12 @@ describe("[ch-theme]", () => {
       }
     });
     await page.setContent(`<ch-theme timeout="${TIMEOUT}"></ch-theme>`);
-    await delayTest(DELAY);
+    await delayTest(TIMEOUT_DELAY);
 
     expect(consoleMessages.length).toBe(0);
   });
 
   it("should fire the themeLoaded event when setting a valid model", async () => {
-    await page.setContent(`<ch-theme></ch-theme>`);
-
-    const themeRef = await page.find("ch-theme");
     const themeLoadedEvent = themeRef.waitForEvent("themeLoaded");
 
     themeRef.setProperty("model", {
@@ -100,10 +93,10 @@ describe("[ch-theme]", () => {
       `<ch-theme model="dummy" timeout="${TIMEOUT}"></ch-theme>`
     );
 
-    const themeRef = await page.find("ch-theme");
+    themeRef = await page.find("ch-theme");
     const themeLoadedSpy = await themeRef.spyOnEvent("themeLoaded");
 
-    await delayTest(DELAY);
+    await delayTest(TIMEOUT_DELAY);
 
     expect(themeLoadedSpy).toHaveReceivedEventDetail({
       success: []
@@ -113,9 +106,6 @@ describe("[ch-theme]", () => {
   });
 
   it("should adopt the stylesheet when the root node is the document", async () => {
-    await page.setContent(`<ch-theme></ch-theme>`);
-
-    const themeRef = await page.find("ch-theme");
     const themeLoadedEvent = themeRef.waitForEvent("themeLoaded");
 
     themeRef.setProperty("model", {
@@ -144,9 +134,6 @@ describe("[ch-theme]", () => {
   });
 
   it("should maintain the stylesheet in the document when disconnecting the ch-theme", async () => {
-    await page.setContent(`<ch-theme></ch-theme>`);
-
-    const themeRef = await page.find("ch-theme");
     const themeLoadedEvent = themeRef.waitForEvent("themeLoaded");
 
     themeRef.setProperty("model", {

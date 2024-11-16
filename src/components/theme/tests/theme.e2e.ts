@@ -15,6 +15,10 @@ describe("[ch-theme][basic]", () => {
     themeRef = await page.find("ch-theme");
   });
 
+  it("should have the hidden attribute set", async () => {
+    expect(themeRef.getAttribute("hidden")).toEqual("");
+  });
+
   it("should always be hidden", async () => {
     expect((await themeRef.getComputedStyle()).display).toEqual("none");
   });
@@ -23,22 +27,22 @@ describe("[ch-theme][basic]", () => {
     expect(themeRef.shadowRoot).toBeFalsy();
   });
 
-  it("should hide the root node if avoidFlashOfUnstyledContent is set", async () => {
-    await page.setContent(`<ch-theme model="dummy"></ch-theme>`);
-    themeRef = await page.find("ch-theme");
+  it('the "attachStyleSheets" property should be true by default', async () => {
+    expect(await themeRef.getProperty("attachStyleSheets")).toBe(true);
+  });
 
-    expect(themeRef.innerHTML).toBe(
-      "<style>:host,html{visibility:hidden !important}</style>"
+  it('the "avoidFlashOfUnstyledContent" property should be true by default', async () => {
+    expect(await themeRef.getProperty("avoidFlashOfUnstyledContent")).toBe(
+      true
     );
   });
 
-  it("should not hide the root node if avoidFlashOfUnstyledContent is false", async () => {
-    await page.setContent(
-      `<ch-theme avoid-flash-of-unstyled-content="false" model="url"></ch-theme>`
-    );
-    themeRef = await page.find("ch-theme");
+  it('the "model" property should be undefined by default', async () => {
+    expect(await themeRef.getProperty("model")).toBeUndefined();
+  });
 
-    expect(themeRef.innerHTML).toBe("");
+  it('the "timeout" property should equal to 10000 by default', async () => {
+    expect(await themeRef.getProperty("timeout")).toBe(10000);
   });
 
   it("should not fire the themeLoaded event if the model is undefined", async () => {

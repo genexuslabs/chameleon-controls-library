@@ -4,7 +4,7 @@ import {
   EventSpy,
   newE2EPage
 } from "@stencil/core/testing";
-import { ChThemeLoadedEvent, ThemeModel } from "../theme-types";
+import { ThemeModel } from "../theme-types";
 import {
   checkThemeValues,
   CSS_CONTENT,
@@ -13,8 +13,10 @@ import {
   STYLE_SHEET1,
   STYLE_SHEET1_NAME,
   STYLE_SHEET2,
-  STYLE_SHEET2_NAME
+  STYLE_SHEET2_NAME,
+  TIME_TO_DOWNLOAD_CSS
 } from "./utils.e2e";
+import { delayTest } from "../../../testing/utils.e2e";
 
 describe("[ch-theme][reuse]", () => {
   let page: E2EPage;
@@ -83,6 +85,7 @@ describe("[ch-theme][reuse]", () => {
       { name: STYLE_SHEET2_NAME, styleSheet: STYLE_SHEET2 },
       { name: CSS_NAME, url: CSS_URL }
     ]);
+    await delayTest(TIME_TO_DOWNLOAD_CSS);
     await checkValues(
       [STYLE_SHEET2_NAME, CSS_NAME],
       [STYLE_SHEET1, STYLE_SHEET2, CSS_CONTENT],

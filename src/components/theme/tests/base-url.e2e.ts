@@ -4,8 +4,9 @@ import {
   EventSpy,
   newE2EPage
 } from "@stencil/core/testing";
-import { checkThemeValues } from "./utils.e2e";
+import { checkThemeValues, TIME_TO_DOWNLOAD_CSS } from "./utils.e2e";
 import { ThemeModel } from "../theme-types";
+import { delayTest } from "../../../testing/utils.e2e";
 
 const BASE_URL = "https://example.com/";
 
@@ -62,6 +63,7 @@ describe("[ch-theme][baseUrl]", () => {
     await setModel(themeRef, [
       { name: "test-urls", url: "showcase/theme-test.css" }
     ]);
+    await delayTest(TIME_TO_DOWNLOAD_CSS);
 
     checkValues(["test-urls"], [STYLESHEET_WITH_URLS]);
   });
@@ -83,6 +85,7 @@ describe("[ch-theme][baseUrl]", () => {
         themeBaseUrl: BASE_URL
       }
     ]);
+    await delayTest(TIME_TO_DOWNLOAD_CSS);
 
     checkValues(["test-urls"], [STYLESHEET_WITH_TRANSFORMED_URLS]);
   });

@@ -12,8 +12,10 @@ import {
   STYLE_SHEET1,
   STYLE_SHEET1_NAME,
   STYLE_SHEET2,
-  STYLE_SHEET2_NAME
+  STYLE_SHEET2_NAME,
+  TIME_TO_DOWNLOAD_CSS
 } from "./utils.e2e";
+import { delayTest } from "../../../testing/utils.e2e";
 
 describe("[ch-theme][stylesheet]", () => {
   let page: E2EPage;
@@ -76,6 +78,8 @@ describe("[ch-theme][stylesheet]", () => {
       { name: CSS_NAME, url: CSS_URL }
     ] satisfies ThemeModel);
     await page.waitForChanges();
+
+    await delayTest(TIME_TO_DOWNLOAD_CSS);
 
     await checkValues(
       [STYLE_SHEET1_NAME, STYLE_SHEET2_NAME, CSS_NAME],

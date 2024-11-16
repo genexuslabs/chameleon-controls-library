@@ -24,7 +24,7 @@ describe("[ch-theme][basic]", () => {
   });
 
   it("should not have Shadow DOM", async () => {
-    expect(themeRef.shadowRoot).toBeFalsy();
+    expect(themeRef.shadowRoot).toBeNull();
   });
 
   it('the "attachStyleSheets" property should be true by default', async () => {
@@ -190,5 +190,9 @@ describe("[ch-theme][basic]", () => {
 
   it.todo(
     "should not hide the UI when all stylesheets are already loaded by another ch-theme"
+  );
+
+  it.todo(
+    'should work with an item that is an object { name: "something", url: "..." }'
   );
 });

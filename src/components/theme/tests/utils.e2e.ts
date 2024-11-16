@@ -1,6 +1,8 @@
 import { E2EPage, EventSpy } from "@stencil/core/testing";
 import { ChThemeLoadedEvent } from "../theme-types";
 
+export const TIME_TO_DOWNLOAD_CSS = 200;
+
 export const CSS_NAME = "chameleon/scrollbar";
 export const CSS_URL = "showcase/scrollbar.css";
 export const CSS_CONTENT = `:host(.ch-scrollable), .ch-scrollable, .scrollable {

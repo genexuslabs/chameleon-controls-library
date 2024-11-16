@@ -34,12 +34,6 @@ export class ChTheme {
   @State() loaded: boolean = false;
 
   /**
-   * `true` to visually hide the contents of the root node while the control's
-   * style is not loaded.
-   */
-  @Prop() readonly avoidFlashOfUnstyledContent: boolean = true;
-
-  /**
    * Indicates whether the theme should be attached to the Document or
    * the ShadowRoot after loading.
    * The value can be overridden by the `attachStyleSheet` property of the model.
@@ -47,13 +41,19 @@ export class ChTheme {
   @Prop() readonly attachStyleSheets: boolean = true;
 
   /**
+   * `true` to visually hide the contents of the root node while the control's
+   * style is not loaded.
+   */
+  @Prop() readonly avoidFlashOfUnstyledContent: boolean = true;
+
+  /**
    * Specify themes to load
    */
-  @Prop() readonly model: ThemeModel;
+  @Prop() readonly model: ThemeModel | undefined | null;
   @Watch("model")
   modelChanged(_, oldModel: ThemeModel) {
     // TODO: Make fully reactive the model property
-    if (oldModel === undefined) {
+    if (!oldModel) {
       this.#loadModel();
     }
   }
@@ -71,13 +71,14 @@ export class ChTheme {
 
   connectedCallback() {
     this.el.hidden = true;
-
-    if (this.model !== undefined) {
-      this.#loadModel();
-    }
+    this.#loadModel();
   }
 
   #loadModel = async () => {
+    if (!this.model || (Array.isArray(this.model) && this.model.length === 0)) {
+      return;
+    }
+
     const model = this.#normalizeModel();
     const themePromises = model.map(item => getTheme(item, this.timeout));
 

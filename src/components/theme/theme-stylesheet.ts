@@ -130,6 +130,13 @@ async function requestStyleSheet(url: string): Promise<string> {
   }
 }
 
+/**
+ * @example
+ * const baseUrl = "https://example.com/"
+ * const cssText = "background-image: url(images/background.png);"
+ *
+ * result: "background-image: url(https://example.com/images/background.png);"
+ */
 function applyBaseUrl(baseUrl: string | undefined, cssText: string): string {
   if (baseUrl) {
     return cssText.replace(BASEURL_REGEX, `$1${baseUrl}$2`);

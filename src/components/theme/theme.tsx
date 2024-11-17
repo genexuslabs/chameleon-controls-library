@@ -12,6 +12,7 @@ import {
   ChThemeLoadedEvent,
   Theme,
   ThemeItemModel,
+  ThemeItemModelStyleSheet,
   ThemeItemModelUrl,
   ThemeModel
 } from "./theme-types";
@@ -128,13 +129,20 @@ export class ChTheme {
   };
 
   #mustAttachTheme = (normalizedModel: ThemeItemModel[], theme: Theme) => {
+    // TODO: "normalizedModel" should be a Set to reduce lookup times
     const themeItemModel = normalizedModel.find(
       item => item.name === theme.name
     );
 
-    if ((themeItemModel as ThemeItemModelUrl).url) {
+    // TODO: What's the meaning of this condition?
+    if (
+      (themeItemModel as ThemeItemModelUrl).url ||
+      (themeItemModel as ThemeItemModelStyleSheet).styleSheet
+    ) {
       return themeItemModel.attachStyleSheet ?? this.attachStyleSheets;
     }
+
+    // TODO: Why do we return `true` instead of `false`?
     return true;
   };
 

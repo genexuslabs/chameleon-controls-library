@@ -46,7 +46,6 @@ export async function getTheme(
       createThemePromise(themeModel.name, timeout)
     ).get(themeModel.name);
 
-  // TODO: Check if this works properly with inline stylesheets
   if ((themeModel as ThemeItemModelUrl).url) {
     instanceTheme(themeModel);
   }

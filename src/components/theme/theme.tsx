@@ -17,6 +17,7 @@ import {
   ThemeModel
 } from "./theme-types";
 import { getTheme } from "./theme-stylesheet";
+import { removeElement } from "../../common/array";
 
 const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
 
@@ -30,6 +31,8 @@ const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
   tag: "ch-theme"
 })
 export class ChTheme {
+  #successThemes: Theme[] = [];
+
   @Element() el: HTMLChThemeElement;
 
   @State() loaded: boolean = false;
@@ -40,6 +43,10 @@ export class ChTheme {
    * The value can be overridden by the `attachStyleSheet` property of the model.
    */
   @Prop() readonly attachStyleSheets: boolean = true;
+  @Watch("attachStyleSheets")
+  attachStyleSheetsChanged() {
+    this.#toggleAttachedModels();
+  }
 
   /**
    * `true` to visually hide the contents of the root node while the control's
@@ -80,19 +87,19 @@ export class ChTheme {
       return;
     }
 
-    const model = this.#normalizeModel();
-    const themePromises = model.map(item => getTheme(item, this.timeout));
+    const normalizeModel = this.#normalizeModel();
+    const themePromises = normalizeModel.map(item =>
+      getTheme(item, this.timeout)
+    );
 
     Promise.allSettled(themePromises).then(results => {
-      const successThemes = results
+      this.#successThemes = results
         .filter(result => result.status === "fulfilled")
         .map(result => result.status === "fulfilled" && result.value);
 
-      this.#attachThemes(
-        successThemes.filter(theme => this.#mustAttachTheme(model, theme))
-      );
+      this.#attachThemes();
       this.themeLoaded.emit({
-        success: successThemes.map(successTheme => successTheme.name)
+        success: this.#successThemes.map(successTheme => successTheme.name)
       });
       this.loaded = true;
 
@@ -116,16 +123,40 @@ export class ChTheme {
     });
   };
 
-  #attachThemes = (themes: Theme[]) => {
+  #attachThemes = () => {
     const root = this.el.getRootNode();
 
-    if (root instanceof Document || root instanceof ShadowRoot) {
-      themes.forEach(theme => {
-        if (!root.adoptedStyleSheets.includes(theme.styleSheet)) {
-          root.adoptedStyleSheets.push(theme.styleSheet);
-        }
-      });
+    if (!(root instanceof Document || root instanceof ShadowRoot)) {
+      return;
     }
+    const normalizeModel = this.#normalizeModel();
+
+    this.#successThemes.forEach(successTheme => {
+      if (
+        this.#mustAttachTheme(normalizeModel, successTheme) &&
+        !root.adoptedStyleSheets.includes(successTheme.styleSheet)
+      ) {
+        root.adoptedStyleSheets.push(successTheme.styleSheet);
+      }
+    });
+  };
+
+  #detachThemes = () => {
+    const root = this.el.getRootNode();
+
+    if (!(root instanceof Document || root instanceof ShadowRoot)) {
+      return;
+    }
+
+    this.#successThemes.forEach(successTheme => {
+      const themeIndex = root.adoptedStyleSheets.findIndex(
+        adoptedStyleSheet => adoptedStyleSheet === successTheme.styleSheet
+      );
+
+      if (themeIndex > -1) {
+        removeElement(root.adoptedStyleSheets, themeIndex);
+      }
+    });
   };
 
   #mustAttachTheme = (normalizedModel: ThemeItemModel[], theme: Theme) => {
@@ -144,6 +175,21 @@ export class ChTheme {
 
     // TODO: Why do we return `true` instead of `false`?
     return true;
+  };
+
+  #toggleAttachedModels = () => {
+    if (!this.loaded || !this.model) {
+      return;
+    }
+
+    // TODO: We should unify this condition to iterate only over the successful
+    // themes using "themeItemModel.attachStyleSheet ?? this.attachStyleSheets".
+    // For this, we should see the TODOs in `#mustAttachTheme` method
+    if (this.attachStyleSheets) {
+      this.#attachThemes();
+    } else {
+      this.#detachThemes();
+    }
   };
 
   render() {

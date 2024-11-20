@@ -35,7 +35,9 @@ describe("[ch-theme][reuse]", () => {
     page.evaluate(() =>
       document
         .querySelector("ch-markdown-viewer")
-        .shadowRoot.adoptedStyleSheets.map(sheet => sheet.cssRules[0].cssText)
+        .shadowRoot.adoptedStyleSheets.map(stylesheet =>
+          [...stylesheet.cssRules].map(rule => rule.cssText).join("\n")
+        )
     );
 
   const checkValues = async (
@@ -93,8 +95,8 @@ describe("[ch-theme][reuse]", () => {
     );
   });
 
-  it.skip("should adopt/reuse the stylesheet defined by another ch-theme (same root)", async () => {
-    await setModel(theme2Ref, [
+  it("should adopt/reuse the stylesheet defined by another ch-theme (same root)", async () => {
+    await setModel(theme1Ref, [
       { name: STYLE_SHEET1_NAME, styleSheet: STYLE_SHEET1 }
     ]);
     await checkValues([STYLE_SHEET1_NAME], [STYLE_SHEET1]);
@@ -103,7 +105,7 @@ describe("[ch-theme][reuse]", () => {
     await checkValues([STYLE_SHEET1_NAME], [STYLE_SHEET1], 2);
   });
 
-  it.skip("should adopt/reuse the stylesheet defined by another ch-theme (different root)", async () => {
+  it("should adopt/reuse the stylesheet defined by another ch-theme (different root)", async () => {
     await setModel(theme1Ref, [
       { name: STYLE_SHEET1_NAME, styleSheet: STYLE_SHEET1 }
     ]);

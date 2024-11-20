@@ -28,6 +28,23 @@ export async function getTheme(
   themeModel: ThemeItemModel,
   timeout: number
 ): Promise<Theme> {
+  const promise =
+    THEMES.get(themeModel.name) ??
+    THEMES.set(themeModel.name, createThemePromise(themeModel, timeout)).get(
+      themeModel.name
+    );
+
+  if ((themeModel as ThemeItemModelUrl).url) {
+    instanceTheme(themeModel);
+  }
+
+  return promise;
+}
+
+async function createThemePromise(
+  themeModel: ThemeItemModel,
+  timeout: number
+): Promise<Theme> {
   // If it has an inlined styleSheet, directly resolve the promise
   if ((themeModel as ThemeItemModelStyleSheet).styleSheet) {
     return Promise.resolve({
@@ -38,22 +55,10 @@ export async function getTheme(
       )
     });
   }
-
-  const promise =
-    THEMES.get(themeModel.name) ??
-    THEMES.set(
-      themeModel.name,
-      createThemePromise(themeModel.name, timeout)
-    ).get(themeModel.name);
-
-  if ((themeModel as ThemeItemModelUrl).url) {
-    instanceTheme(themeModel);
-  }
-
-  return promise;
+  return createThemePromiseUrl(themeModel.name, timeout);
 }
 
-function createThemePromise(name: string, timeout: number): Promise<Theme> {
+function createThemePromiseUrl(name: string, timeout: number): Promise<Theme> {
   return new Promise<Theme>((resolve, reject) => {
     PROMISE_RESOLVER.set(name, {
       name,

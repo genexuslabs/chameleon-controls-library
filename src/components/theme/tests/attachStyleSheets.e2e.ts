@@ -8,28 +8,17 @@ import {
   checkThemeValues,
   EMPTY_ADOPTED_STYLESHEETS,
   getDocumentAdoptedStyleSheets,
+  INLINE_MODEL_2,
+  MULTIPLE_MODEL,
   STYLE_SHEET2,
   STYLE_SHEET2_NAME,
   STYLESHEET_WITH_URLS,
-  TIME_TO_DOWNLOAD_CSS
+  TIME_TO_DOWNLOAD_CSS,
+  URL_MODEL,
+  URL_NAME
 } from "./utils.e2e";
 import { ThemeModel } from "../theme-types";
 import { delayTest } from "../../../testing/utils.e2e";
-
-const URL_NAME = "test-urls";
-
-const URL_MODEL = [
-  { name: URL_NAME, url: "showcase/theme-test.css" }
-] as const satisfies ThemeModel;
-
-const INLINE_MODEL = [
-  { name: STYLE_SHEET2_NAME, styleSheet: STYLE_SHEET2 }
-] as const satisfies ThemeModel;
-
-const MULTIPLE_MODEL = [
-  { name: URL_NAME, url: "showcase/theme-test.css" },
-  { name: STYLE_SHEET2_NAME, styleSheet: STYLE_SHEET2 }
-] as const satisfies ThemeModel;
 
 describe("[ch-theme][attachStyleSheets]", () => {
   let page: E2EPage;
@@ -66,7 +55,7 @@ describe("[ch-theme][attachStyleSheets]", () => {
   });
 
   it("should attach the stylesheet by default (inline stylesheet)", async () => {
-    await setModel(INLINE_MODEL);
+    await setModel(INLINE_MODEL_2);
 
     await checkValues([STYLE_SHEET2_NAME], [STYLE_SHEET2]);
   });
@@ -91,7 +80,7 @@ describe("[ch-theme][attachStyleSheets]", () => {
 
   it('should not attach the stylesheet if "attachStyleSheets === false" (inline stylesheet)', async () => {
     themeRef.setProperty("attachStyleSheets", false);
-    await setModel(INLINE_MODEL);
+    await setModel(INLINE_MODEL_2);
 
     await checkValues([STYLE_SHEET2_NAME], EMPTY_ADOPTED_STYLESHEETS);
   });
@@ -123,7 +112,7 @@ describe("[ch-theme][attachStyleSheets]", () => {
     });
   };
   testReactiveTrueFalse(URL_MODEL, "(stylesheet by URL)", true);
-  testReactiveTrueFalse(INLINE_MODEL, "(inline stylesheet)");
+  testReactiveTrueFalse(INLINE_MODEL_2, "(inline stylesheet)");
   testReactiveTrueFalse(MULTIPLE_MODEL, "(multiple stylesheets)", true);
 
   const testReactiveFalseTrue = (
@@ -153,7 +142,7 @@ describe("[ch-theme][attachStyleSheets]", () => {
     true
   );
   testReactiveFalseTrue(
-    INLINE_MODEL,
+    INLINE_MODEL_2,
     "(inline stylesheet)",
     [STYLE_SHEET2_NAME],
     [STYLE_SHEET2]

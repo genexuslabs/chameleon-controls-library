@@ -1,6 +1,7 @@
 import { E2EPage, EventSpy } from "@stencil/core/testing";
-import { ChThemeLoadedEvent } from "../theme-types";
+import { ChThemeLoadedEvent, ThemeModel } from "../theme-types";
 
+export const URL_NAME = "test-urls";
 export const BASE_URL = "https://example.com/";
 export const TIME_TO_DOWNLOAD_CSS = 200;
 export const EMPTY_ADOPTED_STYLESHEETS = [];
@@ -17,6 +18,23 @@ export const STYLE_SHEET1_NAME = "stylesheet 1";
 export const STYLE_SHEET2_NAME = "stylesheet 2";
 export const STYLE_SHEET1 = ".custom-rule { background-color: red; }";
 export const STYLE_SHEET2 = ".custom-rule-2 { color: black; }";
+
+export const URL_MODEL = [
+  { name: URL_NAME, url: "showcase/theme-test.css" }
+] as const satisfies ThemeModel;
+
+export const INLINE_MODEL_1 = [
+  { name: STYLE_SHEET1_NAME, styleSheet: STYLE_SHEET1 }
+] as const satisfies ThemeModel;
+
+export const INLINE_MODEL_2 = [
+  { name: STYLE_SHEET2_NAME, styleSheet: STYLE_SHEET2 }
+] as const satisfies ThemeModel;
+
+export const MULTIPLE_MODEL = [
+  { name: URL_NAME, url: "showcase/theme-test.css" },
+  { name: STYLE_SHEET2_NAME, styleSheet: STYLE_SHEET2 }
+] as const satisfies ThemeModel;
 
 export const STYLESHEET_WITH_URLS = `.rule-1 { background-image: url("images/background.png"); }
 .rule-2 { background-image: url("/images/background.png"); }

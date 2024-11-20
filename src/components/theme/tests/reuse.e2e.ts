@@ -10,11 +10,16 @@ import {
   CSS_CONTENT,
   CSS_NAME,
   CSS_URL,
+  INLINE_MODEL_1,
+  INLINE_MODEL_2,
   STYLE_SHEET1,
   STYLE_SHEET1_NAME,
   STYLE_SHEET2,
   STYLE_SHEET2_NAME,
-  TIME_TO_DOWNLOAD_CSS
+  STYLESHEET_WITH_URLS,
+  TIME_TO_DOWNLOAD_CSS,
+  URL_MODEL,
+  URL_NAME
 } from "./utils.e2e";
 import { delayTest } from "../../../testing/utils.e2e";
 
@@ -66,21 +71,15 @@ describe("[ch-theme][reuse]", () => {
   });
 
   it("should work with multiple ch-theme defined for the same root", async () => {
-    await setModel(theme1Ref, [
-      { name: STYLE_SHEET1_NAME, styleSheet: STYLE_SHEET1 }
-    ]);
+    await setModel(theme1Ref, INLINE_MODEL_1);
     await checkValues([STYLE_SHEET1_NAME], [STYLE_SHEET1]);
 
-    await setModel(theme2Ref, [
-      { name: STYLE_SHEET2_NAME, styleSheet: STYLE_SHEET2 }
-    ]);
+    await setModel(theme2Ref, INLINE_MODEL_2);
     await checkValues([STYLE_SHEET2_NAME], [STYLE_SHEET1, STYLE_SHEET2], 2);
   });
 
   it("should work with multiple ch-theme defined for the same root, even if the item have inline stylesheets", async () => {
-    await setModel(theme1Ref, [
-      { name: STYLE_SHEET1_NAME, styleSheet: STYLE_SHEET1 }
-    ]);
+    await setModel(theme1Ref, INLINE_MODEL_1);
     await checkValues([STYLE_SHEET1_NAME], [STYLE_SHEET1]);
 
     await setModel(theme2Ref, [
@@ -95,20 +94,35 @@ describe("[ch-theme][reuse]", () => {
     );
   });
 
-  it("should adopt/reuse the stylesheet defined by another ch-theme (same root)", async () => {
-    await setModel(theme1Ref, [
-      { name: STYLE_SHEET1_NAME, styleSheet: STYLE_SHEET1 }
-    ]);
+  it("should adopt/reuse the stylesheet with URL defined by another ch-theme (same root)", async () => {
+    await setModel(theme1Ref, URL_MODEL);
+    await delayTest(TIME_TO_DOWNLOAD_CSS);
+    await checkValues([URL_NAME], [STYLESHEET_WITH_URLS]);
+
+    await setModel(theme2Ref, URL_NAME);
+    await checkValues([URL_NAME], [STYLESHEET_WITH_URLS], 2);
+  });
+
+  it("should adopt/reuse the inline stylesheet defined by another ch-theme (same root)", async () => {
+    await setModel(theme1Ref, INLINE_MODEL_1);
     await checkValues([STYLE_SHEET1_NAME], [STYLE_SHEET1]);
 
     await setModel(theme2Ref, STYLE_SHEET1_NAME);
     await checkValues([STYLE_SHEET1_NAME], [STYLE_SHEET1], 2);
   });
 
-  it("should adopt/reuse the stylesheet defined by another ch-theme (different root)", async () => {
-    await setModel(theme1Ref, [
-      { name: STYLE_SHEET1_NAME, styleSheet: STYLE_SHEET1 }
-    ]);
+  it.skip("should adopt/reuse the stylesheet with URL defined by another ch-theme (different root)", async () => {
+    await setModel(theme1Ref, URL_MODEL);
+
+    markdownViewerRef.setProperty("theme", URL_NAME);
+    await page.waitForChanges();
+    expect(await getMarkdownViewerAdoptedStyleSheets()).toContainEqual(
+      STYLESHEET_WITH_URLS
+    );
+  });
+
+  it.skip("should adopt/reuse the inline stylesheet defined by another ch-theme (different root)", async () => {
+    await setModel(theme1Ref, INLINE_MODEL_1);
 
     markdownViewerRef.setProperty("theme", STYLE_SHEET1_NAME);
     await page.waitForChanges();

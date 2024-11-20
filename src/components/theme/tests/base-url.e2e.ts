@@ -4,33 +4,15 @@ import {
   EventSpy,
   newE2EPage
 } from "@stencil/core/testing";
-import { checkThemeValues, TIME_TO_DOWNLOAD_CSS } from "./utils.e2e";
+import {
+  BASE_URL,
+  checkThemeValues,
+  STYLESHEET_WITH_TRANSFORMED_URLS,
+  STYLESHEET_WITH_URLS,
+  TIME_TO_DOWNLOAD_CSS
+} from "./utils.e2e";
 import { ThemeModel } from "../theme-types";
 import { delayTest } from "../../../testing/utils.e2e";
-
-const BASE_URL = "https://example.com/";
-
-const STYLESHEET_WITH_URLS = `.rule-1 { background-image: url("images/background.png"); }
-.rule-2 { background-image: url("/images/background.png"); }
-.rule-3 { background-image: url("../assets/images/logo.svg"); }
-.rule-4 { background-image: url("./assets/images/logo.svg"); }
-.rule-5 { background-image: url("logo.png"); }
-.not-valid-1 { background-image: url("http://example.com/image.png"); }
-.not-valid-2 { background-image: url("https://example.com/image.png"); }
-.not-valid-3 { background-image: url("data:image/png;base64,..."); }
-.not-valid-4 { background-image: url("file:///C:/images/background.png"); }
-.not-valid-5 { background-image: url("data:image/svg+xml,<svg width=\\"24\\" height=\\"24\\" viewBox=\\"0 0 24 24\\" xmlns=\\"http://www.w3.org/2000/svg\\"><path d=\\"M10 17.42L5 12.42L6.41 11L10 14.59L17.59 7L19 8.42L10 17.42Z\\"/></svg>"); }`;
-
-const STYLESHEET_WITH_TRANSFORMED_URLS = `.rule-1 { background-image: url("${BASE_URL}images/background.png"); }
-.rule-2 { background-image: url("${BASE_URL}/images/background.png"); }
-.rule-3 { background-image: url("${BASE_URL}../assets/images/logo.svg"); }
-.rule-4 { background-image: url("${BASE_URL}./assets/images/logo.svg"); }
-.rule-5 { background-image: url("${BASE_URL}logo.png"); }
-.not-valid-1 { background-image: url("http://example.com/image.png"); }
-.not-valid-2 { background-image: url("https://example.com/image.png"); }
-.not-valid-3 { background-image: url("data:image/png;base64,..."); }
-.not-valid-4 { background-image: url("file:///C:/images/background.png"); }
-.not-valid-5 { background-image: url("data:image/svg+xml,<svg width=\\"24\\" height=\\"24\\" viewBox=\\"0 0 24 24\\" xmlns=\\"http://www.w3.org/2000/svg\\"><path d=\\"M10 17.42L5 12.42L6.41 11L10 14.59L17.59 7L19 8.42L10 17.42Z\\"/></svg>"); }`;
 
 describe("[ch-theme][baseUrl]", () => {
   let page: E2EPage;
@@ -59,7 +41,7 @@ describe("[ch-theme][baseUrl]", () => {
     themeLoadedSpy = await themeRef.spyOnEvent("themeLoaded");
   });
 
-  it("should not transform the URLs if the base themeBaseUrl is not set (stylesheet downloaded with an URL)", async () => {
+  it("should not transform the URLs if the themeBaseUrl is not set (stylesheet downloaded with an URL)", async () => {
     await setModel(themeRef, [
       { name: "test-urls", url: "showcase/theme-test.css" }
     ]);
@@ -68,7 +50,7 @@ describe("[ch-theme][baseUrl]", () => {
     checkValues(["test-urls"], [STYLESHEET_WITH_URLS]);
   });
 
-  it("should not transform the URLs if the base themeBaseUrl is not set (inline stylesheet)", async () => {
+  it("should not transform the URLs if the themeBaseUrl is not set (inline stylesheet)", async () => {
     await setModel(themeRef, [
       { name: "test-urls", styleSheet: STYLESHEET_WITH_URLS }
     ]);

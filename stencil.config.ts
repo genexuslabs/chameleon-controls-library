@@ -36,6 +36,7 @@ export const config: Config = {
       "node_modules/",
       "src/testing/",
       "dist/",
+      "src/components/theme/tests/utils.e2e.ts",
       "src/components/tree-view/tests/utils.e2e.ts"
     ]
   },

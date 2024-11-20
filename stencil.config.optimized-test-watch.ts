@@ -8,5 +8,6 @@ export const config: Config = {
     output => output.type === "www"
   ),
   plugins: [sass()],
+  testing: defaultConfig.testing,
   tsconfig: "tsconfig-optimized-test-watch.json"
 };

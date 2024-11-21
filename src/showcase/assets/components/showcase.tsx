@@ -393,7 +393,6 @@ export class ChShowcase {
           attachStyleSheets={this.designSystem === "mercury"}
           model={MERCURY_THEME}
         ></ch-theme>
-        <ch-theme model={SHOWCASE_STYLES}></ch-theme>
 
         <div class="header-start">
           <a
@@ -482,7 +481,6 @@ export class ChShowcase {
           attachStyleSheets={this.designSystem === "mercury"}
           model={MERCURY_THEME}
         ></ch-theme>
-        <ch-theme model={SHOWCASE_STYLES}></ch-theme>
 
         {this.#showcaseStory.render(this.designSystem)}
       </div>
@@ -1044,6 +1042,7 @@ export class ChShowcase {
             class="flexible-layout ch-showcase__flexible-layout-playground"
             model={flexibleLayoutPlaygroundConfiguration}
             renders={this.#flexibleLayoutPlaygroundRenders}
+            theme={SHOWCASE_STYLES}
             ref={el => (this.#playgroundRef = el)}
           ></ch-flexible-layout-render>
         </div>
@@ -1141,6 +1140,7 @@ export class ChShowcase {
           // TODO: Fix error when adding the closeButton and closing the last item
           model={flexibleLayoutConfiguration}
           renders={this.#flexibleLayoutRender}
+          theme={SHOWCASE_STYLES}
           ref={el => (this.#flexibleLayoutRef = el)}
         ></ch-flexible-layout-render>
 

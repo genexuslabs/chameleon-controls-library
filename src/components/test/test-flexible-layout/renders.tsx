@@ -15,9 +15,32 @@ import { GXWebModel } from "../../../showcase/pages/assets/models/action-group.j
 import { TreeViewItemModel } from "../../tree-view/types";
 import {
   ChTreeViewRenderCustomEvent,
+  ThemeModel,
   TreeViewItemOpenReferenceInfo
 } from "../../../components";
 import { panelToolbox } from "../../../showcase/assets/components/action-list/models";
+
+const UNANIMO_THEME: ThemeModel = [
+  {
+    name: "unanimo",
+    url: "https://unpkg.com/@genexus/unanimo@latest/dist/bundles/css/all.css"
+  },
+  {
+    name: "unanimo-extra",
+    url: "showcase/unanimo-extra-styles.css"
+  }
+];
+
+const MERCURY_THEME: ThemeModel = [
+  {
+    name: "mercury",
+    url: "https://unpkg.com/@genexus/mercury@latest/dist/bundles/css/all.css"
+  },
+  {
+    name: "mercury-extra",
+    url: "showcase/mercury-extra-styles.css"
+  }
+];
 
 // IDs
 const MENU_BAR = "menu-bar";
@@ -461,14 +484,24 @@ const openNewPanel = (
   });
 };
 
-export const layoutRenders: FlexibleLayoutRenders = {
-  [MENU_BAR]: () => (
+export const layoutRenders = (
+  designSystem: "mercury" | "unanimo"
+): FlexibleLayoutRenders => ({
+  [MENU_BAR]: () => [
+    <ch-theme
+      attachStyleSheets={designSystem === "unanimo"}
+      model={UNANIMO_THEME}
+    ></ch-theme>,
+    <ch-theme
+      attachStyleSheets={designSystem === "mercury"}
+      model={MERCURY_THEME}
+    ></ch-theme>,
     <ch-action-group-render
       slot={MENU_BAR}
       key={MENU_BAR}
       model={GXWebModel}
     ></ch-action-group-render>
-  ),
+  ],
   [KB_EXPLORER]: () => (
     <ch-tree-view-render
       class="tree-view tree-view-secondary"
@@ -692,4 +725,4 @@ export const layoutRenders: FlexibleLayoutRenders = {
       model={panelToolbox}
     ></ch-action-list-render>
   )
-};
+});

@@ -102,11 +102,6 @@ export class ChFlexibleLayoutRender {
   @Prop() readonly contain: CssContainProperty = "none";
 
   /**
-   * A CSS class to set as the `ch-flexible-layout` element class.
-   */
-  @Prop() readonly cssClass: string = "flexible-layout";
-
-  /**
    * When the "tabbed" type leafs are sortable, the items can be dragged
    * outside of its tab-list.
    *
@@ -891,7 +886,6 @@ export class ChFlexibleLayoutRender {
         {this.theme && <ch-theme model={this.theme}></ch-theme>}
 
         <ch-flexible-layout
-          class={this.cssClass || null}
           closeButton={this.closeButton}
           contain={this.contain}
           dragOutside={this.dragOutside}

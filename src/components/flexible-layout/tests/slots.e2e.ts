@@ -64,7 +64,7 @@ const SLOT_AND_RENDER_MODEL = {
 } satisfies FlexibleLayoutModel;
 
 const FLEXIBLE_LAYOUT_RENDERED_CONTENT = (children: string) =>
-  `<ch-flexible-layout class="flexible-layout hydrated">${children}</ch-flexible-layout>`;
+  `<ch-flexible-layout exportparts="bar,block,inline,leaf,start,end" class="hydrated">${children}</ch-flexible-layout>`;
 
 const SLOT_CONTENT = (id: string) => `<slot name="${id}" slot="${id}"></slot>`;
 

@@ -80,7 +80,7 @@ export class ChFlexibleLayoutRender {
 
   #itemsInfo: Map<string, ItemExtended> = new Map();
 
-  #layoutSplitterParts = "";
+  #layoutSplitterParts: Set<string> = new Set();
 
   // Refs
   #flexibleLayoutRef: HTMLChFlexibleLayoutElement;
@@ -499,13 +499,13 @@ export class ChFlexibleLayoutRender {
       return;
     }
 
-    const layoutSplitterPartsSet: Set<string> = new Set();
+    this.#layoutSplitterParts.clear();
     const newRenderedWidgets: Set<string> = new Set(); // Temporal Set to store the new rendered widgets
 
     updateFlexibleModels(
       layout,
       this.#itemsInfo,
-      layoutSplitterPartsSet,
+      this.#layoutSplitterParts,
       newRenderedWidgets,
       this.#widgetsInfo
     );
@@ -518,7 +518,6 @@ export class ChFlexibleLayoutRender {
     });
 
     this.#renderedWidgets = newRenderedWidgets;
-    this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
   };
 
   #getLeafInfo = (

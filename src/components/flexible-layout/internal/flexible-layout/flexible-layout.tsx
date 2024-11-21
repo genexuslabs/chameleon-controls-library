@@ -55,6 +55,10 @@ const ESCAPE_KEY = "Escape";
   tag: "ch-flexible-layout"
 })
 export class ChFlexibleLayout {
+  #exportParts: string;
+  #layoutSplitterExportParts: string;
+  #leafs: FlexibleLayoutLeafInfo<FlexibleLayoutLeafType>[] = [];
+
   #draggableViews: DraggableViewExtendedInfo[];
 
   #dragInfo: WidgetDragInfo;
@@ -104,7 +108,7 @@ export class ChFlexibleLayout {
   /**
    * Specifies additional parts to export.
    */
-  @Prop() readonly layoutSplitterParts: string;
+  @Prop() readonly layoutSplitterParts: Set<string>;
 
   /**
    * Specifies the distribution of the items in the flexible layout.
@@ -459,6 +463,31 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
+  #computePartsToExport = () => {
+    const exportPartsSet = new Set([
+      "bar",
+      "block",
+      "inline",
+      "leaf",
+      "start",
+      "end"
+    ]);
+
+    this.layoutSplitterParts.forEach(part => exportPartsSet.add(part));
+
+    // TODO: Revisit this algorithm to simplify definition of exportparts
+    this.#leafs.forEach(leaf => {
+      if (leaf.type === "tabbed") {
+        exportPartsSet.add(leaf.id);
+        exportPartsSet.add(leaf.exportParts);
+      }
+    });
+
+    this.#exportParts = [...exportPartsSet.keys()].join(",");
+    this.#layoutSplitterExportParts =
+      [...exportPartsSet.keys()].join(",") + ",bar";
+  };
+
   #renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => {
     const dragOutsideEnabled = viewInfo.dragOutside ?? this.dragOutside;
     const sortableEnabled = viewInfo.sortable ?? this.sortable;
@@ -512,6 +541,11 @@ export class ChFlexibleLayout {
       this.#renderTab(leaf)
     );
 
+  componentWillRender() {
+    this.#leafs = this.#getAllLeafs();
+    this.#computePartsToExport();
+  }
+
   render() {
     const layoutModel = this.model;
 
@@ -520,14 +554,14 @@ export class ChFlexibleLayout {
     }
 
     return (
-      <Host>
+      <Host exportparts={this.#exportParts}>
         <ch-layout-splitter
           dragBarDisabled={this.dragBarDisabled}
           model={layoutModel}
-          exportparts={"bar," + this.layoutSplitterParts}
+          exportparts={this.#layoutSplitterExportParts}
           ref={el => (this.#layoutSplitterRef = el)}
         >
-          {this.#getAllLeafs().map(this.#renderView)}
+          {this.#leafs.map(this.#renderView)}
         </ch-layout-splitter>
 
         <div

@@ -17,6 +17,7 @@ export class ChTestFlexibleLayout {
   render() {
     return (
       <ch-flexible-layout-render
+        class="flexible-layout"
         closeButton
         contain="size"
         dragOutside

@@ -2,6 +2,7 @@ import {
   Component,
   Event,
   EventEmitter,
+  Host,
   Method,
   Prop,
   Watch,
@@ -25,9 +26,10 @@ import {
   FlexibleLayoutLeafType,
   FlexibleLayoutWidgetExtended,
   FlexibleLayoutWidgetCloseInfo,
-  FlexibleLayoutLeafConfigurationTabbed
+  FlexibleLayoutLeafConfigurationTabbed,
+  FlexibleLayoutRenderedWidgets
 } from "./internal/flexible-layout/types";
-import { ChFlexibleLayoutCustomEvent } from "../../components";
+import { ChFlexibleLayoutCustomEvent, ThemeModel } from "../../components";
 import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
 import { CssContainProperty, CssOverflowProperty } from "../../common/types";
@@ -61,7 +63,7 @@ const GENERATE_GUID = () => {
 };
 
 @Component({
-  shadow: false,
+  shadow: true,
   styleUrl: "flexible-layout-render.scss",
   tag: "ch-flexible-layout-render"
 })
@@ -72,12 +74,13 @@ export class ChFlexibleLayoutRender {
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #renderedWidgets: Set<string> = new Set();
+  #lastRenderedWidgets = new Set();
 
   #widgetsInfo: Map<string, FlexibleLayoutWidgetExtended> = new Map();
 
   #itemsInfo: Map<string, ItemExtended> = new Map();
 
-  #layoutSplitterParts = "";
+  #layoutSplitterParts: Set<string> = new Set();
 
   // Refs
   #flexibleLayoutRef: HTMLChFlexibleLayoutElement;
@@ -97,11 +100,6 @@ export class ChFlexibleLayoutRender {
    * Containment can also be used to scope CSS counters and quotes.
    */
   @Prop() readonly contain: CssContainProperty = "none";
-
-  /**
-   * A CSS class to set as the `ch-flexible-layout` element class.
-   */
-  @Prop() readonly cssClass: string = "flexible-layout";
 
   /**
    * When the "tabbed" type leafs are sortable, the items can be dragged
@@ -143,9 +141,29 @@ export class ChFlexibleLayoutRender {
   @Prop() readonly sortable: boolean = false;
 
   /**
+   * Specifies whether widgets are rendered outside of the
+   * ch-flexible-layout-render by default by projecting a slot.
+   */
+  @Prop() readonly slottedWidgets: boolean = false;
+
+  /**
+   * Specifies the theme to be used for rendering the control.
+   * If `undefined`, no theme will be applied.
+   */
+  @Prop() readonly theme: ThemeModel | undefined;
+
+  /**
    * Emitted when the user pressed the close button in a widget.
    */
   @Event() widgetClose: EventEmitter<FlexibleLayoutWidgetCloseInfo>;
+
+  /**
+   * Emitted every time the rendered widgets changes. It contains the detail
+   * of which widgets are rendered inside the `ch-flexible-layout-render`
+   * (`rendered` member) and those widgets that are rendered in an slot
+   * (`slotted` member).
+   */
+  @Event() renderedWidgetsChange: EventEmitter<FlexibleLayoutRenderedWidgets>;
 
   /**
    * Add a view with widgets to render. The view will take the half space of
@@ -481,13 +499,13 @@ export class ChFlexibleLayoutRender {
       return;
     }
 
-    const layoutSplitterPartsSet: Set<string> = new Set();
+    this.#layoutSplitterParts.clear();
     const newRenderedWidgets: Set<string> = new Set(); // Temporal Set to store the new rendered widgets
 
     updateFlexibleModels(
       layout,
       this.#itemsInfo,
-      layoutSplitterPartsSet,
+      this.#layoutSplitterParts,
       newRenderedWidgets,
       this.#widgetsInfo
     );
@@ -500,7 +518,6 @@ export class ChFlexibleLayoutRender {
     });
 
     this.#renderedWidgets = newRenderedWidgets;
-    this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
   };
 
   #getLeafInfo = (
@@ -612,7 +629,7 @@ export class ChFlexibleLayoutRender {
       return;
     }
 
-    // Remove the item from the flexible-layout-render to optimize resources
+    // Remove the item from the ch-flexible-layout-render to optimize resources
     this.#renderedWidgets.delete(widgetInfo.id);
     this.#widgetsInfo.delete(widgetInfo.id);
   };
@@ -781,13 +798,17 @@ export class ChFlexibleLayoutRender {
 
   #renderWidget = (widgetId: string) => {
     const widgetInfo = this.#widgetsInfo.get(widgetId).info;
-    const widgetRender = this.renders[widgetInfo.renderId ?? widgetId];
+
+    if (this.#widgetIsSlotted(widgetInfo)) {
+      return <slot key={widgetId} name={widgetId} slot={widgetId} />;
+    }
+
+    const renderId = widgetInfo.renderId ?? widgetId;
+    const widgetRender = this.renders[renderId];
 
     if (!widgetRender) {
       console.error(
-        `Could not find a render for the "${widgetId}" widget. The render "${
-          widgetInfo.renderId ?? widgetId
-        }" does not exists in the "renders" property.`
+        `Could not find a render for the "${widgetId}" widget. The render "${renderId}" does not exists in the "renders" property.`
       );
       return;
     }
@@ -805,8 +826,52 @@ export class ChFlexibleLayoutRender {
     );
   };
 
+  #widgetIsSlotted = (widgetInfo: FlexibleLayoutWidget) =>
+    widgetInfo.slot ?? this.slottedWidgets;
+
+  #checkToEmitRenderedWidgetsChange = () => {
+    if (
+      this.#lastRenderedWidgets.size === this.#renderedWidgets.size &&
+      this.#lastRenderedWidgets.size === 0
+    ) {
+      return;
+    }
+
+    // If the Sets have different sizes, we can ensure that the event must be
+    // emitted. If not, we should check if both Sets have the same items.
+    let shouldEmitRenderedWidgetsChange =
+      this.#lastRenderedWidgets.size !== this.#renderedWidgets.size;
+    const rendered: string[] = [];
+    const slotted: string[] = [];
+
+    // In the same loop, prepare the event detail while checking to emit the event
+    this.#renderedWidgets.forEach(widgetId => {
+      const widgetInfo = this.#widgetsInfo.get(widgetId)!.info;
+
+      if (this.#widgetIsSlotted(widgetInfo)) {
+        slotted.push(widgetId);
+      } else {
+        rendered.push(widgetId);
+      }
+
+      shouldEmitRenderedWidgetsChange ||=
+        !this.#lastRenderedWidgets.has(widgetId);
+    });
+
+    if (shouldEmitRenderedWidgetsChange) {
+      this.renderedWidgetsChange.emit({ rendered, slotted });
+    }
+
+    // Update the Set using the new rendered widgets, without sharing the reference
+    this.#lastRenderedWidgets = new Set(this.#renderedWidgets);
+  };
+
   componentWillLoad() {
     this.#updateFlexibleModels(this.model);
+  }
+
+  componentDidRender() {
+    this.#checkToEmitRenderedWidgetsChange();
   }
 
   render() {
@@ -816,23 +881,26 @@ export class ChFlexibleLayoutRender {
     }
 
     return (
-      <ch-flexible-layout
-        class={this.cssClass || null}
-        closeButton={this.closeButton}
-        contain={this.contain}
-        dragOutside={this.dragOutside}
-        model={this.model}
-        layoutSplitterParts={this.#layoutSplitterParts}
-        itemsInfo={this.#itemsInfo}
-        overflow={this.overflow}
-        sortable={this.sortable}
-        onViewItemClose={this.#handleLeafWidgetClose}
-        onViewItemReorder={this.#handleLeafWidgetReorder}
-        onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}
-        ref={el => (this.#flexibleLayoutRef = el)}
-      >
-        {[...this.#renderedWidgets.values()].map(this.#renderWidget)}
-      </ch-flexible-layout>
+      <Host>
+        {this.theme && <ch-theme model={this.theme}></ch-theme>}
+
+        <ch-flexible-layout
+          closeButton={this.closeButton}
+          contain={this.contain}
+          dragOutside={this.dragOutside}
+          model={this.model}
+          layoutSplitterParts={this.#layoutSplitterParts}
+          itemsInfo={this.#itemsInfo}
+          overflow={this.overflow}
+          sortable={this.sortable}
+          onViewItemClose={this.#handleLeafWidgetClose}
+          onViewItemReorder={this.#handleLeafWidgetReorder}
+          onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}
+          ref={el => (this.#flexibleLayoutRef = el)}
+        >
+          {[...this.#renderedWidgets.values()].map(this.#renderWidget)}
+        </ch-flexible-layout>
+      </Host>
     );
   }
 }

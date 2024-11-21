@@ -20,6 +20,7 @@
 
 ### Depends on
 
+- [ch-theme](../../../components/theme)
 - [ch-segmented-control-render](../../../components/segmented-control)
 - [ch-edit](../../../components/edit)
 - [ch-navigation-list-render](../../../components/navigation-list)
@@ -32,6 +33,7 @@
 ### Graph
 ```mermaid
 graph TD;
+  ch-showcase --> ch-theme
   ch-showcase --> ch-segmented-control-render
   ch-showcase --> ch-edit
   ch-showcase --> ch-navigation-list-render
@@ -45,6 +47,7 @@ graph TD;
   ch-navigation-list-item --> ch-tooltip
   ch-tooltip --> ch-popover
   ch-combo-box-render --> ch-popover
+  ch-flexible-layout-render --> ch-theme
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter

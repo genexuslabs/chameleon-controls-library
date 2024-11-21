@@ -55,9 +55,6 @@ export function setDesignSystemInBrowser(designSystem) {
 // Initialize the design system
 const designSystem = getDesignSystem();
 
-if (designSystem) {
-  setDesignSystemInBrowser(designSystem);
-} else {
+if (!designSystem) {
   storeDesignSystem(DEFAULT_DS);
-  setDesignSystemInBrowser(DEFAULT_DS);
 }

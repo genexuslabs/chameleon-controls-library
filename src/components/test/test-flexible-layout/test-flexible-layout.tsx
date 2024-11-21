@@ -14,14 +14,20 @@ export class ChTestFlexibleLayout {
    */
   @Prop() readonly model: FlexibleLayoutModel = layout3;
 
+  /**
+   * Specifies the design system used. Only for testing purposes.
+   */
+  @Prop() readonly designSystem!: "mercury" | "unanimo";
+
   render() {
     return (
       <ch-flexible-layout-render
+        class="flexible-layout"
         closeButton
         contain="size"
         dragOutside
         model={this.model}
-        renders={layoutRenders}
+        renders={layoutRenders(this.designSystem)}
         sortable
       ></ch-flexible-layout-render>
     );

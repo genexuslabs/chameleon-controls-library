@@ -342,10 +342,7 @@ const lightDOMMarkup = (
     Content of the item 1
     <label>
       Any text
-      <input ${showcaseTemplateClassProperty(
-        framework,
-        "form-input"
-      )} type="text" />
+      <input ${showcaseTemplateClassProperty(framework, "input")} type="text" />
     </label>
   </div>
 )}

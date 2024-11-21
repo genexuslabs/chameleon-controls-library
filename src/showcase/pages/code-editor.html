@@ -57,13 +57,129 @@
     </style>
   </head>
   <body class="white-label">
-    <div class="card card-editor">
+    <div class="card card-editor" style="grid-template-rows: 1fr">
       <ch-code-editor
-        value="name: John Doe
-age: 42
-occupation: Pirate
-"
-        language="yaml"
+        value='{
+  "agentData": {
+      "description": "Translator Agent",
+      "strategyName": "predict",
+      "prompt": {
+          "context": "You are a helpful translator, expert in business language",
+          "instruction": "Translate the text to english, return output as json",
+          "inputs": [
+              {
+                  "text": ""
+              }
+          ],
+          "outputs": [
+              {
+                  "key": "translatedText",
+                  "description": ""
+              },
+              {
+                  "key": "summary",
+                  "description": "a summary of the text"
+              }
+          ],
+          "example": [
+              {
+                  "inputData": "hola que tal?",
+                  "output": {
+                      "translatedText": "hello, how are you?",
+                      "summary": "greeting"
+                  }
+              }
+          ]
+      }
+  },
+  "llmConfig": {
+      "maxTokens": 5000,
+      "timeout": 0,
+      "sampling": {
+          "temperature": 0.2,
+          "topK": 0,
+          "topP": 0
+      },
+      "safetySettings": {
+          "harassment": 0,
+          "hate": 0,
+          "sexuallyExplicit": 0,
+          "dangerousContent": 0
+      }
+  },
+  "models": {
+      "model": {
+          "name": "gpt-4o",
+          "llmConfig": null,
+          "prompt": null
+      }
+  },
+  "agentGuardrail": {
+      "text": ""
+  },
+  "resourcePools": [
+      {
+          "item": {
+              "name": "api-tools",
+              "tools": [
+                  {
+                      "tool": {
+                          "name": "weather-api"
+                      }
+                  }
+              ]
+          }
+      },
+      {
+          "item": {
+              "name": "formatting-tools",
+              "assistants": [
+                  {
+                      "assistant": {
+                          "name": "Json Converter"
+                      }
+                  }
+              ],
+              "tools": [
+                  {
+                      "tool": {
+                          "name": "excape-utf"
+                      }
+                  }
+              ]
+          }
+      },
+      {
+          "item": {
+              "name": "file-tools",
+              "tools": [
+                  {
+                      "tool": {
+                          "name": "read_file"
+                      }
+                  },
+                  {
+                      "tool": {
+                          "name": "create_artifact"
+                      }
+                  }
+              ]
+          }
+      }
+  ],
+  "properties": [
+      {
+          "property": {
+              "key": "ALGO",
+              "value": "",
+              "dataType": "String"
+          }
+      }
+  ]
+}
+'
+        language="json"
+        theme="vs-dark"
         yaml-schema-uri="https://json.schemastore.org/prettierrc.json"
       ></ch-code-editor>
     </div>
@@ -75,7 +191,7 @@ occupation: Pirate
           <textarea
             style="width: 100%; min-height: 200px; resize: unset"
             id="value"
-            class="form-input"
+            class="input"
             type="text"
           >
 console.log("Hello world!");
@@ -94,12 +210,7 @@ console.log("Hello world!");
       <div class="field">
         <label>
           Language
-          <input
-            id="language"
-            class="form-input"
-            value="typescript"
-            type="text"
-          />
+          <input id="language" class="input" value="typescript" type="text" />
         </label>
 
         <button id="update-language" class="button-primary" type="button">
@@ -110,7 +221,7 @@ console.log("Hello world!");
       <div class="field">
         <label>
           Theme
-          <input id="theme" class="form-input" value="vs" type="text" />
+          <input id="theme" class="input" value="vs-dark" type="text" />
         </label>
 
         <button id="update-theme" class="button-primary" type="button">
@@ -123,7 +234,7 @@ console.log("Hello world!");
           YAML Schema URI
           <input
             id="yaml-schema-uri"
-            class="form-input"
+            class="input"
             value="https://json.schemastore.org/prettierrc.json"
             type="text"
           />

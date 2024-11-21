@@ -80,15 +80,15 @@ const render = () => (
         Popover content
         <div>
           <div>
-            <label class="form-input__label">
+            <label class="label">
               Any content 1
-              <input class="form-input" type="text" />
+              <input class="input" type="text" />
             </label>
           </div>
 
-          <label class="form-input__label">
+          <label class="label">
             Any content 2
-            <input class="form-input" type="text" />
+            <input class="input" type="text" />
           </label>
           <button class="button-primary" onClick={handlePopoverClosed}>
             Close

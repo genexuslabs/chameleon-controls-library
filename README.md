@@ -94,6 +94,16 @@ npm run test.watch -- -- src/components/edit/<path to test file.<spec|e2e>.ts>
 npm run test.watch -- -- src/components/edit/tests/edit.e2e.ts
 ```
 
+To watch only one folder, run:
+
+```bash
+npm run test.watch -- -- <folder path>
+
+## For example:
+
+npm run test.watch -- -- src/components/edit/tests/
+```
+
 ### Building for production
 
 To build the design for production, run:

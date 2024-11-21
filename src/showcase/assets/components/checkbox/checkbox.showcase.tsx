@@ -67,7 +67,7 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
       <form id="form-checkbox-2" ref={el => (formRefs["form-checkbox-2"] = el)}>
-        <label class="form-input__label" htmlFor="checkbox-2">
+        <label class="label" htmlFor="checkbox-2">
           Label for checkbox 2
         </label>
 
@@ -96,7 +96,7 @@ const render = () => (
         Component inside label
       </legend>
       <form id="form-checkbox-3" ref={el => (formRefs["form-checkbox-3"] = el)}>
-        <label class="form-input__label" htmlFor="checkbox-3">
+        <label class="label" htmlFor="checkbox-3">
           Label for checkbox 3
           <ch-checkbox
             id="checkbox-3"

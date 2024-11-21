@@ -59,7 +59,7 @@ const render: ShowcaseRender = designSystem => (
 
     <textarea
       aria-label="Markdown content"
-      class="form-input"
+      class="input"
       value={initialMarkdown}
       onInput={handleValueChange}
       ref={el => (textareaRef = el)}

@@ -758,7 +758,7 @@ export class ChFlexibleLayoutRender {
       id: newLeafToAddId,
       selectedWidgetId: widget.id,
       size: undefined,
-      tabDirection: viewTargetUIModel.leafInfo.tabDirection,
+      tabListPosition: viewTargetUIModel.leafInfo.tabListPosition,
       type: "tabbed",
       widgets: [widget],
       dragBar: {

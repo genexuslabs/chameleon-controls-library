@@ -10,10 +10,12 @@ import {
   LayoutSplitterLeafModel,
   LayoutSplitterItemRemoveResult
 } from "../../../layout-splitter/types";
+import { TabListPosition } from "../../../tab/types";
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
+// TODO: Remove this unused type
 export type ViewType =
   | "inlineStart"
   | "main"
@@ -87,13 +89,12 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
   /** `true` to not render the tab captions of the view. */
   tabButtonHidden?: boolean;
 
-  tabDirection: FlexibleLayoutLeafTabDirection;
-
   /**
-   * Specifies whether the tab is displayed before or after of its content.
-   * If not specified, defaults to `"start"`
+   * Specifies the position of the tab list in the tabbed view.
+   * If not specified, defaults to `"block-start"`.
    */
-  tabPosition?: FlexibleLayoutLeafTabPosition;
+  tabListPosition?: TabListPosition;
+
   type: Extract<FlexibleLayoutLeafType, "tabbed">;
   widgets: FlexibleLayoutWidget[];
 };
@@ -104,9 +105,6 @@ export type FlexibleLayoutLeafConfigurationSingleContent = {
 } & FlexibleLayoutWidgetRender;
 
 export type FlexibleLayoutLeafType = "tabbed" | "single-content";
-
-export type FlexibleLayoutLeafTabDirection = "block" | "inline";
-export type FlexibleLayoutLeafTabPosition = "start" | "end";
 
 export type FlexibleLayoutGroupModel = Omit<
   LayoutSplitterGroupModel,
@@ -228,8 +226,6 @@ export type FlexibleLayoutLeafInfo<T extends FlexibleLayoutLeafType> = {
    * Same as the leaf id (item.id).
    */
   id: string;
-
-  exportParts: string;
 } & (T extends "tabbed"
   ? Required<FlexibleLayoutLeafConfigurationTabbed>
   : FlexibleLayoutLeafConfigurationSingleContent);

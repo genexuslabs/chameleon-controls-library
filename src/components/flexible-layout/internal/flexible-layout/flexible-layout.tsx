@@ -42,6 +42,13 @@ import {
   CssContainProperty,
   CssOverflowProperty
 } from "../../../../common/types";
+import { DEFAULT_TAB_LIST_POSITION } from "../../../tab/utils";
+import {
+  FLEXIBLE_LAYOUT_PARTS_DICTIONARY,
+  LAYOUT_SPLITTER_PARTS_DICTIONARY,
+  TAB_EXPORT_PARTS,
+  TAB_PARTS_DICTIONARY
+} from "../../../../common/reserved-names";
 
 const LEAF_SELECTOR = (id: string) => `[id="${id}"]`;
 
@@ -464,33 +471,38 @@ export class ChFlexibleLayout {
   };
 
   #computePartsToExport = () => {
-    const exportPartsSet = new Set([
-      "bar",
-      "block",
-      "inline",
-      "leaf",
-      "start",
-      "end"
+    const exportPartsSet = new Set<string>([
+      ...Object.values(TAB_PARTS_DICTIONARY)
     ]);
+    exportPartsSet.add(FLEXIBLE_LAYOUT_PARTS_DICTIONARY.DROPPABLE_AREA);
+    exportPartsSet.add(FLEXIBLE_LAYOUT_PARTS_DICTIONARY.LEAF);
+    exportPartsSet.add(LAYOUT_SPLITTER_PARTS_DICTIONARY.BAR);
 
+    // TODO: Test items that have a part with spaces
     this.layoutSplitterParts.forEach(part => exportPartsSet.add(part));
 
     // TODO: Revisit this algorithm to simplify definition of exportparts
     this.#leafs.forEach(leaf => {
       if (leaf.type === "tabbed") {
         exportPartsSet.add(leaf.id);
-        exportPartsSet.add(leaf.exportParts);
+        exportPartsSet.add(leaf.tabListPosition ?? DEFAULT_TAB_LIST_POSITION);
+        leaf.widgets.forEach(({ id }) => exportPartsSet.add(id));
       }
     });
 
     this.#exportParts = [...exportPartsSet.keys()].join(",");
-    this.#layoutSplitterExportParts =
-      [...exportPartsSet.keys()].join(",") + ",bar";
+
+    this.#layoutSplitterExportParts = [
+      ...this.layoutSplitterParts.keys(),
+      LAYOUT_SPLITTER_PARTS_DICTIONARY.BAR
+    ].join(",");
   };
 
   #renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => {
     const dragOutsideEnabled = viewInfo.dragOutside ?? this.dragOutside;
     const sortableEnabled = viewInfo.sortable ?? this.sortable;
+    const tabListPosition =
+      viewInfo.tabListPosition ?? DEFAULT_TAB_LIST_POSITION;
 
     return (
       <ch-tab-render
@@ -498,16 +510,13 @@ export class ChFlexibleLayout {
         key={viewInfo.id}
         slot={viewInfo.id}
         contain={this.contain}
-        class={{
-          [`ch-tab-${viewInfo.tabDirection}--end`]:
-            viewInfo.tabPosition === "end"
-        }}
-        part={`leaf ${viewInfo.tabDirection} ${
-          viewInfo.tabPosition ?? "start"
-        } ${viewInfo.id}`}
-        exportparts={viewInfo.exportParts}
+        // TODO: Add hostParts property in the ch-tab-render
+        part={`${FLEXIBLE_LAYOUT_PARTS_DICTIONARY.LEAF} ${tabListPosition} ${viewInfo.id}`}
+        // TODO: Find a better way to avoid this mapping on every render
+        exportparts={`${TAB_EXPORT_PARTS},${tabListPosition},${viewInfo.widgets
+          .map(({ id }) => id)
+          .join(",")}`}
         closeButton={viewInfo.closeButton ?? this.closeButton}
-        direction={viewInfo.tabDirection}
         disabled={viewInfo.disabled}
         dragOutside={dragOutsideEnabled}
         model={viewInfo.widgets}
@@ -516,6 +525,7 @@ export class ChFlexibleLayout {
         showCaptions={viewInfo.showCaptions}
         sortable={sortableEnabled}
         tabButtonHidden={viewInfo.tabButtonHidden}
+        tabListPosition={tabListPosition}
         // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
         onItemDragStart={
           dragOutsideEnabled && sortableEnabled
@@ -543,6 +553,8 @@ export class ChFlexibleLayout {
 
   componentWillRender() {
     this.#leafs = this.#getAllLeafs();
+
+    // TODO: Find a better life cycle to run this?
     this.#computePartsToExport();
   }
 
@@ -567,7 +579,7 @@ export class ChFlexibleLayout {
         <div
           aria-hidden="true"
           class="droppable-area"
-          part="droppable-area"
+          part={FLEXIBLE_LAYOUT_PARTS_DICTIONARY.DROPPABLE_AREA}
           popover="manual"
           ref={el => (this.#droppableAreaRef = el)}
         ></div>

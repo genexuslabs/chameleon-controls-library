@@ -86,7 +86,7 @@ export const defaultLayout: FlexibleLayoutModel = {
           accessibleRole: "complementary",
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
+          tabListPosition: "inline-start",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
             {
@@ -114,7 +114,6 @@ export const defaultLayout: FlexibleLayoutModel = {
           accessibleRole: "main",
           size: "1fr",
           type: "tabbed",
-          tabDirection: "block",
           selectedWidgetId: START_PAGE,
           widgets: [
             { id: START_PAGE, name: "Start Page" },
@@ -130,8 +129,7 @@ export const defaultLayout: FlexibleLayoutModel = {
           accessibleRole: "complementary",
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
-          tabPosition: "end",
+          tabListPosition: "inline-start",
           widgets: [
             {
               id: PROPERTIES,
@@ -147,7 +145,6 @@ export const defaultLayout: FlexibleLayoutModel = {
       accessibleRole: "contentinfo",
       size: "200px",
       type: "tabbed",
-      tabDirection: "block",
       widgets: [
         {
           id: OUTPUT,
@@ -184,7 +181,7 @@ export const layout2: FlexibleLayoutModel = {
           accessibleRole: "complementary",
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
+          tabListPosition: "inline-start",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
             {
@@ -217,7 +214,6 @@ export const layout2: FlexibleLayoutModel = {
               id: "sub-group-2-2-1",
               size: "1fr",
               type: "tabbed",
-              tabDirection: "block",
               selectedWidgetId: START_PAGE,
               widgets: [{ id: START_PAGE, name: "Start Page" }]
             },
@@ -225,7 +221,6 @@ export const layout2: FlexibleLayoutModel = {
               id: "sub-group-2-2-2",
               size: "1fr",
               type: "tabbed",
-              tabDirection: "block",
               widgets: [
                 {
                   id: STRUCT_EDITOR,
@@ -241,8 +236,7 @@ export const layout2: FlexibleLayoutModel = {
           accessibleRole: "complementary",
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
-          tabPosition: "end",
+          tabListPosition: "inline-end",
           widgets: [
             {
               id: PROPERTIES,
@@ -258,7 +252,6 @@ export const layout2: FlexibleLayoutModel = {
       accessibleRole: "contentinfo",
       size: "200px",
       type: "tabbed",
-      tabDirection: "block",
       widgets: [
         {
           id: OUTPUT,
@@ -299,7 +292,7 @@ export const layout3: FlexibleLayoutModel = {
           dragBar: { part: "visible", size: 1 },
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
+          tabListPosition: "inline-start",
           selectedWidgetId: KB_EXPLORER,
           showCaptions: false,
           widgets: [
@@ -342,7 +335,6 @@ export const layout3: FlexibleLayoutModel = {
                   dragBar: { part: "visible", size: 1 },
                   size: "0.5fr",
                   type: "tabbed",
-                  tabDirection: "block",
                   selectedWidgetId: START_PAGE,
                   widgets: [
                     {
@@ -362,7 +354,6 @@ export const layout3: FlexibleLayoutModel = {
                       dragBar: { part: "visible", size: 1 },
                       size: "0.5fr",
                       type: "tabbed",
-                      tabDirection: "block",
                       widgets: [
                         {
                           id: STRUCT_EDITOR,
@@ -382,7 +373,6 @@ export const layout3: FlexibleLayoutModel = {
                       id: "sub-group-2-2-1-2-2",
                       size: "0.5fr",
                       type: "tabbed",
-                      tabDirection: "block",
                       widgets: [
                         {
                           id: PANEL1,
@@ -416,7 +406,6 @@ export const layout3: FlexibleLayoutModel = {
               accessibleRole: "contentinfo",
               size: "200px",
               type: "tabbed",
-              tabDirection: "block",
               widgets: [
                 {
                   id: OUTPUT,
@@ -434,8 +423,7 @@ export const layout3: FlexibleLayoutModel = {
           size: "300px",
           showCaptions: false,
           type: "tabbed",
-          tabDirection: "inline",
-          tabPosition: "end",
+          tabListPosition: "inline-end",
           widgets: [
             {
               id: PROPERTIES,

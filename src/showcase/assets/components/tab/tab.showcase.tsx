@@ -1,4 +1,4 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -23,7 +23,8 @@ import {
 import {
   insertSpacesAtTheBeginningExceptForTheFirstLine,
   renderShowcaseProperties,
-  showcaseTemplateClassProperty
+  showcaseTemplateClassProperty,
+  updateShowcase
 } from "../utils";
 
 const state: Partial<HTMLChTabRenderElement> = {};
@@ -38,11 +39,7 @@ const selectedItemChangeHandler = (
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = event.target.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const render = () => (
@@ -55,7 +52,7 @@ const render = () => (
         accessibleName={state.accessibleName}
         closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        direction={state.direction}
+        tabListPosition={state.tabListPosition}
         disabled={state.disabled}
         dragOutside={state.dragOutside}
         expanded={state.expanded}
@@ -103,7 +100,7 @@ const render = () => (
         accessibleName={state.accessibleName}
         closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        direction={state.direction}
+        tabListPosition={state.tabListPosition}
         disabled={state.disabled}
         dragOutside={state.dragOutside}
         expanded={state.expanded}
@@ -176,12 +173,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
       caption: "Properties",
       properties: [
         {
-          id: "direction",
-          caption: "Direction",
-          value: "block",
+          id: "tabListPosition",
+          caption: "Tab List Position",
+          value: "block-start",
           values: [
-            { caption: "Block", value: "block" },
-            { caption: "Inline", value: "inline" }
+            { caption: "Block Start", value: "block-start" },
+            { caption: "Block End", value: "block-end" },
+            { caption: "Inline Start", value: "inline-start" },
+            { caption: "Inline End", value: "inline-end" }
           ],
           render: "radio-group",
           type: "enum"

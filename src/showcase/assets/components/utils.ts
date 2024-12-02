@@ -1,8 +1,16 @@
+import { forceUpdate } from "@stencil/core";
 import {
   ShowcaseTemplateFrameWork,
   ShowcaseTemplatePropertyInfo,
   ShowcaseTemplatePropertyInfoVariable
 } from "./types";
+
+export const updateShowcase = () => {
+  const showcaseRef = document.querySelector("ch-showcase");
+  if (showcaseRef) {
+    forceUpdate(showcaseRef);
+  }
+};
 
 export const insertSpacesAtTheBeginningExceptForTheFirstLine = (
   text: string,

@@ -1,10 +1,10 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
   ShowcaseTemplatePropertyInfo
 } from "../types";
-import { renderShowcaseProperties } from "../utils";
+import { renderShowcaseProperties, updateShowcase } from "../utils";
 
 const state: Partial<HTMLChSwitchElement> = {};
 const formRefs: {
@@ -32,11 +32,7 @@ const handleValueInput =
     // TODO: Until we support external slots in the ch-flexible-layout-render,
     // this is a hack to update the render of the widget and thus re-render the
     // combo-box updating the displayed items
-    const showcaseRef = formRefs[formId].closest("ch-showcase");
-
-    if (showcaseRef) {
-      forceUpdate(showcaseRef);
-    }
+    updateShowcase();
   };
 
 const render = () => (

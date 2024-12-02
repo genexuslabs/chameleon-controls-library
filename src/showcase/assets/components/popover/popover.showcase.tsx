@@ -1,4 +1,4 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -6,12 +6,12 @@ import {
 } from "../types";
 import {
   renderShowcaseProperties,
-  showcaseTemplateClassProperty
+  showcaseTemplateClassProperty,
+  updateShowcase
 } from "../utils";
 
 const state: Partial<HTMLChPopoverElement> = {};
 let buttonRef: HTMLButtonElement;
-let popoverRef: HTMLChPopoverElement;
 
 const handlePopoverOpened = () => {
   state.hidden = false;
@@ -19,11 +19,7 @@ const handlePopoverOpened = () => {
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = popoverRef.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const handlePopoverClosed = () => {
@@ -32,11 +28,7 @@ const handlePopoverClosed = () => {
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = popoverRef.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const render = () => (
@@ -62,7 +54,6 @@ const render = () => (
         resizable={state.resizable}
         onPopoverOpened={handlePopoverOpened}
         onPopoverClosed={handlePopoverClosed}
-        ref={el => (popoverRef = el)}
       >
         <div
           slot="header"

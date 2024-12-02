@@ -4,7 +4,11 @@ import {
   ImageRender
 } from "../../common/types";
 
-export type TabDirection = "block" | "inline";
+export type TabListPosition =
+  | "block-start"
+  | "inline-end"
+  | "block-end"
+  | "inline-start";
 
 export type TabModel = TabItemModel[];
 

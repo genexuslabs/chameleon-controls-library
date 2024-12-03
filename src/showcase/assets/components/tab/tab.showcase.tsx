@@ -11,10 +11,14 @@ import {
   disabledModel2,
   disabledModel3,
   simpleModel1,
-  simpleModel2
+  simpleModel2,
+  closeButtonModel
 } from "./models";
 import { ChTabRenderCustomEvent } from "../../../../components";
-import { TabSelectedItemInfo } from "../../../../components/tab/types";
+import {
+  TabItemCloseInfo,
+  TabSelectedItemInfo
+} from "../../../../components/tab/types";
 import {
   kbExplorerModel,
   lazyLoadTreeItemsCallback,
@@ -42,6 +46,10 @@ const selectedItemChangeHandler = (
   updateShowcase();
 };
 
+const handleItemClose = (event: CustomEvent<TabItemCloseInfo>) => {
+  console.log(event.detail);
+};
+
 const render = () => (
   <div class="tab-test-main-wrapper">
     <fieldset>
@@ -60,6 +68,7 @@ const render = () => (
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
         sortable={state.sortable}
+        onItemClose={handleItemClose}
         onSelectedItemChange={selectedItemChangeHandler}
       >
         {renderedItems.has("item1") && (
@@ -108,6 +117,7 @@ const render = () => (
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
         sortable={state.sortable}
+        onItemClose={handleItemClose}
         onSelectedItemChange={selectedItemChangeHandler}
       >
         {renderedItems.has("item1") && (
@@ -154,6 +164,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
           values: [
             { caption: "Simple Model 1", value: simpleModel1 },
             { caption: "Simple Model 2", value: simpleModel2 },
+            { caption: "Close Button Model", value: closeButtonModel },
             { caption: "Disabled Model 1", value: disabledModel1 },
             { caption: "Disabled Model 2", value: disabledModel2 },
             { caption: "Disabled Model 3", value: disabledModel3 },

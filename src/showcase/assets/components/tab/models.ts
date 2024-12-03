@@ -24,6 +24,23 @@ export const simpleModel2: TabModel = [
   { id: "item4", name: "", startImgSrc: `${ASSETS_PREFIX}dso.svg` }
 ];
 
+export const closeButtonModel: TabModel = [
+  {
+    id: "item1",
+    name: "Item 1 (always closable)",
+    startImgSrc: `${ASSETS_PREFIX}angular.svg`,
+    closeButton: true
+  },
+  {
+    id: "item2",
+    name: "Item 2 (not closable)",
+    startImgSrc: `${ASSETS_PREFIX}api.svg`,
+    closeButton: false
+  },
+  { id: "item3", name: "Item 3 (not closable)", closeButton: false },
+  { id: "item4", name: "", startImgSrc: `${ASSETS_PREFIX}dso.svg` }
+];
+
 export const disabledModel1: TabModel = [
   {
     id: "item1",

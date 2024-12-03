@@ -332,7 +332,6 @@ export const layout3: FlexibleLayoutModel = {
               items: [
                 {
                   id: "sub-group-2-2-1-1",
-                  closeButton: false,
                   dragBar: { part: "visible", size: 1 },
                   size: "0.5fr",
                   type: "tabbed",
@@ -341,7 +340,8 @@ export const layout3: FlexibleLayoutModel = {
                     {
                       id: START_PAGE,
                       name: "Start Page",
-                      startImgSrc: `${ASSETS_PREFIX}/toolbar/home.svg`
+                      startImgSrc: `${ASSETS_PREFIX}/toolbar/home.svg`,
+                      closeButton: false
                     }
                   ]
                 },

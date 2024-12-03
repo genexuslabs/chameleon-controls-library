@@ -29,6 +29,11 @@ export type TabItemModel = {
    */
   contain?: CssContainProperty;
 
+  /**
+   * `true` to display a close button for the tab.
+   */
+  closeButton?: boolean;
+
   disabled?: boolean;
 
   /**

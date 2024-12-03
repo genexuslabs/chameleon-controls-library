@@ -847,6 +847,14 @@ export class ChTabRender implements DraggableView {
   };
 
   #emitCloseEvent = (itemId: string, event: PointerEvent) => {
+    // Assume that the itemId always maps to an item
+    const itemUIModel = this.model.find(({ id }) => id === itemId)!;
+    const hasCloseButton = itemUIModel.closeButton ?? this.closeButton;
+
+    if (!hasCloseButton) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 
@@ -931,11 +939,8 @@ export class ChTabRender implements DraggableView {
           [TAB_PARTS_DICTIONARY.START]: startDirection,
           [TAB_PARTS_DICTIONARY.END]: !startDirection
         })}
-        onAuxClick={
-          this.closeButton && atLeastOneItemsIsEnabled
-            ? this.#handleClose
-            : undefined
-        }
+        // TODO: Don't add this handler if there is no items with closeButton
+        onAuxClick={atLeastOneItemsIsEnabled ? this.#handleClose : undefined}
         onClick={
           atLeastOneItemsIsEnabled ? this.#handleSelectedItemChange : undefined
         }
@@ -951,10 +956,9 @@ export class ChTabRender implements DraggableView {
             ? this.#handleTabFocus
             : undefined
         }
+        // TODO: Don't add this handler if there is no items with closeButton
         onMouseDown={
-          this.closeButton && atLeastOneItemsIsEnabled
-            ? this.#preventMouseDownOnScroll
-            : undefined
+          atLeastOneItemsIsEnabled ? this.#preventMouseDownOnScroll : undefined
         }
         ref={el => (this.#tabListRef = el)}
       >
@@ -978,6 +982,7 @@ export class ChTabRender implements DraggableView {
     blockDirection: boolean,
     startDirection: boolean
   ) => {
+    const closeButton = item.closeButton ?? this.closeButton;
     const isDisabled = item.disabled ?? this.disabled;
     const selected = item.id === this.selectedId;
     this.#itemIdToIndex.set(item.id, index);
@@ -1026,8 +1031,8 @@ export class ChTabRender implements DraggableView {
           [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
           [TAB_PARTS_DICTIONARY.START]: startDirection,
           [TAB_PARTS_DICTIONARY.END]: !startDirection,
-          [TAB_PARTS_DICTIONARY.CLOSABLE]: this.closeButton,
-          [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !this.closeButton,
+          [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
+          [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
           [TAB_PARTS_DICTIONARY.SELECTED]: selected,
           [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected,
           [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
@@ -1046,7 +1051,7 @@ export class ChTabRender implements DraggableView {
 
         {this.showCaptions && item.name}
 
-        {this.closeButton && (
+        {closeButton && (
           <button
             aria-label={this.closeButtonAccessibleName}
             class={CLOSE_BUTTON_CLASS}
@@ -1150,6 +1155,8 @@ export class ChTabRender implements DraggableView {
       draggedElement.startImgType
     );
 
+    const closeButton = draggedElement.closeButton ?? this.closeButton;
+
     return (
       <button
         class={{
@@ -1177,8 +1184,8 @@ export class ChTabRender implements DraggableView {
             this.hasCrossedBoundaries,
           [TAB_PARTS_DICTIONARY.DRAGGING_OVER_TAB_LIST]:
             !this.hasCrossedBoundaries,
-          [TAB_PARTS_DICTIONARY.CLOSABLE]: this.closeButton,
-          [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !this.closeButton,
+          [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
+          [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
           [TAB_PARTS_DICTIONARY.SELECTED]: selected,
           [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected
         })}

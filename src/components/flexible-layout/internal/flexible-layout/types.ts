@@ -154,6 +154,15 @@ export type FlexibleLayoutWidget = {
 
 type FlexibleLayoutWidgetRender = {
   /**
+   * `true` to display a close button in the tab button.
+   *
+   * By default, this property takes the value of the tab parent. If the
+   * `closeButton` property is not defined in the tab parent, it takes the value
+   * of the ch-flexible-layout-render.
+   */
+  closeButton?: boolean;
+
+  /**
    * Same as the contain CSS property. This property indicates that an widget
    * and its contents are, as much as possible, independent from the rest of
    * the document tree. Containment enables isolating a subsection of the DOM,

@@ -1,7 +1,9 @@
 import { Component, Prop, h } from "@stencil/core";
 import { FlexibleLayoutModel } from "../../flexible-layout/internal/flexible-layout/types";
 // import { defaultLayout, layout2, layoutRenders } from "./renders";
-import { layout3, layoutRenders } from "./renders";
+import { layout3, layoutRenders, MENU_BAR, TOOLBOX } from "./renders";
+import { panelToolbox } from "../../../showcase/assets/components/action-list/models";
+import { GXWebModel } from "../../../showcase/assets/components/action-group/models";
 
 @Component({
   shadow: false,
@@ -29,7 +31,19 @@ export class ChTestFlexibleLayout {
         model={this.model}
         renders={layoutRenders(this.designSystem)}
         sortable
-      ></ch-flexible-layout-render>
+      >
+        <ch-action-group-render
+          slot={MENU_BAR}
+          key={MENU_BAR}
+          model={GXWebModel}
+        ></ch-action-group-render>
+        <ch-action-list-render
+          slot={TOOLBOX}
+          key={TOOLBOX}
+          class="list-box list-box-secondary"
+          model={panelToolbox}
+        ></ch-action-list-render>
+      </ch-flexible-layout-render>
     );
   }
 }

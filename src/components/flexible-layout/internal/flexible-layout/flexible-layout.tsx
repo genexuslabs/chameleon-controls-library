@@ -37,12 +37,16 @@ import {
   removeDroppableAreaStyles
 } from "./utils";
 import { getLeafInfo } from "../../utils";
-import { isRTL } from "../../../../common/utils";
+import { isRTL, tokenMap } from "../../../../common/utils";
 import {
   CssContainProperty,
   CssOverflowProperty
 } from "../../../../common/types";
-import { DEFAULT_TAB_LIST_POSITION } from "../../../tab/utils";
+import {
+  DEFAULT_TAB_LIST_POSITION,
+  isBlockDirection,
+  isStartDirection
+} from "../../../tab/utils";
 import {
   FLEXIBLE_LAYOUT_PARTS_DICTIONARY,
   LAYOUT_SPLITTER_PARTS_DICTIONARY,
@@ -504,6 +508,9 @@ export class ChFlexibleLayout {
     const tabListPosition =
       viewInfo.tabListPosition ?? DEFAULT_TAB_LIST_POSITION;
 
+    const blockDirection = isBlockDirection(tabListPosition);
+    const startDirection = isStartDirection(tabListPosition);
+
     return (
       <ch-tab-render
         id={viewInfo.id}
@@ -511,7 +518,15 @@ export class ChFlexibleLayout {
         slot={viewInfo.id}
         contain={this.contain}
         // TODO: Add hostParts property in the ch-tab-render
-        part={`${FLEXIBLE_LAYOUT_PARTS_DICTIONARY.LEAF} ${tabListPosition} ${viewInfo.id}`}
+        part={tokenMap({
+          [viewInfo.id]: true,
+          [FLEXIBLE_LAYOUT_PARTS_DICTIONARY.LEAF]: true,
+          [tabListPosition]: true,
+          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+          [TAB_PARTS_DICTIONARY.START]: startDirection,
+          [TAB_PARTS_DICTIONARY.END]: !startDirection
+        })}
         // TODO: Find a better way to avoid this mapping on every render
         exportparts={`${TAB_EXPORT_PARTS},${tabListPosition},${viewInfo.widgets
           .map(({ id }) => id)

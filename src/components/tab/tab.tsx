@@ -993,7 +993,9 @@ export class ChTabRender implements DraggableView {
         id={item.id}
         role="tab"
         aria-controls={PANEL_ID(item.id)}
-        aria-label={!this.showCaptions ? item.name : null}
+        aria-label={
+          item.accessibleName ?? (!this.showCaptions ? item.name : null)
+        }
         aria-selected={selected.toString()}
         class={{
           [TAB_BUTTON_CLASS]: true,
@@ -1159,6 +1161,8 @@ export class ChTabRender implements DraggableView {
 
     return (
       <button
+        // TODO: Check if this is necessary
+        // aria-hidden="true"
         class={{
           [TAB_BUTTON_CLASS]: true,
           [DRAG_PREVIEW]: true,

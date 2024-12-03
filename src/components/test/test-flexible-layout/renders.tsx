@@ -115,7 +115,7 @@ export const defaultLayout: FlexibleLayoutModel = {
           type: "tabbed",
           selectedWidgetId: START_PAGE,
           widgets: [
-            { id: START_PAGE, name: "Start Page" },
+            { id: START_PAGE, accessibleName: "Start Page" },
             {
               id: STRUCT_EDITOR,
               name: "Struct Editor",
@@ -215,7 +215,7 @@ export const layout2: FlexibleLayoutModel = {
               size: "1fr",
               type: "tabbed",
               selectedWidgetId: START_PAGE,
-              widgets: [{ id: START_PAGE, name: "Start Page" }]
+              widgets: [{ id: START_PAGE, accessibleName: "Start Page" }]
             },
             {
               id: "sub-group-2-2-2",
@@ -339,7 +339,7 @@ export const layout3: FlexibleLayoutModel = {
                   widgets: [
                     {
                       id: START_PAGE,
-                      name: "Start Page",
+                      accessibleName: "Start Page",
                       startImgSrc: `${ASSETS_PREFIX}/toolbar/home.svg`,
                       closeButton: false
                     }

@@ -134,6 +134,8 @@ export type FlexibleLayoutWidget = {
   conserveRenderState?: boolean;
   id: string;
 
+  accessibleName?: string;
+
   /**
    * Specify if the tab button is disabled.
    * If disabled, it will not fire any user interaction related event
@@ -141,7 +143,9 @@ export type FlexibleLayoutWidget = {
    */
   disabled?: boolean;
 
-  name: string;
+  // TODO: Check in the drag and drop algorithm if the name property can be
+  // optional. To model tabs with only icons this property must be optional
+  name?: string;
 
   startImgSrc?: string;
 

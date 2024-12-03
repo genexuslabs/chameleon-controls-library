@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { tabTypeToPart } from "../tab/utils";
+import { Build } from "@stencil/core";
 import {
   FlexibleLayoutModel,
   FlexibleLayoutGroupModel,
@@ -11,7 +11,7 @@ import {
   FlexibleLayoutWidgetExtended
 } from "./internal/flexible-layout/types";
 import { ROOT_VIEW } from "../../common/utils";
-import { Build } from "@stencil/core";
+import { DEFAULT_TAB_LIST_POSITION, isBlockDirection } from "../tab/utils";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
@@ -49,22 +49,12 @@ export const createAndSetLeafInfo = (
     return {
       id: leafId,
       type: leafType,
-      exportParts: "",
       widget: widget
     };
   }
 
   let selectedWidgetId = flexibleLayoutLeaf.selectedWidgetId;
   const widgets = flexibleLayoutLeaf.widgets;
-  const tabOrientation = flexibleLayoutLeaf.tabDirection;
-  const tabPosition = flexibleLayoutLeaf.tabPosition;
-
-  const exportParts =
-    tabTypeToPart[
-      `${tabOrientation}-${
-        tabPosition ?? "start"
-      }` as keyof typeof tabTypeToPart
-    ](widgets);
 
   widgets.forEach(widget => {
     if (widget.wasRendered || selectedWidgetId === widget.id) {
@@ -87,7 +77,13 @@ export const createAndSetLeafInfo = (
   // If there is no widget selected by default, select one
   if (selectedWidgetId == null && widgets.length > 0) {
     const selectedWidget =
-      widgets[tabOrientation === "block" ? widgets.length - 1 : 0];
+      widgets[
+        isBlockDirection(
+          flexibleLayoutLeaf.tabListPosition ?? DEFAULT_TAB_LIST_POSITION
+        )
+          ? widgets.length - 1
+          : 0
+      ];
     selectedWidgetId = selectedWidget.id;
     selectedWidget.wasRendered = true;
 
@@ -97,16 +93,14 @@ export const createAndSetLeafInfo = (
 
   return {
     id: leafId,
-    exportParts,
     closeButton: flexibleLayoutLeaf.closeButton,
     disabled: flexibleLayoutLeaf.disabled,
     dragOutside: flexibleLayoutLeaf.dragOutside,
     selectedWidgetId: selectedWidgetId,
     showCaptions: flexibleLayoutLeaf.showCaptions ?? true,
     sortable: flexibleLayoutLeaf.sortable,
-    tabDirection: tabOrientation,
+    tabListPosition: flexibleLayoutLeaf.tabListPosition,
     tabButtonHidden: flexibleLayoutLeaf.tabButtonHidden ?? false,
-    tabPosition: flexibleLayoutLeaf.tabPosition,
     type: leafType,
     widgets: widgets
   };

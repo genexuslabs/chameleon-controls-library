@@ -57,7 +57,6 @@ export const flexibleLayoutPlaygroundConfiguration: FlexibleLayoutModel = {
       size: "1fr",
       minSize: "220px",
       selectedWidgetId: MAIN_WIDGET,
-      tabDirection: "block",
       type: "tabbed",
       widgets: [
         { id: MAIN_WIDGET, name: "Playground" },

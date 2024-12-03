@@ -1,4 +1,4 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseRenderProperty,
@@ -17,7 +17,7 @@ import {
   ComboBoxItemModel
 } from "../../../../components/combo-box/types";
 import { ChComboBoxRenderCustomEvent } from "../../../../components";
-import { renderShowcaseProperties } from "../utils";
+import { renderShowcaseProperties, updateShowcase } from "../utils";
 
 const state: Partial<HTMLChComboBoxRenderElement> = {};
 let itemsFilteredByTheServer: ComboBoxItemModel[] = comboBoxFilterChange({
@@ -67,13 +67,7 @@ const handleInputChange =
     // TODO: Until we support external slots in the ch-flexible-layout-render,
     // this is a hack to update the render of the widget and thus re-render the
     // combo-box updating the displayed items
-    const showcaseRef = (
-      event as ChComboBoxRenderCustomEvent<string>
-    ).target.closest("ch-showcase");
-
-    if (showcaseRef) {
-      forceUpdate(showcaseRef);
-    }
+    updateShowcase();
   };
 
 const handleChangeEvent =
@@ -83,13 +77,7 @@ const handleChangeEvent =
     // TODO: Until we support external slots in the ch-flexible-layout-render,
     // this is a hack to update the render of the widget and thus re-render the
     // combo-box updating the displayed items
-    const showcaseRef = (
-      event as ChComboBoxRenderCustomEvent<string>
-    ).target.closest("ch-showcase");
-
-    if (showcaseRef) {
-      forceUpdate(showcaseRef);
-    }
+    updateShowcase();
   };
 
 const render = () => (

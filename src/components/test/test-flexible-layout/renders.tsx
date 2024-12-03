@@ -11,14 +11,12 @@ import {
   kbExplorerModel,
   preferencesModel
 } from "../../../showcase/assets/components/tree-view/models";
-import { GXWebModel } from "../../../showcase/pages/assets/models/action-group.js";
 import { TreeViewItemModel } from "../../tree-view/types";
 import {
   ChTreeViewRenderCustomEvent,
   ThemeModel,
   TreeViewItemOpenReferenceInfo
 } from "../../../components";
-import { panelToolbox } from "../../../showcase/assets/components/action-list/models";
 
 const UNANIMO_THEME: ThemeModel = [
   {
@@ -43,7 +41,7 @@ const MERCURY_THEME: ThemeModel = [
 ];
 
 // IDs
-const MENU_BAR = "menu-bar";
+export const MENU_BAR = "menu-bar";
 const KB_EXPLORER = "kb-explorer";
 const PREFERENCES = "preferences";
 const HEAVY_TREE = "heavy-tree";
@@ -51,7 +49,7 @@ const START_PAGE = "start-page";
 const STRUCT_EDITOR = "StructEditor";
 const ATTRS_CONTAINERS_AND_OTHERS = "AttrsContainersAndOthers";
 const PROPERTIES = "properties";
-const TOOLBOX = "toolbox";
+export const TOOLBOX = "toolbox";
 const OUTPUT = "output";
 const IMPORT_OBJECTS = "import-objects";
 const PANEL1 = "panel-1";
@@ -73,7 +71,8 @@ export const defaultLayout: FlexibleLayoutModel = {
       type: "single-content",
       widget: {
         id: MENU_BAR,
-        name: null
+        name: null,
+        slot: true
       }
     },
     {
@@ -86,7 +85,7 @@ export const defaultLayout: FlexibleLayoutModel = {
           accessibleRole: "complementary",
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
+          tabListPosition: "inline-start",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
             {
@@ -114,7 +113,6 @@ export const defaultLayout: FlexibleLayoutModel = {
           accessibleRole: "main",
           size: "1fr",
           type: "tabbed",
-          tabDirection: "block",
           selectedWidgetId: START_PAGE,
           widgets: [
             { id: START_PAGE, name: "Start Page" },
@@ -130,8 +128,7 @@ export const defaultLayout: FlexibleLayoutModel = {
           accessibleRole: "complementary",
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
-          tabPosition: "end",
+          tabListPosition: "inline-start",
           widgets: [
             {
               id: PROPERTIES,
@@ -147,7 +144,6 @@ export const defaultLayout: FlexibleLayoutModel = {
       accessibleRole: "contentinfo",
       size: "200px",
       type: "tabbed",
-      tabDirection: "block",
       widgets: [
         {
           id: OUTPUT,
@@ -171,7 +167,8 @@ export const layout2: FlexibleLayoutModel = {
       type: "single-content",
       widget: {
         id: MENU_BAR,
-        name: null
+        name: null,
+        slot: true
       }
     },
     {
@@ -184,7 +181,7 @@ export const layout2: FlexibleLayoutModel = {
           accessibleRole: "complementary",
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
+          tabListPosition: "inline-start",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
             {
@@ -217,7 +214,6 @@ export const layout2: FlexibleLayoutModel = {
               id: "sub-group-2-2-1",
               size: "1fr",
               type: "tabbed",
-              tabDirection: "block",
               selectedWidgetId: START_PAGE,
               widgets: [{ id: START_PAGE, name: "Start Page" }]
             },
@@ -225,7 +221,6 @@ export const layout2: FlexibleLayoutModel = {
               id: "sub-group-2-2-2",
               size: "1fr",
               type: "tabbed",
-              tabDirection: "block",
               widgets: [
                 {
                   id: STRUCT_EDITOR,
@@ -241,8 +236,7 @@ export const layout2: FlexibleLayoutModel = {
           accessibleRole: "complementary",
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
-          tabPosition: "end",
+          tabListPosition: "inline-end",
           widgets: [
             {
               id: PROPERTIES,
@@ -258,7 +252,6 @@ export const layout2: FlexibleLayoutModel = {
       accessibleRole: "contentinfo",
       size: "200px",
       type: "tabbed",
-      tabDirection: "block",
       widgets: [
         {
           id: OUTPUT,
@@ -282,7 +275,8 @@ export const layout3: FlexibleLayoutModel = {
       type: "single-content",
       widget: {
         id: MENU_BAR,
-        name: null
+        name: null,
+        slot: true
       }
     },
     {
@@ -299,7 +293,7 @@ export const layout3: FlexibleLayoutModel = {
           dragBar: { part: "visible", size: 1 },
           size: "300px",
           type: "tabbed",
-          tabDirection: "inline",
+          tabListPosition: "inline-start",
           selectedWidgetId: KB_EXPLORER,
           showCaptions: false,
           widgets: [
@@ -342,7 +336,6 @@ export const layout3: FlexibleLayoutModel = {
                   dragBar: { part: "visible", size: 1 },
                   size: "0.5fr",
                   type: "tabbed",
-                  tabDirection: "block",
                   selectedWidgetId: START_PAGE,
                   widgets: [
                     {
@@ -362,7 +355,6 @@ export const layout3: FlexibleLayoutModel = {
                       dragBar: { part: "visible", size: 1 },
                       size: "0.5fr",
                       type: "tabbed",
-                      tabDirection: "block",
                       widgets: [
                         {
                           id: STRUCT_EDITOR,
@@ -382,7 +374,6 @@ export const layout3: FlexibleLayoutModel = {
                       id: "sub-group-2-2-1-2-2",
                       size: "0.5fr",
                       type: "tabbed",
-                      tabDirection: "block",
                       widgets: [
                         {
                           id: PANEL1,
@@ -416,7 +407,6 @@ export const layout3: FlexibleLayoutModel = {
               accessibleRole: "contentinfo",
               size: "200px",
               type: "tabbed",
-              tabDirection: "block",
               widgets: [
                 {
                   id: OUTPUT,
@@ -434,8 +424,7 @@ export const layout3: FlexibleLayoutModel = {
           size: "300px",
           showCaptions: false,
           type: "tabbed",
-          tabDirection: "inline",
-          tabPosition: "end",
+          tabListPosition: "inline-end",
           widgets: [
             {
               id: PROPERTIES,
@@ -445,7 +434,8 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: TOOLBOX,
               name: "Toolbox",
-              startImgSrc: `${ASSETS_PREFIX}toolbar/toolbox.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/toolbox.svg`,
+              slot: true
             }
           ]
         }
@@ -487,7 +477,7 @@ const openNewPanel = (
 export const layoutRenders = (
   designSystem: "mercury" | "unanimo"
 ): FlexibleLayoutRenders => ({
-  [MENU_BAR]: () => [
+  [KB_EXPLORER]: () => [
     <ch-theme
       attachStyleSheets={designSystem === "unanimo"}
       model={UNANIMO_THEME}
@@ -496,13 +486,6 @@ export const layoutRenders = (
       attachStyleSheets={designSystem === "mercury"}
       model={MERCURY_THEME}
     ></ch-theme>,
-    <ch-action-group-render
-      slot={MENU_BAR}
-      key={MENU_BAR}
-      model={GXWebModel}
-    ></ch-action-group-render>
-  ],
-  [KB_EXPLORER]: () => (
     <ch-tree-view-render
       class="tree-view tree-view-secondary"
       slot={KB_EXPLORER}
@@ -513,7 +496,7 @@ export const layoutRenders = (
       showLines="last"
       onItemOpenReference={openNewPanel}
     ></ch-tree-view-render>
-  ),
+  ],
   [PREFERENCES]: () => (
     <ch-tree-view-render
       class="tree-view tree-view-secondary"
@@ -716,13 +699,5 @@ export const layoutRenders = (
     <div slot={widget.id} key={widget.id}>
       This is the render for the <strong>{widget.id}</strong> widget
     </div>
-  ),
-  [TOOLBOX]: () => (
-    <ch-action-list-render
-      slot={TOOLBOX}
-      key={TOOLBOX}
-      class="list-box list-box-secondary"
-      model={panelToolbox}
-    ></ch-action-list-render>
   )
 });

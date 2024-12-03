@@ -14,7 +14,11 @@ export type TabModel = TabItemModel[];
 
 export type TabItemModel = {
   id: string;
-  name: string;
+
+  accessibleName?: string;
+
+  // TODO: Rename to caption???
+  name?: string;
 
   /**
    * Same as the contain CSS property. This property indicates that an item

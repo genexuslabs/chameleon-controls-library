@@ -9,19 +9,11 @@ Visit the [Chameleon Showcase](https://gx-chameleon.netlify.app) for general inf
 
 ## Using this library
 
-There are three strategies we recommend for using these web components.
+There are four strategies we recommend for using these web components.
 
-### Node Modules
+### In frameworks (React, Angular, etc) using a design system like Mercury or Unanimo.
 
-- Run
-
-  ```bash
-  npm i @genexus/chameleon-controls-library --save
-  ```
-
-- Put a script tag similar to this `<script src="node_modules/@genexus/chameleon-controls-library/dist/chameleon/chameleon.esm.js"></script>` in the head of your index.html
-
-- Then you can use the web components anywhere in your template, JSX, html etc
+For this, we recommend consulting our repository [chameleon-integrations](https://github.com/genexuslabs/chameleon-integrations) that contains various examples demonstrating how to effectively use the Chameleon Controls Library in different frameworks and with different design systems.
 
 ### In a Stencil project
 
@@ -36,6 +28,18 @@ There are three strategies we recommend for using these web components.
   ```ts
   import "@genexus/chameleon-controls-library";
   ```
+
+- Then you can use the web components anywhere in your template, JSX, html etc
+
+### Node Modules
+
+- Run
+
+  ```bash
+  npm i @genexus/chameleon-controls-library --save
+  ```
+
+- Put a script tag similar to this `<script src="node_modules/@genexus/chameleon-controls-library/dist/chameleon/chameleon.esm.js"></script>` in the head of your index.html
 
 - Then you can use the web components anywhere in your template, JSX, html etc
 

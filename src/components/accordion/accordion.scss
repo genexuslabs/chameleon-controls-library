@@ -1,8 +1,8 @@
 @import "../../common/base";
 @import "../../common/icons";
 
-@include box-sizing();
 @include button-reset();
+@include box-sizing();
 
 :host {
   /**

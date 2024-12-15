@@ -1,6 +1,6 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 
-describe("[ch-tab][basic]", () => {
+describe("[ch-tab-render][basic]", () => {
   let page: E2EPage;
   let tabRef: E2EElement;
 

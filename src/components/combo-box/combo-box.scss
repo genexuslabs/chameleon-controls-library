@@ -178,6 +178,10 @@ ch-popover {
   --ch-popover-separation-x: var(--ch-combo-box-separation-x);
   --ch-popover-separation-y: var(--ch-combo-box-separation-y);
 
+  // We must reset the cursor to avoid the inheriting "cursor: pointer" from
+  // the Host
+  cursor: auto;
+
   // --ch-popover-min-inline-size: var(--ch-popover-action-width);
 
   &:not(.hydrated) {

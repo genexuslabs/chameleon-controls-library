@@ -83,9 +83,13 @@ export class ChTooltip implements ComponentInterface {
   };
 
   #handleLeave = () => {
-    // Only remove the tooltip if the action element is not focused. If focused,
-    // "mouseleave" should not dismiss the tooltip
-    if (focusComposedPath()[0] !== this.#getActionElement()) {
+    const focusedWithFocusVisible =
+      focusComposedPath()[0] === this.#getActionElement() &&
+      this.#actualActionElement.matches(":focus-visible");
+
+    // Only remove the tooltip if the action element is not focused with
+    // "focus-visible". If focused, "mouseleave" should not dismiss the tooltip
+    if (!focusedWithFocusVisible) {
       this.visible = false;
     }
   };

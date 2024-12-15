@@ -188,27 +188,28 @@ export class ChTooltip implements ComponentInterface {
           </button>
         )}
 
-        <ch-popover
-          id={actionInsideShadow ? this.#tooltipId : undefined}
-          role={actionInsideShadow ? "tooltip" : undefined}
-          class={this.visible ? "visible" : undefined}
-          style={{
-            "--ch-tooltip-delay": `${this.delay}ms`
-          }}
-          part="window"
-          // Don't use #actualActionElement. On the first render is not defined
-          actionElement={this.#getActionElement()}
-          blockAlign={this.blockAlign}
-          closeOnClickOutside
-          hidden={!this.visible}
-          inlineAlign={this.inlineAlign}
-          mode="manual"
-          // We need to sync the visible state when the popover is closed by an
-          // user interaction (click outside)
-          onPopoverClosed={this.visible ? this.#handleLeave : undefined}
-        >
-          <slot />
-        </ch-popover>
+        {this.visible && (
+          <ch-popover
+            id={actionInsideShadow ? this.#tooltipId : undefined}
+            role={actionInsideShadow ? "tooltip" : undefined}
+            style={{
+              "--ch-tooltip-delay": `${this.delay}ms`
+            }}
+            part="window"
+            // Don't use #actualActionElement. On the first render is not defined
+            actionElement={this.#getActionElement()}
+            blockAlign={this.blockAlign}
+            closeOnClickOutside
+            hidden={false}
+            inlineAlign={this.inlineAlign}
+            mode="manual"
+            // We need to sync the visible state when the popover is closed by an
+            // user interaction (click outside)
+            onPopoverClosed={this.#handleLeave}
+          >
+            <slot />
+          </ch-popover>
+        )}
       </Host>
     );
   }

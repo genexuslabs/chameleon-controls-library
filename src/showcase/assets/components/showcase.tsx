@@ -1152,6 +1152,8 @@ export class ChShowcase {
           attachStyleSheets={this.designSystem === "mercury"}
           model={MERCURY_BASE_THEME}
         ></ch-theme>
+
+        <ch-accessibility></ch-accessibility>
       </Host>
     );
   }

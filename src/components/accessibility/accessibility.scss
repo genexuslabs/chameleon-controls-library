@@ -1,0 +1,111 @@
+@import "../../common/_base";
+
+@include button-reset();
+@include box-sizing();
+@include typography-reset();
+
+:host {
+  display: contents;
+}
+
+ch-dialog {
+  --ch-dialog-block-start: calc(100dvh - 100% - 16px);
+  --ch-dialog-inline-start: calc(100dvw - 100% - 16px);
+  --ch-dialog-block-size: min(calc(100dvh - 32px), 500px);
+  --ch-dialog-inline-size: min(calc(100dvw - 32px), 700px);
+  --ch-dialog-min-block-size: 290px;
+  --ch-dialog-min-inline-size: 300px;
+  color: #000;
+
+  &::part(header) {
+    padding-inline: 16px;
+    padding-block: 8px;
+    border-block-end: 1px solid;
+    font-size: 1.125em;
+    font-weight: 600;
+  }
+
+  &::part(dialog) {
+    background-color: rgb(231, 231, 231);
+    border: 1px solid;
+    border-radius: 4px;
+    box-shadow: 0 7px 10px -1px rgba(0, 0, 0, 0.125);
+    white-space: pre-wrap;
+    z-index: 1;
+  }
+
+  &::part(content) {
+    grid-template-rows: max-content 1fr;
+    padding-block-end: 16px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+  }
+}
+
+.settings {
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  gap: 8px;
+  position: sticky;
+  inset-block-start: 0px;
+  padding: 16px;
+  background-color: rgb(231, 231, 231);
+}
+
+ch-edit {
+  padding-block: 4px;
+  background-color: white;
+  border: 1px solid;
+  max-inline-size: 50px;
+}
+
+ch-accordion-render {
+  --ch-accordion-expand-collapse-duration: 150ms;
+  padding-inline: 16px;
+  gap: 8px;
+
+  &::part(header) {
+    padding-inline: 12px;
+    padding-block: 8px;
+  }
+
+  &::part(panel) {
+    border: 1px solid;
+    border-radius: 4px;
+  }
+}
+
+section {
+  padding-inline: 12px;
+  padding-block: 8px;
+  border-block-start: 1px solid;
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 1.375em;
+}
+
+.nodes {
+  border: 1px dashed;
+  padding: 4px;
+  margin-block: 8px 12px;
+}
+
+.node {
+  display: grid;
+  padding-block: 4px;
+  padding-inline: 8px;
+  word-break: break-word;
+}
+
+ch-code {
+  text-wrap: auto;
+}
+
+ch-popover {
+  background-color: rgb(193, 220, 182, 0.75);
+  border: 1px dashed rgb(134, 68, 214, 0.75);
+  padding: 1px;
+}

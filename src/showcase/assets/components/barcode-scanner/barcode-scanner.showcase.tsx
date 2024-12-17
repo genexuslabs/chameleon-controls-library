@@ -1,14 +1,13 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import { ChBarcodeScannerCustomEvent } from "../../../../components";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
   ShowcaseTemplatePropertyInfo
 } from "../types";
-import { renderShowcaseProperties } from "../utils";
+import { renderShowcaseProperties, updateShowcase } from "../utils";
 
 const state: Partial<HTMLChBarcodeScannerElement> = {};
-let barcodeScannerRef: HTMLChBarcodeScannerElement;
 
 let lastRead: string;
 
@@ -18,11 +17,7 @@ const handleRead = (event: ChBarcodeScannerCustomEvent<string>) => {
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = barcodeScannerRef.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const render = () => (
@@ -32,7 +27,6 @@ const render = () => (
       barcodeBoxHeight={state.barcodeBoxHeight}
       scanning={state.scanning}
       onRead={handleRead}
-      ref={el => (barcodeScannerRef = el)}
     ></ch-barcode-scanner>
 
     <span>Content: {lastRead}</span>

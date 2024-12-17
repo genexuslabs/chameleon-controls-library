@@ -13,9 +13,6 @@ export const config: Config = {
     // It generates the dist/components folder
     { type: "dist-custom-elements" },
     {
-      type: "docs-readme"
-    },
-    {
       type: "www",
       serviceWorker: null,
       copy: [
@@ -35,7 +32,13 @@ export const config: Config = {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
     verbose: true,
     browserHeadless: "new",
-    testPathIgnorePatterns: ["node_modules/", "src/testing/", "dist/"]
+    testPathIgnorePatterns: [
+      "node_modules/",
+      "src/testing/",
+      "dist/",
+      "src/components/theme/tests/utils.e2e.ts",
+      "src/components/tree-view/tests/utils.e2e.ts"
+    ]
   },
   bundles: [
     {

@@ -1,4 +1,4 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -17,7 +17,8 @@ import {
 import {
   insertSpacesAtTheBeginningExceptForTheFirstLine,
   renderShowcaseProperties,
-  showcaseTemplateClassProperty
+  showcaseTemplateClassProperty,
+  updateShowcase
 } from "../utils";
 
 const state: Partial<HTMLChAccordionRenderElement> = {};
@@ -34,11 +35,7 @@ const expandedItemChangeHandler = (
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = event.target.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const render = () => (
@@ -87,7 +84,7 @@ const render = () => (
       Custom header
       <input
         aria-label="Search"
-        class="form-input"
+        class="input"
         type="text"
         placeholder="Search..."
       />
@@ -151,7 +148,7 @@ const lightDOMInputPropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLInputElement
     {
       name: "class",
       fixed: true,
-      value: "form-input",
+      value: "input",
       type: "string"
     },
     { name: "placeholder", fixed: true, value: "Search...", type: "string" },

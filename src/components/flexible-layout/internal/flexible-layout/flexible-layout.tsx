@@ -37,11 +37,22 @@ import {
   removeDroppableAreaStyles
 } from "./utils";
 import { getLeafInfo } from "../../utils";
-import { isRTL } from "../../../../common/utils";
+import { isRTL, tokenMap } from "../../../../common/utils";
 import {
   CssContainProperty,
   CssOverflowProperty
 } from "../../../../common/types";
+import {
+  DEFAULT_TAB_LIST_POSITION,
+  isBlockDirection,
+  isStartDirection
+} from "../../../tab/utils";
+import {
+  FLEXIBLE_LAYOUT_PARTS_DICTIONARY,
+  LAYOUT_SPLITTER_PARTS_DICTIONARY,
+  TAB_EXPORT_PARTS,
+  TAB_PARTS_DICTIONARY
+} from "../../../../common/reserved-names";
 
 const LEAF_SELECTOR = (id: string) => `[id="${id}"]`;
 
@@ -55,6 +66,10 @@ const ESCAPE_KEY = "Escape";
   tag: "ch-flexible-layout"
 })
 export class ChFlexibleLayout {
+  #exportParts: string;
+  #layoutSplitterExportParts: string;
+  #leafs: FlexibleLayoutLeafInfo<FlexibleLayoutLeafType>[] = [];
+
   #draggableViews: DraggableViewExtendedInfo[];
 
   #dragInfo: WidgetDragInfo;
@@ -104,7 +119,7 @@ export class ChFlexibleLayout {
   /**
    * Specifies additional parts to export.
    */
-  @Prop() readonly layoutSplitterParts: string;
+  @Prop() readonly layoutSplitterParts: Set<string>;
 
   /**
    * Specifies the distribution of the items in the flexible layout.
@@ -459,9 +474,42 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
+  #computePartsToExport = () => {
+    const exportPartsSet = new Set<string>([
+      ...Object.values(TAB_PARTS_DICTIONARY)
+    ]);
+    exportPartsSet.add(FLEXIBLE_LAYOUT_PARTS_DICTIONARY.DROPPABLE_AREA);
+    exportPartsSet.add(FLEXIBLE_LAYOUT_PARTS_DICTIONARY.LEAF);
+    exportPartsSet.add(LAYOUT_SPLITTER_PARTS_DICTIONARY.BAR);
+
+    // TODO: Test items that have a part with spaces
+    this.layoutSplitterParts.forEach(part => exportPartsSet.add(part));
+
+    // TODO: Revisit this algorithm to simplify definition of exportparts
+    this.#leafs.forEach(leaf => {
+      if (leaf.type === "tabbed") {
+        exportPartsSet.add(leaf.id);
+        exportPartsSet.add(leaf.tabListPosition ?? DEFAULT_TAB_LIST_POSITION);
+        leaf.widgets.forEach(({ id }) => exportPartsSet.add(id));
+      }
+    });
+
+    this.#exportParts = [...exportPartsSet.keys()].join(",");
+
+    this.#layoutSplitterExportParts = [
+      ...this.layoutSplitterParts.keys(),
+      LAYOUT_SPLITTER_PARTS_DICTIONARY.BAR
+    ].join(",");
+  };
+
   #renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => {
     const dragOutsideEnabled = viewInfo.dragOutside ?? this.dragOutside;
     const sortableEnabled = viewInfo.sortable ?? this.sortable;
+    const tabListPosition =
+      viewInfo.tabListPosition ?? DEFAULT_TAB_LIST_POSITION;
+
+    const blockDirection = isBlockDirection(tabListPosition);
+    const startDirection = isStartDirection(tabListPosition);
 
     return (
       <ch-tab-render
@@ -469,16 +517,21 @@ export class ChFlexibleLayout {
         key={viewInfo.id}
         slot={viewInfo.id}
         contain={this.contain}
-        class={{
-          [`ch-tab-${viewInfo.tabDirection}--end`]:
-            viewInfo.tabPosition === "end"
-        }}
-        part={`leaf ${viewInfo.tabDirection} ${
-          viewInfo.tabPosition ?? "start"
-        } ${viewInfo.id}`}
-        exportparts={viewInfo.exportParts}
+        // TODO: Add hostParts property in the ch-tab-render
+        part={tokenMap({
+          [viewInfo.id]: true,
+          [FLEXIBLE_LAYOUT_PARTS_DICTIONARY.LEAF]: true,
+          [tabListPosition]: true,
+          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+          [TAB_PARTS_DICTIONARY.START]: startDirection,
+          [TAB_PARTS_DICTIONARY.END]: !startDirection
+        })}
+        // TODO: Find a better way to avoid this mapping on every render
+        exportparts={`${TAB_EXPORT_PARTS},${tabListPosition},${viewInfo.widgets
+          .map(({ id }) => id)
+          .join(",")}`}
         closeButton={viewInfo.closeButton ?? this.closeButton}
-        direction={viewInfo.tabDirection}
         disabled={viewInfo.disabled}
         dragOutside={dragOutsideEnabled}
         model={viewInfo.widgets}
@@ -487,6 +540,7 @@ export class ChFlexibleLayout {
         showCaptions={viewInfo.showCaptions}
         sortable={sortableEnabled}
         tabButtonHidden={viewInfo.tabButtonHidden}
+        tabListPosition={tabListPosition}
         // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
         onItemDragStart={
           dragOutsideEnabled && sortableEnabled
@@ -512,6 +566,13 @@ export class ChFlexibleLayout {
       this.#renderTab(leaf)
     );
 
+  componentWillRender() {
+    this.#leafs = this.#getAllLeafs();
+
+    // TODO: Find a better life cycle to run this?
+    this.#computePartsToExport();
+  }
+
   render() {
     const layoutModel = this.model;
 
@@ -520,20 +581,20 @@ export class ChFlexibleLayout {
     }
 
     return (
-      <Host>
+      <Host exportparts={this.#exportParts}>
         <ch-layout-splitter
           dragBarDisabled={this.dragBarDisabled}
           model={layoutModel}
-          exportparts={"bar," + this.layoutSplitterParts}
+          exportparts={this.#layoutSplitterExportParts}
           ref={el => (this.#layoutSplitterRef = el)}
         >
-          {this.#getAllLeafs().map(this.#renderView)}
+          {this.#leafs.map(this.#renderView)}
         </ch-layout-splitter>
 
         <div
           aria-hidden="true"
           class="droppable-area"
-          part="droppable-area"
+          part={FLEXIBLE_LAYOUT_PARTS_DICTIONARY.DROPPABLE_AREA}
           popover="manual"
           ref={el => (this.#droppableAreaRef = el)}
         ></div>

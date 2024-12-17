@@ -39,6 +39,7 @@ import {
 import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
 import { addSiblingLeaf } from "./add-sibling-item";
 import { SyncWithRAF } from "../../common/sync-with-frames";
+import { LAYOUT_SPLITTER_PARTS_DICTIONARY } from "../../common/reserved-names";
 
 type Group = LayoutSplitterGroupModel;
 type Item = LayoutSplitterItemModel;
@@ -421,11 +422,16 @@ export class ChLayoutSplitter implements ChComponent {
           aria-label={this.barAccessibleName}
           aria-orientation={direction === "columns" ? "vertical" : "horizontal"}
           aria-valuetext={itemUIModel.actualSize}
+          // TODO: Add aria-valuenow
           title={this.barAccessibleName}
           tabindex="0"
           // - - - - - - - - - - - - -
           class="bar"
-          part={item.dragBar?.part ? `bar ${item.dragBar.part}` : "bar"}
+          part={
+            item.dragBar?.part
+              ? `${LAYOUT_SPLITTER_PARTS_DICTIONARY.BAR} ${item.dragBar.part}`
+              : LAYOUT_SPLITTER_PARTS_DICTIONARY.BAR
+          }
           style={
             item.dragBar?.size ? { "--size": `${item.dragBar.size}px` } : null
           }

@@ -22,25 +22,22 @@ import {
   tokenMap
 } from "../../common/utils";
 import {
-  TabDirection,
   TabElementSize,
   TabItemCloseInfo,
   TabItemModel,
+  TabListPosition,
   TabModel,
   TabSelectedItemInfo
 } from "./types";
 import {
-  CLOSE_BUTTON_PART,
+  DEFAULT_TAB_LIST_POSITION,
   DRAG_PREVIEW,
-  DRAG_PREVIEW_ELEMENT,
   DRAG_PREVIEW_INSIDE_BLOCK,
   DRAG_PREVIEW_INSIDE_INLINE,
   DRAG_PREVIEW_OUTSIDE,
-  LIST_CLASSES,
-  LIST_PART_BLOCK,
-  LIST_PART_INLINE,
-  PAGE_ID,
-  SELECTED_PART
+  isBlockDirection,
+  isStartDirection,
+  PANEL_ID
 } from "./utils";
 import { insertIntoIndex, removeIndex } from "../../common/array";
 import {
@@ -49,7 +46,9 @@ import {
   MouseEventButtons
 } from "../common/helpers";
 import { CssContainProperty, CssOverflowProperty } from "../../common/types";
+import { KEY_CODES, TAB_PARTS_DICTIONARY } from "../../common/reserved-names";
 
+const TAB_BUTTON_CLASS = "tab";
 const CLOSE_BUTTON_CLASS = "close-button";
 
 // Custom vars
@@ -70,22 +69,13 @@ const TAB_LIST_EDGE_START_POSITION = "--ch-tab-list-start";
 const TAB_LIST_EDGE_END_POSITION = "--ch-tab-list-end";
 
 const DECORATIVE_IMAGE = "--ch-tab-decorative-image";
-
-// Key codes
-const ARROW_UP = "ArrowUp";
-const ARROW_RIGHT = "ArrowRight";
-const ARROW_DOWN = "ArrowDown";
-const ARROW_LEFT = "ArrowLeft";
-const HOME = "Home";
-const END = "End";
-
 type KeyEvents =
-  | typeof ARROW_UP
-  | typeof ARROW_RIGHT
-  | typeof ARROW_DOWN
-  | typeof ARROW_LEFT
-  | typeof HOME
-  | typeof END;
+  | typeof KEY_CODES.ARROW_UP
+  | typeof KEY_CODES.ARROW_RIGHT
+  | typeof KEY_CODES.ARROW_DOWN
+  | typeof KEY_CODES.ARROW_LEFT
+  | typeof KEY_CODES.HOME
+  | typeof KEY_CODES.END;
 
 // Selectors
 const FIRST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
@@ -95,8 +85,6 @@ const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
   tabListRef.querySelector(":scope>button:last-child") as HTMLButtonElement;
 
 // Utility functions
-
-const isBlockDirection = (direction: TabDirection) => direction === "block";
 
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
@@ -136,7 +124,7 @@ const setTabListStartEndPosition = (
 const getTabListSizesAndSetPosition = (
   hostRef: HTMLChTabRenderElement,
   tabListRef: HTMLElement,
-  direction: TabDirection,
+  blockDirection: boolean,
   buttonRect: DOMRect
 ): TabElementSize => {
   const tabListRect = tabListRef.getBoundingClientRect();
@@ -149,7 +137,7 @@ const getTabListSizesAndSetPosition = (
     yEnd: tabListRect.y + tabListRect.height
   };
 
-  if (isBlockDirection(direction)) {
+  if (blockDirection) {
     setTabListStartEndPosition(
       hostRef,
       tabListSizes.xStart,
@@ -228,24 +216,6 @@ const focusNextOrPreviousCaption = (
 export class ChTabRender implements DraggableView {
   #cancelId: number;
 
-  // Styling
-  #classes: {
-    BUTTON?: string;
-    IMAGE?: string;
-    PAGE?: string;
-    PAGE_CONTAINER?: string;
-    PAGE_NAME?: string;
-    TAB_LIST?: string;
-  } = {};
-  #parts: {
-    BUTTON?: string;
-    IMAGE?: string;
-    PAGE?: string;
-    PAGE_CONTAINER?: string;
-    PAGE_NAME?: string;
-    TAB_LIST?: string;
-  } = {};
-
   #selectedIndex: number = -1;
 
   #lastDragEvent: MouseEvent;
@@ -268,47 +238,47 @@ export class ChTabRender implements DraggableView {
   #itemIdToIndex: Map<string, number> = new Map();
 
   // Refs
-  #dragPreviewRef: HTMLDivElement;
+  #dragPreviewRef: HTMLButtonElement;
   #tabListRef: HTMLDivElement;
   #tabPageRef: HTMLDivElement;
 
   // Keyboard interactions
   #keyEvents: {
     [key in KeyEvents]: (
-      direction: TabDirection,
+      blockDirection: boolean,
       event: KeyboardEvent,
       focusedCaption: HTMLButtonElement
     ) => void;
   } = {
-    [ARROW_UP]: (direction, ev, focusedButton) => {
-      if (direction === "block") {
+    [KEY_CODES.ARROW_UP]: (blockDirection, ev, focusedButton) => {
+      if (blockDirection) {
         return;
       }
       focusNextOrPreviousCaption(false, this.#tabListRef, focusedButton, ev);
     },
 
-    [ARROW_RIGHT]: (direction, ev, focusedButton) => {
-      if (direction === "inline") {
+    [KEY_CODES.ARROW_RIGHT]: (blockDirection, ev, focusedButton) => {
+      if (!blockDirection) {
         return;
       }
       focusNextOrPreviousCaption(!isRTL(), this.#tabListRef, focusedButton, ev);
     },
 
-    [ARROW_DOWN]: (direction, ev, focusedButton) => {
-      if (direction === "block") {
+    [KEY_CODES.ARROW_DOWN]: (blockDirection, ev, focusedButton) => {
+      if (blockDirection) {
         return;
       }
       focusNextOrPreviousCaption(true, this.#tabListRef, focusedButton, ev);
     },
 
-    [ARROW_LEFT]: (direction, ev, focusedButton) => {
-      if (direction === "inline") {
+    [KEY_CODES.ARROW_LEFT]: (blockDirection, ev, focusedButton) => {
+      if (!blockDirection) {
         return;
       }
       focusNextOrPreviousCaption(isRTL(), this.#tabListRef, focusedButton, ev);
     },
 
-    [HOME]: (_, ev) =>
+    [KEY_CODES.HOME]: (_, ev) =>
       focusNextOrPreviousCaption(
         true,
         this.#tabListRef,
@@ -316,7 +286,7 @@ export class ChTabRender implements DraggableView {
         ev
       ),
 
-    [END]: (_, ev) =>
+    [KEY_CODES.END]: (_, ev) =>
       focusNextOrPreviousCaption(
         false,
         this.#tabListRef,
@@ -364,15 +334,6 @@ export class ChTabRender implements DraggableView {
    * Containment can also be used to scope CSS counters and quotes.
    */
   @Prop() readonly contain?: CssContainProperty = "none";
-
-  /**
-   * Specifies the flexible layout type.
-   */
-  @Prop({ reflect: true }) readonly direction: TabDirection;
-  @Watch("direction")
-  directionChange(newDirection: TabDirection) {
-    this.#initializeState(newDirection);
-  }
 
   /**
    * This attribute lets you specify if all tab buttons are disabled.
@@ -445,6 +406,11 @@ export class ChTabRender implements DraggableView {
    * `true` to not render the tab buttons of the control.
    */
   @Prop() readonly tabButtonHidden: boolean = false;
+
+  /**
+   * Specifies the position of the tab list of the `ch-tab-render`.
+   */
+  @Prop() readonly tabListPosition: TabListPosition = DEFAULT_TAB_LIST_POSITION;
 
   /**
    * Fired when an item of the main group is double clicked.
@@ -576,9 +542,9 @@ export class ChTabRender implements DraggableView {
     // - - - - - - - - - - - DOM read operations - - - - - - - - - - -
     const mousePositionX = event.clientX;
     const mousePositionY = event.clientY;
-    const direction = this.direction;
+    const blockDirection = isBlockDirection(this.tabListPosition);
 
-    const getItemSize = isBlockDirection(direction)
+    const getItemSize = blockDirection
       ? (item: HTMLElement) => item.getBoundingClientRect().width
       : (item: HTMLElement) => item.getBoundingClientRect().height;
     this.#itemSizes = [...this.#tabListRef.children].map(getItemSize);
@@ -591,7 +557,7 @@ export class ChTabRender implements DraggableView {
     const tabListSizes = getTabListSizesAndSetPosition(
       this.el,
       this.#tabListRef,
-      direction,
+      blockDirection,
       buttonRect
     );
 
@@ -619,7 +585,7 @@ export class ChTabRender implements DraggableView {
     }
 
     // Store initial mouse position
-    this.#initialMousePosition = isBlockDirection(direction)
+    this.#initialMousePosition = blockDirection
       ? mousePositionX
       : mousePositionY;
 
@@ -632,7 +598,7 @@ export class ChTabRender implements DraggableView {
 
     setButtonSize(
       this.el,
-      isBlockDirection(direction) ? buttonRect.width : buttonRect.height
+      blockDirection ? buttonRect.width : buttonRect.height
     );
 
     // Update mouse offset to correctly place the dragged element preview
@@ -771,7 +737,7 @@ export class ChTabRender implements DraggableView {
 
       // In this point, the preview is inside the tab list, we should check
       // in which place is the preview to give feedback for the item's reorder
-      const mousePosition = isBlockDirection(this.direction)
+      const mousePosition = isBlockDirection(this.tabListPosition)
         ? mousePositionX
         : mousePositionY;
 
@@ -881,6 +847,14 @@ export class ChTabRender implements DraggableView {
   };
 
   #emitCloseEvent = (itemId: string, event: PointerEvent) => {
+    // Assume that the itemId always maps to an item
+    const itemUIModel = this.model.find(({ id }) => id === itemId)!;
+    const hasCloseButton = itemUIModel.closeButton ?? this.closeButton;
+
+    if (!hasCloseButton) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 
@@ -899,10 +873,14 @@ export class ChTabRender implements DraggableView {
     }
 
     const currentFocusedCaption = focusComposedPath()[0].closest(
-      "." + this.#classes.BUTTON
+      "." + TAB_BUTTON_CLASS
     ) as HTMLButtonElement;
 
-    keyEventHandler(this.direction, event, currentFocusedCaption);
+    keyEventHandler(
+      isBlockDirection(this.tabListPosition),
+      event,
+      currentFocusedCaption
+    );
   };
 
   #getEnabledItems = (): number => {
@@ -930,15 +908,17 @@ export class ChTabRender implements DraggableView {
     item.startImgSrc && (
       <img
         aria-hidden="true"
-        class={"caption-image " + this.#classes.IMAGE}
-        part={this.#parts.IMAGE}
+        class="caption-image img"
+        part={TAB_PARTS_DICTIONARY.IMAGE}
         alt=""
         src={item.startImgSrc}
         loading="lazy"
       />
     );
 
-  #renderTabBar = (thereAreShiftedElements: boolean) => {
+  #renderTabList = (thereAreShiftedElements: boolean) => {
+    const blockDirection = isBlockDirection(this.tabListPosition);
+    const startDirection = isStartDirection(this.tabListPosition);
     const enabledItems = this.#getEnabledItems();
     const atLeastOneItemsIsEnabled = enabledItems >= 1;
 
@@ -946,13 +926,21 @@ export class ChTabRender implements DraggableView {
       <div
         role="tablist"
         aria-label={this.accessibleName}
-        class={this.#classes.TAB_LIST}
-        part={this.#parts.TAB_LIST}
-        onAuxClick={
-          this.closeButton && atLeastOneItemsIsEnabled
-            ? this.#handleClose
-            : undefined
-        }
+        class={{
+          "tab-list": true,
+          "tab-list--block": blockDirection,
+          "tab-list--inline": !blockDirection
+        }}
+        part={tokenMap({
+          [TAB_PARTS_DICTIONARY.LIST]: true,
+          [this.tabListPosition]: true,
+          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+          [TAB_PARTS_DICTIONARY.START]: startDirection,
+          [TAB_PARTS_DICTIONARY.END]: !startDirection
+        })}
+        // TODO: Don't add this handler if there is no items with closeButton
+        onAuxClick={atLeastOneItemsIsEnabled ? this.#handleClose : undefined}
         onClick={
           atLeastOneItemsIsEnabled ? this.#handleSelectedItemChange : undefined
         }
@@ -968,15 +956,20 @@ export class ChTabRender implements DraggableView {
             ? this.#handleTabFocus
             : undefined
         }
+        // TODO: Don't add this handler if there is no items with closeButton
         onMouseDown={
-          this.closeButton && atLeastOneItemsIsEnabled
-            ? this.#preventMouseDownOnScroll
-            : undefined
+          atLeastOneItemsIsEnabled ? this.#preventMouseDownOnScroll : undefined
         }
         ref={el => (this.#tabListRef = el)}
       >
         {this.model.map((item, index) =>
-          this.#renderTabButton(item, index, thereAreShiftedElements)
+          this.#renderTabButton(
+            item,
+            index,
+            thereAreShiftedElements,
+            blockDirection,
+            startDirection
+          )
         )}
       </div>
     );
@@ -985,9 +978,13 @@ export class ChTabRender implements DraggableView {
   #renderTabButton = (
     item: TabItemModel,
     index: number,
-    thereAreShiftedElements: boolean
+    thereAreShiftedElements: boolean,
+    blockDirection: boolean,
+    startDirection: boolean
   ) => {
+    const closeButton = item.closeButton ?? this.closeButton;
     const isDisabled = item.disabled ?? this.disabled;
+    const selected = item.id === this.selectedId;
     this.#itemIdToIndex.set(item.id, index);
 
     return (
@@ -995,12 +992,16 @@ export class ChTabRender implements DraggableView {
         key={item.id}
         id={item.id}
         role="tab"
-        aria-controls={PAGE_ID(item.id)}
-        aria-label={!this.showCaptions ? item.name : null}
-        aria-selected={(item.id === this.selectedId).toString()}
+        aria-controls={PANEL_ID(item.id)}
+        aria-label={
+          item.accessibleName ?? (!this.showCaptions ? item.name : null)
+        }
+        aria-selected={selected.toString()}
         class={{
-          [this.#classes.BUTTON]: true,
+          [TAB_BUTTON_CLASS]: true,
           "no-captions": !this.showCaptions,
+
+          sortable: this.sortable,
 
           "decorative-image": isPseudoElementImg(
             item.startImgSrc,
@@ -1022,15 +1023,21 @@ export class ChTabRender implements DraggableView {
           "shifted-element--end":
             thereAreShiftedElements &&
             this.draggedElementNewIndex <= index &&
-            index < this.draggedElementIndex,
-
-          sortable: this.sortable
+            index < this.draggedElementIndex
         }}
         part={tokenMap({
-          [this.#parts.BUTTON]: true,
           [item.id]: true,
-          [SELECTED_PART]: item.id === this.selectedId,
-          disabled: isDisabled
+          [TAB_PARTS_DICTIONARY.TAB]: true,
+          [this.tabListPosition]: true,
+          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+          [TAB_PARTS_DICTIONARY.START]: startDirection,
+          [TAB_PARTS_DICTIONARY.END]: !startDirection,
+          [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
+          [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
+          [TAB_PARTS_DICTIONARY.SELECTED]: selected,
+          [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected,
+          [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
         })}
         disabled={isDisabled}
         style={
@@ -1046,11 +1053,21 @@ export class ChTabRender implements DraggableView {
 
         {this.showCaptions && item.name}
 
-        {this.closeButton && (
+        {closeButton && (
           <button
             aria-label={this.closeButtonAccessibleName}
             class={CLOSE_BUTTON_CLASS}
-            part={CLOSE_BUTTON_PART}
+            part={tokenMap({
+              [TAB_PARTS_DICTIONARY.CLOSE_BUTTON]: true,
+              [this.tabListPosition]: true,
+              [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+              [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+              [TAB_PARTS_DICTIONARY.START]: startDirection,
+              [TAB_PARTS_DICTIONARY.END]: !startDirection,
+              [TAB_PARTS_DICTIONARY.SELECTED]: selected,
+              [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected,
+              [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
+            })}
             disabled={isDisabled}
             type="button"
           ></button>
@@ -1059,23 +1076,35 @@ export class ChTabRender implements DraggableView {
     );
   };
 
-  #renderTabPages = () => (
+  #renderTabPages = (blockDirection: boolean, startDirection: boolean) => (
     <div
       class={{
-        [this.#classes.PAGE_CONTAINER]: true,
-        "page-container": true,
-        "page-container--collapsed": !this.expanded
+        "panel-container": true,
+        "panel-container--collapsed": !this.expanded
       }}
-      part={this.#parts.PAGE_CONTAINER}
+      part={tokenMap({
+        [TAB_PARTS_DICTIONARY.PANEL_CONTAINER]: true,
+        [this.tabListPosition]: true,
+        [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+        [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+        [TAB_PARTS_DICTIONARY.START]: startDirection,
+        [TAB_PARTS_DICTIONARY.END]: !startDirection
+      })}
       ref={el => (this.#tabPageRef = el)}
     >
-      {[...this.#renderedPages.values()].map(this.#renderTabPage)}
+      {[...this.#renderedPages.values()].map(this.#renderTabPanel)}
     </div>
   );
 
-  #renderTabPage = (item: TabItemModel) => {
+  #renderTabPanel = (item: TabItemModel) => {
+    // TODO: Avoid this check as much as possible
+    const blockDirection = isBlockDirection(this.tabListPosition);
+    const startDirection = isStartDirection(this.tabListPosition);
+
     const contain = item.contain ?? this.contain;
+    const isDisabled = item.disabled ?? this.disabled;
     const overflow = item.overflow ?? this.overflow;
+    const selected = item.id === this.selectedId;
 
     const hasContain = contain !== "none";
     const hasOverflow =
@@ -1083,14 +1112,14 @@ export class ChTabRender implements DraggableView {
 
     return (
       <div
-        key={PAGE_ID(item.id)}
-        id={PAGE_ID(item.id)}
+        key={PANEL_ID(item.id)}
+        id={PANEL_ID(item.id)}
         role={!this.tabButtonHidden ? "tabpanel" : undefined}
         aria-labelledby={!this.tabButtonHidden ? item.id : undefined}
         class={{
-          [this.#classes.PAGE]: true,
-          "page--selected": item.id === this.selectedId,
-          "page--hidden": !(item.id === this.selectedId)
+          panel: true,
+          "panel--selected": item.id === this.selectedId,
+          "panel--hidden": !(item.id === this.selectedId)
         }}
         style={
           hasContain || hasOverflow
@@ -1100,7 +1129,18 @@ export class ChTabRender implements DraggableView {
               }
             : undefined
         }
-        part={this.#parts.PAGE}
+        part={tokenMap({
+          [item.id]: true,
+          [TAB_PARTS_DICTIONARY.PANEL]: true,
+          [this.tabListPosition]: true,
+          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+          [TAB_PARTS_DICTIONARY.START]: startDirection,
+          [TAB_PARTS_DICTIONARY.END]: !startDirection,
+          [TAB_PARTS_DICTIONARY.SELECTED]: selected,
+          [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected,
+          [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
+        })}
       >
         <slot name={item.id} />
       </div>
@@ -1108,69 +1148,72 @@ export class ChTabRender implements DraggableView {
   };
 
   #renderDragPreview = (draggedElement: TabItemModel) => {
-    const classes = {
-      [DRAG_PREVIEW]: true,
-      [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
-
-      [DRAG_PREVIEW_INSIDE_INLINE]:
-        !this.hasCrossedBoundaries && !isBlockDirection(this.direction),
-
-      [DRAG_PREVIEW_INSIDE_BLOCK]:
-        !this.hasCrossedBoundaries && isBlockDirection(this.direction)
-    };
+    const blockDirection = isBlockDirection(this.tabListPosition);
+    const startDirection = isStartDirection(this.tabListPosition);
+    const selected = draggedElement.id === this.selectedId;
 
     const decorativeImage = isPseudoElementImg(
       draggedElement.startImgSrc,
       draggedElement.startImgType
     );
 
+    const closeButton = draggedElement.closeButton ?? this.closeButton;
+
     return (
-      <div
-        aria-hidden="true"
-        class={classes}
-        part={tokenMap(classes)}
+      <button
+        // TODO: Check if this is necessary
+        // aria-hidden="true"
+        class={{
+          [TAB_BUTTON_CLASS]: true,
+          [DRAG_PREVIEW]: true,
+          "no-captions": !this.showCaptions,
+          "decorative-image": decorativeImage,
+
+          [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
+          [DRAG_PREVIEW_INSIDE_INLINE]:
+            !this.hasCrossedBoundaries && !blockDirection,
+          [DRAG_PREVIEW_INSIDE_BLOCK]:
+            !this.hasCrossedBoundaries && blockDirection
+        }}
+        part={tokenMap({
+          [draggedElement.id]: true,
+          [TAB_PARTS_DICTIONARY.TAB]: true,
+          [TAB_PARTS_DICTIONARY.DRAGGING]: true,
+          [this.tabListPosition]: true,
+          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+          [TAB_PARTS_DICTIONARY.START]: startDirection,
+          [TAB_PARTS_DICTIONARY.END]: !startDirection,
+          [TAB_PARTS_DICTIONARY.DRAGGING_OUT_OF_TAB_LIST]:
+            this.hasCrossedBoundaries,
+          [TAB_PARTS_DICTIONARY.DRAGGING_OVER_TAB_LIST]:
+            !this.hasCrossedBoundaries,
+          [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
+          [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
+          [TAB_PARTS_DICTIONARY.SELECTED]: selected,
+          [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected
+        })}
+        style={
+          decorativeImage
+            ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImgSrc}")` }
+            : null
+        }
         ref={el => (this.#dragPreviewRef = el)}
       >
-        <button
-          class={{
-            [this.#classes.BUTTON]: true,
-            [DRAG_PREVIEW_ELEMENT]: true,
-            "decorative-image": decorativeImage
-          }}
-          part={tokenMap({
-            [this.#parts.BUTTON]: true,
-            [draggedElement.id]: true,
-            [DRAG_PREVIEW_ELEMENT]: true,
-            [SELECTED_PART]: draggedElement.id === this.selectedId
-          })}
-          style={
-            decorativeImage
-              ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImgSrc}")` }
-              : null
-          }
-        >
-          {this.#imgRender(draggedElement)}
+        {this.#imgRender(draggedElement)}
 
-          {this.showCaptions && draggedElement.name}
-        </button>
-      </div>
+        {this.showCaptions && draggedElement.name}
+      </button>
     );
   };
 
-  #initializeState = (direction: TabDirection) => {
+  #initializeState = () => {
     this.#updateRenderedPages(this.model);
-
-    // Initialize classes and parts
-    this.#setClassesAndParts(direction);
   };
 
-  #setClassesAndParts = (direction: TabDirection) => {
-    this.#classes = LIST_CLASSES;
-    this.#parts = direction === "block" ? LIST_PART_BLOCK : LIST_PART_INLINE;
-  };
-
+  // TODO: Use connectedCallback
   componentWillLoad() {
-    this.#initializeState(this.direction);
+    this.#initializeState();
   }
 
   render() {
@@ -1188,14 +1231,15 @@ export class ChTabRender implements DraggableView {
     return (
       <Host
         class={
-          !this.tabButtonHidden
-            ? `ch-tab-direction--${this.direction}`
-            : undefined
+          !this.tabButtonHidden ? `ch-tab--${this.tabListPosition}` : undefined
         }
       >
         {!this.tabButtonHidden &&
-          this.#renderTabBar(thereAreShiftedElementsInPreview)}
-        {this.#renderTabPages()}
+          this.#renderTabList(thereAreShiftedElementsInPreview)}
+        {this.#renderTabPages(
+          isBlockDirection(this.tabListPosition),
+          isStartDirection(this.tabListPosition)
+        )}
 
         {draggedIndex !== -1 && this.#renderDragPreview(draggedElement)}
       </Host>

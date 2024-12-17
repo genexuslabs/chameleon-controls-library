@@ -32,7 +32,8 @@ import {
   ItemLink,
   NavigationListItemModel,
   NavigationListModel,
-  RadioGroupModel
+  RadioGroupModel,
+  ThemeModel
 } from "../../../components";
 import {
   defineControlMarkupWithUIModelReact,
@@ -41,16 +42,14 @@ import {
   defineControlMarkupWithoutUIModelStencil
 } from "./utils";
 import { registryProperty } from "../../../common/registry-properties";
-import { getImagePathCallbackImage } from "./image/models";
+import { getActionListPathCallback } from "./action-list/models";
+import { getAccordionPathCallback } from "./accordion/models";
+import { getComboBoxImagePathCallback } from "./combo-box/models";
 import { getImagePathCallbackEdit } from "./edit/models";
+import { getImagePathCallbackImage } from "./image/models";
 import { getImagePathCallbackTreeView } from "./tree-view/models";
-import { getAccordionPathCallbackEdit } from "./accordion/models";
 
-import {
-  getDesignSystem,
-  setDesignSystemInBrowser,
-  storeDesignSystem
-} from "../../models/ds-manager.js";
+import { getDesignSystem, storeDesignSystem } from "../../models/ds-manager.js";
 import {
   getTheme,
   setThemeInBrowser,
@@ -77,9 +76,52 @@ import {
 } from "./renders";
 import { findComponentMetadataUsingURLHash } from "./pages";
 
+const SHOWCASE_STYLES: ThemeModel = [
+  {
+    name: "showcase-styles",
+    url: "showcase/showcase-flexible-layout.css"
+  }
+];
+
+const UNANIMO_THEME: ThemeModel = [
+  {
+    name: "unanimo",
+    url: "https://unpkg.com/@genexus/unanimo@latest/dist/bundles/css/all.css"
+  },
+  {
+    name: "unanimo-extra",
+    url: "showcase/unanimo-extra-styles.css"
+  }
+];
+const UNANIMO_BASE_THEME: ThemeModel = [
+  {
+    name: "unanimo/base",
+    url: "https://unpkg.com/@genexus/unanimo@latest/dist/bundles/css/base/base.css"
+  }
+];
+
+const MERCURY_THEME: ThemeModel = [
+  {
+    name: "mercury",
+    url: "https://unpkg.com/@genexus/mercury@latest/dist/bundles/css/all.css"
+  },
+  {
+    name: "mercury-extra",
+    url: "showcase/mercury-extra-styles.css"
+  }
+];
+const MERCURY_BASE_THEME: ThemeModel = [
+  {
+    name: "mercury/base",
+    url: "https://unpkg.com/@genexus/mercury@latest/dist/bundles/css/base/base.css"
+  }
+];
+
 registryProperty("getImagePathCallback", {
-  "ch-accordion-render": getAccordionPathCallbackEdit,
+  "ch-action-list-render": getActionListPathCallback,
+  "ch-accordion-render": getAccordionPathCallback,
   "ch-checkbox": getImagePathCallbackEdit,
+  "ch-combo-box-render": getComboBoxImagePathCallback,
   "ch-edit": getImagePathCallbackEdit,
   "ch-image": getImagePathCallbackImage,
   "ch-tree-view-render": getImagePathCallbackTreeView
@@ -343,6 +385,15 @@ export class ChShowcase {
   #flexibleLayoutRender: FlexibleLayoutRenders = {
     [HEADER_WIDGET]: () => (
       <header key={HEADER_WIDGET} slot={HEADER_WIDGET} class="header">
+        <ch-theme
+          attachStyleSheets={this.designSystem === "unanimo"}
+          model={UNANIMO_THEME}
+        ></ch-theme>
+        <ch-theme
+          attachStyleSheets={this.designSystem === "mercury"}
+          model={MERCURY_THEME}
+        ></ch-theme>
+
         <div class="header-start">
           <a
             id="chameleon-home"
@@ -390,7 +441,7 @@ export class ChShowcase {
       <aside key={ASIDE_WIDGET} slot={ASIDE_WIDGET} class="ch-showcase__aside">
         <ch-edit
           accessibleName="Search"
-          class="form-input form-input-search sidebar__search-input"
+          class="input input-search sidebar__search-input"
           placeholder="Search"
           type="search"
         ></ch-edit>
@@ -422,6 +473,15 @@ export class ChShowcase {
   #flexibleLayoutPlaygroundRenders: FlexibleLayoutRenders = {
     [MAIN_WIDGET]: () => (
       <div key={MAIN_WIDGET} slot={MAIN_WIDGET} class="card">
+        <ch-theme
+          attachStyleSheets={this.designSystem === "unanimo"}
+          model={UNANIMO_THEME}
+        ></ch-theme>
+        <ch-theme
+          attachStyleSheets={this.designSystem === "mercury"}
+          model={MERCURY_THEME}
+        ></ch-theme>
+
         {this.#showcaseStory.render(this.designSystem)}
       </div>
     ),
@@ -792,7 +852,7 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
@@ -821,14 +881,14 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <input
           id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
-          class="form-input"
+          class="input"
           type="text"
           value={property.value?.toString()}
           onInput={this.#showcaseStoryInput.get(propertyGroupId)}
@@ -850,14 +910,14 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <input
           id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
-          class="form-input"
+          class="input"
           type="number"
           value={property.value?.toString()}
           onInput={this.#showcaseStoryInputNumber.get(propertyGroupId)}
@@ -886,7 +946,7 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
@@ -915,14 +975,14 @@ export class ChShowcase {
 
       return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={propertyGroupId}>
+          <label class="label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <textarea
           id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
-          class="form-input"
+          class="input"
           value={property.value.toString()}
           onInput={this.#showcaseStoryInput.get(propertyGroupId)}
         ></textarea>
@@ -940,7 +1000,6 @@ export class ChShowcase {
   #handleDesignSystemChange = () => {
     const newDS = getDesignSystem() === "unanimo" ? "mercury" : "unanimo";
     storeDesignSystem(newDS);
-    setDesignSystemInBrowser(newDS);
 
     this.designSystem = newDS;
   };
@@ -980,9 +1039,10 @@ export class ChShowcase {
           </h1>
 
           <ch-flexible-layout-render
-            class="ch-showcase__flexible-layout-playground"
+            class="flexible-layout ch-showcase__flexible-layout-playground"
             model={flexibleLayoutPlaygroundConfiguration}
             renders={this.#flexibleLayoutPlaygroundRenders}
+            theme={SHOWCASE_STYLES}
             ref={el => (this.#playgroundRef = el)}
           ></ch-flexible-layout-render>
         </div>
@@ -1076,11 +1136,22 @@ export class ChShowcase {
     return (
       <Host>
         <ch-flexible-layout-render
+          class="flexible-layout"
           // TODO: Fix error when adding the closeButton and closing the last item
           model={flexibleLayoutConfiguration}
           renders={this.#flexibleLayoutRender}
+          theme={SHOWCASE_STYLES}
           ref={el => (this.#flexibleLayoutRef = el)}
         ></ch-flexible-layout-render>
+
+        <ch-theme
+          attachStyleSheets={this.designSystem === "unanimo"}
+          model={UNANIMO_BASE_THEME}
+        ></ch-theme>
+        <ch-theme
+          attachStyleSheets={this.designSystem === "mercury"}
+          model={MERCURY_BASE_THEME}
+        ></ch-theme>
       </Host>
     );
   }

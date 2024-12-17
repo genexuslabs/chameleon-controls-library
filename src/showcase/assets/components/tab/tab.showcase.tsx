@@ -1,4 +1,4 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -11,10 +11,14 @@ import {
   disabledModel2,
   disabledModel3,
   simpleModel1,
-  simpleModel2
+  simpleModel2,
+  closeButtonModel
 } from "./models";
 import { ChTabRenderCustomEvent } from "../../../../components";
-import { TabSelectedItemInfo } from "../../../../components/tab/types";
+import {
+  TabItemCloseInfo,
+  TabSelectedItemInfo
+} from "../../../../components/tab/types";
 import {
   kbExplorerModel,
   lazyLoadTreeItemsCallback,
@@ -23,7 +27,8 @@ import {
 import {
   insertSpacesAtTheBeginningExceptForTheFirstLine,
   renderShowcaseProperties,
-  showcaseTemplateClassProperty
+  showcaseTemplateClassProperty,
+  updateShowcase
 } from "../utils";
 
 const state: Partial<HTMLChTabRenderElement> = {};
@@ -38,11 +43,11 @@ const selectedItemChangeHandler = (
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = event.target.closest("ch-showcase");
+  updateShowcase();
+};
 
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+const handleItemClose = (event: CustomEvent<TabItemCloseInfo>) => {
+  console.log(event.detail);
 };
 
 const render = () => (
@@ -55,7 +60,7 @@ const render = () => (
         accessibleName={state.accessibleName}
         closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        direction={state.direction}
+        tabListPosition={state.tabListPosition}
         disabled={state.disabled}
         dragOutside={state.dragOutside}
         expanded={state.expanded}
@@ -63,6 +68,7 @@ const render = () => (
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
         sortable={state.sortable}
+        onItemClose={handleItemClose}
         onSelectedItemChange={selectedItemChangeHandler}
       >
         {renderedItems.has("item1") && (
@@ -103,7 +109,7 @@ const render = () => (
         accessibleName={state.accessibleName}
         closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        direction={state.direction}
+        tabListPosition={state.tabListPosition}
         disabled={state.disabled}
         dragOutside={state.dragOutside}
         expanded={state.expanded}
@@ -111,6 +117,7 @@ const render = () => (
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
         sortable={state.sortable}
+        onItemClose={handleItemClose}
         onSelectedItemChange={selectedItemChangeHandler}
       >
         {renderedItems.has("item1") && (
@@ -157,6 +164,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
           values: [
             { caption: "Simple Model 1", value: simpleModel1 },
             { caption: "Simple Model 2", value: simpleModel2 },
+            { caption: "Close Button Model", value: closeButtonModel },
             { caption: "Disabled Model 1", value: disabledModel1 },
             { caption: "Disabled Model 2", value: disabledModel2 },
             { caption: "Disabled Model 3", value: disabledModel3 },
@@ -176,12 +184,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
       caption: "Properties",
       properties: [
         {
-          id: "direction",
-          caption: "Direction",
-          value: "block",
+          id: "tabListPosition",
+          caption: "Tab List Position",
+          value: "block-start",
           values: [
-            { caption: "Block", value: "block" },
-            { caption: "Inline", value: "inline" }
+            { caption: "Block Start", value: "block-start" },
+            { caption: "Block End", value: "block-end" },
+            { caption: "Inline Start", value: "inline-start" },
+            { caption: "Inline End", value: "inline-end" }
           ],
           render: "radio-group",
           type: "enum"
@@ -342,10 +352,7 @@ const lightDOMMarkup = (
     Content of the item 1
     <label>
       Any text
-      <input ${showcaseTemplateClassProperty(
-        framework,
-        "form-input"
-      )} type="text" />
+      <input ${showcaseTemplateClassProperty(framework, "input")} type="text" />
     </label>
   </div>
 )}

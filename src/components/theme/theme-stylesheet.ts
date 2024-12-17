@@ -1,4 +1,9 @@
-import { Theme, ThemeItemModel } from "./theme-types";
+import {
+  Theme,
+  ThemeItemModel,
+  ThemeItemModelStyleSheet,
+  ThemeItemModelUrl
+} from "./theme-types";
 
 const THEMES = new Map<string, Promise<Theme>>();
 const PROMISE_RESOLVER = new Map<string, ThemePromiseResolver>();
@@ -14,25 +19,46 @@ type ThemePromiseResolver = {
   isLoading: boolean;
 };
 
+const createStyleSheetFromString = (
+  baseUrl: string | undefined,
+  cssText: string
+) => new CSSStyleSheet().replace(applyBaseUrl(baseUrl, cssText));
+
 export async function getTheme(
   themeModel: ThemeItemModel,
   timeout: number
 ): Promise<Theme> {
   const promise =
     THEMES.get(themeModel.name) ??
-    THEMES.set(
-      themeModel.name,
-      createThemePromise(themeModel.name, timeout)
-    ).get(themeModel.name);
+    THEMES.set(themeModel.name, createThemePromise(themeModel, timeout)).get(
+      themeModel.name
+    );
 
-  if (themeModel.url) {
+  if ((themeModel as ThemeItemModelUrl).url) {
     instanceTheme(themeModel);
   }
 
   return promise;
 }
 
-function createThemePromise(name: string, timeout: number): Promise<Theme> {
+async function createThemePromise(
+  themeModel: ThemeItemModel,
+  timeout: number
+): Promise<Theme> {
+  // If it has an inlined styleSheet, directly resolve the promise
+  if ((themeModel as ThemeItemModelStyleSheet).styleSheet) {
+    return Promise.resolve({
+      name: themeModel.name,
+      styleSheet: await createStyleSheetFromString(
+        themeModel.themeBaseUrl,
+        (themeModel as ThemeItemModelStyleSheet).styleSheet
+      )
+    });
+  }
+  return createThemePromiseUrl(themeModel.name, timeout);
+}
+
+function createThemePromiseUrl(name: string, timeout: number): Promise<Theme> {
   return new Promise<Theme>((resolve, reject) => {
     PROMISE_RESOLVER.set(name, {
       name,
@@ -66,7 +92,7 @@ function disposeResolver(resolver: ThemePromiseResolver) {
   PROMISE_RESOLVER.delete(resolver.name);
 }
 
-async function instanceTheme(themeModel: ThemeItemModel) {
+async function instanceTheme(themeModel: ThemeItemModelUrl) {
   const resolver = PROMISE_RESOLVER.get(themeModel.name);
 
   if (resolver && !resolver.isLoading) {
@@ -89,9 +115,7 @@ async function loadThemeStyleSheet(
   baseUrl: string
 ): Promise<CSSStyleSheet> {
   try {
-    return new CSSStyleSheet().replace(
-      applyBaseUrl(baseUrl, await requestStyleSheet(url))
-    );
+    return createStyleSheetFromString(baseUrl, await requestStyleSheet(url));
   } catch (error) {
     throw new Error(`Failed to load theme stylesheet: ${error}`);
   }
@@ -110,7 +134,14 @@ async function requestStyleSheet(url: string): Promise<string> {
   }
 }
 
-function applyBaseUrl(baseUrl: string, cssText: string): string {
+/**
+ * @example
+ * const baseUrl = "https://example.com/"
+ * const cssText = "background-image: url(images/background.png);"
+ *
+ * result: "background-image: url(https://example.com/images/background.png);"
+ */
+function applyBaseUrl(baseUrl: string | undefined, cssText: string): string {
   if (baseUrl) {
     return cssText.replace(BASEURL_REGEX, `$1${baseUrl}$2`);
   }

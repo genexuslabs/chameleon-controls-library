@@ -4,14 +4,12 @@ import {
   lazyLoadTreeItemsCallback
 } from "../../../showcase/assets/components/tree-view/models";
 import { delayTest } from "../../../testing/utils.e2e";
-
-const ITEM_EXPORT_PARTS =
-  "item__action,item__checkbox,item__checkbox-container,item__checkbox-input,item__checkbox-option,item__downloading,item__edit-caption,item__expandable-button,item__group,item__header,item__img,item__line,disabled,expanded,collapsed,expand-button,even-level,odd-level,last-line,lazy-loaded,start-img,end-img,editing,not-editing,selected,not-selected,checked,unchecked,indeterminate,drag-enter";
+import { ITEM_EXPORT_PARTS } from "./utils.e2e";
 
 const TREE_VIEW_NODE = (children: string) =>
   `<ch-tree-view class="not-dragging-item hydrated" exportparts="drag-preview">${children}</ch-tree-view>`;
 
-describe('[ch-tree-view-render][filters][filter-type="list"]', () => {
+describe('[ch-tree-view-render][filters][filterType="list"]', () => {
   let page: E2EPage;
   let treeViewRef: E2EElement;
 

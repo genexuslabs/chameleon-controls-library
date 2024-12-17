@@ -1,7 +1,7 @@
 import { ImageRender } from "./types";
 
 const joinParts = (parts: { [key in string]: string }) =>
-  [...Object.values(parts)].join(",");
+  Object.values(parts).join(",");
 
 /**
  * Useful key codes that must be used in KeyboardEvent.code
@@ -283,6 +283,33 @@ export const DROPDOWN_PARTS_DICTIONARY = {
 export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
+//          Flexible Layout Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const FLEXIBLE_LAYOUT_PARTS_DICTIONARY = {
+  DROPPABLE_AREA: "droppable-area",
+  LEAF: "leaf"
+
+  // - - - - - - - - States - - - - - - - -
+} as const;
+
+export const FLEXIBLE_LAYOUT_EXPORT_PARTS = joinParts(
+  FLEXIBLE_LAYOUT_PARTS_DICTIONARY
+);
+
+// - - - - - - - - - - - - - - - - - - - -
+//          Layout Splitter Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const LAYOUT_SPLITTER_PARTS_DICTIONARY = {
+  BAR: "bar"
+
+  // - - - - - - - - States - - - - - - - -
+} as const;
+
+export const LAYOUT_SPLITTER_EXPORT_PARTS = joinParts(
+  LAYOUT_SPLITTER_PARTS_DICTIONARY
+);
+
+// - - - - - - - - - - - - - - - - - - - -
 //          Navigation List Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
@@ -372,7 +399,38 @@ export const SWITCH_PARTS_DICTIONARY = {
 export const SWITCH_EXPORT_PARTS = joinParts(SWITCH_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
-//             Tabular Grid view Parts
+//                Tab Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const TAB_PARTS_DICTIONARY = {
+  TAB: "tab",
+  CLOSE_BUTTON: "close-button",
+  LIST: "tab-list",
+  PANEL: "tab-panel",
+  PANEL_CONTAINER: "tab-panel-container",
+  IMAGE: "img",
+
+  // - - - - - - - - States - - - - - - - -
+  CLOSABLE: "closable", // TAB
+  NOT_CLOSABLE: "not-closable", // TAB
+  DISABLED: "disabled", // TAB, PANEL, CLOSE_BUTTON
+  DRAGGING: "dragging", // TAB, CLOSE_BUTTON, LIST
+  DRAGGING_OVER_TAB_LIST: "dragging-over-tab-list", // TAB, CLOSE_BUTTON, LIST
+  DRAGGING_OUT_OF_TAB_LIST: "dragging-out-of-tab-list", // TAB, CLOSE_BUTTON, LIST
+  EXPANDED: "expanded", // PANEL_CONTAINER
+  COLLAPSED: "collapsed", // PANEL_CONTAINER
+  SELECTED: "selected", // TAB, PANEL, CLOSE_BUTTON
+  NOT_SELECTED: "not-selected", // TAB, PANEL, CLOSE_BUTTON
+
+  BLOCK: "block", // TAB,  CLOSE_BUTTON, TAB_LIST, PANEL, PANEL_CONTAINER
+  INLINE: "inline", // TAB,  CLOSE_BUTTON, TAB_LIST, PANEL, PANEL_CONTAINER
+  START: "start", // TAB,  CLOSE_BUTTON, TAB_LIST, PANEL, PANEL_CONTAINER
+  END: "end" // TAB,  CLOSE_BUTTON, TAB_LIST, PANEL, PANEL_CONTAINER
+} as const;
+
+export const TAB_EXPORT_PARTS = joinParts(TAB_PARTS_DICTIONARY);
+
+// - - - - - - - - - - - - - - - - - - - -
+//         Tabular Grid view Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const TABULAR_GRID_PARTS_DICTIONARY = {
   COLUMNSET: "columnset",
@@ -420,6 +478,7 @@ export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
 
   EDITING: "editing", // HEADER, ACTION
   NOT_EDITING: "not-editing", // HEADER, ACTION
+  LEVEL_0_LEAF: "level-0-leaf", // HEADER
 
   SELECTED: "selected", // HEADER
   NOT_SELECTED: "not-selected", // HEADER

@@ -22,6 +22,7 @@ const render = () => (
     }
     checkbox={state.checkbox}
     checked={state.checked}
+    disabled={state.disabled}
     selection={state.selection}
     editableItems={state.editableItems}
     modifyItemCaptionCallback={modifyItemCaptionCallback}
@@ -49,7 +50,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionListRenderE
             { caption: "Keyboard Navigation", value: keyboardNavigation },
             { caption: "Ticket List", value: ticketList }
           ],
-          value: GxEAIRecentChats
+          value: GitHubChangesModel
         }
       ]
     },
@@ -59,6 +60,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionListRenderE
       properties: [
         { id: "checkbox", caption: "Checkbox", value: false, type: "boolean" },
         { id: "checked", caption: "Checked", value: false, type: "boolean" },
+        { id: "disabled", caption: "Disabled", value: false, type: "boolean" },
         {
           id: "editableItems",
           caption: "Editable Items",

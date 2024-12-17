@@ -1,10 +1,10 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
   ShowcaseTemplatePropertyInfo
 } from "../types";
-import { renderShowcaseProperties } from "../utils";
+import { renderShowcaseProperties, updateShowcase } from "../utils";
 
 const state: Partial<HTMLChCheckboxElement> = {};
 const formRefs: {
@@ -33,11 +33,7 @@ const handleValueInput =
     // TODO: Until we support external slots in the ch-flexible-layout-render,
     // this is a hack to update the render of the widget and thus re-render the
     // combo-box updating the displayed items
-    const showcaseRef = formRefs[formId].closest("ch-showcase");
-
-    if (showcaseRef) {
-      forceUpdate(showcaseRef);
-    }
+    updateShowcase();
   };
 
 const render = () => (
@@ -67,7 +63,7 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
       <form id="form-checkbox-2" ref={el => (formRefs["form-checkbox-2"] = el)}>
-        <label class="form-input__label" htmlFor="checkbox-2">
+        <label class="label" htmlFor="checkbox-2">
           Label for checkbox 2
         </label>
 
@@ -96,7 +92,7 @@ const render = () => (
         Component inside label
       </legend>
       <form id="form-checkbox-3" ref={el => (formRefs["form-checkbox-3"] = el)}>
-        <label class="form-input__label" htmlFor="checkbox-3">
+        <label class="label" htmlFor="checkbox-3">
           Label for checkbox 3
           <ch-checkbox
             id="checkbox-3"

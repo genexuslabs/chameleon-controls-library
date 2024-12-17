@@ -4,13 +4,21 @@ import {
   ImageRender
 } from "../../common/types";
 
-export type TabDirection = "block" | "inline";
+export type TabListPosition =
+  | "block-start"
+  | "inline-end"
+  | "block-end"
+  | "inline-start";
 
 export type TabModel = TabItemModel[];
 
 export type TabItemModel = {
   id: string;
-  name: string;
+
+  accessibleName?: string;
+
+  // TODO: Rename to caption???
+  name?: string;
 
   /**
    * Same as the contain CSS property. This property indicates that an item
@@ -24,6 +32,11 @@ export type TabItemModel = {
    * By default, this property takes to value of the ch-tab-render.
    */
   contain?: CssContainProperty;
+
+  /**
+   * `true` to display a close button for the tab.
+   */
+  closeButton?: boolean;
 
   disabled?: boolean;
 

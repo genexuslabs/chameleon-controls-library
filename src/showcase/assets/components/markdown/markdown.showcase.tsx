@@ -1,6 +1,7 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import { ShowcaseCustomStory, ShowcaseRender } from "../types";
 import { markdownReadmeModel } from "./models";
+import { updateShowcase } from "../utils";
 
 let initialMarkdown = markdownReadmeModel;
 let rawHTMLEnabled = "false";
@@ -16,11 +17,7 @@ const handleValueChange = () => {
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = textareaRef.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const handleCheckboxValueChange = () => {
@@ -30,11 +27,7 @@ const handleCheckboxValueChange = () => {
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = checkboxRawHTMLRef.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const render: ShowcaseRender = designSystem => (
@@ -59,7 +52,7 @@ const render: ShowcaseRender = designSystem => (
 
     <textarea
       aria-label="Markdown content"
-      class="form-input"
+      class="input"
       value={initialMarkdown}
       onInput={handleValueChange}
       ref={el => (textareaRef = el)}

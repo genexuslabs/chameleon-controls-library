@@ -1,45 +1,35 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
   ShowcaseTemplateFrameWork,
   ShowcaseTemplatePropertyInfo
 } from "../types";
-import { ChDialogCustomEvent } from "../../../../components";
 import {
   insertSpacesAtTheBeginningExceptForTheFirstLine,
   renderShowcaseProperties,
-  showcaseTemplateClassProperty
+  showcaseTemplateClassProperty,
+  updateShowcase
 } from "../utils";
 
 const state: Partial<HTMLChDialogElement> = {};
 
-const handleClose = (event: ChDialogCustomEvent<any>) => {
+const handleClose = () => {
   state.hidden = true;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = event.target.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
-const handleDialogOpen = (event: MouseEvent) => {
+const handleDialogOpen = () => {
   state.hidden = false;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = (event.target as HTMLButtonElement).closest(
-    "ch-showcase"
-  );
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const render = () => [
@@ -61,7 +51,7 @@ const render = () => [
     onDialogClosed={handleClose}
   >
     <label htmlFor="some-input">Any data</label>
-    <input id="some-input" class="form-input" type="text" />
+    <input id="some-input" class="input" type="text" />
 
     <button class="button-primary">button</button>
     <p>
@@ -229,7 +219,7 @@ const lightDOMMarkup = (
 ) => `<label htmlFor="some-input">Any data</label>
 <input id="some-input" ${showcaseTemplateClassProperty(
   framework,
-  "form-input"
+  "input"
 )} type="text" />
 
 <button ${showcaseTemplateClassProperty(

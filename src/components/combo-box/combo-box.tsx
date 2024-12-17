@@ -22,30 +22,42 @@ import {
   ComboBoxSuggestInfo,
   ComboBoxModel,
   ComboBoxSelectedIndex,
-  ComboBoxItemModelExtended
+  ComboBoxItemModelExtended,
+  ComboBoxItemImagesModel,
+  ComboBoxImagePathCallback
 } from "./types";
-import { isMobileDevice, tokenMap } from "../../common/utils";
+import { focusComposedPath } from "../common/helpers";
 import {
   COMBO_BOX_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
-import { ChPopoverCustomEvent } from "../../components";
+import { isMobileDevice, tokenMap } from "../../common/utils";
 import { ChPopoverAlign } from "../popover/types";
-import { focusComposedPath } from "../common/helpers";
+import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
 import { filterSubModel } from "./helpers";
 import {
   comboBoxActiveDescendantIsRendered,
   findComboBoxLargestValue,
   getComboBoxItemFromMouseEvent,
-  getComboBoxItemImageCustomVars,
   mapValuesToItemInfo,
   popoverWasClicked
 } from "./utils";
 import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
 import { customComboBoxItemRender, nativeItemRender } from "./renders";
+import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
+import { getControlRegisterProperty } from "../../common/registry-properties";
+import { GxImageMultiStateStart } from "../../common/types";
 
 const SELECTED_ITEM_SELECTOR = `button[part*='${COMBO_BOX_PARTS_DICTIONARY.SELECTED}']`;
 const mobileDevice = isMobileDevice();
+
+const DEFAULT_GET_IMAGE_PATH_CALLBACK = (
+  itemUIModel: ComboBoxItemModel,
+  iconDirection: "start" | "end"
+): GxImageMultiState => ({
+  base:
+    iconDirection === "start" ? itemUIModel.startImgSrc : itemUIModel.endImgSrc
+});
 
 // Keys
 type KeyDownNoFiltersEvents =
@@ -99,6 +111,7 @@ export class ChComboBoxRender
 
   #valueToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
   #captionToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
+  #itemImages: Map<string, ComboBoxItemImagesModel> | undefined;
 
   // Filters info
   #applyFilters = false;
@@ -275,7 +288,7 @@ export class ChComboBoxRender
   @Watch("expanded")
   handleExpandedChange(newExpandedValue: boolean) {
     if (newExpandedValue && !mobileDevice) {
-      // this.#focusSelectAfterNextRender = true;
+      this.#setComboBoxIcons();
 
       // Sync the active descendant when expanding the combo-box
       this.#syncActiveDescendant();
@@ -286,6 +299,10 @@ export class ChComboBoxRender
       if (this.suggest) {
         this.#scheduleFilterProcessing();
       }
+    }
+    // Free the memory, since the combo-box does not won't render any images
+    else {
+      this.#itemImages = undefined;
     }
   }
 
@@ -308,6 +325,12 @@ export class ChComboBoxRender
   @Prop() readonly disabled: boolean = false;
 
   /**
+   * This property specifies a callback that is executed when the path for an
+   * imgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: ComboBoxImagePathCallback;
+
+  /**
    * Specifies a set of parts to use in the Host element (`ch-combo-box-render`).
    */
   @Prop() readonly hostParts?: string;
@@ -324,6 +347,14 @@ export class ChComboBoxRender
       this.#valueToItemInfo,
       this.#captionToItemInfo
     );
+
+    // TODO: Add a unit test for this
+    // The model can change when the combo-box is expanded by having server
+    // filters. In this case, we need to re-compute the icons
+    if (this.expanded) {
+      this.#setComboBoxIcons();
+    }
+
     // this.#checkIfCurrentSelectedValueIsNoLongerValid();
 
     // This must be the last operation, since it needs to wait for the UI Model
@@ -426,11 +457,32 @@ export class ChComboBoxRender
    */
   @Event() input: EventEmitter<string>;
 
-  // TODO: Add change event
-  // @Event() change: EventEmitter<string>;
+  /**
+   * The `change` event is emitted when a change to the element's value is
+   * committed by the user.
+   *  - In normal mode (suggest = false), it is emitted after each input event.
+   *
+   *  - In suggest mode (suggest = true), it is emitted after the popover is closed
+   * and a new value is committed by the user.
+   *
+   * This event is NOT debounced by the `suggestDebounce` value.
+   */
+  @Event() change: EventEmitter<string>;
 
   #findLargestValue = (model: ComboBoxModel) => {
     this.#largestValue = findComboBoxLargestValue(model);
+  };
+
+  #getActualImagePathCallback = () =>
+    this.getImagePathCallback ??
+    getControlRegisterProperty("getImagePathCallback", "ch-combo-box-render") ??
+    DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
+  #setComboBoxIcons = () => {
+    this.#itemImages = getComboBoxImages(
+      this.model,
+      this.#getActualImagePathCallback()
+    );
   };
 
   #scheduleFilterProcessing = () => {
@@ -492,7 +544,8 @@ export class ChComboBoxRender
       this.input.emit(this.value);
 
       // Emit change event
-      // this.change.emit(this.value);
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
   };
 
@@ -517,6 +570,8 @@ export class ChComboBoxRender
     if (!this.suggestOptions?.strict) {
       // TODO: Should we update the #lastConfirmedValue?
 
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
       return;
     }
 
@@ -525,6 +580,9 @@ export class ChComboBoxRender
 
     if (inputValueMatches) {
       // TODO: Do we have to emit the change event?
+
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
     // Revert change because the input value does not match any item value
     else {
@@ -536,6 +594,9 @@ export class ChComboBoxRender
       // Emit filter change event to recover the previous state.
       // TODO: Should we debounce this event?
       this.input.emit(this.value);
+
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
   };
 
@@ -549,6 +610,8 @@ export class ChComboBoxRender
 
     // Emit event
     this.input.emit(this.value);
+
+    // TODO: Prevent change event in the native select
   };
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
@@ -606,10 +669,18 @@ export class ChComboBoxRender
         // TODO: Should we debounce this event?
         this.input.emit(this.value);
       }
+
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     } else {
       this.#checkAndEmitValueChangeWithNoFilter();
     }
   };
+
+  #emitChangeEvent = () =>
+    // TODO: Add a unit test for this
+    // TODO: Don't emit the event if the value didn't change
+    this.change.emit(this.value);
 
   #handleInputFilterChange = (event: InputEvent) => {
     event.stopPropagation();
@@ -684,6 +755,10 @@ export class ChComboBoxRender
   };
 
   #isModelAlreadyFiltered = () => this.suggestOptions.alreadyProcessed === true;
+  #shouldRenderActiveItemIcon = () =>
+    !this.suggest ||
+    !this.expanded ||
+    this.suggestOptions.renderActiveItemIconOnExpand;
 
   #setValueInForm = (value: string) => {
     // TODO: Add a unit test for this case
@@ -781,17 +856,23 @@ export class ChComboBoxRender
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
 
     const currentItemInInput: ComboBoxItemModel | undefined = filtersAreApplied
-      ? this.#valueToItemInfo.get(this.value)?.item
+      ? this.#getCurrentValueMapping()?.item
       : this.activeDescendant;
 
-    const hasStartImg = currentItemInInput && !!currentItemInInput.startImgSrc;
+    const computedImage =
+      currentItemInInput?.startImgSrc && this.#shouldRenderActiveItemIcon()
+        ? (computeComboBoxItemImage(
+            currentItemInInput,
+            "start",
+            this.#getActualImagePathCallback()
+          ) as GxImageMultiStateStart | undefined)
+        : undefined;
 
-    const customVars = getComboBoxItemImageCustomVars(
-      currentItemInInput,
-      hasStartImg,
-      hasStartImg,
-      false
-    );
+    const startImgClasses = computedImage
+      ? `img--start start-img-type--${
+          currentItemInInput.startImgType ?? "background"
+        } ${computedImage.classes}`
+      : undefined;
 
     // TODO: UNIT TESTS.
     // - Clicking the combo-box with JS should not open the popover
@@ -842,11 +923,12 @@ export class ChComboBoxRender
                 class={{
                   "input-container": true,
 
-                  [`start-img-type--${
-                    currentItemInInput?.startImgType ?? "background"
-                  } img--start`]: hasStartImg
+                  // TODO: Fix disabled styling when the group parent is disabled, but the option leaf isn't.
+                  // Class for disabled images. Used when the combo-box or selected item are disabled
+                  disabled: this.disabled || currentItemInInput?.disabled,
+                  [startImgClasses]: !!startImgClasses
                 }}
-                style={customVars}
+                style={computedImage?.styles}
               >
                 <input
                   aria-controls="popover"
@@ -907,6 +989,7 @@ export class ChComboBoxRender
                       filtersAreApplied && !this.#isModelAlreadyFiltered(),
                       this.activeDescendant,
                       this.#displayedValues,
+                      this.#itemImages,
                       ""
                     )
                   )}

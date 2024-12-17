@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description                                                     | Type                                                                         | Default   |
-| -------- | --------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------- |
-| `model`  | --        | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterModel, "items"> & { items: FlexibleLayoutItemModel[]; }` | `layout3` |
+| Property                    | Attribute       | Description                                                     | Type                                                                         | Default     |
+| --------------------------- | --------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- | ----------- |
+| `designSystem` _(required)_ | `design-system` | Specifies the design system used. Only for testing purposes.    | `"mercury" \| "unanimo"`                                                     | `undefined` |
+| `model`                     | --              | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterModel, "items"> & { items: FlexibleLayoutItemModel[]; }` | `layout3`   |
 
 
 ## Dependencies
@@ -17,6 +18,7 @@
 ### Depends on
 
 - [ch-flexible-layout-render](../../flexible-layout)
+- [ch-theme](../../theme)
 - [ch-action-group-render](../../action-group)
 - [ch-tree-view-render](../../tree-view)
 - [ch-edit](../../edit)
@@ -30,6 +32,7 @@
 ```mermaid
 graph TD;
   ch-test-flexible-layout --> ch-flexible-layout-render
+  ch-test-flexible-layout --> ch-theme
   ch-test-flexible-layout --> ch-action-group-render
   ch-test-flexible-layout --> ch-tree-view-render
   ch-test-flexible-layout --> ch-edit
@@ -38,6 +41,7 @@ graph TD;
   ch-test-flexible-layout --> ch-grid-column
   ch-test-flexible-layout --> ch-action-list-render
   ch-test-flexible-layout --> ch-checkbox
+  ch-flexible-layout-render --> ch-theme
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter

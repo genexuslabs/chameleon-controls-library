@@ -28,7 +28,7 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
 
-      <label class="form-input__label" htmlFor="slider-2">
+      <label class="label" htmlFor="slider-2">
         Label for slider 2
       </label>
       <ch-slider
@@ -49,7 +49,7 @@ const render = () => (
         Component inside label
       </legend>
 
-      <label class="form-input__label" htmlFor="slider-3">
+      <label class="label" htmlFor="slider-3">
         Label for slider 3
         <ch-slider
           id="slider-3"

@@ -1,4 +1,4 @@
-import { forceUpdate, h } from "@stencil/core";
+import { h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -6,7 +6,8 @@ import {
 } from "../types";
 import {
   renderShowcaseProperties,
-  showcaseTemplateClassProperty
+  showcaseTemplateClassProperty,
+  updateShowcase
 } from "../utils";
 import { dummyPictureCallback } from "./models";
 
@@ -37,11 +38,7 @@ const handleValueInput =
     // TODO: Until we support external slots in the ch-flexible-layout-render,
     // this is a hack to update the render of the widget and thus re-render the
     // combo-box updating the displayed items
-    const showcaseRef = formRefs[formId].closest("ch-showcase");
-
-    if (showcaseRef) {
-      forceUpdate(showcaseRef);
-    }
+    updateShowcase();
   };
 
 const render = () => (
@@ -55,7 +52,7 @@ const render = () => (
           autocapitalize={state.autocapitalize}
           autocomplete={state.autocomplete}
           autoGrow={state.autoGrow}
-          class="form-input"
+          class="input"
           debounce={state.debounce}
           disabled={state.disabled}
           maxLength={state.maxLength}
@@ -82,7 +79,7 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
       <form id="form-edit-2" ref={el => (formRefs["form-edit-2"] = el)}>
-        <label class="form-input__label" htmlFor="edit-2">
+        <label class="label" htmlFor="edit-2">
           Label for edit 2
         </label>
 
@@ -93,7 +90,7 @@ const render = () => (
           autocapitalize={state.autocapitalize}
           autocomplete={state.autocomplete}
           autoGrow={state.autoGrow}
-          class="form-input"
+          class="input"
           debounce={state.debounce}
           disabled={state.disabled}
           maxLength={state.maxLength}
@@ -122,7 +119,7 @@ const render = () => (
         Component inside label
       </legend>
       <form id="form-edit-3" ref={el => (formRefs["form-edit-3"] = el)}>
-        <label class="form-input__label" htmlFor="edit-3">
+        <label class="label" htmlFor="edit-3">
           Label for edit 3
           <ch-edit
             id="edit-3"
@@ -131,7 +128,7 @@ const render = () => (
             autocapitalize={state.autocapitalize}
             autocomplete={state.autocomplete}
             autoGrow={state.autoGrow}
-            class="form-input"
+            class="input"
             debounce={state.debounce}
             disabled={state.disabled}
             maxLength={state.maxLength}
@@ -377,7 +374,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
     {
       name: "class",
       fixed: true,
-      value: "form-input",
+      value: "input",
       type: "string"
     },
     {
@@ -431,7 +428,7 @@ export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
   markupWithoutUIModel: {
     react: () => `<label ${showcaseTemplateClassProperty(
       "react",
-      "form-input__label"
+      "label"
     )} htmlFor="first-name">
         First name
       </label>
@@ -441,7 +438,7 @@ export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
 
     stencil: () => `<label ${showcaseTemplateClassProperty(
       "stencil",
-      "form-input__label"
+      "label"
     )} htmlFor="first-name">
           First name
         </label>

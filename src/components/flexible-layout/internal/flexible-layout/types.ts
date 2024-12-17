@@ -10,10 +10,12 @@ import {
   LayoutSplitterLeafModel,
   LayoutSplitterItemRemoveResult
 } from "../../../layout-splitter/types";
+import { TabListPosition } from "../../../tab/types";
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
+// TODO: Remove this unused type
 export type ViewType =
   | "inlineStart"
   | "main"
@@ -87,13 +89,12 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
   /** `true` to not render the tab captions of the view. */
   tabButtonHidden?: boolean;
 
-  tabDirection: FlexibleLayoutLeafTabDirection;
-
   /**
-   * Specifies whether the tab is displayed before or after of its content.
-   * If not specified, defaults to `"start"`
+   * Specifies the position of the tab list in the tabbed view.
+   * If not specified, defaults to `"block-start"`.
    */
-  tabPosition?: FlexibleLayoutLeafTabPosition;
+  tabListPosition?: TabListPosition;
+
   type: Extract<FlexibleLayoutLeafType, "tabbed">;
   widgets: FlexibleLayoutWidget[];
 };
@@ -104,9 +105,6 @@ export type FlexibleLayoutLeafConfigurationSingleContent = {
 } & FlexibleLayoutWidgetRender;
 
 export type FlexibleLayoutLeafType = "tabbed" | "single-content";
-
-export type FlexibleLayoutLeafTabDirection = "block" | "inline";
-export type FlexibleLayoutLeafTabPosition = "start" | "end";
 
 export type FlexibleLayoutGroupModel = Omit<
   LayoutSplitterGroupModel,
@@ -136,6 +134,8 @@ export type FlexibleLayoutWidget = {
   conserveRenderState?: boolean;
   id: string;
 
+  accessibleName?: string;
+
   /**
    * Specify if the tab button is disabled.
    * If disabled, it will not fire any user interaction related event
@@ -143,7 +143,9 @@ export type FlexibleLayoutWidget = {
    */
   disabled?: boolean;
 
-  name: string;
+  // TODO: Check in the drag and drop algorithm if the name property can be
+  // optional. To model tabs with only icons this property must be optional
+  name?: string;
 
   startImgSrc?: string;
 
@@ -156,6 +158,15 @@ export type FlexibleLayoutWidget = {
 
 type FlexibleLayoutWidgetRender = {
   /**
+   * `true` to display a close button in the tab button.
+   *
+   * By default, this property takes the value of the tab parent. If the
+   * `closeButton` property is not defined in the tab parent, it takes the value
+   * of the ch-flexible-layout-render.
+   */
+  closeButton?: boolean;
+
+  /**
    * Same as the contain CSS property. This property indicates that an widget
    * and its contents are, as much as possible, independent from the rest of
    * the document tree. Containment enables isolating a subsection of the DOM,
@@ -164,7 +175,8 @@ type FlexibleLayoutWidgetRender = {
    * page.
    * Containment can also be used to scope CSS counters and quotes.
    *
-   * By default, this property takes to value of the ch-flexible-layout-render.
+   * By default, this property takes to value of the
+   * ch-flexible-layout-render's `contain` property.
    */
   contain?: CssContainProperty;
 
@@ -173,7 +185,8 @@ type FlexibleLayoutWidgetRender = {
    * when content does not fit in the widget's padding box (overflows) in the
    * horizontal and/or vertical direction.
    *
-   * By default, this property takes to value of the ch-flexible-layout-render.
+   * By default, this property takes to value of the
+   * ch-flexible-layout-render's `overflow` property.
    */
   overflow?:
     | CssOverflowProperty
@@ -184,6 +197,15 @@ type FlexibleLayoutWidgetRender = {
    * will be used as the `renderId`.
    */
   renderId?: string;
+
+  /**
+   * Specifies whether the widget is rendered outside of the
+   * ch-flexible-layout-render by projecting a slot.
+   *
+   * By default, this property takes to value of the
+   * ch-flexible-layout-render's `slottedWidgets` property.
+   */
+  slot?: boolean;
 };
 
 export type FlexibleLayoutItemBase = {
@@ -217,8 +239,6 @@ export type FlexibleLayoutLeafInfo<T extends FlexibleLayoutLeafType> = {
    * Same as the leaf id (item.id).
    */
   id: string;
-
-  exportParts: string;
 } & (T extends "tabbed"
   ? Required<FlexibleLayoutLeafConfigurationTabbed>
   : FlexibleLayoutLeafConfigurationSingleContent);
@@ -287,6 +307,11 @@ export type WidgetReorderInfo = WidgetDragInfo & WidgetDropInfo;
 export type FlexibleLayoutWidgetCloseInfo = {
   widgetId: string;
   viewId: string;
+};
+
+export type FlexibleLayoutRenderedWidgets = {
+  rendered: string[];
+  slotted: string[];
 };
 
 export type DroppableArea =

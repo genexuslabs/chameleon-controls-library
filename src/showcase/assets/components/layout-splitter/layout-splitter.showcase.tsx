@@ -34,7 +34,7 @@ const render = () => (
       }}
     >
       <label htmlFor="start">Start</label>
-      <ch-edit id="start" class="form-input" type="text"></ch-edit>
+      <ch-edit id="start" class="input" type="text"></ch-edit>
     </div>
     <div
       slot="end-component"
@@ -45,7 +45,7 @@ const render = () => (
       }}
     >
       <label htmlFor="end">End</label>
-      <ch-edit id="end" class="form-input" type="text"></ch-edit>
+      <ch-edit id="end" class="input" type="text"></ch-edit>
     </div>
 
     <div
@@ -57,7 +57,7 @@ const render = () => (
       }}
     >
       <label htmlFor="end-end">End End</label>
-      <ch-edit id="end-end" class="form-input" type="text"></ch-edit>
+      <ch-edit id="end-end" class="input" type="text"></ch-edit>
     </div>
 
     <div
@@ -69,7 +69,7 @@ const render = () => (
       }}
     >
       <label htmlFor="center-2">Center 2</label>
-      <ch-edit id="center-2" class="form-input" type="text"></ch-edit>
+      <ch-edit id="center-2" class="input" type="text"></ch-edit>
     </div>
 
     <div
@@ -81,7 +81,7 @@ const render = () => (
       }}
     >
       <label htmlFor="center">Center</label>
-      <ch-edit id="center" class="form-input" type="text"></ch-edit>
+      <ch-edit id="center" class="input" type="text"></ch-edit>
     </div>
   </ch-layout-splitter>
 );
@@ -123,7 +123,7 @@ const lightDOMMarkup = (
   <label htmlFor="start">Start</label>
   <ch-edit id="start" ${showcaseTemplateClassProperty(
     framework,
-    "form-input"
+    "input"
   )} type="text"></ch-edit>
 </div>
 
@@ -131,7 +131,7 @@ const lightDOMMarkup = (
   <label htmlFor="end">End</label>
   <ch-edit id="end" ${showcaseTemplateClassProperty(
     framework,
-    "form-input"
+    "input"
   )} type="text"></ch-edit>
 </div>
 
@@ -139,7 +139,7 @@ const lightDOMMarkup = (
   <label htmlFor="end-end">End End</label>
   <ch-edit id="end-end" ${showcaseTemplateClassProperty(
     framework,
-    "form-input"
+    "input"
   )} type="text"></ch-edit>
 </div>
 
@@ -147,7 +147,7 @@ const lightDOMMarkup = (
   <label htmlFor="center-2">Center 2</label>
   <ch-edit id="center-2" ${showcaseTemplateClassProperty(
     framework,
-    "form-input"
+    "input"
   )} type="text"></ch-edit>
 </div>
 
@@ -155,7 +155,7 @@ const lightDOMMarkup = (
   <label htmlFor="center">Center</label>
   <ch-edit id="center" ${showcaseTemplateClassProperty(
     framework,
-    "form-input"
+    "input"
   )} type="text"></ch-edit>
 </div>`;
 

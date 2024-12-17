@@ -33,15 +33,12 @@
 ch-popover {
   --ch-popover-separation-x: var(--ch-tooltip-separation-x);
   --ch-popover-separation-y: var(--ch-tooltip-separation-y);
+  animation: delay-visibility var(--ch-tooltip-delay) linear;
 
   &:not(.hydrated) {
     display: none;
     opacity: 0;
   }
-}
-
-.visible {
-  animation: delay-visibility var(--ch-tooltip-delay) linear;
 }
 
 @keyframes delay-visibility {

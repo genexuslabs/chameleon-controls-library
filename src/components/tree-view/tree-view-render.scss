@@ -104,6 +104,15 @@ ch-tree-view-drop {
   );
 }
 
+// Properly ident first level leafs when the expand button is visible
+::part(item__header level-0-leaf) {
+  --ch-tree-view-item-indentation: calc(
+    var(--ch-tree-view-item__expandable-button-size) +
+      var(--ch-tree-view-item-gap) +
+      var(--ch-tree-view-item-custom-padding-inline-start)
+  );
+}
+
 ::part(item__header expand-button),
 ch-tree-view-drop {
   --own-offset: calc(

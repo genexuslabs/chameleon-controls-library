@@ -97,10 +97,26 @@ const DEFAULT_SELECTED_VALUE = false;
 
 // There are a filter applied and, if the type is "caption" or
 // "metadata", the filter property must be set
-const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
-  filterType !== "none" &&
-  ((filterType !== "caption" && filterType !== "metadata") ||
-    (filter != null && filter.trim() !== ""));
+const treeViewHasFilters = (
+  filterType: TreeViewFilterType,
+  filter: string | RegExp
+) => {
+  if (filterType === "none") {
+    return false;
+  }
+
+  if (filterType !== "caption" && filterType !== "metadata") {
+    return true;
+  }
+
+  if (!filter) {
+    return false;
+  }
+
+  // The RegExp has "object" type
+  // TODO: Add unit tests for the trim case
+  return typeof filter === "object" || filter.trim() !== "";
+};
 
 // GeneXus implementation
 const gxDragDisabled = (
@@ -411,7 +427,7 @@ export class ChTreeViewRender {
    * filter.
    * Only works if `filterType = "caption" | "metadata"`.
    */
-  @Prop() readonly filter: string;
+  @Prop() readonly filter?: string | RegExp | undefined;
   @Watch("filter")
   filterChanged() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
@@ -771,7 +787,7 @@ export class ChTreeViewRender {
     this.#scheduleCheckedItemsChange();
 
     // Update filters
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
 
     // Force re-render
     forceUpdate(this);
@@ -1357,7 +1373,7 @@ export class ChTreeViewRender {
     this.#flattenSubModel(this.#rootNode);
 
     // Re-sync filters
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
 
     // The model was updated at runtime, so we need to update the references
     // Re-sync selected items
@@ -1512,6 +1528,8 @@ export class ChTreeViewRender {
 
       this.#checkIfThereAreDifferentItemsWithCheckbox(itemsWithCheckbox);
       this.#validateCheckedAndSelectedItems();
+      // Reset immediate filters, since there are not any filters to process
+      this.#immediateFilter = undefined;
 
       return;
     }

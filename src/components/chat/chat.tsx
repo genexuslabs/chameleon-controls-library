@@ -88,7 +88,7 @@ export class ChChat {
   /**
    * Specifies the callbacks required in the control.
    */
-  @Prop() readonly callbacks!: ChatInternalCallbacks;
+  @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
 
   /**
    * This property allows us to implement custom rendering for the code blocks.
@@ -103,7 +103,7 @@ export class ChChat {
   /**
    * `true` if a response for the assistant is being generated.
    */
-  @Prop() readonly generatingResponse!: boolean;
+  @Prop() readonly generatingResponse?: boolean = false;
 
   /**
    * Specifies an object containing an HTMLAnchorElement reference. Use this
@@ -115,7 +115,7 @@ export class ChChat {
   /**
    * Specifies if the chat is used in a mobile device.
    */
-  @Prop() readonly isMobile!: boolean;
+  @Prop() readonly isMobile?: boolean = false;
 
   /**
    * Specifies the items that the chat will display.
@@ -125,7 +125,7 @@ export class ChChat {
   /**
    * Specifies if the chat is waiting for the data to be loaded.
    */
-  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
+  @Prop({ mutable: true }) loadingState?: SmartGridDataState = "initial";
 
   /**
    * Specifies the theme to be used for rendering the markdown.
@@ -136,7 +136,26 @@ export class ChChat {
   /**
    * Specifies the literals required in the control.
    */
-  @Prop() readonly translations!: ChatTranslations;
+  @Prop() readonly translations: ChatTranslations = {
+    accessibleName: {
+      clearChat: "Clear chat",
+      copyResponseButton: "Copy assistant response",
+      downloadCodeButton: "Download code",
+      imagePicker: "Select images",
+      removeUploadedImage: "Remove uploaded image",
+      sendButton: "Send",
+      sendInput: "Message",
+      stopGeneratingAnswerButton: "Stop generating answer"
+    },
+    placeholder: {
+      sendInput: "Ask me a question..."
+    },
+    text: {
+      copyCodeButton: "Copy code",
+      processing: `Processing...`,
+      sourceFiles: "Source files:"
+    }
+  };
 
   /**
    * Specifies if the control can render a button to load images from the file
@@ -377,7 +396,7 @@ export class ChChat {
       };
 
       await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.callbacks.sendChat(this.items);
+      this.callbacks?.sendChat(this.items);
 
       // Queue a new re-render
       forceUpdate(this);
@@ -444,7 +463,7 @@ export class ChChat {
 
     if (this.remainingFilesToUpload === 0) {
       if (!this.#errorWhenUploadingImages) {
-        this.callbacks.sendChat(this.items);
+        this.callbacks?.sendChat(this.items);
       }
       this.#errorWhenUploadingImages = false;
     }
@@ -453,7 +472,7 @@ export class ChChat {
   #handleStopGenerating = (event: MouseEvent) => {
     event.stopPropagation();
 
-    this.callbacks.stopGeneratingAnswer!();
+    this.callbacks?.stopGeneratingAnswer!();
   };
 
   #handleDropdownItemClick = (_: UIEvent, __: string, itemId: string) => {
@@ -467,8 +486,8 @@ export class ChChat {
       this.filesToUpload,
       this.uploadMaxFileSize,
       this.uploadMaxFileCount,
-      this.callbacks.showMaxFileCountForUploadError,
-      this.callbacks.showMaxFileSizeForUploadError,
+      this.callbacks?.showMaxFileCountForUploadError,
+      this.callbacks?.showMaxFileSizeForUploadError,
       this,
       event
     );
@@ -632,7 +651,7 @@ export class ChChat {
           }}
           part="send-container"
         >
-          {this.generatingResponse && this.callbacks.stopGeneratingAnswer && (
+          {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
             <button
               class="stop-generating-answer-button"
               part="stop-generating-answer-button"

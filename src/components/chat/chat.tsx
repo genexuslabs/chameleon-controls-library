@@ -40,8 +40,7 @@ import {
 import { getMimeTypeFormat } from "../../common/mime-type/mime-type-mapping";
 import { getMessageContent } from "./utils";
 import { handleFilesChanged } from "./upload-files-utils";
-
-const ENTER_KEY = "Enter";
+import { KEY_CODES } from "../../common/reserved-names";
 
 const mimeTypeFormatToIconPathMapping = {
   audio: "./assets/icons/audio.svg",
@@ -356,7 +355,7 @@ export class ChChat {
   };
 
   #sendMessageKeyboard = (event: KeyboardEvent) => {
-    if (event.key !== ENTER_KEY || event.shiftKey) {
+    if (event.key !== KEY_CODES.ENTER || event.shiftKey) {
       return;
     }
     event.preventDefault();

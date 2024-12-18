@@ -91,11 +91,6 @@ export class ChChat {
   @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
 
   /**
-   * This property allows us to implement custom rendering for the code blocks.
-   */
-  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
-
-  /**
    * Specifies if all interactions are disabled
    */
   @Prop() readonly disabled: boolean = false;
@@ -125,6 +120,11 @@ export class ChChat {
    * If `null`, no theme will be applied.
    */
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
+
+  /**
+   * This property allows us to implement custom rendering for the code blocks.
+   */
+  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
 
   /**
    * Specifies the literals required in the control.

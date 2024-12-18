@@ -144,7 +144,6 @@ function dummyStreaming(
 }
 
 export const chatCallbacks: ChatInternalCallbacks = {
-  clear: () => new Promise(resolve => resolve()),
   loadMoreItems: () =>
     new Promise(resolve =>
       setTimeout(() => {

@@ -106,13 +106,6 @@ export class ChChat {
   @Prop() readonly generatingResponse?: boolean = false;
 
   /**
-   * Specifies an object containing an HTMLAnchorElement reference. Use this
-   * property to render a button to download the code when displaying a code
-   * block.
-   */
-  @Prop() readonly hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement };
-
-  /**
    * Specifies if the chat is used in a mobile device.
    */
   @Prop() readonly isMobile?: boolean = false;

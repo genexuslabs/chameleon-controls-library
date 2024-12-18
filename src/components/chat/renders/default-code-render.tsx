@@ -2,8 +2,8 @@ import { h } from "@stencil/core";
 import {
   MarkdownViewerCodeRender,
   MarkdownViewerCodeRenderOptions
-} from "../markdown-viewer/parsers/types";
-import { copyToTheClipboard } from "../../common/utils";
+} from "../../markdown-viewer/parsers/types";
+import { copyToTheClipboard } from "../../../common/utils";
 
 const handleCopy =
   (callbacks: string, callback?: (message: string) => void) => () => {

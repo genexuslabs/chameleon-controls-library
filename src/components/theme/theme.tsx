@@ -17,7 +17,7 @@ import {
   ThemeModel
 } from "./theme-types";
 import { getTheme } from "./theme-stylesheet";
-import { removeElement } from "../../common/array";
+import { removeIndex } from "../../common/array";
 
 const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
 
@@ -154,7 +154,7 @@ export class ChTheme {
       );
 
       if (themeIndex > -1) {
-        removeElement(root.adoptedStyleSheets, themeIndex);
+        removeIndex(root.adoptedStyleSheets, themeIndex);
       }
     });
   };

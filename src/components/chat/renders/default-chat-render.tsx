@@ -4,12 +4,12 @@ import {
   ChatContentFiles,
   ChatMessageAssistantStatus,
   ChatMessageByRole
-} from "./types";
-import { copyToTheClipboard } from "../../common/utils";
+} from "../types";
+import { copyToTheClipboard } from "../../../common/utils";
 import {
   getFileExtension,
   getMimeTypeFormat
-} from "../../common/mime-type/mime-type-mapping";
+} from "../../../common/mime-type/mime-type-mapping";
 import { defaultChatCodeRender } from "./default-code-render";
 
 const copy = (text: string) => () => copyToTheClipboard(text);

@@ -26,7 +26,7 @@ import {
 import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
 import { removeIndex } from "../../common/array";
 import { ChatTranslations } from "./translations";
-import { defaultChatRender } from "./default-chat-render";
+import { defaultChatRender } from "./renders/default-chat-render";
 import { adoptCommonThemes } from "../../common/theme";
 import { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 import { tokenMap } from "../../common/utils";
@@ -138,22 +138,34 @@ export class ChChat {
    */
   @Prop() readonly translations: ChatTranslations = {
     accessibleName: {
-      clearChat: "Clear chat",
+      audioPicker: "Select audios",
+      clearConversation: "Clear conversation",
       copyResponseButton: "Copy assistant response",
       downloadCodeButton: "Download code",
+      filePicker: "Select files",
       imagePicker: "Select images",
+      regenerateAnswerButton: "Regenerate Answer",
+      removeUploadedAudio: "Remove uploaded audio",
+      removeUploadedFile: "Remove uploaded file",
       removeUploadedImage: "Remove uploaded image",
+      removeUploadedVideo: "Remove uploaded video",
       sendButton: "Send",
       sendInput: "Message",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopGeneratingAnswerButton: "Stop generating answer",
+      videoPicker: "Select videos"
     },
     placeholder: {
       sendInput: "Ask me a question..."
     },
     text: {
+      audio: "Audio",
       copyCodeButton: "Copy code",
+      file: "File",
+      image: "Image",
+      page: "Page",
       processing: `Processing...`,
-      sourceFiles: "Source files:"
+      sourceFiles: "Source files:",
+      video: "Video"
     }
   };
 

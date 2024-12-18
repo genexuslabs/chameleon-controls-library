@@ -128,8 +128,6 @@ export type ChatContentFile = {
 };
 
 export type ChatInternalCallbacks = {
-  clear: () => Promise<void>;
-
   /**
    * Specifies a callback to execute when the user reaches the infinite
    * threshold. It receives the current array of messages and return a promise

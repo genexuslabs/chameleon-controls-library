@@ -201,7 +201,7 @@ export class ChChat {
    */
   @Method()
   async addNewMessage(message: ChatMessage) {
-    this.#pushMessage(message);
+    return this.#pushMessage(message);
   }
 
   /**

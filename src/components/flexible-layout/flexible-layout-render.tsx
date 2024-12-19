@@ -29,10 +29,11 @@ import {
   FlexibleLayoutLeafConfigurationTabbed,
   FlexibleLayoutRenderedWidgets
 } from "./internal/flexible-layout/types";
-import { ChFlexibleLayoutCustomEvent, ThemeModel } from "../../components";
+import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
 import { CssContainProperty, CssOverflowProperty } from "../../common/types";
+import { ThemeModel } from "../theme/theme-types";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<

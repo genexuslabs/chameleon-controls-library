@@ -34,8 +34,13 @@ const render: ShowcaseRender = designSystem => (
     }
     isMobile={false}
     items={state.items}
+    showAdditionalContent={state.showAdditionalContent}
     translations={chatTranslations}
-  ></ch-chat>
+  >
+    <div slot="additional-content">
+      Custom content that is rendered when the chat renders content
+    </div>
+  </ch-chat>
 );
 
 const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
@@ -56,18 +61,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "enum"
       }
     ]
+  },
+  {
+    caption: "Properties",
+    properties: [
+      {
+        id: "showAdditionalContent",
+        caption: "Show Additional Content",
+        value: false,
+        type: "boolean"
+      }
+    ]
   }
-  // {
-  //   caption: "Properties",
-  //   properties: [
-  //     {
-  //       id: "accessibleName",
-  //       caption: "Accessible Name",
-  //       value: undefined,
-  //       type: "string"
-  //     }
-  //   ]
-  // }
 ];
 
 const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] =
@@ -78,6 +83,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       fixed: true,
       value: "controlUIModel",
       type: "function"
+    },
+    {
+      name: "showAdditionalContent",
+      defaultValue: false,
+      type: "boolean"
     }
   ];
 

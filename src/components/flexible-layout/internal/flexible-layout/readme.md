@@ -102,13 +102,6 @@ Type: `Promise<FlexibleLayoutViewRemoveResult>`
 
 
 
-## Shadow Parts
-
-| Part               | Description |
-| ------------------ | ----------- |
-| `"droppable-area"` |             |
-
-
 ## Dependencies
 
 ### Used by

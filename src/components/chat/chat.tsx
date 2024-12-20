@@ -103,6 +103,15 @@ export class ChChat {
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
 
   /**
+   * `true` to render a slot named "additional-content" to project elements
+   * between the "content" slot (grid messages) and the "send-container" slot.
+   *
+   * This slot can only be rendered if loadingState !== "initial" and
+   * (loadingState !== "all-records-loaded" && items.length > 0).
+   */
+  @Prop() readonly showAdditionalContent: boolean = false;
+
+  /**
    * Specifies the literals required in the control.
    */
   @Prop() readonly translations: ChatTranslations = {
@@ -483,13 +492,25 @@ export class ChChat {
   render() {
     const accessibleName = this.translations.accessibleName;
 
+    const canShowAdditionalContent =
+      this.showAdditionalContent &&
+      this.loadingState !== "initial" &&
+      this.loadingState !== "all-records-loaded" &&
+      this.items.length !== 0;
+
     return (
-      <Host>
+      <Host
+        class={
+          canShowAdditionalContent ? "ch-chat--additional-content" : undefined
+        }
+      >
         {this.loadingState === "initial" ? (
           <div class="loading-chat" slot="empty-chat"></div>
         ) : (
           this.#renderChatOrEmpty()
         )}
+
+        {canShowAdditionalContent && <slot name="additional-content" />}
 
         <div
           class={{

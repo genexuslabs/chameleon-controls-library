@@ -494,9 +494,10 @@ export class ChChat {
 
     const canShowAdditionalContent =
       this.showAdditionalContent &&
+      // It's not the initial load
       this.loadingState !== "initial" &&
-      this.loadingState !== "all-records-loaded" &&
-      this.items.length !== 0;
+      // It's not the empty chat
+      !(this.items.length === 0 && this.loadingState === "all-records-loaded");
 
     return (
       <Host

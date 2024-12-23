@@ -64,8 +64,7 @@ describe('[ch-chat][slot "additional-content", without slot in light DOM]', () =
       const canShowAdditionalContent =
         showAdditionalContent &&
         loadingState !== "initial" &&
-        loadingState !== "all-records-loaded" &&
-        items.length !== 0;
+        !(items.length === 0 && loadingState === "all-records-loaded");
 
       chatRef.setProperty("showAdditionalContent", showAdditionalContent);
       chatRef.setProperty("items", items);
@@ -136,8 +135,7 @@ describe('[ch-chat][slot "additional-content", with slot in light DOM]', () => {
       const canShowAdditionalContent =
         showAdditionalContent &&
         loadingState !== "initial" &&
-        loadingState !== "all-records-loaded" &&
-        items.length !== 0;
+        !(items.length === 0 && loadingState === "all-records-loaded");
 
       chatRef.setProperty("showAdditionalContent", showAdditionalContent);
       chatRef.setProperty("items", items);

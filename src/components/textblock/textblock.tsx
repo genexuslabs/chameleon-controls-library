@@ -12,6 +12,10 @@ import {
 } from "@stencil/core";
 
 import { SyncWithRAF } from "../../common/sync-with-frames";
+import {
+  highlightCharacters,
+  TextBlockHighlightedCharacters
+} from "./highlight";
 
 const AVAILABLE_SIZE_CUSTOM_VAR = "--ch-textblock-available-size";
 const DISPLAYED_LINES_CUSTOM_VAR = "--ch-textblock-displayed-lines";
@@ -28,6 +32,8 @@ const LINE_HEIGHT_CUSTOM_VAR = "--ch-textblock-line-height";
   tag: "ch-textblock"
 })
 export class ChTextBlock implements ComponentInterface {
+  #highlightedCaption: TextBlockHighlightedCharacters | undefined;
+
   #currentAvailableHeight: number = -1;
   #availableHeight: number = -1;
   #contentHeight: number = -1;
@@ -71,6 +77,10 @@ export class ChTextBlock implements ComponentInterface {
    * Specifies the content to be displayed when the control has `format = text`.
    */
   @Prop() readonly caption: string;
+  @Watch("caption")
+  captionChanged() {
+    this.#setHighlightedCaption();
+  }
 
   /**
    * Specifies the character used to measure the line height
@@ -91,6 +101,17 @@ export class ChTextBlock implements ComponentInterface {
   formatChanged() {
     // Avoid memory leaks, since the containerRef variable will be destroyed
     this.#disconnectResizeObserver();
+    this.#setHighlightedCaption();
+  }
+
+  /**
+   * Specifies a pattern to highlight in the caption.
+   * Only works if format === "text"
+   */
+  @Prop() readonly highlightPattern?: string | undefined;
+  @Watch("highlightPattern")
+  highlightPatternChanged() {
+    this.#setHighlightedCaption();
   }
 
   /**
@@ -106,6 +127,13 @@ export class ChTextBlock implements ComponentInterface {
    * If `true`, the current content overflows the control.
    */
   @Event() overflowingContentChange: EventEmitter<boolean>;
+
+  #setHighlightedCaption = () => {
+    this.#highlightedCaption =
+      this.format === "text" && this.caption && this.highlightPattern
+        ? highlightCharacters(this.caption, this.highlightPattern)
+        : undefined;
+  };
 
   #getContentRef = () =>
     this.format === "HTML" ? this.#htmlContentRef : this.#contentRef;
@@ -225,7 +253,8 @@ export class ChTextBlock implements ComponentInterface {
     this.#displayedLines = -1;
   };
 
-  #autoGrowRender = () => (this.format === "text" ? this.caption : <slot />);
+  #autoGrowRender = () =>
+    this.format === "text" ? this.#captionWithWrapperRender() : <slot />;
 
   #noAutoGrowRender = () => [
     <div class="line-measure" ref={el => (this.#lineMeasuringRef = el)}>
@@ -234,7 +263,7 @@ export class ChTextBlock implements ComponentInterface {
 
     this.format === "text" ? (
       <p class="content" ref={el => (this.#contentRef = el)}>
-        {this.caption}
+        {this.#captionRender()}
       </p>
     ) : (
       <div class="html-content" ref={el => (this.#htmlContentRef = el)}>
@@ -242,6 +271,18 @@ export class ChTextBlock implements ComponentInterface {
       </div>
     )
   ];
+
+  #captionWithWrapperRender = () =>
+    this.#highlightedCaption ? (
+      <p>{this.#captionRender()}</p>
+    ) : (
+      this.#captionRender()
+    );
+
+  #captionRender = () =>
+    this.#highlightedCaption?.map(part =>
+      part.highlight ? <span part="highlighted">{part.text}</span> : part.text
+    ) ?? this.caption;
 
   componentDidRender() {
     if (!this.autoGrow) {

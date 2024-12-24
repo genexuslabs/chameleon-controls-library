@@ -855,9 +855,8 @@ export class ChComboBoxRender
     const disableTextSelection = !this.disabled && !filtersAreApplied;
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
 
-    const currentItemInInput: ComboBoxItemModel | undefined = filtersAreApplied
-      ? this.#getCurrentValueMapping()?.item
-      : this.activeDescendant;
+    const currentItemInInput: ComboBoxItemModel | undefined =
+      this.#getCurrentValueMapping()?.item;
 
     const computedImage =
       currentItemInInput?.startImgSrc && this.#shouldRenderActiveItemIcon()
@@ -880,7 +879,7 @@ export class ChComboBoxRender
     // - Clicking the combo-box's label should not open the popover
 
     // TODO: Add unit tests for this feature.
-    const currentValueMapping = this.#getCurrentValueMapping()?.item.value;
+    // const currentValueMapping = this.#getCurrentValueMapping()?.item.value;
 
     return (
       <Host
@@ -892,7 +891,7 @@ export class ChComboBoxRender
         // TODO: Add unit tests for this feature, since it breaks custom parts
         // rendered outside of the ch-combo-box-render render() method
         part={tokenMap({
-          [currentValueMapping]: !!currentValueMapping,
+          [currentItemInInput?.value]: !!currentItemInInput,
           [this.hostParts]: !!this.hostParts
         })}
         onKeyDown={
@@ -947,9 +946,7 @@ export class ChComboBoxRender
                   placeholder={this.placeholder}
                   readOnly={this.readonly || !filtersAreApplied}
                   value={
-                    filtersAreApplied
-                      ? this.value
-                      : this.activeDescendant?.caption
+                    filtersAreApplied ? this.value : currentItemInInput?.caption
                   }
                   onInputCapture={
                     filtersAreApplied &&

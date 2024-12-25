@@ -47,3 +47,64 @@ export const isActiveElement = async (
 
     return activeElement === elementToCheck;
   }, elementToCheckSelector);
+
+export const checkBorderBoxBoxSizing = (page: E2EPage) =>
+  page.evaluate(() => {
+    const allElements: string[] = [];
+    const lightDOMElements = document.querySelectorAll("*");
+
+    const getAllShadowDOMElements = (parent: HTMLElement) => {
+      const elementBoxSizing = getComputedStyle(parent).boxSizing;
+      const elementBeforeBoxSizing = getComputedStyle(
+        parent,
+        "::before"
+      ).boxSizing;
+      const elementAfterBoxSizing = getComputedStyle(
+        parent,
+        "::after"
+      ).boxSizing;
+
+      if (elementBoxSizing !== "border-box") {
+        // eslint-disable-next-line no-console
+        console.error(
+          "The " +
+            parent.tagName.toLowerCase() +
+            " element does not have box-sizing: border-box"
+        );
+      }
+      if (elementBeforeBoxSizing !== "border-box") {
+        // eslint-disable-next-line no-console
+        console.error(
+          "The " +
+            parent.tagName.toLowerCase() +
+            "::before element does not have box-sizing: border-box"
+        );
+      }
+      if (elementAfterBoxSizing !== "border-box") {
+        // eslint-disable-next-line no-console
+        console.error(
+          "The " +
+            parent.tagName.toLowerCase() +
+            "::after element does not have box-sizing: border-box"
+        );
+      }
+
+      allElements.push(elementBoxSizing);
+      allElements.push(elementBeforeBoxSizing);
+      allElements.push(elementAfterBoxSizing);
+
+      if (parent.shadowRoot) {
+        parent.shadowRoot
+          .querySelectorAll("*")
+          .forEach(getAllShadowDOMElements);
+      }
+    };
+
+    lightDOMElements.forEach((lightDOMElement: HTMLElement) => {
+      if (lightDOMElement.tagName.toLowerCase().startsWith("ch-")) {
+        getAllShadowDOMElements(lightDOMElement);
+      }
+    });
+
+    return allElements.every(boxSizing => boxSizing === "border-box");
+  });

@@ -1,7 +1,7 @@
+import { GxImageMultiState } from "../../../../common/types";
 import {
-  ComboBoxFilterInfo,
-  ComboBoxFilterOptions,
-  ComboBoxFilterType,
+  ComboBoxSuggestInfo,
+  ComboBoxSuggestOptions,
   ComboBoxItemGroup,
   ComboBoxItemModel,
   ComboBoxModel
@@ -9,7 +9,42 @@ import {
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 
-export const simpleModel1: ComboBoxModel = [
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
+
+export const getComboBoxImagePathCallback = (
+  comboBoxItem: ComboBoxItemModel
+): GxImageMultiState | undefined => {
+  if ((comboBoxItem.startImgSrc ?? comboBoxItem.endImgSrc) === MODULE_ICON) {
+    return {
+      base: "var(--icon-module-base)",
+      active: "var(--icon-module-active)",
+      hover: "var(--icon-module-hover)",
+      disabled: "var(--icon-module-disabled)",
+      selected: "var(--icon-stencil-hover)"
+    };
+  }
+
+  if ((comboBoxItem.startImgSrc ?? comboBoxItem.endImgSrc) === FOLDER_ICON) {
+    return {
+      base: "var(--icon-folder-base)",
+      active: "var(--icon-folder-active)",
+      hover: "var(--icon-folder-hover)",
+      disabled: "var(--icon-folder-disabled)",
+      selected: "var(--icon-stencil-hover)"
+    };
+  }
+
+  return {
+    base: "var(--icon-stencil-base)",
+    active: "var(--icon-stencil-active)",
+    hover: "var(--icon-stencil-hover)",
+    disabled: "var(--icon-stencil-disabled)",
+    selected: "var(--icon-folder-active)"
+  };
+};
+
+export const simpleModelComboBox1: ComboBoxModel = [
   { value: "Value 1", caption: "Label for the value 1" },
   {
     value: "Value 2",
@@ -30,6 +65,7 @@ export const simpleModel1: ComboBoxModel = [
     caption: "Label for the value 5",
     disabled: true,
     expandable: true,
+    expanded: true,
     items: [
       { value: "Value 5.1", caption: "Label for the value 5.1" },
       { value: "Value 5.2", caption: "Label for the value 5.2" },
@@ -85,6 +121,163 @@ export const simpleModel1: ComboBoxModel = [
       },
       { value: "Value 9.4", caption: "Label for the value 9.4" }
     ]
+  },
+  { value: "Value 10", caption: "Label for the value 10" },
+  {
+    value: "Value 11",
+    caption: "Label for the value 11",
+    expandable: true,
+    expanded: true,
+    disabled: true,
+    items: [
+      { value: "Value 11.1", caption: "Label for the value 11.1" },
+      { value: "Value 11.2", caption: "Label for the value 11.2" },
+      {
+        value: "Value 11.3",
+        caption: "Label for the value 11.3",
+        disabled: false
+      },
+      { value: "Value 11.4", caption: "Label for the value 11.4" }
+    ]
+  },
+  { value: "Value 12", caption: "Label for the value 12" }
+];
+
+export const simpleModelComboBoxWithIcons: ComboBoxModel = [
+  { value: "Value 1", caption: "Label for the value 1" },
+  {
+    value: "Value 2",
+    caption: "Label for the value 222 (not expandable)",
+    endImgSrc: MODULE_ICON,
+    items: [
+      { value: "Value 2.1", caption: "Label for the value 2.1" },
+      { value: "Value 2.2", caption: "Label for the value 2.2" }
+    ]
+  },
+  {
+    value: "Value 3",
+    caption: "Label for the value 3",
+    disabled: true,
+    startImgSrc: FOLDER_ICON,
+    endImgSrc: MODULE_ICON
+  },
+  { value: "Value 4", caption: "Label for the value 4" },
+  {
+    value: "Value 5",
+    caption: "Label for the value 5",
+    disabled: true,
+    expandable: true,
+    startImgSrc: FOLDER_ICON,
+    expanded: true,
+    items: [
+      { value: "Value 5.1", caption: "Label for the value 5.1" },
+      {
+        value: "Value 5.2",
+        caption: "Label for the value 5.2",
+        startImgSrc: FOLDER_ICON
+      },
+
+      {
+        value: "Value 5.3",
+        caption: "Label for the value 5.3",
+        endImgSrc: MODULE_ICON,
+        disabled: false
+      },
+      { value: "Value 5.4", caption: "Label for the value 5.4" }
+    ]
+  },
+  {
+    value: "Value 6",
+    caption: "Label for the value 6",
+    expandable: true,
+    expanded: true,
+    startImgSrc: FOLDER_ICON,
+    endImgSrc: MODULE_ICON,
+    items: [
+      {
+        value: "Value 6.1",
+        caption: "Label for the value 6.1",
+        disabled: true
+      },
+      {
+        value: "Value 6.2",
+        caption: "Label for the value 6.2",
+        disabled: true
+      },
+      {
+        value: "Value 6.3",
+        caption: "Label for the value 6.3",
+        disabled: false
+      },
+      { value: "Value 6.4", caption: "Label for the value 6.4" }
+    ]
+  },
+  {
+    value: "Value 7",
+    caption: "Label for the value 7",
+    disabled: true
+  },
+
+  {
+    value: "Value 8",
+    caption: "Label for the value 8",
+    startImgSrc: FOLDER_ICON
+  },
+  {
+    value: "Value 9",
+    caption: "Label for the value 9",
+    expandable: true,
+    items: [
+      {
+        value: "Value 9.1",
+        caption: "Label for the value 9.1",
+        startImgSrc: FOLDER_ICON,
+        endImgSrc: MODULE_ICON
+      },
+      {
+        value: "Value 9.2",
+        caption: "Label for the value 9.2",
+        endImgSrc: MODULE_ICON
+      },
+      {
+        value: "Value 9.3",
+        caption: "Label for the value 9.3",
+        disabled: false
+      },
+      {
+        value: "Value 9.4",
+        caption: "Label for the value 9.4",
+        startImgSrc: FOLDER_ICON
+      }
+    ]
+  },
+  {
+    value: "Value 10",
+    caption: "Label for the value 10",
+    endImgSrc: MODULE_ICON
+  },
+  {
+    value: "Value 11",
+    caption: "Label for the value 11",
+    expandable: true,
+    expanded: true,
+    disabled: true,
+    items: [
+      { value: "Value 11.1", caption: "Label for the value 11.1" },
+      { value: "Value 11.2", caption: "Label for the value 11.2" },
+      {
+        value: "Value 11.3",
+        caption: "Label for the value 11.3",
+        disabled: false
+      },
+      { value: "Value 11.4", caption: "Label for the value 11.4" }
+    ]
+  },
+  {
+    value: "Value 12",
+    caption: "Label for the value 12",
+    startImgSrc: FOLDER_ICON,
+    endImgSrc: MODULE_ICON
   }
 ];
 
@@ -98,111 +291,111 @@ export const smallModel: ComboBoxModel = [
 
 export const dataTypeInGeneXus: ComboBoxModel = [
   {
-    value: "Basics",
+    value: "_Basics",
     caption: "Basics",
     expandable: true,
     expanded: true,
     items: [
-      { value: "Audio", caption: "Audio" },
-      { value: "Blob", caption: "Blob" },
-      { value: "BlobFile", caption: "BlobFile" },
-      { value: "Boolean", caption: "Boolean" },
-      { value: "Character", caption: "Character" },
-      { value: "Date", caption: "Date" },
-      { value: "DateTime", caption: "DateTime" },
-      { value: "Geography", caption: "Geography" },
-      { value: "GeoLine", caption: "GeoLine" },
-      { value: "GeoPoint", caption: "GeoPoint" },
-      { value: "GeoPolygon", caption: "GeoPolygon" },
-      { value: "GUID", caption: "GUID" },
-      { value: "Image", caption: "Image" },
-      { value: "LongVarChar", caption: "LongVarChar" },
-      { value: "Numeric", caption: "Numeric" },
-      { value: "VarChar", caption: "VarChar" },
-      { value: "Video", caption: "Video" }
+      { value: "_Audio", caption: "Audio" },
+      { value: "_Blob", caption: "Blob" },
+      { value: "_BlobFile", caption: "BlobFile" },
+      { value: "_Boolean", caption: "Boolean" },
+      { value: "_Character", caption: "Character" },
+      { value: "_Date", caption: "Date" },
+      { value: "_DateTime", caption: "DateTime" },
+      { value: "_Geography", caption: "Geography" },
+      { value: "_GeoLine", caption: "GeoLine" },
+      { value: "_GeoPoint", caption: "GeoPoint" },
+      { value: "_GeoPolygon", caption: "GeoPolygon" },
+      { value: "_GUID", caption: "GUID" },
+      { value: "_Image", caption: "Image" },
+      { value: "_LongVarChar", caption: "LongVarChar" },
+      { value: "_Numeric", caption: "Numeric" },
+      { value: "_VarChar", caption: "VarChar" },
+      { value: "_Video", caption: "Video" }
     ]
   },
   {
-    value: "Extended Types",
+    value: "_Extended Types",
     caption: "Extended Types",
     expandable: true,
     items: [
-      { value: "Cache", caption: "Cache" },
-      { value: "ContentInfo", caption: "ContentInfo" },
-      { value: "Cookie", caption: "Cookie" },
+      { value: "_Cache", caption: "Cache" },
+      { value: "_ContentInfo", caption: "ContentInfo" },
+      { value: "_Cookie", caption: "Cookie" },
       {
-        value: "CryptoAsymmetricEncrypt",
+        value: "_CryptoAsymmetricEncrypt",
         caption: "CryptoAsymmetricEncrypt"
       },
-      { value: "CryptoCertificate", caption: "CryptoCertificate" },
-      { value: "CryptoHash", caption: "CryptoHash" },
-      { value: "CryptoSign", caption: "CryptoSign" },
-      { value: "CryptoSignXml", caption: "CryptoSignXml" },
+      { value: "_CryptoCertificate", caption: "CryptoCertificate" },
+      { value: "_CryptoHash", caption: "CryptoHash" },
+      { value: "_CryptoSign", caption: "CryptoSign" },
+      { value: "_CryptoSignXml", caption: "CryptoSignXml" },
       {
-        value: "CryptoSymmetricEncrypt",
+        value: "_CryptoSymmetricEncrypt",
         caption: "CryptoSymmetricEncrypt"
       },
-      { value: "DBConnection", caption: "DBConnection" },
-      { value: "Directory", caption: "Directory" },
-      { value: "ExcelDocument", caption: "ExcelDocument" },
-      { value: "Expression", caption: "Expression" },
-      { value: "File", caption: "File" },
-      { value: "HttpClient", caption: "HttpClient" },
-      { value: "HttpRequest", caption: "HttpRequest" },
-      { value: "HttpResponse", caption: "HttpResponse" }
+      { value: "_DBConnection", caption: "DBConnection" },
+      { value: "_Directory", caption: "Directory" },
+      { value: "_ExcelDocument", caption: "ExcelDocument" },
+      { value: "_Expression", caption: "Expression" },
+      { value: "_File", caption: "File" },
+      { value: "_HttpClient", caption: "HttpClient" },
+      { value: "_HttpRequest", caption: "HttpRequest" },
+      { value: "_HttpResponse", caption: "HttpResponse" }
     ]
   },
   {
-    value: "Structured Data Types",
+    value: "_Structured Data Types",
     caption: "Structured Data Types",
     expandable: true,
     items: [
       {
-        value: "GeneXus.Common.AnalyticsKeyValue",
+        value: "_GeneXus.Common.AnalyticsKeyValue",
         caption: "AnalyticsKeyValue, GeneXus.Common"
       },
       {
-        value: "GeneXus.Common.AnalyticsKeyPurchase",
+        value: "_GeneXus.Common.AnalyticsKeyPurchase",
         caption: "AnalyticsKeyPurchase, GeneXus.Common"
       },
       {
-        value: "GeneXus.Common.AnalyticsKeyPurchase.Item",
+        value: "_GeneXus.Common.AnalyticsKeyPurchase.Item",
         caption: "AnalyticsKeyPurchase.Item, GeneXus.Common"
       },
       {
-        value: "GeneXus.SD.Media.AudioPlayerCustomAction",
+        value: "_GeneXus.SD.Media.AudioPlayerCustomAction",
         caption: "AudioPlayerCustomAction, GeneXus.SD.Media"
       },
       {
-        value: "GeneXus.SD.Media.AudioPlayerSettings",
+        value: "_GeneXus.SD.Media.AudioPlayerSettings",
         caption: "AudioPlayerSettings, GeneXus.SD.Media"
       },
       {
-        value: "GeneXus.SD.BeaconInfo",
+        value: "_GeneXus.SD.BeaconInfo",
         caption: "BeaconInfo, GeneXus.SD"
       },
       {
-        value: "GeneXus.SD.BeaconProximityAlert",
+        value: "_GeneXus.SD.BeaconProximityAlert",
         caption: "BeaconProximityAlert, GeneXus.SD"
       },
       {
-        value: "GeneXus.SD.BeaconRegion",
+        value: "_GeneXus.SD.BeaconRegion",
         caption: "BeaconRegion, GeneXus.SD"
       },
       {
-        value: "GeneXus.SD.BeaconState",
+        value: "_GeneXus.SD.BeaconState",
         caption: "BeaconState, GeneXus.SD"
       },
       {
-        value: "GeneXus.SD.CardInformation",
+        value: "_GeneXus.SD.CardInformation",
         caption: "CardInformation, GeneXus.SD"
       },
       {
-        value: "GeneXus.Common.Notifications.Configuration",
+        value: "_GeneXus.Common.Notifications.Configuration",
         caption: "Configuration, GeneXus.Common.Notifications"
       },
       {
-        value: "GeneXus.Common.Notifications.ConfigurationProperty",
+        value: "_GeneXus.Common.Notifications.ConfigurationProperty",
         caption: "ConfigurationProperty, GeneXus.Common.Notifications"
       }
     ]
@@ -259,52 +452,34 @@ const filterWithCase = (
 const filterWithString = (
   stringToFilter: string,
   filter: string,
-  filterOptions: ComboBoxFilterOptions
+  filterOptions: ComboBoxSuggestOptions
 ) =>
   filterOptions?.regularExpression
     ? stringToFilter.match(filter) !== null
     : filterWithCase(stringToFilter, filter, filterOptions?.matchCase);
 
-const filterDictionary: {
-  [key in ComboBoxFilterType]: (
-    item: ComboBoxItemModel,
-    filterInfo: ComboBoxFilterInfo
-  ) => boolean;
-} = {
-  caption: (item, filterInfo) =>
-    filterInfo.filter
-      ? filterWithString(
-          item.caption ?? "",
-          filterInfo.filter,
-          filterInfo.filterOptions
-        )
-      : true,
-
-  value: (item, filterInfo) =>
-    filterInfo.filter
-      ? filterWithString(
-          item.value,
-          filterInfo.filter,
-          filterInfo.filterOptions
-        )
-      : true,
-
-  none: () => true
-};
+const filterCaption = (
+  item: ComboBoxItemModel,
+  filterInfo: ComboBoxSuggestInfo
+) =>
+  !filterInfo.filter ||
+  filterWithString(
+    item.caption ?? item.value,
+    filterInfo.filter,
+    filterInfo.options
+  );
 
 const computeFilter = (
-  filterType: ComboBoxFilterType,
   item: ComboBoxItemModel,
-  filterInfo: ComboBoxFilterInfo
+  filterInfo: ComboBoxSuggestInfo
 ): boolean =>
-  filterInfo.filterOptions?.hideMatchesAndShowNonMatches === true
-    ? !filterDictionary[filterType](item, filterInfo)
-    : filterDictionary[filterType](item, filterInfo);
+  filterInfo.options?.hideMatchesAndShowNonMatches === true
+    ? !filterCaption(item, filterInfo)
+    : filterCaption(item, filterInfo);
 
 const filterSubModel = (
   item: ComboBoxItemModel,
-  filterType: ComboBoxFilterType,
-  filterInfo: ComboBoxFilterInfo,
+  filterInfo: ComboBoxSuggestInfo,
   newModel: ComboBoxModel
 ): boolean => {
   // Check if a subitem is rendered
@@ -317,7 +492,6 @@ const filterSubModel = (
       const itemLeaf = itemSubGroup[index];
       const itemSatisfiesFilter = filterSubModel(
         itemLeaf,
-        filterType,
         filterInfo,
         newSubItems
       );
@@ -328,8 +502,7 @@ const filterSubModel = (
 
   // The current item is rendered if it satisfies the filter condition or a
   // subitem exists that needs to be rendered
-  const satisfiesFilter =
-    aSubItemIsRendered || computeFilter(filterType, item, filterInfo);
+  const satisfiesFilter = aSubItemIsRendered || computeFilter(item, filterInfo);
 
   // Update selected and checkbox items
   if (satisfiesFilter) {
@@ -343,15 +516,14 @@ const filterSubModel = (
 };
 
 export const comboBoxFilterChange = (
-  filterType: ComboBoxFilterType,
-  filterInfo: ComboBoxFilterInfo
+  filterInfo: ComboBoxSuggestInfo
 ): ComboBoxModel => {
   const filteredModel = [];
 
   for (let index = 0; index < dataTypeInGeneXus.length; index++) {
     const item = dataTypeInGeneXus[index];
 
-    filterSubModel(item, filterType, filterInfo, filteredModel);
+    filterSubModel(item, filterInfo, filteredModel);
   }
 
   return filteredModel;

@@ -9,9 +9,9 @@ export const config: Config = {
       esmLoaderPath: "../loader",
       copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
     },
-    {
-      type: "docs-readme"
-    },
+    // dist-custom-elements output target is required for the React output target.
+    // It generates the dist/components folder
+    { type: "dist-custom-elements" },
     {
       type: "www",
       serviceWorker: null,
@@ -22,13 +22,28 @@ export const config: Config = {
     }
   ],
   plugins: [sass()],
+  extras: {
+    // Enabling this flag will allow downstream projects that consume a Stencil
+    // library and use a bundler such as Vite to lazily load the Stencil
+    // library's components.
+    enableImportInjection: true
+  },
   testing: {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
     verbose: true,
     browserHeadless: "new",
-    testPathIgnorePatterns: ["node_modules/", "src/testing/", "dist/"]
+    testPathIgnorePatterns: [
+      "node_modules/",
+      "src/testing/",
+      "dist/",
+      "src/components/theme/tests/utils.e2e.ts",
+      "src/components/tree-view/tests/utils.e2e.ts"
+    ]
   },
   bundles: [
+    {
+      components: ["ch-accordion-render"] // Make sure the ch-accordion-render control is not bundled with other components
+    },
     {
       components: [
         "ch-action-group",
@@ -67,6 +82,9 @@ export const config: Config = {
       components: ["ch-tab-render"] // Make sure the ch-tab-render control is not bundled with other components
     },
     {
+      components: ["ch-navigation-list-render", "ch-navigation-list-item"]
+    },
+    {
       components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]
     },
     {
@@ -94,6 +112,9 @@ export const config: Config = {
         "ch-tree-view-item",
         "ch-tree-view-render"
       ]
+    },
+    {
+      components: ["ch-virtual-scroller"] // Make sure the ch-virtual-scroller control is not bundled with other components
     }
   ]
 };

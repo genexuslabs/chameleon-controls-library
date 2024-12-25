@@ -1,11 +1,14 @@
-import { forceUpdate, h } from "@stencil/core";
-import { ShowcaseCustomStory } from "../types";
+import { h } from "@stencil/core";
+import { ShowcaseCustomStory, ShowcaseRender } from "../types";
 import { markdownReadmeModel } from "./models";
+import { updateShowcase } from "../utils";
 
 let initialMarkdown = markdownReadmeModel;
 let rawHTMLEnabled = "false";
+let showIndicator = "false";
 
-let checkboxRef: HTMLChCheckboxElement;
+let checkboxRawHTMLRef: HTMLChCheckboxElement;
+let checkboxIndicatorRef: HTMLChCheckboxElement;
 let textareaRef: HTMLTextAreaElement;
 
 const handleValueChange = () => {
@@ -14,27 +17,20 @@ const handleValueChange = () => {
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = textareaRef.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
 const handleCheckboxValueChange = () => {
-  rawHTMLEnabled = checkboxRef.value;
+  rawHTMLEnabled = checkboxRawHTMLRef.value;
+  showIndicator = checkboxIndicatorRef.value;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
-  const showcaseRef = checkboxRef.closest("ch-showcase");
-
-  if (showcaseRef) {
-    forceUpdate(showcaseRef);
-  }
+  updateShowcase();
 };
 
-const render = () => (
+const render: ShowcaseRender = designSystem => (
   <div class="markdown-test-main-wrapper">
     <div class="markdown-test-properties">
       <ch-checkbox
@@ -42,21 +38,36 @@ const render = () => (
         class="checkbox"
         checkedValue="true"
         onInput={handleCheckboxValueChange}
-        ref={el => (checkboxRef = el)}
+        ref={el => (checkboxRawHTMLRef = el)}
+      ></ch-checkbox>
+
+      <ch-checkbox
+        caption="Show indicator"
+        class="checkbox"
+        checkedValue="true"
+        onInput={handleCheckboxValueChange}
+        ref={el => (checkboxIndicatorRef = el)}
       ></ch-checkbox>
     </div>
 
     <textarea
       aria-label="Markdown content"
-      class="form-input"
+      class="input"
       value={initialMarkdown}
       onInput={handleValueChange}
       ref={el => (textareaRef = el)}
     ></textarea>
     <ch-markdown-viewer
+      key={designSystem}
       class="markdown"
+      theme={
+        designSystem === "unanimo"
+          ? "unanimo/markdown-viewer"
+          : "mercury/markdown-viewer"
+      }
       value={initialMarkdown}
       rawHtml={rawHTMLEnabled === "true"}
+      showIndicator={showIndicator === "true"}
     ></ch-markdown-viewer>
   </div>
 );

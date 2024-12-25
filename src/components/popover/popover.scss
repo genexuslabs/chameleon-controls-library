@@ -2,18 +2,6 @@
 
 @include box-sizing();
 
-$ch-popover-x: calc(
-  (
-      var(--ch-popover-action-left) + var(--ch-popover-inline) +
-        var(--ch-popover-dragged-x)
-    ) * var(--ch-popover-rtl)
-);
-
-$ch-popover-y: calc(
-  var(--ch-popover-action-top) + var(--ch-popover-block) +
-    var(--ch-popover-dragged-y)
-);
-
 $ch-popover-x--same-layer: calc(
   (var(--ch-popover-inline) + var(--ch-popover-dragged-x)) *
     var(--ch-popover-rtl)
@@ -122,6 +110,18 @@ $ch-popover-y--same-layer: calc(
       var(--ch-popover-border-block-end-width) * 0.5
   );
 
+  --ch-popover-x: calc(
+    (
+        var(--ch-popover-action-left) + var(--ch-popover-inline) +
+          var(--ch-popover-dragged-x)
+      ) * var(--ch-popover-rtl)
+  );
+
+  --ch-popover-y: calc(
+    var(--ch-popover-action-top) + var(--ch-popover-block) +
+      var(--ch-popover-dragged-y)
+  );
+
   --ch-popover-dragged-x: 0px;
   --ch-popover-dragged-y: 0px;
   --ch-popover-rtl: 1;
@@ -136,8 +136,14 @@ $ch-popover-y--same-layer: calc(
   block-size: var(--ch-popover-block-size);
   min-inline-size: var(--ch-popover-min-inline-size);
   min-block-size: var(--ch-popover-min-block-size);
-  max-inline-size: var(--ch-popover-max-inline-size);
-  max-block-size: var(--ch-popover-max-block-size);
+  max-inline-size: var(
+    --ch-popover-forced-max-inline-size,
+    var(--ch-popover-max-inline-size)
+  );
+  max-block-size: var(
+    --ch-popover-forced-max-block-size,
+    var(--ch-popover-max-block-size)
+  );
 
   // Reset browser defaults
   margin: 0;
@@ -151,16 +157,22 @@ $ch-popover-y--same-layer: calc(
   inset-inline-start: 0;
 
   // Alignment and Drag
-  translate: $ch-popover-x $ch-popover-y;
+  translate: var(--ch-popover-x) var(--ch-popover-y);
+}
+
+:host([overflow-behavior="add-scroll"]) {
+  overflow: auto;
+
+  // Alignment and Drag
+  translate: max(0px, var(--ch-popover-x)) max(0px, var(--ch-popover-y));
 }
 
 // - - - - - - - - - - - - - - - -
 //             Hidden
 // - - - - - - - - - - - - - - - -
-// :host([hidden]) {
-//   display: grid !important;
-//   visibility: hidden;
-// }
+:host([hidden]) {
+  display: none;
+}
 
 // // content-visibility: hidden is faster for rendering the content back, as
 // // it preserves the rendering state of the content (display: none does not)

@@ -1,3 +1,5 @@
+import { TABULAR_GRID_PARTS_DICTIONARY } from "../../../common/reserved-names";
+import { tokenMap } from "../../../common/utils";
 import HTMLChTabularGridRowElement from "../row/tabular-grid-row";
 
 /**
@@ -27,6 +29,7 @@ export default class HTMLChTabularGridCellElement extends HTMLElement {
   private action: HTMLButtonElement;
   private selector: HTMLInputElement;
   private selectorLabel: HTMLLabelElement;
+  #parts: boolean | string;
 
   public rowDrag: boolean;
   public rowSelector: boolean;
@@ -38,10 +41,12 @@ export default class HTMLChTabularGridCellElement extends HTMLElement {
 
   constructor() {
     super();
+    this.#defineProperties();
     this.defineFocusHandler();
   }
 
   connectedCallback() {
+    this.#renderAttributes();
     if (this.cellType !== TabularGridCellType.Plain) {
       this.define();
     }
@@ -345,8 +350,36 @@ export default class HTMLChTabularGridCellElement extends HTMLElement {
         "mousedown",
         this.caretMouseDownHandler.bind(this)
       );
+      this.caret.addEventListener("click", eventInfo =>
+        eventInfo.stopPropagation()
+      );
     }
   }
+
+  #defineProperties = () => {
+    this.#parts = (this as any).parts;
+    Object.defineProperty(this, "parts", {
+      get: () => this.#parts,
+      set: value => {
+        this.#parts = value;
+        this.#renderAttributes();
+      },
+      enumerable: true,
+      configurable: true
+    });
+  };
+
+  #renderAttributes = () => {
+    this.#parts &&
+      this.setAttribute(
+        "part",
+        tokenMap({
+          [TABULAR_GRID_PARTS_DICTIONARY.CELL]: true,
+          [this.cellId]: !!this.cellId,
+          [this.#parts.toString()]: typeof this.#parts === "string"
+        })
+      );
+  };
 }
 
 export interface TabularGridCellSelectorClickedEvent {

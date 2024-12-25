@@ -18,19 +18,6 @@
 | `value`                | `value`                  | Any kind of text, also links, email addresses, any thing.                                                                                                                                                                                                            | `string`                                    | `undefined` |
 
 
-## Dependencies
-
-### Used by
-
- - [ch-showcase](../../showcase/assets/components)
-
-### Graph
-```mermaid
-graph TD;
-  ch-showcase --> ch-qr
-  style ch-qr fill:#f9f,stroke:#333,stroke-width:4px
-```
-
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

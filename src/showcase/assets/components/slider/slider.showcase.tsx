@@ -1,9 +1,12 @@
 import { h } from "@stencil/core";
-import { ChSlider } from "../../../../components/slider/slider";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties } from "../utils";
 
-const state: Partial<Mutable<ChSlider>> = {};
+const state: Partial<HTMLChSliderElement> = {};
 
 const render = () => (
   <div class="checkbox-test-main-wrapper">
@@ -12,7 +15,7 @@ const render = () => (
 
       <ch-slider
         accessibleName={state.accessibleName}
-        class="slider-primary"
+        class="slider slider-primary"
         disabled={state.disabled}
         maxValue={state.maxValue}
         minValue={state.minValue}
@@ -25,13 +28,13 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
 
-      <label class="form-input__label" htmlFor="slider-2">
+      <label class="label" htmlFor="slider-2">
         Label for slider 2
       </label>
       <ch-slider
         id="slider-2"
         accessibleName={state.accessibleName}
-        class="slider-primary"
+        class="slider slider-primary"
         disabled={state.disabled}
         maxValue={state.maxValue}
         minValue={state.minValue}
@@ -46,12 +49,12 @@ const render = () => (
         Component inside label
       </legend>
 
-      <label class="form-input__label" htmlFor="slider-3">
+      <label class="label" htmlFor="slider-3">
         Label for slider 3
         <ch-slider
           id="slider-3"
           accessibleName={state.accessibleName}
-          class="slider-primary"
+          class="slider slider-primary"
           disabled={state.disabled}
           maxValue={state.maxValue}
           minValue={state.minValue}
@@ -64,71 +67,96 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChSlider>> = [
-  {
-    caption: "Models",
-    properties: [
-      {
-        id: "value",
-        caption: "Value",
-        value: 2,
-        type: "number"
-      },
-      {
-        id: "maxValue",
-        caption: "Max Value",
-        value: 5,
-        type: "number"
-      },
-      {
-        id: "minValue",
-        caption: "Min Value",
-        value: 0,
-        type: "number"
-      },
-      {
-        id: "step",
-        caption: "Step",
-        value: 0.1,
-        type: "number"
-      }
-    ]
-  },
-  {
-    caption: "Properties",
-    properties: [
-      {
-        id: "accessibleName",
-        caption: "Accessible Name",
-        value: "Option",
-        type: "string"
-      },
-      {
-        id: "disabled",
-        caption: "Disabled",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "showValue",
-        caption: "Show Value (not supported yet)",
-        value: false,
-        type: "boolean"
-      }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChSliderElement> =
+  [
+    {
+      caption: "Models",
+      properties: [
+        {
+          id: "value",
+          caption: "Value",
+          value: 2,
+          type: "number"
+        },
+        {
+          id: "maxValue",
+          caption: "Max Value",
+          value: 5,
+          type: "number"
+        },
+        {
+          id: "minValue",
+          caption: "Min Value",
+          value: 0,
+          type: "number"
+        },
+        {
+          id: "step",
+          caption: "Step",
+          value: 0.1,
+          type: "number"
+        }
+      ]
+    },
+    {
+      caption: "Properties",
+      properties: [
+        {
+          id: "accessibleName",
+          caption: "Accessible Name",
+          value: "Option",
+          type: "string"
+        },
+        {
+          id: "disabled",
+          caption: "Disabled",
+          value: false,
+          type: "boolean"
+        },
+        {
+          id: "showValue",
+          caption: "Show Value (not supported yet)",
+          value: false,
+          type: "boolean"
+        }
+      ]
+    }
+  ];
 
-export const sliderShowcaseStory: ShowcaseStory<Mutable<ChSlider>> = {
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChSliderElement>[] =
+  [
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    {
+      name: "class",
+      fixed: true,
+      value: "slider",
+      type: "string"
+    },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "maxValue", defaultValue: 5, type: "number" },
+    { name: "minValue", defaultValue: 0, type: "number" },
+    { name: "step", defaultValue: 1, type: "number" },
+    { name: "value", defaultValue: 0, type: "number" },
+    { name: "input", fixed: true, value: "handleInput", type: "event" }
+  ];
+
+export const sliderShowcaseStory: ShowcaseStory<HTMLChSliderElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-slider
-          class="slider-primary"
-          maxValue={<max value>}
-          minValue={<min value>}
-          value={<initial value>}
-          step={<step>}
-          onInput={this.#handleValueChange}
-        ></ch-slider>`,
+  markupWithoutUIModel: {
+    react: () => `<ChSlider${renderShowcaseProperties(
+      state,
+      "react",
+      showcasePropertiesInfo
+    )}
+      ></ChSlider>`,
+
+    stencil: () => `<ch-slider${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcasePropertiesInfo
+    )}
+        ></ch-slider>`
+  },
   render: render,
   state: state
 };

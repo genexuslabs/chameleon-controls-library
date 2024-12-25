@@ -59,11 +59,10 @@ relative to an element or the screen.
  - [ch-grid-row-actions](../grid/grid-row-actions)
  - [ch-grid-settings](../grid/grid-settings)
  - [ch-shortcuts](../../components/shortcuts)
- - [ch-suggest](../../components/suggest)
+ - [ch-suggest](../suggest)
  - [ch-tabular-grid-column-settings](../../components/tabular-grid/column/settings)
  - [ch-tabular-grid-row-actions](../../components/tabular-grid/row-actions)
  - [ch-tabular-grid-settings](../../components/tabular-grid/settings)
- - [ch-tooltip](../../components/tooltip)
 
 ### Depends on
 
@@ -81,7 +80,6 @@ graph TD;
   ch-tabular-grid-column-settings --> ch-window
   ch-tabular-grid-row-actions --> ch-window
   ch-tabular-grid-settings --> ch-window
-  ch-tooltip --> ch-window
   style ch-window fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

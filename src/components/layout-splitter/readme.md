@@ -80,13 +80,11 @@ Type: `Promise<LayoutSplitterItemRemoveResult>`
 ### Used by
 
  - [ch-flexible-layout](../flexible-layout/internal/flexible-layout)
- - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid
 graph TD;
   ch-flexible-layout --> ch-layout-splitter
-  ch-showcase --> ch-layout-splitter
   style ch-layout-splitter fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

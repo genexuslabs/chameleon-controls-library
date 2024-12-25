@@ -24,6 +24,8 @@ import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
 import { adoptCommonThemes } from "../../common/theme";
+import { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
+import { tokenMap } from "../../common/utils";
 
 const ENTER_KEY = "Enter";
 
@@ -49,7 +51,12 @@ export class ChChat {
   /**
    * Specifies the callbacks required in the control.
    */
-  @Prop() readonly callbacks!: ChatInternalCallbacks;
+  @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
+
+  /**
+   * This property allows us to implement custom rendering for the code blocks.
+   */
+  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
 
   /**
    * Specifies if all interactions are disabled
@@ -59,7 +66,7 @@ export class ChChat {
   /**
    * `true` if a response for the assistant is being generated.
    */
-  @Prop() readonly generatingResponse!: boolean;
+  @Prop() readonly generatingResponse?: boolean = false;
 
   /**
    * Specifies an object containing an HTMLAnchorElement reference. Use this
@@ -77,7 +84,7 @@ export class ChChat {
   /**
    * Specifies if the chat is used in a mobile device.
    */
-  @Prop() readonly isMobile!: boolean;
+  @Prop() readonly isMobile?: boolean = false;
 
   /**
    * Specifies the items that the chat will display.
@@ -87,29 +94,54 @@ export class ChChat {
   /**
    * Specifies if the chat is waiting for the data to be loaded.
    */
-  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
+  @Prop({ mutable: true }) loadingState?: SmartGridDataState = "initial";
 
   /**
    * Specifies the theme to be used for rendering the markdown.
-   * If `undefined`, no theme will be applied.
+   * If `null`, no theme will be applied.
    */
-  @Prop() readonly markdownTheme: string | undefined = "ch-markdown-viewer";
+  @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
+
+  /**
+   * `true` to render a slot named "additional-content" to project elements
+   * between the "content" slot (grid messages) and the "send-container" slot.
+   *
+   * This slot can only be rendered if loadingState !== "initial" and
+   * (loadingState !== "all-records-loaded" && items.length > 0).
+   */
+  @Prop() readonly showAdditionalContent: boolean = false;
 
   /**
    * Specifies the literals required in the control.
    */
-  @Prop() readonly translations!: ChatTranslations;
+  @Prop() readonly translations: ChatTranslations = {
+    accessibleName: {
+      clearChat: "Clear chat",
+      copyResponseButton: "Copy assistant response",
+      downloadCodeButton: "Download code",
+      imagePicker: "Select images",
+      removeUploadedImage: "Remove uploaded image",
+      sendButton: "Send",
+      sendInput: "Message",
+      stopGeneratingAnswerButton: "Stop generating answer"
+    },
+    placeholder: {
+      sendInput: "Ask me a question..."
+    },
+    text: {
+      copyCodeButton: "Copy code",
+      processing: `Processing...`,
+      sourceFiles: "Source files:"
+    }
+  };
 
   /**
    * This property allows us to implement custom rendering of chat items.
+   * If allow us to implement the render of the cell content.
    */
-  @Prop() readonly renderItem: (messageModel: ChatMessage) => any =
-    defaultChatRender(
-      this.translations,
-      this.isMobile,
-      this.markdownTheme,
-      this.hyperlinkToDownloadFile
-    );
+  @Prop() readonly renderItem?: (
+    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
+  ) => any;
 
   /**
    * Add a new message at the end of the record, performing a re-render.
@@ -175,12 +207,12 @@ export class ChChat {
     forceUpdate(this);
   }
 
-  #pushMessage = (message: ChatMessage) => {
+  #pushMessage = async (message: ChatMessage) => {
     if (this.items.length === 0) {
       this.items.push(message);
       forceUpdate(this);
     } else {
-      this.#virtualScrollRef.addItems("end", message);
+      await this.#virtualScrollRef.addItems("end", message);
     }
   };
 
@@ -225,7 +257,7 @@ export class ChChat {
     this.#sendMessage();
   };
 
-  #addUserMessageToRecordAndFocusInput = (
+  #addUserMessageToRecordAndFocusInput = async (
     userMessage: ChatMessageByRole<"user">
   ) => {
     this.#editRef.value = "";
@@ -236,7 +268,7 @@ export class ChChat {
       this.#scrollRef.scrollTop = this.#scrollRef.scrollHeight;
     }
 
-    this.#pushMessage(userMessage);
+    await this.#pushMessage(userMessage);
   };
 
   #sendMessage = async () => {
@@ -259,8 +291,8 @@ export class ChChat {
         content: this.#editRef.value
       };
 
-      this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.callbacks.sendChatToLLM(this.items);
+      await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+      this.callbacks?.sendChatToLLM(this.items);
 
       // Queue a new re-render
       forceUpdate(this);
@@ -282,7 +314,7 @@ export class ChChat {
 
       // Upload the image to the server asynchronously
       this.callbacks
-        .uploadImage(imageToUpload.file)
+        ?.uploadImage(imageToUpload.file)
         .then(imageSrc => {
           userContent[index + 1] = {
             type: "image_url",
@@ -293,7 +325,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks.sendChatToLLM(this.items);
+            this.callbacks?.sendChatToLLM(this.items);
           }
         })
         .catch(() => {
@@ -303,7 +335,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks.sendChatToLLM(this.items);
+            this.callbacks?.sendChatToLLM(this.items);
           }
         });
     });
@@ -313,7 +345,7 @@ export class ChChat {
       role: "user",
       content: userContent
     };
-    this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+    await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
 
     // Free the memory
     this.imagesToUpload = [];
@@ -322,7 +354,7 @@ export class ChChat {
   #handleStopGenerating = (event: MouseEvent) => {
     event.stopPropagation();
 
-    this.callbacks.stopGeneratingAnswer!();
+    this.callbacks?.stopGeneratingAnswer!();
   };
 
   // #handleFilesChanged = (event: ImagePickerCustomEvent<FileList | null>) => {
@@ -354,6 +386,12 @@ export class ChChat {
     URL.revokeObjectURL(imageFile); // Free the memory
   };
 
+  #virtualItemsChanged = (
+    event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
+  ) => {
+    this.virtualItems = event.detail.virtualItems as ChatMessage[];
+  };
+
   #renderChatOrEmpty = () =>
     this.loadingState === "all-records-loaded" && this.items.length === 0 ? (
       <slot name="empty-chat"></slot>
@@ -382,9 +420,27 @@ export class ChChat {
             (this.#virtualScrollRef = el as HTMLChVirtualScrollerElement)
           }
         >
-          {this.virtualItems.map(this.renderItem)}
+          {this.virtualItems.map(this.#renderItem)}
         </ch-virtual-scroller>
       </ch-smart-grid>
+    );
+
+  #renderItem = (messageModel: ChatMessage) =>
+    messageModel.role !== "system" && (
+      <ch-smart-grid-cell
+        key={messageModel.id}
+        cellId={messageModel.id}
+        part={tokenMap({
+          [`message ${messageModel.role}`]: true,
+          [messageModel.parts]: !!messageModel.parts,
+          [(messageModel as ChatMessageByRole<"assistant">).status]:
+            messageModel.role === "assistant"
+        })}
+      >
+        {this.renderItem
+          ? this.renderItem(messageModel)
+          : defaultChatRender(this.el)(messageModel)}
+      </ch-smart-grid-cell>
     );
 
   #loadMoreItems = () => {
@@ -428,12 +484,6 @@ export class ChChat {
     }, 10);
   };
 
-  #virtualItemsChanged = (
-    event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
-  ) => {
-    this.virtualItems = event.detail.virtualItems as ChatMessage[];
-  };
-
   connectedCallback() {
     // Scrollbar styles
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
@@ -442,13 +492,26 @@ export class ChChat {
   render() {
     const accessibleName = this.translations.accessibleName;
 
+    const canShowAdditionalContent =
+      this.showAdditionalContent &&
+      // It's not the initial load
+      this.loadingState !== "initial" &&
+      // It's not the empty chat
+      !(this.items.length === 0 && this.loadingState === "all-records-loaded");
+
     return (
-      <Host>
+      <Host
+        class={
+          canShowAdditionalContent ? "ch-chat--additional-content" : undefined
+        }
+      >
         {this.loadingState === "initial" ? (
           <div class="loading-chat" slot="empty-chat"></div>
         ) : (
           this.#renderChatOrEmpty()
         )}
+
+        {canShowAdditionalContent && <slot name="additional-content" />}
 
         <div
           class={{
@@ -457,7 +520,7 @@ export class ChChat {
           }}
           part="send-container"
         >
-          {this.generatingResponse && this.callbacks.stopGeneratingAnswer && (
+          {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
             <button
               class="stop-generating-answer-button"
               part="stop-generating-answer-button"
@@ -502,9 +565,9 @@ export class ChChat {
             )}
 
             <ch-edit
-              part="send-input"
               accessibleName={accessibleName.sendInput}
               autoGrow
+              hostParts="send-input"
               multiline
               placeholder={this.translations.placeholder.sendInput}
               onKeyDown={this.#sendMessageKeyboard}

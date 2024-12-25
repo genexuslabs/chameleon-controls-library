@@ -1,9 +1,13 @@
+import { GxImageMultiState } from "../../../../common/types";
 import {
+  ActionListItemAdditionalBase,
   ActionListItemAdditionalInformation,
   ActionListModel
 } from "../../../../components/action-list/types";
 import { h } from "@stencil/core";
 
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 const chatIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/chat.svg";
@@ -14,6 +18,48 @@ const editIconPath =
 const deleteIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/delete.svg";
 
+let acceptModification = true;
+
+export const getActionListPathCallback = (
+  additionalItem: ActionListItemAdditionalBase
+): GxImageMultiState => {
+  if (additionalItem.imgSrc === MODULE_ICON) {
+    return {
+      base: "var(--icon-module-base)",
+      active: "var(--icon-module-active)",
+      hover: "var(--icon-module-hover)",
+      disabled: "var(--icon-module-disabled)"
+    };
+  }
+
+  if (additionalItem.imgSrc === FOLDER_ICON) {
+    return {
+      base: "var(--icon-folder-base)",
+      active: "var(--icon-folder-active)",
+      hover: "var(--icon-folder-hover)",
+      disabled: "var(--icon-folder-disabled)"
+    };
+  }
+
+  return {
+    base: "var(--icon-stencil-base)",
+    active: "var(--icon-stencil-active)",
+    hover: "var(--icon-stencil-hover)",
+    disabled: "var(--icon-stencil-disabled)"
+  };
+};
+
+export const modifyItemCaptionCallback = () =>
+  new Promise<void>((resolve, reject) => {
+    if (acceptModification) {
+      resolve();
+    } else {
+      reject();
+    }
+
+    acceptModification = !acceptModification;
+  });
+
 export const GitHubHistoryModel: ActionListModel = [
   {
     id: "5903474",
@@ -23,7 +69,7 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imgSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
           { caption: "Nicolás Cámera" },
           { caption: "6 days ago" }
@@ -43,7 +89,7 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imgSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
           { caption: "Nicolás Cámera" },
           { caption: "6 days ago" }
@@ -60,7 +106,7 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imgSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
           { caption: "Nicolás Cámera" },
           { caption: "6 days ago" }
@@ -76,8 +122,7 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            imageSrc:
-              "https://avatars.githubusercontent.com/u/49991370?s=96&v=4"
+            imgSrc: "https://avatars.githubusercontent.com/u/49991370?s=96&v=4"
           },
           { caption: "Daniel Mariño" },
           { caption: "7 days ago" }
@@ -100,7 +145,7 @@ export const GitHubChangesModel: ActionListModel = [
           { caption: "src\\common\\", part: "github-changes-directory" },
           { caption: "renders.tsx", part: "github-changes-file" }
         ],
-        end: [{ imageSrc: "new" }]
+        end: [{ imgSrc: MODULE_ICON }]
       }
     }
   },
@@ -122,7 +167,7 @@ export const GitHubChangesModel: ActionListModel = [
             part: "github-changes-file"
           }
         ],
-        end: [{ imageSrc: "modified" }]
+        end: [{ imgSrc: "modified" }]
       }
     }
   },
@@ -144,7 +189,7 @@ export const GitHubChangesModel: ActionListModel = [
             part: "github-changes-file"
           }
         ],
-        end: [{ imageSrc: "new" }]
+        end: [{ imgSrc: "new" }]
       }
     }
   },
@@ -167,7 +212,7 @@ export const GitHubChangesModel: ActionListModel = [
             part: "github-changes-file"
           }
         ],
-        end: [{ imageSrc: "new" }]
+        end: [{ imgSrc: "new" }]
       }
     }
   },
@@ -190,7 +235,7 @@ export const GitHubChangesModel: ActionListModel = [
             part: "github-changes-file"
           }
         ],
-        end: [{ imageSrc: "new" }]
+        end: [{ imgSrc: "new" }]
       }
     }
   }
@@ -346,7 +391,7 @@ export const recentKBs: ActionListModel = [
     caption: "TestIDEWeb",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -356,7 +401,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularVisualTests",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -366,7 +411,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularPlayground",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -376,7 +421,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularAccessibility",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -386,7 +431,7 @@ export const recentKBs: ActionListModel = [
     caption: "UnanimoShowcase",
     additionalInformation: {
       "stretch-start": {
-        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   }
@@ -406,7 +451,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Attribute/Variable",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -416,7 +461,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Button",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -426,7 +471,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Component",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -436,7 +481,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Image",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -446,7 +491,7 @@ export const panelToolbox: ActionListModel = [
         caption: "TextBlock",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -456,7 +501,7 @@ export const panelToolbox: ActionListModel = [
         caption: "User Control",
         additionalInformation: {
           "stretch-start": {
-            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imgSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       }
@@ -466,14 +511,17 @@ export const panelToolbox: ActionListModel = [
 
 const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
   "stretch-start": {
-    center: [{ imageSrc: chatIconPath, imageType: "mask" }]
+    center: [{ imgSrc: chatIconPath }]
+  },
+  "inline-caption": {
+    start: [{ imgSrc: chatIconPath, caption: "Status" }]
   },
   "stretch-end": {
     center: [
       {
         accessibleName: "Edit caption",
-        imageSrc: editIconPath,
-        imageType: "mask",
+        imgSrc: editIconPath,
+        imgType: "mask",
         action: {
           type: "modify",
           showOnHover: true
@@ -481,8 +529,8 @@ const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
       },
       {
         accessibleName: "Delete item",
-        imageSrc: deleteIconPath,
-        imageType: "mask",
+        imgSrc: deleteIconPath,
+        imgType: "mask",
         action: {
           type: "remove",
           showOnHover: true
@@ -490,7 +538,7 @@ const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
       },
       {
         accessibleName: "Pin item",
-        imageType: "mask",
+        imgType: "mask",
         action: {
           type: "fix"
         }
@@ -555,7 +603,7 @@ export const GxEAINotifications: ActionListModel = [
     type: "actionable",
     caption: "Project Name",
     additionalInformation: {
-      "inline-caption": { end: [{ imageSrc: redDotIconPath }] },
+      "inline-caption": { end: [{ imgSrc: redDotIconPath }] },
       "block-end": {
         start: [
           { caption: "Ticket #ID Finalized" },
@@ -884,5 +932,137 @@ export const keyboardNavigation: ActionListModel = [
         caption: "item 14.1"
       }
     ]
+  }
+];
+
+const processingAnimation = () => (
+  <svg
+    width="14"
+    height="13"
+    viewBox="0 0 14 13"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="infinite-rotate"
+  >
+    <path
+      d="M6.73324 11.9269C9.67875 11.9269 12.0666 9.53911 12.0666 6.59359C12.0666 3.64807 9.67875 1.26025 6.73324 1.26025C3.78772 1.26025 1.3999 3.64807 1.3999 6.59359C1.3999 9.53911 3.78772 11.9269 6.73324 11.9269Z"
+      stroke="var(--mer-color__primary-blue--200)"
+      stroke-opacity="0.2"
+      stroke-width="2.06667"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M1.3999 6.59359C1.3999 3.66025 3.7999 1.26025 6.73324 1.26025"
+      stroke="var(--mer-color__primary-blue--200)"
+      stroke-width="2.06667"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <style>
+      {`.infinite-rotate {
+  animation: infinite-rotate 1s infinite linear;
+}
+
+@keyframes infinite-rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+`}
+    </style>
+  </svg>
+);
+
+const ticketAdditionalInfo = (
+  status: "Open" | "Pending" | "Processing" | "Error" | "Closed",
+  description: string,
+  priority: "Low" | "Medium" | "High"
+): ActionListItemAdditionalInformation => ({
+  "block-start": {
+    start:
+      status === "Processing"
+        ? [
+            { jsx: processingAnimation },
+            {
+              caption: status,
+              part: "status processing"
+            }
+          ]
+        : [
+            {
+              caption: status,
+              part: `status ${status.toLowerCase()} dot`
+            }
+          ]
+  },
+  "block-end": { start: [{ caption: description, part: "description" }] },
+  "stretch-end": {
+    center: [
+      {
+        caption: priority,
+        part: "priority",
+        imgSrc:
+          "https://unpkg.com/@genexus/mercury@latest/dist/assets/icons/system/light/success.svg#enabled",
+        imgType: "mask"
+      }
+    ]
+  }
+});
+
+export const ticketList: ActionListModel = [
+  {
+    id: "1",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Pending",
+      "Incorrect validation on user registration in login form. Incorrect validation on user registration in login form.Incorrect validation on user registration in login form.",
+      "Medium"
+    ),
+    type: "actionable"
+  },
+  { type: "separator" },
+  {
+    id: "2",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Closed",
+      "Image upload feature not working as expected in the Main section.",
+      "High"
+    ),
+    type: "actionable"
+  },
+  { type: "separator" },
+  {
+    id: "3",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Error",
+      "Image upload feature not working as expected in the Main section.",
+      "Medium"
+    ),
+    type: "actionable"
+  },
+  { type: "separator" },
+  {
+    id: "4",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Processing",
+      "Mismatch between email body content in general use case",
+      "Low"
+    ),
+    type: "actionable"
+  },
+  { type: "separator" },
+  {
+    id: "5",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Open",
+      "Incorrect validation on user registration in login form.",
+      "Medium"
+    ),
+    type: "actionable"
   }
 ];

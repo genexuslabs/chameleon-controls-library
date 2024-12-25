@@ -49,6 +49,7 @@ export type ChatMessageByRoleNoId<T extends ChatMessageRole> =
 export type ChatMessageSystem = {
   id: string;
   role: "system";
+  metadata?: string;
   content: string;
 };
 
@@ -56,12 +57,24 @@ export type ChatMessageUser = {
   id: string;
   role: "user";
   content: ChatUserContent;
+  metadata?: string;
+
+  /**
+   * Added to the parts of the cell.
+   */
+  parts?: string;
 };
 
 export type ChatMessageAssistant = {
   id: string;
   role: "assistant";
-  content: ChatAssistantContent;
+  content?: ChatAssistantContent;
+  metadata?: string;
+
+  /**
+   * Added to the parts of the cell.
+   */
+  parts?: string;
 
   /**
    * Specifies the status of the message. If not defined, it will default
@@ -74,6 +87,12 @@ export type ChatMessageError = {
   id: string;
   role: "error";
   content: string;
+  metadata?: string;
+
+  /**
+   * Added to the parts of the cell.
+   */
+  parts?: string;
 };
 
 export type ChatMessageRole = "system" | "user" | "assistant" | "error";

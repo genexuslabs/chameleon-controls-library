@@ -473,7 +473,7 @@ export class ChTabularGrid {
   }
 
   @Listen("mousedown", { passive: true })
-  clickHandler(eventInfo: MouseEvent) {
+  mouseDownHandler(eventInfo: MouseEvent) {
     const row = this.manager.getRowEventTarget(eventInfo);
     const cell = this.manager.getCellEventTarget(eventInfo);
 
@@ -490,22 +490,18 @@ export class ChTabularGrid {
   }
 
   @Listen("mouseup", { passive: true })
-  mouseUpHandler(eventInfo: MouseEvent) {
-    const row = this.manager.getRowEventTarget(eventInfo);
-    const cell = this.manager.getCellEventTarget(eventInfo);
-
+  mouseUpHandler() {
     if (this.manager.selection.selecting) {
       this.stopSelecting();
     }
+  }
 
-    /**
-     * - Verifies that the mouseup event occurs over a row and not over a column or rowset legend.
-     * - Verifies that the mouseup event occurs on the same row where the mousedown or the last mousemove occurred.
-     *   This aims to prevent cases where a mousedown starts on a row in grid A and the mouseup happens on a row in grid B (drag & drop scenario).
-     * - The emitRowClicked() cannot be placed inside the if (this.manager.selection.selecting)
-     *   because the selection can be canceled during the mousemove.
-     */
-    if (row && row === this.rowFocused) {
+  @Listen("click", { passive: true })
+  clickHandler(eventInfo: MouseEvent) {
+    const row = this.manager.getRowEventTarget(eventInfo);
+    const cell = this.manager.getCellEventTarget(eventInfo);
+
+    if (row) {
       this.emitRowClicked(row, cell);
     }
   }
@@ -1316,7 +1312,7 @@ export class ChTabularGrid {
           <slot name="header"></slot>
         </header>
         <section
-          class="main"
+          class="main ch-scrollable"
           style={this.gridStyle}
           part="main"
           ref={el => (this.gridLayoutElement = el)}

@@ -23,13 +23,14 @@ A control to render markdown syntax. It supports GitHub Flavored Markdown
 
 ## Properties
 
-| Property        | Attribute        | Description                                                                                                                              | Type                                                | Default                |
-| --------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
-| `rawHtml`       | `raw-html`       | `true` to render raw HTML with sanitization.                                                                                             | `boolean`                                           | `false`                |
-| `renderCode`    | --               | This property allows us to implement custom rendering for the code blocks.                                                               | `(options: MarkdownViewerCodeRenderOptions) => any` | `defaultCodeRender`    |
-| `showIndicator` | `show-indicator` | Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed. | `boolean`                                           | `undefined`            |
-| `theme`         | `theme`          | Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied.                                      | `string`                                            | `"ch-markdown-viewer"` |
-| `value`         | `value`          | Specifies the markdown string to parse.                                                                                                  | `string`                                            | `undefined`            |
+| Property                      | Attribute                         | Description                                                                                                                               | Type                                                | Default                |
+| ----------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
+| `avoidFlashOfUnstyledContent` | `avoid-flash-of-unstyled-content` | `true` to visually hide the contents of the root node while the control's style is not loaded. Only works if the `theme` property is set. | `boolean`                                           | `false`                |
+| `rawHtml`                     | `raw-html`                        | `true` to render raw HTML with sanitization.                                                                                              | `boolean`                                           | `false`                |
+| `renderCode`                  | --                                | This property allows us to implement custom rendering for the code blocks.                                                                | `(options: MarkdownViewerCodeRenderOptions) => any` | `defaultCodeRender`    |
+| `showIndicator`               | `show-indicator`                  | Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.  | `boolean`                                           | `undefined`            |
+| `theme`                       | `theme`                           | Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied.                                       | `string`                                            | `"ch-markdown-viewer"` |
+| `value`                       | `value`                           | Specifies the markdown string to parse.                                                                                                   | `string`                                            | `undefined`            |
 
 
 ## Dependencies
@@ -37,7 +38,6 @@ A control to render markdown syntax. It supports GitHub Flavored Markdown
 ### Used by
 
  - [ch-chat](../chat)
- - [ch-showcase](../../showcase/assets/components)
 
 ### Depends on
 
@@ -50,7 +50,6 @@ graph TD;
   ch-markdown-viewer --> ch-theme
   ch-markdown-viewer --> ch-code
   ch-chat --> ch-markdown-viewer
-  ch-showcase --> ch-markdown-viewer
   style ch-markdown-viewer fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

@@ -1,318 +1,187 @@
-.card {
-  margin: 4px; /* Necessary to avoid iframe's "overflow: clip" issues */
-  padding: var(--spacing--l, var(--mer-spacing--md));
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_Regular.woff2");
+  font-weight: 400;
+  font-display: swap;
 }
 
-.mercury .card {
-  display: grid;
-  box-shadow: 0px 0px 6px 0px #00000030;
-  border-radius: 8px;
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
+  font-weight: 600;
+  font-display: swap;
 }
 
-.dark .mercury .card {
-  background-color: var(--mer-color__elevation--01);
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_Bold.woff2");
+  font-weight: 700;
+  font-display: swap;
 }
 
-.card-markup {
-  position: relative;
-
-  pre {
-    margin: 0; /* WA until this is fixed by Unanimo/Mercury */
-  }
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Thin.woff2");
+  font-weight: 100;
+  font-style: normal;
 }
-
-.copy-button {
-  --icon-path: url("https://unpkg.com/@genexus/unanimo@0.12.0/dist/assets/icons/copy.svg");
-  position: absolute;
-  inset-block-start: var(--spacing--l, var(--mer-spacing--md));
-  inset-inline-end: var(--spacing--l, var(--mer-spacing--md));
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ThinItalic.woff2");
+  font-weight: 100;
+  font-style: italic;
 }
-
-.card-properties {
-  display: grid;
-  grid-auto-flow: row;
-  grid-auto-rows: max-content;
-  gap: var(--spacing--l, var(--mer-spacing--md));
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ExtraLight.woff2");
+  font-weight: 200;
+  font-style: normal;
 }
-
-label {
-  display: grid;
-  grid-template-rows: max-content max-content;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ExtraLightItalic.woff2");
+  font-weight: 200;
+  font-style: italic;
 }
-
-fieldset {
-  display: grid;
-  grid-auto-flow: row;
-  gap: var(--spacing--m, var(--mer-spacing--xs));
-  border: unset;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Light.woff2");
+  font-weight: 300;
+  font-style: normal;
 }
-
-legend {
-  margin-block-end: var(--spacing--m, var(--mer-spacing--xs));
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-LightItalic.woff2");
+  font-weight: 300;
+  font-style: italic;
 }
-
-.form-field {
-  display: grid;
-  grid-auto-rows: max-content;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Regular.woff2");
+  font-weight: 400;
+  font-style: normal;
 }
-
-.fieldset-test {
-  border: 1px solid
-    color-mix(
-      in srgb,
-      var(--colors-foundation__purple--300, var(--mer-color__primary-blue--600))
-        40%,
-      transparent
-    );
-  padding: 8px;
-  margin-block-end: 16px;
-
-  form {
-    display: flex;
-    gap: 8px;
-  }
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Italic.woff2");
+  font-weight: 400;
+  font-style: italic;
 }
-
-.field-legend-test {
-  padding-inline: 16px;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Medium.woff2");
+  font-weight: 500;
+  font-style: normal;
 }
-
-.barcode-scanner-test-main-wrapper {
-  display: grid;
-  grid-template-rows: 1fr max-content;
-  gap: var(--spacing--m, var(--mer-spacing--xs));
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-MediumItalic.woff2");
+  font-weight: 500;
+  font-style: italic;
 }
-
-.checkbox-test-main-wrapper {
-  display: grid;
-  grid-auto-rows: 128px;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-SemiBold.woff2");
+  font-weight: 600;
+  font-style: normal;
 }
-
-.image-test-main-wrapper {
-  display: grid;
-  grid-template-columns: max-content max-content max-content max-content;
-  grid-template-rows: max-content max-content;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-SemiBoldItalic.woff2");
+  font-weight: 600;
+  font-style: italic;
 }
-
-.markdown-test-main-wrapper {
-  display: grid;
-  grid-template-rows: max-content 1fr;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing--m, var(--mer-spacing--xs));
-
-  textarea {
-    block-size: 100%;
-    max-block-size: unset;
-    contain: size;
-  }
-
-  ch-markdown-viewer {
-    contain: size;
-    overflow: auto;
-  }
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Bold.woff2");
+  font-weight: 700;
+  font-style: normal;
 }
-
-.markdown-test-properties {
-  display: flex;
-  justify-content: flex-start;
-  grid-column: 1 / 3;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-BoldItalic.woff2");
+  font-weight: 700;
+  font-style: italic;
 }
-
-.popover-test-main-wrapper {
-  display: grid;
-  contain: size;
-  overflow: auto;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ExtraBold.woff2");
+  font-weight: 800;
+  font-style: normal;
 }
-
-.popover-test-scroll {
-  padding: 200px;
-  inline-size: 200dvw;
-  block-size: 200dvh;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ExtraBoldItalic.woff2");
+  font-weight: 800;
+  font-style: italic;
 }
-
-.radio-group-test-main-wrapper {
-  display: grid;
-  grid-auto-rows: max-content;
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Black.woff2");
+  font-weight: 900;
+  font-style: normal;
 }
-
-.segmented-control-test-main-wrapper {
-  display: grid;
-  grid-template-rows: max-content;
-}
-
-.tab-test-main-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.unanimo .tab-test-main-wrapper {
-  ch-tab-render {
-    gap: 8px;
-
-    &::part(page-container) {
-      border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
-    }
-  }
-}
-
-.action-group-test-main-wrapper {
-  display: grid;
-  grid-template-rows: 100px 100px;
-  gap: var(--spacing--l, var(--mer-spacing--md));
-
-  .fieldset-test {
-    display: grid;
-    grid-auto-flow: row;
-    gap: var(--spacing--m, var(--mer-spacing--xs));
-    resize: inline;
-    overflow: auto;
-  }
-}
-
-.dropdown-test-main-wrapper {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 128px;
-  grid-template-rows: 80px;
-  gap: var(--spacing--l, var(--mer-spacing--md));
-}
-
-/* ch-action-list-render {
-  gap: 4px;
-
-  &::part(item__caption) {
-    font-weight: 600;
-  }
-
-  &::part(item__action) {
-    padding-inline: 8px;
-    padding-block: 4px;
-  }
-
-  &::part(item__action group) {
-    border: 1px solid;
-  }
-
-  &::part(expandable) {
-    padding-inline-start: 15px;
-  }
-
-  &::part(item__action):focus-visible {
-    outline: 2px solid #be6c6c;
-    outline-offset: -2px;
-  }
-
-  &::part(item__action disabled) {
-    color: gray;
-  }
-
-  &::part(item__action selected) {
-    background-color: color-mix(in srgb, currentColor 10%, transparent);
-  }
-
-  &::part(time) {
-    display: block;
-    font-style: italic;
-    color: gray;
-  }
-
-  &::part(hyperlink-notification) {
-    text-decoration: underline;
-  }
-} */
-
-ch-code > pre > code {
-  contain: size;
-  overflow: auto;
-}
-
-ch-showcase ch-flexible-layout-render {
-  hr {
-    margin-inline: calc(var(--spacing--l, var(--mer-spacing--md)) * -1);
-  }
-
-  textarea.form-input {
-    min-block-size: 32px;
-    block-size: 200px;
-    max-block-size: unset;
-    resize: vertical;
-  }
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-BlackItalic.woff2");
+  font-weight: 900;
+  font-style: italic;
 }
 
 :root.dark {
-  --icon-module-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module.svg#enabled");
-  --icon-module-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module.svg#active");
-  --icon-module-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module.svg#hover");
-  --icon-module-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module.svg#disabled");
+  --icon-module-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module.svg#enabled");
+  --icon-module-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module.svg#active");
+  --icon-module-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module.svg#hover");
+  --icon-module-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module.svg#disabled");
 
-  --icon-folder-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder.svg#enabled");
-  --icon-folder-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder.svg#active");
-  --icon-folder-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder.svg#hover");
-  --icon-folder-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder.svg#disabled");
+  --icon-folder-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder.svg#enabled");
+  --icon-folder-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder.svg#active");
+  --icon-folder-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder.svg#hover");
+  --icon-folder-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder.svg#disabled");
 
-  --icon-module-base--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module-open.svg#enabled");
-  --icon-module-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module-open.svg#active");
-  --icon-module-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module-open.svg#hover");
-  --icon-module-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module-open.svg#disabled");
+  --icon-module-base--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module-open.svg#enabled");
+  --icon-module-active--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module-open.svg#active");
+  --icon-module-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module-open.svg#hover");
+  --icon-module-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module-open.svg#disabled");
 
-  --icon-folder-base--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#enabled");
-  --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#active");
-  --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#hover");
-  --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#disabled");
+  --icon-folder-base--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder-open.svg#enabled");
+  --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder-open.svg#active");
+  --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder-open.svg#hover");
+  --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder-open.svg#disabled");
 
-  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#enabled");
-  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#active");
-  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#hover");
-  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#disabled");
+  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/stencil.svg#enabled");
+  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/stencil.svg#active");
+  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/stencil.svg#hover");
+  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/stencil.svg#disabled");
+
+  --icon__system_copy_primary--enabledd: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/system/dark/copy.svg#primary--enabled");
 }
 
 :root.light {
-  --icon-module-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module.svg#enabled");
-  --icon-module-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module.svg#active");
-  --icon-module-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module.svg#hover");
-  --icon-module-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module.svg#disabled");
+  --icon-module-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module.svg#enabled");
+  --icon-module-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module.svg#active");
+  --icon-module-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module.svg#hover");
+  --icon-module-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module.svg#disabled");
 
-  --icon-folder-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder.svg#enabled");
-  --icon-folder-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder.svg#active");
-  --icon-folder-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder.svg#hover");
-  --icon-folder-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder.svg#disabled");
+  --icon-folder-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder.svg#enabled");
+  --icon-folder-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder.svg#active");
+  --icon-folder-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder.svg#hover");
+  --icon-folder-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder.svg#disabled");
 
-  --icon-module-base--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module-open.svg#enabled");
-  --icon-module-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module-open.svg#active");
-  --icon-module-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module-open.svg#hover");
-  --icon-module-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module-open.svg#disabled");
+  --icon-module-base--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module-open.svg#enabled");
+  --icon-module-active--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module-open.svg#active");
+  --icon-module-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module-open.svg#hover");
+  --icon-module-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module-open.svg#disabled");
 
-  --icon-folder-base--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#enabled");
-  --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#active");
-  --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#hover");
-  --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#disabled");
+  --icon-folder-base--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder-open.svg#enabled");
+  --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder-open.svg#active");
+  --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder-open.svg#hover");
+  --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder-open.svg#disabled");
 
-  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#enabled");
-  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#active");
-  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#hover");
-  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#disabled");
-}
+  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/stencil.svg#enabled");
+  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/stencil.svg#active");
+  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/stencil.svg#hover");
+  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/stencil.svg#disabled");
 
-/* This is a WA to improve the UX */
-ch-tree-view-render.tree-view-primary::part(item__action) {
-  --ch-tree-view-item__image-size: 20px;
-  padding-block: var(--spacing--s, var(--mer-spacing--2xs));
-}
-
-/* 
-.combo-box::part(item):hover {
-  background-color: var(--accents__primary-dim--hover);
-} */
-
-.chat {
-  &::part(content) {
-    /* gap: 12px; */
-  }
-
-  &::part(message) {
-    border: 1px solid;
-    border-radius: 8px;
-    padding: 8px;
-  }
+  --icon__system_copy_primary--enabledd: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/system/light/copy.svg#primary--enabled");
 }

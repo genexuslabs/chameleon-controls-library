@@ -1,9 +1,12 @@
 import { h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
-import { ChImage } from "../../../../components/image/image";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties } from "../utils";
 
-const state: Partial<Mutable<ChImage>> = {};
+const state: Partial<HTMLChImageElement> = {};
 let button2Ref: HTMLButtonElement;
 
 const render = () => (
@@ -40,7 +43,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChImage>> = [
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChImageElement> = [
   {
     caption: "Properties",
     properties: [
@@ -72,39 +75,155 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChImage>> = [
   }
 ];
 
-export const imageShowcaseStory: ShowcaseStory<Mutable<ChImage>> = {
+const showcaseImage1PropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChImageElement>[] =
+  [
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    {
+      name: "getImagePathCallback",
+      fixed: true,
+      value: "getImagePathCallback",
+      type: "function"
+    },
+    {
+      name: "src",
+      defaultValue: undefined,
+      type: "string"
+    },
+    {
+      name: "type",
+      defaultValue: "background",
+      type: "string"
+    }
+  ];
+
+const showcaseButton1PropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChImageElement>[] =
+  [
+    {
+      name: "class",
+      fixed: true,
+      value: "button-tertiary button-icon",
+      type: "string"
+    },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    {
+      name: "type",
+      fixed: true,
+      value: "button",
+      type: "string"
+    }
+  ];
+
+const showcaseImage2PropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChImageElement>[] =
+  [
+    { name: "containerRef", fixed: true, value: "buttonRef", type: "string" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    {
+      name: "getImagePathCallback",
+      fixed: true,
+      value: "getImagePathCallback",
+      type: "function"
+    },
+    {
+      name: "src",
+      defaultValue: undefined,
+      type: "string"
+    },
+    {
+      name: "type",
+      defaultValue: "background",
+      type: "string"
+    }
+  ];
+
+const showcaseButton2PropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChImageElement>[] =
+  [
+    {
+      name: "class",
+      fixed: true,
+      value: "button-tertiary button-icon",
+      type: "string"
+    },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    {
+      name: "type",
+      fixed: true,
+      value: "button",
+      type: "string"
+    }
+    // TODO: Add ref property
+  ];
+
+export const imageShowcaseStory: ShowcaseStory<HTMLChImageElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<button
-          class="button-tertiary button-icon"
-          disabled={<disabled value>}
-          type="button"
+  markupWithoutUIModel: {
+    react: () => `<button${renderShowcaseProperties(
+      state,
+      "react",
+      showcaseButton1PropertiesInfo
+    )}
+      >
+        <ChImage${renderShowcaseProperties(
+          state,
+          "react",
+          showcaseImage1PropertiesInfo,
+          11
+        )}
+        ></ChImage>
+        Some text
+      </button>
+
+      <button${renderShowcaseProperties(
+        state,
+        "react",
+        showcaseButton2PropertiesInfo
+      )}
+      >
+        <div>
+          <ChImage${renderShowcaseProperties(
+            state,
+            "react",
+            showcaseImage2PropertiesInfo,
+            13
+          )}
+          ></ChImage>
+        </div>
+        Some text
+      </button>`,
+
+    stencil: () => `<button${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcaseButton1PropertiesInfo
+    )}
         >
-          <ch-image
-            disabled={<disabled value>}
-            getImagePathCallback={getImagePathCallback}
-            src={<src value>}
-            type={<type value>}
+          <ch-image${renderShowcaseProperties(
+            state,
+            "stencil",
+            showcaseImage1PropertiesInfo,
+            13
+          )}
           ></ch-image>
           Some text
         </button>
-
-        <button
-          class="button-tertiary button-icon"
-          disabled={<disabled value>}
-          type="button"
-          ref={el => (this.#buttonRef = el)}
+  
+        <button${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcaseButton2PropertiesInfo
+        )}
         >
           <div>
-            <ch-image
-              containerRef={this.#buttonRef}
-              disabled={<disabled value>}
-              getImagePathCallback={getImagePathCallback}
-              src={<src value>}
-              type={<type value>}
+            <ch-image${renderShowcaseProperties(
+              state,
+              "stencil",
+              showcaseImage2PropertiesInfo,
+              15
+            )}
             ></ch-image>
           </div>
           Some text
-        </button>`,
+        </button>`
+  },
   render: render,
   state: state
 };

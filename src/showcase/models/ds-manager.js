@@ -1,6 +1,6 @@
 const DS_MANAGER_LANGUAGE_KEY = "chameleon-design-system";
 const UNANIMO_DS =
-  "https://unpkg.com/@genexus/unanimo@latest/dist/css/unanimo.css";
+  "https://unpkg.com/@genexus/unanimo@latest/dist/bundles/css/all.css";
 const MERCURY_DS =
   "https://unpkg.com/@genexus/mercury@latest/dist/bundles/css/all.css";
 
@@ -55,9 +55,6 @@ export function setDesignSystemInBrowser(designSystem) {
 // Initialize the design system
 const designSystem = getDesignSystem();
 
-if (designSystem) {
-  setDesignSystemInBrowser(designSystem);
-} else {
+if (!designSystem) {
   storeDesignSystem(DEFAULT_DS);
-  setDesignSystemInBrowser(DEFAULT_DS);
 }

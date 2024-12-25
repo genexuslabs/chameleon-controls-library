@@ -37,6 +37,26 @@
   text-align: end;
 }
 
+blockquote {
+  margin-inline: 0;
+}
+
+hr {
+  block-size: 1px;
+  margin: unset;
+  padding: unset;
+  border: unset;
+  background-color: currentColor;
+}
+
+table {
+  display: block;
+  overflow: auto;
+  word-break: normal;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
 ch-code {
   --ch-code-indicator-color: var(--ch-markdown-viewer-indicator-color);
   --ch-code-inline-size: var(--ch-markdown-viewer-inline-size);

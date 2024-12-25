@@ -1,4 +1,4 @@
-import { ImageRender } from "../../common/types";
+import { GxImageMultiState, ImageRender } from "../../common/types";
 // import { ChActionListRender } from "./action-list-render";
 
 export type ActionListModel = ActionListItemModel[];
@@ -71,6 +71,7 @@ export type ActionListItemActionable = {
 export type ActionListItemAdditionalInformation = {
   "stretch-start"?: ActionListItemAdditionalModel;
   "block-start"?: ActionListItemAdditionalModel;
+  // TODO: Remove "center" section
   "inline-caption"?: ActionListItemAdditionalModel;
   "block-end"?: ActionListItemAdditionalModel;
   "stretch-end"?: ActionListItemAdditionalModel;
@@ -82,6 +83,12 @@ export type ActionListItemAdditionalModel = {
   end?: ActionListItemAdditionalItem[];
 };
 
+export type ActionListItemAdditionalInformationSection =
+  keyof ActionListItemAdditionalInformation;
+
+export type ActionListItemAdditionalInformationSectionAlign =
+  keyof ActionListItemAdditionalModel;
+
 export type ActionListItemAdditionalItem =
   | ActionListItemAdditionalBase
   | ActionListItemAdditionalAction
@@ -91,8 +98,12 @@ export type ActionListItemAdditionalItem =
 export type ActionListItemAdditionalBase = {
   id?: string;
   caption?: string;
-  imageSrc?: string;
-  imageType?: ImageRender;
+  imgSrc?: string;
+
+  /**
+   * Specifies how the image will be rendered. Defaults to `"background"`.
+   */
+  imgType?: ImageRender;
   part?: string;
 };
 
@@ -164,7 +175,6 @@ export type ActionListItemSeparator = {
   type: ActionListItemTypeSeparator;
 };
 
-// export type ActionListImagePathCallback = (
-//   imgSrc: string,
-//   treeState: ChActionListRender
-// ) => string;
+export type ActionListImagePathCallback = (
+  additionalItem: ActionListItemAdditionalBase
+) => GxImageMultiState | undefined;

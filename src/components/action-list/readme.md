@@ -1,23 +1,29 @@
 # ch-action-list-render
 
+## Item Layout
 
+![ActionListItem layout](action-list-item-layout.svg "Action List Item Layout")
 
 <!-- Auto Generated Below -->
 
 
 ## Properties
 
-| Property             | Attribute        | Description                                                                                                                                                        | Type                                                                                                                                                   | Default                        |
-| -------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
-| `checkbox`           | `checkbox`       | Set this attribute if you want display a checkbox in all items by default.                                                                                         | `boolean`                                                                                                                                              | `false`                        |
-| `checked`            | `checked`        | Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`                                                 | `boolean`                                                                                                                                              | `false`                        |
-| `editableItems`      | `editable-items` | This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.                      | `boolean`                                                                                                                                              | `DEFAULT_EDITABLE_ITEMS_VALUE` |
-| `fixItemCallback`    | --               | Callback that is executed when and item requests to be fixed/unfixed. If the callback is not defined, the item will be fixed/unfixed without further confirmation. | `(itemInfo: ActionListItemActionable, newFixedValue: boolean) => Promise<boolean>`                                                                     | `undefined`                    |
-| `model`              | --               | This property lets you define the model of the control.                                                                                                            | `ActionListItemModel[]`                                                                                                                                | `[]`                           |
-| `removeItemCallback` | --               | Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.             | `(itemInfo: ActionListItemActionable) => Promise<boolean>`                                                                                             | `undefined`                    |
-| `renderItem`         | --               | This property allows us to implement custom rendering of tree items.                                                                                               | `(itemModel: ActionListItemModel, actionListRenderState: ChActionListRender, disabled?: boolean, nested?: boolean, nestedExpandable?: boolean) => any` | `defaultRenderItem`            |
-| `selection`          | `selection`      | Specifies the type of selection implemented by the control.                                                                                                        | `"multiple" \| "none" \| "single"`                                                                                                                     | `"none"`                       |
-| `sortItemsCallback`  | --               | Callback that is executed when the treeModel is changed to order its items.                                                                                        | `(subModel: ActionListModel) => void`                                                                                                                  | `defaultSortItemsCallback`     |
+| Property                    | Attribute        | Description                                                                                                                                                                            | Type                                                                                                                                                   | Default                         |
+| --------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| `checkbox`                  | `checkbox`       | Set this attribute if you want display a checkbox in all items by default.                                                                                                             | `boolean`                                                                                                                                              | `false`                         |
+| `checked`                   | `checked`        | Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`                                                                     | `boolean`                                                                                                                                              | `false`                         |
+| `disabled`                  | `disabled`       | This attribute lets you specify if all items are disabled. If disabled, action list items will not fire any user interaction related event (for example, `selectedItemsChange` event). | `boolean`                                                                                                                                              | `false`                         |
+| `editableItems`             | `editable-items` | This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.                                          | `boolean`                                                                                                                                              | `DEFAULT_EDITABLE_ITEMS_VALUE`  |
+| `fixItemCallback`           | --               | Callback that is executed when and item requests to be fixed/unfixed. If the callback is not defined, the item will be fixed/unfixed without further confirmation.                     | `(itemInfo: ActionListItemActionable, newFixedValue: boolean) => Promise<boolean>`                                                                     | `undefined`                     |
+| `getImagePathCallback`      | --               | This property specifies a callback that is executed when the path for an imgSrc needs to be resolved.                                                                                  | `(additionalItem: ActionListItemAdditionalBase) => GxImageMultiState`                                                                                  | `undefined`                     |
+| `model`                     | --               | This property lets you define the model of the control.                                                                                                                                | `ActionListItemModel[]`                                                                                                                                | `[]`                            |
+| `modifyItemCaptionCallback` | --               | Callback that is executed when a item request to modify its caption.                                                                                                                   | `(actionListItemId: string, newCaption: string) => Promise<void>`                                                                                      | `undefined`                     |
+| `removeItemCallback`        | --               | Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.                                 | `(itemInfo: ActionListItemActionable) => Promise<boolean>`                                                                                             | `undefined`                     |
+| `renderItem`                | --               | This property allows us to implement custom rendering of tree items.                                                                                                                   | `(itemModel: ActionListItemModel, actionListRenderState: ChActionListRender, disabled?: boolean, nested?: boolean, nestedExpandable?: boolean) => any` | `defaultRenderItem`             |
+| `selection`                 | `selection`      | Specifies the type of selection implemented by the control.                                                                                                                            | `"multiple" \| "none" \| "single"`                                                                                                                     | `"none"`                        |
+| `sortItemsCallback`         | --               | Callback that is executed when the treeModel is changed to order its items.                                                                                                            | `(subModel: ActionListModel) => void`                                                                                                                  | `defaultSortItemsCallback`      |
+| `translations`              | --               | Specifies the literals required for the control.                                                                                                                                       | `{ confirmDelete: string; cancelDelete: string; confirmModify: string; cancelModify: string; }`                                                        | `actionListDefaultTranslations` |
 
 
 ## Events
@@ -119,7 +125,6 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-showcase](../../showcase/assets/components)
  - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
@@ -132,7 +137,7 @@ Type: `Promise<void>`
 graph TD;
   ch-action-list-render --> ch-action-list-item
   ch-action-list-render --> ch-action-list-group
-  ch-showcase --> ch-action-list-render
+  ch-action-list-item --> ch-edit
   ch-test-flexible-layout --> ch-action-list-render
   style ch-action-list-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

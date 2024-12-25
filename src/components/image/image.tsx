@@ -27,6 +27,7 @@ export class ChImage {
 
   @Element() el!: HTMLChImageElement;
 
+  // TODO: Should it be actionElement?
   /**
    * Specifies a reference for the container, in order to update the state of
    * the icon. The reference must be an ancestor of the control.
@@ -118,7 +119,7 @@ export class ChImage {
           "ch-image--enabled": !this.disabled,
           [`ch-image--${this.type}`]: true
         }}
-        style={this.#image ?? undefined}
+        style={this.#image?.styles ?? undefined}
       ></Host>
     );
   }

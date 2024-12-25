@@ -2,10 +2,12 @@ import { Component } from "./interfaces";
 import {
   CssCursorProperty,
   GxImageMultiState,
-  GxImageMultiStateEnd,
-  GxImageMultiStateStart,
+  GxImageMultiStateEndStyles,
+  GxImageMultiStateStartStyles,
   ImageRender
 } from "./types";
+
+const VALID_CSS_URL_PATH_REGEX = /^\s*(var\(|url\()/;
 
 export function debounce(
   func: () => void,
@@ -93,6 +95,40 @@ export const tokenMap = (tokens: { [key: string]: boolean }) => {
 
     if (tokenValue) {
       result += result === "" ? tokenKey : ` ${tokenKey}`;
+    }
+  }
+
+  return result;
+};
+
+/**
+ * Same as tokenMap, but for the exportparts attribute.
+ * @example
+ *   part={tokenMapExportParts({
+ *     header: true,
+ *     disabled: this.disabled,
+ *     selected: this.selected,
+ *     [levelPart]: canShowLines,
+ *     "expand-button":
+ *       canShowLines && !this.leaf && this.expandableButton !== "no"
+ *   }, "window")}
+ */
+export const tokenMapExportParts = (
+  tokens: { [key: string]: boolean },
+  partToRename: string
+) => {
+  const keys = Object.keys(tokens);
+  let result = "";
+
+  for (let index = 0; index < keys.length; index++) {
+    const tokenKey = keys[index];
+    const tokenValue = tokens[tokenKey];
+
+    if (tokenValue) {
+      result +=
+        result === ""
+          ? `${partToRename}:${tokenKey}`
+          : `,${partToRename}:${tokenKey}`;
     }
   }
 
@@ -208,51 +244,106 @@ export const unsubscribeToRTLChanges = (subscriberId: string) => {
   }
 };
 
+// TODO: Test more use cases
+export const formatImagePath = <T extends string | undefined>(
+  imageSrc: T,
+  imageType: ImageRender
+) =>
+  !imageSrc || imageType === "img" || VALID_CSS_URL_PATH_REGEX.test(imageSrc)
+    ? imageSrc
+    : (`url(${imageSrc})` as const);
+
 export const updateDirectionInImageCustomVar = <T extends "start" | "end">(
   image: GxImageMultiState | undefined,
-  direction: T
-): GxImageMultiStateStart | GxImageMultiStateEnd | undefined => {
+  direction: T,
+  imageType: ImageRender = "background"
+):
+  | {
+      classes: string;
+      styles: GxImageMultiStateStartStyles | GxImageMultiStateEndStyles;
+    }
+  | undefined => {
   if (!image) {
     return undefined;
   }
 
   if (direction === "start") {
-    const startImg: GxImageMultiStateStart = {
-      "--ch-start-img--base": image.base
+    let states = "start-img--base";
+
+    const startImg: GxImageMultiStateStartStyles = {
+      "--ch-start-img--base": formatImagePath(image.base, imageType)
     };
 
     if (image.active) {
-      startImg["--ch-start-img--active"] = image.active;
+      startImg["--ch-start-img--active"] = formatImagePath(
+        image.active,
+        imageType
+      );
+      states += " start-img--active";
     }
     if (image.focus) {
-      startImg["--ch-start-img--focus"] = image.focus;
+      startImg["--ch-start-img--focus"] = formatImagePath(
+        image.focus,
+        imageType
+      );
+      states += " start-img--focus";
     }
     if (image.hover) {
-      startImg["--ch-start-img--hover"] = image.hover;
+      startImg["--ch-start-img--hover"] = formatImagePath(
+        image.hover,
+        imageType
+      );
+      states += " start-img--hover";
+    }
+    if (image.selected) {
+      startImg["--ch-start-img--selected"] = formatImagePath(
+        image.selected,
+        imageType
+      );
+      states += " start-img--selected";
     }
     if (image.disabled) {
-      startImg["--ch-start-img--disabled"] = image.disabled;
+      startImg["--ch-start-img--disabled"] = formatImagePath(
+        image.disabled,
+        imageType
+      );
+      states += " start-img--disabled";
     }
 
-    return startImg;
+    return { classes: states, styles: startImg };
   }
 
-  const endImg: GxImageMultiStateEnd = {
-    "--ch-end-img--base": image.base
+  let states = "end-img--base";
+  const endImg: GxImageMultiStateEndStyles = {
+    "--ch-end-img--base": formatImagePath(image.base, imageType)
   };
 
   if (image.active) {
-    endImg["--ch-end-img--active"] = image.active;
+    endImg["--ch-end-img--active"] = formatImagePath(image.active, imageType);
+    states += " end-img--active";
   }
   if (image.focus) {
-    endImg["--ch-end-img--focus"] = image.focus;
+    endImg["--ch-end-img--focus"] = formatImagePath(image.focus, imageType);
+    states += " end-img--focus";
   }
   if (image.hover) {
-    endImg["--ch-end-img--hover"] = image.hover;
+    endImg["--ch-end-img--hover"] = formatImagePath(image.hover, imageType);
+    states += " end-img--hover";
+  }
+  if (image.selected) {
+    endImg["--ch-end-img--selected"] = formatImagePath(
+      image.selected,
+      imageType
+    );
+    states += " end-img--selected";
   }
   if (image.disabled) {
-    endImg["--ch-end-img--disabled"] = image.disabled;
+    endImg["--ch-end-img--disabled"] = formatImagePath(
+      image.disabled,
+      imageType
+    );
+    states += " end-img--disabled";
   }
 
-  return endImg;
+  return { classes: states, styles: endImg };
 };

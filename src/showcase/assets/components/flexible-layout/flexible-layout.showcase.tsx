@@ -1,7 +1,11 @@
 import { h } from "@stencil/core";
 import { ShowcaseCustomStory } from "../types";
 
-const render = () => <ch-test-flexible-layout></ch-test-flexible-layout>;
+const render = (designSystem: "mercury" | "unanimo") => (
+  <ch-test-flexible-layout
+    designSystem={designSystem}
+  ></ch-test-flexible-layout>
+);
 
 export const flexibleLayoutShowcaseStory: ShowcaseCustomStory = {
   render: render

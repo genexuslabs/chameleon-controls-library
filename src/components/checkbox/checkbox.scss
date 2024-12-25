@@ -41,9 +41,19 @@ $option-checked-color: currentColor;
    */
   --ch-checkbox__option-image-size: 100%;
 
-  display: inline-grid;
-  grid-template-columns: max-content 1fr;
-  align-items: center;
+  /**
+   * @prop --ch-checkbox__image-size:
+   * Specifies the box size that contains the start image of the control.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-checkbox__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-checkbox__background-image-size:
+   * Specifies the size of the start image of the control.
+   * @default 100%
+   */
+  --ch-checkbox__background-image-size: 100%;
 
   // Avoid zooming on double tap
   touch-action: manipulation;
@@ -54,6 +64,14 @@ $option-checked-color: currentColor;
   // Necessary to implement to focus delegation to the input when clicking on
   // external labels
   pointer-events: none;
+}
+
+:host,
+.label {
+  display: inline-grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  align-items: center;
 }
 
 :host(.ch-checkbox--actionable) :is(.input, .label) {
@@ -71,6 +89,10 @@ $option-checked-color: currentColor;
   position: relative;
   inline-size: var(--ch-checkbox__container-size);
   block-size: var(--ch-checkbox__container-size);
+
+  // TODO: Add a unit test for this
+  // Place the option before the icon
+  order: -1;
 }
 
 .input {
@@ -111,6 +133,53 @@ $option-checked-color: currentColor;
 }
 
 .label {
+  // Base image
+  --ch-start-img: var(--ch-start-img--base);
+
   display: inline-grid;
   max-inline-size: max-content;
+  gap: inherit;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.start-img--hover:hover {
+  --ch-start-img: var(--ch-start-img--hover);
+}
+
+// TODO: Add unit test for checking the hover state when disabled=true and the
+// mouse is over an external label
+.start-img--active:active {
+  --ch-start-img: var(--ch-start-img--active);
+}
+
+.start-img--focus:focus {
+  --ch-start-img: var(--ch-start-img--focus);
+}
+
+:host(.ch-disabled) > .start-img--disabled {
+  --ch-start-img: var(--ch-start-img--disabled);
+}
+
+.pseudo-img--start::before {
+  content: "";
+  display: block;
+  inline-size: var(--ch-checkbox__image-size);
+  // Necessary to properly size the image, due to the Host has display: flex
+  min-inline-size: var(--ch-checkbox__image-size);
+  block-size: var(--ch-checkbox__image-size);
+}
+
+// Background
+.start-img-type--background::before {
+  background: no-repeat center / var(--ch-checkbox__background-image-size)
+    var(--ch-start-img);
+}
+
+// Mask
+.start-img-type--mask::before {
+  -webkit-mask: no-repeat center / var(--ch-checkbox__background-image-size)
+    var(--ch-start-img);
+  background-color: currentColor;
 }

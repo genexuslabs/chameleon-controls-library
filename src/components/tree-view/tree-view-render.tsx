@@ -56,11 +56,6 @@ import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
 import { insertIntoIndex, removeElement } from "../../common/array";
 import {
-  removeSubscription,
-  subscribe,
-  syncStateWithObservableAncestors
-} from "../sidebar/expanded-change-obervables";
-import {
   getControlRegisterProperty,
   registryControlProperty
 } from "../../common/registry-properties";
@@ -91,7 +86,6 @@ const registerDefaultGetImagePathCallback = (treeState: ChTreeViewRender) =>
 // - - - - - - - - - - - - - - - - - - - -
 //                Defaults
 // - - - - - - - - - - - - - - - - - - - -
-let autoId = 0;
 
 const ROOT_ID = null;
 
@@ -103,10 +97,26 @@ const DEFAULT_SELECTED_VALUE = false;
 
 // There are a filter applied and, if the type is "caption" or
 // "metadata", the filter property must be set
-const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
-  filterType !== "none" &&
-  ((filterType !== "caption" && filterType !== "metadata") ||
-    (filter != null && filter.trim() !== ""));
+const treeViewHasFilters = (
+  filterType: TreeViewFilterType,
+  filter: string | RegExp
+) => {
+  if (filterType === "none") {
+    return false;
+  }
+
+  if (filterType !== "caption" && filterType !== "metadata") {
+    return true;
+  }
+
+  if (!filter) {
+    return false;
+  }
+
+  // The RegExp has "object" type
+  // TODO: Add unit tests for the trim case
+  return typeof filter === "object" || filter.trim() !== "";
+};
 
 // GeneXus implementation
 const gxDragDisabled = (
@@ -146,7 +156,11 @@ const defaultRenderItem = <T extends true | false>(
   dropBeforeAndAfterEnabled: boolean,
   useGxRender = false
 ) =>
-  (treeState.filterType === "none" || itemModel.render !== false) && [
+  (treeState.filterType === "none" ||
+    itemModel.render !== false ||
+    (treeState.filterType === "list" &&
+      (treeState.filterList === undefined ||
+        treeState.filterList === null))) && [
     dropBeforeAndAfterEnabled && (
       <ch-tree-view-drop
         id={treeDropId(itemModel.id)}
@@ -198,8 +212,7 @@ const defaultRenderItem = <T extends true | false>(
       startImgSrc={itemModel.startImgSrc}
       startImgType={itemModel.startImgType ?? "background"}
     >
-      {treeState.expanded &&
-        !itemModel.leaf &&
+      {!itemModel.leaf &&
         itemModel.items != null &&
         itemModel.items.map((subModel, index) =>
           treeState.renderItem(
@@ -328,19 +341,10 @@ export class ChTreeViewRender {
   #filterTimeout: NodeJS.Timeout;
   #filterListAsSet: Set<string>;
 
-  /**
-   * This ID is used to identify the Tree View. Necessary to subscribe for
-   * expand/collapse changes in the ancestor nodes.
-   */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #treeViewId: string;
-
   // Refs
   #treeRef: HTMLChTreeViewElement;
 
   @Element() el: HTMLChTreeViewRenderElement;
-
-  @State() expanded: boolean = true;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -423,7 +427,7 @@ export class ChTreeViewRender {
    * filter.
    * Only works if `filterType = "caption" | "metadata"`.
    */
-  @Prop() readonly filter: string;
+  @Prop() readonly filter?: string | RegExp | undefined;
   @Watch("filter")
   filterChanged() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
@@ -449,8 +453,10 @@ export class ChTreeViewRender {
   /**
    * This property lets you determine the list of items that will be filtered.
    * Only works if `filterType = "list"`.
+   * If `undefined` or `null` all items will be rendered. If `[]` no items will
+   * be rendered.
    */
-  @Prop() readonly filterList: string[] = [];
+  @Prop() readonly filterList: string[] | undefined | null = undefined;
   @Watch("filterList")
   filterListChanged() {
     // Use a Set to efficiently check for ids
@@ -486,7 +492,14 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterType: TreeViewFilterType = "none";
   @Watch("filterType")
-  filterTypeChanged() {
+  filterTypeChanged(newValue: TreeViewFilterType) {
+    if (newValue === "list") {
+      // Use a Set to efficiently check for ids
+      this.#filterListAsSet = new Set(this.filterList);
+    } else {
+      this.#filterListAsSet = undefined; // Free the memory
+    }
+
     this.#scheduleFilterProcessing();
   }
 
@@ -774,7 +787,7 @@ export class ChTreeViewRender {
     this.#scheduleCheckedItemsChange();
 
     // Update filters
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
 
     // Force re-render
     forceUpdate(this);
@@ -1360,7 +1373,7 @@ export class ChTreeViewRender {
     this.#flattenSubModel(this.#rootNode);
 
     // Re-sync filters
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
 
     // The model was updated at runtime, so we need to update the references
     // Re-sync selected items
@@ -1515,6 +1528,8 @@ export class ChTreeViewRender {
 
       this.#checkIfThereAreDifferentItemsWithCheckbox(itemsWithCheckbox);
       this.#validateCheckedAndSelectedItems();
+      // Reset immediate filters, since there are not any filters to process
+      this.#immediateFilter = undefined;
 
       return;
     }
@@ -1530,6 +1545,10 @@ export class ChTreeViewRender {
       const currentSelectedItems: Set<string> = new Set();
       const currentCheckedItems: Map<string, TreeViewItemModelExtended> =
         new Map();
+
+      if (this.filterType === "list") {
+        this.#filterListAsSet ??= new Set();
+      }
 
       this.#filterSubModel(
         {
@@ -1604,25 +1623,12 @@ export class ChTreeViewRender {
   };
 
   connectedCallback() {
-    this.#treeViewId ||= `ch-tree-view-render-${autoId++}`;
-
     // If the getImagePathCallback was not previously registered
     if (
       !getControlRegisterProperty("getImagePathCallback", "ch-tree-view-render")
     ) {
       registerDefaultGetImagePathCallback(this);
     }
-
-    // Subscribe to expand/collapse changes in the ancestor nodes
-    subscribe(this.#treeViewId, {
-      getSubscriberRef: () => this.el,
-      observerCallback: expanded => {
-        this.expanded = expanded;
-      }
-    });
-
-    // Initialize the state
-    syncStateWithObservableAncestors(this.#treeViewId);
 
     // Accessibility
     this.el.setAttribute("role", "tree");
@@ -1650,10 +1656,6 @@ export class ChTreeViewRender {
     }
 
     this.#validateCheckedAndSelectedItems();
-  }
-
-  disconnectedCallback() {
-    removeSubscription(this.#treeViewId);
   }
 
   render() {

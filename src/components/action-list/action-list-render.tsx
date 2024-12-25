@@ -14,6 +14,7 @@ import {
   // EventEmitter
 } from "@stencil/core";
 import {
+  ActionListImagePathCallback,
   ActionListItemActionable,
   ActionListItemGroup,
   ActionListItemModel,
@@ -24,13 +25,32 @@ import {
   ActionListItemType,
   ActionListModel
 } from "./types";
-import { ChActionListItemCustomEvent } from "../../components";
-import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
-import { removeElement } from "../../common/array";
+import {
+  ActionListTranslations,
+  ChActionListItemCustomEvent
+} from "../../components";
+import {
+  ActionListCaptionChangeEventDetail,
+  ActionListFixedChangeEventDetail
+} from "./internal/action-list-item/types";
 import { mouseEventModifierKey } from "../common/helpers";
+import { removeElement } from "../../common/array";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
 import { actionListKeyboardNavigation } from "./keyboard-navigation";
-import { getActionListOrGroupItemFromEvent } from "./utils";
+import {
+  ACTION_LIST_ITEM_TAG,
+  getActionListItemOrGroupInfo,
+  getActionListOrGroupItemFromEvent,
+  getParentArray
+} from "./utils";
 import { updateItemProperty } from "./update-item-property";
+import { actionListDefaultTranslations } from "./translations";
+import {
+  selectedItemsChangeShouldBeEmitted,
+  setActionListSelectedItems
+} from "./selections";
+import { flattenActionListUIModel } from "./flatten-model";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -61,30 +81,36 @@ const renderMapping: {
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? actionListRenderState.checkbox}
       checked={itemModel.checked ?? actionListRenderState.checked}
-      disabled={disabled === true ? true : itemModel.disabled}
+      disabled={
+        disabled === true
+          ? true
+          : itemModel.disabled ?? actionListRenderState.disabled
+      }
       editable={itemModel.editable ?? actionListRenderState.editableItems}
       fixed={itemModel.fixed}
+      getImagePathCallback={actionListRenderState.getImagePathCallback}
       metadata={itemModel.metadata}
       nested={nested}
       nestedExpandable={nestedExpandable}
       selectable={actionListRenderState.selection !== "none"}
       selected={itemModel.selected}
+      translations={actionListRenderState.translations}
     ></ch-action-list-item>
   ),
-  group: (itemModel, actionRenderState) => (
+  group: (itemModel, actionListRenderState) => (
     <ch-action-list-group
       key={itemModel.id}
       id={itemModel.id}
       caption={itemModel.caption}
-      disabled={itemModel.disabled}
+      disabled={itemModel.disabled ?? actionListRenderState.disabled}
       expandable={itemModel.expandable}
       expanded={itemModel.expanded}
       selected={itemModel.selected}
     >
       {itemModel.items?.map(item =>
-        actionRenderState.renderItem(
+        actionListRenderState.renderItem(
           item,
-          actionRenderState,
+          actionListRenderState,
           itemModel.disabled,
           true,
           itemModel.expandable
@@ -175,7 +201,9 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
 export class ChActionListRender {
   #flattenedModel: Map<string, ActionListItemModelExtended> = new Map();
   // #additionalItemsParts: Set<string> | undefined;
-  #selectedItems: Set<string> | undefined;
+  #selectedItems: Set<string> | undefined = undefined;
+
+  #shouldUpdateModelAndSelection = false;
 
   @Element() el: HTMLChActionListRenderElement;
 
@@ -200,6 +228,13 @@ export class ChActionListRender {
   @Prop() readonly checked: boolean = false;
 
   /**
+   * This attribute lets you specify if all items are disabled.
+   * If disabled, action list items will not fire any user interaction related
+   * event (for example, `selectedItemsChange` event).
+   */
+  @Prop() readonly disabled: boolean = false;
+
+  /**
    * This attribute lets you specify if the edit operation is enabled in all
    * items by default. If `true`, the items can edit its caption in place.
    */
@@ -216,12 +251,18 @@ export class ChActionListRender {
   ) => Promise<boolean>;
 
   /**
+   * This property specifies a callback that is executed when the path for an
+   * imgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: ActionListImagePathCallback;
+
+  /**
    * This property lets you define the model of the control.
    */
   @Prop() readonly model: ActionListModel = [];
   @Watch("model")
-  modelChanged(newModel: ActionListModel) {
-    this.#flattenUIModel(newModel);
+  modelChanged() {
+    this.#shouldUpdateModelAndSelection = true;
   }
 
   // /**
@@ -305,25 +346,13 @@ export class ChActionListRender {
   // @Prop() readonly getImagePathCallback: TreeViewImagePathCallback =
   //   defaultGetImagePath;
 
-  // /**
-  //  * Callback that is executed when a item request to modify its caption.
-  //  */
-  // @Prop() readonly modifyItemCaptionCallback: (
-  //   treeItemId: string,
-  //   newCaption: string
-  // ) => Promise<TreeViewOperationStatusModifyCaption>;
-
-  // /**
-  //  * Set this attribute if you want to allow multi selection of the items.
-  //  */
-  // @Prop() readonly multiSelection: boolean = false;
-  // @Watch("multiSelection")
-  // multiSelectionChanged(newMultiSelection: boolean) {
-  //   // MultiSelection is disabled. We must select the last updated item
-  //   if (!newMultiSelection) {
-  //     this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
-  //   }
-  // }
+  /**
+   * Callback that is executed when a item request to modify its caption.
+   */
+  @Prop() readonly modifyItemCaptionCallback: (
+    actionListItemId: string,
+    newCaption: string
+  ) => Promise<void>;
 
   /**
    * This property allows us to implement custom rendering of tree items.
@@ -350,19 +379,8 @@ export class ChActionListRender {
    */
   @Prop() readonly selection: "single" | "multiple" | "none" = "none";
   @Watch("selection")
-  selectionChanged(newValue: "single" | "multiple" | "none") {
-    if (newValue === "none") {
-      this.#removeAllSelectedItems();
-      this.#selectedItems = undefined;
-    }
-    // Create the set to allocate the selected items, if necessary
-    else {
-      this.#selectedItems ??= new Set();
-
-      if (newValue === "single") {
-        this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
-      }
-    }
+  selectionChanged() {
+    this.#shouldUpdateModelAndSelection = true;
   }
 
   /**
@@ -378,6 +396,12 @@ export class ChActionListRender {
   // @Event() checkedItemsChange: EventEmitter<
   //   Map<string, TreeViewItemModelExtended>
   // >;
+
+  /**
+   * Specifies the literals required for the control.
+   */
+  @Prop() readonly translations: ActionListTranslations =
+    actionListDefaultTranslations;
 
   /**
    * Fired when the selected items change and `selection !== "none"`
@@ -517,12 +541,68 @@ export class ChActionListRender {
       this.#sortModel(parentArray);
     }
 
-    // MultiSelection is disabled. We must select the last updated item
-    if (this.selection === "single") {
-      this.#removeAllSelectedItemsExceptForTheLast(newSelectedItems);
+    if (
+      selectedItemsChangeShouldBeEmitted(
+        this.#selectedItems,
+        newSelectedItems,
+        this.#flattenedModel,
+        this.selection
+      )
+    ) {
+      this.#selectedItems = newSelectedItems;
+      this.#emitSelectedItemsChange();
     }
 
     forceUpdate(this);
+  }
+
+  @Listen("captionChange")
+  onCaptionChange(
+    event: ChActionListItemCustomEvent<ActionListCaptionChangeEventDetail>
+  ) {
+    if (!this.modifyItemCaptionCallback) {
+      return;
+    }
+    event.stopPropagation();
+
+    const itemRef = event
+      .composedPath()
+      .find(
+        el =>
+          (el as HTMLElement).tagName &&
+          (el as HTMLElement).tagName?.toLowerCase() === ACTION_LIST_ITEM_TAG
+      ) as HTMLChActionListItemElement;
+    if (!itemRef) {
+      return;
+    }
+
+    const itemId = event.detail.itemId;
+    const itemUIModel = this.#flattenedModel.get(itemId);
+    const itemInfo = itemUIModel.item as ActionListItemActionable;
+    const newCaption = event.detail.newCaption;
+    const oldCaption = itemInfo.caption;
+
+    // Optimistic UI: Update the caption in the UI Model before the change is
+    // completed in the server
+    itemInfo.caption = newCaption;
+    itemRef.caption = newCaption;
+
+    this.modifyItemCaptionCallback(itemId, newCaption)
+      .then(() => {
+        // Sort items in parent model
+        this.#sortModel(getParentArray(itemUIModel));
+
+        // Update filters
+        // this.#scheduleFilterProcessing();
+
+        // Force re-render
+        forceUpdate(this);
+      })
+      .catch(() => {
+        // TODO: Should we do something with the error message?
+        itemRef.caption = oldCaption;
+        itemInfo.caption = oldCaption;
+      });
   }
 
   @Listen("fixedChange")
@@ -554,10 +634,7 @@ export class ChActionListRender {
     itemInfo.fixed = newFixedValue;
 
     // Sort items in parent model
-    this.#sortModel(
-      (itemUIModel as ActionListItemModelExtendedRoot).root ??
-        (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items
-    );
+    this.#sortModel(getParentArray(itemUIModel));
 
     // Queue a re-render to update the fixed binding and the order of the items
     forceUpdate(this);
@@ -583,47 +660,60 @@ export class ChActionListRender {
   }
 
   #getItemOrGroupInfo = (itemId: string) =>
-    this.#flattenedModel.get(itemId).item as
-      | ActionListItemActionable
-      | ActionListItemGroup;
+    getActionListItemOrGroupInfo(itemId, this.#flattenedModel);
 
-  #removeAllSelectedItemsExceptForTheLast = (
-    currentSelectedItems: Set<string>
-  ) => {
-    if (currentSelectedItems.size > 1) {
-      const selectedItemsArray = [...currentSelectedItems.values()];
-      const lastItemIndex = currentSelectedItems.size - 1;
+  #updateAndEmitSelectedItems = (selection: "single" | "multiple" | "none") => {
+    if (selection === "none") {
+      this.#removeAllSelectedItems();
+      this.#selectedItems = undefined;
+    }
+    // Create the set to allocate the selected items, if necessary
+    else {
+      // First render. Do not check to emit selectedItemsChange event.
+      if (!this.#selectedItems) {
+        this.#selectedItems = new Set();
 
-      // Deselect all items except the last
-      for (let index = 0; index < lastItemIndex; index++) {
-        const itemId = selectedItemsArray[index];
-
-        this.#getItemOrGroupInfo(itemId).selected = false;
+        // TODO: Add a unit test for "?? []"
+        setActionListSelectedItems(this.model ?? [], this.#selectedItems);
+        return;
       }
 
-      // Create a new Set with only the last item
-      currentSelectedItems.clear();
-      currentSelectedItems.add(selectedItemsArray[lastItemIndex]);
+      const newSelectedItems = new Set<string>();
+      setActionListSelectedItems(this.model ?? [], newSelectedItems);
 
-      forceUpdate(this);
-      this.#emitSelectedItemsChange();
-      // this.#scheduleSelectedItemsChange();
+      if (
+        selectedItemsChangeShouldBeEmitted(
+          this.#selectedItems,
+          newSelectedItems,
+          this.#flattenedModel,
+          this.selection
+        )
+      ) {
+        this.#selectedItems = newSelectedItems;
+        forceUpdate(this);
+        this.#emitSelectedItemsChange();
+      }
     }
   };
 
   #removeAllSelectedItems = () => {
-    this.#selectedItems.forEach(selectedItemId => {
-      const selectedItemInfo = this.#getItemOrGroupInfo(selectedItemId);
-      selectedItemInfo.selected = false;
-    });
+    if (this.#selectedItems) {
+      this.#selectedItems.forEach(selectedItemId => {
+        const selectedItemInfo = this.#getItemOrGroupInfo(selectedItemId);
+        selectedItemInfo.selected = false;
+      });
 
-    this.#selectedItems.clear();
+      this.#selectedItems.clear();
+    }
   };
 
   #handleItemClick = (event: PointerEvent) => {
     const actionListItemOrGroup = getActionListOrGroupItemFromEvent(event);
 
-    if (!actionListItemOrGroup) {
+    if (
+      !actionListItemOrGroup ||
+      (actionListItemOrGroup as HTMLChActionListItemElement).editing
+    ) {
       return;
     }
     const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
@@ -652,7 +742,10 @@ export class ChActionListRender {
   #handleItemSelection = (event: PointerEvent) => {
     const actionListItemOrGroup = getActionListOrGroupItemFromEvent(event);
 
-    if (!actionListItemOrGroup) {
+    if (
+      !actionListItemOrGroup ||
+      (actionListItemOrGroup as HTMLChActionListItemElement).editing
+    ) {
       return;
     }
     const itemId = actionListItemOrGroup.id;
@@ -761,50 +854,8 @@ export class ChActionListRender {
     }
   };
 
-  #flattenUIModel = (model: ActionListModel) => {
-    this.#flattenedModel.clear();
-
-    if (!model) {
-      return;
-    }
-
-    // Traditional for loop is the faster "for"
-    for (let index = 0; index < model.length; index++) {
-      const itemInfo = model[index];
-
-      // Group
-      if (itemInfo.type === "group") {
-        this.#flattenedModel.set(itemInfo.id, { item: itemInfo, root: model });
-        this.#flattenSubUIModel(itemInfo.items, itemInfo);
-      }
-      // Actionable
-      else if (itemInfo.type === "actionable") {
-        this.#flattenedModel.set(itemInfo.id, { item: itemInfo, root: model });
-      }
-    }
-
-    this.#sortModel(model);
-  };
-
-  #flattenSubUIModel = (
-    model: ActionListItemActionable[],
-    parentItem: ActionListItemGroup
-  ) => {
-    if (!model) {
-      return;
-    }
-
-    // Traditional for loop is the faster "for"
-    for (let index = 0; index < model.length; index++) {
-      const itemInfo = model[index];
-      this.#flattenedModel.set(itemInfo.id, {
-        item: itemInfo,
-        parentItem: parentItem
-      });
-    }
-
-    this.#sortModel(model);
-  };
+  #flattenUIModel = (model: ActionListModel) =>
+    flattenActionListUIModel(model, this.#flattenedModel, this.#sortModel);
 
   // #processAdditionalItemParts = () => {
   //   this.#additionalItemsParts = undefined;
@@ -813,13 +864,27 @@ export class ChActionListRender {
   // }
 
   connectedCallback() {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
     this.#flattenUIModel(this.model);
+
+    this.#updateAndEmitSelectedItems(this.selection);
+    this.el.setAttribute("role", "list");
+  }
+
+  componentWillUpdate() {
+    if (this.#shouldUpdateModelAndSelection) {
+      this.#shouldUpdateModelAndSelection = false;
+
+      this.#flattenUIModel(this.model);
+      this.#updateAndEmitSelectedItems(this.selection);
+    }
   }
 
   render() {
     return (
       <Host
         aria-multiselectable={this.selection === "multiple" ? "true" : null}
+        class={SCROLLABLE_CLASS}
         onClick={
           this.selection === "none"
             ? this.#handleItemClick

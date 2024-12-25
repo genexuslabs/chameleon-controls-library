@@ -38,6 +38,12 @@ export class ChMarkdownViewer {
   // @Prop() readonly allowDangerousHtml: boolean = false;
 
   /**
+   * `true` to visually hide the contents of the root node while the control's
+   * style is not loaded. Only works if the `theme` property is set.
+   */
+  @Prop() readonly avoidFlashOfUnstyledContent?: boolean = false;
+
+  /**
    * `true` to render raw HTML with sanitization.
    */
   @Prop() readonly rawHtml: boolean = false;
@@ -73,7 +79,8 @@ export class ChMarkdownViewer {
       allowDangerousHtml: true, // Allow dangerous in this version
       codeRender: this.renderCode,
       lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
-      rawHTML: this.rawHtml
+      rawHTML: this.rawHtml,
+      showIndicator: this.showIndicator
     });
   }
 
@@ -88,7 +95,13 @@ export class ChMarkdownViewer {
           this.showIndicator ? "ch-markdown-viewer-show-indicator" : undefined
         }
       >
-        {this.theme && <ch-theme key="theme" model={this.theme}></ch-theme>}
+        {this.theme && (
+          <ch-theme
+            key="theme"
+            avoidFlashOfUnstyledContent={this.avoidFlashOfUnstyledContent}
+            model={this.theme}
+          ></ch-theme>
+        )}
         {this.#JSXTree}
       </Host>
     );

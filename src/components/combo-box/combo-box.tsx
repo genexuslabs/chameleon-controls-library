@@ -16,40 +16,48 @@ import {
   DisableableComponent
 } from "../../common/interfaces";
 import {
-  ComboBoxFilterOptions,
-  ComboBoxFilterType,
+  ComboBoxSuggestOptions,
   ComboBoxItemModel,
   ComboBoxItemGroup,
-  ComboBoxItemLeaf,
-  ComboBoxFilterInfo,
+  ComboBoxSuggestInfo,
   ComboBoxModel,
   ComboBoxSelectedIndex,
-  ComboBoxItemModelExtended
+  ComboBoxItemModelExtended,
+  ComboBoxItemImagesModel,
+  ComboBoxImagePathCallback
 } from "./types";
-import { isMobileDevice } from "../../common/utils";
-import { KEY_CODES } from "../../common/reserved-names";
-import { SyncWithRAF } from "../../common/sync-with-frames";
-import { ChPopoverCustomEvent } from "../../components";
-import { ChPopoverAlign } from "../popover/types";
 import { focusComposedPath } from "../common/helpers";
+import {
+  COMBO_BOX_PARTS_DICTIONARY,
+  KEY_CODES
+} from "../../common/reserved-names";
+import { isMobileDevice, tokenMap } from "../../common/utils";
+import { ChPopoverAlign } from "../popover/types";
+import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
 import { filterSubModel } from "./helpers";
+import {
+  comboBoxActiveDescendantIsRendered,
+  findComboBoxLargestValue,
+  getComboBoxItemFromMouseEvent,
+  mapValuesToItemInfo,
+  popoverWasClicked
+} from "./utils";
+import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
+import { customComboBoxItemRender, nativeItemRender } from "./renders";
+import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
+import { getControlRegisterProperty } from "../../common/registry-properties";
+import { GxImageMultiStateStart } from "../../common/types";
 
-const SELECTED_PART = "selected";
-const DISABLED_PART = "disabled";
-
-const SELECTED_ITEM_SELECTOR = `button[part*='${SELECTED_PART}']`;
-
-const COMBO_BOX_MASK_BLOCK_START = "--ch-combo-box-mask-block-start";
-const COMBO_BOX_MASK_BLOCK_END = "--ch-combo-box-mask-block-end";
-const COMBO_BOX_MASK_INLINE_START = "--ch-combo-box-mask-inline-start";
-const COMBO_BOX_MASK_INLINE_END = "--ch-combo-box-mask-inline-end";
-
+const SELECTED_ITEM_SELECTOR = `button[part*='${COMBO_BOX_PARTS_DICTIONARY.SELECTED}']`;
 const mobileDevice = isMobileDevice();
 
-let autoId = 0;
-
-const negateBorderValue = (borderSize: string) =>
-  borderSize === "0px" ? "0px" : `-${borderSize}`;
+const DEFAULT_GET_IMAGE_PATH_CALLBACK = (
+  itemUIModel: ComboBoxItemModel,
+  iconDirection: "start" | "end"
+): GxImageMultiState => ({
+  base:
+    iconDirection === "start" ? itemUIModel.startImgSrc : itemUIModel.endImgSrc
+});
 
 // Keys
 type KeyDownNoFiltersEvents =
@@ -67,114 +75,18 @@ type KeyDownWithFiltersEvents =
   | typeof KEY_CODES.ENTER
   | typeof KEY_CODES.TAB;
 
-const SELECTED_VALUE_DOES_NOT_EXISTS: ComboBoxSelectedIndex = {
-  type: "not-exists"
-} as const;
-
-const isValidIndex = (array: any, index: number) =>
-  0 <= index && index < array.length;
-
-const findSelectedIndex = (
-  valueToItemInfo: Map<string, ComboBoxItemModelExtended>,
-  selectedValue: string | undefined
-): ComboBoxSelectedIndex => {
-  if (!selectedValue) {
-    return SELECTED_VALUE_DOES_NOT_EXISTS;
-  }
-
-  return (
-    valueToItemInfo.get(selectedValue)?.index ?? SELECTED_VALUE_DOES_NOT_EXISTS
-  );
-};
-
-const findNextSelectedIndex = (
-  model: ComboBoxModel,
-  currentIndex: ComboBoxSelectedIndex,
-  increment: 1 | -1,
-  hasFilters: boolean,
-  displayedValues: Set<string>
-): ComboBoxSelectedIndex => {
-  if (currentIndex.type === "not-exists") {
-    return SELECTED_VALUE_DOES_NOT_EXISTS;
-  }
-  const firstLevelIndex = currentIndex.firstLevelIndex;
-
-  if (currentIndex.type === "nested") {
-    let secondLevelIndex = currentIndex.secondLevelIndex + increment; // Start from the first valid index
-    const firstLevelItemItems = (model[firstLevelIndex] as ComboBoxItemGroup)
-      .items;
-
-    // Search in the nested level skipping disabled and not rendered items
-    while (
-      isValidIndex(firstLevelItemItems, secondLevelIndex) &&
-      (firstLevelItemItems[secondLevelIndex].disabled ||
-        (hasFilters &&
-          !displayedValues.has(firstLevelItemItems[secondLevelIndex].value)))
-    ) {
-      secondLevelIndex += increment;
-    }
-
-    // If the index is not after the end of the array, the new selected value
-    // was found
-    if (isValidIndex(firstLevelItemItems, secondLevelIndex)) {
-      return {
-        type: "nested",
-        firstLevelIndex: firstLevelIndex,
-        secondLevelIndex: secondLevelIndex
-      };
-    }
-  }
-
-  // At this point, either all items in the nested level were disabled or the
-  // "currentIndex" was not nested. In any case, we must check the next item
-  // in the first level
-  let nextFirstLevelIndex = firstLevelIndex + increment;
-
-  // Search for the next first level item that is not disabled and is not filtered
-  while (
-    isValidIndex(model, nextFirstLevelIndex) &&
-    (model[nextFirstLevelIndex].disabled ||
-      (hasFilters && !displayedValues.has(model[nextFirstLevelIndex].value)))
-  ) {
-    nextFirstLevelIndex += increment;
-  }
-
-  // With this flag, we also say that we are at the end of the combo-box
-  // and there isn't any new "next value" to select
-  if (!isValidIndex(model, nextFirstLevelIndex)) {
-    return SELECTED_VALUE_DOES_NOT_EXISTS;
-  }
-
-  const nestedLevel = (model[nextFirstLevelIndex] as ComboBoxItemGroup).items;
-
-  if (nestedLevel != null) {
-    return findNextSelectedIndex(
-      model,
-      {
-        type: "nested",
-        firstLevelIndex: nextFirstLevelIndex,
-        secondLevelIndex: increment === 1 ? -1 : nestedLevel.length // The algorithm will sum 1 (or -1) to the start index
-      },
-      increment,
-      hasFilters,
-      displayedValues
-    );
-  }
-
-  return {
-    type: "first-level",
-    firstLevelIndex: nextFirstLevelIndex
-  };
-};
-
-type ImmediateFilter = "immediate" | "debounced" | undefined;
-
 /**
+ * @status experimental
+ *
+ * The ch-combo-box-render is an input widget that has an associated popup. The
+ * popup enables users to choose a value for the input from a collection.
+ *  - Items are only rendered when the popup is displayed.
+ *
  * @part ... - ...
  */
 @Component({
   formAssociated: true,
-  shadow: true,
+  shadow: { delegatesFocus: true },
   styleUrl: "combo-box.scss",
   tag: "ch-combo-box-render"
 })
@@ -182,8 +94,6 @@ export class ChComboBoxRender
   implements AccessibleNameComponent, DisableableComponent
 {
   #accessibleNameFromExternalLabel: string | undefined;
-  #popoverId: string | undefined;
-  #firstExpanded = false;
 
   /**
    * This variable is used to emulate the behavior of the native select. The
@@ -193,48 +103,33 @@ export class ChComboBoxRender
   #largestValue: string;
 
   /**
-   * Caption of the item identified by the value property
+   * Last value that was set correctly in the control. Useful to revert the
+   * value when applying strict filters.
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #currentValueCaption: string;
-
-  #borderSizeRAF: SyncWithRAF | undefined;
-  #resizeObserver: ResizeObserver | undefined;
-
-  #lastMaskInlineStart = undefined;
-  #lastMaskInlineEnd = undefined;
-  #lastMaskBlockStart = undefined;
-  #lastMaskBlockEnd = undefined;
+  #lastConfirmedValue: string;
 
   #valueToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
-
-  #itemCaptionToItemValue: Map<string, string> = new Map();
+  #captionToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
+  #itemImages: Map<string, ComboBoxItemImagesModel> | undefined;
 
   // Filters info
   #applyFilters = false;
-  #immediateFilter: ImmediateFilter;
-  #queuedFilterId: NodeJS.Timeout;
+  #queuedInputValueUpdate: NodeJS.Timeout;
 
   /**
    * Collection of displayed values. If a filter is applied and the value
    * belongs to this Set, the item is displayed.
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #displayedValues: Set<string> | undefined; // Don't allocate memory until needed
-
-  /**
-   * When the control is used in a desktop environment, we need to manually
-   * focus the selected item when the control is expanded.
-   */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #focusSelectAfterNextRender = true;
+  #displayedValues: Set<ComboBoxItemModel> | undefined; // Don't allocate memory until needed
 
   #selectNextIndex = (
     event: KeyboardEvent,
     currentSelectedIndex: ComboBoxSelectedIndex,
     increment: 1 | -1,
     hasFilters: boolean,
-    displayedValues: Set<string>
+    displayedValues: Set<ComboBoxItemModel>
   ) => {
     event.preventDefault(); // Stop ArrowDown key from scrolling
 
@@ -265,13 +160,12 @@ export class ChComboBoxRender
     // The new selected value is either in the first level or in the group
     const newSelectedValue =
       nextSelectedIndex.type === "first-level"
-        ? this.model[nextSelectedIndex.firstLevelIndex].value
+        ? this.model[nextSelectedIndex.firstLevelIndex]
         : (this.model[nextSelectedIndex.firstLevelIndex] as ComboBoxItemGroup)
-            .items[nextSelectedIndex.secondLevelIndex].value;
+            .items[nextSelectedIndex.secondLevelIndex];
 
-    if (this.currentSelectedValue !== newSelectedValue) {
-      this.currentSelectedValue = newSelectedValue;
-      this.#focusSelectAfterNextRender = true;
+    if (this.activeDescendant !== newSelectedValue) {
+      this.activeDescendant = newSelectedValue;
     }
   };
 
@@ -282,18 +176,18 @@ export class ChComboBoxRender
     ArrowUp: (event: KeyboardEvent) =>
       this.#selectNextIndex(
         event,
-        findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
+        findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
         -1,
-        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
+        this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
     ArrowDown: (event: KeyboardEvent) =>
       this.#selectNextIndex(
         event,
-        findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
+        findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
         1,
-        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
+        this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -305,7 +199,7 @@ export class ChComboBoxRender
           firstLevelIndex: -1
         }, // The algorithm will sum 1 to the start index
         1,
-        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
+        this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -317,7 +211,7 @@ export class ChComboBoxRender
           firstLevelIndex: this.model.length
         }, // The algorithm will sum -1 to the start index
         -1,
-        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
+        this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -377,7 +271,7 @@ export class ChComboBoxRender
   };
 
   // Refs
-  #maskRef: HTMLDivElement;
+  // #maskRef: HTMLDivElement;
   #inputRef: HTMLInputElement;
   #selectRef: HTMLSelectElement | undefined;
 
@@ -388,22 +282,27 @@ export class ChComboBoxRender
    * This state help us to render the visually selected value, without updating
    * the `value` property in the interface.
    */
-  @State() currentSelectedValue: string;
+  @State() activeDescendant: ComboBoxItemModel | undefined;
 
   @State() expanded = false;
   @Watch("expanded")
   handleExpandedChange(newExpandedValue: boolean) {
-    this.#firstExpanded = true;
-
     if (newExpandedValue && !mobileDevice) {
-      this.#focusSelectAfterNextRender = true;
+      this.#setComboBoxIcons();
 
+      // Sync the active descendant when expanding the combo-box
+      this.#syncActiveDescendant();
+
+      // TODO: Add a unit test for this case
       // When the control is expanded and has filters applied, we should
       // refresh the rendered items without any debounce
-      if (this.filterType !== "none") {
-        this.currentSelectedValue = undefined; // Clear selected value when expanding with filters
-        this.#scheduleFilterProcessing("immediate");
+      if (this.suggest) {
+        this.#scheduleFilterProcessing();
       }
+    }
+    // Free the memory, since the combo-box does not won't render any images
+    else {
+      this.#itemImages = undefined;
     }
   }
 
@@ -426,67 +325,15 @@ export class ChComboBoxRender
   @Prop() readonly disabled: boolean = false;
 
   /**
-   * Specifies whether the items should not stay rendered in the DOM if the
-   * control is closed.
-   * `true` to destroy the rendered items when the control is closed.
-   * Note: By default, the control does not rendered the items until the first
-   * expansion. The same applies if the control have groups.
+   * This property specifies a callback that is executed when the path for an
+   * imgSrc needs to be resolved.
    */
-  @Prop() readonly destroyItemsOnClose: boolean = false;
+  @Prop() readonly getImagePathCallback?: ComboBoxImagePathCallback;
 
   /**
-   * This property lets you determine the expression that will be applied to the
-   * filter.
-   * Only works if `filterType = "caption" | "value"`.
+   * Specifies a set of parts to use in the Host element (`ch-combo-box-render`).
    */
-  @Prop({ mutable: true }) filter: string;
-  @Watch("filter")
-  filterChanged() {
-    if (this.filterType === "caption" || this.filterType === "value") {
-      this.#scheduleFilterProcessing();
-    }
-  }
-
-  /**
-   * This property lets you determine the debounce time (in ms) that the
-   * control waits until it processes the changes to the filter property.
-   * Consecutive changes to the `filter` property between this range, reset the
-   * timeout to process the filter.
-   * Only works if `filterType = "caption" | "value"`.
-   */
-  @Prop() readonly filterDebounce: number = 250;
-  @Watch("filterDebounce")
-  filterDebounceChanged() {
-    if (this.filterType === "caption" || this.filterType === "value") {
-      this.#scheduleFilterProcessing();
-    }
-  }
-
-  /**
-   * This property lets you determine the options that will be applied to the
-   * filter.
-   */
-  @Prop() readonly filterOptions: ComboBoxFilterOptions = {};
-  @Watch("filterOptions")
-  filterOptionsChanged() {
-    this.#scheduleFilterProcessing("immediate");
-  }
-
-  /**
-   * This attribute lets you define what kind of filter is applied to items.
-   * Only items that satisfy the filter predicate will be displayed.
-   *
-   * | Value     | Details                                                                                       |
-   * | --------- | --------------------------------------------------------------------------------------------- |
-   * | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property. |
-   * | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property.   |
-   * | `none`    | Show all items.                                                                               |
-   */
-  @Prop() readonly filterType: ComboBoxFilterType = "none";
-  @Watch("filterType")
-  filterTypeChanged() {
-    this.#scheduleFilterProcessing("immediate");
-  }
+  @Prop() readonly hostParts?: string;
 
   /**
    * Specifies the items of the control
@@ -495,8 +342,24 @@ export class ChComboBoxRender
   @Watch("model")
   modelChanged(newModel: ComboBoxModel) {
     this.#findLargestValue(this.model);
-    this.#mapValuesToItemInfo(newModel);
-    this.#checkIfCurrentSelectedValueIsNoLongerValid();
+    mapValuesToItemInfo(
+      newModel,
+      this.#valueToItemInfo,
+      this.#captionToItemInfo
+    );
+
+    // TODO: Add a unit test for this
+    // The model can change when the combo-box is expanded by having server
+    // filters. In this case, we need to re-compute the icons
+    if (this.expanded) {
+      this.#setComboBoxIcons();
+    }
+
+    // this.#checkIfCurrentSelectedValueIsNoLongerValid();
+
+    // This must be the last operation, since it needs to wait for the UI Model
+    // Map to be updated (#valueToItemInfo)
+    this.#setValueInForm(this.value);
   }
 
   /**
@@ -506,6 +369,11 @@ export class ChComboBoxRender
    * instead of a single line dropdown.
    */
   @Prop() readonly multiple: boolean = false;
+
+  /**
+   * This property specifies the `name` of the control when used in a form.
+   */
+  @Prop({ reflect: true }) readonly name?: string;
 
   /**
    * A hint to the user of what can be entered in the control. Same as
@@ -533,210 +401,151 @@ export class ChComboBoxRender
   @Prop() readonly resizable: boolean = false;
 
   /**
+   * This property lets you specify if the control behaves like a suggest.
+   * If `true` the combo-box value will be editable an displayed items will be
+   * filtered according to the input's value.
+   */
+  @Prop() readonly suggest: boolean = false;
+  @Watch("suggest")
+  suggestChanged() {
+    this.#scheduleFilterProcessing();
+  }
+
+  /**
+   * This property lets you determine the debounce time (in ms) that the
+   * control waits until it processes the changes to the filter property.
+   * Consecutive changes to the `value` property between this range, reset the
+   * timeout to process the value.
+   * Only works if `suggest === true`.
+   */
+  @Prop() readonly suggestDebounce: number = 250;
+  @Watch("suggestDebounce")
+  suggestDebounceChanged() {
+    if (this.suggest) {
+      this.#scheduleFilterProcessing();
+    }
+  }
+
+  /**
+   * This property lets you determine the options that will be applied to the
+   * suggest.
+   */
+  @Prop() readonly suggestOptions: ComboBoxSuggestOptions = {};
+  @Watch("suggestOptions")
+  suggestOptionsChanged() {
+    this.#scheduleFilterProcessing();
+  }
+
+  /**
    * Specifies the value (selected item) of the control.
    */
   @Prop({ mutable: true }) value?: string;
   @Watch("value")
-  valueChange(newValue: string) {
-    this.currentSelectedValue = newValue;
-    this.#currentValueCaption = this.#getCaptionUsingValue(newValue);
+  valueChanged(newValue: string) {
+    this.#setValueInForm(newValue);
 
-    // Update the filter property is there are no filters applied. TODO: USE @State FOR FILTER PROPERTY?
-    if (this.filterType === "none") {
-      this.filter = this.#currentValueCaption;
+    if (this.suggest) {
+      this.#scheduleFilterProcessing();
     }
-
-    // Update form value
-    this.internals.setFormValue(newValue);
   }
-
-  /**
-   * Emitted when a change to the element's filter is committed by the user.
-   * Only applies if `filterType !== "none"`. It contains the information about
-   * the new filter value.
-   *
-   * This event is debounced by the `filterDebounce` value.
-   */
-  @Event() filterChange: EventEmitter<string>;
 
   /**
    * The `input` event is emitted when a change to the element's value is
    * committed by the user.
+   *
+   * If `suggest = true`, this event is debounced by the `suggestDebounce` value.
    */
   @Event() input: EventEmitter<string>;
 
+  /**
+   * The `change` event is emitted when a change to the element's value is
+   * committed by the user.
+   *  - In normal mode (suggest = false), it is emitted after each input event.
+   *
+   *  - In suggest mode (suggest = true), it is emitted after the popover is closed
+   * and a new value is committed by the user.
+   *
+   * This event is NOT debounced by the `suggestDebounce` value.
+   */
+  @Event() change: EventEmitter<string>;
+
   #findLargestValue = (model: ComboBoxModel) => {
-    this.#largestValue = "";
-    let largestValueLength = 0;
-
-    model.forEach((itemGroup: ComboBoxItemGroup) => {
-      const subItems = itemGroup.items;
-
-      if (itemGroup.caption.length > largestValueLength) {
-        this.#largestValue = itemGroup.caption;
-        largestValueLength = itemGroup.caption.length;
-      }
-
-      if (subItems != null) {
-        subItems.forEach(leaf => {
-          if (leaf.caption.length > largestValueLength) {
-            this.#largestValue = leaf.caption;
-            largestValueLength = leaf.caption.length;
-          }
-        });
-      }
-    });
+    this.#largestValue = findComboBoxLargestValue(model);
   };
 
-  #scheduleFilterProcessing = (newImmediateFilter?: ImmediateFilter) => {
+  #getActualImagePathCallback = () =>
+    this.getImagePathCallback ??
+    getControlRegisterProperty("getImagePathCallback", "ch-combo-box-render") ??
+    DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
+  #setComboBoxIcons = () => {
+    this.#itemImages = getComboBoxImages(
+      this.model,
+      this.#getActualImagePathCallback()
+    );
+  };
+
+  #scheduleFilterProcessing = () => {
     this.#applyFilters = true;
-
-    if (newImmediateFilter !== undefined) {
-      this.#immediateFilter ??= newImmediateFilter;
-    }
   };
 
-  #filterFunction = (modelIsAlreadyFiltered: boolean) => {
-    // Reset immediate filter
-    this.#immediateFilter = undefined;
-
+  #filterModel = () => {
     // New filter value
-    this.filterChange.emit(this.filter);
-
-    if (modelIsAlreadyFiltered) {
-      return;
-    }
-
     this.#displayedValues.clear();
 
-    const filterOptions: ComboBoxFilterInfo = {
-      filter: this.filter,
-      filterOptions: this.filterOptions
+    const filterOptions: ComboBoxSuggestInfo = {
+      filter: this.value,
+      options: this.suggestOptions
     };
 
     for (let index = 0; index < this.model.length; index++) {
       const item = this.model[index];
-
-      filterSubModel(
-        item,
-        this.filterType,
-        filterOptions,
-        this.#displayedValues
-      );
+      filterSubModel(item, filterOptions, this.#displayedValues);
     }
 
-    // Remove the selected value if it is no longer rendered
-    if (!this.#displayedValues.has(this.currentSelectedValue)) {
-      this.currentSelectedValue = undefined;
+    // Remove the active descendant if it is no longer rendered
+    if (!this.#displayedValues.has(this.activeDescendant)) {
+      this.activeDescendant = undefined;
     }
   };
 
   #updateFilters = () => {
-    if (this.filterType === "none") {
+    if (!this.suggest) {
       this.#displayedValues = undefined;
       return;
     }
 
     const modelIsAlreadyFiltered = this.#isModelAlreadyFiltered();
 
-    // Remove queued filter processing
-    clearTimeout(this.#queuedFilterId);
-
-    const processWithDebounce =
-      this.filterDebounce > 0 &&
-      (this.filterType === "caption" || this.filterType === "value");
-
     // Check if the model already contains the filtered items
     if (!modelIsAlreadyFiltered) {
       this.#displayedValues ??= new Set();
-    }
-
-    // Check if should filter with debounce
-    if (processWithDebounce && this.#immediateFilter !== "immediate") {
-      this.#queuedFilterId = setTimeout(() => {
-        this.#filterFunction(modelIsAlreadyFiltered);
-        forceUpdate(this); // After the filter processing is completed, force a re-render
-      }, this.filterDebounce);
-    }
-    // No debounce
-    else {
-      this.#filterFunction(modelIsAlreadyFiltered);
+      this.#filterModel();
     }
   };
 
-  #mapValuesToItemInfo = (model: ComboBoxModel) => {
-    this.#valueToItemInfo.clear();
-    this.#itemCaptionToItemValue.clear();
-
-    if (model == null) {
-      return;
-    }
-
-    model.forEach((item, firstLevelIndex) => {
-      const itemGroup = item as ComboBoxItemGroup;
-      const subItems = itemGroup.items;
-
-      if (subItems != null) {
-        // First level item
-        this.#valueToItemInfo.set(itemGroup.value, {
-          item: itemGroup,
-          index: {
-            type: "first-level",
-            firstLevelIndex: firstLevelIndex
-          },
-          firstExpanded: itemGroup.expandable && !!itemGroup.expanded
-        });
-
-        this.#itemCaptionToItemValue.set(itemGroup.caption, itemGroup.value);
-
-        // Second level items
-        subItems.forEach((subItem, secondLevelIndex) => {
-          this.#valueToItemInfo.set(subItem.value, {
-            item: subItem,
-            index: {
-              type: "nested",
-              firstLevelIndex: firstLevelIndex,
-              secondLevelIndex: secondLevelIndex
-            }
-          });
-
-          this.#itemCaptionToItemValue.set(subItem.caption, subItem.value);
-        });
-      }
-      // First level item
-      else {
-        this.#valueToItemInfo.set(item.value, {
-          item: item,
-          index: {
-            type: "first-level",
-            firstLevelIndex: firstLevelIndex
-          }
-        });
-        this.#itemCaptionToItemValue.set(item.caption, item.value);
-      }
-    });
-  };
-
-  #checkIfCurrentSelectedValueIsNoLongerValid = () => {
-    // If the current selected does not exists in the new model, remove the
-    // current selected value. This is necessary to process filters
-    if (!this.#valueToItemInfo.get(this.currentSelectedValue)) {
-      this.currentSelectedValue = undefined;
-    }
-  };
-
-  #getCaptionUsingValue = (itemValue: string) =>
-    this.#valueToItemInfo.get(itemValue)?.item.caption;
-
-  #getValueUsingCaption = (itemCaption: string) =>
-    this.#itemCaptionToItemValue.get(itemCaption);
+  #getCurrentValueMapping = (): ComboBoxItemModelExtended | undefined =>
+    this.#captionToItemInfo.get(this.value) ??
+    this.#valueToItemInfo.get(this.value);
 
   #checkAndEmitValueChangeWithNoFilter = () => {
-    if (this.currentSelectedValue !== this.value) {
-      this.value = this.currentSelectedValue;
+    const activeDescendant = this.activeDescendant;
+
+    // TODO: Should we debounce this event?
+    if (activeDescendant?.value !== this.value) {
+      // Clear last debounce
+      clearTimeout(this.#queuedInputValueUpdate);
+
+      this.value = this.suggest
+        ? activeDescendant.caption ?? activeDescendant.value
+        : activeDescendant.value;
 
       // Emit event
       this.input.emit(this.value);
+
+      // Emit change event
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
   };
 
@@ -752,133 +561,61 @@ export class ChComboBoxRender
     event.preventDefault();
 
     // "Traditional selection". A value was selected pressing the enter key
-    if (this.currentSelectedValue) {
-      this.filter = this.#getCaptionUsingValue(this.currentSelectedValue);
+    if (this.activeDescendant) {
       this.#checkAndEmitValueChangeWithNoFilter();
       return;
     }
 
-    // No item was selected and the filters are not strict
-    if (!this.filterOptions?.strict) {
-      this.value = this.filter;
+    // No item was selected and the suggest is not strict
+    if (!this.suggestOptions?.strict) {
+      // TODO: Should we update the #lastConfirmedValue?
 
-      // Emit input event
-      this.input.emit(this.value);
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
       return;
     }
 
     // Strict selection
-    const valueMatchingTheCaption = this.#getValueUsingCaption(this.filter);
+    const inputValueMatches = this.#getCurrentValueMapping();
 
-    if (valueMatchingTheCaption) {
-      this.value = valueMatchingTheCaption;
+    if (inputValueMatches) {
+      // TODO: Do we have to emit the change event?
 
-      // Emit input event
-      this.input.emit(this.value);
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
-    // Revert change because the filter does not match any item value
+    // Revert change because the input value does not match any item value
     else {
-      this.filter = this.#currentValueCaption;
+      // Clear last debounce
+      clearTimeout(this.#queuedInputValueUpdate);
 
-      // Emit filter change event to recover the previous state
-      this.filterChange.emit(this.filter);
+      this.value = this.#lastConfirmedValue;
+
+      // Emit filter change event to recover the previous state.
+      // TODO: Should we debounce this event?
+      this.input.emit(this.value);
+
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
     }
-  };
-
-  #itemLeafParts = (
-    item: ComboBoxItemLeaf,
-    insideAGroup: boolean,
-    isDisabled: boolean
-  ) =>
-    `item${insideAGroup ? " nested" : ""}${
-      isDisabled ? ` ${DISABLED_PART}` : ""
-    }${item.value === this.currentSelectedValue ? ` ${SELECTED_PART}` : ""}`;
-
-  #setResizeObserver = () => {
-    this.#borderSizeRAF = new SyncWithRAF();
-    this.#resizeObserver = new ResizeObserver(this.#updateBorderSizeRAF);
-
-    // Observe the size of the edges to know if the border
-    this.#resizeObserver.observe(this.el, { box: "border-box" });
-    this.#resizeObserver.observe(this.#maskRef ?? this.#selectRef);
-  };
-
-  #updateBorderSizeRAF = () => {
-    this.#borderSizeRAF.perform(this.#updateBorderSize);
-  };
-
-  #updateBorderSize = () => {
-    // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
-    const computedStyle = getComputedStyle(this.el);
-
-    const negatedBorderInlineStartWidth = negateBorderValue(
-      computedStyle.borderInlineStartWidth
-    );
-    const negatedBorderInlineEndWidth = negateBorderValue(
-      computedStyle.borderInlineEndWidth
-    );
-    const negatedBorderBlockStartWidth = negateBorderValue(
-      computedStyle.borderBlockStartWidth
-    );
-    const negatedBorderBlockEndWidth = negateBorderValue(
-      computedStyle.borderBlockEndWidth
-    );
-
-    if (
-      this.#lastMaskInlineStart === negatedBorderInlineStartWidth &&
-      this.#lastMaskInlineEnd === negatedBorderInlineEndWidth &&
-      this.#lastMaskBlockStart === negatedBorderBlockStartWidth &&
-      this.#lastMaskBlockEnd === negatedBorderBlockEndWidth
-    ) {
-      return;
-    }
-
-    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-    this.el.style.setProperty(
-      COMBO_BOX_MASK_INLINE_START,
-      negatedBorderInlineStartWidth
-    );
-
-    this.el.style.setProperty(
-      COMBO_BOX_MASK_INLINE_END,
-      negatedBorderInlineEndWidth
-    );
-
-    this.el.style.setProperty(
-      COMBO_BOX_MASK_BLOCK_START,
-      negatedBorderBlockStartWidth
-    );
-
-    this.el.style.setProperty(
-      COMBO_BOX_MASK_BLOCK_END,
-      negatedBorderBlockEndWidth
-    );
-
-    // Store borders to avoid an extra call from the resize observer due to
-    // the size of the mask is updated
-    this.#lastMaskInlineStart = negatedBorderInlineStartWidth;
-    this.#lastMaskInlineEnd = negatedBorderInlineEndWidth;
-    this.#lastMaskBlockStart = negatedBorderBlockStartWidth;
-    this.#lastMaskBlockEnd = negatedBorderBlockEndWidth;
   };
 
   #handleSelectChange = (event: Event) => {
     event.preventDefault();
 
     this.value = this.#selectRef.value;
-    this.currentSelectedValue = this.#selectRef.value;
+    this.activeDescendant = this.#valueToItemInfo.get(
+      this.activeDescendant.value
+    )?.item;
 
     // Emit event
     this.input.emit(this.value);
-  };
 
-  #handleExpandedChange = (event: MouseEvent) => {
-    event.stopPropagation();
-    this.expanded = !this.expanded;
+    // TODO: Prevent change event in the native select
   };
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
-    if (this.filterType === "none") {
+    if (!this.suggest) {
       const keyboardHandler = this.#keyEventsNoFiltersDictionary[event.code];
 
       if (!keyboardHandler) {
@@ -918,272 +655,167 @@ export class ChComboBoxRender
       this.el.focus();
     }
 
-    // this.#checkAndEmitValueChange();
+    if (this.suggest) {
+      // Strict selection. Closing the popover should never confirm the current
+      // value. In other words, it cancels the selection
+      if (this.suggestOptions.strict) {
+        // Clear last debounce
+        clearTimeout(this.#queuedInputValueUpdate);
+
+        // Revert change because the input value does not match any item value
+        this.value = this.#lastConfirmedValue;
+
+        // Emit filter change event to recover the previous state.
+        // TODO: Should we debounce this event?
+        this.input.emit(this.value);
+      }
+
+      // TODO: Add a unit test for this
+      this.#emitChangeEvent();
+    } else {
+      this.#checkAndEmitValueChangeWithNoFilter();
+    }
   };
+
+  #emitChangeEvent = () =>
+    // TODO: Add a unit test for this
+    // TODO: Don't emit the event if the value didn't change
+    this.change.emit(this.value);
 
   #handleInputFilterChange = (event: InputEvent) => {
     event.stopPropagation();
     this.expanded = true;
-    this.filter = this.#inputRef.value;
+
+    // Clear last debounce
+    clearTimeout(this.#queuedInputValueUpdate);
+
+    // TODO: Add unit tests for this case
+    if (this.suggestDebounce > 0) {
+      this.#queuedInputValueUpdate = setTimeout(() => {
+        this.value = this.#inputRef.value;
+        this.input.emit(this.value);
+      }, this.suggestDebounce);
+    } else {
+      this.value = this.#inputRef.value;
+      this.input.emit(this.value);
+    }
   };
 
-  #displayPopoverWhenFiltersApplied = (event: MouseEvent) => {
+  #displayPopover = (event: MouseEvent) => {
+    const clickWasPerformedInALabel = event.detail === 0;
+
+    // TODO: Add a unit test for this case (clicking on the popover should not
+    // close the popover)
+    if (
+      clickWasPerformedInALabel ||
+      (this.expanded && popoverWasClicked(event))
+    ) {
+      return;
+    }
     event.stopPropagation();
-    this.expanded = true;
+    this.expanded = !this.expanded;
   };
 
-  #focusInnerInputWhenFiltersApplied = (event: MouseEvent) => {
-    event.stopPropagation();
-    this.#inputRef.focus();
-  };
+  #handlePopoverClick = (event: MouseEvent) => {
+    const itemUIModel = getComboBoxItemFromMouseEvent(event, this.model);
 
-  #updateCurrentSelectedValue = (itemValue: string) => (event: MouseEvent) => {
-    event.stopPropagation();
-    this.currentSelectedValue = itemValue;
-  };
+    if (!itemUIModel) {
+      return;
+    }
+    const itemGroup = itemUIModel as ComboBoxItemGroup;
 
-  #selectValueAndClosePopover = (itemValue: string) => (event: MouseEvent) => {
-    event.stopPropagation();
+    // Clicked in a group header
+    if (itemGroup.items != null) {
+      if (!itemGroup.expandable) {
+        return;
+      }
+      // Toggle expanded
+      itemGroup.expanded = !itemGroup.expanded;
+    }
+    // Clicked in a leaf
+    else {
+      this.activeDescendant = itemUIModel;
+      this.expanded = false;
 
-    this.expanded = false;
-    this.currentSelectedValue = itemValue;
-
-    // Update current filter, even if no filters are applied. With this, if the
-    // filterType property is updated at runtime, the current selected caption
-    // won't change
-    this.filter = this.#getCaptionUsingValue(itemValue);
-    this.#checkAndEmitValueChangeWithNoFilter();
-  };
-
-  #toggleExpandInGroup = (itemGroup: ComboBoxItemGroup) => () => {
-    this.#valueToItemInfo.get(itemGroup.value).firstExpanded = true;
-    itemGroup.expanded = !itemGroup.expanded;
+      this.#checkAndEmitValueChangeWithNoFilter();
+    }
 
     forceUpdate(this);
   };
 
-  #getItemImageCustomVars = (
-    item: ComboBoxItemModel,
-    hasImages: boolean,
-    hasStartImg: boolean,
-    hasEndImg: boolean
-  ) =>
-    hasImages
-      ? {
-          "--ch-combo-box-item-start-img": hasStartImg
-            ? `url("${item.startImgSrc}")`
-            : null,
-          "--ch-combo-box-item-end-img": hasEndImg
-            ? `url("${item.endImgSrc}")`
-            : null
-        }
-      : undefined;
+  #handleMouseOverItem = (event: MouseEvent) => {
+    const itemUIModel = getComboBoxItemFromMouseEvent(event, this.model) as
+      | ComboBoxItemGroup
+      | undefined;
 
-  #isModelAlreadyFiltered = () => this.filterOptions.alreadyProcessed === true;
+    if (itemUIModel && itemUIModel.items == null) {
+      this.activeDescendant = itemUIModel;
+      forceUpdate(this);
+    }
+  };
 
-  #customItemRender =
-    (
-      insideAGroup: boolean,
-      disabled: boolean | undefined,
-      filtersAreApplied: boolean
-    ) =>
-    (item: ComboBoxItemModel, index: number) => {
-      if (
-        filtersAreApplied &&
-        !this.#isModelAlreadyFiltered() &&
-        !this.#displayedValues.has(item.value)
-      ) {
-        return;
-      }
+  #isModelAlreadyFiltered = () => this.suggestOptions.alreadyProcessed === true;
+  #shouldRenderActiveItemIcon = () =>
+    !this.suggest ||
+    !this.expanded ||
+    this.suggestOptions.renderActiveItemIconOnExpand;
 
-      const hasStartImg = !!item.startImgSrc;
-      const hasEndImg = !!item.endImgSrc;
-      const hasImages = hasStartImg || hasEndImg;
+  #setValueInForm = (value: string) => {
+    // TODO: Add a unit test for this case
+    if (!this.expanded) {
+      this.#lastConfirmedValue = value;
+    }
 
-      const customVars = this.#getItemImageCustomVars(
-        item,
-        hasImages,
-        hasStartImg,
-        hasEndImg
-      );
+    this.#syncActiveDescendant();
 
-      // This variable inherits the disabled state from group parents. Useful
-      // to propagate the disabled state in the child buttons
-      const isDisabled = disabled ?? item.disabled;
-      const itemGroup = item as ComboBoxItemGroup;
-      const canAddListeners = !isDisabled && this.expanded;
+    // Update form value
+    this.internals.setFormValue(value);
+  };
 
-      return itemGroup.items != null ? (
-        <div
-          key={item.value}
-          aria-controls={itemGroup.expandable ? `${index}__content` : null}
-          aria-expanded={
-            itemGroup.expandable ? (!!itemGroup.expanded).toString() : null
-          }
-          aria-labelledby={index.toString()}
-          role="group"
-          class="group"
-          part={`group${isDisabled ? ` ${DISABLED_PART}` : ""}`}
-        >
-          {itemGroup.expandable ? (
-            <button
-              class={{
-                // eslint-disable-next-line camelcase
-                group__header: true,
-                "group--expandable": true,
-                "group--collapsed": !itemGroup.expanded
-              }}
-              part={`group__header expandable${isDisabled ? " disabled" : ""} ${
-                this.expanded ? "expanded" : "collapsed"
-              }`}
-              style={customVars}
-              disabled={isDisabled}
-              type="button"
-              onClick={
-                canAddListeners ? this.#toggleExpandInGroup(itemGroup) : null
-              }
-            >
-              <span
-                class={{
-                  "group__header-caption": true,
-                  [`start-img-type--${
-                    item.startImgType ?? "background"
-                  } img--start`]: hasStartImg,
-                  [`end-img-type--${item.endImgType ?? "background"} img--end`]:
-                    hasEndImg
-                }}
-                part="group__header-caption"
-              >
-                {item.caption}
-              </span>
-            </button>
-          ) : (
-            <span
-              id={index.toString()}
-              class={{
-                // eslint-disable-next-line camelcase
-                group__header: true,
-                [`start-img-type--${
-                  item.startImgType ?? "background"
-                } img--start`]: hasStartImg,
-                [`end-img-type--${item.endImgType ?? "background"} img--end`]:
-                  hasEndImg
-              }}
-              part={`group__header${this.disabled ? " disabled" : ""}`}
-              style={customVars}
-            >
-              {item.caption}
-            </span>
-          )}
+  #syncActiveDescendant = () => {
+    // TODO: Should we set the activeDescendant at the end of this function?
 
-          <div
-            key={`${index}__content`}
-            id={itemGroup.expandable ? `${index}__content` : null}
-            class={{
-              // eslint-disable-next-line camelcase
-              group__content: true,
-              "group__content--collapsed":
-                itemGroup.expandable && !itemGroup.expanded
-            }}
-            part="group__content"
-          >
-            {(!itemGroup.expandable ||
-              this.#valueToItemInfo.get(itemGroup.value).firstExpanded) &&
-              itemGroup.items.map(
-                this.#customItemRender(true, isDisabled, filtersAreApplied)
-              )}
-          </div>
-        </div>
-      ) : (
-        <button
-          key={item.value}
-          role="option"
-          aria-selected={item.value === this.currentSelectedValue}
-          tabindex="-1"
-          class={
-            hasImages
-              ? {
-                  leaf: true,
-                  [`start-img-type--${
-                    item.startImgType ?? "background"
-                  } img--start`]: hasStartImg,
-                  [`end-img-type--${item.endImgType ?? "background"} img--end`]:
-                    hasEndImg
-                }
-              : undefined
-          }
-          part={this.#itemLeafParts(item, insideAGroup, isDisabled)}
-          style={customVars}
-          disabled={isDisabled}
-          type="button"
-          onClick={
-            canAddListeners
-              ? this.#selectValueAndClosePopover(item.value)
-              : null
-          }
-          onMouseEnter={
-            canAddListeners
-              ? this.#updateCurrentSelectedValue(item.value)
-              : null
-          }
-        >
-          {item.caption}
-        </button>
-      );
-    };
+    // If the active descendant is not set, try to set it using the value
+    // TODO: Do we have to use the caption when using suggest?
+    if (!this.activeDescendant || !this.expanded) {
+      this.activeDescendant = this.#getCurrentValueMapping()?.item;
+    }
 
-  #nativeItemRender = (item: ComboBoxItemModel) =>
-    (item as ComboBoxItemGroup).items != null ? (
-      <optgroup label={item.caption}>
-        {(item as ComboBoxItemGroup).items.map(this.#nativeItemRender)}
-      </optgroup>
-    ) : (
-      <option
-        key={item.value}
-        value={item.value}
-        disabled={item.disabled}
-        selected={item.value === this.value}
-      >
-        {item.caption}
-      </option>
-    );
+    // If the value does not belong to a rendered item, remove the active
+    // descendant
+    const clientSideFilters = this.suggest && !this.#isModelAlreadyFiltered();
+    if (
+      !clientSideFilters &&
+      !comboBoxActiveDescendantIsRendered(this.activeDescendant, this.model)
+    ) {
+      this.activeDescendant = undefined;
+    }
+  };
 
-  #nativeRender = () => [
-    <span
-      aria-hidden={!this.currentSelectedValue ? "true" : null}
-      class="value"
-    >
-      {this.currentSelectedValue
-        ? this.#getCaptionUsingValue(this.currentSelectedValue) ??
-          this.placeholder
-        : this.placeholder}
-    </span>,
-
+  #nativeRender = () => (
     <select
       aria-label={this.#accessibleNameFromExternalLabel ?? this.accessibleName}
       disabled={this.disabled}
-      onChange={!this.disabled ? this.#handleSelectChange : null}
+      onChange={!this.disabled && this.#handleSelectChange}
       ref={el => (this.#selectRef = el)}
     >
-      {!this.currentSelectedValue && (
+      {!this.activeDescendant && (
         <option disabled selected value="">
           {this.placeholder}
         </option>
       )}
-      {this.model.map(this.#nativeItemRender)}
+      {this.model.map(item => nativeItemRender(item, this.value))}
     </select>
-  ];
+  );
 
   connectedCallback() {
-    this.#popoverId ??= `ch-combo-box-popover-${autoId++}`;
     this.#findLargestValue(this.model);
-    this.#mapValuesToItemInfo(this.model);
-
-    this.internals.setFormValue(this.value);
-    this.currentSelectedValue = this.value;
-
-    this.#currentValueCaption = this.#getCaptionUsingValue(this.value);
-    this.filter = this.#currentValueCaption;
+    mapValuesToItemInfo(
+      this.model,
+      this.#valueToItemInfo,
+      this.#captionToItemInfo
+    );
+    this.#setValueInForm(this.value);
 
     const labels = this.internals.labels;
 
@@ -1193,118 +825,85 @@ export class ChComboBoxRender
     }
   }
 
-  // Don't trigger the render method if the only changed property is "filter"
-  componentShouldUpdate(_newValue, _oldValue, name: string) {
-    if (name === "filter") {
-      // We need to check this condition here, because only the "filter" prop
-      // could be updated and because we return false (to avoid extra re-renders)
-      // the componentWillRender method won't be dispatched
-      if (this.#applyFilters) {
-        this.#updateFilters(); // TODO: THERE IS A BUG IF THE COMBO-BOX STARTS WITH FILTERS APPLIED
-        this.#applyFilters = false;
-      }
-
-      return false;
-    }
-
-    return true;
-  }
-
   componentWillRender() {
-    // If the "filter" property was not updated, we still have to check if we
-    // should update filters. This verification MUST NOT be implemented in the
-    // componentShouldUpdate method, because not all properties are updated in
-    // that method, leaving to race-conditions in some cases when checking
-    // filters in the componentShouldUpdate method
-
     if (this.#applyFilters) {
       this.#updateFilters(); // TODO: THERE IS A BUG IF THE COMBO-BOX STARTS WITH FILTERS APPLIED
       this.#applyFilters = false;
     }
   }
 
-  componentDidLoad() {
-    this.#setResizeObserver();
-  }
-
   componentDidRender() {
-    // Focus the input when there are filters and the control is expanded
-    if (this.filterType !== "none" && this.expanded) {
-      this.#focusSelectAfterNextRender = false;
-      this.#inputRef.focus();
-      return;
+    if (this.expanded) {
+      const selectedElement = this.el.shadowRoot.querySelector(
+        SELECTED_ITEM_SELECTOR
+      ) as HTMLElement | undefined;
+
+      // Focus the selected element to force the scroll into view
+      if (selectedElement) {
+        // Wait until the JS has been executed to avoid race conditions when
+        // rendering elements in the top layer and trying to focus them
+        requestAnimationFrame(() => {
+          selectedElement.focus();
+          this.#inputRef.focus();
+        });
+      }
     }
-
-    // Only focus elements when filter are not applied
-    if (!this.#focusSelectAfterNextRender) {
-      return;
-    }
-    this.#focusSelectAfterNextRender = false;
-
-    const selectedElement = this.el.shadowRoot.querySelector(
-      SELECTED_ITEM_SELECTOR
-    ) as HTMLElement | undefined;
-
-    // Focus the selected element
-    if (selectedElement) {
-      // Wait until the JS has been executed to avoid race conditions when
-      // rendering elements in the top layer and trying to focus them
-      requestAnimationFrame(() => {
-        selectedElement.focus();
-      });
-    }
-  }
-
-  disconnectedCallback() {
-    if (this.#resizeObserver) {
-      this.#resizeObserver.disconnect();
-      this.#resizeObserver = undefined; // Free the memory
-    }
-
-    this.#borderSizeRAF = undefined; // Free the memory
   }
 
   render() {
-    const filtersAreApplied = this.filterType !== "none";
+    const filtersAreApplied = this.suggest;
+    const disableTextSelection = !this.disabled && !filtersAreApplied;
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
-    const destroyRender = this.destroyItemsOnClose && !this.expanded;
 
-    const currentItemInInput: ComboBoxItemModel | undefined =
-      this.#valueToItemInfo.get(
-        filtersAreApplied
-          ? this.#getValueUsingCaption(this.filter)
-          : this.currentSelectedValue
-      )?.item;
+    const currentItemInInput: ComboBoxItemModel | undefined = filtersAreApplied
+      ? this.#getCurrentValueMapping()?.item
+      : this.activeDescendant;
 
-    const hasStartImg = currentItemInInput && !!currentItemInInput.startImgSrc;
+    const computedImage =
+      currentItemInInput?.startImgSrc && this.#shouldRenderActiveItemIcon()
+        ? (computeComboBoxItemImage(
+            currentItemInInput,
+            "start",
+            this.#getActualImagePathCallback()
+          ) as GxImageMultiStateStart | undefined)
+        : undefined;
 
-    const customVars = this.#getItemImageCustomVars(
-      currentItemInInput,
-      hasStartImg,
-      hasStartImg,
-      false
-    );
+    const startImgClasses = computedImage
+      ? `img--start start-img-type--${
+          currentItemInInput.startImgType ?? "background"
+        } ${computedImage.classes}`
+      : undefined;
+
+    // TODO: UNIT TESTS.
+    // - Clicking the combo-box with JS should not open the popover
+    // - User click must open the combo-box
+    // - Clicking the combo-box's label should not open the popover
+
+    // TODO: Add unit tests for this feature.
+    const currentValueMapping = this.#getCurrentValueMapping()?.item.value;
 
     return (
       <Host
-        // Make the host focusable since the input is disabled when there are no
-        // filters
-        tabindex={
-          !mobileDevice && !filtersAreApplied && !this.disabled ? "0" : null
-        }
         class={{
           "ch-disabled": this.disabled,
+          "ch-combo-box--normal": !filtersAreApplied,
           "ch-combo-box--suggest": filtersAreApplied
         }}
+        // TODO: Add unit tests for this feature, since it breaks custom parts
+        // rendered outside of the ch-combo-box-render render() method
+        part={tokenMap({
+          [currentValueMapping]: !!currentValueMapping,
+          [this.hostParts]: !!this.hostParts
+        })}
         onKeyDown={
-          !mobileDevice && comboBoxIsInteractive
-            ? this.#handleExpandedChangeWithKeyBoard
-            : null
+          !mobileDevice &&
+          comboBoxIsInteractive &&
+          this.#handleExpandedChangeWithKeyBoard
         }
-        onClick={
-          !mobileDevice && filtersAreApplied && comboBoxIsInteractive
-            ? this.#focusInnerInputWhenFiltersApplied
-            : null
+        onClickCapture={
+          comboBoxIsInteractive &&
+          (!filtersAreApplied || !this.expanded) &&
+          this.#displayPopover
         }
       >
         {mobileDevice
@@ -1315,104 +914,85 @@ export class ChComboBoxRender
               </span>,
 
               <div
-                key="mask"
-                // This mask is used to capture click events that must open the
-                // popover. If we capture click events in the Host, clicking external
-                // label would open the combo-box's window
-                aria-hidden="true"
-                class={{
-                  mask: true,
-                  "mask--no-filters": this.filterType === "none",
-
-                  [`start-img-type--${
-                    currentItemInInput?.startImgType ?? "background"
-                  } img--start`]: hasStartImg
-                }}
-                style={customVars}
-                onClickCapture={
-                  !filtersAreApplied && comboBoxIsInteractive
-                    ? this.#handleExpandedChange
-                    : null
+                key="combobox"
+                role="combobox"
+                aria-label={
+                  this.#accessibleNameFromExternalLabel ?? this.accessibleName
                 }
-                ref={el => (this.#maskRef = el)}
+                tabindex={disableTextSelection ? "0" : null}
+                class={{
+                  "input-container": true,
+
+                  // TODO: Fix disabled styling when the group parent is disabled, but the option leaf isn't.
+                  // Class for disabled images. Used when the combo-box or selected item are disabled
+                  disabled: this.disabled || currentItemInInput?.disabled,
+                  [startImgClasses]: !!startImgClasses
+                }}
+                style={computedImage?.styles}
               >
                 <input
-                  // We must place the input inside the mask, otherwise it
-                  // won't stretch to the Host size
-                  key="combobox"
-                  role="combobox"
                   aria-controls="popover"
                   // This reset is necessary, since we use "disabled" to
                   // disallow the focus and text selection in the input when
                   // the combo-box has no filters
-                  aria-disabled={
-                    !this.disabled && !filtersAreApplied ? "false" : null
-                  }
+                  aria-disabled={disableTextSelection ? "false" : null}
                   aria-expanded={this.expanded.toString()}
                   aria-haspopup="true"
-                  aria-label={
-                    this.#accessibleNameFromExternalLabel ?? this.accessibleName
-                  }
                   autocomplete="off"
                   class={{
                     value: true,
-                    "value--readonly": !filtersAreApplied,
-                    "value--start-img": hasStartImg
+                    "value--readonly": !filtersAreApplied
                   }}
                   disabled={this.disabled || !filtersAreApplied}
                   placeholder={this.placeholder}
                   readOnly={this.readonly || !filtersAreApplied}
                   value={
                     filtersAreApplied
-                      ? this.filter
-                      : this.#getCaptionUsingValue(this.currentSelectedValue)
-                  }
-                  onClickCapture={
-                    filtersAreApplied && !this.expanded && comboBoxIsInteractive
-                      ? this.#displayPopoverWhenFiltersApplied
-                      : null
+                      ? this.value
+                      : this.activeDescendant?.caption
                   }
                   onInputCapture={
-                    filtersAreApplied && comboBoxIsInteractive
-                      ? this.#handleInputFilterChange
-                      : null
+                    filtersAreApplied &&
+                    comboBoxIsInteractive &&
+                    this.#handleInputFilterChange
                   }
                   ref={el => (this.#inputRef = el)}
                 ></input>
               </div>,
 
-              this.#firstExpanded && !destroyRender && (
+              this.expanded && comboBoxIsInteractive && (
                 <ch-popover
                   key="popover"
                   id="popover"
                   role="listbox"
-                  aria-hidden="false"
+                  aria-hidden="false" // TODO: Remove this and add a unit test
                   part="window"
                   actionById
                   actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it
                   blockAlign="outside-end"
                   inlineAlign={this.popoverInlineAlign}
                   closeOnClickOutside
-                  hidden={!this.expanded}
+                  hidden={false}
                   popover="manual"
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
+                  overflowBehavior="add-scroll"
                   positionTry="flip-block"
-                  onPopoverClosed={
-                    this.expanded && comboBoxIsInteractive
-                      ? this.#handlePopoverClose
-                      : null
-                  }
+                  onClick={this.#handlePopoverClick}
+                  onMouseOver={this.#handleMouseOverItem}
+                  onPopoverClosed={this.#handlePopoverClose}
                 >
-                  <div class="window__content" part="window__content">
-                    {this.model.map(
-                      this.#customItemRender(
-                        false,
-                        undefined,
-                        filtersAreApplied
-                      )
-                    )}
-                  </div>
+                  {this.model.map(
+                    customComboBoxItemRender(
+                      false,
+                      this.disabled,
+                      filtersAreApplied && !this.#isModelAlreadyFiltered(),
+                      this.activeDescendant,
+                      this.#displayedValues,
+                      this.#itemImages,
+                      ""
+                    )
+                  )}
                 </ch-popover>
               )
             ]}

@@ -279,7 +279,7 @@
 
     <div class="card card-properties">
       <fieldset>
-        <legend class="form-input__label">Properties</legend>
+        <legend class="label">Properties</legend>
 
         <div>
           <ch-checkbox
@@ -326,25 +326,19 @@
         </div>
 
         <div>
-          <label
-            class="form-input__label"
-            style="display: flex; flex-direction: column"
-          >
+          <label class="label" style="display: flex; flex-direction: column">
             Lines
-            <select class="form-input" name="lines" id="lines">
+            <select class="input" name="lines" id="lines">
               <option value="all" selected>All lines</option>
               <option value="last">Last line</option>
               <option value="none">None</option>
             </select>
           </label>
 
-          <label
-            class="form-input__label"
-            style="display: flex; flex-direction: column"
-          >
+          <label class="label" style="display: flex; flex-direction: column">
             Expandable button
             <select
-              class="form-input"
+              class="input"
               name="expandable-button"
               id="expandable-button"
             >
@@ -354,12 +348,9 @@
             </select>
           </label>
 
-          <label
-            class="form-input__label"
-            style="display: flex; flex-direction: column"
-          >
+          <label class="label" style="display: flex; flex-direction: column">
             Drop mode
-            <select class="form-input" name="drop-mode" id="drop-mode">
+            <select class="input" name="drop-mode" id="drop-mode">
               <option value="above" selected>Above</option>
               <option value="before-after">Before and After</option>
               <option value="all">All</option>
@@ -371,7 +362,7 @@
       <hr />
 
       <fieldset>
-        <legend class="form-input__label">Methods</legend>
+        <legend class="label">Methods</legend>
 
         <div>
           <button class="button-primary" id="expand-all" type="button">
@@ -391,7 +382,7 @@
         </div>
 
         <fieldset style="grid-template-columns: max-content max-content">
-          <legend class="form-input__label">Update items properties</legend>
+          <legend class="label">Update items properties</legend>
 
           <div class="flex-container" style="flex-direction: column">
             <ch-checkbox
@@ -413,7 +404,7 @@
 
           <div class="flex-container">
             <input
-              class="form-input"
+              class="input"
               aria-label="Items to update"
               id="items-to-update"
               placeholder="ItemId1,ItemId2,ItemId3"
@@ -426,7 +417,7 @@
         </fieldset>
 
         <fieldset style="grid-template-columns: max-content max-content">
-          <legend class="form-input__label">Scroll into visible</legend>
+          <legend class="label">Scroll into visible</legend>
 
           <div class="flex-container" style="flex-direction: column">
             <ch-checkbox
@@ -447,11 +438,7 @@
           </div>
 
           <div class="flex-container">
-            <input
-              class="form-input"
-              id="input-scroll-into-visible"
-              type="text"
-            />
+            <input class="input" id="input-scroll-into-visible" type="text" />
             <button
               class="button-primary"
               id="btn-scroll-into-visible"
@@ -464,7 +451,7 @@
 
         <div class="flex-container">
           <input
-            class="form-input"
+            class="input"
             aria-label="Reload items"
             id="item-id-to-reload"
             placeholder="ItemId1"
@@ -477,7 +464,7 @@
 
         <div class="flex-container">
           <input
-            class="form-input"
+            class="input"
             aria-label="Remove items"
             id="items-to-remove"
             placeholder="ItemId1,ItemId2,ItemId3"
@@ -492,11 +479,11 @@
       <hr />
 
       <fieldset>
-        <legend class="form-input__label">Filters</legend>
+        <legend class="label">Filters</legend>
 
-        <label class="form-input__label">
+        <label class="label">
           Filter type
-          <select class="form-input" name="filter-type" id="filter-type">
+          <select class="input" name="filter-type" id="filter-type">
             <option value="checked">Checked</option>
             <option value="unchecked">Unchecked</option>
             <option value="caption">Caption</option>
@@ -506,9 +493,9 @@
           </select>
         </label>
 
-        <label class="form-input__label">
+        <label class="label">
           Filter
-          <input class="form-input" id="filter" value="" />
+          <input class="input" id="filter" value="" />
         </label>
 
         <div>
@@ -531,7 +518,7 @@
       </fieldset>
 
       <fieldset>
-        <legend class="form-input__label">Models</legend>
+        <legend class="label">Models</legend>
 
         <div>
           <button class="button-primary" id="update-file-system-btn">

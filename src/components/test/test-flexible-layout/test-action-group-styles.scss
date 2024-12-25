@@ -1,7 +1,11 @@
 .action-group {
   min-height: 32px;
   padding-inline: 48px;
-  background-color: var(--colors-foundation__gray--300);
+  background-color: var(--flexible-layout--tab-list-inline__background-color);
+
+  &::part(actions) {
+    gap: 8px;
+  }
 }
 
 .action-group::part(more-actions-window),

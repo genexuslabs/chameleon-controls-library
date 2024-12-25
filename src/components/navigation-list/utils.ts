@@ -1,0 +1,1 @@
+export const NAVIGATION_LIST_INITIAL_LEVEL = 0;

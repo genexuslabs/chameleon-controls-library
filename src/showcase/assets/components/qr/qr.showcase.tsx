@@ -1,9 +1,12 @@
 import { h } from "@stencil/core";
-import { ChQr } from "../../../../components/qr/qr";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties } from "../utils";
 
-const state: Partial<Mutable<ChQr>> = {};
+const state: Partial<HTMLChQrElement> = {};
 
 const render = () => (
   <ch-qr
@@ -18,7 +21,7 @@ const render = () => (
   ></ch-qr>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChQrElement> = [
   {
     caption: "Model",
     properties: [
@@ -31,7 +34,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
       {
         id: "accessibleName",
         caption: "Accessible Name",
-        value: "",
+        value: undefined,
         type: "string"
       },
       {
@@ -79,16 +82,34 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
   }
 ];
 
-export const qrShowcaseStory: ShowcaseStory<Mutable<ChQr>> = {
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChQrElement>[] =
+  [
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    { name: "background", defaultValue: "white", type: "string" },
+    { name: "errorCorrectionLevel", defaultValue: "High", type: "string" },
+    { name: "fill", defaultValue: "black", type: "string" },
+    { name: "radius", defaultValue: 0, type: "number" },
+    { name: "size", defaultValue: 128, type: "number" },
+    { name: "value", defaultValue: undefined, type: "string" }
+  ];
+
+export const qrShowcaseStory: ShowcaseStory<HTMLChQrElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-qr
-          accessibleName={<accessible name>}
-          errorCorrectionLevel={<Error Correction Level>}
-          background={<background>}
-          fill={<fill>}
-          size={<size>}
-          value={<initial value>}
-        ></ch-qr>`,
+  markupWithoutUIModel: {
+    react: () => `<ChQr${renderShowcaseProperties(
+      state,
+      "react",
+      showcasePropertiesInfo
+    )}
+      ></ChQr>`,
+
+    stencil: () => `<ch-qr${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcasePropertiesInfo
+    )}
+        ></ch-qr>`
+  },
   render: render,
   state: state
 };

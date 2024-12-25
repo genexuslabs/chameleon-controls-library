@@ -1,3 +1,4 @@
+import { ActionListImagePathCallback } from "../components/action-list/types";
 import {
   ChameleonImagePathCallbackControls,
   ChameleonImagePathCallbackControlsTagName
@@ -47,3 +48,8 @@ export const getControlRegisterProperty = <
   controlName: Control
 ): RegisterProperty[PropName][Control] | undefined =>
   registerMapping[propertyName][controlName];
+
+export const DEFAULT_GET_IMAGE_PATH_CALLBACK: ActionListImagePathCallback =
+  additionalItem => ({
+    base: additionalItem.imgSrc
+  });

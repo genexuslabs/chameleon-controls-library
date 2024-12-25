@@ -1,7 +1,6 @@
 import {
-  ComboBoxFilterInfo,
-  ComboBoxFilterOptions,
-  ComboBoxFilterType,
+  ComboBoxSuggestInfo,
+  ComboBoxSuggestOptions,
   ComboBoxItemGroup,
   ComboBoxItemModel
 } from "./types";
@@ -18,53 +17,35 @@ const filterWithCase = (
 const filterWithString = (
   stringToFilter: string,
   filter: string,
-  filterOptions: ComboBoxFilterOptions
+  filterOptions: ComboBoxSuggestOptions
 ) =>
   filterOptions?.regularExpression
     ? stringToFilter.match(filter) !== null
     : filterWithCase(stringToFilter, filter, filterOptions?.matchCase);
 
-const filterDictionary: {
-  [key in ComboBoxFilterType]: (
-    item: ComboBoxItemModel,
-    filterInfo: ComboBoxFilterInfo
-  ) => boolean;
-} = {
-  caption: (item, filterInfo) =>
-    filterInfo.filter
-      ? filterWithString(
-          item.caption ?? "",
-          filterInfo.filter,
-          filterInfo.filterOptions
-        )
-      : true,
-
-  value: (item, filterInfo) =>
-    filterInfo.filter
-      ? filterWithString(
-          item.value,
-          filterInfo.filter,
-          filterInfo.filterOptions
-        )
-      : true,
-
-  none: () => true
-};
+const filterCaption = (
+  item: ComboBoxItemModel,
+  filterInfo: ComboBoxSuggestInfo
+) =>
+  !filterInfo.filter ||
+  filterWithString(
+    item.caption ?? item.value,
+    filterInfo.filter,
+    filterInfo.options
+  );
 
 const computeFilter = (
-  filterType: ComboBoxFilterType,
   item: ComboBoxItemModel,
-  filterInfo: ComboBoxFilterInfo
+  filterInfo: ComboBoxSuggestInfo
 ): boolean =>
-  filterInfo.filterOptions?.hideMatchesAndShowNonMatches === true
-    ? !filterDictionary[filterType](item, filterInfo)
-    : filterDictionary[filterType](item, filterInfo);
+  filterInfo.options?.hideMatchesAndShowNonMatches === true
+    ? !filterCaption(item, filterInfo)
+    : filterCaption(item, filterInfo);
 
 export const filterSubModel = (
   item: ComboBoxItemModel,
-  filterType: ComboBoxFilterType,
-  filterInfo: ComboBoxFilterInfo,
-  displayedValues: Set<string>
+  filterInfo: ComboBoxSuggestInfo,
+  displayedValues: Set<ComboBoxItemModel>
 ): boolean => {
   // Check if a subitem is rendered
   let aSubItemIsRendered = false;
@@ -75,7 +56,6 @@ export const filterSubModel = (
       const itemLeaf = itemSubGroup[index];
       const itemSatisfiesFilter = filterSubModel(
         itemLeaf,
-        filterType,
         filterInfo,
         displayedValues
       );
@@ -86,12 +66,11 @@ export const filterSubModel = (
 
   // The current item is rendered if it satisfies the filter condition or a
   // subitem exists that needs to be rendered
-  const satisfiesFilter =
-    aSubItemIsRendered || computeFilter(filterType, item, filterInfo);
+  const satisfiesFilter = aSubItemIsRendered || computeFilter(item, filterInfo);
 
   // Update selected and checkbox items
   if (satisfiesFilter) {
-    displayedValues.add(item.value);
+    displayedValues.add(item);
   }
 
   return satisfiesFilter;

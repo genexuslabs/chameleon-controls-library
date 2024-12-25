@@ -1,4 +1,9 @@
-import { ImageRender } from "../../common/types";
+import {
+  GxImageMultiState,
+  GxImageMultiStateEnd,
+  GxImageMultiStateStart,
+  ImageRender
+} from "../../common/types";
 
 export type ComboBoxModel = ComboBoxItemModel[];
 
@@ -7,7 +12,11 @@ export type ComboBoxItemModel = ComboBoxItemGroup | ComboBoxItemLeaf;
 export type ComboBoxItemModelExtended = {
   item: ComboBoxItemModel;
   index: ComboBoxSelectedIndex;
-  firstExpanded?: boolean;
+};
+
+export type ComboBoxItemImagesModel = {
+  start?: GxImageMultiStateStart;
+  end?: GxImageMultiStateEnd;
 };
 
 export type ComboBoxSelectedIndex =
@@ -25,7 +34,7 @@ export type ComboBoxSelectedIndex =
     };
 
 export type ComboBoxItemLeaf = {
-  caption: string;
+  caption?: string;
   disabled?: boolean;
   endImgSrc?: string;
   endImgType?: Exclude<ImageRender, "img">;
@@ -40,7 +49,7 @@ export type ComboBoxItemGroup = ComboBoxItemLeaf & {
   items: ComboBoxItemLeaf[];
 };
 
-export type ComboBoxFilterOptions = {
+export type ComboBoxSuggestOptions = {
   /**
    * `true` if the items of the combo-box are already filtered and the control
    * does not have to apply any transformation to process the filter value.
@@ -52,6 +61,7 @@ export type ComboBoxFilterOptions = {
 
   /**
    * When applying a new filter, expand the matches.
+   * @status Not yet implemented.
    */
   autoExpand?: boolean;
 
@@ -68,6 +78,7 @@ export type ComboBoxFilterOptions = {
 
   /**
    * Only works if `regularExpression` is not used.
+   * @status Not yet implemented.
    */
   highlightMatchedItems?: boolean;
 
@@ -83,14 +94,26 @@ export type ComboBoxFilterOptions = {
   regularExpression?: boolean;
 
   /**
+   * Determine whether the icon for the selected item is displayed in the
+   * combo-box, even when the popover is expanded.
+   * By default, the combo-box does not render the active item icon when the
+   * combo-box is expanded in suggest mode, as it may have a negative impact on
+   * the user experience.
+   */
+  renderActiveItemIconOnExpand?: boolean;
+
+  /**
    *
    */
   strict?: boolean;
 };
 
-export type ComboBoxFilterType = "caption" | "value" | "none";
-
-export type ComboBoxFilterInfo = {
+export type ComboBoxSuggestInfo = {
   filter: string;
-  filterOptions: ComboBoxFilterOptions;
+  options: ComboBoxSuggestOptions;
 };
+
+export type ComboBoxImagePathCallback = (
+  item: ComboBoxItemModel,
+  iconDirection: "start" | "end"
+) => GxImageMultiState | undefined;

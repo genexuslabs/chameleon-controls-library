@@ -46,6 +46,11 @@ export class ChRadioGroupRender {
   @AttachInternals() internals: ElementInternals;
 
   /**
+   * Specifies the direction of the items.
+   */
+  @Prop() readonly direction: "horizontal" | "vertical" = "horizontal";
+
+  /**
    * This attribute lets you specify if the radio-group is disabled.
    * If disabled, it will not fire any user interaction related event
    * (for example, click event).
@@ -139,6 +144,13 @@ export class ChRadioGroupRender {
   }
 
   render() {
-    return <Host role="radiogroup">{this.model?.map(this.#itemRender)}</Host>;
+    return (
+      <Host
+        role="radiogroup"
+        class={`ch-radio-group--direction-${this.direction}`}
+      >
+        {this.model?.map(this.#itemRender)}
+      </Host>
+    );
   }
 }

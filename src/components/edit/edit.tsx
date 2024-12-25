@@ -10,23 +10,24 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { formatNumericField } from "@genexus/web-standard-functions/dist/lib-esm/numeric/formatNumericField";
-import { formatNumericFieldBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/bigNumber/formatNumericField";
-import { GxBigNumber } from "@genexus/web-standard-functions/dist/lib-esm/types/gxbignumber";
 
 import {
   AccessibleNameComponent,
   DisableableComponent
 } from "../../common/interfaces";
 
-import { DISABLED_CLASS } from "../../common/reserved-names";
+import {
+  DISABLED_CLASS,
+  EDIT_HOST_PARTS,
+  EDIT_PARTS_DICTIONARY
+} from "../../common/reserved-names";
 import { EditInputMode, EditType } from "./types";
 import {
   GxImageMultiState,
   GxImageMultiStateStart,
   ImageRender
 } from "../../common/types";
-import { updateDirectionInImageCustomVar } from "../../common/utils";
+import { tokenMap, updateDirectionInImageCustomVar } from "../../common/utils";
 import { getControlRegisterProperty } from "../../common/registry-properties";
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
@@ -60,6 +61,7 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
  *  - Support to auto grow the control when used with multiline (useful to
  *    model chat inputs).
  *  - An image which can have multiple states.
+ *  - Support for debouncing the input event.
  *
  * @part date-placeholder - A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.
  * @part hidden-multiline - The auxiliary content rendered in the control to implement the auto-grow. This part only applies when `multiline="true"`.
@@ -77,8 +79,14 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   #accessibleNameFromExternalLabel: string | undefined;
   #startImage: GxImageMultiStateStart | undefined;
 
+  #debounceId: NodeJS.Timeout | undefined;
+  #shouldComputePictureValue = false;
+
   // Refs
-  #inputRef: HTMLInputElement | HTMLTextAreaElement = null;
+  // TODO: StencilJS issue. We have to use two refs because StencilJS does not,
+  // update the ref when updating the multiline property
+  #inputRef: HTMLInputElement | undefined;
+  #textareaRef: HTMLTextAreaElement | undefined;
 
   @State() isFocusOnControl = false;
 
@@ -127,11 +135,24 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly autoGrow: boolean = false;
 
   /**
+   * This property lets you specify the label for the clear search button.
+   * Important for accessibility.
+   *
+   * Only works if `type = "search"` and `multiline = false`.
+   */
+  @Prop() readonly clearSearchButtonAccessibleName: string = "Clear search";
+
+  /**
+   * Specifies a debounce for the input event.
+   */
+  @Prop() readonly debounce?: number = 0;
+
+  /**
    * This attribute lets you specify if the element is disabled.
    * If disabled, it will not fire any user interaction related event
    * (for example, click event).
    */
-  @Prop() readonly disabled: boolean = false;
+  @Prop({ reflect: true }) readonly disabled: boolean = false;
 
   /**
    * This property specifies a callback that is executed when the path for an
@@ -144,6 +165,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   getImagePathCallbackChanged() {
     this.#computeImage();
   }
+
+  /**
+   * Specifies a set of parts to use in the Host element (`ch-edit`).
+   */
+  @Prop() readonly hostParts?: string;
 
   /**
    * This property defines the maximum string length that the user can enter
@@ -162,7 +188,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   /**
    * Controls if the element accepts multiline text.
    */
-  @Prop() readonly multiline: boolean;
+  @Prop() readonly multiline: boolean = false;
 
   /**
    * This property specifies the `name` of the control when used in a form.
@@ -176,6 +202,26 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly pattern: string = undefined;
 
   /**
+   * Specifies a picture to apply for the value of the control. Only works if
+   * not `multiline`.
+   */
+  @Prop() readonly picture?: string;
+  @Watch("picture")
+  pictureChanged() {
+    this.#shouldComputePictureValue = true;
+  }
+
+  /**
+   * Specifies the callback to execute when the picture must computed for the
+   * new value.
+   */
+  @Prop() readonly pictureCallback?: (value: any, picture: string) => string;
+  @Watch("pictureCallback")
+  pictureCallbackChanged() {
+    this.#shouldComputePictureValue = true;
+  }
+
+  /**
    * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder)
    * attribute for `input` elements.
    */
@@ -186,7 +232,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
    * attribute for `input` elements.
    */
-  @Prop() readonly readonly: boolean;
+  @Prop() readonly readonly: boolean = false;
 
   /**
    * If true, a trigger button is shown next to the edit field. The button can
@@ -199,7 +245,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Specifies whether the element may be checked for spelling errors
    */
   // eslint-disable-next-line @stencil-community/reserved-member-names
-  @Prop() readonly spellcheck: boolean;
+  @Prop() readonly spellcheck: boolean = false;
 
   /**
    * Specifies the source of the start image.
@@ -243,9 +289,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop({ mutable: true }) value: string;
   @Watch("value")
   valueChanged(newValue: string) {
-    this.#computePictureValue(newValue);
+    this.#shouldComputePictureValue = true;
 
-    if (!this.#inputRef) {
+    if (!this.#getInputRef()) {
       return;
     }
 
@@ -259,8 +305,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
      *  - ChangeEvent. Input ref: "X"
      *  Result: Angular's UIModel has value = "", but the control has value = "X"
      */
-    if (this.#inputRef.value !== this.value) {
-      this.#inputRef.value = this.value;
+    if (this.#getInputRef().value !== this.value) {
+      this.#getInputRef().value = this.value;
     }
 
     // Update form value
@@ -268,28 +314,26 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   }
 
   /**
-   * Specifies a picture to apply for the value of the control. Only works if
-   * `type === "Text"` and `mode === "numeric"`.
-   */
-  @Prop() readonly picture?: string;
-
-  /**
    * The `change` event is emitted when a change to the element's value is
    * committed by the user. Unlike the `input` event, the `change` event is not
    * necessarily fired for each change to an element's value but when the
    * control loses focus.
+   * This event is _NOT_ debounced by the `debounce` property.
    */
   @Event() change: EventEmitter;
 
   /**
    * Fired synchronously when the value is changed.
+   * This event is debounced by the `debounce` property.
    */
-  @Event() input: EventEmitter;
+  @Event() input: EventEmitter<string>;
 
   /**
    * Fired when the trigger button is clicked.
    */
   @Event() triggerClick: EventEmitter;
+
+  #getInputRef = () => this.#inputRef ?? this.#textareaRef;
 
   #computeImage = () => {
     if (!this.startImgSrc) {
@@ -319,6 +363,20 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   #getValueFromEvent = (event: InputEvent): string =>
     (event.target as HTMLInputElement).value;
 
+  #setValueAndEmitInputEventWithDebounce = (valueToEmit: string) => {
+    clearTimeout(this.#debounceId);
+
+    if (this.debounce > 0) {
+      this.#debounceId = setTimeout(() => {
+        this.value = valueToEmit;
+        this.input.emit(valueToEmit);
+      }, this.debounce);
+    } else {
+      this.value = valueToEmit;
+      this.input.emit(valueToEmit);
+    }
+  };
+
   #handleAutoFill = (event: AnimationEvent) => {
     this.autoFilled = event.animationName === AUTOFILL_START_ANIMATION_NAME;
   };
@@ -332,13 +390,12 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     event.stopPropagation();
 
     // Don't allow invalid values
-    if (!this.#inputRef.validity.valid) {
-      this.#inputRef.value = this.value;
+    if (!this.#getInputRef().validity.valid) {
+      this.#getInputRef().value = this.value;
       return;
     }
 
-    this.value = this.#getValueFromEvent(event);
-    this.input.emit(event);
+    this.#setValueAndEmitInputEventWithDebounce(this.#getValueFromEvent(event));
   };
 
   #handleTriggerClick = (event: UIEvent) => {
@@ -348,26 +405,21 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     this.triggerClick.emit(event);
   };
 
+  #clearValue = (event: PointerEvent) => {
+    event.stopPropagation();
+    this.#setValueAndEmitInputEventWithDebounce("");
+
+    requestAnimationFrame(() => this.el.focus());
+  };
+
   // - - - - - - - - - - - - - - - - - - - - - -
   //                  Pictures
   // - - - - - - - - - - - - - - - - - - - - - -
-  #hasPictureApplied = () =>
-    this.picture &&
-    this.type === "text" &&
-    (this.mode === "numeric" || this.mode === "decimal");
+  #hasPictureApplied = () => this.picture && !!this.pictureCallback;
 
   #computePictureValue(value: string | number) {
-    if (!this.#hasPictureApplied()) {
-      return;
-    }
-
-    if (typeof value === "number") {
-      this.pictureValue = formatNumericField(value, this.picture).trim();
-    } else {
-      this.pictureValue = formatNumericFieldBigNumber(
-        value as any as GxBigNumber,
-        this.picture
-      ).trim();
+    if (this.#hasPictureApplied()) {
+      this.pictureValue = this.pictureCallback(value, this.picture).trim();
     }
   }
 
@@ -398,8 +450,22 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     }
   }
 
+  componentWillUpdate() {
+    if (this.#shouldComputePictureValue) {
+      this.#shouldComputePictureValue = false;
+      this.#computePictureValue(this.value);
+    }
+  }
+
+  componentDidLoad() {
+    if (this.autoFocus) {
+      this.el.focus();
+    }
+  }
+
   render() {
     const isDateType = DATE_TYPES.includes(this.type);
+    const showDatePLaceholder = isDateType && this.placeholder && !this.value;
     const shouldDisplayPicture = this.#hasPictureApplied();
     const canAddListeners = !this.disabled && !this.readonly;
 
@@ -417,7 +483,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
           [DISABLED_CLASS]: this.disabled
         }}
-        style={this.#startImage ?? undefined}
+        // TODO: Add unit tests for this feature, since it breaks custom parts
+        // rendered outside of the ch-edit render() method
+        part={tokenMap({
+          [EDIT_HOST_PARTS.EMPTY_VALUE]: !this.value,
+          [this.hostParts]: !!this.hostParts
+        })}
+        style={this.#startImage?.styles ?? undefined}
         // Alignment
         data-text-align=""
         data-valign={!this.multiline ? "" : undefined}
@@ -441,10 +513,10 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 spellcheck={this.spellcheck}
                 value={this.value}
                 // Event listeners
-                onChange={canAddListeners ? this.#handleChange : null}
-                onInput={canAddListeners ? this.#handleValueChanging : null}
-                onAnimationStart={canAddListeners ? this.#handleAutoFill : null}
-                ref={el => (this.#inputRef = el)}
+                onChange={canAddListeners && this.#handleChange}
+                onInput={canAddListeners && this.#handleValueChanging}
+                onAnimationStart={canAddListeners && this.#handleAutoFill}
+                ref={el => (this.#textareaRef = el)}
               ></textarea>,
 
               // The space at the end of the value is necessary to correctly display the enters
@@ -466,7 +538,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 autoComplete={this.autocomplete}
                 class={{
                   "content autofill": true,
-                  "null-date": isDateType && !this.value
+                  "null-date": showDatePLaceholder
                 }}
                 disabled={this.disabled}
                 inputMode={this.mode}
@@ -477,7 +549,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 placeholder={this.placeholder}
                 readOnly={this.readonly}
                 spellcheck={this.spellcheck}
-                step={DATE_TYPES.includes(this.type) ? "1" : undefined}
+                step={isDateType ? "1" : undefined}
                 type={this.type}
                 value={
                   shouldDisplayPicture && !this.isFocusOnControl
@@ -485,22 +557,20 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                     : this.value
                 }
                 // Event listeners
-                onAnimationStart={canAddListeners ? this.#handleAutoFill : null}
-                onChange={canAddListeners ? this.#handleChange : null}
-                onInput={canAddListeners ? this.#handleValueChanging : null}
+                onAnimationStart={canAddListeners && this.#handleAutoFill}
+                onChange={canAddListeners && this.#handleChange}
+                onInput={canAddListeners && this.#handleValueChanging}
                 onFocus={
                   canAddListeners &&
                   shouldDisplayPicture &&
-                  !this.isFocusOnControl
-                    ? this.#showPictureOnFocus
-                    : null
+                  !this.isFocusOnControl &&
+                  this.#showPictureOnFocus
                 }
                 onBlur={
                   canAddListeners &&
                   shouldDisplayPicture &&
-                  this.isFocusOnControl
-                    ? this.#removePictureOnBlur
-                    : null
+                  this.isFocusOnControl &&
+                  this.#removePictureOnBlur
                 }
                 ref={el => (this.#inputRef = el)}
               />,
@@ -515,21 +585,34 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                   part="trigger-button"
                   type="button"
                   disabled={this.disabled}
-                  onClick={canAddListeners ? this.#handleTriggerClick : null}
+                  onClick={canAddListeners && this.#handleTriggerClick}
                 >
                   <slot name="trigger-content" />
                 </button>
               ),
 
-              // Implements a non-native placeholder for date types
-              isDateType && !this.value && (
+              // Implements a non-native placeholder for date types. TODO: Add unit tests for this
+              showDatePLaceholder && (
                 <div
                   aria-hidden="true"
                   class="date-placeholder"
-                  part="date-placeholder"
+                  part={EDIT_PARTS_DICTIONARY.DATE_PLACEHOLDER}
                 >
                   {this.placeholder}
                 </div>
+              ),
+
+              this.type === "search" && !!this.value && (
+                <button
+                  aria-label={this.clearSearchButtonAccessibleName}
+                  class="clear-button"
+                  part={tokenMap({
+                    [EDIT_PARTS_DICTIONARY.CLEAR_BUTTON]: true,
+                    [EDIT_PARTS_DICTIONARY.DISABLED]: this.disabled
+                  })}
+                  type="button"
+                  onClick={!this.disabled && this.#clearValue}
+                ></button>
               )
             ]}
       </Host>

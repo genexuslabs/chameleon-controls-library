@@ -17,99 +17,9 @@ ch-test-flexible-layout {
 }
 
 .flexible-layout {
-  &::part(bar visible) {
-    background-color: var(--colors-foundation__gray--400);
+  &::part(leaf inline) {
+    background-color: var(--mer-surface__elevation--01);
   }
-
-  // &::part(page-container inline) {
-  //   background-color: var(--colors-foundation__gray--200);
-  // }
-
-  // &::part(button inline) {
-  //   position: relative;
-  //   block-size: 32px;
-  //   inline-size: 48px;
-
-  //   &::before {
-  //     display: flex;
-  //     block-size: 100%;
-  //     inline-size: 100%;
-  //     -webkit-mask-size: 16px;
-  //   }
-  // }
-
-  // &::part(button selected inline) {
-  //   &::after {
-  //     content: "";
-  //     display: flex;
-  //     position: absolute;
-  //     inset-block-start: 4px;
-  //     inset-inline-start: 1px;
-  //     block-size: calc(100% - 8px);
-  //     inline-size: 2px;
-  //     background-color: currentColor;
-  //   }
-  // }
-
-  // &::part(button inlineEnd selected)::after {
-  //   inset-inline-start: unset;
-  //   inset-inline-end: 1px;
-  // }
-
-  // // &::part(page-name inline) {
-  // //   display: block;
-  // //   padding-block: 8px;
-  // //   padding-inline: 16px;
-  // // }
-
-  // &::part(close-button) {
-  //   padding: 1px;
-
-  //   &:hover {
-  //     background-color: color-mix(in srgb, currentColor 10%, transparent);
-  //     border-radius: 4px;
-  //   }
-
-  //   &:focus-visible {
-  //     outline: 1px solid currentColor;
-  //   }
-  // }
-
-  // &::part(button inline):focus-visible {
-  //   outline: 1px solid currentColor;
-  //   outline-offset: -1px;
-  // }
-
-  // // Main, BlockEnd
-  // &::part(button block) {
-  //   padding-block: 6px;
-  //   padding-inline: 16px 8px;
-  //   gap: 8px;
-  //   background-color: var(--colors-foundation__gray--200);
-
-  //   &:focus-visible {
-  //     outline: 1px solid currentColor;
-  //     outline-offset: -1px;
-  //   }
-  // }
-
-  // &::part(button block selected) {
-  //   background-color: var(--elevation--2);
-  // }
-
-  // &::part(button block selected blockEnd) {
-  //   position: relative;
-
-  //   &::after {
-  //     content: "";
-  //     position: absolute;
-  //     inset-block-start: 0;
-  //     inset-inline: 0;
-  //     block-size: 1px;
-  //     background-color: currentColor;
-  //     z-index: 1;
-  //   }
-  // }
 
   &::part(tab-list block) {
     overflow: auto;
@@ -118,11 +28,11 @@ ch-test-flexible-layout {
   // - - - - - - - - - - - - - - - -
   //          Drag preview
   // - - - - - - - - - - - - - - - -
-  &::part(drag-preview-element button block) {
-    padding-inline: 25px;
-  }
+  // &::part(drag-preview-element button block) {
+  //   padding-inline: 25px;
+  // }
 
-  &::part(drag-preview--outside-tab-list) {
-    box-shadow: 0 3px 4px 1px #00000020;
-  }
+  // &::part(drag-preview--outside-tab-list) {
+  //   box-shadow: 0 3px 4px 1px #00000020;
+  // }
 }

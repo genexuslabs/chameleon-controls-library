@@ -1,7 +1,7 @@
 import { GxImageMultiState } from "../../../../common/types";
 
-const FOLDER_ICON = "folder";
-const MODULE_ICON = "module";
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
 
 export const getImagePathCallbackEdit = (
   startImgSrc: string
@@ -30,4 +30,12 @@ export const getImagePathCallbackEdit = (
     hover: "var(--icon-stencil-hover)",
     disabled: "var(--icon-stencil-disabled)"
   };
+};
+
+export const dummyPictureCallback = (value: any, picture: string): string => {
+  if (Number.isInteger(Number(value)) && picture.includes("$")) {
+    return `$ ${Number(value).toLocaleString()}`;
+  }
+
+  return `dummy ${value}`;
 };

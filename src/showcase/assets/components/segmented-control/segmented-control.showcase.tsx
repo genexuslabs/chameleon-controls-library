@@ -1,10 +1,13 @@
 import { h } from "@stencil/core";
-import { ChSegmentedControl } from "../../../../components/segmented-control/segmented-control-render";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
 import { basicModel1, model2 } from "./models";
+import { renderShowcaseProperties } from "../utils";
 
-const state: Partial<Mutable<ChSegmentedControl>> = {};
+const state: Partial<HTMLChSegmentedControlRenderElement> = {};
 
 const render = () => (
   <div class="segmented-control-test-main-wrapper">
@@ -14,39 +17,61 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<
-  Mutable<ChSegmentedControl>
-> = [
-  {
-    caption: "Models",
-    properties: [
-      {
-        id: "model",
-        accessibleName: "Model",
-        type: "enum",
-        values: [
-          { caption: "Model 1", value: basicModel1 },
-          { caption: "Model 2", value: model2 }
-        ],
-        value: basicModel1
-      }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChSegmentedControlRenderElement> =
+  [
+    {
+      caption: "Models",
+      properties: [
+        {
+          id: "model",
+          accessibleName: "Model",
+          type: "enum",
+          values: [
+            { caption: "Model 1", value: basicModel1 },
+            { caption: "Model 2", value: model2 }
+          ],
+          value: basicModel1
+        }
+      ]
+    }
+  ];
 
-export const segmentedControlShowcaseStory: ShowcaseStory<
-  Mutable<ChSegmentedControl>
-> = {
-  properties: showcaseRenderProperties,
-  markupWithUIModel: {
-    uiModel: basicModel1,
-    uiModelType: "SegmentedControlModel",
-    render: `<ch-segmented-control-render
-          class="segmented-control"
-          model={this.#controlUIModel}
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChSegmentedControlRenderElement>[] =
+  [
+    {
+      name: "class",
+      fixed: true,
+      value: "segmented-control",
+      type: "string"
+    },
+
+    { name: "model", fixed: true, value: "controlUIModel", type: "function" }
+  ];
+
+export const segmentedControlShowcaseStory: ShowcaseStory<HTMLChSegmentedControlRenderElement> =
+  {
+    properties: showcaseRenderProperties,
+    markupWithUIModel: {
+      uiModel: () => state.model,
+      uiModelType: "SegmentedControlModel",
+      render: {
+        react: () => `<ChSegmentedControlRender${renderShowcaseProperties(
+          state,
+          "react",
+          showcasePropertiesInfo
+        )}
+      >
+      </ChSegmentedControlRender>`,
+
+        stencil: () => `<ch-segmented-control-render${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
         >
         </ch-segmented-control-render>`
-  },
-  render: render,
-  state: state
-};
+      }
+    },
+    render: render,
+    state: state
+  };

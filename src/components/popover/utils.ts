@@ -65,17 +65,12 @@ const getAlignmentValue = (
   documentSize: number,
   separation: number,
   flipSupport: boolean
-) => {
+): { alignmentPosition: number; alignmentOverflow: number } => {
   const popoverRelativePosition = alignToImplementationMap[align](
     actionSize,
     popoverSize,
     separation
   );
-
-  // The configuration does not support flip
-  if (!flipSupport) {
-    return popoverRelativePosition;
-  }
 
   // Check if the current alignment overflows the document window
   const alignmentOverflowingSize = getOverflowingSize(
@@ -85,13 +80,24 @@ const getAlignmentValue = (
     popoverRelativePosition
   );
 
-  if (!contentOverflowsWindow(alignmentOverflowingSize)) {
-    return popoverRelativePosition;
+  // Find which alignment is the best fit, even if both alignments overflow the
+  // window
+  const alignmentWorstOverflowingSize = Math.min(
+    alignmentOverflowingSize.start,
+    alignmentOverflowingSize.end
+  );
+
+  // The configuration does not support flip or the alignment does not overflow
+  if (!flipSupport || !contentOverflowsWindow(alignmentOverflowingSize)) {
+    return {
+      alignmentPosition: popoverRelativePosition,
+      alignmentOverflow: alignmentWorstOverflowingSize
+    };
   }
 
   // Check the alignment with the opposite alignment
   const oppositeAlign = positionTryFlipMap[align];
-  const oppositePopoverRelativePosition = alignToImplementationMap[
+  const oppositePopoverRelativePosition: number = alignToImplementationMap[
     oppositeAlign
   ](actionSize, popoverSize, separation);
 
@@ -102,25 +108,30 @@ const getAlignmentValue = (
     oppositePopoverRelativePosition
   );
 
-  // The opposite alignment is the best fit
-  if (!contentOverflowsWindow(oppositeAlignmentOverflowingSize)) {
-    return oppositePopoverRelativePosition;
-  }
-
   // Find which alignment is the best fit, even if both alignments overflow the
   // window
-  const alignmentWorstOverflowingSize = Math.min(
-    alignmentOverflowingSize.start,
-    alignmentOverflowingSize.end
-  );
   const oppositeAlignmentWorstOverflowingSize = Math.min(
     oppositeAlignmentOverflowingSize.start,
     oppositeAlignmentOverflowingSize.end
   );
 
+  // The opposite alignment is the best fit
+  if (!contentOverflowsWindow(oppositeAlignmentOverflowingSize)) {
+    return {
+      alignmentPosition: oppositePopoverRelativePosition,
+      alignmentOverflow: oppositeAlignmentWorstOverflowingSize
+    };
+  }
+
   return alignmentWorstOverflowingSize < oppositeAlignmentWorstOverflowingSize
-    ? oppositePopoverRelativePosition
-    : popoverRelativePosition;
+    ? {
+        alignmentPosition: oppositePopoverRelativePosition,
+        alignmentOverflow: oppositeAlignmentWorstOverflowingSize
+      }
+    : {
+        alignmentPosition: popoverRelativePosition,
+        alignmentOverflow: alignmentWorstOverflowingSize
+      };
 };
 
 export const setResponsiveAlignment = (
@@ -133,7 +144,10 @@ export const setResponsiveAlignment = (
   inlineAlign: ChPopoverAlign,
   blockAlign: ChPopoverAlign,
   positionTry: ChPopoverPositionTry
-): [number, number] => {
+): [
+  { alignmentPosition: number; alignmentOverflow: number },
+  { alignmentPosition: number; alignmentOverflow: number }
+] => {
   const separationX = computedStyle.getPropertyValue(POPOVER_SEPARATION_X);
   const separationY = computedStyle.getPropertyValue(POPOVER_SEPARATION_Y);
 

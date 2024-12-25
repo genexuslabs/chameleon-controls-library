@@ -1,4 +1,5 @@
 @import "../../common/base";
+@import "../../common/icons";
 
 // Used to change the placeholder color in the input controls
 // Opacity property is necessary, because some browsers (e.g., mozilla) change this value
@@ -21,14 +22,15 @@
 
   /**
    * @prop --ch-edit__image-size:
-   * Specifies the box size that contains the start of the control.
+   * Specifies the box size that contains the start and clear images of the
+   * control.
    * @default #{$default-decorative-image-size}
    */
   --ch-edit__image-size: #{$default-decorative-image-size};
 
   /**
-    * @prop --ch-edit__image-size:
-    * Specifies the size of the start image of the control.
+    * @prop --ch-edit__background-image-size:
+    * Specifies the size of the start and clear images of the control.
     * @default 100%
     */
   --ch-edit__background-image-size: 100%;
@@ -47,11 +49,16 @@
    */
   --ch-placeholder-color: currentColor;
 
+  /**
+   * @prop --ch-edit__clear-button-image:
+   * Specifies the image for the clear button. 
+   * @default #{$close-icon}
+   */
+  --ch-edit__clear-button-image: #{$close-icon};
+
   // --ch-edit-trigger-button-inline-size: #{$ch-icon-size};
 
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: max-content;
+  display: flex;
   align-items: center;
   position: relative;
 
@@ -111,14 +118,24 @@
   --ch-start-img: var(--ch-start-img--disabled, var(--ch-start-img--base));
 }
 
-:host(.ch-edit-pseudo-img--start)::before {
-  content: "";
-  display: block;
-  inline-size: var(--ch-edit__image-size);
-  block-size: var(--ch-edit__image-size);
-  margin-inline-end: var(--ch-edit-gap);
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-edit__image-size);
+:host(.ch-edit-pseudo-img--start) {
+  & > .content {
+    margin-inline-start: var(--ch-edit-gap);
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    inline-size: var(--ch-edit__image-size);
+    // Necessary to properly size the image, due to the Host has display: flex
+    min-inline-size: var(--ch-edit__image-size);
+    block-size: var(--ch-edit__image-size);
+
+    // Do not add content-visibility with display: flex. The Tree View control
+    // had browser crashes with this combination
+    // content-visibility: auto;
+    // contain-intrinsic-size: auto var(--ch-edit__image-size);
+  }
 }
 
 // Background
@@ -229,6 +246,32 @@
   inset-inline-end: 0;
   padding-inline: inherit;
   cursor: pointer;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//              Clear button
+// - - - - - - - - - - - - - - - - - - - -
+[type="search"]::-webkit-search-decoration,
+[type="search"]::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.clear-button {
+  display: inline-grid;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: "";
+    display: block;
+    inline-size: var(--ch-edit__image-size);
+    // Necessary to properly size the image, due to the Host has display: flex
+    min-inline-size: var(--ch-edit__image-size);
+    block-size: var(--ch-edit__image-size);
+    -webkit-mask: no-repeat center / var(--ch-edit__background-image-size)
+      var(--ch-edit__clear-button-image);
+    background-color: currentColor;
+  }
 }
 
 // - - - - - - - - - - - - - - - -

@@ -1,9 +1,17 @@
-import { forceUpdate, h } from "@stencil/core";
-import { ChEdit } from "../../../../components/edit/edit";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
+import { h } from "@stencil/core";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import {
+  renderShowcaseProperties,
+  showcaseTemplateClassProperty,
+  updateShowcase
+} from "../utils";
+import { dummyPictureCallback } from "./models";
 
-const state: Partial<Mutable<ChEdit>> = {};
+const state: Partial<HTMLChEditElement> = {};
 const formRefs: {
   [key in "form-edit-1" | "form-edit-2" | "form-edit-3"]:
     | HTMLFormElement
@@ -30,11 +38,7 @@ const handleValueInput =
     // TODO: Until we support external slots in the ch-flexible-layout-render,
     // this is a hack to update the render of the widget and thus re-render the
     // combo-box updating the displayed items
-    const showcaseRef = formRefs[formId].closest("ch-showcase");
-
-    if (showcaseRef) {
-      forceUpdate(showcaseRef);
-    }
+    updateShowcase();
   };
 
 const render = () => (
@@ -48,7 +52,8 @@ const render = () => (
           autocapitalize={state.autocapitalize}
           autocomplete={state.autocomplete}
           autoGrow={state.autoGrow}
-          class="form-input"
+          class="input"
+          debounce={state.debounce}
           disabled={state.disabled}
           maxLength={state.maxLength}
           mode={state.mode}
@@ -56,6 +61,7 @@ const render = () => (
           pattern={state.pattern}
           placeholder={state.placeholder}
           picture={state.picture}
+          pictureCallback={dummyPictureCallback}
           value={state.value}
           showTrigger={state.showTrigger}
           spellcheck={state.spellcheck}
@@ -73,7 +79,7 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
       <form id="form-edit-2" ref={el => (formRefs["form-edit-2"] = el)}>
-        <label class="form-input__label" htmlFor="edit-2">
+        <label class="label" htmlFor="edit-2">
           Label for edit 2
         </label>
 
@@ -84,7 +90,8 @@ const render = () => (
           autocapitalize={state.autocapitalize}
           autocomplete={state.autocomplete}
           autoGrow={state.autoGrow}
-          class="form-input"
+          class="input"
+          debounce={state.debounce}
           disabled={state.disabled}
           maxLength={state.maxLength}
           mode={state.mode}
@@ -92,6 +99,7 @@ const render = () => (
           pattern={state.pattern}
           placeholder={state.placeholder}
           picture={state.picture}
+          pictureCallback={dummyPictureCallback}
           value={state.value}
           showTrigger={state.showTrigger}
           spellcheck={state.spellcheck}
@@ -111,7 +119,7 @@ const render = () => (
         Component inside label
       </legend>
       <form id="form-edit-3" ref={el => (formRefs["form-edit-3"] = el)}>
-        <label class="form-input__label" htmlFor="edit-3">
+        <label class="label" htmlFor="edit-3">
           Label for edit 3
           <ch-edit
             id="edit-3"
@@ -120,7 +128,8 @@ const render = () => (
             autocapitalize={state.autocapitalize}
             autocomplete={state.autocomplete}
             autoGrow={state.autoGrow}
-            class="form-input"
+            class="input"
+            debounce={state.debounce}
             disabled={state.disabled}
             maxLength={state.maxLength}
             mode={state.mode}
@@ -128,6 +137,7 @@ const render = () => (
             pattern={state.pattern}
             placeholder={state.placeholder}
             picture={state.picture}
+            pictureCallback={dummyPictureCallback}
             value={state.value}
             showTrigger={state.showTrigger}
             spellcheck={state.spellcheck}
@@ -145,7 +155,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
   {
     caption: "Model",
     columns: 2,
@@ -154,7 +164,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
         id: "value",
         columnSpan: 2,
         caption: "Value",
-        value: "",
+        value: undefined,
         type: "string"
       },
       {
@@ -210,7 +220,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
         id: "picture",
         columnSpan: 2,
         caption: "Picture",
-        value: "",
+        value: undefined,
         type: "string"
       },
       {
@@ -246,6 +256,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
         type: "string"
       },
       {
+        id: "debounce",
+        columnSpan: 2,
+        caption: "Debounce",
+        type: "number",
+        value: 0
+      },
+      {
         id: "startImgSrc",
         caption: "Start Image Src",
         value: "folder",
@@ -260,6 +277,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
           { caption: "Mask", value: "mask" }
         ],
         value: "background"
+      },
+      {
+        id: "hostParts",
+        caption: "Host Parts",
+        value: undefined,
+        type: "string"
       },
       {
         id: "autocapitalize",
@@ -307,6 +330,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
         type: "boolean"
       },
       {
+        id: "clearSearchButtonAccessibleName",
+        caption: "Clear Search Button Accessible Name",
+        columnSpan: 2,
+        value: "Clear search",
+        type: "string"
+      },
+      {
         id: "showTrigger",
         caption: "Show Trigger",
         value: false,
@@ -316,44 +346,110 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
         id: "triggerButtonAccessibleName",
         caption: "Trigger Button Accessible Name",
         columnSpan: 2,
-        value: "",
+        value: undefined,
         type: "string"
       }
     ]
   }
 ];
 
-export const editShowcaseStory: ShowcaseStory<Mutable<ChEdit>> = {
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] =
+  [
+    {
+      name: "id",
+      fixed: true,
+      value: "first-name",
+      type: "string"
+    },
+    {
+      name: "name",
+      fixed: true,
+      value: "first-name",
+      type: "string"
+    },
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    { name: "autocapitalize", defaultValue: undefined, type: "string" },
+    { name: "autocomplete", defaultValue: undefined, type: "string" },
+    { name: "autoGrow", defaultValue: false, type: "boolean" },
+    {
+      name: "class",
+      fixed: true,
+      value: "input",
+      type: "string"
+    },
+    {
+      name: "clearSearchButtonAccessibleName",
+      defaultValue: "Clear search",
+      type: "string"
+    },
+    { name: "debounce", defaultValue: 0, type: "number" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    {
+      name: "getImagePathCallback",
+      fixed: true,
+      value: "getImagePathCallback",
+      type: "function"
+    },
+    { name: "hostParts", defaultValue: undefined, type: "string" },
+    { name: "maxLength", defaultValue: undefined, type: "number" },
+    { name: "mode", defaultValue: undefined, type: "string" },
+    { name: "multiline", defaultValue: false, type: "boolean" },
+    { name: "pattern", defaultValue: undefined, type: "string" },
+    { name: "picture", defaultValue: undefined, type: "string" },
+    {
+      name: "pictureCallback",
+      fixed: true,
+      value: "pictureCallback",
+      type: "function"
+    },
+    { name: "placeholder", defaultValue: undefined, type: "string" },
+    { name: "readonly", defaultValue: false, type: "boolean" },
+    { name: "spellcheck", defaultValue: false, type: "boolean" },
+    { name: "showTrigger", defaultValue: false, type: "boolean" },
+    { name: "startImgSrc", defaultValue: undefined, type: "string" },
+    { name: "startImgType", defaultValue: "background", type: "string" },
+    {
+      name: "triggerButtonAccessibleName",
+      defaultValue: undefined,
+      type: "string"
+    },
+    { name: "type", defaultValue: "text", type: "string" },
+    { name: "value", defaultValue: undefined, type: "string" },
+    {
+      name: "input",
+      fixed: true,
+      value: "handleInput",
+      type: "event"
+    }
+  ];
+
+export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<label class="form-input__label" htmlFor="first-name">
+  markupWithoutUIModel: {
+    react: () => `<label ${showcaseTemplateClassProperty(
+      "react",
+      "label"
+    )} htmlFor="first-name">
+        First name
+      </label>
+
+      <ChEdit${renderShowcaseProperties(state, "react", showcasePropertiesInfo)}
+      ></ChEdit>`,
+
+    stencil: () => `<label ${showcaseTemplateClassProperty(
+      "stencil",
+      "label"
+    )} htmlFor="first-name">
           First name
         </label>
 
-        <ch-edit
-          id="first-name"
-          name="First name"
-          accessibleName={state.accessibleName}
-          autocapitalize={state.autocapitalize}
-          autocomplete={state.autocomplete}
-          class="form-input"
-          disabled={state.disabled}
-          getImagePathCallback={getImagePathCallback}
-          maxLength={state.maxLength}
-          mode={state.mode}
-          multiline={state.multiline}
-          pattern={state.pattern}
-          placeholder={state.placeholder}
-          picture={state.picture}
-          value={state.value}
-          showTrigger={state.showTrigger}
-          spellcheck={state.spellcheck}
-          startImgSrc={state.startImgSrc}
-          startImgType={state.startImgType}
-          type={state.type}
-          triggerButtonAccessibleName={state.triggerButtonAccessibleName}
-          readonly={state.readonly}
-          onInput={this.#handleValueChange}
-        ></ch-edit>`,
+        <ch-edit${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
+        ></ch-edit>`
+  },
   render: render,
   state: state
 };

@@ -39,6 +39,7 @@ export type MarkdownViewerToJSXCommonMetadata = {
   codeRender: MarkdownViewerCodeRender;
   lastNestedChildClass: string;
   rawHTML: boolean;
+  showIndicator: boolean;
 };
 
 export type MarkdownViewerCodeRender = (

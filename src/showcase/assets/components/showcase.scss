@@ -1,12 +1,3 @@
-ch-showcase {
-  display: grid;
-  grid-template-rows: max-content 1fr;
-  margin: var(--spacing--l, var(--mer-spacing--md));
-  gap: var(--spacing--l, var(--mer-spacing--md));
-
-  & > iframe {
-    display: grid;
-    block-size: 100%;
-    inline-size: 100%;
-  }
+:host {
+  display: contents;
 }

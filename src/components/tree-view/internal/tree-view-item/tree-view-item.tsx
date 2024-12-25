@@ -658,7 +658,8 @@ export class ChTreeViewItem {
         this.#startImageExpanded = this.startImgSrc
           ? (updateDirectionInImageCustomVar(
               (img as TreeViewItemImageMultiState).expanded,
-              "start"
+              "start",
+              this.startImgType
             ) as GxImageMultiStateStart)
           : undefined;
       }
@@ -666,7 +667,8 @@ export class ChTreeViewItem {
       this.#startImage = this.startImgSrc
         ? (updateDirectionInImageCustomVar(
             parsedImg,
-            "start"
+            "start",
+            this.startImgType
           ) as GxImageMultiStateStart)
         : undefined;
     }
@@ -688,7 +690,8 @@ export class ChTreeViewItem {
         this.#endImageExpanded = this.endImgSrc
           ? (updateDirectionInImageCustomVar(
               (img as TreeViewItemImageMultiState).expanded,
-              "end"
+              "end",
+              this.endImgType
             ) as GxImageMultiStateEnd)
           : undefined;
       }
@@ -696,7 +699,8 @@ export class ChTreeViewItem {
       this.#endImage = this.endImgSrc
         ? (updateDirectionInImageCustomVar(
             parsedImg,
-            "end"
+            "end",
+            this.endImgType
           ) as GxImageMultiStateEnd)
         : undefined;
     }
@@ -1017,6 +1021,7 @@ export class ChTreeViewItem {
       this.el.setAttribute(
         "exportparts",
         // Replace sequential empty characters with a comma
+        // TODO: Use replaceAll?
         `${TREE_VIEW_ITEM_EXPORT_PARTS},${exportparts.replace(/\s+/g, ",")}`
       );
     } else {
@@ -1133,6 +1138,11 @@ export class ChTreeViewItem {
               ? TREE_VIEW_ITEM_PARTS_DICTIONARY.EDITING
               : TREE_VIEW_ITEM_PARTS_DICTIONARY.NOT_EDITING]: true,
             [levelPart]: canShowLines,
+
+            // TODO: Add unit test
+            // Undocumented. Only used for implementation purposes
+            [TREE_VIEW_ITEM_PARTS_DICTIONARY.LEVEL_0_LEAF]:
+              !canShowLines && this.leaf && this.expandableButton !== "no",
             [this.parts]: hasParts
           })}
           style={
@@ -1140,7 +1150,7 @@ export class ChTreeViewItem {
               ? this.#getImageExpandedOrDefault(
                   this.#startImage,
                   this.#startImageExpanded
-                )
+                ).styles
               : undefined
           }
           type="button"
@@ -1224,7 +1234,7 @@ export class ChTreeViewItem {
                     ? this.#getImageExpandedOrDefault(
                         this.#endImage,
                         this.#endImageExpanded
-                      )
+                      ).styles
                     : undefined
                 }
                 onDblClick={!this.editing ? this.#handleActionDblClick : null}
@@ -1235,7 +1245,7 @@ export class ChTreeViewItem {
                     hasParts
                       ? `${START_IMAGE_PARTS} ${this.parts}`
                       : START_IMAGE_PARTS,
-                    this.#startImage["--ch-start-img--base"],
+                    this.#startImage.styles["--ch-start-img--base"],
                     this.startImgType
                   )}
 
@@ -1265,7 +1275,7 @@ export class ChTreeViewItem {
                     hasParts
                       ? `${END_IMAGE_PARTS} ${this.parts}`
                       : END_IMAGE_PARTS,
-                    this.#endImage["--ch-end-img--base"],
+                    this.#endImage.styles["--ch-end-img--base"],
                     this.endImgType
                   )}
               </div>,

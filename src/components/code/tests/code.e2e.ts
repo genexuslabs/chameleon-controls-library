@@ -1,4 +1,4 @@
-import { newE2EPage } from "@stencil/core/testing";
+import { E2EPage, newE2EPage } from "@stencil/core/testing";
 
 // const delay = (value: number) =>
 //   new Promise(resolve => setTimeout(resolve, value));
@@ -56,11 +56,16 @@ const COMPLEX_PARSED_CODE = `<code class="hljs language-typescript" part="code l
   };</code>`;
 
 describe("[ch-code]", () => {
+  let page: E2EPage;
+
+  beforeEach(async () => {
+    page = await newE2EPage({ failOnConsoleError: true });
+  });
+
   // If this test fails with "App did not load in allowed time. Please ensure the content loads a stencil application.",
   // set --maxWorkers=1 in the test script of the package.json.
   // For more information: https://github.com/ionic-team/stencil/issues/4782
   it("should render a ch-code", async () => {
-    const page = await newE2EPage();
     await page.setContent(`<ch-code></ch-code>`);
     const codeRef = await page.find("ch-code");
 
@@ -68,7 +73,6 @@ describe("[ch-code]", () => {
   });
 
   it("should have a shadowRoot", async () => {
-    const page = await newE2EPage();
     await page.setContent(`<ch-code></ch-code>`);
     const codeRef = await page.find("ch-code");
 
@@ -76,7 +80,6 @@ describe("[ch-code]", () => {
   });
 
   it("should render an empty <code> when no value is provided", async () => {
-    const page = await newE2EPage();
     await page.setContent(`<ch-code></ch-code>`);
     const codeRef = await page.find("ch-code");
 
@@ -86,7 +89,6 @@ describe("[ch-code]", () => {
   });
 
   it('should set a part with "language-<language name>" in the <code>', async () => {
-    const page = await newE2EPage();
     await page.setContent(`<ch-code language="typescript"></ch-code>`);
     const codeRef = await page.find("ch-code");
 
@@ -95,8 +97,7 @@ describe("[ch-code]", () => {
     );
   });
 
-  it("should have white-space: pre the Host to properly display the content", async () => {
-    const page = await newE2EPage();
+  it('should have "white-space: pre" to properly display the content', async () => {
     await page.setContent(`<ch-code language="typescript"></ch-code>`);
     const codeRef = await page.find("ch-code");
 
@@ -105,9 +106,16 @@ describe("[ch-code]", () => {
     expect(computedStyle.whiteSpace).toBe("pre");
   });
 
-  it("should render a hello world", async () => {
-    const page = await newE2EPage();
+  it('should have "overflow: auto" to properly display the content', async () => {
+    await page.setContent(`<ch-code language="typescript"></ch-code>`);
+    const codeRef = await page.find("ch-code");
 
+    const computedStyle = await codeRef.getComputedStyle();
+
+    expect(computedStyle.overflow).toBe("auto");
+  });
+
+  it("should render a hello world", async () => {
     await page.setContent(
       `<ch-code language="typescript" value="${HELLO_WORLD}"></ch-code>`
     );
@@ -130,7 +138,6 @@ describe("[ch-code]", () => {
 
   // TODO: Fix this test
   it.skip("should render a complex template", async () => {
-    const page = await newE2EPage();
     await page.setContent(`<ch-code language="typescript"></ch-code>`);
     const codeRef = await page.find("ch-code");
 

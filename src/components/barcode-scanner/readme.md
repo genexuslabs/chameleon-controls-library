@@ -47,19 +47,6 @@ Type: `Promise<string>`
 
 
 
-## Dependencies
-
-### Used by
-
- - [ch-showcase](../../showcase/assets/components)
-
-### Graph
-```mermaid
-graph TD;
-  ch-showcase --> ch-barcode-scanner
-  style ch-barcode-scanner fill:#f9f,stroke:#333,stroke-width:4px
-```
-
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

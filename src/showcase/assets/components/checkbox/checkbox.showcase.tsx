@@ -1,9 +1,12 @@
-import { forceUpdate, h } from "@stencil/core";
-import { ChCheckBox } from "../../../../components/checkbox/checkbox";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
+import { h } from "@stencil/core";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties, updateShowcase } from "../utils";
 
-const state: Partial<Mutable<ChCheckBox>> = {};
+const state: Partial<HTMLChCheckboxElement> = {};
 const formRefs: {
   [key in "form-checkbox-1" | "form-checkbox-2" | "form-checkbox-3"]:
     | HTMLFormElement
@@ -30,11 +33,7 @@ const handleValueInput =
     // TODO: Until we support external slots in the ch-flexible-layout-render,
     // this is a hack to update the render of the widget and thus re-render the
     // combo-box updating the displayed items
-    const showcaseRef = formRefs[formId].closest("ch-showcase");
-
-    if (showcaseRef) {
-      forceUpdate(showcaseRef);
-    }
+    updateShowcase();
   };
 
 const render = () => (
@@ -52,6 +51,8 @@ const render = () => (
           disabled={state.disabled}
           indeterminate={state.indeterminate}
           readonly={state.readonly}
+          startImgSrc={state.startImgSrc}
+          startImgType={state.startImgType}
           value={state.value}
           onInput={handleValueInput("form-checkbox-1", "checkbox-1")}
         ></ch-checkbox>
@@ -62,7 +63,7 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
       <form id="form-checkbox-2" ref={el => (formRefs["form-checkbox-2"] = el)}>
-        <label class="form-input__label" htmlFor="checkbox-2">
+        <label class="label" htmlFor="checkbox-2">
           Label for checkbox 2
         </label>
 
@@ -77,6 +78,8 @@ const render = () => (
           disabled={state.disabled}
           indeterminate={state.indeterminate}
           readonly={state.readonly}
+          startImgSrc={state.startImgSrc}
+          startImgType={state.startImgType}
           value={state.value}
           onInput={handleValueInput("form-checkbox-2", "checkbox-2")}
         ></ch-checkbox>
@@ -89,7 +92,7 @@ const render = () => (
         Component inside label
       </legend>
       <form id="form-checkbox-3" ref={el => (formRefs["form-checkbox-3"] = el)}>
-        <label class="form-input__label" htmlFor="checkbox-3">
+        <label class="label" htmlFor="checkbox-3">
           Label for checkbox 3
           <ch-checkbox
             id="checkbox-3"
@@ -102,6 +105,8 @@ const render = () => (
             disabled={state.disabled}
             indeterminate={state.indeterminate}
             readonly={state.readonly}
+            startImgSrc={state.startImgSrc}
+            startImgType={state.startImgType}
             value={state.value}
             onInput={handleValueInput("form-checkbox-3", "checkbox-3")}
           ></ch-checkbox>
@@ -112,7 +117,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCheckBox>> =
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCheckboxElement> =
   [
     {
       caption: "Properties",
@@ -128,6 +133,22 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCheckBox>> =
           caption: "Caption",
           value: "Option",
           type: "string"
+        },
+        {
+          id: "startImgSrc",
+          caption: "Start Image Src",
+          value: "folder",
+          type: "string"
+        },
+        {
+          id: "startImgType",
+          caption: "Start Image Type",
+          type: "enum",
+          values: [
+            { caption: "Background", value: "background" },
+            { caption: "Mask", value: "mask" }
+          ],
+          value: "background"
         },
         {
           id: "checkedValue",
@@ -163,14 +184,39 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCheckBox>> =
     }
   ];
 
-export const checkboxShowcaseStory: ShowcaseStory<Mutable<ChCheckBox>> = {
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCheckboxElement>[] =
+  [
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    { name: "class", fixed: true, value: "checkbox", type: "string" },
+    { name: "caption", defaultValue: undefined, type: "string" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "checkedValue", defaultValue: undefined, type: "string" },
+    { name: "indeterminate", defaultValue: false, type: "boolean" },
+    { name: "readonly", defaultValue: false, type: "boolean" },
+    { name: "startImgSrc", defaultValue: undefined, type: "string" },
+    { name: "startImgType", defaultValue: "background", type: "string" },
+    { name: "value", defaultValue: undefined, type: "string" },
+    { name: "unCheckedValue", defaultValue: undefined, type: "string" },
+    { name: "input", fixed: true, value: "handleValueChange", type: "event" }
+  ];
+
+export const checkboxShowcaseStory: ShowcaseStory<HTMLChCheckboxElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-checkbox
-          class="checkbox"
-          checkedValue={<checked value>}
-          value={<initial value (optional)>}
-          onInput={this.#handleValueChange}
-        ></ch-checkbox>`,
+  markupWithoutUIModel: {
+    react: () => `<ChCheckbox${renderShowcaseProperties(
+      state,
+      "react",
+      showcasePropertiesInfo
+    )}
+      ></ChCheckbox>`,
+
+    stencil: () => `<ch-checkbox${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcasePropertiesInfo
+    )}
+        ></ch-checkbox>`
+  },
   render: render,
   state: state
 };

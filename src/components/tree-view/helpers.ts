@@ -21,10 +21,10 @@ const filterWithCase = (
 
 const filterWithString = (
   stringToFilter: string,
-  filter: string,
+  filter: string | RegExp,
   filterOptions: TreeViewFilterOptions
 ) =>
-  filterOptions?.regularExpression
+  typeof filter === "object"
     ? stringToFilter.match(filter) !== null
     : filterWithCase(stringToFilter, filter, filterOptions?.matchCase);
 

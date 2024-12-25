@@ -22,17 +22,3 @@
   transition: inset 150ms ease-in-out;
   pointer-events: none; // Avoid the capture of pointer events
 }
-
-.ch-tab-inline--end {
-  grid-template-columns: 1fr max-content;
-}
-
-.ch-tab-block--end {
-  grid-template-rows: 1fr max-content;
-}
-
-// Change the visual order, but no the order in the HTML
-.ch-tab-inline--end::part(tab-list),
-.ch-tab-block--end::part(tab-list) {
-  order: 1;
-}

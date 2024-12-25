@@ -1,7 +1,7 @@
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
-import { CodeToJSX } from "./internal/types";
-
-let parseCodeToJSX: CodeToJSX;
+import { adoptCommonThemes } from "../../common/theme";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import { parseCodeToJSX } from "./internal/code-highlight";
 
 /**
  * A control to highlight code blocks.
@@ -18,14 +18,6 @@ let parseCodeToJSX: CodeToJSX;
 })
 export class ChCode {
   #lastNestedChildIsRoot: boolean = true;
-
-  /**
-   * This flag is used for faster initial loading. It avoid waiting for the
-   * lazy JS to render the code with its language. This reduces the CLS at the
-   * initial load.
-   */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #initialLoad = true;
 
   @Element() el: HTMLChCodeElement;
 
@@ -62,42 +54,20 @@ export class ChCode {
       this.lastNestedChildClass
     );
 
+  connectedCallback() {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+  }
+
   async componentWillRender() {
-    if (!this.value) {
+    if (this.value) {
+      const renderResult = await this.#parseCodeToJSX();
+
+      this.JSXCodeBlock = renderResult.renderedCode;
+      this.#lastNestedChildIsRoot = renderResult.lastNestedChildIsRoot;
+    } else {
       this.JSXCodeBlock = "";
       this.#lastNestedChildIsRoot = true;
-      return;
     }
-
-    // Don't block the initial render, even if the parser is not downloaded
-    if (this.#initialLoad) {
-      // The parser was already downloaded
-      if (parseCodeToJSX) {
-        this.#parseCodeToJSX().then(renderResult => {
-          this.JSXCodeBlock = renderResult.renderedCode;
-          this.#lastNestedChildIsRoot = renderResult.lastNestedChildIsRoot;
-        });
-      }
-      // The parser is not downloaded. Subscribe to its download
-      else {
-        import("./internal/code-highlight").then(async bundle => {
-          parseCodeToJSX ??= bundle.parseCodeToJSX; // Initialize the parser if necessary
-          const renderResult = await this.#parseCodeToJSX();
-
-          this.JSXCodeBlock = renderResult.renderedCode;
-          this.#lastNestedChildIsRoot = renderResult.lastNestedChildIsRoot;
-        });
-      }
-    }
-    // Block re-renders until the JSX is resolved
-    else {
-      const result = await this.#parseCodeToJSX();
-
-      this.JSXCodeBlock = result.renderedCode;
-      this.#lastNestedChildIsRoot = result.lastNestedChildIsRoot;
-    }
-
-    this.#initialLoad = false;
   }
 
   render() {
@@ -106,9 +76,13 @@ export class ChCode {
 
     const language = this.#getLanguageOrDefault();
 
-    // TODO: Should we hide the ch-code on the initial load?
     return (
-      <Host class={this.showIndicator ? "ch-code-show-indicator" : undefined}>
+      <Host
+        class={{
+          "ch-code-show-indicator": this.showIndicator,
+          [SCROLLABLE_CLASS]: true
+        }}
+      >
         <code
           class={{
             [`hljs language-${language}`]: true,
@@ -116,7 +90,7 @@ export class ChCode {
           }}
           part={`code language-${language}`}
         >
-          {this.JSXCodeBlock ?? this.value}
+          {this.JSXCodeBlock}
         </code>
       </Host>
     );

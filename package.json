@@ -1,6 +1,6 @@
 {
   "name": "@genexus/chameleon-controls-library",
-  "version": "6.0.0-next.25",
+  "version": "6.0.0-next.55",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -17,19 +17,21 @@
     "loader/"
   ],
   "scripts": {
-    "build": "npm run build.monaco && npm run build.light",
+    "build": "npm run build.monaco && npm run build.light && npm run build.extras",
     "build.light": "stencil build --docs",
+    "build.extras": "tsc --project tsconfig-collection.json && node copy-files.mjs",
     "build.monaco": "vite build",
     "generate": "stencil generate",
     "prettier": "prettier src/**/*.{tsx,ts,jsx,js,css,json,md} --write",
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "npm run build.monaco && npm run start.light",
     "start.light": "stencil build --dev --watch --serve",
+    "start.optimized": "stencil build --dev --watch --serve --config stencil.config.optimized-dev.ts",
     "test": "stencil test --spec --e2e --maxWorkers=1",
     "test.spec": "stencil test --spec --coverage --no-cache",
-    "test.watch": "stencil test --spec --e2e --watchAll --maxWorkers=1",
+    "test.watch": "npm run test -- --watchAll --config stencil.config.optimized-test-watch.ts",
     "validate": "npm run lint && npm run test && npm run build",
-    "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug"
+    "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug && npm run build.extras"
   },
   "license": "MIT",
   "dependencies": {
@@ -40,11 +42,7 @@
     "qr-creator": "^1.0.0",
     "stencil-click-outside": "^1.8.0"
   },
-  "peerDependencies": {
-    "@genexus/web-standard-functions": ">= 0.65.0"
-  },
   "devDependencies": {
-    "@genexus/web-standard-functions": ">= 0.65.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@stencil-community/eslint-plugin": "~0.7.1",
     "@stencil/core": "~4.16.0",

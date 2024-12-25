@@ -17,9 +17,11 @@
     "stretch-start block-end stretch-end" max-content / max-content 1fr max-content;
 }
 
+// TODO: Fix "inline-caption: start" items support
 .align-container {
   display: grid;
   grid-auto-flow: column;
+  // Don't add (grid-auto-columns: max-content), because it will break the align-end
   white-space: break-spaces; // Support for line breaks, like \n
 }
 
@@ -57,14 +59,17 @@
 //         Second level containers
 // - - - - - - - - - - - - - - - - - - - -
 .align-start {
+  display: flex;
   justify-self: flex-start;
 }
 
 .align-center {
+  display: flex;
   justify-self: center;
 }
 
 .align-end {
+  display: flex;
   justify-self: flex-end;
 }
 
@@ -90,9 +95,18 @@
   display: none;
 }
 
+.additional-item {
+  display: inline-grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  align-items: center;
+}
+
 .fix,
 .modify,
-.remove {
+.remove,
+.confirm-action,
+.cancel-action {
   &::before {
     content: "";
     display: inline-block;
@@ -101,41 +115,69 @@
     content-visibility: auto;
     contain-intrinsic-size: auto var(--ch-action-list-item__image-size);
     -webkit-mask: no-repeat center /
-      var(--ch-action-list-item__background-image-size) var(--ch-img);
-    background-color: currentColor;
+      var(--ch-action-list-item__background-image-size) var(--ch-start-start);
+    background-color: var(--ch-action-list-item__action-color);
   }
 }
 
 .fixed {
-  --ch-img: var(--ch-action-list-item__additional-item-fixed-image);
+  --ch-start-start: var(--ch-action-list-item__additional-item-fixed-image);
 }
 
 .not-fixed {
-  --ch-img: var(--ch-action-list-item__additional-item-not-fixed-image);
+  --ch-start-start: var(--ch-action-list-item__additional-item-not-fixed-image);
 }
 
 .modify {
-  --ch-img: var(--ch-action-list-item__additional-item-modify-image);
+  --ch-start-start: var(--ch-action-list-item__additional-item-modify-image);
 }
 
 .remove {
-  --ch-img: var(--ch-action-list-item__additional-item-remove-image);
+  --ch-start-start: var(--ch-action-list-item__additional-item-remove-image);
+}
+
+.confirm-action {
+  --ch-start-start: var(--ch-action-list-item__additional-item-confirm-image);
+}
+
+.cancel-action {
+  --ch-start-start: var(--ch-action-list-item__additional-item-cancel-image);
 }
 
 // - - - - - - - - - - - - - - - - - - - -
 //                 Images
 // - - - - - - - - - - - - - - - - - - - -
 @include images-without-pseudo-elements(
-  $image-path-custom-var: var(--ch-img),
+  $image-path-custom-var: var(--ch-start-start),
   $image-size-custom-var: var(--ch-action-list-item__image-size),
   $background-image-size-custom-var:
     var(--ch-action-list-item__background-image-size)
 );
 
 @include images-with-pseudo-elements(
-  $start-image-path-custom-var: var(--ch-start-img),
+  $start-image-path-custom-var: var(--ch-start-start),
   $end-image-path-custom-var: var(--ch-end-img),
   $image-size-custom-var: var(--ch-action-list-item__image-size),
   $background-image-size-custom-var:
     var(--ch-action-list-item__background-image-size)
 );
+
+.additional-item.not-actionable {
+  --ch-start-start: var(--ch-start-img--base);
+
+  .action:active &.start-img--active {
+    --ch-start-start: var(--ch-start-img--active);
+  }
+
+  .action:focus &.start-img--focus {
+    --ch-start-start: var(--ch-start-img--focus);
+  }
+
+  .action:hover &.start-img--hover {
+    --ch-start-start: var(--ch-start-img--hover);
+  }
+
+  .action:disabled &.start-img--disabled {
+    --ch-start-start: var(--ch-start-img--disabled);
+  }
+}

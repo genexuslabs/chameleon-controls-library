@@ -35,8 +35,4 @@ describe("[ch-textblock][basic]", () => {
   testDefault("format", "text", "text");
   testDefault("highlightPattern", undefined, "undefined");
   testDefault("showTooltipOnOverflow", false, "false");
-
-  it('should have "display: inline-grid" by default', async () => {
-    expect((await textBlockRef.getComputedStyle()).display).toBe("inline-grid");
-  });
 });

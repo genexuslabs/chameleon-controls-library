@@ -4,6 +4,9 @@ $default-decorative-image-size: 0.875em;
 //          Base styling
 // - - - - - - - - - - - - - - - -
 @mixin box-sizing() {
+  :host,
+  :host::after,
+  :host::before,
   *,
   ::after,
   ::before {

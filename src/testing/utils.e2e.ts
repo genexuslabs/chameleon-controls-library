@@ -47,3 +47,12 @@ export const isActiveElement = async (
 
     return activeElement === elementToCheck;
   }, elementToCheckSelector);
+
+export const getTestDefaultDescription = (
+  propName: string,
+  propValue: any,
+  propValueDesc: string
+) =>
+  `the "${propName}" property should be ${
+    typeof propValue === "string" ? `"${propValueDesc}"` : propValueDesc
+  } by default`;

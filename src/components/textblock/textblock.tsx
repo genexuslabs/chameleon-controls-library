@@ -76,14 +76,15 @@ export class ChTextBlock implements ComponentInterface {
   /**
    * Specifies the content to be displayed when the control has `format = text`.
    */
-  @Prop() readonly caption: string;
+  @Prop() readonly caption?: string | undefined;
   @Watch("caption")
   captionChanged() {
     this.#setHighlightedCaption();
   }
 
   /**
-   * Specifies the character used to measure the line height
+   * Specifies the character used to measure the line height. Used when
+   * `autoGrow = false`.
    */
   @Prop() readonly characterToMeasureLineHeight: string = "A";
 

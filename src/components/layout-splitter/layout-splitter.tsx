@@ -481,25 +481,25 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   render() {
-    const layoutModel = this.model;
+    const model = this.model;
 
-    if (layoutModel?.items == null) {
+    if (model?.items == null) {
       return "";
     }
 
     return (
       <div
-        class={DIRECTION_CLASS(layoutModel.direction)}
+        class={DIRECTION_CLASS(model.direction)}
         style={TEMPLATE_STYLE(
-          layoutModel.items,
+          model.items,
           this.#itemsInfo,
           this.#fixedSizesSumRoot
         )}
       >
         {this.#renderItems(
-          layoutModel.direction,
-          layoutModel.items,
-          layoutModel.items.length - 1
+          model.direction,
+          model.items,
+          model.items.length - 1
         )}
       </div>
     );

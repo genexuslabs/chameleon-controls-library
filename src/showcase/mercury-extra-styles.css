@@ -32,3 +32,7 @@ aside,
 header {
   background-color: var(--mer-surface__elevation--01);
 }
+
+ch-textblock::part(highlighted) {
+  color: var(--mer-accent__primary);
+}

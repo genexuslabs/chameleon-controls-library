@@ -8,6 +8,7 @@ const render = () => (
     autoGrow={state.autoGrow}
     caption={state.caption}
     format={state.format}
+    highlightPattern={state.highlightPattern}
     showTooltipOnOverflow={state.showTooltipOnOverflow}
   >
     <ul>
@@ -110,6 +111,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTextblockElement>
           caption: "Show Tooltip On Overflow",
           value: false,
           type: "boolean"
+        },
+        {
+          id: "highlightPattern",
+          caption: "Highlight Pattern",
+          value: undefined,
+          type: "string"
         }
       ]
     }

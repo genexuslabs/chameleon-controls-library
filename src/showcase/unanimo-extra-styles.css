@@ -63,3 +63,7 @@ aside,
   --colors-foundation__gray--800: #353537;
   --colors-foundation__gray--1000: #242426;
 }
+
+ch-textblock::part(highlighted) {
+  color: var(--accents__primary);
+}

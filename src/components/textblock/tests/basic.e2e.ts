@@ -2,14 +2,14 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 
 describe("[ch-textblock][basic]", () => {
   let page: E2EPage;
-  let tooltipRef: E2EElement;
+  let textBlockRef: E2EElement;
 
   beforeEach(async () => {
     page = await newE2EPage({
       html: `<ch-textblock></ch-textblock>`,
       failOnConsoleError: true
     });
-    tooltipRef = await page.find("ch-textblock");
+    textBlockRef = await page.find("ch-textblock");
   });
 
   const testDefault = (
@@ -22,11 +22,11 @@ describe("[ch-textblock][basic]", () => {
         ? `"${propertyValueDescription}"`
         : propertyValueDescription
     } by default`, async () => {
-      expect(await tooltipRef.getProperty(propertyName)).toBe(propertyValue);
+      expect(await textBlockRef.getProperty(propertyName)).toBe(propertyValue);
     });
 
   it("should have Shadow DOM", async () => {
-    expect(tooltipRef.shadowRoot).toBeTruthy();
+    expect(textBlockRef.shadowRoot).toBeTruthy();
   });
 
   testDefault("autoGrow", false, "false");
@@ -37,6 +37,6 @@ describe("[ch-textblock][basic]", () => {
   testDefault("showTooltipOnOverflow", false, "false");
 
   it('should have "display: inline-grid" by default', async () => {
-    expect((await tooltipRef.getComputedStyle()).display).toBe("inline-grid");
+    expect((await textBlockRef.getComputedStyle()).display).toBe("inline-grid");
   });
 });

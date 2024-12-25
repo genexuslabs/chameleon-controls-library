@@ -125,11 +125,7 @@ export class ChLayoutSplitter implements ChComponent {
    * Specifies the list of component that are displayed. Each component will be
    * separated via a drag bar.
    */
-  @Prop() readonly model: LayoutSplitterModel = {
-    id: "root",
-    direction: "columns",
-    items: []
-  };
+  @Prop() readonly model?: LayoutSplitterModel | undefined;
   @Watch("model")
   modelChanged(newModel: LayoutSplitterModel) {
     this.#updateLayoutInfo(newModel);

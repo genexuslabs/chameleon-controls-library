@@ -9,7 +9,6 @@
 
   display: inline-grid;
   grid-auto-rows: max-content;
-  position: relative;
   text-align: start; // Default alignment which supports RTL
 
   // Enter support
@@ -17,6 +16,7 @@
 }
 
 :host(.ch-textblock--no-auto-grow) {
+  position: relative;
   contain: size;
 }
 

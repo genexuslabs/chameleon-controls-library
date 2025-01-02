@@ -11,17 +11,26 @@ export interface CustomDOMRect {
 
 export async function getDialogPartRect(
   page: E2EPage,
-  partSelector: string = null
-): Promise<CustomDOMRect | null> {
+  partSelector: string
+): Promise<CustomDOMRect> {
+  if (!partSelector) {
+    throw new Error("No partSelector provided.");
+  }
+
   return await page.evaluate(partSelector => {
     const chDialog = document.querySelector("ch-dialog");
     if (!chDialog) {
       throw new Error("ch-dialog element not found.");
     }
 
-    const rect = chDialog.shadowRoot
-      .querySelector(partSelector)
-      .getBoundingClientRect();
+    const element = chDialog.shadowRoot.querySelector(partSelector);
+    if (!element) {
+      throw new Error(
+        `Element with selector "${partSelector}" not found in ch-dialog's shadow DOM.`
+      );
+    }
+
+    const rect = element.getBoundingClientRect();
 
     return {
       x: rect.left,

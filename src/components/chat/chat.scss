@@ -6,7 +6,11 @@
 
 :host {
   display: grid;
-  grid-template-rows: 1fr min-content;
+  grid-template-rows: 1fr max-content;
+}
+
+:host(.ch-chat--additional-content) {
+  grid-template-rows: 1fr max-content max-content;
 }
 
 .assistant-content,

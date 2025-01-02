@@ -150,6 +150,10 @@ $ch-dialog-y--same-layer: calc(
   display: contents;
 }
 
+:host(.ch-dialog--hidden) {
+  display: none;
+}
+
 // - - - - - - - - - - - - - - - -
 //             Header
 // - - - - - - - - - - - - - - - -

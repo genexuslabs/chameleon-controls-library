@@ -371,22 +371,21 @@ export class ChPopover {
    * Specifies whether the popover is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop({ mutable: true, reflect: true }) hidden = true;
-  @Watch("hidden")
-  handleHiddenChange(newHiddenValue: boolean) {
+  @Prop({ mutable: true, reflect: true }) show = false;
+  @Watch("show")
+  handleShowChange(newShowValue: boolean) {
     // Schedule update for watchers
     this.#checkBorderSizeWatcher = true;
     this.#checkPositionWatcher = true;
 
     // Update the popover visualization
-    if (newHiddenValue) {
+    if (newShowValue) {
+      this.#showPopover();
+    } else {
       if (this.firstLayer) {
         this.#avoidFlickeringInTheNextRender(true);
       }
-
       this.el.hidePopover();
-    } else {
-      this.#showPopover();
     }
   }
 
@@ -494,7 +493,7 @@ export class ChPopover {
     ) {
       this.#removeClickOutsideWatcher();
 
-      this.hidden = true;
+      this.show = false;
       this.popoverClosed.emit();
     }
   };
@@ -503,7 +502,7 @@ export class ChPopover {
     if (event.code === KEY_CODES.ESCAPE) {
       this.#removeClickOutsideWatcher();
 
-      this.hidden = true;
+      this.show = false;
       this.popoverClosed.emit();
     }
   };
@@ -563,7 +562,7 @@ export class ChPopover {
   };
 
   #setPositionWatcher = () => {
-    if (!this.actionElement || this.hidden) {
+    if (!this.actionElement || !this.show) {
       this.#removePositionWatcher();
       return;
     }
@@ -802,7 +801,7 @@ export class ChPopover {
 
   #handlePopoverToggle = (event: ToggleEvent) => {
     const willBeHidden = !(event.newState === "open");
-    this.hidden = willBeHidden;
+    this.show = !willBeHidden;
 
     // Emit events only when the action is committed by the user
     if (willBeHidden) {
@@ -1017,7 +1016,7 @@ export class ChPopover {
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #setBorderSizeWatcher = () => {
-    if (!this.resizable || this.hidden) {
+    if (!this.resizable || !this.show) {
       this.#removeBorderSizeWatcher();
       return;
     }
@@ -1144,7 +1143,7 @@ export class ChPopover {
     this.#setPositionWatcher();
     this.#setBorderSizeWatcher();
 
-    if (!this.hidden) {
+    if (this.show) {
       this.#showPopover();
     }
   }
@@ -1170,7 +1169,7 @@ export class ChPopover {
   }
 
   render() {
-    const canAddListeners = !this.hidden;
+    const canAddListeners = this.show;
 
     return (
       <Host
@@ -1201,7 +1200,7 @@ export class ChPopover {
         <slot />
 
         {this.resizable &&
-          !this.hidden && [
+          this.show && [
             <div
               class="edge__block-start"
               onMouseDown={this.#handleEdgeResize("block-start")}

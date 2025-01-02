@@ -126,7 +126,7 @@ $ch-popover-y--same-layer: calc(
   --ch-popover-dragged-y: 0px;
   --ch-popover-rtl: 1;
 
-  display: grid; // Necessary to support gap property
+  display: none;
 
   // Necessary when the popover is not placed in a new top layer. For example,
   // when nesting dropdowns
@@ -167,12 +167,13 @@ $ch-popover-y--same-layer: calc(
   translate: max(0px, var(--ch-popover-x)) max(0px, var(--ch-popover-y));
 }
 
+:host([show]) {
+  display: grid; // Necessary to support gap property
+}
+
 // - - - - - - - - - - - - - - - -
 //             Hidden
 // - - - - - - - - - - - - - - - -
-:host([hidden]) {
-  display: none;
-}
 
 // // content-visibility: hidden is faster for rendering the content back, as
 // // it preserves the rendering state of the content (display: none does not)

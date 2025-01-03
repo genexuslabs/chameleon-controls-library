@@ -17,8 +17,8 @@ describe("[ch-dialog][semantic]", () => {
     await page.waitForChanges();
     chDialogRef.setProperty("showFooter", true);
     await page.waitForChanges();
-    // chDialogRef.setProperty("resizable", true);
-    // await page.waitForChanges();
+    chDialogRef.setProperty("resizable", true);
+    await page.waitForChanges();
     chDialogRef.setProperty("show", true);
     await page.waitForChanges();
   });
@@ -51,7 +51,31 @@ describe("[ch-dialog][semantic]", () => {
     expect(roleAttribute).not.toBe("contentinfo");
   });
 
-  it.skip("should not include an id on any of the resize-bar elements", async () => {
+  it("should not include an id on any of the resize-bar elements", async () => {
+    const partsSelectors = [
+      "ch-dialog >>> [part='edge edge-block-start']",
+      "ch-dialog >>> [part='edge edge-inline-end']",
+      "ch-dialog >>> [part='edge edge-block-end']",
+      "ch-dialog >>> [part='edge edge-inline-start']",
+      "ch-dialog >>> [part='corner corner-block-start-inline-start']",
+      "ch-dialog >>> [part='corner corner-block-start-inline-end']",
+      "ch-dialog >>> [part='corner corner-block-end-inline-start']",
+      "ch-dialog >>> [part='corner corner-block-end-inline-end']"
+    ];
+
+    for (const part of partsSelectors) {
+      const resizePartRef = await page.find(part);
+
+      if (resizePartRef) {
+        const idAttribute = await resizePartRef.getAttribute("id");
+        expect(idAttribute).toBeNull();
+      } else {
+        throw new Error(`Element with part "${part}" not found.`);
+      }
+    }
+  });
+
+  it("test ", async () => {
     const partsSelectors = [
       "ch-dialog >>> [part='edge edge-block-start']",
       "ch-dialog >>> [part='edge edge-inline-end']",

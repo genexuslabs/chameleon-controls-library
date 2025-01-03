@@ -200,7 +200,7 @@ export class ChTooltip implements ComponentInterface {
             actionElement={this.#getActionElement()}
             blockAlign={this.blockAlign}
             closeOnClickOutside
-            show={true}
+            show
             inlineAlign={this.inlineAlign}
             mode="manual"
             // We need to sync the visible state when the popover is closed by an

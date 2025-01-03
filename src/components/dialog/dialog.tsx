@@ -351,9 +351,7 @@ export class ChDialog {
       this.#checkBorderSizeWatcher = false;
 
       // Wait until the resize edges have been rendered
-      requestAnimationFrame(() => {
-        this.#setBorderSizeWatcher();
-      });
+      requestAnimationFrame(() => setTimeout(this.#setBorderSizeWatcher));
     }
   }
 

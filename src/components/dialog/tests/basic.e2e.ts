@@ -13,6 +13,7 @@ describe("[ch-dialog][basic]", () => {
     chDialogRef = await page.find("ch-dialog");
 
     // Set properties
+    chDialogRef.setProperty("showHeader", true);
     chDialogRef.setProperty("resizable", true);
     chDialogRef.setProperty("show", true);
     await page.waitForChanges();

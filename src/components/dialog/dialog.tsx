@@ -271,9 +271,9 @@ export class ChDialog {
    * Specifies whether the dialog is shown or not.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop({ mutable: true }) show = false;
+  @Prop({ mutable: true }) show: boolean = false;
   @Watch("show")
-  handleShowChange(show: boolean) {
+  showChanged(show: boolean) {
     // Schedule update for watchers
     this.#checkBorderSizeWatcher = true;
     this.#checkPositionWatcher = true;
@@ -750,7 +750,7 @@ export class ChDialog {
           ref={el => (this.#dialogRef = el)}
         >
           {this.showHeader && (
-            <header
+            <div
               key="header"
               class="header"
               part="header"
@@ -771,67 +771,59 @@ export class ChDialog {
                 type="button"
                 onClick={this.#closeHandler}
               ></button>
-            </header>
+            </div>
           )}
 
-          <div id="content" key="content" class="content" part="content">
+          <div key="content" class="content" part="content">
             <slot />
           </div>
 
           {this.showFooter && (
-            <footer key="footer" class="footer" part="footer">
+            <div key="footer" class="footer" part="footer">
               <slot name="footer" />
-            </footer>
+            </div>
           )}
 
           {this.resizable &&
             this.show && [
               <div
-                id="edge-block-start"
                 key="edge-block-start"
                 class="edge__block-start"
                 part="edge edge-block-start"
                 onMouseDown={this.#handleEdgeResize("block-start")}
               ></div>, // Top
               <div
-                id="edge-inline-end"
                 class="edge__inline-end"
                 part="edge edge-inline-end"
                 onMouseDown={this.#handleEdgeResize("inline-end")}
               ></div>, // Right
               <div
-                id="edge-block-end"
                 class="edge__block-end"
                 part="edge edge-block-end"
                 onMouseDown={this.#handleEdgeResize("block-end")}
               ></div>, // Bottom
               <div
-                id="edge-inline-start"
                 class="edge__inline-start"
                 part="edge edge-inline-start"
                 onMouseDown={this.#handleEdgeResize("inline-start")}
               ></div>, // Left
 
               <div
-                id="corner-block-start-inline-start"
                 class="corner__block-start-inline-start"
                 part="corner corner-block-start-inline-start"
                 onMouseDown={this.#handleEdgeResize("block-start-inline-start")}
               ></div>, // Top Left
               <div
-                id="corner-block-start-inline-end"
                 class="corner__block-start-inline-end"
                 part="corner corner-block-start-inline-end"
                 onMouseDown={this.#handleEdgeResize("block-start-inline-end")}
               ></div>, // Top Right
               <div
-                id="corner-block-end-inline-start"
                 class="corner__block-end-inline-start"
                 part="corner corner-block-end-inline-start"
                 onMouseDown={this.#handleEdgeResize("block-end-inline-start")}
               ></div>, // Bottom Left
               <div
-                id="corner-block-end-inline-end"
                 class="corner__block-end-inline-end"
                 part="corner corner-block-end-inline-end"
                 onMouseDown={this.#handleEdgeResize("block-end-inline-end")}

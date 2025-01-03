@@ -371,9 +371,9 @@ export class ChPopover {
    * Specifies whether the popover is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop({ mutable: true, reflect: true }) show = false;
+  @Prop({ mutable: true, reflect: true }) show: boolean = false;
   @Watch("show")
-  handleShowChange(newShowValue: boolean) {
+  showChanged(newShowValue: boolean) {
     // Schedule update for watchers
     this.#checkBorderSizeWatcher = true;
     this.#checkPositionWatcher = true;
@@ -800,14 +800,14 @@ export class ChPopover {
   };
 
   #handlePopoverToggle = (event: ToggleEvent) => {
-    const willBeHidden = !(event.newState === "open");
-    this.show = !willBeHidden;
+    const willBeOpen = event.newState === "open";
+    this.show = willBeOpen;
 
     // Emit events only when the action is committed by the user
-    if (willBeHidden) {
-      this.popoverClosed.emit();
-    } else {
+    if (willBeOpen) {
       this.popoverOpened.emit();
+    } else {
+      this.popoverClosed.emit();
     }
   };
 

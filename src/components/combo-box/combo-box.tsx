@@ -972,7 +972,7 @@ export class ChComboBoxRender
                   blockAlign="outside-end"
                   inlineAlign={this.popoverInlineAlign}
                   closeOnClickOutside
-                  show={true}
+                  show
                   popover="manual"
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"

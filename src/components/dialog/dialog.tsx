@@ -762,7 +762,6 @@ export class ChDialog {
                 </h2>
               )}
               <button
-                id="close-button"
                 aria-label={this.closeButtonAccessibleName || null}
                 class="close-button"
                 part="close-button"

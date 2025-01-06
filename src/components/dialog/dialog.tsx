@@ -270,7 +270,6 @@ export class ChDialog {
   /**
    * Specifies whether the dialog is shown or not.
    */
-  // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop({ mutable: true }) show: boolean = false;
   @Watch("show")
   showChanged(show: boolean) {

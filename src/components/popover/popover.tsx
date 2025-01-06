@@ -370,7 +370,8 @@ export class ChPopover {
   /**
    * Specifies whether the popover is hidden or visible.
    */
-  // eslint-disable-next-line @stencil-community/ban-default-true
+  // TODO: Remove reflect in a future PR (also add a unit test to verify that the
+  // property is not reflected and be careful with the selector `:host([show]) {...}` ).
   @Prop({ mutable: true, reflect: true }) show: boolean = false;
   @Watch("show")
   showChanged(newShowValue: boolean) {

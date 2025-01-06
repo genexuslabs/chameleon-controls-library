@@ -15,7 +15,6 @@ describe("[ch-dialog][accessibility]", () => {
     // Set properties
     chDialogRef.setProperty("showHeader", true);
     chDialogRef.setProperty("showFooter", true);
-    chDialogRef.setProperty("resizable", true);
     chDialogRef.setProperty("show", true);
     await page.waitForChanges();
   });

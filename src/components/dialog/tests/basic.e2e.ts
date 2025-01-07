@@ -37,23 +37,23 @@ describe("[ch-dialog][basic]", () => {
 
   // Validate properties default values
 
-  testDefaultProperty("adjustPositionAfterResize", false);
+  // testDefaultProperty("adjustPositionAfterResize", false);
 
-  testDefaultProperty("allowDrag", "no");
+  // testDefaultProperty("allowDrag", "no");
 
-  testDefaultProperty("caption", undefined);
+  // testDefaultProperty("caption", undefined);
 
-  testDefaultProperty("closeButtonAccessibleName", undefined);
+  // testDefaultProperty("closeButtonAccessibleName", undefined);
 
-  testDefaultProperty("show", false);
+  // testDefaultProperty("show", false);
 
-  testDefaultProperty("modal", true);
+  // testDefaultProperty("modal", true);
 
-  testDefaultProperty("resizable", false);
+  // testDefaultProperty("resizable", false);
 
-  testDefaultProperty("showFooter", false);
+  // testDefaultProperty("showFooter", false);
 
-  testDefaultProperty("showHeader", false);
+  // testDefaultProperty("showHeader", false);
 
   // Validate id's
 

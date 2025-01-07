@@ -81,12 +81,15 @@ describe("[ch-dialog][basic]", () => {
   });
 
   it("should not include an id on the part='content' element", async () => {
+    dialogRef.setProperty("show", true);
+    await page.waitForChanges();
     const contentPartRef = await page.find("ch-dialog >>> [part='content']");
     expect(contentPartRef).not.toHaveAttribute("id");
   });
 
   it("should not include an id on the part='close-button' element", async () => {
     dialogRef.setProperty("showHeader", true);
+    dialogRef.setProperty("show", true);
     await page.waitForChanges();
 
     const closeButtonPartRef = await page.find(

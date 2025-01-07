@@ -4,21 +4,21 @@ describe("[ch-dialog][basic]", () => {
   let page: E2EPage;
   let chDialogRef: E2EElement;
 
-  const testDefaultProperty = async (
-    propertyName: string,
-    expectedValue: any
-  ) => {
-    it(`the "${propertyName}" property should be ${
-      expectedValue === undefined ? "undefined" : `"${expectedValue}"`
-    }`, async () => {
-      const propertyValue = await chDialogRef.getProperty(propertyName);
-      if (expectedValue === undefined) {
-        expect(propertyValue).toBeUndefined();
-      } else {
-        expect(propertyValue).toBe(expectedValue);
-      }
-    });
-  };
+  // const testDefaultProperty = async (
+  //   propertyName: string,
+  //   expectedValue: any
+  // ) => {
+  //   it(`the "${propertyName}" property should be ${
+  //     expectedValue === undefined ? "undefined" : `"${expectedValue}"`
+  //   }`, async () => {
+  //     const propertyValue = await chDialogRef.getProperty(propertyName);
+  //     if (expectedValue === undefined) {
+  //       expect(propertyValue).toBeUndefined();
+  //     } else {
+  //       expect(propertyValue).toBe(expectedValue);
+  //     }
+  //   });
+  // };
 
   beforeEach(async () => {
     page = await newE2EPage({

@@ -4,21 +4,21 @@ describe("[ch-dialog][basic]", () => {
   let page: E2EPage;
   let chDialogRef: E2EElement;
 
-  // const testDefaultProperty = async (
-  //   propertyName: string,
-  //   expectedValue: any
-  // ) => {
-  //   it(`the "${propertyName}" property should be ${
-  //     expectedValue === undefined ? "undefined" : `"${expectedValue}"`
-  //   }`, async () => {
-  //     const propertyValue = await chDialogRef.getProperty(propertyName);
-  //     if (expectedValue === undefined) {
-  //       expect(propertyValue).toBeUndefined();
-  //     } else {
-  //       expect(propertyValue).toBe(expectedValue);
-  //     }
-  //   });
-  // };
+  const testDefaultProperty = async (
+    propertyName: string,
+    expectedValue: any
+  ) => {
+    it(`the "${propertyName}" property should be ${
+      expectedValue === undefined ? "undefined" : `"${expectedValue}"`
+    }`, async () => {
+      const propertyValue = await chDialogRef.getProperty(propertyName);
+      if (expectedValue === undefined) {
+        expect(propertyValue).toBeUndefined();
+      } else {
+        expect(propertyValue).toBe(expectedValue);
+      }
+    });
+  };
 
   beforeEach(async () => {
     page = await newE2EPage({
@@ -37,30 +37,30 @@ describe("[ch-dialog][basic]", () => {
 
   // Validate properties default values
 
-  // testDefaultProperty("adjustPositionAfterResize", false);
+  testDefaultProperty("adjustPositionAfterResize", false);
 
-  // testDefaultProperty("allowDrag", "no");
+  testDefaultProperty("allowDrag", "no");
 
-  // testDefaultProperty("caption", undefined);
+  testDefaultProperty("caption", undefined);
 
-  // testDefaultProperty("closeButtonAccessibleName", undefined);
+  testDefaultProperty("closeButtonAccessibleName", undefined);
 
-  // testDefaultProperty("show", false);
+  testDefaultProperty("show", false);
 
-  // testDefaultProperty("modal", true);
+  testDefaultProperty("modal", true);
 
-  // testDefaultProperty("resizable", false);
+  testDefaultProperty("resizable", false);
 
-  // testDefaultProperty("showFooter", false);
+  testDefaultProperty("showFooter", false);
 
-  // testDefaultProperty("showHeader", false);
+  testDefaultProperty("showHeader", false);
 
   // Validate id's
 
   it("should not include an id on any of the resize-bar elements", async () => {
     chDialogRef.setProperty("resizable", true);
     chDialogRef.setProperty("show", true);
-    page.waitForChanges();
+    await page.waitForChanges();
 
     const partsNames = [
       "edge edge-block-start",
@@ -87,7 +87,7 @@ describe("[ch-dialog][basic]", () => {
 
   it("should not include an id on the part='close-button' element", async () => {
     chDialogRef.setProperty("showHeader", true);
-    page.waitForChanges();
+    await page.waitForChanges();
 
     const closeButtonPartRef = await page.find(
       "ch-dialog >>> [part='close-button']"

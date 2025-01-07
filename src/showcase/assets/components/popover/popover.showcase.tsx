@@ -14,7 +14,7 @@ const state: Partial<HTMLChPopoverElement> = {};
 let buttonRef: HTMLButtonElement;
 
 const handlePopoverOpened = () => {
-  state.hidden = false;
+  state.show = true;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
@@ -23,7 +23,7 @@ const handlePopoverOpened = () => {
 };
 
 const handlePopoverClosed = () => {
-  state.hidden = true;
+  state.show = false;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
@@ -45,7 +45,7 @@ const render = () => (
         blockSizeMatch={state.blockSizeMatch}
         class="popover-secondary"
         closeOnClickOutside={state.closeOnClickOutside}
-        hidden={state.hidden}
+        show={state.show}
         inlineAlign={state.inlineAlign}
         inlineSizeMatch={state.inlineSizeMatch}
         mode={state.mode}
@@ -97,9 +97,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChPopoverElement> =
       columns: 2,
       properties: [
         {
-          id: "hidden",
-          caption: "Hidden",
-          value: true,
+          id: "show",
+          caption: "Show",
+          value: false,
           type: "boolean"
         },
         {
@@ -314,7 +314,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChPopoverElement>
       type: "string"
     },
     { name: "closeOnClickOutside", defaultValue: false, type: "boolean" },
-    { name: "hidden", defaultValue: true, type: "boolean" },
+    { name: "show", defaultValue: false, type: "boolean" },
     { name: "inlineAlign", defaultValue: "center", type: "string" },
     { name: "inlineSizeMatch", defaultValue: "content", type: "string" },
     { name: "mode", defaultValue: "auto", type: "string" },

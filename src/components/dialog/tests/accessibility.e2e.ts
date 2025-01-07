@@ -2,7 +2,7 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 
 describe("[ch-dialog][accessibility]", () => {
   let page: E2EPage;
-  let chDialogRef: E2EElement;
+  let dialogRef: E2EElement;
 
   beforeEach(async () => {
     page = await newE2EPage({
@@ -10,12 +10,12 @@ describe("[ch-dialog][accessibility]", () => {
       failOnConsoleError: true
     });
 
-    chDialogRef = await page.find("ch-dialog");
+    dialogRef = await page.find("ch-dialog");
 
     // Set Properties
-    chDialogRef.setProperty("showHeader", true);
-    chDialogRef.setProperty("showFooter", true);
-    chDialogRef.setProperty("show", true);
+    dialogRef.setProperty("showHeader", true);
+    dialogRef.setProperty("showFooter", true);
+    dialogRef.setProperty("show", true);
     await page.waitForChanges();
   });
 

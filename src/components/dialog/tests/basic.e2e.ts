@@ -2,7 +2,7 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 
 describe("[ch-dialog][basic]", () => {
   let page: E2EPage;
-  let chDialogRef: E2EElement;
+  let dialogRef: E2EElement;
 
   const testDefaultProperty = async (
     propertyName: string,
@@ -11,7 +11,7 @@ describe("[ch-dialog][basic]", () => {
     it(`the "${propertyName}" property should be ${
       expectedValue === undefined ? "undefined" : `"${expectedValue}"`
     }`, async () => {
-      const propertyValue = await chDialogRef.getProperty(propertyName);
+      const propertyValue = await dialogRef.getProperty(propertyName);
       if (expectedValue === undefined) {
         expect(propertyValue).toBeUndefined();
       } else {
@@ -26,13 +26,13 @@ describe("[ch-dialog][basic]", () => {
       failOnConsoleError: true
     });
 
-    chDialogRef = await page.find("ch-dialog");
+    dialogRef = await page.find("ch-dialog");
   });
 
   // Validate shadowRoot
 
   it("should have a shadowRoot", async () => {
-    expect(chDialogRef.shadowRoot).toBeTruthy();
+    expect(dialogRef.shadowRoot).toBeTruthy();
   });
 
   // Validate properties default values
@@ -58,8 +58,8 @@ describe("[ch-dialog][basic]", () => {
   // Validate id's
 
   it("should not include an id on any of the resize-bar elements", async () => {
-    chDialogRef.setProperty("resizable", true);
-    chDialogRef.setProperty("show", true);
+    dialogRef.setProperty("resizable", true);
+    dialogRef.setProperty("show", true);
     await page.waitForChanges();
 
     const partsNames = [
@@ -86,7 +86,7 @@ describe("[ch-dialog][basic]", () => {
   });
 
   it("should not include an id on the part='close-button' element", async () => {
-    chDialogRef.setProperty("showHeader", true);
+    dialogRef.setProperty("showHeader", true);
     await page.waitForChanges();
 
     const closeButtonPartRef = await page.find(

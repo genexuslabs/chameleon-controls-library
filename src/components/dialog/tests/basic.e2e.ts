@@ -75,6 +75,7 @@ describe("[ch-dialog][basic]", () => {
 
     for (const part of partsNames) {
       const resizePartRef = await page.find(`ch-dialog >>> [part="${part}"]`);
+      expect(resizePartRef).not.toBeNull();
       expect(resizePartRef).not.toHaveAttribute("id");
     }
   });
@@ -91,6 +92,7 @@ describe("[ch-dialog][basic]", () => {
     const closeButtonPartRef = await page.find(
       "ch-dialog >>> [part='close-button']"
     );
+    expect(closeButtonPartRef).not.toBeNull();
     expect(closeButtonPartRef).not.toHaveAttribute("id");
   });
 });

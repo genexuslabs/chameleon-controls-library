@@ -12,7 +12,7 @@ describe("[ch-dialog][accessibility]", () => {
 
     chDialogRef = await page.find("ch-dialog");
 
-    // Set properties
+    // Set Properties
     chDialogRef.setProperty("showHeader", true);
     chDialogRef.setProperty("showFooter", true);
     chDialogRef.setProperty("show", true);

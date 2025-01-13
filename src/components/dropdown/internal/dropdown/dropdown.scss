@@ -22,10 +22,6 @@ button {
   --ch-dropdown-item__image-size: #{$default-decorative-image-size};
   --ch-dropdown-item__background-image-size: 100%;
 
-  --ch-dropdown-separation: 0px;
-  --ch-dropdown-separation-x: var(--ch-dropdown-separation);
-  --ch-dropdown-separation-y: var(--ch-dropdown-separation);
-
   display: flex;
   position: relative;
   inline-size: 100%;

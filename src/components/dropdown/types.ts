@@ -1,25 +1,35 @@
 import { ImageRender } from "../../common/types";
-import { DropdownPosition } from "./internal/dropdown/types";
+import { ChPopoverAlign } from "../popover/types";
 
 export type DropdownModel = DropdownItemModel[];
-
-export type DropdownItemType =
-  | DropdownItemTypeActionable
-  | DropdownItemTypeGroup
-  | DropdownItemTypeSeparator;
-
-export type DropdownItemTypeActionable = "actionable";
-export type DropdownItemTypeGroup = "group";
-export type DropdownItemTypeSeparator = "separator";
 
 export type DropdownItemModel =
   | DropdownItemActionable
   // | DropdownItemGroup
-  | DropdownItemSeparator;
+  | DropdownItemSeparator
+  | DropdownItemSlot;
+
+export type DropdownItemType =
+  | DropdownItemTypeActionable
+  // | DropdownItemTypeGroup
+  | DropdownItemTypeSeparator
+  | DropdownItemTypeSlot;
+
+export type DropdownItemTypeActionable = "actionable";
+// export type DropdownItemTypeGroup = "group";
+export type DropdownItemTypeSeparator = "separator";
+export type DropdownItemTypeSlot = "slot";
+
+export type DropdownItemTypeMapping = {
+  actionable: DropdownItemActionable;
+  separator: DropdownItemSeparator;
+  slot: DropdownItemSlot;
+};
 
 export type DropdownItemActionable = {
   id?: string;
   caption: string;
+  disabled?: boolean;
   endImgSrc?: string;
   endImgType?: Exclude<ImageRender, "img">;
 
@@ -27,7 +37,8 @@ export type DropdownItemActionable = {
   expanded?: boolean;
 
   items?: DropdownModel;
-  itemsPosition?: DropdownPosition;
+  itemsBlockAlign?: ChPopoverAlign;
+  itemsInlineAlign?: ChPopoverAlign;
   link?: Link;
   parts?: string;
   shortcut?: string;
@@ -40,6 +51,11 @@ export type DropdownItemSeparator = {
   id?: string;
   part?: string;
   type: DropdownItemTypeSeparator;
+};
+
+export type DropdownItemSlot = {
+  id: string;
+  type: DropdownItemTypeSlot;
 };
 
 type Link = {

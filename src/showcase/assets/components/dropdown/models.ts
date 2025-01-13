@@ -19,20 +19,20 @@ export const simpleModel1: DropdownModel = [
         startImgType: START_IMG_TYPE,
         items: [],
         link: { url: "https://www.google.com.uy" },
-        caption: "Google",
-        showSeparator: false
+        caption: "Google"
+        // showSeparator: false
       },
       {
         id: "item-1-3",
         startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
         items: [],
-        caption: "Item 1-3",
-        showSeparator: false
+        caption: "Item 1-3"
+        // showSeparator: false
       }
     ],
-    caption: "Item 1",
-    showSeparator: false
+    caption: "Item 1"
+    // showSeparator: false
   },
   {
     id: "item-2",
@@ -40,8 +40,8 @@ export const simpleModel1: DropdownModel = [
     startImgType: START_IMG_TYPE,
     items: [],
     link: { url: "https://www.google.com.uy" },
-    caption: "Google",
-    showSeparator: false
+    caption: "Google"
+    // showSeparator: false
   },
   {
     id: "item-3",
@@ -63,8 +63,8 @@ export const simpleModel1: DropdownModel = [
             endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
             endImgType: END_IMG_TYPE,
             items: [],
-            caption: "Item 3-1-1",
-            showSeparator: false
+            caption: "Item 3-1-1"
+            // showSeparator: false
           },
           {
             id: "item-3-1-2",
@@ -72,20 +72,20 @@ export const simpleModel1: DropdownModel = [
             startImgType: START_IMG_TYPE,
             items: [],
             link: { url: "https://www.google.com.uy" },
-            caption: "Google",
-            showSeparator: false
+            caption: "Google"
+            // showSeparator: false
           },
           {
             id: "item-3-1-3",
             startImgSrc: `${ASSETS_PREFIX}file.svg`,
             startImgType: START_IMG_TYPE,
             items: [],
-            caption: "Item 3-1-3",
-            showSeparator: false
+            caption: "Item 3-1-3"
+            // showSeparator: false
           }
         ],
-        caption: "Item 1-1",
-        showSeparator: false
+        caption: "Item 1-1"
+        // showSeparator: false
       },
       {
         id: "item-3-2",
@@ -93,21 +93,21 @@ export const simpleModel1: DropdownModel = [
         startImgType: START_IMG_TYPE,
         items: [],
         link: { url: "https://www.google.com.uy" },
-        caption: "Google",
-        showSeparator: false
+        caption: "Google"
+        // showSeparator: false
       },
       {
         id: "item-3-3",
         startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
         items: [],
-        caption: "Item 3-3",
-        showSeparator: false
+        caption: "Item 3-3"
+        // showSeparator: false
       }
     ],
-    itemsPosition: "OutsideStart_InsideStart",
-    caption: "Item 3",
-    showSeparator: false
+    // itemsPosition: "OutsideStart_InsideStart",
+    caption: "Item 3"
+    // showSeparator: false
   }
 ];
 
@@ -119,8 +119,8 @@ export const simpleModel2: DropdownModel = [
     endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
     endImgType: END_IMG_TYPE,
     link: { url: "https://github.com" },
-    caption: "GitHub",
-    showSeparator: false
+    caption: "GitHub"
+    // showSeparator: false
   },
   {
     id: "item-2",
@@ -134,8 +134,8 @@ export const simpleModel2: DropdownModel = [
         endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
         endImgType: END_IMG_TYPE,
         items: [],
-        caption: "Item 1-1",
-        showSeparator: false
+        caption: "Item 1-1"
+        // showSeparator: false
       },
       {
         id: "item-2-2",
@@ -144,37 +144,37 @@ export const simpleModel2: DropdownModel = [
         startImgType: START_IMG_TYPE,
         items: [],
         link: { url: "https://www.google.com.uy" },
-        caption: "Google",
-        showSeparator: false
+        caption: "Google"
+        // showSeparator: false
       },
       {
         id: "item-2-3",
         startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
         items: [],
-        caption: "Item 3-3",
-        showSeparator: false
+        caption: "Item 3-3"
+        // showSeparator: false
       }
     ],
-    itemsPosition: "InsideStart_OutsideEnd",
-    caption: "More Actionsssssss",
-    showSeparator: false
+    // itemsPosition: "InsideStart_OutsideEnd",
+    caption: "More Actionsssssss"
+    // showSeparator: false
   },
   {
     id: "item-3",
     startImgSrc: `${ASSETS_PREFIX}file.svg`,
     startImgType: START_IMG_TYPE,
     link: { url: "https://www.google.com.uy" },
-    caption: "Googleeeeeeee",
-    showSeparator: true
+    caption: "Googleeeeeeee"
+    // showSeparator: true
   },
   {
     id: "item-4",
     startImgSrc: `${ASSETS_PREFIX}file.svg`,
     startImgType: START_IMG_TYPE,
     link: { url: "https://www.google.com.uy" },
-    caption: "Google",
-    showSeparator: false
+    caption: "Google"
+    // showSeparator: false
   }
 ];
 
@@ -202,8 +202,8 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
         endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
         endImgType: END_IMG_TYPE,
         link: "",
-        caption: subSubModelId,
-        showSeparator: false
+        caption: subSubModelId
+        // showSeparator: false
       });
     }
 
@@ -235,7 +235,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
 export const GXWebModel: DropdownModel = [
   {
     caption: "File",
-    itemsPosition: "InsideStart_OutsideEnd",
+    // itemsPosition: "InsideStart_OutsideEnd",
     items: [
       {
         caption: "New",
@@ -246,8 +246,8 @@ export const GXWebModel: DropdownModel = [
           },
           {
             caption: "New Object",
-            shortcut: "Ctrl+Alt+N",
-            showSeparator: true
+            shortcut: "Ctrl+Alt+N"
+            // showSeparator: true
           },
           {
             caption: "Knowledge Base from GeneXus Server"
@@ -256,16 +256,16 @@ export const GXWebModel: DropdownModel = [
       },
       {
         caption: "Open Object",
-        shortcut: "Ctrl+O",
-        showSeparator: true
+        shortcut: "Ctrl+O"
+        // showSeparator: true
       },
       {
         caption: "Close",
         shortcut: "Ctrl+Alt+W"
       },
       {
-        caption: "Close Knowledge Base",
-        showSeparator: true
+        caption: "Close Knowledge Base"
+        // showSeparator: true
       },
       {
         caption: "Save",
@@ -282,7 +282,7 @@ export const GXWebModel: DropdownModel = [
 
   {
     caption: "View",
-    itemsPosition: "InsideStart_OutsideEnd",
+    // itemsPosition: "InsideStart_OutsideEnd",
     items: [
       {
         caption: "Domains"
@@ -291,8 +291,8 @@ export const GXWebModel: DropdownModel = [
         caption: "Launchpad"
       },
       {
-        caption: "Start Page",
-        showSeparator: true
+        caption: "Start Page"
+        // showSeparator: true
       },
       {
         caption: "Last Impact"
@@ -305,7 +305,7 @@ export const GXWebModel: DropdownModel = [
 
   {
     caption: "Knowledge Manager",
-    itemsPosition: "InsideStart_OutsideEnd",
+    // itemsPosition: "InsideStart_OutsideEnd",
     items: [
       {
         caption: "Export"
@@ -321,7 +321,7 @@ export const GXWebModel: DropdownModel = [
 
   {
     caption: "Selection",
-    itemsPosition: "InsideStart_OutsideEnd",
+    // itemsPosition: "InsideStart_OutsideEnd",
     items: [
       {
         caption: "Select All",
@@ -333,8 +333,8 @@ export const GXWebModel: DropdownModel = [
       },
       {
         caption: "Shrink Selection",
-        shortcut: "Alt+Shift+Left",
-        showSeparator: true
+        shortcut: "Alt+Shift+Left"
+        // showSeparator: true
       },
       {
         caption: "Copy Line Up",
@@ -353,8 +353,8 @@ export const GXWebModel: DropdownModel = [
         shortcut: "Alt+Down"
       },
       {
-        caption: "Duplicate Selection",
-        showSeparator: true
+        caption: "Duplicate Selection"
+        // showSeparator: true
       },
       {
         caption: "Add Cursor Above",
@@ -384,33 +384,33 @@ export const GXWebModel: DropdownModel = [
 
   {
     caption: "Build",
-    itemsPosition: "InsideStart_OutsideEnd",
+    // itemsPosition: "InsideStart_OutsideEnd",
     items: [
       {
         caption: "Build All"
       },
       {
-        caption: "Rebuild All",
-        showSeparator: true
+        caption: "Rebuild All"
+        // showSeparator: true
       },
       {
         caption: "Run",
         shortcut: "F5"
       },
       {
-        caption: "Run Without Building",
-        showSeparator: true
+        caption: "Run Without Building"
+        // showSeparator: true
       },
       {
         caption: "Create Database Tables"
       },
       {
-        caption: "Impact Database Tables",
-        showSeparator: true
+        caption: "Impact Database Tables"
+        // showSeparator: true
       },
       {
-        caption: "Cancel Build",
-        showSeparator: true
+        caption: "Cancel Build"
+        // showSeparator: true
       },
       {
         caption: "Show Live Inspector"
@@ -423,7 +423,7 @@ export const GXWebModel: DropdownModel = [
 
   {
     caption: "Tools",
-    itemsPosition: "InsideStart_OutsideEnd",
+    // itemsPosition: "InsideStart_OutsideEnd",
     items: [
       {
         caption: "Sketch Import"

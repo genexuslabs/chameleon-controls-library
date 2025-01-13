@@ -1,8 +1,21 @@
-ch-dropdown-render {
+@import "../../common/base";
+
+@include button-reset();
+@include box-sizing();
+
+:host {
+  --ch-dropdown-separation: 0px;
+  --ch-dropdown-separation-x: var(--ch-dropdown-separation);
+  --ch-dropdown-separation-y: var(--ch-dropdown-separation);
+
   display: contents;
 }
 
-.ch-dropdown-separator {
+::slotted(action) {
+  pointer-events: none;
+}
+
+hr {
   display: grid;
   block-size: 1px;
   background-color: color-mix(in srgb, currentColor 25%, transparent);

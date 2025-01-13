@@ -269,17 +269,28 @@ export const EDIT_HOST_PARTS = {
 // - - - - - - - - - - - - - - - - - - - -
 //             Dropdown Parts
 // - - - - - - - - - - - - - - - - - - - -
-export const DROPDOWN_PARTS_DICTIONARY = {
+export const DROPDOWN_ITEM_PARTS_DICTIONARY = {
   CONTENT: "content",
   SHORTCUT: "shortcut",
   ACTION: "action",
   BUTTON: "button",
   LINK: "link",
-  EXPANDABLE_BUTTON: "expandable-button",
-  EXPANDABLE: "expandable",
-  WINDOW: "window"
+  WINDOW: "window",
+
+  // - - - - - - - - States - - - - - - - -
+  EXPANDABLE: "expandable", // ACTION
+  EXPANDED: "expanded", // ACTION
+  COLLAPSED: "collapsed", // ACTION
+  DISABLED: "disabled" // ACTION
 } as const;
 
+export const DROPDOWN_PARTS_DICTIONARY = {
+  EXPANDABLE_BUTTON: "expandable-button"
+};
+
+export const DROPDOWN_ITEM_EXPORT_PARTS = joinParts(
+  DROPDOWN_ITEM_PARTS_DICTIONARY
+);
 export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -

@@ -9,18 +9,17 @@ import {
   EventEmitter,
   Watch
 } from "@stencil/core";
-import { DropdownPosition } from "../../../dropdown/internal/dropdown/types";
 import { ItemsOverflowBehavior } from "./types";
-import { ChDropdownCustomEvent } from "../../../../components";
 import {
   ACTION_GROUP_PARTS_DICTIONARY,
-  DROPDOWN_PARTS_DICTIONARY
+  DROPDOWN_PARTS_DICTIONARY,
+  DROPDOWN_ITEM_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
 
 const FLOATING_POINT_ERROR = 1;
 
 const MORE_ACTION_EXPORT_PARTS =
-  `${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_BUTTON},${DROPDOWN_PARTS_DICTIONARY.WINDOW}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_WINDOW}` as const;
+  `${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_BUTTON},${DROPDOWN_ITEM_PARTS_DICTIONARY.WINDOW}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_WINDOW}` as const;
 
 /**
  * @part actions - The container of the visible actions.
@@ -105,12 +104,12 @@ export class ChActionGroup {
    */
   @Prop() readonly moreActionsButtonPosition: "Start" | "End" = "Start";
 
-  /**
-   * Specifies the position of the dropdown section that is placed relative to
-   * the more actions button.
-   */
-  @Prop() readonly moreActionsDropdownPosition: DropdownPosition =
-    "InsideStart_OutsideEnd";
+  // /**
+  //  * Specifies the position of the dropdown section that is placed relative to
+  //  * the more actions button.
+  //  */
+  // @Prop() readonly moreActionsDropdownPosition: DropdownPosition =
+  //   "InsideStart_OutsideEnd";
 
   /**
    * Determine if the dropdowns should be opened when the action is focused.
@@ -236,7 +235,7 @@ export class ChActionGroup {
     this.#connectActionsObserver();
   };
 
-  #handleMoreActionButtonExpand = (event: ChDropdownCustomEvent<boolean>) => {
+  #handleMoreActionButtonExpand = (event: CustomEvent<boolean>) => {
     event.stopPropagation();
     this.moreActionsButtonExpandedChange.emit(event.detail);
   };
@@ -255,24 +254,26 @@ export class ChActionGroup {
 
     return (
       <Host role="menubar" aria-label={this.accessibleName}>
-        {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-          this.#totalItems !== this.displayedItems && (
-            <ch-dropdown
-              exportparts={MORE_ACTION_EXPORT_PARTS}
-              class="more-actions"
-              part={ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS}
-              actionGroupParent={true}
-              buttonAccessibleName={this.moreActionsAccessibleName}
-              leaf={false}
-              level={-1}
-              nestedDropdown={true}
-              openOnFocus={this.openOnFocus}
-              position={this.moreActionsDropdownPosition}
-              onExpandedChange={this.#handleMoreActionButtonExpand}
-            >
-              <slot name="more-items"></slot>
-            </ch-dropdown>
-          )}
+        {
+          this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+            this.#totalItems !== this.displayedItems &&
+            ""
+          // <ch-dropdown
+          //   exportparts={MORE_ACTION_EXPORT_PARTS}
+          //   class="more-actions"
+          //   part={ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS}
+          //   actionGroupParent={true}
+          //   buttonAccessibleName={this.moreActionsAccessibleName}
+          //   // leaf={false}
+          //   // level={-1}
+          //   nestedDropdown={true}
+          //   openOnFocus={this.openOnFocus}
+          //   // position={this.moreActionsDropdownPosition}
+          //   // onExpandedChange={this.#handleMoreActionButtonExpand}
+          // >
+          //   <slot name="more-items"></slot>
+          // </ch-dropdown>
+        }
 
         <div
           class={{

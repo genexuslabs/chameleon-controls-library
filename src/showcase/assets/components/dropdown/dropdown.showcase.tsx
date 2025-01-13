@@ -15,9 +15,11 @@ const render = () => (
       <legend class="label field-legend-test">Primary</legend>
 
       <ch-dropdown-render
-        cssClass="dropdown-primary"
+        class="dropdown-primary"
+        blockAlign={state.blockAlign}
         buttonAccessibleName={state.buttonAccessibleName}
-        position={state.position}
+        disabled={state.disabled}
+        inlineAlign={state.inlineAlign}
         model={state.model}
       >
         <div slot="action">Action</div>
@@ -28,9 +30,11 @@ const render = () => (
       <legend class="label field-legend-test">Secondary</legend>
 
       <ch-dropdown-render
-        cssClass="dropdown-secondary"
+        class="dropdown-secondary"
+        blockAlign={state.blockAlign}
         buttonAccessibleName={state.buttonAccessibleName}
-        position={state.position}
+        disabled={state.disabled}
+        inlineAlign={state.inlineAlign}
         model={state.model}
       >
         <div slot="action">John Doe</div>
@@ -68,55 +72,60 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChDropdownRenderEle
           type: "string"
         },
         {
-          id: "position",
-          caption: "Position",
-          value: "Center_OutsideEnd",
+          id: "inlineAlign",
+          caption: "Inline Align",
+          value: "center",
           type: "enum",
           values: [
             {
-              value: "OutsideStart_OutsideStart",
-              caption: "OutsideStart_OutsideStart"
+              value: "outside-start",
+              caption: "outside-start"
             },
             {
-              value: "InsideStart_OutsideStart",
-              caption: "InsideStart_OutsideStart"
+              value: "inside-start",
+              caption: "inside-start"
             },
-            { value: "Center_OutsideStart", caption: "Center_OutsideStart" },
+            { value: "center", caption: "center" },
             {
-              value: "InsideEnd_OutsideStart",
-              caption: "InsideEnd_OutsideStart"
-            },
-            {
-              value: "OutsideEnd_OutsideStart",
-              caption: "OutsideEnd_OutsideStart"
+              value: "inside-end",
+              caption: "inside-end"
             },
             {
-              value: "OutsideStart_InsideStart",
-              caption: "OutsideStart_InsideStart"
-            },
-            {
-              value: "OutsideEnd_InsideStart",
-              caption: "OutsideEnd_InsideStart"
-            },
-            { value: "OutsideStart_Center", caption: "OutsideStart_Center" },
-            { value: "OutsideEnd_Center", caption: "OutsideEnd_Center" },
-            {
-              value: "OutsideStart_InsideEnd",
-              caption: "OutsideStart_InsideEnd"
-            },
-            { value: "OutsideEnd_InsideEnd", caption: "OutsideEnd_InsideEnd" },
-            {
-              value: "OutsideStart_OutsideEnd",
-              caption: "OutsideStart_OutsideEnd"
-            },
-            {
-              value: "InsideStart_OutsideEnd",
-              caption: "InsideStart_OutsideEnd"
-            },
-            { value: "Center_OutsideEnd", caption: "Center_OutsideEnd" },
-            { value: "InsideEnd_OutsideEnd", caption: "InsideEnd_OutsideEnd" },
-            { value: "OutsideEnd_OutsideEnd", caption: "OutsideEnd_OutsideEnd" }
+              value: "outside-end",
+              caption: "outside-end"
+            }
           ]
+        },
+        {
+          id: "blockAlign",
+          caption: "Block Align",
+          value: "outside-end",
+          type: "enum",
+          values: [
+            {
+              value: "outside-start",
+              caption: "outside-start"
+            },
+            {
+              value: "inside-start",
+              caption: "inside-start"
+            },
+            { value: "center", caption: "center" },
+            {
+              value: "inside-end",
+              caption: "inside-end"
+            },
+            {
+              value: "outside-end",
+              caption: "outside-end"
+            }
+          ]
+        },
+        {
+          id: "disabled",
+          caption: "Disabled",
+          value: false,
+          type: "boolean"
         }
       ]
     }

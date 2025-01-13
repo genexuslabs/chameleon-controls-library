@@ -2,48 +2,35 @@ import {
   Component,
   ComponentInterface,
   Element,
-  Event,
-  EventEmitter,
   Host,
   Prop,
   Watch,
   h
 } from "@stencil/core";
 
-import { DropdownAlign, DropdownPosition } from "./types";
 import { ChPopoverAlign } from "../../../popover/types";
-import { isPseudoElementImg } from "../../../../common/utils";
+import { isPseudoElementImg, tokenMap } from "../../../../common/utils";
 import { ImageRender } from "../../../../common/types";
 import {
-  DROPDOWN_EXPORT_PARTS,
-  DROPDOWN_PARTS_DICTIONARY
+  DROPDOWN_ITEM_EXPORT_PARTS,
+  DROPDOWN_ITEM_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
 import { DropdownItemModelExtended } from "../../types";
 
-const SEPARATE_BY_SPACE_REGEX = /\s*/;
-
-const mapDropdownAlignToChWindowAlign: {
-  [key in DropdownAlign]: ChPopoverAlign;
-} = {
-  OutsideStart: "outside-start",
-  InsideStart: "inside-start",
-  Center: "center",
-  InsideEnd: "inside-end",
-  OutsideEnd: "outside-end"
-};
+const SEPARATE_BY_SPACE_REGEX = /\s+/;
 
 // Parts
 const ACTION_LINK =
-  `${DROPDOWN_PARTS_DICTIONARY.ACTION} ${DROPDOWN_PARTS_DICTIONARY.LINK}` as const;
+  `${DROPDOWN_ITEM_PARTS_DICTIONARY.ACTION} ${DROPDOWN_ITEM_PARTS_DICTIONARY.LINK}` as const;
 
 const ACTION_LINK_EXPANDABLE =
-  `${ACTION_LINK} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE}` as const;
+  `${ACTION_LINK} ${DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDABLE}` as const;
 
 const ACTION_BUTTON =
-  `${DROPDOWN_PARTS_DICTIONARY.ACTION} ${DROPDOWN_PARTS_DICTIONARY.BUTTON}` as const;
+  `${DROPDOWN_ITEM_PARTS_DICTIONARY.ACTION} ${DROPDOWN_ITEM_PARTS_DICTIONARY.BUTTON}` as const;
 
 const ACTION_BUTTON_EXPANDABLE =
-  `${ACTION_BUTTON} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE}` as const;
+  `${ACTION_BUTTON} ${DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDABLE}` as const;
 
 const WINDOW_ID = "window";
 
@@ -64,10 +51,10 @@ export class ChDropdown implements ComponentInterface {
   @Prop() readonly actionGroupParent: boolean = false;
 
   /**
-   * This attribute lets you specify the label for the expandable button.
-   * Important for accessibility.
+   * Specifies the block alignment of the dropdown section that is placed
+   * relative to the expandable button.
    */
-  @Prop() readonly buttonAccessibleName: string;
+  @Prop() readonly blockAlign: ChPopoverAlign = "center";
 
   /**
    * Specifies the caption that the control will display.
@@ -75,9 +62,16 @@ export class ChDropdown implements ComponentInterface {
   @Prop() readonly caption: string;
 
   /**
+   * This attribute lets you specify if the element is disabled.
+   * If disabled, it will not fire any user interaction related event
+   * (for example, click event).
+   */
+  @Prop() readonly disabled: boolean = false;
+
+  /**
    * Specifies the src of the end image.
    */
-  @Prop() readonly endImgSrc: string;
+  @Prop() readonly endImgSrc: string | undefined;
 
   /**
    * Specifies how the end image will be rendered.
@@ -93,7 +87,7 @@ export class ChDropdown implements ComponentInterface {
   /**
    * `true` to display the dropdown section.
    */
-  @Prop() readonly expanded: boolean = false;
+  @Prop() readonly expanded: boolean | undefined = false;
 
   // @Watch("expanded")
   // handleExpandedChange(newExpandedValue: boolean) {
@@ -121,18 +115,13 @@ export class ChDropdown implements ComponentInterface {
    * control will render an anchor tag with this `href`. Otherwise, it will
    * render a button tag.
    */
-  @Prop() readonly href: string;
+  @Prop() readonly href: string | undefined;
 
   /**
-   * This callback is executed when an item is clicked.
+   * Specifies the inline alignment of the dropdown section that is placed
+   * relative to the expandable button.
    */
-  @Prop() readonly itemClickCallback: (event: UIEvent) => void;
-
-  /**
-   * Specifies if the control is at the first level, where the actions are
-   * always visible.
-   */
-  @Prop() readonly firstLevel: boolean = false;
+  @Prop() readonly inlineAlign: ChPopoverAlign = "center";
 
   /**
    * Specifies the extended model of the control. This property is only needed
@@ -163,67 +152,31 @@ export class ChDropdown implements ComponentInterface {
   }
 
   /**
-   * Specifies the position of the dropdown section that is placed relative to
-   * the expandable button.
-   */
-  @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
-
-  /**
    * Specifies the shortcut caption that the control will display.
    */
-  @Prop() readonly shortcut: string;
+  @Prop() readonly shortcut: string | undefined;
 
   /**
    * Specifies the src for the left img.
    */
-  @Prop() readonly startImgSrc: string;
+  @Prop() readonly startImgSrc: string | undefined;
 
   /**
    * Specifies how the start image will be rendered.
    */
   @Prop() readonly startImgType: ImageRender = "background";
 
-  /**
-   * Fired when the visibility of the dropdown section is changed by user
-   * interaction.
-   */
-  @Event({ composed: true }) expandedChange: EventEmitter<boolean>;
-
   #dropDownItemContent = () => [
-    <span
-      slot="action"
-      class="content"
-      part={DROPDOWN_PARTS_DICTIONARY.CONTENT}
-    >
+    <span class="content" part={DROPDOWN_ITEM_PARTS_DICTIONARY.CONTENT}>
       {this.caption}
     </span>,
 
     !!this.shortcut && (
-      <span
-        aria-hidden="true"
-        slot="action"
-        part={DROPDOWN_PARTS_DICTIONARY.SHORTCUT}
-      >
+      <span aria-hidden="true" part={DROPDOWN_ITEM_PARTS_DICTIONARY.SHORTCUT}>
         {this.shortcut}
       </span>
     )
   ];
-
-  #firstLevelRender = () => (
-    <button
-      popoverTarget={WINDOW_ID}
-      aria-controls={WINDOW_ID}
-      aria-expanded={this.expanded.toString()}
-      aria-haspopup="true"
-      aria-label={this.buttonAccessibleName}
-      class="expandable-button"
-      part={DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}
-      type="button"
-      ref={el => (this.#mainAction = el)}
-    >
-      <slot name="action" />
-    </button>
-  );
 
   #actionRender = () => {
     const pseudoStartImage = isPseudoElementImg(
@@ -231,12 +184,15 @@ export class ChDropdown implements ComponentInterface {
       this.startImgType
     );
     const pseudoEndImage = isPseudoElementImg(this.endImgSrc, this.endImgType);
+    const expandable = this.expandable;
 
     return this.href ? (
       <a
-        aria-controls={this.expandable ? WINDOW_ID : null}
-        aria-expanded={this.expandable ? this.expanded.toString() : null}
-        aria-haspopup={this.expandable ? "true" : null}
+        role={this.disabled ? "link" : undefined}
+        aria-controls={expandable ? WINDOW_ID : null}
+        aria-disabled={this.disabled ? "true" : undefined}
+        aria-expanded={expandable ? (!!this.expanded).toString() : null}
+        aria-haspopup={expandable ? "true" : null}
         class={{
           action: true,
 
@@ -244,8 +200,18 @@ export class ChDropdown implements ComponentInterface {
             pseudoStartImage,
           [`end-img-type--${this.endImgType} pseudo-img--end`]: pseudoEndImage
         }}
-        part={!this.expandable ? ACTION_LINK : ACTION_LINK_EXPANDABLE}
-        href={this.href}
+        part={tokenMap({
+          [ACTION_LINK_EXPANDABLE]: expandable,
+          [ACTION_LINK]: !expandable,
+          [DROPDOWN_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+          [DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDED]:
+            expandable && this.expanded,
+          [DROPDOWN_ITEM_PARTS_DICTIONARY.COLLAPSED]:
+            expandable && !this.expanded
+        })}
+        href={!this.disabled ? this.href : undefined}
+        // TODO: Use a different ref due to a StencilJS bug when reassigning
+        // the same variable with a different element's ref in runtime
         ref={el => (this.#mainAction = el)}
       >
         {this.#dropDownItemContent()}
@@ -253,9 +219,9 @@ export class ChDropdown implements ComponentInterface {
     ) : (
       <button
         popoverTarget={WINDOW_ID}
-        aria-controls={this.expandable ? WINDOW_ID : null}
-        aria-expanded={this.expandable ? this.expanded.toString() : null}
-        aria-haspopup={this.expandable ? "true" : null}
+        aria-controls={expandable ? WINDOW_ID : null}
+        aria-expanded={expandable ? (!!this.expanded).toString() : null}
+        aria-haspopup={expandable ? "true" : null}
         class={{
           action: true,
 
@@ -263,7 +229,16 @@ export class ChDropdown implements ComponentInterface {
             pseudoStartImage,
           [`end-img-type--${this.endImgType} pseudo-img--end`]: pseudoEndImage
         }}
-        part={!this.expandable ? ACTION_BUTTON : ACTION_BUTTON_EXPANDABLE}
+        part={tokenMap({
+          [ACTION_BUTTON_EXPANDABLE]: expandable,
+          [ACTION_BUTTON]: !expandable,
+          [DROPDOWN_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+          [DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDED]:
+            expandable && this.expanded,
+          [DROPDOWN_ITEM_PARTS_DICTIONARY.COLLAPSED]:
+            expandable && !this.expanded
+        })}
+        disabled={this.disabled}
         type="button"
         ref={el => (this.#mainAction = el)}
       >
@@ -272,49 +247,40 @@ export class ChDropdown implements ComponentInterface {
     );
   };
 
-  #popoverRender = () => {
-    const aligns = this.position.split("_");
-    const alignX = aligns[0] as DropdownAlign;
-    const alignY = aligns[1] as DropdownAlign;
-
-    const xAlignMapping = mapDropdownAlignToChWindowAlign[alignX];
-    const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
-
-    return (
-      <ch-popover
-        role="list"
-        id={WINDOW_ID}
-        part={DROPDOWN_PARTS_DICTIONARY.WINDOW}
-        actionById={true}
-        actionElement={this.#mainAction as HTMLButtonElement}
-        closeOnClickOutside={this.firstLevel}
-        firstLayer={this.firstLevel || this.actionGroupParent}
-        popover="manual"
-        hidden={!this.expanded}
-        inlineAlign={xAlignMapping}
-        blockAlign={yAlignMapping}
-      >
-        <slot />
-      </ch-popover>
-    );
-  };
+  #popoverRender = () => (
+    <ch-popover
+      role="list"
+      id={WINDOW_ID}
+      part={DROPDOWN_ITEM_PARTS_DICTIONARY.WINDOW}
+      actionById
+      actionElement={this.#mainAction as HTMLButtonElement}
+      blockAlign={this.blockAlign}
+      firstLayer={this.actionGroupParent}
+      hidden={false}
+      inlineAlign={this.inlineAlign}
+      popover="manual"
+    >
+      <slot />
+    </ch-popover>
+  );
 
   #setExportparts = (parts?: string) => {
+    // TODO: Add tests for this.
+    // TODO: Should be global the Regex?
+    // TODO: Test this with multiple parts
+
     const customParts = parts
-      ? `${DROPDOWN_EXPORT_PARTS},${parts
+      ? `${DROPDOWN_ITEM_EXPORT_PARTS},${parts
           .split(SEPARATE_BY_SPACE_REGEX)
           .join(",")}`
-      : DROPDOWN_EXPORT_PARTS;
+      : DROPDOWN_ITEM_EXPORT_PARTS;
 
     this.el.setAttribute("exportparts", customParts);
   };
 
-  connectedCallback(): void {
+  connectedCallback() {
+    this.el.setAttribute("role", "listitem");
     this.#setExportparts(this.parts);
-
-    if (!this.firstLevel) {
-      this.el.setAttribute("role", "listitem");
-    }
   }
 
   render() {
@@ -329,9 +295,7 @@ export class ChDropdown implements ComponentInterface {
             : undefined
         }
       >
-        {this.firstLevel && this.expandable
-          ? this.#firstLevelRender()
-          : this.#actionRender()}
+        {this.#actionRender()}
 
         {this.expandable && this.expanded && this.#popoverRender()}
       </Host>

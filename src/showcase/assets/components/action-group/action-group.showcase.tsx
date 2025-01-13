@@ -12,7 +12,7 @@ const render = () => (
       <ch-action-group-render
         cssClass="dropdown-primary"
         model={state.model}
-        moreActionsDropdownPosition={state.moreActionsDropdownPosition}
+        // moreActionsDropdownPosition={state.moreActionsDropdownPosition}
       ></ch-action-group-render>
     </div>
 
@@ -22,7 +22,7 @@ const render = () => (
       <ch-action-group-render
         cssClass="dropdown-secondary"
         model={state.model}
-        moreActionsDropdownPosition={state.moreActionsDropdownPosition}
+        // moreActionsDropdownPosition={state.moreActionsDropdownPosition}
       ></ch-action-group-render>
     </div>
   </div>
@@ -48,59 +48,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionGroupRender
     },
     {
       caption: "Properties",
-      properties: [
-        {
-          id: "moreActionsDropdownPosition",
-          caption: "More Actions Dropdown Position",
-          value: "Center_OutsideEnd",
-          type: "enum",
-          values: [
-            {
-              value: "OutsideStart_OutsideStart",
-              caption: "OutsideStart_OutsideStart"
-            },
-            {
-              value: "InsideStart_OutsideStart",
-              caption: "InsideStart_OutsideStart"
-            },
-            { value: "Center_OutsideStart", caption: "Center_OutsideStart" },
-            {
-              value: "InsideEnd_OutsideStart",
-              caption: "InsideEnd_OutsideStart"
-            },
-            {
-              value: "OutsideEnd_OutsideStart",
-              caption: "OutsideEnd_OutsideStart"
-            },
-            {
-              value: "OutsideStart_InsideStart",
-              caption: "OutsideStart_InsideStart"
-            },
-            {
-              value: "OutsideEnd_InsideStart",
-              caption: "OutsideEnd_InsideStart"
-            },
-            { value: "OutsideStart_Center", caption: "OutsideStart_Center" },
-            { value: "OutsideEnd_Center", caption: "OutsideEnd_Center" },
-            {
-              value: "OutsideStart_InsideEnd",
-              caption: "OutsideStart_InsideEnd"
-            },
-            { value: "OutsideEnd_InsideEnd", caption: "OutsideEnd_InsideEnd" },
-            {
-              value: "OutsideStart_OutsideEnd",
-              caption: "OutsideStart_OutsideEnd"
-            },
-            {
-              value: "InsideStart_OutsideEnd",
-              caption: "InsideStart_OutsideEnd"
-            },
-            { value: "Center_OutsideEnd", caption: "Center_OutsideEnd" },
-            { value: "InsideEnd_OutsideEnd", caption: "InsideEnd_OutsideEnd" },
-            { value: "OutsideEnd_OutsideEnd", caption: "OutsideEnd_OutsideEnd" }
-          ]
-        }
-      ]
+      properties: []
     }
   ];
 

@@ -35,9 +35,6 @@ ch-popover {
   }
 }
 
-ch-popover[hidden] {
-  display: none; // This is a WA for GXNext to improve the positioning of the dropdown
-}
 // Dummy separation to keep opened the popup when expand-behavior === "ClickOrHover"
 // ch-window[y-align="outside-start"] {
 //   --ch-window-separation: var(--separation-y);

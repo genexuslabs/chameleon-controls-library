@@ -144,7 +144,7 @@ export class ChDropdownRender {
   ) => {
     const itemUIModelExtended = parentExtendedModel[index];
     const expandable = dropdownItemActionableIsExpandable(
-      itemUIModelExtended.item
+      itemUIModelExtended.item as DropdownItemActionable
     );
 
     return (
@@ -189,9 +189,7 @@ export class ChDropdownRender {
 
   #renderDictionary: {
     [key in DropdownItemTypeSeparator | DropdownItemTypeSlot]: (
-      model: DropdownItemTypeMapping[key],
-      index: number,
-      parentExtendedModel: DropdownModelExtended
+      model: DropdownItemTypeMapping[key]
     ) => any;
   } = {
     separator: item => <hr key={item.id} part={item.part} />,
@@ -202,20 +200,11 @@ export class ChDropdownRender {
     model.map((extendedItem, index) =>
       dropdownItemIsActionable(extendedItem.item)
         ? this.#renderActionItem(extendedItem.item, index, model)
-        : this.#renderDictionary[
-            (extendedItem.item as DropdownItemSeparator | DropdownItemSlot).type
-          ]
+        : this.#renderDictionary[extendedItem.item.type](
+            // TODO: Improve type inference
+            extendedItem.item as any
+          )
     );
-
-  // #handleKeyDownEvents = (event: KeyboardEvent) => {
-  //   const keyEventHandler: ((event?: KeyboardEvent) => void) | undefined =
-  //     dropdownKeyEventsDictionary[event.code];
-
-  //   if (keyEventHandler) {
-  //     event.stopPropagation();
-  //     keyEventHandler(event);
-  //   }
-  // };
 
   #processEvent = (
     event: MouseEvent | PointerEvent,
@@ -243,24 +232,24 @@ export class ChDropdownRender {
     }
 
     const modelToUpdateExpanded = dropdownInfoToUpdateExpanded.model;
+    const item = modelToUpdateExpanded.item as DropdownItemActionable;
 
     if (type === "mouseout") {
-      collapseSubTree(modelToUpdateExpanded.item);
+      collapseSubTree(item);
 
       // TODO: Emit expandedChange event
     } else {
       collapseAllItems(this.model);
       expandFromRootToNode(modelToUpdateExpanded);
 
-      const isExpanded =
-        type === "mouseover" || modelToUpdateExpanded.item.expanded;
+      const isExpanded = type === "mouseover" || item.expanded;
 
-      if (modelToUpdateExpanded.item.expanded !== isExpanded) {
-        modelToUpdateExpanded.item.expanded = isExpanded;
+      if (item.expanded !== isExpanded) {
+        item.expanded = isExpanded;
 
         // Only emit the event if the expanded value was changed
         this.expandedItemChange.emit({
-          item: modelToUpdateExpanded.item,
+          item,
           expanded: isExpanded
         });
       }
@@ -306,11 +295,11 @@ export class ChDropdownRender {
         collapseAllItems(this.model);
         expandFromRootToNode(result.model);
       } else {
-        collapseSubTree(result.model.item);
+        collapseSubTree(result.model.item as DropdownItemActionable);
       }
 
       this.expandedItemChange.emit({
-        item: result.model.item,
+        item: result.model.item as DropdownItemActionable,
         expanded: result.newExpanded
       });
 
@@ -381,6 +370,8 @@ export class ChDropdownRender {
   render() {
     const canAddEventListeners = !(this.disabled && !this.expanded);
 
+    console.log(this.#modelExtended);
+
     return (
       // TODO: Should we let expand the control if it is disabled? If so, we
       // can't disable the click interaction...
@@ -404,7 +395,7 @@ export class ChDropdownRender {
           type="button"
           ref={el => (this.#actionRef = el)}
         >
-          <slot name="action" />
+          <slot />
         </button>
 
         {this.expanded && (

@@ -34,7 +34,7 @@ export const expandFromRootToNode = (
   let parentUIModelExtended = itemUIModelExtended;
 
   while (parentUIModelExtended !== undefined) {
-    parentUIModelExtended.item.expanded = true;
+    (parentUIModelExtended.item as DropdownItemActionable).expanded = true;
 
     parentUIModelExtended = parentUIModelExtended.parentItem;
   }

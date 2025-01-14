@@ -14,25 +14,26 @@ export const parseSubModel = (
   for (let index = 0; index < parentModel.length; index++) {
     const itemUIModel = parentModel[index];
 
-    if (dropdownItemIsActionable(itemUIModel)) {
-      if (itemUIModel.items === undefined) {
-        parentModelExtended.push({
-          item: itemUIModel,
-          parentItem
-        });
-      } else {
-        const subModelExtended: DropdownModelExtended = [];
+    if (
+      dropdownItemIsActionable(itemUIModel) &&
+      itemUIModel.items !== undefined
+    ) {
+      const subModelExtended: DropdownModelExtended = [];
 
-        const itemUIModelExtended: DropdownItemModelExtended = {
-          item: itemUIModel,
-          parentItem,
-          items: subModelExtended
-        };
+      const itemUIModelExtended: DropdownItemModelExtended = {
+        item: itemUIModel,
+        parentItem,
+        items: subModelExtended
+      };
 
-        parseSubModel(itemUIModel.items, subModelExtended, itemUIModelExtended);
+      parseSubModel(itemUIModel.items, subModelExtended, itemUIModelExtended);
 
-        parentModelExtended.push(itemUIModelExtended);
-      }
+      parentModelExtended.push(itemUIModelExtended);
+    } else {
+      parentModelExtended.push({
+        item: itemUIModel,
+        parentItem
+      });
     }
   }
 };

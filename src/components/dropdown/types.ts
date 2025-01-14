@@ -73,7 +73,7 @@ export type DropdownExpandedChangeEvent = {
 export type DropdownModelExtended = DropdownItemModelExtended[];
 
 export type DropdownItemModelExtended = {
-  item: DropdownItemActionable;
+  item: DropdownItemActionable | DropdownItemSeparator | DropdownItemSlot;
   items?: DropdownModelExtended;
   parentItem: DropdownItemModelExtended | undefined;
   focusFirstItemAfterExpand?: boolean;

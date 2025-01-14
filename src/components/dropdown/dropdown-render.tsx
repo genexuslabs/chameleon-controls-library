@@ -357,6 +357,7 @@ export class ChDropdownRender {
             [DROPDOWN_ITEM_PARTS_DICTIONARY.COLLAPSED]: !this.expanded,
             [DROPDOWN_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
           })}
+          disabled={this.disabled}
           popoverTarget={WINDOW_ID}
           type="button"
           ref={el => (this.#actionRef = el)}

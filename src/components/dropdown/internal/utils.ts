@@ -46,6 +46,10 @@ export const getDropdownModelInEvent = (
   event: MouseEvent | PointerEvent
 ): DropdownItemModelExtended | typeof DROPDOWN_RENDER_TAG_NAME | undefined => {
   const shadowRoot = getShadowRootOfEvent(event);
+  if (!shadowRoot) {
+    return undefined;
+  }
+
   const parentTagName = shadowRoot.host.tagName.toLowerCase();
 
   // The button does not belong to a ch-dropdown or ch-dropdown-render element

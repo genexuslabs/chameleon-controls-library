@@ -2,20 +2,8 @@
 
 $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
-:where(a, button) {
-  all: unset;
-}
-
-a,
-button {
-  display: flex;
-  align-items: center;
-  inline-size: 100%;
-  block-size: 100%;
-  cursor: pointer;
-}
-
 // Must be placed after the ":where(a, button)"
+@include button-reset();
 @include box-sizing();
 
 :host {
@@ -32,6 +20,8 @@ button {
   justify-content: center;
   align-self: center;
   position: relative;
+
+  // TODO: Is this necessary?
   z-index: $z-index-gx-navbar-item + 1;
 }
 

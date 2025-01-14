@@ -256,9 +256,9 @@ export class ChDropdown implements ComponentInterface {
       actionElement={this.#mainAction as HTMLButtonElement}
       blockAlign={this.blockAlign}
       firstLayer={this.actionGroupParent}
-      hidden={false}
       inlineAlign={this.inlineAlign}
       popover="manual"
+      show
     >
       <slot />
     </ch-popover>

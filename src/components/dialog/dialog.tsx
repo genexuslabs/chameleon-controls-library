@@ -268,21 +268,20 @@ export class ChDialog {
   @Prop() readonly closeButtonAccessibleName?: string;
 
   /**
-   * Specifies whether the dialog is hidden or visible.
+   * Specifies whether the dialog is shown or not.
    */
-  // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop({ mutable: true, reflect: true }) hidden = true;
-  @Watch("hidden")
-  handleHiddenChange(hidden: boolean) {
+  @Prop({ mutable: true }) show: boolean = false;
+  @Watch("show")
+  showChanged(show: boolean) {
     // Schedule update for watchers
     this.#checkBorderSizeWatcher = true;
     this.#checkPositionWatcher = true;
 
     // Update the dialog visualization
-    if (hidden) {
-      this.#dialogRef.close();
-    } else {
+    if (show) {
       this.#showModal();
+    } else {
+      this.#dialogRef.close();
     }
   }
 
@@ -291,7 +290,7 @@ export class ChDialog {
    * interrupt interaction with the rest of the page being inert, while
    * non-modal dialog boxes allow interaction with the rest of the page.
    *
-   * Note: If `hidden !== false`, this property does not reflect changes on
+   * Note: If `show !== true`, this property does not reflect changes on
    * runtime, since at the time of writing browsers do not support switching
    * from modal to not-modal, (or vice-versa).
    */
@@ -351,12 +350,12 @@ export class ChDialog {
       this.#checkBorderSizeWatcher = false;
 
       // Wait until the resize edges have been rendered
-      setTimeout(() => requestAnimationFrame(this.#setBorderSizeWatcher));
+      requestAnimationFrame(() => setTimeout(this.#setBorderSizeWatcher));
     }
   }
 
   componentDidLoad() {
-    if (!this.hidden) {
+    if (this.show) {
       // Schedule update for watchers
       this.#checkBorderSizeWatcher = true;
       this.#checkPositionWatcher = true;
@@ -396,7 +395,7 @@ export class ChDialog {
   };
 
   #handleDialogClose = () => {
-    this.hidden = true;
+    this.show = false;
     // Emit events only when the action is committed by the user
     this.dialogClosed.emit();
     document.removeEventListener("click", this.#evaluateClickOnDocument, {
@@ -503,7 +502,7 @@ export class ChDialog {
   };
 
   #closeHandler = () => {
-    this.hidden = true;
+    this.show = false;
   };
 
   #evaluateClickOnDocument = (e: MouseEvent) => {
@@ -651,7 +650,7 @@ export class ChDialog {
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #setBorderSizeWatcher = () => {
-    if (!this.resizable || this.hidden) {
+    if (!this.resizable || !this.show) {
       this.#removeBorderSizeWatcher();
       return;
     }
@@ -732,9 +731,10 @@ export class ChDialog {
     return (
       <Host
         class={{
-          "gx-dialog-header-drag": !this.hidden && this.allowDrag === "header",
+          "gx-dialog-header-drag": this.show && this.allowDrag === "header",
           "ch-dialog--modal": this.modal,
           "ch-dialog--non-modal": !this.modal,
+          "ch-dialog--hidden": !this.show,
           [RESIZING_CLASS]: this.resizing
         }}
       >
@@ -781,7 +781,7 @@ export class ChDialog {
           )}
 
           {this.resizable &&
-            !this.hidden && [
+            this.show && [
               <div
                 key="edge-block-start"
                 class="edge__block-start"

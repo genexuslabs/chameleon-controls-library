@@ -40,6 +40,7 @@ export const simpleModel1: DropdownModel = [
     caption: "Google"
     // showSeparator: false
   },
+  { type: "slot", id: "tree" },
   {
     id: "item-3",
     startImgSrc: `${ASSETS_PREFIX}file.svg`,

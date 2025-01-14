@@ -6,6 +6,7 @@ import {
   simpleModel1,
   simpleModel2
 } from "./models";
+import { kbExplorerModel } from "../tree-view/models";
 
 const state: Partial<HTMLChDropdownRenderElement> = {};
 
@@ -15,14 +16,23 @@ const render = () => (
       <legend class="label field-legend-test">Primary</legend>
 
       <ch-dropdown-render
-        class="dropdown-primary"
+        class="dropdown dropdown-primary"
         blockAlign={state.blockAlign}
         buttonAccessibleName={state.buttonAccessibleName}
         disabled={state.disabled}
         inlineAlign={state.inlineAlign}
         model={state.model}
       >
-        <div slot="action">Action</div>
+        Action
+        <div
+          slot="tree"
+          style={{ minBlockSize: "300px", minInlineSize: "300px" }}
+        >
+          <ch-tree-view-render
+            class="tree-view tree-view-secondary"
+            model={kbExplorerModel}
+          ></ch-tree-view-render>
+        </div>
       </ch-dropdown-render>
     </fieldset>
 
@@ -30,14 +40,20 @@ const render = () => (
       <legend class="label field-legend-test">Secondary</legend>
 
       <ch-dropdown-render
-        class="dropdown-secondary"
+        class="dropdown dropdown-secondary"
         blockAlign={state.blockAlign}
         buttonAccessibleName={state.buttonAccessibleName}
         disabled={state.disabled}
         inlineAlign={state.inlineAlign}
         model={state.model}
       >
-        <div slot="action">John Doe</div>
+        John Doe
+        <div slot="tree" style={{ minBlockSize: "300px" }}>
+          <ch-tree-view-render
+            class="tree-view tree-view-secondary"
+            model={kbExplorerModel}
+          ></ch-tree-view-render>
+        </div>
       </ch-dropdown-render>
     </fieldset>
   </div>

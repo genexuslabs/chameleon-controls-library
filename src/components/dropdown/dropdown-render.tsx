@@ -25,7 +25,8 @@ import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { ChPopoverAlign } from "../popover/types";
 import {
   DROPDOWN_ITEM_PARTS_DICTIONARY,
-  DROPDOWN_PARTS_DICTIONARY
+  DROPDOWN_PARTS_DICTIONARY,
+  KEY_CODES
 } from "../../common/reserved-names";
 import {
   DROPDOWN_RENDER_TAG_NAME,
@@ -280,19 +281,42 @@ export class ChDropdownRender {
     const composedPath = event.composedPath();
 
     if (!composedPath.includes(this.el)) {
-      this.expanded = false;
-      this.expandedChange.emit();
+      this.#closeDropdown();
     }
   };
 
-  #addCloseOnClickOutside = () =>
-    document.body.addEventListener("click", this.#closeOnClickOutside, {
+  #closeOnClickOutsideKeyboard = (event: KeyboardEvent) => {
+    if (event.code === KEY_CODES.ESCAPE) {
+      this.#closeDropdown();
+    }
+  };
+
+  #closeDropdown = () => {
+    collapseAllItems(this.model);
+
+    this.expanded = false;
+    this.expandedChange.emit();
+  };
+
+  #addCloseOnClickOutside = () => {
+    document.addEventListener("click", this.#closeOnClickOutside, {
       capture: true,
       passive: true
     });
+    document.addEventListener("keydown", this.#closeOnClickOutsideKeyboard, {
+      capture: true,
+      passive: true
+    });
+  };
 
-  #removeCloseOnClickOutside = () =>
-    document.body.removeEventListener("click", this.#closeOnClickOutside, true);
+  #removeCloseOnClickOutside = () => {
+    document.removeEventListener("click", this.#closeOnClickOutside, true);
+    document.removeEventListener(
+      "keydown",
+      this.#closeOnClickOutsideKeyboard,
+      true
+    );
+  };
 
   #setExtendedModel = (model: DropdownModel) => {
     this.#modelExtended = [];
@@ -313,8 +337,6 @@ export class ChDropdownRender {
   }
 
   render() {
-    console.log("RENDER........", this.expanded);
-
     const canAddEventListeners = !(this.disabled && !this.expanded);
 
     return (
@@ -354,9 +376,9 @@ export class ChDropdownRender {
             actionElement={this.#actionRef as HTMLButtonElement}
             blockAlign={this.blockAlign}
             firstLayer
-            hidden={false}
             inlineAlign={this.inlineAlign}
             popover="manual"
+            show
             onMouseOver={this.#handleDropdownItemMouseOver}
             onMouseOut={this.#handleDropdownItemMouseOut}
           >

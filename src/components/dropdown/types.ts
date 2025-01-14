@@ -76,4 +76,11 @@ export type DropdownItemModelExtended = {
   item: DropdownItemActionable;
   items?: DropdownModelExtended;
   parentItem: DropdownItemModelExtended | undefined;
+  focusFirstItemAfterExpand?: boolean;
+  focusAfterCollapse?: boolean;
+};
+
+export type DropdownKeyboardActionResult = {
+  newExpanded: boolean;
+  model: DropdownItemModelExtended;
 };

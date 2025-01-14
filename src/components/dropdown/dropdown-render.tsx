@@ -17,6 +17,7 @@ import {
   DropdownItemTypeMapping,
   DropdownItemTypeSeparator,
   DropdownItemTypeSlot,
+  DropdownKeyboardActionResult,
   DropdownModel,
   DropdownModelExtended
 } from "./types";
@@ -32,7 +33,7 @@ import {
   DROPDOWN_RENDER_TAG_NAME,
   dropdownItemActionableIsExpandable,
   dropdownItemIsActionable,
-  getDropdownModelInEvent,
+  getDropdownInfoInEvent,
   WINDOW_ID
 } from "./internal/utils";
 import {
@@ -42,6 +43,7 @@ import {
 } from "./internal/update-expanded";
 import { parseSubModel } from "./internal/parse-model";
 import { tokenMap } from "../../common/utils";
+import { dropdownKeyEventsDictionary } from "./internal/keyboard-actions";
 
 @Component({
   tag: "ch-dropdown-render",
@@ -53,6 +55,7 @@ export class ChDropdownRender {
 
   // Refs
   #actionRef!: HTMLButtonElement;
+  #popoverRef: HTMLChPopoverElement | undefined;
 
   @Element() el: HTMLChDropdownRenderElement;
 
@@ -218,15 +221,13 @@ export class ChDropdownRender {
     event: MouseEvent | PointerEvent,
     type: "click" | "mouseover" | "mouseout"
   ) => {
-    const modelToUpdateExpanded = getDropdownModelInEvent(event);
+    const dropdownInfoToUpdateExpanded = getDropdownInfoInEvent(event);
 
-    console.log(modelToUpdateExpanded);
-
-    if (modelToUpdateExpanded === undefined) {
+    if (dropdownInfoToUpdateExpanded === undefined) {
       return;
     }
 
-    if (modelToUpdateExpanded === DROPDOWN_RENDER_TAG_NAME) {
+    if (dropdownInfoToUpdateExpanded === DROPDOWN_RENDER_TAG_NAME) {
       if (type === "click") {
         const newExpandedValue = !this.expanded;
 
@@ -240,6 +241,8 @@ export class ChDropdownRender {
 
       return;
     }
+
+    const modelToUpdateExpanded = dropdownInfoToUpdateExpanded.model;
 
     if (type === "mouseout") {
       collapseSubTree(modelToUpdateExpanded.item);
@@ -275,7 +278,45 @@ export class ChDropdownRender {
   #handleDropdownItemMouseOut = (event: MouseEvent) =>
     this.#processEvent(event, "mouseout");
 
-  // #handleDropdownKeyDown = (event: KeyboardEvent) => {};
+  #handleDropdownKeyDown = (event: KeyboardEvent) => {
+    if (
+      !this.expanded &&
+      (event.code === KEY_CODES.ARROW_UP || event.code === KEY_CODES.ARROW_DOWN)
+    ) {
+      this.expanded = true;
+      this.expandedChange.emit(true);
+      return;
+    }
+
+    const keyboardEvent = dropdownKeyEventsDictionary[event.code];
+
+    if (keyboardEvent) {
+      const result: void | DropdownKeyboardActionResult = keyboardEvent(
+        event,
+        this.#popoverRef
+      );
+
+      if (!result) {
+        return;
+      }
+
+      if (result.newExpanded) {
+        // TODO: Emit expandedChange event for the collapsed dropdown items
+
+        collapseAllItems(this.model);
+        expandFromRootToNode(result.model);
+      } else {
+        collapseSubTree(result.model.item);
+      }
+
+      this.expandedItemChange.emit({
+        item: result.model.item,
+        expanded: result.newExpanded
+      });
+
+      forceUpdate(this);
+    }
+  };
 
   #closeOnClickOutside = (event: MouseEvent) => {
     const composedPath = event.composedPath();
@@ -287,6 +328,7 @@ export class ChDropdownRender {
 
   #closeOnClickOutsideKeyboard = (event: KeyboardEvent) => {
     if (event.code === KEY_CODES.ESCAPE) {
+      this.#actionRef.focus();
       this.#closeDropdown();
     }
   };
@@ -295,7 +337,7 @@ export class ChDropdownRender {
     collapseAllItems(this.model);
 
     this.expanded = false;
-    this.expandedChange.emit();
+    this.expandedChange.emit(false);
   };
 
   #addCloseOnClickOutside = () => {
@@ -344,7 +386,7 @@ export class ChDropdownRender {
       // can't disable the click interaction...
       <Host
         onClick={canAddEventListeners && this.#handleDropdownItemClick}
-        // onKeyDown={canAddEventListeners && this.#handleDropdownKeyDown}
+        onKeyDown={canAddEventListeners && this.#handleDropdownKeyDown}
       >
         <button
           aria-controls={WINDOW_ID}
@@ -382,6 +424,7 @@ export class ChDropdownRender {
             show
             onMouseOver={this.#handleDropdownItemMouseOver}
             onMouseOut={this.#handleDropdownItemMouseOut}
+            ref={el => (this.#popoverRef = el)}
           >
             {this.model !== undefined && this.#renderItems(this.#modelExtended)}
           </ch-popover>

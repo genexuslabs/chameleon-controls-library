@@ -4,11 +4,16 @@ import {
   DropdownItemModelExtended
 } from "../types";
 import { ChameleonControlsTagName } from "../../../common/types";
+import { focusComposedPath } from "../../common/helpers";
 
 export const WINDOW_ID = "window";
 export const DROPDOWN_RENDER_TAG_NAME =
   "ch-dropdown-render" satisfies ChameleonControlsTagName;
-const DROPDOWN_TAG_NAME = "ch-dropdown" satisfies ChameleonControlsTagName;
+export const DROPDOWN_TAG_NAME =
+  "ch-dropdown" satisfies ChameleonControlsTagName;
+
+const FIRST_DROPDOWN = `:scope>${DROPDOWN_TAG_NAME}` as const;
+const LAST_DROPDOWN = `:scope>${DROPDOWN_TAG_NAME}:last-of-type` as const;
 
 export const dropdownItemIsActionable = (
   itemUIModel: DropdownItemModel
@@ -42,9 +47,12 @@ export const getShadowRootOfEvent = (
  * @returns The model to update the expanded value or undefined if the click
  * was not performed on any valid item.
  */
-export const getDropdownModelInEvent = (
-  event: MouseEvent | PointerEvent
-): DropdownItemModelExtended | typeof DROPDOWN_RENDER_TAG_NAME | undefined => {
+export const getDropdownInfoInEvent = (
+  event: KeyboardEvent | MouseEvent | PointerEvent
+):
+  | { model: DropdownItemModelExtended; ref: HTMLChDropdownElement }
+  | typeof DROPDOWN_RENDER_TAG_NAME
+  | undefined => {
   const shadowRoot = getShadowRootOfEvent(event);
   if (!shadowRoot) {
     return undefined;
@@ -63,8 +71,26 @@ export const getDropdownModelInEvent = (
 
   return parentTagName === DROPDOWN_RENDER_TAG_NAME
     ? DROPDOWN_RENDER_TAG_NAME
-    : (shadowRoot.host as HTMLChDropdownElement).model;
+    : {
+        ref: shadowRoot.host as HTMLChDropdownElement,
+        model: (shadowRoot.host as HTMLChDropdownElement).model
+      };
 };
+
+export const focusFirstDropdownItem = (
+  dropdown: HTMLChPopoverElement | HTMLChDropdownElement
+) => (dropdown.querySelector(FIRST_DROPDOWN) as HTMLChDropdownElement)?.focus();
+
+export const focusDropdownLastItem = (
+  dropdown: HTMLChPopoverElement | HTMLChDropdownElement
+) => (dropdown.querySelector(LAST_DROPDOWN) as HTMLChDropdownElement)?.focus();
+
+export const siblingIsDropdown = (nextSibling: Element): boolean =>
+  (nextSibling as HTMLChDropdownElement).tagName?.toLowerCase() ===
+  DROPDOWN_TAG_NAME;
+
+export const dropdownElementIsFocused = (dropdownRef: HTMLChDropdownElement) =>
+  dropdownRef === focusComposedPath()[1];
 
 // Keys
 // type DropDownKeyDownEvents =

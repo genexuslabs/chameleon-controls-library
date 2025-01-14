@@ -16,6 +16,7 @@ import {
   DROPDOWN_ITEM_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
 import { DropdownItemModelExtended } from "../../types";
+import { focusFirstDropdownItem } from "../utils";
 
 const SEPARATE_BY_SPACE_REGEX = /\s+/;
 
@@ -35,7 +36,7 @@ const ACTION_BUTTON_EXPANDABLE =
 const WINDOW_ID = "window";
 
 @Component({
-  shadow: true,
+  shadow: { delegatesFocus: true },
   styleUrl: "dropdown.scss",
   tag: "ch-dropdown"
 })
@@ -281,6 +282,20 @@ export class ChDropdown implements ComponentInterface {
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
     this.#setExportparts(this.parts);
+  }
+
+  componentDidRender() {
+    if (this.expanded && this.model.focusFirstItemAfterExpand) {
+      this.model.focusFirstItemAfterExpand = false;
+
+      // Wait until the first item is rendered
+      requestAnimationFrame(() => focusFirstDropdownItem(this.el));
+    }
+
+    if (!this.expanded && this.model.focusAfterCollapse) {
+      this.model.focusAfterCollapse = false;
+      this.el.focus();
+    }
   }
 
   render() {

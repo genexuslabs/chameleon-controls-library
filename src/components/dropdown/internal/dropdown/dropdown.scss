@@ -1,7 +1,5 @@
 @import "../../../../common/_base";
 
-$z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
-
 // Must be placed after the ":where(a, button)"
 @include button-reset();
 @include box-sizing();
@@ -10,19 +8,12 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   --ch-dropdown-item__image-size: #{$default-decorative-image-size};
   --ch-dropdown-item__background-image-size: 100%;
 
-  display: flex;
-  position: relative; // TODO: Is this necessary?
-  inline-size: 100%;
-  block-size: 100%;
+  display: grid;
 }
 
 .expandable-button {
   justify-content: center;
   align-self: center;
-  position: relative; // TODO: Is this necessary?
-
-  // TODO: Is this necessary?
-  z-index: $z-index-gx-navbar-item + 1;
 }
 
 // Remove focus of the button content

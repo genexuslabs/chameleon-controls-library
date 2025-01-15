@@ -27,6 +27,21 @@ export const simpleModel1: DropdownModel = [
         startImgType: START_IMG_TYPE,
         caption: "Item 1-3"
         // showSeparator: false
+      },
+      {
+        id: "item-1-4",
+        startImgSrc: `${ASSETS_PREFIX}file.svg`,
+        startImgType: START_IMG_TYPE,
+        disabled: true,
+        caption: "Item 1-4 (disabled)"
+        // showSeparator: false
+      },
+      {
+        id: "item-1-5",
+        startImgSrc: `${ASSETS_PREFIX}file.svg`,
+        startImgType: START_IMG_TYPE,
+        caption: "Item 1-5"
+        // showSeparator: false
       }
     ],
     caption: "Item 1"

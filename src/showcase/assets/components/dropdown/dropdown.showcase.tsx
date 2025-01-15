@@ -24,15 +24,12 @@ const render = () => (
         model={state.model}
       >
         Action
-        <div
+        <ch-tree-view-render
           slot="tree"
+          class="tree-view tree-view-secondary"
+          model={kbExplorerModel}
           style={{ minBlockSize: "300px", minInlineSize: "300px" }}
-        >
-          <ch-tree-view-render
-            class="tree-view tree-view-secondary"
-            model={kbExplorerModel}
-          ></ch-tree-view-render>
-        </div>
+        ></ch-tree-view-render>
       </ch-dropdown-render>
     </fieldset>
 
@@ -48,12 +45,12 @@ const render = () => (
         model={state.model}
       >
         John Doe
-        <div slot="tree" style={{ minBlockSize: "300px" }}>
-          <ch-tree-view-render
-            class="tree-view tree-view-secondary"
-            model={kbExplorerModel}
-          ></ch-tree-view-render>
-        </div>
+        <ch-tree-view-render
+          slot="tree"
+          class="tree-view tree-view-secondary"
+          model={kbExplorerModel}
+          style={{ minBlockSize: "300px", minInlineSize: "300px" }}
+        ></ch-tree-view-render>
       </ch-dropdown-render>
     </fieldset>
   </div>

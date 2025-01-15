@@ -12,8 +12,6 @@ import {
 import {
   DropdownExpandedChangeEvent,
   DropdownItemActionable,
-  DropdownItemSeparator,
-  DropdownItemSlot,
   DropdownItemTypeMapping,
   DropdownItemTypeSeparator,
   DropdownItemTypeSlot,

@@ -5,8 +5,8 @@ import {
   dropdownItemActionableIsExpandable,
   focusDropdownLastItem,
   focusFirstDropdownItem,
-  getDropdownInfoInEvent,
-  siblingIsDropdown
+  focusNextElement,
+  getDropdownInfoInEvent
 } from "./utils";
 
 type DropDownKeyDownEvents =
@@ -27,52 +27,34 @@ export const dropdownKeyEventsDictionary: Record<
   [KEY_CODES.ARROW_UP]: (event, popoverRef) => {
     const dropdownInfo = getDropdownInfoInEvent(event);
 
-    if (!dropdownInfo) {
+    if (dropdownInfo === undefined) {
       return;
     }
     event.preventDefault(); // Prevent page scroll. TODO: Add a unit test for this
 
-    if (dropdownInfo === "ch-dropdown-render") {
-      return focusDropdownLastItem(popoverRef);
-    }
-    let previousSibling = dropdownInfo.ref.previousElementSibling;
-
-    while (previousSibling) {
-      if (siblingIsDropdown(previousSibling)) {
-        return (previousSibling as HTMLChDropdownElement).focus();
-      }
-
-      previousSibling = previousSibling.previousElementSibling;
-    }
+    return dropdownInfo === "ch-dropdown-render"
+      ? focusDropdownLastItem(popoverRef)
+      : focusNextElement(dropdownInfo, "previous");
   },
 
   [KEY_CODES.ARROW_DOWN]: (event, popoverRef) => {
     const dropdownInfo = getDropdownInfoInEvent(event);
 
-    if (!dropdownInfo) {
+    if (dropdownInfo === undefined) {
       return;
     }
     event.preventDefault(); // Prevent page scroll. TODO: Add a unit test for this
 
-    if (dropdownInfo === "ch-dropdown-render") {
-      return focusFirstDropdownItem(popoverRef);
-    }
-    let nextSibling = dropdownInfo.ref.nextElementSibling;
-
-    while (nextSibling) {
-      if (siblingIsDropdown(nextSibling)) {
-        return (nextSibling as HTMLChDropdownElement).focus();
-      }
-
-      nextSibling = nextSibling.nextElementSibling;
-    }
+    return dropdownInfo === "ch-dropdown-render"
+      ? focusFirstDropdownItem(popoverRef)
+      : focusNextElement(dropdownInfo, "next");
   },
 
   [KEY_CODES.ARROW_RIGHT]: event => {
     const dropdownInfo = getDropdownInfoInEvent(event);
 
     if (
-      !dropdownInfo ||
+      dropdownInfo === undefined ||
       dropdownInfo === "ch-dropdown-render" ||
       !dropdownItemActionableIsExpandable(
         dropdownInfo.model.item as DropdownItemActionable
@@ -98,7 +80,7 @@ export const dropdownKeyEventsDictionary: Record<
     const dropdownInfo = getDropdownInfoInEvent(event);
 
     if (
-      !dropdownInfo ||
+      dropdownInfo === undefined ||
       dropdownInfo === "ch-dropdown-render" ||
       !dropdownInfo.model.parentItem
     ) {
@@ -117,7 +99,7 @@ export const dropdownKeyEventsDictionary: Record<
   [KEY_CODES.HOME]: (event, popoverRef) => {
     const dropdownInfo = getDropdownInfoInEvent(event);
 
-    if (!dropdownInfo) {
+    if (dropdownInfo === undefined) {
       return;
     }
 
@@ -126,6 +108,7 @@ export const dropdownKeyEventsDictionary: Record<
       return focusFirstDropdownItem(popoverRef);
     }
 
+    // TODO: Is this function necessary?
     if (dropdownElementIsFocused(dropdownInfo.ref)) {
       event.preventDefault(); // Prevent page scroll. TODO: Add a unit test for this
       return focusFirstDropdownItem(
@@ -137,7 +120,7 @@ export const dropdownKeyEventsDictionary: Record<
   [KEY_CODES.END]: (event, popoverRef) => {
     const dropdownInfo = getDropdownInfoInEvent(event);
 
-    if (!dropdownInfo) {
+    if (dropdownInfo === undefined) {
       return;
     }
 
@@ -146,6 +129,7 @@ export const dropdownKeyEventsDictionary: Record<
       return focusDropdownLastItem(popoverRef);
     }
 
+    // TODO: Is this function necessary?
     if (dropdownElementIsFocused(dropdownInfo.ref)) {
       event.preventDefault(); // Prevent page scroll. TODO: Add a unit test for this
       return focusDropdownLastItem(

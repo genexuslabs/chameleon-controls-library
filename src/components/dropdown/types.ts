@@ -80,6 +80,11 @@ export type DropdownItemModelExtended = {
   focusAfterCollapse?: boolean;
 };
 
+export type DropdownInfoInEvent = {
+  model: DropdownItemModelExtended;
+  ref: HTMLChDropdownElement;
+};
+
 export type DropdownKeyboardActionResult = {
   newExpanded: boolean;
   model: DropdownItemModelExtended;

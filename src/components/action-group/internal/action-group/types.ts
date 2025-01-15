@@ -1,4 +1,4 @@
 export type ItemsOverflowBehavior =
-  | "AddScroll"
-  | "Multiline"
-  | "ResponsiveCollapse";
+  | "add-scroll"
+  | "multiline"
+  | "responsive-collapse";

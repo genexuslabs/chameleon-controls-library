@@ -1,11 +1,14 @@
 import {
-  DropdownItemActionable,
-  DropdownItemSeparator
+  DropdownItemActionableModel,
+  DropdownItemSeparatorModel
 } from "../dropdown/types";
 
 export type ActionGroupModel = ActionGroupItemModel[];
 
-type ReducedDropdownItemModel = Omit<DropdownItemActionable, "items" | "class">;
+type ReducedDropdownItemModel = Omit<
+  DropdownItemActionableModel,
+  "items" | "class"
+>;
 
 export type ActionGroupItemModel =
   | (ReducedDropdownItemModel & {
@@ -24,4 +27,4 @@ export type ActionGroupItemModel =
        */
       wasExpandedInMoreActions?: boolean;
     })
-  | DropdownItemSeparator;
+  | DropdownItemSeparatorModel;

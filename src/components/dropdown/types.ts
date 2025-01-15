@@ -4,10 +4,10 @@ import { ChPopoverAlign } from "../popover/types";
 export type DropdownModel = DropdownItemModel[];
 
 export type DropdownItemModel =
-  | DropdownItemActionable
+  | DropdownItemActionableModel
   // | DropdownItemGroup
-  | DropdownItemSeparator
-  | DropdownItemSlot;
+  | DropdownItemSeparatorModel
+  | DropdownItemSlotModel;
 
 export type DropdownItemType =
   | DropdownItemTypeActionable
@@ -21,12 +21,12 @@ export type DropdownItemTypeSeparator = "separator";
 export type DropdownItemTypeSlot = "slot";
 
 export type DropdownItemTypeMapping = {
-  actionable: DropdownItemActionable;
-  separator: DropdownItemSeparator;
-  slot: DropdownItemSlot;
+  actionable: DropdownItemActionableModel;
+  separator: DropdownItemSeparatorModel;
+  slot: DropdownItemSlotModel;
 };
 
-export type DropdownItemActionable = {
+export type DropdownItemActionableModel = {
   id?: string;
   caption: string;
   disabled?: boolean;
@@ -47,13 +47,13 @@ export type DropdownItemActionable = {
   type?: DropdownItemTypeActionable;
 };
 
-export type DropdownItemSeparator = {
+export type DropdownItemSeparatorModel = {
   id?: string;
   part?: string;
   type: DropdownItemTypeSeparator;
 };
 
-export type DropdownItemSlot = {
+export type DropdownItemSlotModel = {
   id: string;
   type: DropdownItemTypeSlot;
 };
@@ -63,8 +63,13 @@ type Link = {
 };
 
 export type DropdownExpandedChangeEvent = {
-  item: DropdownItemActionable;
+  item: DropdownItemActionableModel;
   expanded: boolean;
+};
+
+export type DropdownHyperlinkClickEvent = {
+  event: PointerEvent;
+  item: DropdownItemActionableModel;
 };
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -73,7 +78,10 @@ export type DropdownExpandedChangeEvent = {
 export type DropdownModelExtended = DropdownItemModelExtended[];
 
 export type DropdownItemModelExtended = {
-  item: DropdownItemActionable | DropdownItemSeparator | DropdownItemSlot;
+  item:
+    | DropdownItemActionableModel
+    | DropdownItemSeparatorModel
+    | DropdownItemSlotModel;
   items?: DropdownModelExtended;
   parentItem: DropdownItemModelExtended | undefined;
   focusFirstItemAfterExpand?: boolean;

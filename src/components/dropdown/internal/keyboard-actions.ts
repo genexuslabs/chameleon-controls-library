@@ -1,5 +1,8 @@
 import { KEY_CODES } from "../../../common/reserved-names";
-import { DropdownItemActionable, DropdownKeyboardActionResult } from "../types";
+import {
+  DropdownItemActionableModel,
+  DropdownKeyboardActionResult
+} from "../types";
 import {
   dropdownElementIsFocused,
   dropdownItemActionableIsExpandable,
@@ -57,14 +60,14 @@ export const dropdownKeyEventsDictionary: Record<
       dropdownInfo === undefined ||
       dropdownInfo === "ch-dropdown-render" ||
       !dropdownItemActionableIsExpandable(
-        dropdownInfo.model.item as DropdownItemActionable
+        dropdownInfo.model.item as DropdownItemActionableModel
       )
     ) {
       return;
     }
     event.preventDefault(); // Prevent page scroll. TODO: Add a unit test for this
 
-    if ((dropdownInfo.model.item as DropdownItemActionable).expanded) {
+    if ((dropdownInfo.model.item as DropdownItemActionableModel).expanded) {
       return focusFirstDropdownItem(dropdownInfo.ref);
     }
 

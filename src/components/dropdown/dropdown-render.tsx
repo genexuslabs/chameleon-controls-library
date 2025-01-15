@@ -11,7 +11,8 @@ import {
 } from "@stencil/core";
 import {
   DropdownExpandedChangeEvent,
-  DropdownItemActionable,
+  DropdownHyperlinkClickEvent,
+  DropdownItemActionableModel,
   DropdownItemTypeMapping,
   DropdownItemTypeSeparator,
   DropdownItemTypeSlot,
@@ -31,6 +32,7 @@ import {
   DROPDOWN_RENDER_TAG_NAME,
   dropdownItemActionableIsExpandable,
   dropdownItemIsActionable,
+  dropdownItemIsHyperlink,
   getDropdownInfoInEvent,
   WINDOW_ID
 } from "./internal/utils";
@@ -120,6 +122,12 @@ export class ChDropdownRender {
   @Prop() readonly useGxRender?: boolean = false;
 
   /**
+   * Fired when a button is clicked.
+   * This event can be prevented.
+   */
+  @Event() buttonClick: EventEmitter<DropdownItemActionableModel>;
+
+  /**
    * Fired when the visibility of the main dropdown is changed.
    */
   @Event() expandedChange: EventEmitter<boolean>;
@@ -129,20 +137,21 @@ export class ChDropdownRender {
    */
   @Event() expandedItemChange: EventEmitter<DropdownExpandedChangeEvent>;
 
-  // #handleItemClick = (target: string, itemId: string) => (event: UIEvent) => {
-  //   if (this.itemClickCallback) {
-  //     this.itemClickCallback(event, target, itemId);
-  //   }
-  // };
+  /**
+   * Fired when an hyperlink is clicked.
+   * This event can be prevented, but the dropdown will be closed in any case
+   * (prevented or not).
+   */
+  @Event() hyperlinkClick: EventEmitter<DropdownHyperlinkClickEvent>;
 
   #renderActionItem = (
-    item: DropdownItemActionable,
+    item: DropdownItemActionableModel,
     index: number,
     parentExtendedModel: DropdownModelExtended
   ) => {
     const itemUIModelExtended = parentExtendedModel[index];
     const expandable = dropdownItemActionableIsExpandable(
-      itemUIModelExtended.item as DropdownItemActionable
+      itemUIModelExtended.item as DropdownItemActionableModel
     );
 
     return (
@@ -208,29 +217,59 @@ export class ChDropdownRender {
     event: MouseEvent | PointerEvent,
     type: "click" | "mouseover" | "mouseout"
   ) => {
-    const dropdownInfoToUpdateExpanded = getDropdownInfoInEvent(event);
+    const dropdownInfo = getDropdownInfoInEvent(event);
 
-    if (dropdownInfoToUpdateExpanded === undefined) {
+    if (dropdownInfo === undefined) {
       return;
     }
 
-    if (dropdownInfoToUpdateExpanded === DROPDOWN_RENDER_TAG_NAME) {
+    if (dropdownInfo === DROPDOWN_RENDER_TAG_NAME) {
       if (type === "click") {
-        const newExpandedValue = !this.expanded;
-
-        if (!newExpandedValue) {
-          collapseAllItems(this.model);
-        }
-
-        this.expanded = newExpandedValue;
-        this.expandedChange.emit(newExpandedValue);
+        return this.expanded ? this.#closeDropdown() : this.#openDropdown();
       }
 
       return;
     }
 
-    const modelToUpdateExpanded = dropdownInfoToUpdateExpanded.model;
-    const item = modelToUpdateExpanded.item as DropdownItemActionable;
+    const modelToUpdateExpanded = dropdownInfo.model;
+    const item = modelToUpdateExpanded.item as DropdownItemActionableModel;
+
+    // If "click" the event is a PointerEvent
+    if (type === "click") {
+      // Clicked a hyperlink element
+      if (dropdownItemIsHyperlink(item)) {
+        const eventInfo = this.hyperlinkClick.emit({
+          item,
+          event: event as PointerEvent
+        });
+
+        // Prevent a tag navigation, but don't return so we can close the dropdown
+        if (eventInfo.defaultPrevented) {
+          event.preventDefault();
+        }
+
+        // TODO: Emit expandedChange event for all element?
+        this.#closeDropdown();
+
+        return;
+      }
+
+      // Clicked a button element that is a leaf
+      if (!dropdownItemActionableIsExpandable(item)) {
+        const eventInfo = this.buttonClick.emit(item);
+
+        // Prevent button click and avoid closing the dropdown
+        if (eventInfo.defaultPrevented) {
+          event.preventDefault();
+          return;
+        }
+
+        // TODO: Emit expandedChange event for all element?
+        this.#closeDropdown();
+
+        return;
+      }
+    }
 
     if (type === "mouseout") {
       collapseSubTree(item);
@@ -293,11 +332,11 @@ export class ChDropdownRender {
         collapseAllItems(this.model);
         expandFromRootToNode(result.model);
       } else {
-        collapseSubTree(result.model.item as DropdownItemActionable);
+        collapseSubTree(result.model.item as DropdownItemActionableModel);
       }
 
       this.expandedItemChange.emit({
-        item: result.model.item as DropdownItemActionable,
+        item: result.model.item as DropdownItemActionableModel,
         expanded: result.newExpanded
       });
 
@@ -318,6 +357,11 @@ export class ChDropdownRender {
       this.#actionRef.focus();
       this.#closeDropdown();
     }
+  };
+
+  #openDropdown = () => {
+    this.expanded = true;
+    this.expandedChange.emit(true);
   };
 
   #closeDropdown = () => {
@@ -367,8 +411,6 @@ export class ChDropdownRender {
 
   render() {
     const canAddEventListeners = !(this.disabled && !this.expanded);
-
-    console.log(this.#modelExtended);
 
     return (
       // TODO: Should we let expand the control if it is disabled? If so, we

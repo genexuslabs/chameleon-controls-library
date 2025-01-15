@@ -1,6 +1,6 @@
 import {
   DropdownInfoInEvent,
-  DropdownItemActionable,
+  DropdownItemActionableModel,
   DropdownItemModel
 } from "../types";
 import { ChameleonControlsTagName } from "../../../common/types";
@@ -20,12 +20,16 @@ const LAST_DROPDOWN = `:scope>${DROPDOWN_TAG_NAME}:last-of-type` as const;
 
 export const dropdownItemIsActionable = (
   itemUIModel: DropdownItemModel
-): itemUIModel is DropdownItemActionable =>
+): itemUIModel is DropdownItemActionableModel =>
   !itemUIModel.type || itemUIModel.type === "actionable";
 
 export const dropdownItemActionableIsExpandable = (
-  itemUIModel: DropdownItemActionable
+  itemUIModel: DropdownItemActionableModel
 ) => itemUIModel.items !== undefined;
+
+export const dropdownItemIsHyperlink = (
+  itemUIModel: DropdownItemActionableModel
+) => !!itemUIModel.link?.url;
 
 export const getShadowRootOfEvent = (
   event: KeyboardEvent | MouseEvent | PointerEvent

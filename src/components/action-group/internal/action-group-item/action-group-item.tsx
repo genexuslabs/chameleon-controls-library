@@ -24,8 +24,8 @@ export class ChActionGroupItem implements ChComponent {
 
     // Hide items at the start to improve CLS
     if (parentAction) {
-      this.floating =
-        parentAction.itemsOverflowBehavior === "ResponsiveCollapse";
+      // this.floating =
+      //   parentAction.itemsOverflowBehavior === "ResponsiveCollapse";
     }
   }
 

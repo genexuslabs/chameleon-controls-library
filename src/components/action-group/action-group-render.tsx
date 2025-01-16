@@ -1,12 +1,16 @@
-import { Component, forceUpdate, h, Prop, State } from "@stencil/core";
+import { Component, h, Prop, State } from "@stencil/core";
 import { ActionGroupItemModel, ActionGroupModel } from "./types";
 import { ChActionGroupCustomEvent } from "../../components";
 import { ItemsOverflowBehavior } from "./internal/action-group/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import {
-  ACTION_GROUP_EXPORT_PARTS,
-  DROPDOWN_EXPORT_PARTS
+  ACTION_GROUP_EXPORT_PARTS
+  // DROPDOWN_EXPORT_PARTS
 } from "../../common/reserved-names";
+import {
+  dropdownItemActionableIsExpandable,
+  dropdownItemIsActionable
+} from "../dropdown/internal/utils";
 
 @Component({
   tag: "ch-action-group-render",
@@ -24,15 +28,11 @@ export class ChActionGroupRender {
   @Prop() readonly actionGroupExportParts: string = ACTION_GROUP_EXPORT_PARTS;
 
   /**
-   * A CSS class to set as the `ch-action-group` element class.
+   * This attribute lets you specify if the element is disabled.
+   * If disabled, it will not fire any user interaction related event
+   * (for example, click event).
    */
-  @Prop() readonly cssClass: string = "action-group";
-
-  /**
-   * Specifies the parts that are exported by the internal dropdown. This
-   * property is useful to override the exported parts.
-   */
-  @Prop() readonly dropdownExportParts: string = DROPDOWN_EXPORT_PARTS;
+  @Prop() readonly disabled: boolean = false;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -59,17 +59,17 @@ export class ChActionGroupRender {
    *
    * | Value                 | Details                                                                                          |
    * | --------------------- | ------------------------------------------------------------------------------------------------ |
-   * | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          |
-   * | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      |
-   * | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
+   * | `add-scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          |
+   * | `multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      |
+   * | `responsive-collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
    */
   @Prop() readonly itemsOverflowBehavior: ItemsOverflowBehavior =
-    "ResponsiveCollapse";
+    "responsive-collapse";
 
   /**
    * This property lets you define the model of the ch-action-group control.
    */
-  @Prop() readonly model: ActionGroupModel;
+  @Prop() readonly model: ActionGroupModel | undefined;
 
   /**
    * This attribute lets you specify the label for the more actions button.
@@ -92,13 +92,6 @@ export class ChActionGroupRender {
   @Prop() readonly openOnFocus: boolean = false;
 
   /**
-   * A CSS class to set as the `ch-dropdown-item` element class.
-   * This default class is used for the items that don't have an explicit class.
-   */
-  @Prop() readonly separatorCssClass: string =
-    "action-group-separator-horizontal";
-
-  /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly useGxRender: boolean = false;
@@ -119,198 +112,198 @@ export class ChActionGroupRender {
       ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
       : img;
 
-  #renderItem =
-    (level: number, responsiveCollapse: boolean) =>
-    (item: ActionGroupItemModel, index: number) => {
-      // const hasItems = item.items?.length > 0;
+  // #renderItem =
+  //   (level: number, responsiveCollapse: boolean) =>
+  //   (item: ActionGroupItemModel, index: number) => {
+  //     // const hasItems = item.items?.length > 0;
 
-      return "";
-      // return [
-      //   <ch-dropdown
-      //     exportparts={this.dropdownExportParts}
-      //     key={item.id || item.caption || index}
-      //     id={item.id}
-      //     caption={item.caption}
-      //     class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-      //     endImgSrc={this.#getImagePath(item.endImgSrc)}
-      //     endImgType={item.endImgType ?? "background"}
-      //     href={item.link?.url}
-      //     itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
-      //     leaf={!hasItems}
-      //     level={level}
-      //     openOnFocus={this.openOnFocus}
-      //     position={
-      //       (responsiveCollapse
-      //         ? item.itemsResponsiveCollapsePosition
-      //         : item.itemsPosition) || "OutsideEnd_InsideStart"
-      //     }
-      //     shortcut={item.shortcut}
-      //     startImgSrc={this.#getImagePath(item.startImgSrc)}
-      //     startImgType={item.startImgType ?? "background"}
-      //     onExpandedChange={
-      //       !item.wasExpanded
-      //         ? this.#handleItemExpanded(item, "wasExpanded")
-      //         : null
-      //     }
-      //   >
-      //     {hasItems &&
-      //       item.wasExpanded &&
-      //       item.items.map(this.#renderItem(level + 1, responsiveCollapse))}
+  //     return "";
+  //     // return [
+  //     //   <ch-dropdown
+  //     //     exportparts={this.dropdownExportParts}
+  //     //     key={item.id || item.caption || index}
+  //     //     id={item.id}
+  //     //     caption={item.caption}
+  //     //     class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
+  //     //     endImgSrc={this.#getImagePath(item.endImgSrc)}
+  //     //     endImgType={item.endImgType ?? "background"}
+  //     //     href={item.link?.url}
+  //     //     itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
+  //     //     leaf={!hasItems}
+  //     //     level={level}
+  //     //     openOnFocus={this.openOnFocus}
+  //     //     position={
+  //     //       (responsiveCollapse
+  //     //         ? item.itemsResponsiveCollapsePosition
+  //     //         : item.itemsPosition) || "OutsideEnd_InsideStart"
+  //     //     }
+  //     //     shortcut={item.shortcut}
+  //     //     startImgSrc={this.#getImagePath(item.startImgSrc)}
+  //     //     startImgType={item.startImgType ?? "background"}
+  //     //     onExpandedChange={
+  //     //       !item.wasExpanded
+  //     //         ? this.#handleItemExpanded(item, "wasExpanded")
+  //     //         : null
+  //     //     }
+  //     //   >
+  //     //     {hasItems &&
+  //     //       item.wasExpanded &&
+  //     //       item.items.map(this.#renderItem(level + 1, responsiveCollapse))}
 
-      //     {
-      //       // Render a dummy element if the control was not expanded and has items
-      //       hasItems && !item.wasExpanded && <ch-dropdown></ch-dropdown>
-      //     }
-      //   </ch-dropdown>,
+  //     //     {
+  //     //       // Render a dummy element if the control was not expanded and has items
+  //     //       hasItems && !item.wasExpanded && <ch-dropdown></ch-dropdown>
+  //     //     }
+  //     //   </ch-dropdown>,
 
-      //   item.showSeparator && (
-      //     <div
-      //       aria-hidden="true"
-      //       class={
-      //         "ch-dropdown-separator " +
-      //         (item.separatorClass || this.separatorCssClass)
-      //       }
-      //     ></div>
-      //   )
-      // ];
-    };
+  //     //   item.showSeparator && (
+  //     //     <div
+  //     //       aria-hidden="true"
+  //     //       class={
+  //     //         "ch-dropdown-separator " +
+  //     //         (item.separatorClass || this.separatorCssClass)
+  //     //       }
+  //     //     ></div>
+  //     //   )
+  //     // ];
+  //   };
 
-  #firstLevelRenderItem = (
-    item: ActionGroupItemModel,
-    index: number,
-    level: number
-  ) => {
-    // const hasItems = item.items?.length > 0;
+  // #firstLevelRenderItem = (
+  //   item: ActionGroupItemModel,
+  //   index: number,
+  //   level: number
+  // ) => {
+  //   // const hasItems = item.items?.length > 0;
 
-    // // Dummy dropdown item to avoid issues when removing all items from the
-    // // first level. E. g., if the first level adds a chevron when the item is
-    // // a dropdown, by removing all items the chevron won't be displayed
-    // const mustRenderDummySubElement =
-    //   hasItems && // Dropdown has items
-    //   (!item.wasExpandedInFirstLevel || // Dropdown was not expanded and has items
-    //     (this.itemsOverflowBehavior === "ResponsiveCollapse" && // Dropdown items are collapsed
-    //       this.displayedItemsCount !== -1 &&
-    //       index >= this.displayedItemsCount));
-    return "";
-    // return [
-    //   <ch-dropdown
-    //     exportparts={this.dropdownExportParts}
-    //     key={item.id || item.caption || index}
-    //     id={item.id}
-    //     actionGroupParent={true}
-    //     caption={item.caption}
-    //     class={item.actionClass || DEFAULT_ACTION_CLASS}
-    //     endImgSrc={this.#getImagePath(item.endImgSrc)}
-    //     endImgType={item.endImgType ?? "background"}
-    //     href={item.link?.url}
-    //     itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
-    //     leaf={!hasItems}
-    //     level={level}
-    //     openOnFocus={this.openOnFocus}
-    //     position={item.itemsPosition || "Center_OutsideEnd"}
-    //     startImgSrc={this.#getImagePath(item.startImgSrc)}
-    //     startImgType={item.startImgType ?? "background"}
-    //     onExpandedChange={
-    //       !item.wasExpandedInFirstLevel
-    //         ? this.#handleItemExpanded(item, "wasExpandedInFirstLevel")
-    //         : null
-    //     }
-    //   >
-    //     {item.wasExpandedInFirstLevel &&
-    //       this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-    //       (this.displayedItemsCount === -1 ||
-    //         index < this.displayedItemsCount) &&
-    //       item.items != null &&
-    //       item.items.map(this.#renderItem(level + 1, false))}
+  //   // // Dummy dropdown item to avoid issues when removing all items from the
+  //   // // first level. E. g., if the first level adds a chevron when the item is
+  //   // // a dropdown, by removing all items the chevron won't be displayed
+  //   // const mustRenderDummySubElement =
+  //   //   hasItems && // Dropdown has items
+  //   //   (!item.wasExpandedInFirstLevel || // Dropdown was not expanded and has items
+  //   //     (this.itemsOverflowBehavior === "ResponsiveCollapse" && // Dropdown items are collapsed
+  //   //       this.displayedItemsCount !== -1 &&
+  //   //       index >= this.displayedItemsCount));
+  //   return "";
+  //   // return [
+  //   //   <ch-dropdown
+  //   //     exportparts={this.dropdownExportParts}
+  //   //     key={item.id || item.caption || index}
+  //   //     id={item.id}
+  //   //     actionGroupParent={true}
+  //   //     caption={item.caption}
+  //   //     class={item.actionClass || DEFAULT_ACTION_CLASS}
+  //   //     endImgSrc={this.#getImagePath(item.endImgSrc)}
+  //   //     endImgType={item.endImgType ?? "background"}
+  //   //     href={item.link?.url}
+  //   //     itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
+  //   //     leaf={!hasItems}
+  //   //     level={level}
+  //   //     openOnFocus={this.openOnFocus}
+  //   //     position={item.itemsPosition || "Center_OutsideEnd"}
+  //   //     startImgSrc={this.#getImagePath(item.startImgSrc)}
+  //   //     startImgType={item.startImgType ?? "background"}
+  //   //     onExpandedChange={
+  //   //       !item.wasExpandedInFirstLevel
+  //   //         ? this.#handleItemExpanded(item, "wasExpandedInFirstLevel")
+  //   //         : null
+  //   //     }
+  //   //   >
+  //   //     {item.wasExpandedInFirstLevel &&
+  //   //       this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+  //   //       (this.displayedItemsCount === -1 ||
+  //   //         index < this.displayedItemsCount) &&
+  //   //       item.items != null &&
+  //   //       item.items.map(this.#renderItem(level + 1, false))}
 
-    //     {mustRenderDummySubElement && <ch-dropdown></ch-dropdown>}
-    //   </ch-dropdown>,
+  //   //     {mustRenderDummySubElement && <ch-dropdown></ch-dropdown>}
+  //   //   </ch-dropdown>,
 
-    //   item.showSeparator && (
-    //     <div
-    //       aria-hidden="true"
-    //       class={
-    //         "ch-action-group-separator--vertical " +
-    //         (item.separatorClass || this.separatorCssClass)
-    //       }
-    //     ></div>
-    //   )
-    // ];
-  };
+  //   //   item.showSeparator && (
+  //   //     <div
+  //   //       aria-hidden="true"
+  //   //       class={
+  //   //         "ch-action-group-separator--vertical " +
+  //   //         (item.separatorClass || this.separatorCssClass)
+  //   //       }
+  //   //     ></div>
+  //   //   )
+  //   // ];
+  // };
 
-  #handleItemExpanded =
-    (
-      item: ActionGroupItemModel,
-      propertyName: Extract<
-        keyof ActionGroupItemModel,
-        "wasExpanded" | "wasExpandedInFirstLevel" | "wasExpandedInMoreActions"
-      >
-    ) =>
-    () => {
-      // item[propertyName] = true;
-      forceUpdate(this);
-    };
+  // #handleItemExpanded =
+  //   (
+  //     item: ActionGroupItemModel,
+  //     propertyName: Extract<
+  //       keyof ActionGroupItemModel,
+  //       "wasExpanded" | "wasExpandedInFirstLevel" | "wasExpandedInMoreActions"
+  //     >
+  //   ) =>
+  //   () => {
+  //     // item[propertyName] = true;
+  //     forceUpdate(this);
+  //   };
 
-  #firstLevelRenderCollapsedItem =
-    (level: number) => (item: ActionGroupItemModel, index: number) => {
-      // const hasItems = item.items?.length > 0;
+  // #firstLevelRenderCollapsedItem =
+  //   (level: number) => (item: ActionGroupItemModel, index: number) => {
+  //     // const hasItems = item.items?.length > 0;
 
-      return "";
+  //     return "";
 
-      // return [
-      //   <ch-dropdown
-      //     slot="more-items"
-      //     // key={item.id || item.caption || index}
-      //     // exportparts={this.dropdownExportParts}
-      //     // id={item.id}
-      //     // caption={item.caption}
-      //     // class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-      //     // endImgSrc={this.#getImagePath(item.endImgSrc)}
-      //     // endImgType={item.endImgType ?? "background"}
-      //     // href={item.link?.url}
-      //     // itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
-      //     // leaf={!hasItems}
-      //     // level={level}
-      //     // openOnFocus={this.openOnFocus}
-      //     // position={
-      //     //   item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
-      //     // }
-      //     // shortcut={item.shortcut}
-      //     // startImgSrc={this.#getImagePath(item.startImgSrc)}
-      //     // startImgType={item.startImgType ?? "background"}
-      //     // onExpandedChange={
-      //     //   !item.wasExpandedInMoreActions
-      //     //     ? this.#handleItemExpanded(item, "wasExpandedInMoreActions")
-      //     //     : null
-      //     // }
-      //   >
-      //     {
-      //       // Render items when the parent is expanded the first time
-      //       hasItems &&
-      //         item.wasExpandedInMoreActions &&
-      //         item.items.map(this.#renderItem(level + 1, true))
-      //     }
+  //     // return [
+  //     //   <ch-dropdown
+  //     //     slot="more-items"
+  //     //     // key={item.id || item.caption || index}
+  //     //     // exportparts={this.dropdownExportParts}
+  //     //     // id={item.id}
+  //     //     // caption={item.caption}
+  //     //     // class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
+  //     //     // endImgSrc={this.#getImagePath(item.endImgSrc)}
+  //     //     // endImgType={item.endImgType ?? "background"}
+  //     //     // href={item.link?.url}
+  //     //     // itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
+  //     //     // leaf={!hasItems}
+  //     //     // level={level}
+  //     //     // openOnFocus={this.openOnFocus}
+  //     //     // position={
+  //     //     //   item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
+  //     //     // }
+  //     //     // shortcut={item.shortcut}
+  //     //     // startImgSrc={this.#getImagePath(item.startImgSrc)}
+  //     //     // startImgType={item.startImgType ?? "background"}
+  //     //     // onExpandedChange={
+  //     //     //   !item.wasExpandedInMoreActions
+  //     //     //     ? this.#handleItemExpanded(item, "wasExpandedInMoreActions")
+  //     //     //     : null
+  //     //     // }
+  //     //   >
+  //     //     {
+  //     //       // Render items when the parent is expanded the first time
+  //     //       hasItems &&
+  //     //         item.wasExpandedInMoreActions &&
+  //     //         item.items.map(this.#renderItem(level + 1, true))
+  //     //     }
 
-      //     {/* {
-      //       // Render a dummy element if the control was not expanded and has items
-      //       hasItems && !item.wasExpandedInMoreActions && (
-      //         <ch-dropdown></ch-dropdown>
-      //       )
-      //     } */}
-      //   </ch-dropdown>,
+  //     //     {/* {
+  //     //       // Render a dummy element if the control was not expanded and has items
+  //     //       hasItems && !item.wasExpandedInMoreActions && (
+  //     //         <ch-dropdown></ch-dropdown>
+  //     //       )
+  //     //     } */}
+  //     //   </ch-dropdown>,
 
-      //   // item.showSeparator && (
-      //   //   <div
-      //   //     slot="more-items"
-      //   //     aria-hidden="true"
-      //   //     class={
-      //   //       "ch-dropdown-separator " +
-      //   //       (item.separatorClass || this.separatorCssClass)
-      //   //     }
-      //   //   ></div>
-      //   // )
-      // ];
-    };
+  //     //   // item.showSeparator && (
+  //     //   //   <div
+  //     //   //     slot="more-items"
+  //     //   //     aria-hidden="true"
+  //     //   //     class={
+  //     //   //       "ch-dropdown-separator " +
+  //     //   //       (item.separatorClass || this.separatorCssClass)
+  //     //   //     }
+  //     //   //   ></div>
+  //     //   // )
+  //     // ];
+  //   };
 
   #handleDisplayedItemsCountChange = (
     event: ChActionGroupCustomEvent<number>
@@ -322,17 +315,32 @@ export class ChActionGroupRender {
     this.moreActionsButtonWasExpanded = true;
   };
 
+  #renderItem = (item: ActionGroupItemModel) => {
+    if (dropdownItemIsActionable(item)) {
+      return dropdownItemActionableIsExpandable(item) ? (
+        <ch-dropdown-render model={item.items}></ch-dropdown-render>
+      ) : (
+        <button type="button">{item.caption}</button>
+      );
+    }
+
+    return item.type === "separator" ? <hr /> : <slot name={item.id} />;
+  };
+
   render() {
-    const thereAreCollapsedItems =
-      this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-      this.moreActionsButtonWasExpanded &&
-      this.model != null &&
-      this.displayedItemsCount !== -1;
+    if (!this.model || this.model.length === 0) {
+      return "";
+    }
+
+    // const thereAreCollapsedItems =
+    //   this.itemsOverflowBehavior === "responsive-collapse" &&
+    //   this.moreActionsButtonWasExpanded &&
+    //   this.model != null &&
+    //   this.displayedItemsCount !== -1;
 
     return (
       <ch-action-group
         exportparts={this.actionGroupExportParts}
-        class={this.cssClass || null}
         itemsOverflowBehavior={this.itemsOverflowBehavior}
         moreActionsAccessibleName={this.moreActionsAccessibleName}
         // moreActionsDropdownPosition={this.moreActionsDropdownPosition}
@@ -344,6 +352,7 @@ export class ChActionGroupRender {
             : null
         }
       >
+        {this.model.map(this.#renderItem)}
         {/* {this.model != null &&
           this.model.map((item, index) => (
             <ch-action-group-item
@@ -354,10 +363,10 @@ export class ChActionGroupRender {
             </ch-action-group-item>
           ))} */}
 
-        {thereAreCollapsedItems &&
+        {/* {thereAreCollapsedItems &&
           this.model
             .filter((_, index) => index >= this.displayedItemsCount)
-            .map(this.#firstLevelRenderCollapsedItem(0))}
+            .map(this.#firstLevelRenderCollapsedItem(0))} */}
       </ch-action-group>
     );
   }

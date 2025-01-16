@@ -10,7 +10,6 @@ const render = () => (
       <legend class="label field-legend-test">Primary</legend>
 
       <ch-action-group-render
-        cssClass="dropdown-primary"
         model={state.model}
         // moreActionsDropdownPosition={state.moreActionsDropdownPosition}
       ></ch-action-group-render>
@@ -20,7 +19,6 @@ const render = () => (
       <legend class="label field-legend-test">Secondary</legend>
 
       <ch-action-group-render
-        cssClass="dropdown-secondary"
         model={state.model}
         // moreActionsDropdownPosition={state.moreActionsDropdownPosition}
       ></ch-action-group-render>

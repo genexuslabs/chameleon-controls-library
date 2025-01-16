@@ -236,12 +236,12 @@ export const GXWebModel: ActionGroupModel = [
     items: [
       {
         caption: "New",
-        subActionClass: "dropdown-item dropdown-item-web",
+        // subActionClass: "dropdown-item dropdown-item-web",
         // itemsPosition: "OutsideEnd_InsideStart",
         items: [
           {
             caption: "New Knowledge Base",
-            subActionClass: "dropdown-item dropdown-item-web",
+            // subActionClass: "dropdown-item dropdown-item-web",
             shortcut: "Ctrl+Alt+Shift+N",
             startImgSrc: "assets/icons/knowledge-base.svg"
           },
@@ -270,14 +270,14 @@ export const GXWebModel: ActionGroupModel = [
       },
       {
         caption: "Save",
-        subActionClass: "dropdown-item dropdown-item-web",
+        // subActionClass: "dropdown-item dropdown-item-web",
 
         shortcut: "Ctrl+S",
         startImgSrc: "assets/icons/save.svg"
       },
       {
         caption: "Save All",
-        subActionClass: "dropdown-item dropdown-item-web",
+        // subActionClass: "dropdown-item dropdown-item-web",
 
         shortcut: "Ctrl+Shift+S",
         startImgSrc: "assets/icons/save-all.svg"
@@ -291,7 +291,7 @@ export const GXWebModel: ActionGroupModel = [
     items: [
       {
         caption: "Domains",
-        subActionClass: "dropdown-item dropdown-item-web",
+        // subActionClass: "dropdown-item dropdown-item-web",
         startImgSrc: "assets/icons/domain.svg"
       },
       {

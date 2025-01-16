@@ -11,22 +11,22 @@ import {
 } from "@stencil/core";
 import { ItemsOverflowBehavior } from "./types";
 import {
-  ACTION_GROUP_PARTS_DICTIONARY,
-  DROPDOWN_PARTS_DICTIONARY,
-  DROPDOWN_ITEM_PARTS_DICTIONARY
+  ACTION_GROUP_PARTS_DICTIONARY
+  // DROPDOWN_PARTS_DICTIONARY,
+  // DROPDOWN_ITEM_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
 
 const FLOATING_POINT_ERROR = 1;
 
-const MORE_ACTION_EXPORT_PARTS =
-  `${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_BUTTON},${DROPDOWN_ITEM_PARTS_DICTIONARY.WINDOW}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_WINDOW}` as const;
+// const MORE_ACTION_EXPORT_PARTS =
+//   `${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_BUTTON},${DROPDOWN_ITEM_PARTS_DICTIONARY.WINDOW}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_WINDOW}` as const;
 
 /**
  * @part actions - The container of the visible actions.
- * @part more-actions - The ch-dropdown control to show hidden actions when `itemsOverflowBehavior === "ResponsiveCollapse"`.
+ * @part more-actions - The ch-dropdown control to show hidden actions when `itemsOverflowBehavior === "responsive-collapse"`.
  *
  * @slot items - The slot for the actions.
- * @slot more-items - The slot for the hidden actions when `itemsOverflowBehavior === "ResponsiveCollapse"`.
+ * @slot more-items - The slot for the hidden actions when `itemsOverflowBehavior === "responsive-collapse"`.
  */
 @Component({
   tag: "ch-action-group",
@@ -49,7 +49,7 @@ export class ChActionGroup {
   @Element() el: HTMLChActionGroupElement;
 
   /**
-   * The visible actions when `itemsOverflowBehavior === "ResponsiveCollapse"`.
+   * The visible actions when `itemsOverflowBehavior === "responsive-collapse"`.
    */
   @State() displayedItems = -1;
 
@@ -71,10 +71,10 @@ export class ChActionGroup {
    * | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
    */
   @Prop() readonly itemsOverflowBehavior: ItemsOverflowBehavior =
-    "ResponsiveCollapse";
+    "responsive-collapse";
   @Watch("itemsOverflowBehavior")
   handleOverflowBehaviorChange(newValue: ItemsOverflowBehavior) {
-    if (newValue !== "ResponsiveCollapse") {
+    if (newValue !== "responsive-collapse") {
       const actionGroupItems =
         this.#slotItems.assignedElements() as HTMLChActionGroupItemElement[];
 
@@ -128,7 +128,7 @@ export class ChActionGroup {
 
   /**
    * Update the visibility of the actions.
-   * Only works if itemsOverflowBehavior === "ResponsiveCollapse"
+   * Only works if itemsOverflowBehavior === "responsive-collapse"
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #updateDisplayedActions = () => {
@@ -218,7 +218,7 @@ export class ChActionGroup {
     this.#disconnectActionsObserver();
     this.#disconnectActionsContainerObserver();
 
-    if (this.itemsOverflowBehavior !== "ResponsiveCollapse") {
+    if (this.itemsOverflowBehavior !== "responsive-collapse") {
       return;
     }
     this.#connectActionsObserver();
@@ -226,7 +226,7 @@ export class ChActionGroup {
   };
 
   #updateActionsWatcher = () => {
-    if (this.itemsOverflowBehavior !== "ResponsiveCollapse") {
+    if (this.itemsOverflowBehavior !== "responsive-collapse") {
       return;
     }
 
@@ -255,7 +255,7 @@ export class ChActionGroup {
     return (
       <Host role="menubar" aria-label={this.accessibleName}>
         {
-          this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+          this.itemsOverflowBehavior === "responsive-collapse" &&
             this.#totalItems !== this.displayedItems &&
             ""
           // <ch-dropdown
@@ -278,10 +278,10 @@ export class ChActionGroup {
         <div
           class={{
             actions: true,
-            "actions--scroll": this.itemsOverflowBehavior === "AddScroll",
-            "actions--multiline": this.itemsOverflowBehavior === "Multiline",
+            "actions--scroll": this.itemsOverflowBehavior === "add-scroll",
+            "actions--multiline": this.itemsOverflowBehavior === "multiline",
             "actions--responsive":
-              this.itemsOverflowBehavior === "ResponsiveCollapse"
+              this.itemsOverflowBehavior === "responsive-collapse"
           }}
           part={ACTION_GROUP_PARTS_DICTIONARY.ACTIONS}
           ref={el => (this.#actionsContainer = el)}

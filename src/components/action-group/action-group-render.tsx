@@ -1,12 +1,12 @@
-import { Component, h, Prop, State } from "@stencil/core";
+import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
 import { ActionGroupItemModel, ActionGroupModel } from "./types";
-import { ChActionGroupCustomEvent } from "../../components";
+// import { ChActionGroupCustomEvent } from "../../components";
 import { ItemsOverflowBehavior } from "./internal/action-group/types";
-import { fromGxImageToURL } from "../tree-view/genexus-implementation";
-import {
-  ACTION_GROUP_EXPORT_PARTS
-  // DROPDOWN_EXPORT_PARTS
-} from "../../common/reserved-names";
+// import { fromGxImageToURL } from "../tree-view/genexus-implementation";
+// import {
+//   ACTION_GROUP_EXPORT_PARTS
+//   // DROPDOWN_EXPORT_PARTS
+// } from "../../common/reserved-names";
 import {
   dropdownItemActionableIsExpandable,
   dropdownItemIsActionable
@@ -18,14 +18,18 @@ import {
   shadow: false // Necessary to avoid focus capture
 })
 export class ChActionGroupRender {
-  @State() displayedItemsCount = -1;
-  @State() moreActionsButtonWasExpanded = false;
-
   /**
-   * Specifies the parts that are exported by the internal action-group. This
-   * property is useful to override the exported parts.
+   * 0 means no collapsed items. 1 means the first items is collapsed. And so
+   * on.
    */
-  @Prop() readonly actionGroupExportParts: string = ACTION_GROUP_EXPORT_PARTS;
+  @State() collapsedItems = 0;
+  @Watch("collapsedItems")
+  collapsedItemsChanged() {
+    this.#setModels();
+  }
+
+  #collapsedModel: ActionGroupModel = [];
+  #visibleModel: ActionGroupModel = [];
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -43,15 +47,6 @@ export class ChActionGroupRender {
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly gxSettings: any;
-
-  /**
-   * This callback is executed when an item is clicked.
-   */
-  @Prop() readonly itemClickCallback: (
-    event: UIEvent,
-    target: string,
-    itemId: string
-  ) => void;
 
   /**
    * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
@@ -84,33 +79,22 @@ export class ChActionGroupRender {
   // @Prop() readonly moreActionsDropdownPosition: DropdownPosition =
   //   "InsideStart_OutsideEnd";
 
-  /**
-   * Determine if the dropdown section should be opened when the expandable
-   * button of the control is focused.
-   * TODO: Add implementation
-   */
-  @Prop() readonly openOnFocus: boolean = false;
+  // /**
+  //  * Determine if the dropdown section should be opened when the expandable
+  //  * button of the control is focused.
+  //  * TODO: Add implementation
+  //  */
+  // @Prop() readonly openOnFocus: boolean = false;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly useGxRender: boolean = false;
 
-  // /**
-  //  * Fired when the visibility of the dropdown section is changed
-  //  */
-  // @Event() expandedChange: EventEmitter<boolean>;
-
-  #handleItemClick = (target: string, itemId: string) => (event: UIEvent) => {
-    if (this.itemClickCallback) {
-      this.itemClickCallback(event, target, itemId);
-    }
-  };
-
-  #getImagePath = (img: string) =>
-    this.useGxRender
-      ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
-      : img;
+  // #getImagePath = (img: string) =>
+  //   this.useGxRender
+  //     ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
+  //     : img;
 
   // #renderItem =
   //   (level: number, responsiveCollapse: boolean) =>
@@ -305,15 +289,15 @@ export class ChActionGroupRender {
   //     // ];
   //   };
 
-  #handleDisplayedItemsCountChange = (
-    event: ChActionGroupCustomEvent<number>
-  ) => {
-    this.displayedItemsCount = event.detail;
-  };
+  // #handleDisplayedItemsCountChange = (
+  //   event: ChActionGroupCustomEvent<number>
+  // ) => {
+  //   this.collapsedItems = event.detail;
+  // };
 
-  #handleMoreActionButtonExpandedChange = () => {
-    this.moreActionsButtonWasExpanded = true;
-  };
+  // #handleMoreActionButtonExpandedChange = () => {
+  //   this.moreActionsButtonWasExpanded = true;
+  // };
 
   #renderItem = (item: ActionGroupItemModel) => {
     if (dropdownItemIsActionable(item)) {
@@ -327,10 +311,38 @@ export class ChActionGroupRender {
     return item.type === "separator" ? <hr /> : <slot name={item.id} />;
   };
 
+  #setModels = () => {
+    this.#collapsedModel = [];
+    this.#visibleModel = [];
+
+    this.model?.forEach((item, index) => {
+      if (index < this.collapsedItems) {
+        this.#collapsedModel.push(item);
+      } else {
+        this.#visibleModel.push(item);
+      }
+    });
+  };
+
+  connectedCallback() {
+    this.collapsedItems = 0;
+    this.#setModels();
+  }
+
   render() {
     if (!this.model || this.model.length === 0) {
       return "";
     }
+
+    return (
+      <Host>
+        {this.collapsedItems !== 0 && (
+          <ch-dropdown-render model={this.#collapsedModel}></ch-dropdown-render>
+        )}
+
+        {this.#visibleModel.map(this.#renderItem)}
+      </Host>
+    );
 
     // const thereAreCollapsedItems =
     //   this.itemsOverflowBehavior === "responsive-collapse" &&
@@ -338,36 +350,36 @@ export class ChActionGroupRender {
     //   this.model != null &&
     //   this.displayedItemsCount !== -1;
 
-    return (
-      <ch-action-group
-        exportparts={this.actionGroupExportParts}
-        itemsOverflowBehavior={this.itemsOverflowBehavior}
-        moreActionsAccessibleName={this.moreActionsAccessibleName}
-        // moreActionsDropdownPosition={this.moreActionsDropdownPosition}
-        openOnFocus={this.openOnFocus}
-        onDisplayedItemsCountChange={this.#handleDisplayedItemsCountChange}
-        onMoreActionsButtonExpandedChange={
-          !this.moreActionsButtonWasExpanded
-            ? this.#handleMoreActionButtonExpandedChange
-            : null
-        }
-      >
-        {this.model.map(this.#renderItem)}
-        {/* {this.model != null &&
-          this.model.map((item, index) => (
-            <ch-action-group-item
-              slot="items"
-              key={item.id || item.caption || index}
-            >
-              {this.#firstLevelRenderItem(item, index, 0)}
-            </ch-action-group-item>
-          ))} */}
+    // return (
+    //   <ch-action-group
+    //     exportparts={this.actionGroupExportParts}
+    //     itemsOverflowBehavior={this.itemsOverflowBehavior}
+    //     moreActionsAccessibleName={this.moreActionsAccessibleName}
+    //     // moreActionsDropdownPosition={this.moreActionsDropdownPosition}
+    //     openOnFocus={this.openOnFocus}
+    //     onDisplayedItemsCountChange={this.#handleDisplayedItemsCountChange}
+    //     onMoreActionsButtonExpandedChange={
+    //       !this.moreActionsButtonWasExpanded
+    //         ? this.#handleMoreActionButtonExpandedChange
+    //         : null
+    //     }
+    //   >
+    //     {this.model.map(this.#renderItem)}
+    //     {/* {this.model != null &&
+    //       this.model.map((item, index) => (
+    //         <ch-action-group-item
+    //           slot="items"
+    //           key={item.id || item.caption || index}
+    //         >
+    //           {this.#firstLevelRenderItem(item, index, 0)}
+    //         </ch-action-group-item>
+    //       ))} */}
 
-        {/* {thereAreCollapsedItems &&
-          this.model
-            .filter((_, index) => index >= this.displayedItemsCount)
-            .map(this.#firstLevelRenderCollapsedItem(0))} */}
-      </ch-action-group>
-    );
+    //     {/* {thereAreCollapsedItems &&
+    //       this.model
+    //         .filter((_, index) => index >= this.displayedItemsCount)
+    //         .map(this.#firstLevelRenderCollapsedItem(0))} */}
+    //   </ch-action-group>
+    // );
   }
 }

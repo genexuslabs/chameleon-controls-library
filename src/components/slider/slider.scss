@@ -50,6 +50,10 @@
   display: inline-grid;
 }
 
+:host(:disabled) {
+  pointer-events: none;
+}
+
 .position-absolute-wrapper {
   display: grid;
   position: relative;

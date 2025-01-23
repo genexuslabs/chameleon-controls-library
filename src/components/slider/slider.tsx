@@ -53,7 +53,7 @@ export class ChSlider implements AccessibleNameComponent {
    * If disabled, it will not trigger any user interaction related event
    * (for example, click event).
    */
-  @Prop() readonly disabled = false;
+  @Prop({ reflect: true }) readonly disabled: boolean = false;
 
   /**
    * This attribute lets you specify maximum value of the slider.
@@ -69,7 +69,7 @@ export class ChSlider implements AccessibleNameComponent {
    * This attribute lets you indicate whether the control should display a
    * bubble with the current value upon interaction.
    */
-  @Prop() readonly showValue = false;
+  @Prop() readonly showValue: boolean = false;
 
   /**
    * This attribute lets you specify the step of the slider.
@@ -84,9 +84,9 @@ export class ChSlider implements AccessibleNameComponent {
   /**
    * The value of the control.
    */
-  @Prop({ mutable: true }) value = 0;
+  @Prop({ mutable: true }) value: number = 0;
   @Watch("value")
-  handleValueChange(newValue: number) {
+  valueChanged(newValue: number) {
     // Update form value
     this.internals.setFormValue(newValue.toString());
   }
@@ -185,8 +185,8 @@ export class ChSlider implements AccessibleNameComponent {
             max={actualMaxValue}
             step={this.step}
             value={actualValue}
-            onChange={this.#handleChange}
-            onInput={this.#handleInput}
+            onChange={!this.disabled ? this.#handleChange : undefined}
+            onInput={!this.disabled ? this.#handleInput : undefined}
           />
 
           <div

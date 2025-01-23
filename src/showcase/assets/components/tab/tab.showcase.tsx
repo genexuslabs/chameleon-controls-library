@@ -1,5 +1,6 @@
 import { h } from "@stencil/core";
 import {
+  ShowcaseRender,
   ShowcaseRenderProperties,
   ShowcaseStory,
   ShowcaseTemplateFrameWork,
@@ -50,7 +51,7 @@ const handleItemClose = (event: CustomEvent<TabItemCloseInfo>) => {
   console.log(event.detail);
 };
 
-const render = () => (
+const render: ShowcaseRender = designSystem => (
   <div class="tab-test-main-wrapper">
     <fieldset>
       <legend class="heading-4">Simple pages</legend>
@@ -67,6 +68,8 @@ const render = () => (
         model={state.model}
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
+        showTabListEnd={state.showTabListEnd}
+        showTabListStart={state.showTabListStart}
         sortable={state.sortable}
         onItemClose={handleItemClose}
         onSelectedItemChange={selectedItemChangeHandler}
@@ -116,10 +119,38 @@ const render = () => (
         model={state.model}
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
+        showTabListEnd={state.showTabListEnd}
+        showTabListStart={state.showTabListStart}
         sortable={state.sortable}
         onItemClose={handleItemClose}
         onSelectedItemChange={selectedItemChangeHandler}
       >
+        <ch-checkbox
+          slot="tab-list-start"
+          accessibleName="Visibility"
+          class="checkbox"
+          caption="Option"
+          checkedValue="true"
+        ></ch-checkbox>
+
+        <ch-switch
+          slot="tab-list-end"
+          accessibleName="Visibility"
+          class={designSystem === "mercury" ? "toggle-small" : "switch"}
+          checkedValue="true"
+          checkedCaption="Visibility"
+          unCheckedCaption="Visibility"
+        ></ch-switch>
+
+        <ch-switch
+          slot="tab-list-end"
+          accessibleName="Status"
+          class={designSystem === "mercury" ? "toggle-small" : "switch"}
+          checkedValue="true"
+          checkedCaption="Status"
+          unCheckedCaption="Status"
+        ></ch-switch>
+
         {renderedItems.has("item1") && (
           <ch-tree-view-render
             class="tree-view tree-view-secondary"
@@ -195,6 +226,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement>
           ],
           render: "radio-group",
           type: "enum"
+        },
+        {
+          id: "showTabListStart",
+          caption: "Show Tab List Start",
+          type: "boolean",
+          value: false
+        },
+        {
+          id: "showTabListEnd",
+          caption: "Show Tab List End",
+          type: "boolean",
+          value: false
         },
         {
           id: "contain",

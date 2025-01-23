@@ -871,7 +871,11 @@ export class ChActionListRender {
     this.el.setAttribute("role", "list");
   }
 
-  componentWillUpdate() {
+  // Don't turn it into the componentWillUpdate lifecycle method.
+  // For some reason, the componentWillUpdate lifecycle method is not
+  // dispatched when an Angular page (with SSR) is served from the server, but
+  // when navigating in the SPA, the componentWillUpdate method works
+  componentWillRender() {
     if (this.#shouldUpdateModelAndSelection) {
       this.#shouldUpdateModelAndSelection = false;
 

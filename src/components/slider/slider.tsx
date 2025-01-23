@@ -185,8 +185,8 @@ export class ChSlider implements AccessibleNameComponent {
             max={actualMaxValue}
             step={this.step}
             value={actualValue}
-            onChange={this.#handleChange}
-            onInput={this.#handleInput}
+            onChange={!this.disabled ? this.#handleChange : undefined}
+            onInput={!this.disabled ? this.#handleInput : undefined}
           />
 
           <div

@@ -4,7 +4,7 @@ import {
   EventSpy,
   newE2EPage
 } from "@stencil/core/testing";
-import { ticketList } from "../../../showcase/assets/components/action-list/models";
+import { GitHubHistoryModel } from "../../../showcase/assets/components/action-list/models";
 import {
   ActionListItemModel,
   ActionListItemType,
@@ -103,7 +103,7 @@ describe("[ch-action-list-render][selection]", () => {
       html: `<ch-action-list-render></ch-action-list-render>`
     });
     actionListRef = await page.find("ch-action-list-render");
-    actionListRef.setProperty("model", ticketList);
+    actionListRef.setProperty("model", GitHubHistoryModel);
     selectedItemsChangeEventSpy = await actionListRef.spyOnEvent(
       "selectedItemsChange"
     );
@@ -119,7 +119,7 @@ describe("[ch-action-list-render][selection]", () => {
       `<ch-action-list-render selection="single"></ch-action-list-render>`
     );
     actionListRef = await page.find("ch-action-list-render");
-    actionListRef.setProperty("model", ticketList);
+    actionListRef.setProperty("model", GitHubHistoryModel);
     await page.waitForChanges();
 
     await page.click("ch-action-list-render >>> ch-action-list-item");

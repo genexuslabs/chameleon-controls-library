@@ -15,7 +15,7 @@ import {
 const state: Partial<HTMLChDialogElement> = {};
 
 const handleClose = () => {
-  state.hidden = true;
+  state.show = false;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
@@ -24,7 +24,7 @@ const handleClose = () => {
 };
 
 const handleDialogOpen = () => {
-  state.hidden = false;
+  state.show = true;
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
@@ -43,7 +43,7 @@ const render = () => [
     caption={state.caption}
     class="dialog dialog-primary"
     closeButtonAccessibleName={state.closeButtonAccessibleName}
-    hidden={state.hidden}
+    show={state.show}
     modal={state.modal}
     resizable={state.resizable}
     showFooter={state.showFooter}
@@ -84,9 +84,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChDialogElement> =
       columns: 2,
       properties: [
         {
-          id: "hidden",
-          caption: "Hidden",
-          value: true,
+          id: "show",
+          caption: "Show",
+          value: false,
           type: "boolean"
         },
         {
@@ -177,7 +177,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCheckboxElement
       defaultValue: undefined,
       type: "string"
     },
-    { name: "hidden", defaultValue: false, type: "boolean" },
+    { name: "show", defaultValue: false, type: "boolean" },
     { name: "modal", defaultValue: true, type: "boolean" },
     { name: "resizable", defaultValue: false, type: "boolean" },
     { name: "showFooter", defaultValue: false, type: "boolean" },

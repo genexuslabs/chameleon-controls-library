@@ -1,8 +1,14 @@
-import { ActionListImagePathCallback } from "../components/action-list/types";
-import {
+import type { ActionListImagePathCallback } from "../components/action-list/types";
+import type {
   ChameleonImagePathCallbackControls,
   ChameleonImagePathCallbackControlsTagName
 } from "./types";
+
+declare global {
+  interface Window {
+    getImagePathCallback: Partial<RegistryGetImagePathCallback>;
+  }
+}
 
 export type RegistryGetImagePathCallback = {
   [key in ChameleonImagePathCallbackControlsTagName]: ChameleonImagePathCallbackControls[key]["getImagePathCallback"];
@@ -10,13 +16,13 @@ export type RegistryGetImagePathCallback = {
 
 export type RegisterPropertyName = "getImagePathCallback";
 
-export type RegisterProperty = typeof registerMapping;
-
-const registryGetImagePathCallback: Partial<RegistryGetImagePathCallback> = {};
-
-const registerMapping = {
-  getImagePathCallback: registryGetImagePathCallback
+export type RegisterProperty = {
+  getImagePathCallback: Partial<RegistryGetImagePathCallback>;
 };
+
+if (typeof window !== "undefined") {
+  window.getImagePathCallback ??= {};
+}
 
 export const registryProperty = <
   Prop extends RegisterPropertyName,
@@ -25,7 +31,7 @@ export const registryProperty = <
   propertyName: Prop,
   value: T
 ) => {
-  registerMapping[propertyName] = value;
+  window[propertyName] = value;
 };
 
 export const registryControlProperty = <
@@ -37,7 +43,7 @@ export const registryControlProperty = <
   controlName: Control,
   value: T
 ) => {
-  registerMapping[propertyName][controlName] = value;
+  window[propertyName][controlName] = value;
 };
 
 export const getControlRegisterProperty = <
@@ -47,7 +53,7 @@ export const getControlRegisterProperty = <
   propertyName: PropName,
   controlName: Control
 ): RegisterProperty[PropName][Control] | undefined =>
-  registerMapping[propertyName][controlName];
+  window[propertyName][controlName];
 
 export const DEFAULT_GET_IMAGE_PATH_CALLBACK: ActionListImagePathCallback =
   additionalItem => ({

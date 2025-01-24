@@ -1,8 +1,16 @@
-import { ActionListImagePathCallback } from "../components/action-list/types";
-import {
+import type { ActionListImagePathCallback } from "../components/action-list/types";
+import type {
   ChameleonImagePathCallbackControls,
   ChameleonImagePathCallbackControlsTagName
 } from "./types";
+
+declare global {
+  interface Window {
+    chameleonControlsLibrary: {
+      getImagePathCallback: Partial<RegistryGetImagePathCallback>;
+    };
+  }
+}
 
 export type RegistryGetImagePathCallback = {
   [key in ChameleonImagePathCallbackControlsTagName]: ChameleonImagePathCallbackControls[key]["getImagePathCallback"];
@@ -10,13 +18,14 @@ export type RegistryGetImagePathCallback = {
 
 export type RegisterPropertyName = "getImagePathCallback";
 
-export type RegisterProperty = typeof registerMapping;
-
-const registryGetImagePathCallback: Partial<RegistryGetImagePathCallback> = {};
-
-const registerMapping = {
-  getImagePathCallback: registryGetImagePathCallback
+export type RegisterProperty = {
+  getImagePathCallback: Partial<RegistryGetImagePathCallback>;
 };
+
+if (typeof window !== "undefined") {
+  window.chameleonControlsLibrary ??= { getImagePathCallback: {} };
+  window.chameleonControlsLibrary.getImagePathCallback ??= {};
+}
 
 export const registryProperty = <
   Prop extends RegisterPropertyName,
@@ -25,7 +34,15 @@ export const registryProperty = <
   propertyName: Prop,
   value: T
 ) => {
-  registerMapping[propertyName] = value;
+  if (
+    (propertyName as string) === "__proto__" ||
+    (propertyName as string) === "constructor" ||
+    (propertyName as string) === "prototype"
+  ) {
+    throw new Error("Invalid property name");
+  }
+
+  window.chameleonControlsLibrary[propertyName] = value;
 };
 
 export const registryControlProperty = <
@@ -37,7 +54,23 @@ export const registryControlProperty = <
   controlName: Control,
   value: T
 ) => {
-  registerMapping[propertyName][controlName] = value;
+  if (
+    (propertyName as string) === "__proto__" ||
+    (propertyName as string) === "constructor" ||
+    (propertyName as string) === "prototype"
+  ) {
+    throw new Error("Invalid property name");
+  }
+
+  if (
+    (controlName as string) === "__proto__" ||
+    (controlName as string) === "constructor" ||
+    (controlName as string) === "prototype"
+  ) {
+    throw new Error("Invalid control name");
+  }
+
+  window.chameleonControlsLibrary[propertyName][controlName] = value;
 };
 
 export const getControlRegisterProperty = <
@@ -47,7 +80,7 @@ export const getControlRegisterProperty = <
   propertyName: PropName,
   controlName: Control
 ): RegisterProperty[PropName][Control] | undefined =>
-  registerMapping[propertyName][controlName];
+  window.chameleonControlsLibrary[propertyName][controlName];
 
 export const DEFAULT_GET_IMAGE_PATH_CALLBACK: ActionListImagePathCallback =
   additionalItem => ({

@@ -39,6 +39,10 @@ import { formatImagePath } from "../../common/utils";
 // This callback will be registered by default. If it is used in GeneXus, all
 // tree views will have the same state, so the parameters used of the treeState
 // are "shared" across all tree view instances
+
+// TODO: For some reason, this module import is different when an external
+// library imports the registryControlProperty function. We should de-dup this
+// to fix issues related with double initialization of the registry
 const registerDefaultGetImagePathCallback = (
   navigationListState: ChNavigationListRender
 ) =>

@@ -34,6 +34,14 @@ export const registryProperty = <
   propertyName: Prop,
   value: T
 ) => {
+  if (
+    (propertyName as string) === "__proto__" ||
+    (propertyName as string) === "constructor" ||
+    (propertyName as string) === "prototype"
+  ) {
+    throw new Error("Invalid property name");
+  }
+
   window.chameleonControlsLibrary[propertyName] = value;
 };
 
@@ -46,6 +54,14 @@ export const registryControlProperty = <
   controlName: Control,
   value: T
 ) => {
+  if (
+    (propertyName as string) === "__proto__" ||
+    (propertyName as string) === "constructor" ||
+    (propertyName as string) === "prototype"
+  ) {
+    throw new Error("Invalid property name");
+  }
+
   window.chameleonControlsLibrary[propertyName][controlName] = value;
 };
 

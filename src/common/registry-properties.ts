@@ -6,7 +6,9 @@ import type {
 
 declare global {
   interface Window {
-    getImagePathCallback: Partial<RegistryGetImagePathCallback>;
+    chameleonControlsLibrary: {
+      getImagePathCallback: Partial<RegistryGetImagePathCallback>;
+    };
   }
 }
 
@@ -21,7 +23,8 @@ export type RegisterProperty = {
 };
 
 if (typeof window !== "undefined") {
-  window.getImagePathCallback ??= {};
+  window.chameleonControlsLibrary ??= { getImagePathCallback: {} };
+  window.chameleonControlsLibrary.getImagePathCallback ??= {};
 }
 
 export const registryProperty = <
@@ -31,7 +34,7 @@ export const registryProperty = <
   propertyName: Prop,
   value: T
 ) => {
-  window[propertyName] = value;
+  window.chameleonControlsLibrary[propertyName] = value;
 };
 
 export const registryControlProperty = <
@@ -43,7 +46,7 @@ export const registryControlProperty = <
   controlName: Control,
   value: T
 ) => {
-  window[propertyName][controlName] = value;
+  window.chameleonControlsLibrary[propertyName][controlName] = value;
 };
 
 export const getControlRegisterProperty = <
@@ -53,7 +56,7 @@ export const getControlRegisterProperty = <
   propertyName: PropName,
   controlName: Control
 ): RegisterProperty[PropName][Control] | undefined =>
-  window[propertyName][controlName];
+  window.chameleonControlsLibrary[propertyName][controlName];
 
 export const DEFAULT_GET_IMAGE_PATH_CALLBACK: ActionListImagePathCallback =
   additionalItem => ({

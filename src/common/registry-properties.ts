@@ -62,6 +62,14 @@ export const registryControlProperty = <
     throw new Error("Invalid property name");
   }
 
+  if (
+    (controlName as string) === "__proto__" ||
+    (controlName as string) === "constructor" ||
+    (controlName as string) === "prototype"
+  ) {
+    throw new Error("Invalid control name");
+  }
+
   window.chameleonControlsLibrary[propertyName][controlName] = value;
 };
 

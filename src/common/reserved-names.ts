@@ -1,5 +1,15 @@
 import { ImageRender } from "./types";
 
+/**
+ * This Symbol allow us to add metadata to UI models, without making it
+ * available to the UI model host.
+ *
+ * Additionally, object entries that are Symbols are not serialize
+ * (JSON.stringify), which is perfect for further hiding even more this
+ * metadata that must be internal to each component's implementation.
+ */
+export const MODEL_METADATA = Symbol("metadata");
+
 const joinParts = (parts: { [key in string]: string }) =>
   Object.values(parts).join(",");
 

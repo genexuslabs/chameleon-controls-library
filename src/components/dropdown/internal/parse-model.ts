@@ -5,7 +5,10 @@ import {
   DropdownItemModelMetadata,
   DropdownModel
 } from "../types";
-import { dropdownItemIsActionable } from "./utils";
+import {
+  dropdownItemActionableIsExpandable,
+  dropdownItemIsActionable
+} from "./utils";
 
 export const addMetadataInDropdownItem = (
   itemUIModel: DropdownItemModel,
@@ -32,7 +35,7 @@ export const parseSubModel = (
 
     if (
       dropdownItemIsActionable(itemUIModel) &&
-      itemUIModel.items !== undefined
+      dropdownItemActionableIsExpandable(itemUIModel)
     ) {
       parseSubModel(itemUIModel.items, itemUIModel);
     }

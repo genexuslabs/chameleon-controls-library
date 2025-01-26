@@ -1,23 +1,41 @@
 import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
 import { ActionGroupItemModel, ActionGroupModel } from "./types";
-// import { ChActionGroupCustomEvent } from "../../components";
 import { ItemsOverflowBehavior } from "./internal/action-group/types";
 // import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 // import {
 //   ACTION_GROUP_EXPORT_PARTS
-//   // DROPDOWN_EXPORT_PARTS
+//   // DROPDOWN_ITEM_EXPORT_PARTS
 // } from "../../common/reserved-names";
 import {
   dropdownItemActionableIsExpandable,
   dropdownItemIsActionable
 } from "../dropdown/internal/utils";
+import { DROPDOWN_ITEM_EXPORT_PARTS } from "../../common/reserved-names";
+import { SyncWithRAF } from "../../common/sync-with-frames";
+
+// const FLOATING_POINT_ERROR = 1;
+
+const INTERSECTION_OPTIONS: IntersectionObserverInit = { threshold: 1 };
+const EMPTY_DROPDOWN = undefined;
 
 @Component({
   tag: "ch-action-group-render",
   styleUrl: "action-group-render.scss",
-  shadow: false // Necessary to avoid focus capture
+  shadow: true // Necessary to avoid focus capture
 })
 export class ChActionGroupRender {
+  #collapsedModel: ActionGroupModel = [];
+  #isResponsiveCollapse = false;
+  #shouldCheckResponsiveCollapseWatcher = true;
+
+  // Responsive collapse variables
+  #displayedMarkers: boolean[] | undefined;
+  #responsiveActionsWatcher: IntersectionObserver | undefined;
+  #updateActionsRAF: SyncWithRAF | undefined; // Don't allocate memory until needed when dragging
+
+  // Refs
+  #actionsContainerRef: HTMLUListElement;
+
   /**
    * 0 means no collapsed items. 1 means the first items is collapsed. And so
    * on.
@@ -27,9 +45,6 @@ export class ChActionGroupRender {
   collapsedItemsChanged() {
     this.#setModels();
   }
-
-  #collapsedModel: ActionGroupModel = [];
-  #visibleModel: ActionGroupModel = [];
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -60,11 +75,28 @@ export class ChActionGroupRender {
    */
   @Prop() readonly itemsOverflowBehavior: ItemsOverflowBehavior =
     "responsive-collapse";
+  @Watch("itemsOverflowBehavior")
+  itemsOverflowBehaviorChanged() {
+    this.#shouldCheckResponsiveCollapseWatcher = true;
+    this.#isResponsiveCollapse =
+      this.itemsOverflowBehavior === "responsive-collapse";
+
+    this.#disconnectActionsObserver();
+    this.#removeOrInitializeMarkersVisibility();
+  }
 
   /**
    * This property lets you define the model of the ch-action-group control.
    */
   @Prop() readonly model: ActionGroupModel | undefined;
+  @Watch("model")
+  modelChanged() {
+    this.#shouldCheckResponsiveCollapseWatcher = true;
+
+    this.#disconnectActionsObserver();
+    this.#removeOrInitializeMarkersVisibility();
+    this.#setModels();
+  }
 
   /**
    * This attribute lets you specify the label for the more actions button.
@@ -299,34 +331,142 @@ export class ChActionGroupRender {
   //   this.moreActionsButtonWasExpanded = true;
   // };
 
-  #renderItem = (item: ActionGroupItemModel) => {
+  #renderItem = (item: ActionGroupItemModel, index: number) => {
+    const markerId = this.#isResponsiveCollapse ? index.toString() : undefined;
+    const markerClass = this.#isResponsiveCollapse ? "marker" : undefined;
+
     if (dropdownItemIsActionable(item)) {
       return dropdownItemActionableIsExpandable(item) ? (
-        <ch-dropdown-render model={item.items}></ch-dropdown-render>
+        <ch-dropdown-render
+          role="listitem"
+          id={markerId}
+          class={markerClass}
+          exportparts={DROPDOWN_ITEM_EXPORT_PARTS}
+          blockAlign={item.itemsBlockAlign ?? "outside-end"}
+          inlineAlign={item.itemsInlineAlign ?? "inside-start"}
+          model={this.#itemIsVisible(index) ? item.items : EMPTY_DROPDOWN}
+        >
+          {item.caption}
+        </ch-dropdown-render>
       ) : (
-        <button type="button">{item.caption}</button>
+        <button id={markerId} class={markerClass} type="button">
+          {item.caption}
+        </button>
       );
     }
 
-    return item.type === "separator" ? <hr /> : <slot name={item.id} />;
+    return item.type === "separator" ? (
+      <hr id={markerId} class={markerClass} />
+    ) : (
+      <slot
+        name={item.id}
+        // @ts-expect-error slots can include global attributes (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot#attributes)
+        // This error does not make any sense
+        id={markerId}
+        class={markerClass}
+      />
+    );
+  };
+
+  #itemIsVisible = (index: number) =>
+    !this.#isResponsiveCollapse ||
+    index + this.collapsedItems < this.model.length;
+
+  #removeOrInitializeMarkersVisibility = () => {
+    this.#displayedMarkers = this.#isResponsiveCollapse
+      ? this.model?.map(() => true) ?? []
+      : undefined;
   };
 
   #setModels = () => {
     this.#collapsedModel = [];
-    this.#visibleModel = [];
 
-    this.model?.forEach((item, index) => {
-      if (index < this.collapsedItems) {
-        this.#collapsedModel.push(item);
-      } else {
-        this.#visibleModel.push(item);
-      }
-    });
+    if (this.model && this.collapsedItems > 0) {
+      this.#collapsedModel = this.model.slice(
+        this.model.length - this.collapsedItems
+      );
+    }
+    console.log("COLLAPSED MODEL", this.#collapsedModel);
+  };
+
+  // - - - - - - - - - - - - - - - - - - - -
+  //                Observers
+  // - - - - - - - - - - - - - - - - - - - -
+  #setResponsiveCollapse = () => {
+    if (this.#isResponsiveCollapse) {
+      this.#connectActionsObserver();
+    }
+  };
+
+  #connectActionsObserver = () => {
+    this.#updateActionsRAF ??= new SyncWithRAF();
+    this.#responsiveActionsWatcher ??= new IntersectionObserver(entries => {
+      // Update the visibility of each entry
+      entries.forEach(entry => {
+        this.#displayedMarkers[Number(entry.target.id)] = entry.isIntersecting;
+      });
+
+      // Queue a task to update the displayed actions in the next frame
+      this.#updateActionsRAF.perform(this.#updateDisplayedActions);
+    }, INTERSECTION_OPTIONS);
+
+    // Observe the actions
+    this.#actionsContainerRef
+      .querySelectorAll(".marker")
+      .forEach(action => this.#responsiveActionsWatcher.observe(action));
+  };
+
+  /**
+   * Update the visibility of the actions.
+   * Only works if itemsOverflowBehavior === "responsive-collapse"
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #updateDisplayedActions = () => {
+    const firstItemIndexThatIsNotVisible = this.#displayedMarkers.findIndex(
+      markerIsDisplayed => !markerIsDisplayed
+    );
+
+    console.log(
+      "firstItemIndexThatIsNotVisible",
+      firstItemIndexThatIsNotVisible
+    );
+
+    // All items are visible
+    if (firstItemIndexThatIsNotVisible === -1) {
+      this.collapsedItems = 0;
+    }
+    // There are hidden items
+    else {
+      this.collapsedItems = this.model.length - firstItemIndexThatIsNotVisible;
+    }
+  };
+
+  #disconnectActionsObserver = () => {
+    this.#updateActionsRAF?.cancel();
+    this.#updateActionsRAF = undefined;
+
+    this.#responsiveActionsWatcher?.disconnect();
+    this.#responsiveActionsWatcher = undefined;
   };
 
   connectedCallback() {
     this.collapsedItems = 0;
+    this.#isResponsiveCollapse =
+      this.itemsOverflowBehavior === "responsive-collapse";
+
+    this.#removeOrInitializeMarkersVisibility();
     this.#setModels();
+  }
+
+  componentDidRender() {
+    if (this.#shouldCheckResponsiveCollapseWatcher) {
+      this.#shouldCheckResponsiveCollapseWatcher = false;
+      this.#setResponsiveCollapse();
+    }
+  }
+
+  disconnectedCallback() {
+    this.#disconnectActionsObserver();
   }
 
   render() {
@@ -335,12 +475,34 @@ export class ChActionGroupRender {
     }
 
     return (
-      <Host>
-        {this.collapsedItems !== 0 && (
-          <ch-dropdown-render model={this.#collapsedModel}></ch-dropdown-render>
+      <Host
+        class={
+          this.#isResponsiveCollapse ? "ch-responsive-collapse" : undefined
+        }
+      >
+        {this.#isResponsiveCollapse && this.collapsedItems !== 0 && (
+          <ch-dropdown-render
+            exportparts={DROPDOWN_ITEM_EXPORT_PARTS}
+            // blockAlign={item.itemsBlockAlign ?? "outside-end"}
+            // inlineAlign={item.itemsInlineAlign ?? "inside-start"}
+
+            blockAlign="outside-end"
+            inlineAlign="inside-start"
+            model={this.#collapsedModel}
+          >
+            Hello
+          </ch-dropdown-render>
         )}
 
-        {this.#visibleModel.map(this.#renderItem)}
+        <ul
+          class={{
+            content: true,
+            "responsive-collapse": this.#isResponsiveCollapse
+          }}
+          ref={el => (this.#actionsContainerRef = el)}
+        >
+          {this.model.map(this.#renderItem)}
+        </ul>
       </Host>
     );
 

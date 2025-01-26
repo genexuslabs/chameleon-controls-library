@@ -1,17 +1,47 @@
-ch-action-group-render {
-  display: contents;
+:host {
+  display: grid;
 }
 
-.ch-dropdown-separator {
-  display: grid;
-  block-size: 1px;
-  background-color: color-mix(in srgb, currentColor 25%, transparent);
-  pointer-events: none;
+:host(.ch-responsive-collapse) {
+  grid-template-columns: max-content 1fr;
+  overflow: hidden;
 }
 
-.ch-action-group-separator--vertical {
+.content {
+  margin: 0;
+  padding: 0;
+}
+
+.responsive-collapse {
   display: grid;
-  inline-size: 1px;
-  background-color: color-mix(in srgb, currentColor 25%, transparent);
-  pointer-events: none;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  contain: inline-size;
+
+  // WA to test
+  gap: 16px;
+}
+
+.marker {
+  display: grid;
+  align-items: center;
+}
+
+// .ch-dropdown-separator {
+
+//   display: grid;
+//   block-size: 1px;
+//   background-color: color-mix(in srgb, currentColor 25%, transparent);
+//   pointer-events: none;
+// }
+
+// .ch-action-group-separator--vertical {
+//   display: grid;
+//   inline-size: 1px;
+//   background-color: color-mix(in srgb, currentColor 25%, transparent);
+//   pointer-events: none;
+// }
+
+.asd {
+  visibility: hidden;
 }

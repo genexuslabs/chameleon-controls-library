@@ -9,7 +9,8 @@ import {
   Prop,
   Watch
 } from "@stencil/core";
-import {
+
+import type {
   DropdownExpandedChangeEvent,
   DropdownHyperlinkClickEvent,
   DropdownItemActionableModel,
@@ -19,14 +20,23 @@ import {
   DropdownKeyboardActionResult,
   DropdownModel
 } from "./types";
+import type { ChPopoverAlign } from "../popover/types";
+
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
-// import { dropdownKeyEventsDictionary } from "./utils";
-import { ChPopoverAlign } from "../popover/types";
 import {
   DROPDOWN_ITEM_PARTS_DICTIONARY,
   DROPDOWN_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
+
+import { tokenMap } from "../../common/utils";
+import { dropdownKeyEventsDictionary } from "./internal/keyboard-actions";
+import { parseSubModel } from "./internal/parse-model";
+import {
+  collapseAllItems,
+  collapseSubTree,
+  expandFromRootToNode
+} from "./internal/update-expanded";
 import {
   DROPDOWN_RENDER_TAG_NAME,
   dropdownItemActionableIsExpandable,
@@ -35,14 +45,6 @@ import {
   getDropdownInfoInEvent,
   WINDOW_ID
 } from "./internal/utils";
-import {
-  collapseAllItems,
-  collapseSubTree,
-  expandFromRootToNode
-} from "./internal/update-expanded";
-import { parseSubModel } from "./internal/parse-model";
-import { tokenMap } from "../../common/utils";
-import { dropdownKeyEventsDictionary } from "./internal/keyboard-actions";
 
 @Component({
   tag: "ch-dropdown-render",
@@ -110,7 +112,7 @@ export class ChDropdownRender {
   @Prop() readonly model: DropdownModel | undefined;
   @Watch("model")
   modelChanged() {
-    this.#setExtendedModel(this.model);
+    this.#addMetadataToItems();
   }
 
   /**
@@ -380,11 +382,15 @@ export class ChDropdownRender {
     );
   };
 
-  #setExtendedModel = (model: DropdownModel) => parseSubModel(model, undefined);
+  #addMetadataToItems = () => {
+    if (this.model) {
+      parseSubModel(this.model, undefined);
+    }
+  };
 
   connectedCallback() {
     // TODO: Check if this code should be in the constructor
-    this.#setExtendedModel(this.model);
+    this.#addMetadataToItems();
 
     if (this.expanded) {
       this.#addCloseOnClickOutside();
@@ -424,7 +430,7 @@ export class ChDropdownRender {
           <slot />
         </button>
 
-        {this.expanded && (
+        {this.expanded && this.model && (
           <ch-popover
             role="list"
             id={WINDOW_ID}

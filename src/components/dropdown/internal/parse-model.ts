@@ -1,39 +1,40 @@
+import { MODEL_METADATA } from "../../../common/reserved-names";
 import {
-  DropdownItemModelExtended,
-  DropdownModel,
-  DropdownModelExtended
+  DropdownItemActionableModel,
+  DropdownItemModel,
+  DropdownItemModelMetadata,
+  DropdownModel
 } from "../types";
 import { dropdownItemIsActionable } from "./utils";
 
+export const addMetadataInDropdownItem = (
+  itemUIModel: DropdownItemModel,
+  parentItem: DropdownItemActionableModel | undefined
+) => {
+  itemUIModel[MODEL_METADATA] = {
+    parentItem
+  } satisfies DropdownItemModelMetadata;
+};
+
+export const getDropdownItemMetadata = (
+  itemUIModel: DropdownItemModel
+): DropdownItemModelMetadata => itemUIModel[MODEL_METADATA];
+
 export const parseSubModel = (
   parentModel: DropdownModel,
-  parentModelExtended: DropdownModelExtended,
-  parentItem: DropdownItemModelExtended | undefined
+  parentItem: DropdownItemActionableModel | undefined
 ) => {
   // For loop is the fastest iterator
   for (let index = 0; index < parentModel.length; index++) {
     const itemUIModel = parentModel[index];
 
+    addMetadataInDropdownItem(itemUIModel, parentItem);
+
     if (
       dropdownItemIsActionable(itemUIModel) &&
       itemUIModel.items !== undefined
     ) {
-      const subModelExtended: DropdownModelExtended = [];
-
-      const itemUIModelExtended: DropdownItemModelExtended = {
-        item: itemUIModel,
-        parentItem,
-        items: subModelExtended
-      };
-
-      parseSubModel(itemUIModel.items, subModelExtended, itemUIModelExtended);
-
-      parentModelExtended.push(itemUIModelExtended);
-    } else {
-      parentModelExtended.push({
-        item: itemUIModel,
-        parentItem
-      });
+      parseSubModel(itemUIModel.items, itemUIModel);
     }
   }
 };

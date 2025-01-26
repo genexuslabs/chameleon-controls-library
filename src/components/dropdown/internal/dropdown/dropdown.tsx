@@ -15,8 +15,9 @@ import {
   DROPDOWN_ITEM_EXPORT_PARTS,
   DROPDOWN_ITEM_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
-import { DropdownItemModelExtended } from "../../types";
+import { DropdownItemActionableModel } from "../../types";
 import { focusFirstDropdownItem } from "../utils";
+import { getDropdownItemMetadata } from "../parse-model";
 
 const SEPARATE_BY_SPACE_REGEX = /\s+/;
 
@@ -128,7 +129,7 @@ export class ChDropdown implements ComponentInterface {
    * Specifies the extended model of the control. This property is only needed
    * to know the UI Model on each event
    */
-  @Prop() readonly model!: DropdownItemModelExtended;
+  @Prop() readonly model!: DropdownItemActionableModel;
 
   /**
    * This attribute lets you specify if the control is nested in another
@@ -285,15 +286,17 @@ export class ChDropdown implements ComponentInterface {
   }
 
   componentDidRender() {
-    if (this.expanded && this.model.focusFirstItemAfterExpand) {
-      this.model.focusFirstItemAfterExpand = false;
+    const metadata = getDropdownItemMetadata(this.model);
+
+    if (this.expanded && metadata.focusFirstItemAfterExpand) {
+      metadata.focusFirstItemAfterExpand = false;
 
       // Wait until the first item is rendered
       requestAnimationFrame(() => focusFirstDropdownItem(this.el));
     }
 
-    if (!this.expanded && this.model.focusAfterCollapse) {
-      this.model.focusAfterCollapse = false;
+    if (!this.expanded && metadata.focusAfterCollapse) {
+      metadata.focusAfterCollapse = false;
       this.el.focus();
     }
   }

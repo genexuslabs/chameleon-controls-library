@@ -17,8 +17,7 @@ import {
   DropdownItemTypeSeparator,
   DropdownItemTypeSlot,
   DropdownKeyboardActionResult,
-  DropdownModel,
-  DropdownModelExtended
+  DropdownModel
 } from "./types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 // import { dropdownKeyEventsDictionary } from "./utils";
@@ -51,8 +50,6 @@ import { dropdownKeyEventsDictionary } from "./internal/keyboard-actions";
   shadow: true // Necessary to avoid focus capture
 })
 export class ChDropdownRender {
-  #modelExtended: DropdownModelExtended;
-
   // Refs
   #actionRef!: HTMLButtonElement;
   #popoverRef: HTMLChPopoverElement | undefined;
@@ -144,52 +141,45 @@ export class ChDropdownRender {
    */
   @Event() hyperlinkClick: EventEmitter<DropdownHyperlinkClickEvent>;
 
-  #renderActionItem = (
-    item: DropdownItemActionableModel,
-    index: number,
-    parentExtendedModel: DropdownModelExtended
-  ) => {
-    const itemUIModelExtended = parentExtendedModel[index];
-    const expandable = dropdownItemActionableIsExpandable(
-      itemUIModelExtended.item as DropdownItemActionableModel
-    );
+  #renderActionItem = (itemUIModel: DropdownItemActionableModel) => {
+    const expandable = dropdownItemActionableIsExpandable(itemUIModel);
 
     return (
       <ch-dropdown
-        blockAlign={item.itemsBlockAlign ?? "inside-start"}
-        caption={item.caption}
-        disabled={item.disabled}
+        blockAlign={itemUIModel.itemsBlockAlign ?? "inside-start"}
+        caption={itemUIModel.caption}
+        disabled={itemUIModel.disabled}
         endImgSrc={
           this.useGxRender
             ? fromGxImageToURL(
-                item.endImgSrc,
+                itemUIModel.endImgSrc,
                 this.gxSettings,
                 this.gxImageConstructor
               )
-            : item.endImgSrc
+            : itemUIModel.endImgSrc
         }
-        endImgType={item.endImgType ?? "background"}
+        endImgType={itemUIModel.endImgType ?? "background"}
         expandable={expandable}
-        expanded={item.expanded}
-        href={item.link?.url}
-        inlineAlign={item.itemsBlockAlign ?? "outside-end"}
-        model={itemUIModelExtended}
-        parts={item.parts}
-        shortcut={item.shortcut}
+        expanded={itemUIModel.expanded}
+        href={itemUIModel.link?.url}
+        inlineAlign={itemUIModel.itemsBlockAlign ?? "outside-end"}
+        model={itemUIModel}
+        parts={itemUIModel.parts}
+        shortcut={itemUIModel.shortcut}
         startImgSrc={
           this.useGxRender
             ? fromGxImageToURL(
-                item.startImgSrc,
+                itemUIModel.startImgSrc,
                 this.gxSettings,
                 this.gxImageConstructor
               )
-            : item.startImgSrc
+            : itemUIModel.startImgSrc
         }
-        startImgType={item.startImgType ?? "background"}
+        startImgType={itemUIModel.startImgType ?? "background"}
       >
         {expandable &&
-          item.expanded &&
-          this.#renderItems(itemUIModelExtended.items!)}
+          itemUIModel.expanded &&
+          this.#renderItems(itemUIModel.items)}
       </ch-dropdown>
     );
   };
@@ -203,13 +193,13 @@ export class ChDropdownRender {
     slot: item => <slot name={item.id} />
   };
 
-  #renderItems = (model: DropdownModelExtended) =>
-    model.map((extendedItem, index) =>
-      dropdownItemIsActionable(extendedItem.item)
-        ? this.#renderActionItem(extendedItem.item, index, model)
-        : this.#renderDictionary[extendedItem.item.type](
+  #renderItems = (model: DropdownModel) =>
+    model.map(itemUIModel =>
+      dropdownItemIsActionable(itemUIModel)
+        ? this.#renderActionItem(itemUIModel)
+        : this.#renderDictionary[itemUIModel.type](
             // TODO: Improve type inference
-            extendedItem.item as any
+            itemUIModel as any
           )
     );
 
@@ -231,15 +221,14 @@ export class ChDropdownRender {
       return;
     }
 
-    const modelToUpdateExpanded = dropdownInfo.model;
-    const item = modelToUpdateExpanded.item as DropdownItemActionableModel;
+    const itemUIModel = dropdownInfo.model;
 
     // If "click" the event is a PointerEvent
     if (type === "click") {
       // Clicked a hyperlink element
-      if (dropdownItemIsHyperlink(item)) {
+      if (dropdownItemIsHyperlink(itemUIModel)) {
         const eventInfo = this.hyperlinkClick.emit({
-          item,
+          item: itemUIModel,
           event: event as PointerEvent
         });
 
@@ -255,8 +244,8 @@ export class ChDropdownRender {
       }
 
       // Clicked a button element that is a leaf
-      if (!dropdownItemActionableIsExpandable(item)) {
-        const eventInfo = this.buttonClick.emit(item);
+      if (!dropdownItemActionableIsExpandable(itemUIModel)) {
+        const eventInfo = this.buttonClick.emit(itemUIModel);
 
         // Prevent button click and avoid closing the dropdown
         if (eventInfo.defaultPrevented) {
@@ -272,21 +261,21 @@ export class ChDropdownRender {
     }
 
     if (type === "mouseout") {
-      collapseSubTree(item);
+      collapseSubTree(itemUIModel);
 
       // TODO: Emit expandedChange event
     } else {
       collapseAllItems(this.model);
-      expandFromRootToNode(modelToUpdateExpanded);
+      expandFromRootToNode(itemUIModel);
 
-      const isExpanded = type === "mouseover" || item.expanded;
+      const isExpanded = type === "mouseover" || itemUIModel.expanded;
 
-      if (item.expanded !== isExpanded) {
-        item.expanded = isExpanded;
+      if (itemUIModel.expanded !== isExpanded) {
+        itemUIModel.expanded = isExpanded;
 
         // Only emit the event if the expanded value was changed
         this.expandedItemChange.emit({
-          item,
+          item: itemUIModel,
           expanded: isExpanded
         });
       }
@@ -332,11 +321,11 @@ export class ChDropdownRender {
         collapseAllItems(this.model);
         expandFromRootToNode(result.model);
       } else {
-        collapseSubTree(result.model.item as DropdownItemActionableModel);
+        collapseSubTree(result.model);
       }
 
       this.expandedItemChange.emit({
-        item: result.model.item as DropdownItemActionableModel,
+        item: result.model,
         expanded: result.newExpanded
       });
 
@@ -391,10 +380,7 @@ export class ChDropdownRender {
     );
   };
 
-  #setExtendedModel = (model: DropdownModel) => {
-    this.#modelExtended = [];
-    parseSubModel(model, this.#modelExtended, undefined);
-  };
+  #setExtendedModel = (model: DropdownModel) => parseSubModel(model, undefined);
 
   connectedCallback() {
     // TODO: Check if this code should be in the constructor
@@ -457,7 +443,7 @@ export class ChDropdownRender {
             onMouseOut={this.#handleDropdownItemMouseOut}
             ref={el => (this.#popoverRef = el)}
           >
-            {this.model !== undefined && this.#renderItems(this.#modelExtended)}
+            {this.model !== undefined && this.#renderItems(this.model)}
           </ch-popover>
         )}
       </Host>

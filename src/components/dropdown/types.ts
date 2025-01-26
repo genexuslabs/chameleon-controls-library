@@ -73,27 +73,20 @@ export type DropdownHyperlinkClickEvent = {
 };
 
 // - - - - - - - - - - - - - - - - - - - -
-//             Internal model
+//             Internal types
 // - - - - - - - - - - - - - - - - - - - -
-export type DropdownModelExtended = DropdownItemModelExtended[];
-
-export type DropdownItemModelExtended = {
-  item:
-    | DropdownItemActionableModel
-    | DropdownItemSeparatorModel
-    | DropdownItemSlotModel;
-  items?: DropdownModelExtended;
-  parentItem: DropdownItemModelExtended | undefined;
+export type DropdownItemModelMetadata = {
+  parentItem: DropdownItemActionableModel | undefined;
   focusFirstItemAfterExpand?: boolean;
   focusAfterCollapse?: boolean;
 };
 
 export type DropdownInfoInEvent = {
-  model: DropdownItemModelExtended;
+  model: DropdownItemActionableModel;
   ref: HTMLChDropdownElement;
 };
 
 export type DropdownKeyboardActionResult = {
   newExpanded: boolean;
-  model: DropdownItemModelExtended;
+  model: DropdownItemActionableModel;
 };

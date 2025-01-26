@@ -1,8 +1,5 @@
-import {
-  DropdownItemActionableModel,
-  DropdownItemModelExtended,
-  DropdownModel
-} from "../types";
+import { DropdownItemActionableModel, DropdownModel } from "../types";
+import { getDropdownItemMetadata } from "./parse-model";
 import { dropdownItemIsActionable } from "./utils";
 
 export const collapseAllItems = (model: DropdownModel) => {
@@ -29,13 +26,15 @@ export const collapseSubTree = (item: DropdownItemActionableModel) => {
 };
 
 export const expandFromRootToNode = (
-  itemUIModelExtended: DropdownItemModelExtended
+  itemUIModelExtended: DropdownItemActionableModel
 ) => {
   let parentUIModelExtended = itemUIModelExtended;
 
   while (parentUIModelExtended !== undefined) {
-    (parentUIModelExtended.item as DropdownItemActionableModel).expanded = true;
+    parentUIModelExtended.expanded = true;
 
-    parentUIModelExtended = parentUIModelExtended.parentItem;
+    parentUIModelExtended = getDropdownItemMetadata(
+      parentUIModelExtended
+    ).parentItem;
   }
 };

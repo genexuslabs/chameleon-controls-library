@@ -349,6 +349,27 @@ export const NAVIGATION_LIST_ITEM_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
+//            Paginator Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const PAGINATOR_PARTS_DICTIONARY = {
+  DISABLED: "disabled",
+  ITEMS_PER_PAGE: "items-per-page",
+  ITEMS_PER_PAGE__COMBO_BOX: "items-per-page__combo-box",
+  INFO: "info",
+  ELLIPSIS: "ellipsis",
+  INFO__TEXT: "info__text",
+  CONTROLS: "paginator_controls",
+  PREV: "prev__button",
+  NEXT: "next__button",
+  PAGES: "pages",
+  PAGE_ACTIVE: "page-active",
+  FIRST: "first__button",
+  LAST: "last__button",
+  GO_TO: "go-to",
+  GO_TO__INPUT: "go-to__input"
+} as const;
+
+// - - - - - - - - - - - - - - - - - - - -
 //            Radio item Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const RADIO_ITEM_PARTS_DICTIONARY = {

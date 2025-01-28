@@ -172,6 +172,7 @@ export type ChameleonStories = {
   image: ShowcaseStory<HTMLChImageElement>;
   "layout-splitter": ShowcaseStory<HTMLChLayoutSplitterElement>;
   "navigation-list": ShowcaseStory<HTMLChNavigationListRenderElement>;
+  "paginator-render": ShowcaseStory<HTMLChPaginatorRenderElement>;
   popover: ShowcaseStory<HTMLChPopoverElement>;
   qr: ShowcaseStory<HTMLChQrElement>;
   "radio-group": ShowcaseStory<HTMLChRadioGroupRenderElement>;

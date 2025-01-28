@@ -1,0 +1,20 @@
+@import "../../common/base";
+@import "../common/reset.scss";
+
+@include input-reset();
+@include button-reset(); // Should be placed before the box-sizing reset
+@include box-sizing();
+
+:host {
+  display: flex;
+}
+
+.pages {
+  display: flex;
+  align-items: center;
+  @include reset-list;
+}
+
+.form {
+  display: flex;
+}

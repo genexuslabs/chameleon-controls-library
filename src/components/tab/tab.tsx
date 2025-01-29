@@ -396,6 +396,18 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly showCaptions: boolean = true;
 
   /**
+   * `true` to render a slot named "tab-list-end" to project content at the
+   * end position of the tab-list ("after" the tab buttons).
+   */
+  @Prop() readonly showTabListEnd: boolean = false;
+
+  /**
+   * `true` to render a slot named "tab-list-start" to project content at the
+   * start position of the tab-list ("before" the tab buttons).
+   */
+  @Prop() readonly showTabListStart: boolean = false;
+
+  /**
    * `true` to enable sorting the tab buttons by dragging them in the tab-list.
    *
    * If `false`, the tab buttons can not be dragged out either.
@@ -916,6 +928,32 @@ export class ChTabRender implements DraggableView {
       />
     );
 
+  #renderTabListPosition = (
+    position: "start" | "end",
+    blockDirection: boolean,
+    startDirection: boolean
+  ) => {
+    const tabListPosition = `tab-list-${position}` as const;
+
+    return (
+      <div
+        key={tabListPosition}
+        class={tabListPosition}
+        part={tokenMap({
+          [TAB_PARTS_DICTIONARY.LIST_START]: position === "start",
+          [TAB_PARTS_DICTIONARY.LIST_END]: position === "end",
+          [this.tabListPosition]: true,
+          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+          [TAB_PARTS_DICTIONARY.START]: startDirection,
+          [TAB_PARTS_DICTIONARY.END]: !startDirection
+        })}
+      >
+        <slot name={tabListPosition} />
+      </div>
+    );
+  };
+
   #renderTabList = (thereAreShiftedElements: boolean) => {
     const blockDirection = isBlockDirection(this.tabListPosition);
     const startDirection = isStartDirection(this.tabListPosition);
@@ -931,6 +969,7 @@ export class ChTabRender implements DraggableView {
           "tab-list--block": blockDirection,
           "tab-list--inline": !blockDirection
         }}
+        // TODO: Add "DRAGGING" parts
         part={tokenMap({
           [TAB_PARTS_DICTIONARY.LIST]: true,
           [this.tabListPosition]: true,
@@ -1221,6 +1260,8 @@ export class ChTabRender implements DraggableView {
       return "";
     }
 
+    const blockDirection = isBlockDirection(this.tabListPosition);
+    const startDirection = isStartDirection(this.tabListPosition);
     const draggedIndex = this.draggedElementIndex;
     const draggedElement = this.model[draggedIndex];
     const thereAreShiftedElementsInPreview =
@@ -1234,12 +1275,19 @@ export class ChTabRender implements DraggableView {
           !this.tabButtonHidden ? `ch-tab--${this.tabListPosition}` : undefined
         }
       >
-        {!this.tabButtonHidden &&
-          this.#renderTabList(thereAreShiftedElementsInPreview)}
-        {this.#renderTabPages(
-          isBlockDirection(this.tabListPosition),
-          isStartDirection(this.tabListPosition)
-        )}
+        {!this.tabButtonHidden && [
+          this.showTabListStart &&
+            this.#renderTabListPosition(
+              "start",
+              blockDirection,
+              startDirection
+            ),
+          this.#renderTabList(thereAreShiftedElementsInPreview),
+          this.showTabListEnd &&
+            this.#renderTabListPosition("end", blockDirection, startDirection)
+        ]}
+
+        {this.#renderTabPages(blockDirection, startDirection)}
 
         {draggedIndex !== -1 && this.#renderDragPreview(draggedElement)}
       </Host>

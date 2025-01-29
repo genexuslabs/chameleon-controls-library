@@ -1003,7 +1003,7 @@ const ticketAdditionalInfo = (
         caption: priority,
         part: "priority",
         imgSrc:
-          "https://unpkg.com/@genexus/mercury@latest/dist/assets/icons/system/light/success.svg#enabled",
+          "https://unpkg.com/@genexus/mercury@0.11.0/dist/assets/icons/system/light/success.svg#enabled",
         imgType: "mask"
       }
     ]

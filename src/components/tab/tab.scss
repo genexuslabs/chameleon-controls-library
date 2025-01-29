@@ -34,22 +34,28 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :host(.ch-tab--block-start) {
   grid-template:
-    "list" max-content
-    "panel-container" 1fr / 1fr;
+    "list-start list list-end" max-content
+    "panel-container panel-container panel-container" 1fr / max-content 1fr max-content;
 }
 
 :host(.ch-tab--block-end) {
   grid-template:
-    "panel-container" 1fr
-    "list" max-content / 1fr;
+    "panel-container panel-container panel-container" 1fr
+    "list-start list list-end" max-content / max-content 1fr max-content;
 }
 
 :host(.ch-tab--inline-start) {
-  grid-template: "list panel-container" 1fr / max-content 1fr;
+  grid-template:
+    "list-start panel-container" max-content
+    "list panel-container" 1fr
+    "list-end panel-container" max-content / max-content 1fr;
 }
 
 :host(.ch-tab--inline-end) {
-  grid-template: "panel-container list" 1fr / 1fr max-content;
+  grid-template:
+    "panel-container list-start" max-content
+    "panel-container list" 1fr
+    "panel-container list-end" max-content / 1fr max-content;
 }
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -58,6 +64,20 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 .tab-list {
   grid-area: list;
   display: grid;
+
+  &-start {
+    grid-area: list-start;
+  }
+
+  &-end {
+    grid-area: list-end;
+  }
+
+  &-start,
+  &-end {
+    display: flex;
+    align-items: center;
+  }
 
   &--inline {
     grid-auto-flow: row;

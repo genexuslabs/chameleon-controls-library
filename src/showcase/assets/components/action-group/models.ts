@@ -17,7 +17,6 @@ export const modelMinimal: ActionGroupModel = [
         id: "item-2-2",
         startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
-        items: [],
         link: { url: "https://www.google.com.uy" },
         caption: "Google"
         // showSeparator: false
@@ -26,7 +25,6 @@ export const modelMinimal: ActionGroupModel = [
         id: "item-1-3",
         startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
-        items: [],
         caption: "Item 1-3"
         // showSeparator: false
       }
@@ -38,7 +36,6 @@ export const modelMinimal: ActionGroupModel = [
     id: "item-2",
     startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
     startImgType: START_IMG_TYPE,
-    items: [],
     link: { url: "https://www.google.com.uy" },
     caption: "Google"
     // showSeparator: false
@@ -62,7 +59,6 @@ export const modelMinimal: ActionGroupModel = [
             startImgType: START_IMG_TYPE,
             endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
             endImgType: END_IMG_TYPE,
-            items: [],
             caption: "Item 3-1-1"
             // showSeparator: false
           },
@@ -70,7 +66,6 @@ export const modelMinimal: ActionGroupModel = [
             id: "item-3-1-2",
             startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
             startImgType: START_IMG_TYPE,
-            items: [],
             link: { url: "https://www.google.com.uy" },
             caption: "Google"
             // showSeparator: false
@@ -79,7 +74,6 @@ export const modelMinimal: ActionGroupModel = [
             id: "item-3-1-3",
             startImgSrc: `${ASSETS_PREFIX}file.svg`,
             startImgType: START_IMG_TYPE,
-            items: [],
             caption: "Item 3-1-3"
             // showSeparator: false
           }
@@ -91,7 +85,6 @@ export const modelMinimal: ActionGroupModel = [
         id: "item-3-2",
         startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
-        items: [],
         link: { url: "https://www.google.com.uy" },
         caption: "Google"
         // showSeparator: false
@@ -100,7 +93,6 @@ export const modelMinimal: ActionGroupModel = [
         id: "item-3-3",
         startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
-        items: [],
         caption: "Item 3-3"
         // showSeparator: false
       }
@@ -133,7 +125,6 @@ export const modelMediumMinimal: ActionGroupModel = [
         startImgType: START_IMG_TYPE,
         endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
         endImgType: END_IMG_TYPE,
-        items: [],
         caption: "Item 1-1"
         // showSeparator: false
       },
@@ -142,7 +133,6 @@ export const modelMediumMinimal: ActionGroupModel = [
 
         startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
-        items: [],
         link: { url: "https://www.google.com.uy" },
         caption: "Google"
         // showSeparator: false
@@ -151,7 +141,6 @@ export const modelMediumMinimal: ActionGroupModel = [
         id: "item-2-3",
         startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
-        items: [],
         caption: "Item 3-3"
         // showSeparator: false
       }
@@ -428,6 +417,7 @@ export const GXWebModel: ActionGroupModel = [
     ]
   },
 
+  { type: "separator" },
   {
     caption: "Tools",
     // itemsPosition: "InsideStart_OutsideEnd",
@@ -436,5 +426,7 @@ export const GXWebModel: ActionGroupModel = [
         caption: "Sketch Import"
       }
     ]
-  }
+  },
+
+  { id: "pepe", type: "slot" }
 ];

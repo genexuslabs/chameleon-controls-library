@@ -1,3 +1,7 @@
+@import "../../common/_base";
+
+@include box-sizing();
+
 :host {
   display: grid;
 }
@@ -17,14 +21,23 @@
   grid-auto-flow: column;
   grid-auto-columns: max-content;
   contain: inline-size;
+}
 
-  // WA to test
-  gap: 16px;
+hr {
+  display: grid;
+  inline-size: 1px;
+  margin: 0;
+  background-color: color-mix(in srgb, currentColor 25%, transparent);
+  pointer-events: none;
 }
 
 .marker {
   display: grid;
   align-items: center;
+
+  &--hidden {
+    visibility: hidden;
+  }
 }
 
 // .ch-dropdown-separator {
@@ -41,7 +54,3 @@
 //   background-color: color-mix(in srgb, currentColor 25%, transparent);
 //   pointer-events: none;
 // }
-
-.asd {
-  visibility: hidden;
-}

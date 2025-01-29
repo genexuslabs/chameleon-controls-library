@@ -15,6 +15,14 @@ export type ActionGroupActionableModel = DropdownItemActionableModel;
 export type ActionGroupSeparatorModel = DropdownItemSeparatorModel;
 export type ActionGroupSlotModel = DropdownItemSlotModel;
 
+// - - - - - - - - - - - - - - - - - - - -
+//             Internal types
+// - - - - - - - - - - - - - - - - - - - -
+export type ActionGroupDisplayedMarkers = {
+  id: string;
+  displayed: boolean;
+  size?: `${number}px`;
+};
 // type ReducedDropdownItemModel = Omit<
 //   DropdownItemActionableModel,
 //   "items" | "class"

@@ -18,6 +18,7 @@
 hr {
   display: grid;
   block-size: 1px;
+  margin: 0;
   background-color: color-mix(in srgb, currentColor 25%, transparent);
   pointer-events: none;
 }

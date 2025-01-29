@@ -1,22 +1,20 @@
 import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
-import { ActionGroupItemModel, ActionGroupModel } from "./types";
-import { ItemsOverflowBehavior } from "./internal/action-group/types";
+import type { ActionGroupDisplayedMarkers, ActionGroupModel } from "./types";
+import type { ItemsOverflowBehavior } from "./internal/action-group/types";
 // import { fromGxImageToURL } from "../tree-view/genexus-implementation";
-// import {
-//   ACTION_GROUP_EXPORT_PARTS
-//   // DROPDOWN_ITEM_EXPORT_PARTS
-// } from "../../common/reserved-names";
+
 import {
-  dropdownItemActionableIsExpandable,
-  dropdownItemIsActionable
-} from "../dropdown/internal/utils";
-import { DROPDOWN_ITEM_EXPORT_PARTS } from "../../common/reserved-names";
+  ACTION_GROUP_PARTS_DICTIONARY,
+  DROPDOWN_ITEM_EXPORT_PARTS
+} from "../../common/reserved-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
+import { MARKER_CLASS_SELECTOR, renderItems } from "./renders";
+import { tokenMap } from "../../common/utils";
+import { ChPopoverAlign } from "../popover/types";
 
 // const FLOATING_POINT_ERROR = 1;
 
 const INTERSECTION_OPTIONS: IntersectionObserverInit = { threshold: 1 };
-const EMPTY_DROPDOWN = undefined;
 
 @Component({
   tag: "ch-action-group-render",
@@ -29,7 +27,7 @@ export class ChActionGroupRender {
   #shouldCheckResponsiveCollapseWatcher = true;
 
   // Responsive collapse variables
-  #displayedMarkers: boolean[] | undefined;
+  #displayedMarkers: ActionGroupDisplayedMarkers[] | undefined;
   #responsiveActionsWatcher: IntersectionObserver | undefined;
   #updateActionsRAF: SyncWithRAF | undefined; // Don't allocate memory until needed when dragging
 
@@ -99,17 +97,27 @@ export class ChActionGroupRender {
   }
 
   /**
-   * This attribute lets you specify the label for the more actions button.
+   * This property lets you specify the label for the more actions button.
    * Important for accessibility.
    */
-  @Prop() readonly moreActionsAccessibleName: string = "Show options";
+  @Prop() readonly moreActionsAccessibleName: string = "Show more actions";
 
-  // /**
-  //  * Specifies the position of the dropdown section that is placed relative to
-  //  * the more actions button.
-  //  */
-  // @Prop() readonly moreActionsDropdownPosition: DropdownPosition =
-  //   "InsideStart_OutsideEnd";
+  /**
+   * Specifies the block alignment of the more actions dropdown that is
+   * placed relative to the "more actions" button.
+   */
+  @Prop() readonly moreActionsBlockAlign: ChPopoverAlign = "outside-end";
+
+  /**
+   * This attribute lets you specify the caption for the more actions button.
+   */
+  @Prop() readonly moreActionsCaption: string | undefined;
+
+  /**
+   * Specifies the inline alignment of the more actions dropdown that is
+   * placed relative to the "more actions" button.
+   */
+  @Prop() readonly moreActionsInlineAlign: ChPopoverAlign = "inside-start";
 
   // /**
   //  * Determine if the dropdown section should be opened when the expandable
@@ -331,50 +339,12 @@ export class ChActionGroupRender {
   //   this.moreActionsButtonWasExpanded = true;
   // };
 
-  #renderItem = (item: ActionGroupItemModel, index: number) => {
-    const markerId = this.#isResponsiveCollapse ? index.toString() : undefined;
-    const markerClass = this.#isResponsiveCollapse ? "marker" : undefined;
-
-    if (dropdownItemIsActionable(item)) {
-      return dropdownItemActionableIsExpandable(item) ? (
-        <ch-dropdown-render
-          role="listitem"
-          id={markerId}
-          class={markerClass}
-          exportparts={DROPDOWN_ITEM_EXPORT_PARTS}
-          blockAlign={item.itemsBlockAlign ?? "outside-end"}
-          inlineAlign={item.itemsInlineAlign ?? "inside-start"}
-          model={this.#itemIsVisible(index) ? item.items : EMPTY_DROPDOWN}
-        >
-          {item.caption}
-        </ch-dropdown-render>
-      ) : (
-        <button id={markerId} class={markerClass} type="button">
-          {item.caption}
-        </button>
-      );
-    }
-
-    return item.type === "separator" ? (
-      <hr id={markerId} class={markerClass} />
-    ) : (
-      <slot
-        name={item.id}
-        // @ts-expect-error slots can include global attributes (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot#attributes)
-        // This error does not make any sense
-        id={markerId}
-        class={markerClass}
-      />
-    );
-  };
-
-  #itemIsVisible = (index: number) =>
-    !this.#isResponsiveCollapse ||
-    index + this.collapsedItems < this.model.length;
-
   #removeOrInitializeMarkersVisibility = () => {
     this.#displayedMarkers = this.#isResponsiveCollapse
-      ? this.model?.map(() => true) ?? []
+      ? this.model?.map((_, index) => ({
+          id: index.toString(),
+          displayed: true
+        })) ?? []
       : undefined;
   };
 
@@ -386,7 +356,6 @@ export class ChActionGroupRender {
         this.model.length - this.collapsedItems
       );
     }
-    console.log("COLLAPSED MODEL", this.#collapsedModel);
   };
 
   // - - - - - - - - - - - - - - - - - - - -
@@ -403,7 +372,15 @@ export class ChActionGroupRender {
     this.#responsiveActionsWatcher ??= new IntersectionObserver(entries => {
       // Update the visibility of each entry
       entries.forEach(entry => {
-        this.#displayedMarkers[Number(entry.target.id)] = entry.isIntersecting;
+        const itemId = Number(entry.target.id);
+
+        if (this.model[itemId].type === "slot") {
+          this.#displayedMarkers[itemId].size = `${
+            (entry.target as HTMLSlotElement).offsetWidth
+          }px`;
+        }
+
+        this.#displayedMarkers[itemId].displayed = entry.isIntersecting;
       });
 
       // Queue a task to update the displayed actions in the next frame
@@ -412,7 +389,7 @@ export class ChActionGroupRender {
 
     // Observe the actions
     this.#actionsContainerRef
-      .querySelectorAll(".marker")
+      .querySelectorAll(MARKER_CLASS_SELECTOR)
       .forEach(action => this.#responsiveActionsWatcher.observe(action));
   };
 
@@ -423,7 +400,7 @@ export class ChActionGroupRender {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #updateDisplayedActions = () => {
     const firstItemIndexThatIsNotVisible = this.#displayedMarkers.findIndex(
-      markerIsDisplayed => !markerIsDisplayed
+      markerIsDisplayed => !markerIsDisplayed.displayed
     );
 
     console.log(
@@ -483,14 +460,17 @@ export class ChActionGroupRender {
         {this.#isResponsiveCollapse && this.collapsedItems !== 0 && (
           <ch-dropdown-render
             exportparts={DROPDOWN_ITEM_EXPORT_PARTS}
-            // blockAlign={item.itemsBlockAlign ?? "outside-end"}
-            // inlineAlign={item.itemsInlineAlign ?? "inside-start"}
-
-            blockAlign="outside-end"
-            inlineAlign="inside-start"
+            blockAlign={this.moreActionsBlockAlign}
+            inlineAlign={this.moreActionsInlineAlign}
             model={this.#collapsedModel}
           >
-            Hello
+            {this.moreActionsCaption}
+
+            {this.#collapsedModel.map(item =>
+              item.type === "slot" ? (
+                <slot slot={item.id} name={item.id} />
+              ) : undefined
+            )}
           </ch-dropdown-render>
         )}
 
@@ -499,9 +479,22 @@ export class ChActionGroupRender {
             content: true,
             "responsive-collapse": this.#isResponsiveCollapse
           }}
+          part={tokenMap({
+            [ACTION_GROUP_PARTS_DICTIONARY.ACTIONS_CONTAINER]: true,
+            [ACTION_GROUP_PARTS_DICTIONARY.ADD_SCROLL]:
+              this.itemsOverflowBehavior === "add-scroll",
+            [ACTION_GROUP_PARTS_DICTIONARY.MULTILINE]:
+              this.itemsOverflowBehavior === "multiline",
+            [ACTION_GROUP_PARTS_DICTIONARY.RESPONSIVE_COLLAPSE]:
+              this.itemsOverflowBehavior === "responsive-collapse"
+          })}
           ref={el => (this.#actionsContainerRef = el)}
         >
-          {this.model.map(this.#renderItem)}
+          {renderItems(
+            this.model,
+            this.#isResponsiveCollapse,
+            this.#displayedMarkers
+          )}
         </ul>
       </Host>
     );

@@ -199,7 +199,16 @@ export class ChDropdownRender {
       model: DropdownItemTypeMapping[key]
     ) => any;
   } = {
-    separator: item => <hr key={item.id} part={item.part} />,
+    separator: item => (
+      <hr
+        key={item.id}
+        part={tokenMap({
+          [item.id]: !!item.id,
+          [DROPDOWN_ITEM_PARTS_DICTIONARY.SEPARATOR]: true,
+          [item.part]: !!item.part
+        })}
+      />
+    ),
     slot: item => <slot name={item.id} />
   };
 

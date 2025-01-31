@@ -4,8 +4,13 @@ import type {
 } from "./types";
 import { dropdownItemIsActionable } from "../dropdown/internal/utils";
 import { DropdownImagePathCallback, DropdownModel } from "../dropdown/types";
-import { DROPDOWN_ITEM_EXPORT_PARTS } from "../../common/reserved-names";
+import {
+  ACTION_GROUP_PARTS_DICTIONARY,
+  DROPDOWN_ITEM_EXPORT_PARTS,
+  DROPDOWN_ITEM_PARTS_DICTIONARY
+} from "../../common/reserved-names";
 import { h } from "@stencil/core";
+import { tokenMap } from "../../common/utils";
 
 export const MARKER_CLASS = "marker";
 export const MARKER_HIDDEN_CLASS = `${MARKER_CLASS}--hidden`;
@@ -47,7 +52,17 @@ const renderItem = (
 
   if (item.type === "separator") {
     return (
-      <hr aria-orientation="vertical" id={marker?.id} class={markerClasses} />
+      <hr
+        aria-orientation="vertical"
+        id={marker?.id}
+        class={markerClasses}
+        part={tokenMap({
+          [item.id]: !!item.id,
+          [DROPDOWN_ITEM_PARTS_DICTIONARY.SEPARATOR]: true,
+          [ACTION_GROUP_PARTS_DICTIONARY.VERTICAL]: true,
+          [item.part]: !!item.part
+        })}
+      />
     );
   }
 

@@ -1,4 +1,4 @@
-import { ImageRender } from "../../common/types";
+import { GxImageMultiState, ImageRender } from "../../common/types";
 import { ChPopoverAlign } from "../popover/types";
 
 export type DropdownModel = DropdownItemModel[];
@@ -71,6 +71,11 @@ export type DropdownHyperlinkClickEvent = {
   event: PointerEvent;
   item: DropdownItemActionableModel;
 };
+
+export type DropdownImagePathCallback = (
+  item: DropdownItemActionableModel,
+  iconDirection: "start" | "end"
+) => GxImageMultiState | undefined;
 
 // - - - - - - - - - - - - - - - - - - - -
 //             Internal types

@@ -3,7 +3,7 @@ import type {
   ActionGroupItemModel
 } from "./types";
 import { dropdownItemIsActionable } from "../dropdown/internal/utils";
-import { DropdownModel } from "../dropdown/types";
+import { DropdownImagePathCallback, DropdownModel } from "../dropdown/types";
 import { DROPDOWN_ITEM_EXPORT_PARTS } from "../../common/reserved-names";
 import { h } from "@stencil/core";
 
@@ -16,7 +16,9 @@ const EMPTY_DROPDOWN = undefined;
 const renderItem = (
   item: ActionGroupItemModel,
   itemIsVisible: boolean,
-  marker: ActionGroupDisplayedMarkers | undefined
+  marker: ActionGroupDisplayedMarkers | undefined,
+  disabled: boolean,
+  getImagePathCallback?: DropdownImagePathCallback
 ) => {
   const markerClasses = marker
     ? {
@@ -31,6 +33,8 @@ const renderItem = (
         role="listitem"
         id={marker?.id}
         class={markerClasses}
+        disabled={disabled}
+        getImagePathCallback={getImagePathCallback}
         exportparts={DROPDOWN_ITEM_EXPORT_PARTS}
         blockAlign={item.itemsBlockAlign ?? "outside-end"}
         inlineAlign={item.itemsInlineAlign ?? "inside-start"}
@@ -69,12 +73,16 @@ const itemIsVisible = (
 export const renderItems = (
   model: DropdownModel,
   responsiveCollapse: boolean,
-  displayedMarkers: ActionGroupDisplayedMarkers[] | undefined
+  displayedMarkers: ActionGroupDisplayedMarkers[] | undefined,
+  disabled: boolean,
+  getImagePathCallback?: DropdownImagePathCallback
 ) =>
   model.map((item, index) =>
     renderItem(
       item,
       itemIsVisible(responsiveCollapse, displayedMarkers, index),
-      displayedMarkers ? displayedMarkers[index] : undefined
+      displayedMarkers ? displayedMarkers[index] : undefined,
+      disabled,
+      getImagePathCallback
     )
   );

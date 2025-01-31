@@ -13,6 +13,7 @@ import {
 import type {
   DropdownExpandedChangeEvent,
   DropdownHyperlinkClickEvent,
+  DropdownImagePathCallback,
   DropdownItemActionableModel,
   DropdownItemTypeMapping,
   DropdownItemTypeSeparator,
@@ -76,6 +77,12 @@ export class ChDropdownRender {
    * (for example, click event).
    */
   @Prop() readonly disabled: boolean = false;
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * startImgSrc or endImgSrc (of an item) needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: DropdownImagePathCallback;
 
   /**
    * `true` to expand the dropdown window.
@@ -150,7 +157,7 @@ export class ChDropdownRender {
       <ch-dropdown
         blockAlign={itemUIModel.itemsBlockAlign ?? "inside-start"}
         caption={itemUIModel.caption}
-        disabled={itemUIModel.disabled}
+        disabled={itemUIModel.disabled ?? this.disabled}
         endImgSrc={
           this.useGxRender
             ? fromGxImageToURL(
@@ -160,9 +167,10 @@ export class ChDropdownRender {
               )
             : itemUIModel.endImgSrc
         }
-        endImgType={itemUIModel.endImgType ?? "background"}
+        endImgType={itemUIModel.endImgType}
         expandable={expandable}
         expanded={itemUIModel.expanded}
+        getImagePathCallback={this.getImagePathCallback}
         href={itemUIModel.link?.url}
         inlineAlign={itemUIModel.itemsBlockAlign ?? "outside-end"}
         model={itemUIModel}
@@ -177,7 +185,7 @@ export class ChDropdownRender {
               )
             : itemUIModel.startImgSrc
         }
-        startImgType={itemUIModel.startImgType ?? "background"}
+        startImgType={itemUIModel.startImgType}
       >
         {expandable &&
           itemUIModel.expanded &&

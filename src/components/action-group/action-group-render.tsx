@@ -11,6 +11,7 @@ import { SyncWithRAF } from "../../common/sync-with-frames";
 import { MARKER_CLASS_SELECTOR, renderItems } from "./renders";
 import { tokenMap } from "../../common/utils";
 import { ChPopoverAlign } from "../popover/types";
+import { DropdownImagePathCallback } from "../dropdown/types";
 
 // const FLOATING_POINT_ERROR = 1;
 
@@ -50,6 +51,12 @@ export class ChActionGroupRender {
    * (for example, click event).
    */
   @Prop() readonly disabled: boolean = false;
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * startImgSrc or endImgSrc (of an item) needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: DropdownImagePathCallback;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -403,11 +410,6 @@ export class ChActionGroupRender {
       markerIsDisplayed => !markerIsDisplayed.displayed
     );
 
-    console.log(
-      "firstItemIndexThatIsNotVisible",
-      firstItemIndexThatIsNotVisible
-    );
-
     // All items are visible
     if (firstItemIndexThatIsNotVisible === -1) {
       this.collapsedItems = 0;
@@ -461,6 +463,8 @@ export class ChActionGroupRender {
           <ch-dropdown-render
             exportparts={DROPDOWN_ITEM_EXPORT_PARTS}
             blockAlign={this.moreActionsBlockAlign}
+            disabled={this.disabled}
+            getImagePathCallback={this.getImagePathCallback}
             inlineAlign={this.moreActionsInlineAlign}
             model={this.#collapsedModel}
           >
@@ -493,7 +497,9 @@ export class ChActionGroupRender {
           {renderItems(
             this.model,
             this.#isResponsiveCollapse,
-            this.#displayedMarkers
+            this.#displayedMarkers,
+            this.disabled,
+            this.getImagePathCallback
           )}
         </ul>
       </Host>

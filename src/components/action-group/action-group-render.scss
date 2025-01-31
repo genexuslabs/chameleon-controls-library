@@ -28,6 +28,7 @@ hr {
   inline-size: 1px;
   margin: 0;
   background-color: color-mix(in srgb, currentColor 25%, transparent);
+  border: unset;
   pointer-events: none;
 }
 

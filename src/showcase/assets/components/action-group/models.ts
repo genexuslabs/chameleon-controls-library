@@ -232,7 +232,7 @@ export const GXWebModel: ActionGroupModel = [
             caption: "New Knowledge Base",
             // subActionClass: "dropdown-item dropdown-item-web",
             shortcut: "Ctrl+Alt+Shift+N",
-            startImgSrc: "assets/icons/knowledge-base.svg"
+            startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
           },
           {
             caption: "New Object",
@@ -262,14 +262,14 @@ export const GXWebModel: ActionGroupModel = [
         // subActionClass: "dropdown-item dropdown-item-web",
 
         shortcut: "Ctrl+S",
-        startImgSrc: "assets/icons/save.svg"
+        startImgSrc: `${ASSETS_PREFIX}save.svg`
       },
       {
         caption: "Save All",
         // subActionClass: "dropdown-item dropdown-item-web",
 
         shortcut: "Ctrl+Shift+S",
-        startImgSrc: "assets/icons/save-all.svg"
+        startImgSrc: `${ASSETS_PREFIX}save-all.svg`
       }
     ]
   },
@@ -281,7 +281,7 @@ export const GXWebModel: ActionGroupModel = [
       {
         caption: "Domains",
         // subActionClass: "dropdown-item dropdown-item-web",
-        startImgSrc: "assets/icons/domain.svg"
+        startImgSrc: `${ASSETS_PREFIX}domain.svg`
       },
       {
         caption: "Launchpad"

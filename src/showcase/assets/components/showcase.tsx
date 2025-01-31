@@ -75,6 +75,7 @@ import {
   USAGE_STENCIL_JS
 } from "./renders";
 import { findComponentMetadataUsingURLHash } from "./pages";
+import { getDropdownImagePathCallback } from "./dropdown/models";
 
 const SHOWCASE_STYLES: ThemeModel = [
   {
@@ -122,6 +123,7 @@ registryProperty("getImagePathCallback", {
   "ch-accordion-render": getAccordionPathCallback,
   "ch-checkbox": getImagePathCallbackEdit,
   "ch-combo-box-render": getComboBoxImagePathCallback,
+  "ch-dropdown-render": getDropdownImagePathCallback,
   "ch-edit": getImagePathCallbackEdit,
   "ch-image": getImagePathCallbackImage,
   "ch-tree-view-render": getImagePathCallbackTreeView

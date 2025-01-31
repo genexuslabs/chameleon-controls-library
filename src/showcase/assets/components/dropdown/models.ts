@@ -1,21 +1,62 @@
-import { DropdownModel } from "../../../../components/dropdown/types";
+import type {
+  DropdownImagePathCallback,
+  DropdownModel
+} from "../../../../components/dropdown/types";
 
 const START_IMG_TYPE = "background";
 const END_IMG_TYPE = "background";
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
+
+export const getDropdownImagePathCallback: DropdownImagePathCallback = (
+  item,
+  iconDirection
+) => {
+  if (
+    (iconDirection === "start" && item.startImgSrc === MODULE_ICON) ||
+    (iconDirection === "end" && item.endImgSrc === MODULE_ICON)
+  ) {
+    return {
+      base: "var(--icon-module-base)",
+      active: "var(--icon-module-active)",
+      hover: "var(--icon-module-hover)",
+      disabled: "var(--icon-module-disabled)",
+      selected: "var(--icon-stencil-hover)"
+    };
+  }
+
+  if (
+    (iconDirection === "start" && item.startImgSrc === FOLDER_ICON) ||
+    (iconDirection === "end" && item.endImgSrc === FOLDER_ICON)
+  ) {
+    return {
+      base: "var(--icon-folder-base)",
+      active: "var(--icon-folder-active)",
+      hover: "var(--icon-folder-hover)",
+      disabled: "var(--icon-folder-disabled)",
+      selected: "var(--icon-stencil-hover)"
+    };
+  }
+
+  return {
+    base: iconDirection === "start" ? item.startImgSrc : item.endImgSrc
+  };
+};
+
 export const simpleModel1: DropdownModel = [
   {
     id: "item-1",
-    startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+    startImgSrc: MODULE_ICON,
     startImgType: START_IMG_TYPE,
     endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
     endImgType: END_IMG_TYPE,
     items: [
       {
         id: "item-2-2",
-        startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
         link: { url: "https://www.google.com.uy" },
         caption: "Google"
@@ -23,14 +64,14 @@ export const simpleModel1: DropdownModel = [
       },
       {
         id: "item-1-3",
-        startImgSrc: `${ASSETS_PREFIX}file.svg`,
+        startImgSrc: FOLDER_ICON,
         startImgType: START_IMG_TYPE,
         caption: "Item 1-3"
         // showSeparator: false
       },
       {
         id: "item-1-4",
-        startImgSrc: `${ASSETS_PREFIX}file.svg`,
+        startImgSrc: FOLDER_ICON,
         startImgType: START_IMG_TYPE,
         disabled: true,
         caption: "Item 1-4 (disabled)"
@@ -49,7 +90,7 @@ export const simpleModel1: DropdownModel = [
   },
   {
     id: "item-2",
-    startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
     startImgType: START_IMG_TYPE,
     link: { url: "https://www.google.com.uy" },
     caption: "Google"
@@ -63,7 +104,7 @@ export const simpleModel1: DropdownModel = [
     items: [
       {
         id: "item-3-1",
-        startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
         endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
         endImgType: END_IMG_TYPE,
@@ -71,7 +112,7 @@ export const simpleModel1: DropdownModel = [
           {
             id: "item-3-1-1",
 
-            startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+            startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
             startImgType: START_IMG_TYPE,
             endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
             endImgType: END_IMG_TYPE,
@@ -80,7 +121,7 @@ export const simpleModel1: DropdownModel = [
           },
           {
             id: "item-3-1-2",
-            startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+            startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
             startImgType: START_IMG_TYPE,
             link: { url: "https://www.google.com.uy" },
             caption: "Google"
@@ -99,7 +140,7 @@ export const simpleModel1: DropdownModel = [
       },
       {
         id: "item-3-2",
-        startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
         link: { url: "https://www.google.com.uy" },
         caption: "Google"
@@ -122,7 +163,7 @@ export const simpleModel1: DropdownModel = [
 export const simpleModel2: DropdownModel = [
   {
     id: "item-1",
-    startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
     startImgType: START_IMG_TYPE,
     endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
     endImgType: END_IMG_TYPE,
@@ -132,12 +173,12 @@ export const simpleModel2: DropdownModel = [
   },
   {
     id: "item-2",
-    startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
     startImgType: START_IMG_TYPE,
     items: [
       {
         id: "item-2-1",
-        startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
         endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
         endImgType: END_IMG_TYPE,
@@ -147,7 +188,7 @@ export const simpleModel2: DropdownModel = [
       {
         id: "item-2-2",
 
-        startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
         link: { url: "https://www.google.com.uy" },
         caption: "Google"
@@ -202,7 +243,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
 
       subSubEagerLargeModel.push({
         id: subSubModelId,
-        startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
         endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
         endImgType: END_IMG_TYPE,
@@ -214,7 +255,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
 
     subEagerLargeModel.push({
       id: subModelId,
-      startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+      startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
       startImgType: START_IMG_TYPE,
       endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
       endImgType: END_IMG_TYPE,
@@ -226,7 +267,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
   }
 
   eagerLargeModel.push({
-    startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
     startImgType: START_IMG_TYPE,
     endImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
     endImgType: END_IMG_TYPE,

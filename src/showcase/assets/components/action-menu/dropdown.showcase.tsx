@@ -8,14 +8,14 @@ import {
 } from "./models";
 import { kbExplorerModel } from "../tree-view/models";
 
-const state: Partial<HTMLChDropdownRenderElement> = {};
+const state: Partial<HTMLChActionMenuRenderElement> = {};
 
 const render = () => (
   <div class="dropdown-test-main-wrapper">
     <fieldset class="fieldset-test">
       <legend class="label field-legend-test">Primary</legend>
 
-      <ch-dropdown-render
+      <ch-action-menu-render
         class="dropdown dropdown-primary"
         blockAlign={state.blockAlign}
         buttonAccessibleName={state.buttonAccessibleName}
@@ -30,13 +30,13 @@ const render = () => (
           model={kbExplorerModel}
           style={{ minBlockSize: "300px", minInlineSize: "300px" }}
         ></ch-tree-view-render>
-      </ch-dropdown-render>
+      </ch-action-menu-render>
     </fieldset>
 
     <fieldset class="fieldset-test">
       <legend class="label field-legend-test">Secondary</legend>
 
-      <ch-dropdown-render
+      <ch-action-menu-render
         class="dropdown dropdown-secondary"
         blockAlign={state.blockAlign}
         buttonAccessibleName={state.buttonAccessibleName}
@@ -51,12 +51,12 @@ const render = () => (
           model={kbExplorerModel}
           style={{ minBlockSize: "300px", minInlineSize: "300px" }}
         ></ch-tree-view-render>
-      </ch-dropdown-render>
+      </ch-action-menu-render>
     </fieldset>
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChDropdownRenderElement> =
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionMenuRenderElement> =
   [
     {
       caption: "Models",
@@ -144,7 +144,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChDropdownRenderEle
     }
   ];
 
-export const dropdownShowcaseStory: ShowcaseStory<HTMLChDropdownRenderElement> =
+export const actionMenuShowcaseStory: ShowcaseStory<HTMLChActionMenuRenderElement> =
   {
     properties: showcaseRenderProperties,
     render: render,

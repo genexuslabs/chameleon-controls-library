@@ -5,13 +5,13 @@ import type { ItemsOverflowBehavior } from "./internal/action-group/types";
 
 import {
   ACTION_GROUP_PARTS_DICTIONARY,
-  DROPDOWN_ITEM_EXPORT_PARTS
+  ACTION_MENU_ITEM_EXPORT_PARTS
 } from "../../common/reserved-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { MARKER_CLASS_SELECTOR, renderItems } from "./renders";
 import { tokenMap } from "../../common/utils";
 import { ChPopoverAlign } from "../popover/types";
-import { DropdownImagePathCallback } from "../dropdown/types";
+import { ActionMenuImagePathCallback } from "../action-menu/types";
 
 // const FLOATING_POINT_ERROR = 1;
 
@@ -56,7 +56,7 @@ export class ChActionGroupRender {
    * This property specifies a callback that is executed when the path for an
    * startImgSrc or endImgSrc (of an item) needs to be resolved.
    */
-  @Prop() readonly getImagePathCallback?: DropdownImagePathCallback;
+  @Prop() readonly getImagePathCallback?: ActionMenuImagePathCallback;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -461,7 +461,7 @@ export class ChActionGroupRender {
       >
         {this.#isResponsiveCollapse && this.collapsedItems !== 0 && (
           <ch-dropdown-render
-            exportparts={DROPDOWN_ITEM_EXPORT_PARTS}
+            exportparts={ACTION_MENU_ITEM_EXPORT_PARTS}
             blockAlign={this.moreActionsBlockAlign}
             disabled={this.disabled}
             getImagePathCallback={this.getImagePathCallback}

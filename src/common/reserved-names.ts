@@ -247,6 +247,34 @@ export const ACTION_LIST_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
+//            Action Menu Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const ACTION_MENU_ITEM_PARTS_DICTIONARY = {
+  CONTENT: "content",
+  SHORTCUT: "shortcut",
+  ACTION: "action",
+  BUTTON: "button",
+  LINK: "link",
+  WINDOW: "window",
+  SEPARATOR: "separator",
+
+  // - - - - - - - - States - - - - - - - -
+  EXPANDABLE: "expandable", // ACTION
+  EXPANDED: "expanded", // ACTION
+  COLLAPSED: "collapsed", // ACTION
+  DISABLED: "disabled" // ACTION
+} as const;
+
+export const ACTION_MENU_PARTS_DICTIONARY = {
+  EXPANDABLE_BUTTON: "expandable-button"
+};
+
+export const ACTION_MENU_ITEM_EXPORT_PARTS = joinParts(
+  ACTION_MENU_ITEM_PARTS_DICTIONARY
+);
+export const ACTION_MENU_EXPORT_PARTS = joinParts(ACTION_MENU_PARTS_DICTIONARY);
+
+// - - - - - - - - - - - - - - - - - - - -
 //             Combo Box Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const COMBO_BOX_PARTS_DICTIONARY = {
@@ -266,34 +294,6 @@ export const COMBO_BOX_PARTS_DICTIONARY = {
 } as const;
 
 export const COMBO_BOX_EXPORT_PARTS = joinParts(COMBO_BOX_PARTS_DICTIONARY);
-
-// - - - - - - - - - - - - - - - - - - - -
-//             Dropdown Parts
-// - - - - - - - - - - - - - - - - - - - -
-export const DROPDOWN_ITEM_PARTS_DICTIONARY = {
-  CONTENT: "content",
-  SHORTCUT: "shortcut",
-  ACTION: "action",
-  BUTTON: "button",
-  LINK: "link",
-  WINDOW: "window",
-  SEPARATOR: "separator",
-
-  // - - - - - - - - States - - - - - - - -
-  EXPANDABLE: "expandable", // ACTION
-  EXPANDED: "expanded", // ACTION
-  COLLAPSED: "collapsed", // ACTION
-  DISABLED: "disabled" // ACTION
-} as const;
-
-export const DROPDOWN_PARTS_DICTIONARY = {
-  EXPANDABLE_BUTTON: "expandable-button"
-};
-
-export const DROPDOWN_ITEM_EXPORT_PARTS = joinParts(
-  DROPDOWN_ITEM_PARTS_DICTIONARY
-);
-export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Edit Parts

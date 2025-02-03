@@ -21,54 +21,54 @@ import type {
 } from "../../../../common/types";
 import {
   DISABLED_CLASS,
-  DROPDOWN_ITEM_EXPORT_PARTS,
-  DROPDOWN_ITEM_PARTS_DICTIONARY
+  ACTION_MENU_ITEM_EXPORT_PARTS,
+  ACTION_MENU_ITEM_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
 import type {
-  DropdownImagePathCallback,
-  DropdownItemActionableModel
+  ActionMenuImagePathCallback,
+  ActionMenuItemActionableModel
 } from "../../types";
-import { focusFirstDropdownItem } from "../utils";
-import { getDropdownItemMetadata } from "../parse-model";
+import { focusFirstActionMenuItem } from "../utils";
+import { getActionMenuItemMetadata } from "../parse-model";
 import { getControlRegisterProperty } from "../../../../common/registry-properties";
 
 const SEPARATE_BY_SPACE_REGEX = /\s+/;
 
-const DEFAULT_GET_IMAGE_PATH_CALLBACK: DropdownImagePathCallback = (
+const DEFAULT_GET_IMAGE_PATH_CALLBACK: ActionMenuImagePathCallback = (
   item,
   iconDirection
 ) => ({ base: iconDirection === "start" ? item.startImgSrc : item.endImgSrc });
 
 // Parts
 const ACTION_LINK =
-  `${DROPDOWN_ITEM_PARTS_DICTIONARY.ACTION} ${DROPDOWN_ITEM_PARTS_DICTIONARY.LINK}` as const;
+  `${ACTION_MENU_ITEM_PARTS_DICTIONARY.ACTION} ${ACTION_MENU_ITEM_PARTS_DICTIONARY.LINK}` as const;
 
 const ACTION_LINK_EXPANDABLE =
-  `${ACTION_LINK} ${DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDABLE}` as const;
+  `${ACTION_LINK} ${ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDABLE}` as const;
 
 const ACTION_BUTTON =
-  `${DROPDOWN_ITEM_PARTS_DICTIONARY.ACTION} ${DROPDOWN_ITEM_PARTS_DICTIONARY.BUTTON}` as const;
+  `${ACTION_MENU_ITEM_PARTS_DICTIONARY.ACTION} ${ACTION_MENU_ITEM_PARTS_DICTIONARY.BUTTON}` as const;
 
 const ACTION_BUTTON_EXPANDABLE =
-  `${ACTION_BUTTON} ${DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDABLE}` as const;
+  `${ACTION_BUTTON} ${ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDABLE}` as const;
 
 const WINDOW_ID = "window";
 
-let GET_IMAGE_PATH_CALLBACK_REGISTRY: DropdownImagePathCallback;
+let GET_IMAGE_PATH_CALLBACK_REGISTRY: ActionMenuImagePathCallback;
 
 @Component({
   shadow: { delegatesFocus: true },
-  styleUrl: "dropdown.scss",
-  tag: "ch-dropdown"
+  styleUrl: "action-menu.scss",
+  tag: "ch-action-menu"
 })
-export class ChDropdown implements ComponentInterface {
+export class ChActionMenu implements ComponentInterface {
   #startImage: GxImageMultiStateStart | undefined;
   #endImage: GxImageMultiStateEnd | undefined;
 
   // Refs
   #mainAction: HTMLButtonElement | HTMLAnchorElement;
 
-  @Element() el: HTMLChDropdownElement;
+  @Element() el: HTMLChActionMenuElement;
 
   /**
    * Specifies if the current parent of the item is the action-group control.
@@ -76,7 +76,7 @@ export class ChDropdown implements ComponentInterface {
   @Prop() readonly actionGroupParent: boolean = false;
 
   /**
-   * Specifies the block alignment of the dropdown section that is placed
+   * Specifies the block alignment of the dropdown menu that is placed
    * relative to the expandable button.
    */
   @Prop() readonly blockAlign: ChPopoverAlign = "center";
@@ -114,7 +114,7 @@ export class ChDropdown implements ComponentInterface {
   @Prop() readonly expandable: boolean = false;
 
   /**
-   * `true` to display the dropdown section.
+   * `true` to display the dropdown menu.
    */
   @Prop() readonly expanded: boolean | undefined = false;
 
@@ -122,7 +122,7 @@ export class ChDropdown implements ComponentInterface {
    * This property specifies a callback that is executed when the path for an
    * startImgSrc or endImgSrc needs to be resolved.
    */
-  @Prop() readonly getImagePathCallback?: DropdownImagePathCallback;
+  @Prop() readonly getImagePathCallback?: ActionMenuImagePathCallback;
   @Watch("getImagePathCallback")
   getImagePathCallbackChanged() {
     this.#startImage = this.#computeImage("start");
@@ -137,7 +137,7 @@ export class ChDropdown implements ComponentInterface {
   @Prop() readonly href: string | undefined;
 
   /**
-   * Specifies the inline alignment of the dropdown section that is placed
+   * Specifies the inline alignment of the dropdown menu that is placed
    * relative to the expandable button.
    */
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
@@ -146,16 +146,10 @@ export class ChDropdown implements ComponentInterface {
    * Specifies the extended model of the control. This property is only needed
    * to know the UI Model on each event
    */
-  @Prop() readonly model!: DropdownItemActionableModel;
+  @Prop() readonly model!: ActionMenuItemActionableModel;
 
   /**
-   * This attribute lets you specify if the control is nested in another
-   * dropdown. Useful to manage keyboard interaction.
-   */
-  @Prop() readonly nestedDropdown: boolean = false;
-
-  /**
-   * Determine if the dropdown section should be opened when the expandable
+   * Determine if the dropdown menu should be opened when the expandable
    * button of the control is focused.
    * TODO: Add implementation
    */
@@ -216,13 +210,16 @@ export class ChDropdown implements ComponentInterface {
       : undefined;
   };
 
-  #dropDownItemContent = () => [
-    <span class="content" part={DROPDOWN_ITEM_PARTS_DICTIONARY.CONTENT}>
+  #itemContent = () => [
+    <span class="content" part={ACTION_MENU_ITEM_PARTS_DICTIONARY.CONTENT}>
       {this.caption}
     </span>,
 
     !!this.shortcut && (
-      <span aria-hidden="true" part={DROPDOWN_ITEM_PARTS_DICTIONARY.SHORTCUT}>
+      <span
+        aria-hidden="true"
+        part={ACTION_MENU_ITEM_PARTS_DICTIONARY.SHORTCUT}
+      >
         {this.shortcut}
       </span>
     )
@@ -261,10 +258,10 @@ export class ChDropdown implements ComponentInterface {
         part={tokenMap({
           [ACTION_LINK_EXPANDABLE]: expandable,
           [ACTION_LINK]: !expandable,
-          [DROPDOWN_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-          [DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDED]:
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]:
             expandable && this.expanded,
-          [DROPDOWN_ITEM_PARTS_DICTIONARY.COLLAPSED]:
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]:
             expandable && !this.expanded
         })}
         href={!this.disabled ? this.href : undefined}
@@ -272,7 +269,7 @@ export class ChDropdown implements ComponentInterface {
         // the same variable with a different element's ref in runtime
         ref={el => (this.#mainAction = el)}
       >
-        {this.#dropDownItemContent()}
+        {this.#itemContent()}
       </a>
     ) : (
       <button
@@ -284,10 +281,10 @@ export class ChDropdown implements ComponentInterface {
         part={tokenMap({
           [ACTION_BUTTON_EXPANDABLE]: expandable,
           [ACTION_BUTTON]: !expandable,
-          [DROPDOWN_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-          [DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDED]:
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]:
             expandable && this.expanded,
-          [DROPDOWN_ITEM_PARTS_DICTIONARY.COLLAPSED]:
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]:
             expandable && !this.expanded
         })}
         style={this.#endImage?.styles ?? undefined}
@@ -295,7 +292,7 @@ export class ChDropdown implements ComponentInterface {
         type="button"
         ref={el => (this.#mainAction = el)}
       >
-        {this.#dropDownItemContent()}
+        {this.#itemContent()}
       </button>
     );
   };
@@ -304,7 +301,7 @@ export class ChDropdown implements ComponentInterface {
     <ch-popover
       role="list"
       id={WINDOW_ID}
-      part={DROPDOWN_ITEM_PARTS_DICTIONARY.WINDOW}
+      part={ACTION_MENU_ITEM_PARTS_DICTIONARY.WINDOW}
       actionById
       actionElement={this.#mainAction as HTMLButtonElement}
       blockAlign={this.blockAlign}
@@ -323,10 +320,10 @@ export class ChDropdown implements ComponentInterface {
     // TODO: Test this with multiple parts
 
     const customParts = parts
-      ? `${DROPDOWN_ITEM_EXPORT_PARTS},${parts
+      ? `${ACTION_MENU_ITEM_EXPORT_PARTS},${parts
           .split(SEPARATE_BY_SPACE_REGEX)
           .join(",")}`
-      : DROPDOWN_ITEM_EXPORT_PARTS;
+      : ACTION_MENU_ITEM_EXPORT_PARTS;
 
     this.el.setAttribute("exportparts", customParts);
   };
@@ -339,7 +336,7 @@ export class ChDropdown implements ComponentInterface {
     GET_IMAGE_PATH_CALLBACK_REGISTRY ??=
       getControlRegisterProperty(
         "getImagePathCallback",
-        "ch-dropdown-render"
+        "ch-action-menu-render"
       ) ?? DEFAULT_GET_IMAGE_PATH_CALLBACK;
 
     this.#startImage = this.#computeImage("start");
@@ -347,13 +344,13 @@ export class ChDropdown implements ComponentInterface {
   }
 
   componentDidRender() {
-    const metadata = getDropdownItemMetadata(this.model);
+    const metadata = getActionMenuItemMetadata(this.model);
 
     if (this.expanded && metadata.focusFirstItemAfterExpand) {
       metadata.focusFirstItemAfterExpand = false;
 
       // Wait until the first item is rendered
-      requestAnimationFrame(() => focusFirstDropdownItem(this.el));
+      requestAnimationFrame(() => focusFirstActionMenuItem(this.el));
     }
 
     if (!this.expanded && metadata.focusAfterCollapse) {

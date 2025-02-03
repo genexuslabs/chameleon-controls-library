@@ -2,12 +2,15 @@ import type {
   ActionGroupDisplayedMarkers,
   ActionGroupItemModel
 } from "./types";
-import { dropdownItemIsActionable } from "../dropdown/internal/utils";
-import { DropdownImagePathCallback, DropdownModel } from "../dropdown/types";
+import { actionMenuItemIsActionable } from "../action-menu/internal/utils";
+import {
+  ActionMenuImagePathCallback,
+  ActionMenuModel
+} from "../action-menu/types";
 import {
   ACTION_GROUP_PARTS_DICTIONARY,
-  DROPDOWN_ITEM_EXPORT_PARTS,
-  DROPDOWN_ITEM_PARTS_DICTIONARY
+  ACTION_MENU_ITEM_EXPORT_PARTS,
+  ACTION_MENU_ITEM_PARTS_DICTIONARY
 } from "../../common/reserved-names";
 import { h } from "@stencil/core";
 import { tokenMap } from "../../common/utils";
@@ -23,7 +26,7 @@ const renderItem = (
   itemIsVisible: boolean,
   marker: ActionGroupDisplayedMarkers | undefined,
   disabled: boolean,
-  getImagePathCallback?: DropdownImagePathCallback
+  getImagePathCallback?: ActionMenuImagePathCallback
 ) => {
   const markerClasses = marker
     ? {
@@ -32,21 +35,21 @@ const renderItem = (
       }
     : undefined;
 
-  if (dropdownItemIsActionable(item)) {
+  if (actionMenuItemIsActionable(item)) {
     return (
-      <ch-dropdown-render
+      <ch-action-menu-render
         role="listitem"
         id={marker?.id}
         class={markerClasses}
         disabled={disabled}
         getImagePathCallback={getImagePathCallback}
-        exportparts={DROPDOWN_ITEM_EXPORT_PARTS}
+        exportparts={ACTION_MENU_ITEM_EXPORT_PARTS}
         blockAlign={item.itemsBlockAlign ?? "outside-end"}
         inlineAlign={item.itemsInlineAlign ?? "inside-start"}
         model={itemIsVisible ? item.items : EMPTY_DROPDOWN}
       >
         {item.caption}
-      </ch-dropdown-render>
+      </ch-action-menu-render>
     );
   }
 
@@ -58,7 +61,7 @@ const renderItem = (
         class={markerClasses}
         part={tokenMap({
           [item.id]: !!item.id,
-          [DROPDOWN_ITEM_PARTS_DICTIONARY.SEPARATOR]: true,
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.SEPARATOR]: true,
           [ACTION_GROUP_PARTS_DICTIONARY.VERTICAL]: true,
           [item.part]: !!item.part
         })}
@@ -86,11 +89,11 @@ const itemIsVisible = (
 ) => !responsiveCollapse || displayedMarkers[index].displayed;
 
 export const renderItems = (
-  model: DropdownModel,
+  model: ActionMenuModel,
   responsiveCollapse: boolean,
   displayedMarkers: ActionGroupDisplayedMarkers[] | undefined,
   disabled: boolean,
-  getImagePathCallback?: DropdownImagePathCallback
+  getImagePathCallback?: ActionMenuImagePathCallback
 ) =>
   model.map((item, index) =>
     renderItem(

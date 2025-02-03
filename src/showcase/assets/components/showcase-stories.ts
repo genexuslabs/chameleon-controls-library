@@ -9,7 +9,7 @@ import { codeEditorShowcaseStory } from "./code-editor/code-editor.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
 import { dialogShowcaseStory } from "./dialog/dialog.showcase";
-import { dropdownShowcaseStory } from "./dropdown/dropdown.showcase";
+import { actionMenuShowcaseStory } from "./action-menu/dropdown.showcase";
 import { editShowcaseStory } from "./edit/edit.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { imageShowcaseStory } from "./image/image.showcase";
@@ -36,6 +36,7 @@ import { ChameleonCustomStories, ChameleonStories } from "./types";
 export const showcaseStories = {
   accordion: accordionShowcaseStory,
   "action-group": actionGroupShowcaseStory,
+  "action-menu": actionMenuShowcaseStory,
   "action-list": actionListShowcaseStory,
   "barcode-scanner": barcodeScannerShowcaseStory,
   checkbox: checkboxShowcaseStory,
@@ -43,7 +44,6 @@ export const showcaseStories = {
   code: codeShowcaseStory,
   "combo-box": comboBoxShowcaseStory,
   dialog: dialogShowcaseStory,
-  dropdown: dropdownShowcaseStory,
   edit: editShowcaseStory,
   image: imageShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,

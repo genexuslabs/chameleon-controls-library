@@ -235,10 +235,10 @@ export class ChActionGroup {
     this.#connectActionsObserver();
   };
 
-  #handleMoreActionButtonExpand = (event: CustomEvent<boolean>) => {
-    event.stopPropagation();
-    this.moreActionsButtonExpandedChange.emit(event.detail);
-  };
+  // #handleMoreActionButtonExpand = (event: CustomEvent<boolean>) => {
+  //   event.stopPropagation();
+  //   this.moreActionsButtonExpandedChange.emit(event.detail);
+  // };
 
   componentDidLoad() {
     this.#setResponsiveCollapse();

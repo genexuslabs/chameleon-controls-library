@@ -152,9 +152,9 @@ export type ChameleonImagePathCallbackControlsTagName = Extract<
   ChameleonControlsTagName,
   | "ch-accordion-render"
   | "ch-action-list-render"
+  | "ch-action-menu-render"
   | "ch-checkbox"
   | "ch-combo-box-render"
-  | "ch-dropdown-render"
   | "ch-edit"
   | "ch-image"
   | "ch-navigation-list-render"

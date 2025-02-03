@@ -1,8 +1,8 @@
 import {
-  DropdownItemActionableModel,
-  DropdownItemSeparatorModel,
-  DropdownItemSlotModel
-} from "../dropdown/types";
+  ActionMenuItemActionableModel,
+  ActionMenuItemSeparatorModel,
+  ActionMenuItemSlotModel
+} from "../action-menu/types";
 
 export type ActionGroupModel = ActionGroupItemModel[];
 
@@ -11,9 +11,9 @@ export type ActionGroupItemModel =
   | ActionGroupSeparatorModel
   | ActionGroupSlotModel;
 
-export type ActionGroupActionableModel = DropdownItemActionableModel;
-export type ActionGroupSeparatorModel = DropdownItemSeparatorModel;
-export type ActionGroupSlotModel = DropdownItemSlotModel;
+export type ActionGroupActionableModel = ActionMenuItemActionableModel;
+export type ActionGroupSeparatorModel = ActionMenuItemSeparatorModel;
+export type ActionGroupSlotModel = ActionMenuItemSlotModel;
 
 // - - - - - - - - - - - - - - - - - - - -
 //             Internal types

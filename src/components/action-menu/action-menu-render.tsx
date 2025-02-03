@@ -11,27 +11,27 @@ import {
 } from "@stencil/core";
 
 import type {
-  DropdownExpandedChangeEvent,
-  DropdownHyperlinkClickEvent,
-  DropdownImagePathCallback,
-  DropdownItemActionableModel,
-  DropdownItemTypeMapping,
-  DropdownItemTypeSeparator,
-  DropdownItemTypeSlot,
-  DropdownKeyboardActionResult,
-  DropdownModel
+  ActionMenuExpandedChangeEvent,
+  ActionMenuHyperlinkClickEvent,
+  ActionMenuImagePathCallback,
+  ActionMenuItemActionableModel,
+  ActionMenuItemTypeMapping,
+  ActionMenuItemTypeSeparator,
+  ActionMenuItemTypeSlot,
+  ActionMenuKeyboardActionResult,
+  ActionMenuModel
 } from "./types";
 import type { ChPopoverAlign } from "../popover/types";
 
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import {
-  DROPDOWN_ITEM_PARTS_DICTIONARY,
-  DROPDOWN_PARTS_DICTIONARY,
+  ACTION_MENU_ITEM_PARTS_DICTIONARY,
+  ACTION_MENU_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
 
 import { tokenMap } from "../../common/utils";
-import { dropdownKeyEventsDictionary } from "./internal/keyboard-actions";
+import { actionMenuKeyEventsDictionary } from "./internal/keyboard-actions";
 import { parseSubModel } from "./internal/parse-model";
 import {
   collapseAllItems,
@@ -39,25 +39,25 @@ import {
   expandFromRootToNode
 } from "./internal/update-expanded";
 import {
-  DROPDOWN_RENDER_TAG_NAME,
-  dropdownItemActionableIsExpandable,
-  dropdownItemIsActionable,
-  dropdownItemIsHyperlink,
-  getDropdownInfoInEvent,
+  ACTION_MENU_RENDER_TAG_NAME,
+  actionMenuItemActionableIsExpandable,
+  actionMenuItemIsActionable,
+  actionMenuItemIsHyperlink,
+  getActionMenuInfoInEvent,
   WINDOW_ID
 } from "./internal/utils";
 
 @Component({
-  tag: "ch-dropdown-render",
-  styleUrl: "dropdown-render.scss",
+  tag: "ch-action-menu-render",
+  styleUrl: "action-menu-render.scss",
   shadow: true // Necessary to avoid focus capture
 })
-export class ChDropdownRender {
+export class ChActionMenuRender {
   // Refs
   #actionRef!: HTMLButtonElement;
   #popoverRef: HTMLChPopoverElement | undefined;
 
-  @Element() el: HTMLChDropdownRenderElement;
+  @Element() el: HTMLChActionMenuRenderElement;
 
   /**
    * This attribute lets you specify the label for the first expandable button.
@@ -66,7 +66,7 @@ export class ChDropdownRender {
   @Prop() readonly buttonAccessibleName: string;
 
   /**
-   * Specifies the block alignment of the dropdown section that is placed
+   * Specifies the block alignment of the dropdown menu that is placed
    * relative to the expandable button.
    */
   @Prop() readonly blockAlign: ChPopoverAlign = "center";
@@ -82,7 +82,7 @@ export class ChDropdownRender {
    * This property specifies a callback that is executed when the path for an
    * startImgSrc or endImgSrc (of an item) needs to be resolved.
    */
-  @Prop() readonly getImagePathCallback?: DropdownImagePathCallback;
+  @Prop() readonly getImagePathCallback?: ActionMenuImagePathCallback;
 
   /**
    * `true` to expand the dropdown window.
@@ -114,9 +114,9 @@ export class ChDropdownRender {
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
 
   /**
-   * This property lets you define the model of the ch-dropdown control.
+   * This property lets you define the model of the control.
    */
-  @Prop() readonly model: DropdownModel | undefined;
+  @Prop() readonly model: ActionMenuModel | undefined;
   @Watch("model")
   modelChanged() {
     this.#addMetadataToItems();
@@ -131,7 +131,7 @@ export class ChDropdownRender {
    * Fired when a button is clicked.
    * This event can be prevented.
    */
-  @Event() buttonClick: EventEmitter<DropdownItemActionableModel>;
+  @Event() buttonClick: EventEmitter<ActionMenuItemActionableModel>;
 
   /**
    * Fired when the visibility of the main dropdown is changed.
@@ -141,20 +141,20 @@ export class ChDropdownRender {
   /**
    * Fired when the visibility of a dropdown item is changed.
    */
-  @Event() expandedItemChange: EventEmitter<DropdownExpandedChangeEvent>;
+  @Event() expandedItemChange: EventEmitter<ActionMenuExpandedChangeEvent>;
 
   /**
    * Fired when an hyperlink is clicked.
    * This event can be prevented, but the dropdown will be closed in any case
    * (prevented or not).
    */
-  @Event() hyperlinkClick: EventEmitter<DropdownHyperlinkClickEvent>;
+  @Event() hyperlinkClick: EventEmitter<ActionMenuHyperlinkClickEvent>;
 
-  #renderActionItem = (itemUIModel: DropdownItemActionableModel) => {
-    const expandable = dropdownItemActionableIsExpandable(itemUIModel);
+  #renderActionItem = (itemUIModel: ActionMenuItemActionableModel) => {
+    const expandable = actionMenuItemActionableIsExpandable(itemUIModel);
 
     return (
-      <ch-dropdown
+      <ch-action-menu
         blockAlign={itemUIModel.itemsBlockAlign ?? "inside-start"}
         caption={itemUIModel.caption}
         disabled={itemUIModel.disabled ?? this.disabled}
@@ -190,13 +190,13 @@ export class ChDropdownRender {
         {expandable &&
           itemUIModel.expanded &&
           this.#renderItems(itemUIModel.items)}
-      </ch-dropdown>
+      </ch-action-menu>
     );
   };
 
   #renderDictionary: {
-    [key in DropdownItemTypeSeparator | DropdownItemTypeSlot]: (
-      model: DropdownItemTypeMapping[key]
+    [key in ActionMenuItemTypeSeparator | ActionMenuItemTypeSlot]: (
+      model: ActionMenuItemTypeMapping[key]
     ) => any;
   } = {
     separator: item => (
@@ -204,7 +204,7 @@ export class ChDropdownRender {
         key={item.id}
         part={tokenMap({
           [item.id]: !!item.id,
-          [DROPDOWN_ITEM_PARTS_DICTIONARY.SEPARATOR]: true,
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.SEPARATOR]: true,
           [item.part]: !!item.part
         })}
       />
@@ -212,9 +212,9 @@ export class ChDropdownRender {
     slot: item => <slot name={item.id} />
   };
 
-  #renderItems = (model: DropdownModel) =>
+  #renderItems = (model: ActionMenuModel) =>
     model.map(itemUIModel =>
-      dropdownItemIsActionable(itemUIModel)
+      actionMenuItemIsActionable(itemUIModel)
         ? this.#renderActionItem(itemUIModel)
         : this.#renderDictionary[itemUIModel.type](
             // TODO: Improve type inference
@@ -226,26 +226,26 @@ export class ChDropdownRender {
     event: MouseEvent | PointerEvent,
     type: "click" | "mouseover" | "mouseout"
   ) => {
-    const dropdownInfo = getDropdownInfoInEvent(event);
+    const actionMenuInfo = getActionMenuInfoInEvent(event);
 
-    if (dropdownInfo === undefined) {
+    if (actionMenuInfo === undefined) {
       return;
     }
 
-    if (dropdownInfo === DROPDOWN_RENDER_TAG_NAME) {
+    if (actionMenuInfo === ACTION_MENU_RENDER_TAG_NAME) {
       if (type === "click") {
-        return this.expanded ? this.#closeDropdown() : this.#openDropdown();
+        return this.expanded ? this.#closeActionMenu() : this.#openActionMenu();
       }
 
       return;
     }
 
-    const itemUIModel = dropdownInfo.model;
+    const itemUIModel = actionMenuInfo.model;
 
     // If "click" the event is a PointerEvent
     if (type === "click") {
       // Clicked a hyperlink element
-      if (dropdownItemIsHyperlink(itemUIModel)) {
+      if (actionMenuItemIsHyperlink(itemUIModel)) {
         const eventInfo = this.hyperlinkClick.emit({
           item: itemUIModel,
           event: event as PointerEvent
@@ -257,13 +257,13 @@ export class ChDropdownRender {
         }
 
         // TODO: Emit expandedChange event for all element?
-        this.#closeDropdown();
+        this.#closeActionMenu();
 
         return;
       }
 
       // Clicked a button element that is a leaf
-      if (!dropdownItemActionableIsExpandable(itemUIModel)) {
+      if (!actionMenuItemActionableIsExpandable(itemUIModel)) {
         const eventInfo = this.buttonClick.emit(itemUIModel);
 
         // Prevent button click and avoid closing the dropdown
@@ -273,7 +273,7 @@ export class ChDropdownRender {
         }
 
         // TODO: Emit expandedChange event for all element?
-        this.#closeDropdown();
+        this.#closeActionMenu();
 
         return;
       }
@@ -303,16 +303,16 @@ export class ChDropdownRender {
     forceUpdate(this);
   };
 
-  #handleDropdownItemClick = (event: PointerEvent) =>
+  #handleActionMenuItemClick = (event: PointerEvent) =>
     this.#processEvent(event, "click");
 
-  #handleDropdownItemMouseOver = (event: MouseEvent) =>
+  #handleActionMenuItemMouseOver = (event: MouseEvent) =>
     this.#processEvent(event, "mouseover");
 
-  #handleDropdownItemMouseOut = (event: MouseEvent) =>
+  #handleActionMenuItemMouseOut = (event: MouseEvent) =>
     this.#processEvent(event, "mouseout");
 
-  #handleDropdownKeyDown = (event: KeyboardEvent) => {
+  #handleActionMenuKeyDown = (event: KeyboardEvent) => {
     if (
       !this.expanded &&
       (event.code === KEY_CODES.ARROW_UP || event.code === KEY_CODES.ARROW_DOWN)
@@ -322,10 +322,10 @@ export class ChDropdownRender {
       return;
     }
 
-    const keyboardEvent = dropdownKeyEventsDictionary[event.code];
+    const keyboardEvent = actionMenuKeyEventsDictionary[event.code];
 
     if (keyboardEvent) {
-      const result: void | DropdownKeyboardActionResult = keyboardEvent(
+      const result: void | ActionMenuKeyboardActionResult = keyboardEvent(
         event,
         this.#popoverRef
       );
@@ -356,23 +356,23 @@ export class ChDropdownRender {
     const composedPath = event.composedPath();
 
     if (!composedPath.includes(this.el)) {
-      this.#closeDropdown();
+      this.#closeActionMenu();
     }
   };
 
   #closeOnClickOutsideKeyboard = (event: KeyboardEvent) => {
     if (event.code === KEY_CODES.ESCAPE) {
       this.#actionRef.focus();
-      this.#closeDropdown();
+      this.#closeActionMenu();
     }
   };
 
-  #openDropdown = () => {
+  #openActionMenu = () => {
     this.expanded = true;
     this.expandedChange.emit(true);
   };
 
-  #closeDropdown = () => {
+  #closeActionMenu = () => {
     collapseAllItems(this.model);
 
     this.expanded = false;
@@ -425,8 +425,8 @@ export class ChDropdownRender {
       // TODO: Should we let expand the control if it is disabled? If so, we
       // can't disable the click interaction...
       <Host
-        onClick={canAddEventListeners && this.#handleDropdownItemClick}
-        onKeyDown={canAddEventListeners && this.#handleDropdownKeyDown}
+        onClick={canAddEventListeners && this.#handleActionMenuItemClick}
+        onKeyDown={canAddEventListeners && this.#handleActionMenuKeyDown}
       >
         <button
           aria-controls={WINDOW_ID}
@@ -434,10 +434,10 @@ export class ChDropdownRender {
           aria-haspopup="true"
           aria-label={this.buttonAccessibleName}
           part={tokenMap({
-            [DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON]: true,
-            [DROPDOWN_ITEM_PARTS_DICTIONARY.EXPANDED]: this.expanded,
-            [DROPDOWN_ITEM_PARTS_DICTIONARY.COLLAPSED]: !this.expanded,
-            [DROPDOWN_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
+            [ACTION_MENU_PARTS_DICTIONARY.EXPANDABLE_BUTTON]: true,
+            [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]: this.expanded,
+            [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]: !this.expanded,
+            [ACTION_MENU_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
           })}
           disabled={this.disabled}
           popoverTarget={WINDOW_ID}
@@ -451,7 +451,7 @@ export class ChDropdownRender {
           <ch-popover
             role="list"
             id={WINDOW_ID}
-            part={DROPDOWN_ITEM_PARTS_DICTIONARY.WINDOW}
+            part={ACTION_MENU_ITEM_PARTS_DICTIONARY.WINDOW}
             actionById
             // TODO: We must be careful with this property because the control
             // can be expanded on the initial load an the ref will not be
@@ -462,8 +462,8 @@ export class ChDropdownRender {
             inlineAlign={this.inlineAlign}
             popover="manual"
             show
-            onMouseOver={this.#handleDropdownItemMouseOver}
-            onMouseOut={this.#handleDropdownItemMouseOut}
+            onMouseOver={this.#handleActionMenuItemMouseOver}
+            onMouseOut={this.#handleActionMenuItemMouseOut}
             ref={el => (this.#popoverRef = el)}
           >
             {this.model !== undefined && this.#renderItems(this.model)}

@@ -1,7 +1,7 @@
 import type {
-  DropdownImagePathCallback,
-  DropdownModel
-} from "../../../../components/dropdown/types";
+  ActionMenuImagePathCallback,
+  ActionMenuModel
+} from "../../../../components/action-menu/types";
 
 const START_IMG_TYPE = "background";
 const END_IMG_TYPE = "background";
@@ -11,7 +11,7 @@ const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 const FOLDER_ICON = "var(folder)";
 const MODULE_ICON = "var(module)";
 
-export const getDropdownImagePathCallback: DropdownImagePathCallback = (
+export const getDropdownImagePathCallback: ActionMenuImagePathCallback = (
   item,
   iconDirection
 ) => {
@@ -46,7 +46,7 @@ export const getDropdownImagePathCallback: DropdownImagePathCallback = (
   };
 };
 
-export const simpleModel1: DropdownModel = [
+export const simpleModel1: ActionMenuModel = [
   {
     id: "item-1",
     startImgSrc: MODULE_ICON,
@@ -160,7 +160,7 @@ export const simpleModel1: DropdownModel = [
   }
 ];
 
-export const simpleModel2: DropdownModel = [
+export const simpleModel2: ActionMenuModel = [
   {
     id: "item-1",
     startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
@@ -278,7 +278,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
   });
 }
 
-export const GXWebModel: DropdownModel = [
+export const GXWebModel: ActionMenuModel = [
   {
     caption: "File",
     // itemsPosition: "InsideStart_OutsideEnd",

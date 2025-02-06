@@ -1,4 +1,8 @@
 export type PaginatorTranslations = {
+  accessibleName: {
+    goToInput: string;
+    itemsPerPageOptions: string;
+  };
   text: {
     first: string;
     goToButton: string;

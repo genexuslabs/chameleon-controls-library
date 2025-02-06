@@ -17,9 +17,11 @@ import {
 import { PaginatorTranslations } from "./translations";
 import {
   ACTUAL_PAGE,
-  AMOUNT_ITEMS_IN_PAGE,
+  FIRST_ITEM_IN_PAGE,
+  LAST_ITEM_IN_PAGE,
   TOTAL_ITEMS,
-  TOTAL_PAGES
+  TOTAL_PAGES,
+  TOTAL_PAGES_UNDEFINED
 } from "./constants";
 import {
   PaginatorRenderHyperlinkModel,
@@ -27,18 +29,23 @@ import {
   PaginatorRenderNumericModel,
   ControlsOrder
 } from "./types";
-import { ComboBoxModel } from "../../components";
+import { ComboBoxModel } from "../combo-box/types";
 
 @Component({
   tag: "ch-paginator-render",
   styleUrl: "paginator-render.scss",
   shadow: true
 })
-export class ChPaginator implements ComponentInterface {
+export class ChPaginatorRender implements ComponentInterface {
   /**
    * Specifies the index for the actual page in paginator
    */
   @State() actualPage: number = 1;
+
+  /**
+   * State to define the hyperlink or numeric model
+   */
+  @State() hasHyperlink: boolean = false;
 
   /**
    * State to obtain the total pages on model,
@@ -48,15 +55,43 @@ export class ChPaginator implements ComponentInterface {
   @State() totalPages: number = 1;
 
   /**
-   * State to define the hyperlink or numeric model
+   * State containing an Array of controls to render
    */
-  @State() hasHyperlink: boolean = false;
+  @State() controlsToRender: Array<{
+    name: string;
+    render: () => Element;
+  }> = [];
 
   /**
-   * Specifies the UI Model for the Paginator
+   * Indicates that the end has been reached.
+   * Use when total pages are not known (totalPages = -1).
    */
-  @Prop()
-  readonly model: PaginatorRenderModel = [];
+  @Prop() readonly hasNextPage: boolean = false;
+
+  /**
+   * Number for Total Items Per Page.
+   */
+  @Prop({ mutable: true }) itemsPerPage: number = 10;
+
+  /**
+   * Specifies the options in Items Per Page combo-box.
+   */
+  @Prop() readonly itemsPerPageOptions: ComboBoxModel;
+
+  /**
+   * Number of pages to show starting from the selected page to the left.
+   */
+  @Prop() readonly maxPagesToShowLeft: number = 3;
+
+  /**
+   * Number of pages to show starting from the selected page to the right.
+   */
+  @Prop() readonly maxPagesToShowRight: number = 3;
+
+  /**
+   * Specifies the UI Model for the Paginator.
+   */
+  @Prop() readonly model: PaginatorRenderModel = [];
 
   @Watch("model")
   modelChanged() {
@@ -66,12 +101,33 @@ export class ChPaginator implements ComponentInterface {
       this.totalPages = (this.model as PaginatorRenderHyperlinkModel)?.length;
     } else {
       this.totalPages =
-        (this.model as PaginatorRenderNumericModel)?.totalPages ?? -1;
+        (this.model as PaginatorRenderNumericModel)?.totalPages ??
+        TOTAL_PAGES_UNDEFINED;
     }
   }
 
   /**
-   * Specifies the Selected Page, can be a number or hyperlink, default number = 1.
+   * Specifies the order for the controls.
+   */
+  @Prop() readonly order: ControlsOrder = {
+    itemsPerPage: 1,
+    itemsPerPageInfo: 2,
+    firstControl: 3,
+    prevControl: 4,
+    navigationControls: 5,
+    nextControl: 6,
+    lastControl: 7,
+    navigationGoTo: 8,
+    navigationControlsInfo: 9
+  };
+
+  @Watch("order")
+  orderChanged() {
+    this.#initializeControls();
+  }
+
+  /**
+   * Specifies the Selected Page, can be a number or hyperlink.
    */
   @Prop({ mutable: true }) selectedPage: string | number = 1;
 
@@ -88,101 +144,64 @@ export class ChPaginator implements ComponentInterface {
   }
 
   /**
-   * Number for Total Items, default = undefined.
+   * `true` to render the navigation First control.
    */
-  @Prop() readonly totalItems: number | undefined = undefined;
+  @Prop() readonly showFirstControl: boolean = false;
 
   /**
-   * Number for Total Items Per Page, default = 10.
-   */
-  @Prop({ mutable: true }) itemsPerPage: number = 10;
-
-  /**
-   * Indicates that the end has been reached.
-   * Use when total pages are not known (totalPages = -1).
-   */
-  @Prop() readonly hasNextPage: boolean = false;
-
-  /**
-   * Number of pages to show starting from the selected page to the left, default = 3.
-   */
-  @Prop() readonly maxPagesToShowLeft: number = 3;
-
-  /**
-   * Number of pages to show starting from the selected page to the right, default = 3..
-   */
-  @Prop() readonly maxPagesToShowRight: number = 3;
-
-  /**
-   * `true` to render the Items Per Page control, default = false;
+   * `true` to render the Items Per Page control.
    */
   @Prop() readonly showItemsPerPage: boolean = false;
 
   /**
-   * Specifies the options in Items Per Page combo-box
-   */
-  @Prop() readonly itemsPerPageOptions: ComboBoxModel;
-
-  /**
-   * `true` to render the Items Per Page Info, default = false;
+   * `true` to render the Items Per Page Info.
    */
   @Prop() readonly showItemsPerPageInfo: boolean = false;
 
   /**
-   * `true` to render the navigation controls, default = true;
+   * `true` to render the navigation Last control.
+   */
+  @Prop() readonly showLastControl: boolean = false;
+
+  /**
+   * `true` to render the navigation controls.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly showNavigationControls: boolean = true;
 
   /**
-   * `true` to render the navigation Go To control, default = false;
-   */
-  @Prop() readonly showNavigationGoTo: boolean = false;
-
-  /**
-   * `true` to render the navigation First control, default = false;
-   */
-  @Prop() readonly showFirstControl: boolean = false;
-
-  /**
-   * `true` to render the navigation Last control, default = false;
-   */
-  @Prop() readonly showLastControl: boolean = false;
-
-  /**
-   * `true` to render the navigation Prev control, default = false;
-   */
-  @Prop() readonly showPrevControl: boolean = false;
-
-  /**
-   * `true` to render the navigation Next control, default = false;
-   */
-  @Prop() readonly showNextControl: boolean = false;
-
-  /**
-   * `true` to render the navigation Info, default = false;
+   * `true` to render the navigation Info.
    */
   @Prop() readonly showNavigationControlsInfo: boolean = false;
 
   /**
-   * Specifies the order for the controls
+   * `true` to render the navigation Go To control.
    */
-  @Prop() readonly order: ControlsOrder = {
-    itemsPerPage: 1,
-    itemsPerPageInfo: 2,
-    firstControl: 3,
-    prevControl: 4,
-    navigationControls: 5,
-    nextControl: 6,
-    lastControl: 7,
-    navigationGoTo: 8,
-    navigationControlsInfo: 9
-  };
+  @Prop() readonly showNavigationGoTo: boolean = false;
+
+  /**
+   * `true` to render the navigation Next control.
+   */
+  @Prop() readonly showNextControl: boolean = false;
+
+  /**
+   * `true` to render the navigation Prev control.
+   */
+  @Prop() readonly showPrevControl: boolean = false;
+
+  /**
+   * Number for Total Items, default = undefined.
+   */
+  @Prop() readonly totalItems: number | undefined = undefined;
 
   /**
    * Specifies the literals required in the control.
    */
   @Prop() readonly translations: PaginatorTranslations = {
+    accessibleName: {
+      goToInput: "Go to page",
+      itemsPerPageOptions: "Select amount of items to show"
+    },
     text: {
       goToButton: "Go",
       itemsPerPage: "Items per page:",
@@ -194,7 +213,7 @@ export class ChPaginator implements ComponentInterface {
       last: "Last",
       unknownPages: "many",
       unknownItems: "many",
-      showingItems: `Showing ${AMOUNT_ITEMS_IN_PAGE} of ${TOTAL_ITEMS} items`,
+      showingItems: `Showing ${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} of ${TOTAL_ITEMS} items`,
       page: "Page:",
       showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
     }
@@ -211,23 +230,103 @@ export class ChPaginator implements ComponentInterface {
   @Event() itemsPerPageChange: EventEmitter<number>;
 
   connectedCallback(): void {
+    this.#initializeControls();
     this.hasHyperlink = Array.isArray(this.model);
 
     if (this.hasHyperlink) {
       this.totalPages = (this.model as PaginatorRenderHyperlinkModel).length;
     } else {
       this.totalPages =
-        (this.model as PaginatorRenderNumericModel)?.totalPages ?? -1;
+        (this.model as PaginatorRenderNumericModel)?.totalPages ??
+        TOTAL_PAGES_UNDEFINED;
     }
   }
 
-  #getPaginationRange() {
+  #initializeControls = () => {
+    const controls: Array<{
+      name: string;
+      render: () => Element;
+    }> = [
+      {
+        name: "itemsPerPage",
+        render: () => this.showItemsPerPage && this.#renderItemsPerPage()
+      },
+      {
+        name: "itemsPerPageInfo",
+        render: () =>
+          this.showItemsPerPageInfo && this.#renderItemsPerPageInfo()
+      },
+      {
+        name: "navigationControls",
+        render: () =>
+          this.showNavigationControls && this.#renderNavigationControls()
+      },
+      {
+        name: "navigationGoTo",
+        render: () => this.showNavigationGoTo && this.#renderNavigationGoTo()
+      },
+      {
+        name: "navigationControlsInfo",
+        render: () =>
+          this.showNavigationControlsInfo &&
+          this.#renderNavigationControlsInfo()
+      },
+      {
+        name: "firstControl",
+        render: () => this.showFirstControl && this.#renderFirstControl()
+      },
+      {
+        name: "lastControl",
+        render: () => this.showLastControl && this.#renderLastControl()
+      },
+      {
+        name: "prevControl",
+        render: () => this.showPrevControl && this.#renderPrevControl()
+      },
+      {
+        name: "nextControl",
+        render: () => this.showNextControl && this.#renderNextControl()
+      }
+    ];
+
+    // Sort visible controls regarding their order value
+    controls.sort((a, b) => {
+      const orderA =
+        this.order[a.name as keyof ControlsOrder] ?? Number.MAX_SAFE_INTEGER;
+      const orderB =
+        this.order[b.name as keyof ControlsOrder] ?? Number.MAX_SAFE_INTEGER;
+      return orderA - orderB;
+    });
+
+    this.controlsToRender = controls;
+  };
+
+  #getFirstItemInPage = () =>
+    `${this.actualPage * this.itemsPerPage - this.itemsPerPage + 1}`;
+
+  #getLastItemInPage = () => {
+    if (
+      !this.totalItems ||
+      this.totalItems > this.actualPage * this.itemsPerPage ||
+      this.totalItems < 0
+    ) {
+      return `${this.actualPage * this.itemsPerPage}`;
+    }
+    return `${this.totalItems}`;
+  };
+
+  #getTotalItemsString = () =>
+    !this.totalItems || this.totalItems < 0
+      ? `${this.translations.text.unknownItems}`
+      : `${this.totalItems}`;
+
+  #getPaginationRange = (): number[] => {
     const { actualPage, maxPagesToShowLeft, maxPagesToShowRight } = this;
     const totalPages = this.totalPages;
 
     // Set array with pages to show, it starts with the first page on the array.
     // If page is an ellipsis, array number will be -1
-    const pages = [1]; // Start with the first page
+    const pages: number[] = [1]; // Start with the first page
 
     // Check pages to display at the start and end of the navigation control
     let startPage = Math.max(actualPage - maxPagesToShowLeft, 2);
@@ -273,40 +372,26 @@ export class ChPaginator implements ComponentInterface {
     }
 
     return pages;
-  }
-
-  #handlePrev = () => {
-    if (this.actualPage > 1) {
-      this.actualPage -= 1;
-      this.pageChange.emit(this.actualPage);
-    }
-  };
-
-  #handleNext = () => {
-    if (
-      this.actualPage < this.totalPages ||
-      (this.totalPages < 0 && this.hasNextPage)
-    ) {
-      this.actualPage += 1;
-      this.pageChange.emit(this.actualPage);
-    }
   };
 
   #handleFirst = () => {
-    if (this.actualPage !== 1) {
-      this.actualPage = 1;
-      this.pageChange.emit(this.actualPage);
-    }
+    this.actualPage = 1;
+    this.pageChange.emit(this.actualPage);
   };
 
   #handleLast = () => {
-    if (
-      this.actualPage !== this.totalPages ||
-      (this.totalPages < 0 && this.hasNextPage)
-    ) {
-      this.actualPage = this.totalPages;
-      this.pageChange.emit(this.actualPage);
-    }
+    this.actualPage = this.totalPages;
+    this.pageChange.emit(this.actualPage);
+  };
+
+  #handleNext = () => {
+    this.actualPage += 1;
+    this.pageChange.emit(this.actualPage);
+  };
+
+  #handlePrev = () => {
+    this.actualPage -= 1;
+    this.pageChange.emit(this.actualPage);
   };
 
   #handleItemsPerPageChange = (event: Event) => {
@@ -357,7 +442,7 @@ export class ChPaginator implements ComponentInterface {
     }
     event.preventDefault();
 
-    let newPageSelected;
+    let newPageSelected: string;
 
     if (elementRef.tagName.toLowerCase() === "a") {
       newPageSelected = this.hasHyperlink
@@ -380,193 +465,117 @@ export class ChPaginator implements ComponentInterface {
     }
   };
 
-  #renderItemsPerPage = () => {
-    return (
-      <form
-        class="form"
-        part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE]: true })}
+  #renderItemsPerPage = () => (
+    <form class="form" part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE}>
+      <label
+        htmlFor="items-per-page"
+        part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE__LABEL}
       >
-        <label htmlFor="items-per-page">
-          {this.translations.text.itemsPerPage}
-        </label>
-        <ch-combo-box-render
-          class="combo-box"
-          id="items-per-page"
-          name="items-per-page"
-          model={this.itemsPerPageOptions}
-          onChange={this.#handleItemsPerPageChange}
-          hostParts={tokenMap({
-            [PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE__COMBO_BOX]: true
-          })}
-          value={this.itemsPerPage.toString()}
-          exportparts={COMBO_BOX_EXPORT_PARTS}
-        />
-      </form>
-    );
-  };
+        {this.translations.text.itemsPerPage}
+      </label>
+      <ch-combo-box-render
+        class="combo-box"
+        id="items-per-page"
+        name="items-per-page"
+        model={this.itemsPerPageOptions}
+        onChange={this.#handleItemsPerPageChange}
+        hostParts={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE__COMBO_BOX}
+        value={this.itemsPerPage.toString()}
+        exportparts={COMBO_BOX_EXPORT_PARTS}
+        accessibleName={this.translations.accessibleName.itemsPerPageOptions}
+      />
+    </form>
+  );
 
-  #renderItemsPerPageInfo = () => {
-    return (
-      <div part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.INFO]: true })}>
-        <span
-          part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.INFO__TEXT]: true })}
-        >
-          {this.translations.text.showingItems
-            .replace(AMOUNT_ITEMS_IN_PAGE, this.itemsPerPage.toString())
-            .replace(
-              TOTAL_ITEMS,
-              this.totalItems.toString() || this.translations.text.unknownItems
-            )}
-        </span>
-      </div>
-    );
-  };
+  #renderItemsPerPageInfo = () => (
+    <div part={PAGINATOR_PARTS_DICTIONARY.INFO}>
+      <span part={PAGINATOR_PARTS_DICTIONARY.INFO__TEXT}>
+        {this.translations.text.showingItems
+          .replace(FIRST_ITEM_IN_PAGE, this.#getFirstItemInPage())
+          .replace(LAST_ITEM_IN_PAGE, this.#getLastItemInPage())
+          .replace(TOTAL_ITEMS, this.#getTotalItemsString())}
+      </span>
+    </div>
+  );
 
-  #renderFirstControl = () => {
-    return (
-      <button
-        part={tokenMap({
-          [PAGINATOR_PARTS_DICTIONARY.FIRST]: true,
-          [PAGINATOR_PARTS_DICTIONARY.DISABLED]: this.actualPage === 1
-        })}
-        disabled={this.actualPage === 1}
-        onClick={this.#handleFirst}
-      >
-        {this.translations.text.first}
-      </button>
-    );
-  };
+  #renderFirstControl = () => (
+    <button
+      part={tokenMap({
+        [PAGINATOR_PARTS_DICTIONARY.FIRST]: true,
+        [PAGINATOR_PARTS_DICTIONARY.DISABLED]: this.actualPage === 1
+      })}
+      disabled={this.actualPage === 1}
+      onClick={this.actualPage !== 1 && this.#handleFirst}
+      type="button"
+    >
+      {this.translations.text.first}
+    </button>
+  );
 
-  #renderLastControl = () => {
-    return (
-      <button
-        part={tokenMap({
-          [PAGINATOR_PARTS_DICTIONARY.LAST]: true,
-          [PAGINATOR_PARTS_DICTIONARY.DISABLED]:
-            this.actualPage === this.totalPages
-        })}
-        onClick={this.#handleLast}
-        disabled={this.actualPage === this.totalPages}
-      >
-        {this.translations.text.last}
-      </button>
-    );
-  };
+  #renderLastControl = () => (
+    <button
+      part={tokenMap({
+        [PAGINATOR_PARTS_DICTIONARY.LAST]: true,
+        [PAGINATOR_PARTS_DICTIONARY.DISABLED]:
+          this.actualPage === this.totalPages
+      })}
+      onClick={
+        (this.actualPage !== this.totalPages || this.hasNextPage) &&
+        this.#handleLast
+      }
+      disabled={this.actualPage === this.totalPages}
+      type="button"
+    >
+      {this.translations.text.last}
+    </button>
+  );
 
-  #renderPrevControl = () => {
-    return (
-      <button
-        part={tokenMap({
-          [PAGINATOR_PARTS_DICTIONARY.PREV]: true,
-          [PAGINATOR_PARTS_DICTIONARY.DISABLED]: this.actualPage === 1
-        })}
-        onClick={this.#handlePrev}
-        disabled={this.actualPage === 1}
-      >
-        {this.translations.text.prev}
-      </button>
-    );
-  };
+  #renderNextControl = () => (
+    <button
+      part={tokenMap({
+        [PAGINATOR_PARTS_DICTIONARY.NEXT]: true,
+        [PAGINATOR_PARTS_DICTIONARY.DISABLED]:
+          this.actualPage === this.totalPages
+      })}
+      disabled={this.actualPage === this.totalPages}
+      onClick={
+        (this.actualPage !== this.totalPages || this.hasNextPage) &&
+        this.#handleNext
+      }
+      type="button"
+    >
+      {this.translations.text.next}
+    </button>
+  );
 
-  #renderNextControl = () => {
-    return (
-      <button
-        part={tokenMap({
-          [PAGINATOR_PARTS_DICTIONARY.NEXT]: true,
-          [PAGINATOR_PARTS_DICTIONARY.DISABLED]:
-            this.actualPage === this.totalPages
-        })}
-        disabled={this.actualPage === this.totalPages}
-        onClick={this.#handleNext}
-      >
-        {this.translations.text.next}
-      </button>
-    );
-  };
+  #renderPrevControl = () => (
+    <button
+      part={tokenMap({
+        [PAGINATOR_PARTS_DICTIONARY.PREV]: true,
+        [PAGINATOR_PARTS_DICTIONARY.DISABLED]: this.actualPage === 1
+      })}
+      disabled={this.actualPage === 1}
+      onClick={this.actualPage !== 1 && this.#handlePrev}
+      type="button"
+    >
+      {this.translations.text.prev}
+    </button>
+  );
 
-  #renderNavigationControls = () => {
-    return (
-      <ol
-        class="pages"
-        part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.PAGES]: true })}
-        onClick={this.#handleSelectedPageChange}
-      >
-        {this.#getPaginationRange().map((page, index) => {
-          if (page > 0) {
-            // Validate if pagination has hyperlink
-            if (this.hasHyperlink) {
-              return (
-                <li>
-                  <a
-                    key={index}
-                    part={tokenMap({
-                      [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
-                        this.actualPage === page
-                    })}
-                    href={this.model[page - 1]}
-                  >
-                    {page}
-                  </a>
-                </li>
-              );
-            }
-            // Validate if pagination has urlMapping, if true, return anchor element
-            if ((this.model as PaginatorRenderNumericModel)?.urlMapping) {
-              return (
-                <li>
-                  <a
-                    key={index}
-                    id={page.toString()}
-                    part={tokenMap({
-                      [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
-                        this.actualPage === page
-                    })}
-                    href={(
-                      this.model as PaginatorRenderNumericModel
-                    ).urlMapping(page)}
-                  >
-                    {page}
-                  </a>
-                </li>
-              );
-            }
-            // Else, return a button with page number as value
-            return (
-              <li>
-                <button
-                  key={index}
-                  part={tokenMap({
-                    [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
-                      this.actualPage === page
-                  })}
-                  value={page}
-                >
-                  {page}
-                </button>
-              </li>
-            );
-          }
-          // if page is "-1", it renders a span with the ellipsis
-          return (
-            <li>
-              <span
-                key={index}
-                part={tokenMap({
-                  [PAGINATOR_PARTS_DICTIONARY.ELLIPSIS]: true
-                })}
-              >
-                {this.translations.text.ellipsis}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
-    );
-  };
+  #renderNavigationControls = () => (
+    <ol
+      class="pages"
+      onClick={this.#handleSelectedPageChange}
+      part={PAGINATOR_PARTS_DICTIONARY.PAGES}
+      role="navigation"
+    >
+      {this.#getPaginationRange().map(this.#renderPaginatorItem)}
+    </ol>
+  );
 
   #renderNavigationControlsInfo = () => (
-    <div part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.INFO]: true })}>
-      <span part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.INFO__TEXT]: true })}>
+    <div part={PAGINATOR_PARTS_DICTIONARY.INFO}>
+      <span part={PAGINATOR_PARTS_DICTIONARY.INFO__TEXT}>
         {this.translations.text.showingPage
           .replace(ACTUAL_PAGE, this.actualPage?.toString())
           .replace(
@@ -579,16 +588,23 @@ export class ChPaginator implements ComponentInterface {
   );
 
   #renderNavigationGoTo = () => (
-    <div part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.GO_TO]: true })}>
-      {this.translations.text.page}
+    <div part={PAGINATOR_PARTS_DICTIONARY.GO_TO}>
+      <label
+        htmlFor="goto-input"
+        part={PAGINATOR_PARTS_DICTIONARY.GO_TO__LABEL}
+      >
+        {this.translations.text.page}
+      </label>
       <input
-        part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.GO_TO__INPUT]: true })}
+        id="goto-input"
+        part={PAGINATOR_PARTS_DICTIONARY.GO_TO__INPUT}
         type="number"
         min="1"
         max={this.totalPages}
         value={this.actualPage}
         onKeyDown={this.#handleGoToOnKeyDown}
         onBlur={this.#handleGoToOnBlur}
+        aria-label={this.translations.accessibleName.goToInput}
       />
       {this.translations.text.of}
       {this.translations.text.of &&
@@ -597,72 +613,74 @@ export class ChPaginator implements ComponentInterface {
     </div>
   );
 
-  render() {
-    // Array with controls for mapping
-    const controls = [
-      {
-        name: "itemsPerPage",
-        render: () => this.#renderItemsPerPage(),
-        show: this.showItemsPerPage
-      },
-      {
-        name: "itemsPerPageInfo",
-        render: () => this.#renderItemsPerPageInfo(),
-        show: this.showItemsPerPageInfo
-      },
-      {
-        name: "navigationControls",
-        render: () => this.#renderNavigationControls(),
-        show: this.showNavigationControls
-      },
-      {
-        name: "navigationGoTo",
-        render: () => this.#renderNavigationGoTo(),
-        show: this.showNavigationGoTo
-      },
-      {
-        name: "navigationControlsInfo",
-        render: () => this.#renderNavigationControlsInfo(),
-        show: this.showNavigationControlsInfo
-      },
-      {
-        name: "firstControl",
-        render: () => this.#renderFirstControl(),
-        show: this.showFirstControl
-      },
-      {
-        name: "lastControl",
-        render: () => this.#renderLastControl(),
-        show: this.showLastControl
-      },
-      {
-        name: "prevControl",
-        render: () => this.#renderPrevControl(),
-        show: this.showPrevControl
-      },
-      {
-        name: "nextControl",
-        render: () => this.#renderNextControl(),
-        show: this.showNextControl
+  #renderPaginatorItem = (page: number, index: number) => {
+    if (page > 0) {
+      // Validate if pagination has hyperlink
+      if (this.hasHyperlink) {
+        return (
+          <li>
+            <a
+              key={index}
+              part={tokenMap({
+                [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
+                  this.actualPage === page
+              })}
+              href={this.model[page - 1]}
+            >
+              {page}
+            </a>
+          </li>
+        );
       }
-    ];
-
-    // Filter controls that has to be shown
-    const visibleControls = controls.filter(control => control.show);
-
-    // Sort visible controls regarding their order value
-    visibleControls.sort((a, b) => {
-      const orderA =
-        this.order[a.name as keyof ControlsOrder] ?? Number.MAX_SAFE_INTEGER;
-      const orderB =
-        this.order[b.name as keyof ControlsOrder] ?? Number.MAX_SAFE_INTEGER;
-      return orderA - orderB;
-    });
-
+      // Validate if pagination has urlMapping, if true, return anchor element
+      if ((this.model as PaginatorRenderNumericModel)?.urlMapping) {
+        return (
+          <li>
+            <a
+              key={index}
+              id={page.toString()}
+              part={tokenMap({
+                [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
+                  this.actualPage === page
+              })}
+              href={(this.model as PaginatorRenderNumericModel).urlMapping(
+                page
+              )}
+            >
+              {page}
+            </a>
+          </li>
+        );
+      }
+      // Else, return a button with page number as value
+      return (
+        <li>
+          <button
+            key={index}
+            part={tokenMap({
+              [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]: this.actualPage === page
+            })}
+            value={page}
+            type="button"
+          >
+            {page}
+          </button>
+        </li>
+      );
+    }
+    // if page is "-1", it renders a span with the ellipsis
     return (
-      <Host part={tokenMap({ [PAGINATOR_PARTS_DICTIONARY.CONTROLS]: true })}>
-        {visibleControls.map(control => control.render())}
-      </Host>
+      <li>
+        <span key={index} part={PAGINATOR_PARTS_DICTIONARY.ELLIPSIS}>
+          {this.translations.text.ellipsis}
+        </span>
+      </li>
+    );
+  };
+
+  render() {
+    return (
+      <Host>{this.controlsToRender.map(control => control.render())}</Host>
     );
   }
 }

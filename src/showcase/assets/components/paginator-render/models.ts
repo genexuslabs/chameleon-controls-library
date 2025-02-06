@@ -1,5 +1,4 @@
 import {
-  ControlsOrder,
   PaginatorRenderHyperlinkItemModel,
   PaginatorRenderNumericModel
 } from "./../../../../components/paginator-render/types";
@@ -38,15 +37,3 @@ export const itemsPerPageOptionsModel: ComboBoxModel = [
   { value: "20", caption: "20" },
   { value: "30", caption: "30" }
 ];
-
-export const customOrder: ControlsOrder = {
-  itemsPerPage: 4,
-  itemsPerPageInfo: 1,
-  navigationControls: 9,
-  navigationGoTo: 2,
-  navigationControlsInfo: 3,
-  firstControl: 5,
-  prevControl: 6,
-  nextControl: 7,
-  lastControl: 8
-};

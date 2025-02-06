@@ -355,6 +355,7 @@ export const PAGINATOR_PARTS_DICTIONARY = {
   DISABLED: "disabled",
   ITEMS_PER_PAGE: "items-per-page",
   ITEMS_PER_PAGE__COMBO_BOX: "items-per-page__combo-box",
+  ITEMS_PER_PAGE__LABEL: "items-per-page__label",
   INFO: "info",
   ELLIPSIS: "ellipsis",
   INFO__TEXT: "info__text",
@@ -366,7 +367,8 @@ export const PAGINATOR_PARTS_DICTIONARY = {
   FIRST: "first__button",
   LAST: "last__button",
   GO_TO: "go-to",
-  GO_TO__INPUT: "go-to__input"
+  GO_TO__INPUT: "go-to__input",
+  GO_TO__LABEL: "go-to__label"
 } as const;
 
 // - - - - - - - - - - - - - - - - - - - -

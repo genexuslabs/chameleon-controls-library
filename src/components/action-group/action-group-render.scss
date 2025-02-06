@@ -20,7 +20,6 @@
 
 :host([items-overflow-behavior="responsive-collapse"]) {
   contain: inline-size;
-  overflow: hidden;
 }
 
 hr {

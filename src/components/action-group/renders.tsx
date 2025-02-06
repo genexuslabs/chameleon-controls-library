@@ -56,7 +56,6 @@ const renderItem = (
   if (item.type === "separator") {
     return (
       <hr
-        aria-orientation="vertical"
         id={marker?.id}
         class={markerClasses}
         part={tokenMap({
@@ -71,6 +70,7 @@ const renderItem = (
 
   return marker ? (
     <div
+      role="listitem"
       id={marker.id}
       class={markerClasses}
       style={!itemIsVisible ? { "inline-size": marker.size } : undefined}
@@ -78,7 +78,12 @@ const renderItem = (
       {itemIsVisible && <slot name={item.id} />}
     </div>
   ) : (
-    <slot name={item.id} />
+    <slot
+      // @ts-expect-error This error is a StencilJS's bug.
+      // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot#attributes
+      role="listitem"
+      name={item.id}
+    />
   );
 };
 

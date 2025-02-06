@@ -13,13 +13,11 @@ The `ch-grid-columnset` component represents a group of columns.
 
 ### Used by
 
- - [ch-test-flexible-layout](../../../components/test/test-flexible-layout)
  - [gx-grid-chameleon](../../../components/gx-grid)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-test-flexible-layout --> ch-grid-columnset
   gx-grid-chameleon --> ch-grid-columnset
   style ch-grid-columnset fill:#f9f,stroke:#333,stroke-width:4px
 ```

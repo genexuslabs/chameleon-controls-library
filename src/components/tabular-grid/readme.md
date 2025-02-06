@@ -321,6 +321,7 @@ Type: `Promise<void>`
 ### Used by
 
  - [ch-tabular-grid-render](../tabular-grid-render)
+ - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
 
@@ -335,6 +336,7 @@ graph TD;
   ch-tabular-grid-settings --> ch-window
   ch-window --> ch-window-close
   ch-tabular-grid-render --> ch-tabular-grid
+  ch-test-flexible-layout --> ch-tabular-grid
   style ch-tabular-grid fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

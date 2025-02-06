@@ -4,6 +4,11 @@ import {
   ActionMenuItemSlotModel
 } from "../action-menu/types";
 
+export type ItemsOverflowBehavior =
+  | "add-scroll"
+  | "multiline"
+  | "responsive-collapse";
+
 export type ActionGroupModel = ActionGroupItemModel[];
 
 export type ActionGroupItemModel =

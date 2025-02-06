@@ -1,6 +1,9 @@
 import { Component, Element, h, Host, Prop, State, Watch } from "@stencil/core";
-import type { ActionGroupDisplayedMarkers, ActionGroupModel } from "./types";
-import type { ItemsOverflowBehavior } from "./internal/action-group/types";
+import type {
+  ActionGroupDisplayedMarkers,
+  ActionGroupModel,
+  ItemsOverflowBehavior
+} from "./types";
 // import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
 import { ACTION_MENU_ITEM_EXPORT_PARTS } from "../../common/reserved-names";

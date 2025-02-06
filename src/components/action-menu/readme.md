@@ -29,6 +29,14 @@
 | `hyperlinkClick`     | Fired when an hyperlink is clicked. This event can be prevented, but the dropdown will be closed in any case (prevented or not). | `CustomEvent<{ event: PointerEvent; item: ActionMenuItemActionableModel; }>`                                                                                                                                                                                                                                                                                                      |
 
 
+## CSS Custom Properties
+
+| Name                                           | Description                                                                                 |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `--ch-action-menu-item__background-image-size` | Specifies the size of the start and end images of the items. @default 100%                  |
+| `--ch-action-menu-item__image-size`            | Specifies the box size that contains the start or end images of the items. @default 0.875em |
+
+
 ## Dependencies
 
 ### Used by

@@ -4,7 +4,18 @@
 @include box-sizing();
 
 :host {
+  /**
+   * @prop --ch-action-menu-item__image-size:
+   * Specifies the box size that contains the start or end images of the items.
+   * @default #{$default-decorative-image-size}
+   */
   --ch-action-menu-item__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-action-menu-item__background-image-size:
+   * Specifies the size of the start and end images of the items.
+   * @default 100%
+   */
   --ch-action-menu-item__background-image-size: 100%;
 
   --ch-action-menu-separation: 0px;

@@ -126,16 +126,12 @@ export const ACCORDION_EXPORT_PARTS = joinParts(ACCORDION_PARTS_DICTIONARY);
 //           Action Group Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const ACTION_GROUP_PARTS_DICTIONARY = {
-  ACTIONS_CONTAINER: "actions-container",
   ACTIONS: "actions",
   MORE_ACTIONS: "more-actions",
   MORE_ACTIONS_BUTTON: "more-actions-button",
   MORE_ACTIONS_WINDOW: "more-actions-window",
 
   // - - - - - - - - States - - - - - - - -
-  ADD_SCROLL: "add-scroll", // ACTIONS_CONTAINER
-  MULTILINE: "multiline", // ACTIONS_CONTAINER
-  RESPONSIVE_COLLAPSE: "responsive-collapse", // ACTIONS_CONTAINER
   VERTICAL: "vertical" // SEPARATOR (comes from dropdown dictionary)
 } as const;
 

@@ -1,15 +1,11 @@
-import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
+import { Component, Element, h, Host, Prop, State, Watch } from "@stencil/core";
 import type { ActionGroupDisplayedMarkers, ActionGroupModel } from "./types";
 import type { ItemsOverflowBehavior } from "./internal/action-group/types";
 // import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
-import {
-  ACTION_GROUP_PARTS_DICTIONARY,
-  ACTION_MENU_ITEM_EXPORT_PARTS
-} from "../../common/reserved-names";
+import { ACTION_MENU_ITEM_EXPORT_PARTS } from "../../common/reserved-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { MARKER_CLASS_SELECTOR, renderItems } from "./renders";
-import { tokenMap } from "../../common/utils";
 import { ChPopoverAlign } from "../popover/types";
 import { ActionMenuImagePathCallback } from "../action-menu/types";
 
@@ -32,9 +28,6 @@ export class ChActionGroupRender {
   #responsiveActionsWatcher: IntersectionObserver | undefined;
   #updateActionsRAF: SyncWithRAF | undefined; // Don't allocate memory until needed when dragging
 
-  // Refs
-  #actionsContainerRef: HTMLUListElement;
-
   /**
    * 0 means no collapsed items. 1 means the first items is collapsed. And so
    * on.
@@ -44,6 +37,8 @@ export class ChActionGroupRender {
   collapsedItemsChanged() {
     this.#setModels();
   }
+
+  @Element() el!: HTMLChActionGroupRenderElement;
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -78,8 +73,8 @@ export class ChActionGroupRender {
    * | `multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      |
    * | `responsive-collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
    */
-  @Prop() readonly itemsOverflowBehavior: ItemsOverflowBehavior =
-    "responsive-collapse";
+  @Prop({ reflect: true })
+  readonly itemsOverflowBehavior: ItemsOverflowBehavior = "responsive-collapse";
   @Watch("itemsOverflowBehavior")
   itemsOverflowBehaviorChanged() {
     this.#shouldCheckResponsiveCollapseWatcher = true;
@@ -395,7 +390,7 @@ export class ChActionGroupRender {
     }, INTERSECTION_OPTIONS);
 
     // Observe the actions
-    this.#actionsContainerRef
+    this.el.shadowRoot
       .querySelectorAll(MARKER_CLASS_SELECTOR)
       .forEach(action => this.#responsiveActionsWatcher.observe(action));
   };
@@ -429,6 +424,9 @@ export class ChActionGroupRender {
   };
 
   connectedCallback() {
+    // TODO: Use role="menu"
+    this.el.setAttribute("role", "list");
+
     this.collapsedItems = 0;
     this.#isResponsiveCollapse =
       this.itemsOverflowBehavior === "responsive-collapse";
@@ -454,13 +452,11 @@ export class ChActionGroupRender {
     }
 
     return (
-      <Host
-        class={
-          this.#isResponsiveCollapse ? "ch-responsive-collapse" : undefined
-        }
-      >
+      <Host>
         {this.#isResponsiveCollapse && this.collapsedItems !== 0 && (
-          <ch-dropdown-render
+          <ch-action-menu-render
+            key="__action-menu"
+            role="listitem"
             exportparts={ACTION_MENU_ITEM_EXPORT_PARTS}
             blockAlign={this.moreActionsBlockAlign}
             disabled={this.disabled}
@@ -475,33 +471,16 @@ export class ChActionGroupRender {
                 <slot slot={item.id} name={item.id} />
               ) : undefined
             )}
-          </ch-dropdown-render>
+          </ch-action-menu-render>
         )}
 
-        <ul
-          class={{
-            content: true,
-            "responsive-collapse": this.#isResponsiveCollapse
-          }}
-          part={tokenMap({
-            [ACTION_GROUP_PARTS_DICTIONARY.ACTIONS_CONTAINER]: true,
-            [ACTION_GROUP_PARTS_DICTIONARY.ADD_SCROLL]:
-              this.itemsOverflowBehavior === "add-scroll",
-            [ACTION_GROUP_PARTS_DICTIONARY.MULTILINE]:
-              this.itemsOverflowBehavior === "multiline",
-            [ACTION_GROUP_PARTS_DICTIONARY.RESPONSIVE_COLLAPSE]:
-              this.itemsOverflowBehavior === "responsive-collapse"
-          })}
-          ref={el => (this.#actionsContainerRef = el)}
-        >
-          {renderItems(
-            this.model,
-            this.#isResponsiveCollapse,
-            this.#displayedMarkers,
-            this.disabled,
-            this.getImagePathCallback
-          )}
-        </ul>
+        {renderItems(
+          this.model,
+          this.#isResponsiveCollapse,
+          this.#displayedMarkers,
+          this.disabled,
+          this.getImagePathCallback
+        )}
       </Host>
     );
 

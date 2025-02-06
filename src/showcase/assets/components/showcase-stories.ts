@@ -1,6 +1,7 @@
 import { accordionShowcaseStory } from "./accordion/accordion.showcase";
 import { actionGroupShowcaseStory } from "./action-group/action-group.showcase";
 import { actionListShowcaseStory } from "./action-list/action-list.showcase";
+import { actionMenuShowcaseStory } from "./action-menu/action-menu.showcase";
 import { barcodeScannerShowcaseStory } from "./barcode-scanner/barcode-scanner.showcase";
 import { chatShowcaseStory } from "./chat/chat.showcase";
 import { checkboxShowcaseStory } from "./checkbox/checkbox.showcase";
@@ -9,7 +10,6 @@ import { codeEditorShowcaseStory } from "./code-editor/code-editor.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
 import { dialogShowcaseStory } from "./dialog/dialog.showcase";
-import { actionMenuShowcaseStory } from "./action-menu/dropdown.showcase";
 import { editShowcaseStory } from "./edit/edit.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { imageShowcaseStory } from "./image/image.showcase";

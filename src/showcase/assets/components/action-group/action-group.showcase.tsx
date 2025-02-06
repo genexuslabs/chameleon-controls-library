@@ -6,9 +6,9 @@ const state: Partial<HTMLChActionGroupRenderElement> = {};
 
 const render = () => (
   <div class="action-group-test-main-wrapper">
-    <div class="fieldset-test">
-      <legend class="label field-legend-test">Primary</legend>
+    <h2 class="label field-legend-test">Primary</h2>
 
+    <div class="fieldset-test">
       <ch-action-group-render
         class="dropdown dropdown-secondary"
         model={state.model}
@@ -18,12 +18,17 @@ const render = () => (
         itemsOverflowBehavior={state.itemsOverflowBehavior}
         // moreActionsDropdownPosition={state.moreActionsDropdownPosition}
       >
-        <ch-edit slot="pepe" class="input" type="search"></ch-edit>
+        <ch-edit
+          slot="pepe"
+          accessibleName="Name"
+          class="input"
+          type="search"
+        ></ch-edit>
       </ch-action-group-render>
     </div>
     {/* 
     <div class="fieldset-test">
-      <legend class="label field-legend-test">Secondary</legend>
+      <h2 class="label field-legend-test">Secondary</h2>
 
       <ch-action-group-render
         class="dropdown dropdown-secondary"

@@ -16,6 +16,8 @@ export type ActionGroupItemModel =
   | ActionGroupSeparatorModel
   | ActionGroupSlotModel;
 
+// TODO: Find a way to implement the itemsResponsiveCollapseBlockAlign and
+// itemsResponsiveCollapseInlineAlign properties
 export type ActionGroupActionableModel = ActionMenuItemActionableModel;
 export type ActionGroupSeparatorModel = ActionMenuItemSeparatorModel;
 export type ActionGroupSlotModel = ActionMenuItemSlotModel;

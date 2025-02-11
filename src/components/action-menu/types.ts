@@ -49,7 +49,7 @@ export type ActionMenuItemActionableModel = {
 
 export type ActionMenuItemSeparatorModel = {
   id?: string;
-  part?: string;
+  parts?: string;
   type: ActionMenuItemTypeSeparator;
 };
 

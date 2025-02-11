@@ -62,7 +62,7 @@ const renderItem = (
           [item.id]: !!item.id,
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.SEPARATOR]: true,
           [ACTION_GROUP_PARTS_DICTIONARY.VERTICAL]: true,
-          [item.part]: !!item.part
+          [item.parts]: !!item.parts
         })}
       />
     );

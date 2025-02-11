@@ -205,7 +205,7 @@ export class ChActionMenuRender {
         part={tokenMap({
           [item.id]: !!item.id,
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.SEPARATOR]: true,
-          [item.part]: !!item.part
+          [item.parts]: !!item.parts
         })}
       />
     ),

@@ -69,7 +69,7 @@ export class ChActionMenuRender {
    * Specifies the block alignment of the dropdown menu that is placed
    * relative to the expandable button.
    */
-  @Prop() readonly blockAlign: ChPopoverAlign = "center";
+  @Prop() readonly blockAlign: ChPopoverAlign = "outside-end";
 
   /**
    * This attribute lets you specify if the element is disabled.

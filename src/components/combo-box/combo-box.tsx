@@ -568,7 +568,16 @@ export class ChComboBoxRender
 
     // No item was selected and the suggest is not strict
     if (!this.suggestOptions?.strict) {
-      // TODO: Should we update the #lastConfirmedValue?
+      // TODO: Add a unit test: filters, no strict, value confirmation with
+      // Enter or Tab. Expected: The value update should not be debounced
+      // TODO: Avoid emitting duplicated input events if the value did not
+      // changed
+
+      // Clear last debounce and update the value right away, because the value
+      // selection was confirmed
+      clearTimeout(this.#queuedInputValueUpdate);
+      this.value = this.#inputRef.value;
+      this.input.emit(this.value);
 
       // TODO: Add a unit test for this
       this.#emitChangeEvent();

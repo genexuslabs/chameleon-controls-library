@@ -1,5 +1,9 @@
 import { h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
 import {
   GXWebModel,
   eagerLargeModel,
@@ -7,52 +11,29 @@ import {
   simpleModel2
 } from "./models";
 import { kbExplorerModel } from "../tree-view/models";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChActionMenuRenderElement> = {};
 
 const render = () => (
   <div class="dropdown-test-main-wrapper">
-    <fieldset class="fieldset-test">
-      <legend class="label field-legend-test">Primary</legend>
-
-      <ch-action-menu-render
-        class="dropdown dropdown-primary"
-        blockAlign={state.blockAlign}
-        buttonAccessibleName={state.buttonAccessibleName}
-        disabled={state.disabled}
-        inlineAlign={state.inlineAlign}
-        model={state.model}
-      >
-        Action
-        <ch-tree-view-render
-          slot="tree"
-          class="tree-view tree-view-secondary"
-          model={kbExplorerModel}
-          style={{ minBlockSize: "300px", minInlineSize: "300px" }}
-        ></ch-tree-view-render>
-      </ch-action-menu-render>
-    </fieldset>
-
-    <fieldset class="fieldset-test">
-      <legend class="label field-legend-test">Secondary</legend>
-
-      <ch-action-menu-render
-        class="dropdown dropdown-secondary"
-        blockAlign={state.blockAlign}
-        buttonAccessibleName={state.buttonAccessibleName}
-        disabled={state.disabled}
-        inlineAlign={state.inlineAlign}
-        model={state.model}
-      >
-        John Doe
-        <ch-tree-view-render
-          slot="tree"
-          class="tree-view tree-view-secondary"
-          model={kbExplorerModel}
-          style={{ minBlockSize: "300px", minInlineSize: "300px" }}
-        ></ch-tree-view-render>
-      </ch-action-menu-render>
-    </fieldset>
+    <ch-action-menu-render
+      class="dropdown dropdown-secondary"
+      blockAlign={state.blockAlign}
+      buttonAccessibleName={state.buttonAccessibleName}
+      disabled={state.disabled}
+      expanded={state.expanded}
+      inlineAlign={state.inlineAlign}
+      model={state.model}
+    >
+      Expand menu
+      <ch-tree-view-render
+        slot="tree"
+        class="tree-view tree-view-secondary"
+        model={kbExplorerModel}
+        style={{ minBlockSize: "300px", minInlineSize: "300px" }}
+      ></ch-tree-view-render>
+    </ch-action-menu-render>
   </div>
 );
 
@@ -85,9 +66,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionMenuRenderE
           type: "string"
         },
         {
-          id: "inlineAlign",
-          caption: "Inline Align",
-          value: "center",
+          id: "blockAlign",
+          caption: "Block Align",
+          value: "outside-end",
           type: "enum",
           values: [
             {
@@ -110,9 +91,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionMenuRenderE
           ]
         },
         {
-          id: "blockAlign",
-          caption: "Block Align",
-          value: "outside-end",
+          id: "inlineAlign",
+          caption: "Inline Align",
+          value: "inside-start",
           type: "enum",
           values: [
             {
@@ -139,14 +120,68 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionMenuRenderE
           caption: "Disabled",
           value: false,
           type: "boolean"
+        },
+        {
+          id: "expanded",
+          caption: "Expanded",
+          value: false,
+          type: "boolean"
         }
       ]
+    }
+  ];
+
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChActionMenuRenderElement>[] =
+  [
+    { name: "buttonAccessibleName", defaultValue: undefined, type: "string" },
+    { name: "blockAlign", defaultValue: "outside-end", type: "string" },
+    { name: "class", fixed: true, value: "dropdown", type: "string" },
+    { name: "inlineAlign", defaultValue: "center", type: "string" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "expanded", defaultValue: false, type: "boolean" },
+    { name: "model", fixed: true, value: "controlUIModel", type: "string" },
+    {
+      name: "buttonClick",
+      fixed: true,
+      value: "handleButtonClick",
+      type: "event"
+    },
+    {
+      name: "expandedChange",
+      fixed: true,
+      value: "syncExpandedState",
+      type: "event"
+    },
+    {
+      name: "hyperlinkClick",
+      fixed: true,
+      value: "navigateInApp",
+      type: "event"
     }
   ];
 
 export const actionMenuShowcaseStory: ShowcaseStory<HTMLChActionMenuRenderElement> =
   {
     properties: showcaseRenderProperties,
+    markupWithUIModel: {
+      uiModel: () => state.model,
+      uiModelType: "ComboBoxModel",
+      render: {
+        react: () => `<ChActionMenuRender${renderShowcaseProperties(
+          state,
+          "react",
+          showcasePropertiesInfo
+        )}
+      ></ChActionMenuRender>`,
+
+        stencil: () => `<ch-action-menu-render${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
+        ></ch-action-menu-render>`
+      }
+    },
     render: render,
     state: state
   };

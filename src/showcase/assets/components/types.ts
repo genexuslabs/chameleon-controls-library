@@ -160,6 +160,7 @@ export type ShowcaseRenderPropertyObject<
 export type ChameleonStories = {
   accordion: ShowcaseStory<HTMLChAccordionRenderElement>;
   "action-group": ShowcaseStory<HTMLChActionGroupRenderElement>;
+  "action-menu": ShowcaseStory<HTMLChActionMenuRenderElement>;
   "action-list": ShowcaseStory<HTMLChActionListRenderElement>;
   "barcode-scanner": ShowcaseStory<HTMLChBarcodeScannerElement>;
   checkbox: ShowcaseStory<HTMLChCheckboxElement>;
@@ -167,7 +168,6 @@ export type ChameleonStories = {
   code: ShowcaseStory<HTMLChCodeElement>;
   "combo-box": ShowcaseStory<HTMLChComboBoxRenderElement>;
   dialog: ShowcaseStory<HTMLChDialogElement>;
-  dropdown: ShowcaseStory<HTMLChDropdownRenderElement>;
   edit: ShowcaseStory<HTMLChEditElement>;
   image: ShowcaseStory<HTMLChImageElement>;
   "layout-splitter": ShowcaseStory<HTMLChLayoutSplitterElement>;

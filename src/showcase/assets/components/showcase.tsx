@@ -75,6 +75,7 @@ import {
   USAGE_STENCIL_JS
 } from "./renders";
 import { findComponentMetadataUsingURLHash } from "./pages";
+import { getDropdownImagePathCallback } from "./action-menu/models";
 
 const SHOWCASE_STYLES: ThemeModel = [
   {
@@ -119,6 +120,7 @@ const MERCURY_BASE_THEME: ThemeModel = [
 
 registryProperty("getImagePathCallback", {
   "ch-action-list-render": getActionListPathCallback,
+  "ch-action-menu-render": getDropdownImagePathCallback,
   "ch-accordion-render": getAccordionPathCallback,
   "ch-checkbox": getImagePathCallbackEdit,
   "ch-combo-box-render": getComboBoxImagePathCallback,

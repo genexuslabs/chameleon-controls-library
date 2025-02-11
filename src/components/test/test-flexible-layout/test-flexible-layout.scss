@@ -16,6 +16,15 @@ ch-test-flexible-layout {
   }
 }
 
+ch-action-group-render {
+  padding-inline: var(--mer-spacing--sm, 12px);
+
+  &::part(separator) {
+    background-color: currentColor;
+    margin-block: var(--mer-spacing--2xs, var(--spacing--xs));
+  }
+}
+
 .flexible-layout {
   &::part(leaf inline) {
     background-color: var(--mer-surface__elevation--01);

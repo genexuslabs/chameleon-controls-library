@@ -1,42 +1,60 @@
-import { Component, forceUpdate, h, Prop, State } from "@stencil/core";
-import { ActionGroupItemModel, ActionGroupModel } from "./types";
-import { DropdownPosition } from "../dropdown/internal/dropdown/types";
-import { ChActionGroupCustomEvent } from "../../components";
-import { ItemsOverflowBehavior } from "./internal/action-group/types";
-import { fromGxImageToURL } from "../tree-view/genexus-implementation";
-import {
-  ACTION_GROUP_EXPORT_PARTS,
-  DROPDOWN_EXPORT_PARTS
-} from "../../common/reserved-names";
+import { Component, Element, h, Host, Prop, State, Watch } from "@stencil/core";
+import type {
+  ActionGroupDisplayedMarkers,
+  ActionGroupModel,
+  ItemsOverflowBehavior
+} from "./types";
+// import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
-const DEFAULT_ACTION_CLASS = "action-group-item";
-const DEFAULT_SUB_ACTION_CLASS = "dropdown-item";
+import { ACTION_MENU_ITEM_EXPORT_PARTS } from "../../common/reserved-names";
+import { SyncWithRAF } from "../../common/sync-with-frames";
+import { MARKER_CLASS_SELECTOR, renderItems } from "./renders";
+import { ChPopoverAlign } from "../popover/types";
+import { ActionMenuImagePathCallback } from "../action-menu/types";
+
+// const FLOATING_POINT_ERROR = 1;
+
+const INTERSECTION_OPTIONS: IntersectionObserverInit = { threshold: 1 };
 
 @Component({
   tag: "ch-action-group-render",
   styleUrl: "action-group-render.scss",
-  shadow: false // Necessary to avoid focus capture
+  shadow: true // Necessary to avoid focus capture
 })
 export class ChActionGroupRender {
-  @State() displayedItemsCount = -1;
-  @State() moreActionsButtonWasExpanded = false;
+  #collapsedModel: ActionGroupModel = [];
+  #isResponsiveCollapse = false;
+  #shouldCheckResponsiveCollapseWatcher = true;
+
+  // Responsive collapse variables
+  #displayedMarkers: ActionGroupDisplayedMarkers[] | undefined;
+  #responsiveActionsWatcher: IntersectionObserver | undefined;
+  #updateActionsRAF: SyncWithRAF | undefined; // Don't allocate memory until needed when dragging
 
   /**
-   * Specifies the parts that are exported by the internal action-group. This
-   * property is useful to override the exported parts.
+   * 0 means no collapsed items. 1 means the first items is collapsed. And so
+   * on.
    */
-  @Prop() readonly actionGroupExportParts: string = ACTION_GROUP_EXPORT_PARTS;
+  @State() collapsedItems = 0;
+  @Watch("collapsedItems")
+  collapsedItemsChanged() {
+    this.#setModels();
+  }
+
+  @Element() el!: HTMLChActionGroupRenderElement;
 
   /**
-   * A CSS class to set as the `ch-action-group` element class.
+   * This attribute lets you specify if the element is disabled.
+   * If disabled, it will not fire any user interaction related event
+   * (for example, click event).
    */
-  @Prop() readonly cssClass: string = "action-group";
+  @Prop() readonly disabled: boolean = false;
 
   /**
-   * Specifies the parts that are exported by the internal dropdown. This
-   * property is useful to override the exported parts.
+   * This property specifies a callback that is executed when the path for an
+   * startImgSrc or endImgSrc (of an item) needs to be resolved.
    */
-  @Prop() readonly dropdownExportParts: string = DROPDOWN_EXPORT_PARTS;
+  @Prop() readonly getImagePathCallback?: ActionMenuImagePathCallback;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -49,317 +67,260 @@ export class ChActionGroupRender {
   @Prop() readonly gxSettings: any;
 
   /**
-   * This callback is executed when an item is clicked.
-   */
-  @Prop() readonly itemClickCallback: (
-    event: UIEvent,
-    target: string,
-    itemId: string
-  ) => void;
-
-  /**
    * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
    * to make the control responsive to changes in the Width of the container of ActionGroup.
    *
    * | Value                 | Details                                                                                          |
    * | --------------------- | ------------------------------------------------------------------------------------------------ |
-   * | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          |
-   * | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      |
-   * | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
+   * | `add-scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          |
+   * | `multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      |
+   * | `responsive-collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
    */
-  @Prop() readonly itemsOverflowBehavior: ItemsOverflowBehavior =
-    "ResponsiveCollapse";
+  @Prop({ reflect: true })
+  readonly itemsOverflowBehavior: ItemsOverflowBehavior = "responsive-collapse";
+  @Watch("itemsOverflowBehavior")
+  itemsOverflowBehaviorChanged() {
+    this.#shouldCheckResponsiveCollapseWatcher = true;
+    this.#isResponsiveCollapse =
+      this.itemsOverflowBehavior === "responsive-collapse";
+
+    this.#disconnectActionsObserver();
+    this.#removeOrInitializeMarkersVisibility();
+  }
 
   /**
    * This property lets you define the model of the ch-action-group control.
    */
-  @Prop() readonly model: ActionGroupModel;
+  @Prop() readonly model: ActionGroupModel | undefined;
+  @Watch("model")
+  modelChanged() {
+    this.#shouldCheckResponsiveCollapseWatcher = true;
+
+    this.#disconnectActionsObserver();
+    this.#removeOrInitializeMarkersVisibility();
+    this.#setModels();
+  }
 
   /**
-   * This attribute lets you specify the label for the more actions button.
+   * This property lets you specify the label for the more actions button.
    * Important for accessibility.
    */
-  @Prop() readonly moreActionsAccessibleName: string = "Show options";
+  @Prop() readonly moreActionsAccessibleName: string = "Show more actions";
 
   /**
-   * Specifies the position of the dropdown section that is placed relative to
-   * the more actions button.
+   * Specifies the block alignment of the more actions dropdown that is
+   * placed relative to the "more actions" button.
    */
-  @Prop() readonly moreActionsDropdownPosition: DropdownPosition =
-    "InsideStart_OutsideEnd";
+  @Prop() readonly moreActionsBlockAlign: ChPopoverAlign = "outside-end";
 
   /**
-   * Determine if the dropdown section should be opened when the expandable
-   * button of the control is focused.
-   * TODO: Add implementation
+   * This attribute lets you specify the caption for the more actions button.
    */
-  @Prop() readonly openOnFocus: boolean = false;
+  @Prop() readonly moreActionsCaption: string | undefined;
 
   /**
-   * A CSS class to set as the `ch-dropdown-item` element class.
-   * This default class is used for the items that don't have an explicit class.
+   * Specifies the inline alignment of the more actions dropdown that is
+   * placed relative to the "more actions" button.
    */
-  @Prop() readonly separatorCssClass: string =
-    "action-group-separator-horizontal";
+  @Prop() readonly moreActionsInlineAlign: ChPopoverAlign = "inside-start";
+
+  // /**
+  //  * Determine if the dropdown section should be opened when the expandable
+  //  * button of the control is focused.
+  //  * TODO: Add implementation
+  //  */
+  // @Prop() readonly openOnFocus: boolean = false;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly useGxRender: boolean = false;
 
-  // /**
-  //  * Fired when the visibility of the dropdown section is changed
-  //  */
-  // @Event() expandedChange: EventEmitter<boolean>;
+  // TODO: Use the getImagePath for resolving the images
+  // #getImagePath = (img: string) =>
+  //   this.useGxRender
+  //     ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
+  //     : img;
 
-  #handleItemClick = (target: string, itemId: string) => (event: UIEvent) => {
-    if (this.itemClickCallback) {
-      this.itemClickCallback(event, target, itemId);
+  #removeOrInitializeMarkersVisibility = () => {
+    this.#displayedMarkers = this.#isResponsiveCollapse
+      ? this.model?.map((_, index) => ({
+          id: index.toString(),
+          displayed: true
+        })) ?? []
+      : undefined;
+  };
+
+  #setModels = () => {
+    this.#collapsedModel = [];
+
+    if (this.model && this.collapsedItems > 0) {
+      this.#collapsedModel = this.model.slice(
+        this.model.length - this.collapsedItems
+      );
     }
   };
 
-  #getImagePath = (img: string) =>
-    this.useGxRender
-      ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
-      : img;
+  // - - - - - - - - - - - - - - - - - - - -
+  //                Observers
+  // - - - - - - - - - - - - - - - - - - - -
+  #setResponsiveCollapse = () => {
+    if (this.#isResponsiveCollapse) {
+      this.#connectActionsObserver();
+    }
+  };
 
-  #renderItem =
-    (level: number, responsiveCollapse: boolean) =>
-    (item: ActionGroupItemModel, index: number) => {
-      const hasItems = item.items?.length > 0;
+  #connectActionsObserver = () => {
+    this.#updateActionsRAF ??= new SyncWithRAF();
+    this.#responsiveActionsWatcher ??= new IntersectionObserver(entries => {
+      // Update the visibility of each entry
+      entries.forEach(entry => {
+        const itemId = Number(entry.target.id);
 
-      return [
-        <ch-dropdown
-          exportparts={this.dropdownExportParts}
-          key={item.id || item.caption || index}
-          id={item.id}
-          caption={item.caption}
-          class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-          endImgSrc={this.#getImagePath(item.endImgSrc)}
-          endImgType={item.endImgType ?? "background"}
-          href={item.link?.url}
-          itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
-          leaf={!hasItems}
-          level={level}
-          openOnFocus={this.openOnFocus}
-          position={
-            (responsiveCollapse
-              ? item.itemsResponsiveCollapsePosition
-              : item.itemsPosition) || "OutsideEnd_InsideStart"
-          }
-          shortcut={item.shortcut}
-          startImgSrc={this.#getImagePath(item.startImgSrc)}
-          startImgType={item.startImgType ?? "background"}
-          onExpandedChange={
-            !item.wasExpanded
-              ? this.#handleItemExpanded(item, "wasExpanded")
-              : null
-          }
-        >
-          {hasItems &&
-            item.wasExpanded &&
-            item.items.map(this.#renderItem(level + 1, responsiveCollapse))}
-
-          {
-            // Render a dummy element if the control was not expanded and has items
-            hasItems && !item.wasExpanded && <ch-dropdown></ch-dropdown>
-          }
-        </ch-dropdown>,
-
-        item.showSeparator && (
-          <div
-            aria-hidden="true"
-            class={
-              "ch-dropdown-separator " +
-              (item.separatorClass || this.separatorCssClass)
-            }
-          ></div>
-        )
-      ];
-    };
-
-  #firstLevelRenderItem = (
-    item: ActionGroupItemModel,
-    index: number,
-    level: number
-  ) => {
-    const hasItems = item.items?.length > 0;
-
-    // Dummy dropdown item to avoid issues when removing all items from the
-    // first level. E. g., if the first level adds a chevron when the item is
-    // a dropdown, by removing all items the chevron won't be displayed
-    const mustRenderDummySubElement =
-      hasItems && // Dropdown has items
-      (!item.wasExpandedInFirstLevel || // Dropdown was not expanded and has items
-        (this.itemsOverflowBehavior === "ResponsiveCollapse" && // Dropdown items are collapsed
-          this.displayedItemsCount !== -1 &&
-          index >= this.displayedItemsCount));
-
-    return [
-      <ch-dropdown
-        exportparts={this.dropdownExportParts}
-        key={item.id || item.caption || index}
-        id={item.id}
-        actionGroupParent={true}
-        caption={item.caption}
-        class={item.actionClass || DEFAULT_ACTION_CLASS}
-        endImgSrc={this.#getImagePath(item.endImgSrc)}
-        endImgType={item.endImgType ?? "background"}
-        href={item.link?.url}
-        itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
-        leaf={!hasItems}
-        level={level}
-        openOnFocus={this.openOnFocus}
-        position={item.itemsPosition || "Center_OutsideEnd"}
-        startImgSrc={this.#getImagePath(item.startImgSrc)}
-        startImgType={item.startImgType ?? "background"}
-        onExpandedChange={
-          !item.wasExpandedInFirstLevel
-            ? this.#handleItemExpanded(item, "wasExpandedInFirstLevel")
-            : null
+        if (this.model[itemId].type === "slot") {
+          this.#displayedMarkers[itemId].size = `${
+            (entry.target as HTMLSlotElement).offsetWidth
+          }px`;
         }
-      >
-        {item.wasExpandedInFirstLevel &&
-          this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-          (this.displayedItemsCount === -1 ||
-            index < this.displayedItemsCount) &&
-          item.items != null &&
-          item.items.map(this.#renderItem(level + 1, false))}
 
-        {mustRenderDummySubElement && <ch-dropdown></ch-dropdown>}
-      </ch-dropdown>,
+        this.#displayedMarkers[itemId].displayed = entry.isIntersecting;
+      });
 
-      item.showSeparator && (
-        <div
-          aria-hidden="true"
-          class={
-            "ch-action-group-separator--vertical " +
-            (item.separatorClass || this.separatorCssClass)
-          }
-        ></div>
-      )
-    ];
+      // Queue a task to update the displayed actions in the next frame
+      this.#updateActionsRAF.perform(this.#updateDisplayedActions);
+    }, INTERSECTION_OPTIONS);
+
+    // Observe the actions
+    this.el.shadowRoot
+      .querySelectorAll(MARKER_CLASS_SELECTOR)
+      .forEach(action => this.#responsiveActionsWatcher.observe(action));
   };
 
-  #handleItemExpanded =
-    (
-      item: ActionGroupItemModel,
-      propertyName: Extract<
-        keyof ActionGroupItemModel,
-        "wasExpanded" | "wasExpandedInFirstLevel" | "wasExpandedInMoreActions"
-      >
-    ) =>
-    () => {
-      item[propertyName] = true;
-      forceUpdate(this);
-    };
+  /**
+   * Update the visibility of the actions.
+   * Only works if itemsOverflowBehavior === "responsive-collapse"
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #updateDisplayedActions = () => {
+    const firstItemIndexThatIsNotVisible = this.#displayedMarkers.findIndex(
+      markerIsDisplayed => !markerIsDisplayed.displayed
+    );
 
-  #firstLevelRenderCollapsedItem =
-    (level: number) => (item: ActionGroupItemModel, index: number) => {
-      const hasItems = item.items?.length > 0;
-
-      return [
-        <ch-dropdown
-          slot="more-items"
-          key={item.id || item.caption || index}
-          exportparts={this.dropdownExportParts}
-          id={item.id}
-          caption={item.caption}
-          class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-          endImgSrc={this.#getImagePath(item.endImgSrc)}
-          endImgType={item.endImgType ?? "background"}
-          href={item.link?.url}
-          itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
-          leaf={!hasItems}
-          level={level}
-          openOnFocus={this.openOnFocus}
-          position={
-            item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
-          }
-          shortcut={item.shortcut}
-          startImgSrc={this.#getImagePath(item.startImgSrc)}
-          startImgType={item.startImgType ?? "background"}
-          onExpandedChange={
-            !item.wasExpandedInMoreActions
-              ? this.#handleItemExpanded(item, "wasExpandedInMoreActions")
-              : null
-          }
-        >
-          {
-            // Render items when the parent is expanded the first time
-            hasItems &&
-              item.wasExpandedInMoreActions &&
-              item.items.map(this.#renderItem(level + 1, true))
-          }
-
-          {
-            // Render a dummy element if the control was not expanded and has items
-            hasItems && !item.wasExpandedInMoreActions && (
-              <ch-dropdown></ch-dropdown>
-            )
-          }
-        </ch-dropdown>,
-
-        item.showSeparator && (
-          <div
-            slot="more-items"
-            aria-hidden="true"
-            class={
-              "ch-dropdown-separator " +
-              (item.separatorClass || this.separatorCssClass)
-            }
-          ></div>
-        )
-      ];
-    };
-
-  #handleDisplayedItemsCountChange = (
-    event: ChActionGroupCustomEvent<number>
-  ) => {
-    this.displayedItemsCount = event.detail;
+    // All items are visible
+    if (firstItemIndexThatIsNotVisible === -1) {
+      this.collapsedItems = 0;
+    }
+    // There are hidden items
+    else {
+      this.collapsedItems = this.model.length - firstItemIndexThatIsNotVisible;
+    }
   };
 
-  #handleMoreActionButtonExpandedChange = () => {
-    this.moreActionsButtonWasExpanded = true;
+  #disconnectActionsObserver = () => {
+    this.#updateActionsRAF?.cancel();
+    this.#updateActionsRAF = undefined;
+
+    this.#responsiveActionsWatcher?.disconnect();
+    this.#responsiveActionsWatcher = undefined;
   };
+
+  connectedCallback() {
+    // TODO: Use role="menu"
+    this.el.setAttribute("role", "list");
+
+    this.collapsedItems = 0;
+    this.#isResponsiveCollapse =
+      this.itemsOverflowBehavior === "responsive-collapse";
+
+    this.#removeOrInitializeMarkersVisibility();
+    this.#setModels();
+  }
+
+  componentDidRender() {
+    if (this.#shouldCheckResponsiveCollapseWatcher) {
+      this.#shouldCheckResponsiveCollapseWatcher = false;
+      this.#setResponsiveCollapse();
+    }
+  }
+
+  disconnectedCallback() {
+    this.#disconnectActionsObserver();
+  }
 
   render() {
-    const thereAreCollapsedItems =
-      this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-      this.moreActionsButtonWasExpanded &&
-      this.model != null &&
-      this.displayedItemsCount !== -1;
+    if (!this.model || this.model.length === 0) {
+      return "";
+    }
 
     return (
-      <ch-action-group
-        exportparts={this.actionGroupExportParts}
-        class={this.cssClass || null}
-        itemsOverflowBehavior={this.itemsOverflowBehavior}
-        moreActionsAccessibleName={this.moreActionsAccessibleName}
-        moreActionsDropdownPosition={this.moreActionsDropdownPosition}
-        openOnFocus={this.openOnFocus}
-        onDisplayedItemsCountChange={this.#handleDisplayedItemsCountChange}
-        onMoreActionsButtonExpandedChange={
-          !this.moreActionsButtonWasExpanded
-            ? this.#handleMoreActionButtonExpandedChange
-            : null
-        }
-      >
-        {this.model != null &&
-          this.model.map((item, index) => (
-            <ch-action-group-item
-              slot="items"
-              key={item.id || item.caption || index}
-            >
-              {this.#firstLevelRenderItem(item, index, 0)}
-            </ch-action-group-item>
-          ))}
+      <Host>
+        {this.#isResponsiveCollapse && this.collapsedItems !== 0 && (
+          <ch-action-menu-render
+            key="__action-menu"
+            role="listitem"
+            exportparts={ACTION_MENU_ITEM_EXPORT_PARTS}
+            blockAlign={this.moreActionsBlockAlign}
+            disabled={this.disabled}
+            getImagePathCallback={this.getImagePathCallback}
+            inlineAlign={this.moreActionsInlineAlign}
+            model={this.#collapsedModel}
+          >
+            {this.moreActionsCaption}
 
-        {thereAreCollapsedItems &&
-          this.model
-            .filter((_, index) => index >= this.displayedItemsCount)
-            .map(this.#firstLevelRenderCollapsedItem(0))}
-      </ch-action-group>
+            {this.#collapsedModel.map(item =>
+              item.type === "slot" ? (
+                <slot slot={item.id} name={item.id} />
+              ) : undefined
+            )}
+          </ch-action-menu-render>
+        )}
+
+        {renderItems(
+          this.model,
+          this.#isResponsiveCollapse,
+          this.#displayedMarkers,
+          this.disabled,
+          this.getImagePathCallback
+        )}
+      </Host>
     );
+
+    // const thereAreCollapsedItems =
+    //   this.itemsOverflowBehavior === "responsive-collapse" &&
+    //   this.moreActionsButtonWasExpanded &&
+    //   this.model != null &&
+    //   this.displayedItemsCount !== -1;
+
+    // return (
+    //   <ch-action-group
+    //     exportparts={this.actionGroupExportParts}
+    //     itemsOverflowBehavior={this.itemsOverflowBehavior}
+    //     moreActionsAccessibleName={this.moreActionsAccessibleName}
+    //     // moreActionsDropdownPosition={this.moreActionsDropdownPosition}
+    //     openOnFocus={this.openOnFocus}
+    //     onDisplayedItemsCountChange={this.#handleDisplayedItemsCountChange}
+    //     onMoreActionsButtonExpandedChange={
+    //       !this.moreActionsButtonWasExpanded
+    //         ? this.#handleMoreActionButtonExpandedChange
+    //         : null
+    //     }
+    //   >
+    //     {this.model.map(this.#renderItem)}
+    //     {/* {this.model != null &&
+    //       this.model.map((item, index) => (
+    //         <ch-action-group-item
+    //           slot="items"
+    //           key={item.id || item.caption || index}
+    //         >
+    //           {this.#firstLevelRenderItem(item, index, 0)}
+    //         </ch-action-group-item>
+    //       ))} */}
+
+    //     {/* {thereAreCollapsedItems &&
+    //       this.model
+    //         .filter((_, index) => index >= this.displayedItemsCount)
+    //         .map(this.#firstLevelRenderCollapsedItem(0))} */}
+    //   </ch-action-group>
+    // );
   }
 }

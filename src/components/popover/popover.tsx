@@ -1186,7 +1186,9 @@ export class ChPopover {
             ? this.#handleMouseDown
             : null
         }
-        onToggle={this.#handlePopoverToggle} // Check if the actionElement is an instance of Button to add this handler
+        // TODO: Should we add this event with popover="manual"???
+        // TODO: Check if the actionElement is an instance of Button to add this handler
+        onToggle={this.#handlePopoverToggle}
       >
         {this.allowDrag === "header" && (
           <div

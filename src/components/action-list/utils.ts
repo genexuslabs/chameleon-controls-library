@@ -20,7 +20,7 @@ export const ACTION_LIST_GROUP_SELECTOR = (id: string) =>
 
 export const getActionListOrGroupItemFromEvent = (
   event: KeyboardEvent | PointerEvent
-): HTMLChActionListItemElement | HTMLChActionGroupElement | undefined => {
+): HTMLChActionListItemElement | HTMLChActionListGroupElement | undefined => {
   event.stopPropagation();
 
   return event.composedPath().find(el => {
@@ -29,7 +29,7 @@ export const getActionListOrGroupItemFromEvent = (
     return (
       tagName === ACTION_LIST_ITEM_TAG || tagName === ACTION_LIST_GROUP_TAG
     );
-  }) as HTMLChActionListItemElement | HTMLChActionGroupElement | undefined;
+  }) as HTMLChActionListItemElement | HTMLChActionListGroupElement | undefined;
 };
 
 export const getActionListOrGroupItemIndex = (

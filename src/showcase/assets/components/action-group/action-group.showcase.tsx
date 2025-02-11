@@ -6,25 +6,37 @@ const state: Partial<HTMLChActionGroupRenderElement> = {};
 
 const render = () => (
   <div class="action-group-test-main-wrapper">
-    <div class="fieldset-test">
-      <legend class="label field-legend-test">Primary</legend>
-
-      <ch-action-group-render
-        cssClass="dropdown-primary"
-        model={state.model}
-        moreActionsDropdownPosition={state.moreActionsDropdownPosition}
-      ></ch-action-group-render>
-    </div>
+    <h2 class="label field-legend-test">Primary</h2>
 
     <div class="fieldset-test">
-      <legend class="label field-legend-test">Secondary</legend>
+      <ch-action-group-render
+        class="dropdown dropdown-secondary"
+        model={state.model}
+        moreActionsBlockAlign={state.moreActionsBlockAlign}
+        moreActionsCaption={state.moreActionsCaption}
+        moreActionsInlineAlign={state.moreActionsInlineAlign}
+        itemsOverflowBehavior={state.itemsOverflowBehavior}
+        // moreActionsDropdownPosition={state.moreActionsDropdownPosition}
+      >
+        <ch-edit
+          slot="pepe"
+          accessibleName="Name"
+          class="input"
+          type="search"
+        ></ch-edit>
+      </ch-action-group-render>
+    </div>
+    {/* 
+    <div class="fieldset-test">
+      <h2 class="label field-legend-test">Secondary</h2>
 
       <ch-action-group-render
-        cssClass="dropdown-secondary"
+        class="dropdown dropdown-secondary"
         model={state.model}
-        moreActionsDropdownPosition={state.moreActionsDropdownPosition}
+        itemsOverflowBehavior={state.itemsOverflowBehavior}
+        // moreActionsDropdownPosition={state.moreActionsDropdownPosition}
       ></ch-action-group-render>
-    </div>
+    </div> */}
   </div>
 );
 
@@ -42,7 +54,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionGroupRender
             { caption: "GX Web Model", value: GXWebModel },
             { caption: "Eager Large Tree (10x20x20)", value: eagerLargeModel }
           ],
-          value: modelMinimal
+          value: GXWebModel
         }
       ]
     },
@@ -50,54 +62,71 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionGroupRender
       caption: "Properties",
       properties: [
         {
-          id: "moreActionsDropdownPosition",
-          caption: "More Actions Dropdown Position",
-          value: "Center_OutsideEnd",
+          id: "moreActionsCaption",
+          caption: "More actions caption",
+          type: "string",
+          value: "More"
+        },
+        {
+          id: "moreActionsBlockAlign",
+          caption: "More Actions Block Align",
+          value: "outside-end",
           type: "enum",
           values: [
             {
-              value: "OutsideStart_OutsideStart",
-              caption: "OutsideStart_OutsideStart"
+              value: "outside-start",
+              caption: "outside-start"
             },
             {
-              value: "InsideStart_OutsideStart",
-              caption: "InsideStart_OutsideStart"
+              value: "inside-start",
+              caption: "inside-start"
             },
-            { value: "Center_OutsideStart", caption: "Center_OutsideStart" },
+            { value: "center", caption: "center" },
             {
-              value: "InsideEnd_OutsideStart",
-              caption: "InsideEnd_OutsideStart"
-            },
-            {
-              value: "OutsideEnd_OutsideStart",
-              caption: "OutsideEnd_OutsideStart"
+              value: "inside-end",
+              caption: "inside-end"
             },
             {
-              value: "OutsideStart_InsideStart",
-              caption: "OutsideStart_InsideStart"
+              value: "outside-end",
+              caption: "outside-end"
+            }
+          ]
+        },
+        {
+          id: "moreActionsInlineAlign",
+          caption: "More Actions Inline Align",
+          value: "inside-start",
+          type: "enum",
+          values: [
+            {
+              value: "outside-start",
+              caption: "outside-start"
             },
             {
-              value: "OutsideEnd_InsideStart",
-              caption: "OutsideEnd_InsideStart"
+              value: "inside-start",
+              caption: "inside-start"
             },
-            { value: "OutsideStart_Center", caption: "OutsideStart_Center" },
-            { value: "OutsideEnd_Center", caption: "OutsideEnd_Center" },
+            { value: "center", caption: "center" },
             {
-              value: "OutsideStart_InsideEnd",
-              caption: "OutsideStart_InsideEnd"
-            },
-            { value: "OutsideEnd_InsideEnd", caption: "OutsideEnd_InsideEnd" },
-            {
-              value: "OutsideStart_OutsideEnd",
-              caption: "OutsideStart_OutsideEnd"
+              value: "inside-end",
+              caption: "inside-end"
             },
             {
-              value: "InsideStart_OutsideEnd",
-              caption: "InsideStart_OutsideEnd"
-            },
-            { value: "Center_OutsideEnd", caption: "Center_OutsideEnd" },
-            { value: "InsideEnd_OutsideEnd", caption: "InsideEnd_OutsideEnd" },
-            { value: "OutsideEnd_OutsideEnd", caption: "OutsideEnd_OutsideEnd" }
+              value: "outside-end",
+              caption: "outside-end"
+            }
+          ]
+        },
+
+        {
+          id: "itemsOverflowBehavior",
+          caption: "Items overflow behavior",
+          value: "responsive-collapse",
+          type: "enum",
+          values: [
+            { caption: "Add Scroll", value: "add-scroll" },
+            { caption: "Multiline", value: "multiline" },
+            { caption: "Responsive Collapse", value: "responsive-collapse" }
           ]
         }
       ]

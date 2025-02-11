@@ -1,5 +1,15 @@
 import { ImageRender } from "./types";
 
+/**
+ * This Symbol allow us to add metadata to UI models, without making it
+ * available to the UI model host.
+ *
+ * Additionally, object entries that are Symbols are not serialize
+ * (JSON.stringify), which is perfect for further hiding even more this
+ * metadata that must be internal to each component's implementation.
+ */
+export const MODEL_METADATA = Symbol("metadata");
+
 const joinParts = (parts: { [key in string]: string }) =>
   Object.values(parts).join(",");
 
@@ -115,6 +125,23 @@ export const ACCORDION_EXPORT_PARTS = joinParts(ACCORDION_PARTS_DICTIONARY);
 // - - - - - - - - - - - - - - - - - - - -
 //           Action Group Parts
 // - - - - - - - - - - - - - - - - - - - -
+export const ACTION_GROUP_PARTS_DICTIONARY = {
+  ACTIONS: "actions",
+  MORE_ACTIONS: "more-actions",
+  MORE_ACTIONS_BUTTON: "more-actions-button",
+  MORE_ACTIONS_WINDOW: "more-actions-window",
+
+  // - - - - - - - - States - - - - - - - -
+  VERTICAL: "vertical" // SEPARATOR (comes from dropdown dictionary)
+} as const;
+
+export const ACTION_GROUP_EXPORT_PARTS = joinParts(
+  ACTION_GROUP_PARTS_DICTIONARY
+);
+
+// - - - - - - - - - - - - - - - - - - - -
+//            Action List Parts
+// - - - - - - - - - - - - - - - - - - - -
 export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {
   ACTION: "item__action",
   ADDITIONAL_ITEM: "item__additional-item",
@@ -216,18 +243,32 @@ export const ACTION_LIST_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
-//           Action Group Parts
+//            Action Menu Parts
 // - - - - - - - - - - - - - - - - - - - -
-export const ACTION_GROUP_PARTS_DICTIONARY = {
-  ACTIONS: "actions",
-  MORE_ACTIONS: "more-actions",
-  MORE_ACTIONS_BUTTON: "more-actions-button",
-  MORE_ACTIONS_WINDOW: "more-actions-window"
+export const ACTION_MENU_ITEM_PARTS_DICTIONARY = {
+  CONTENT: "content",
+  SHORTCUT: "shortcut",
+  ACTION: "action",
+  BUTTON: "button",
+  LINK: "link",
+  WINDOW: "window",
+  SEPARATOR: "separator",
+
+  // - - - - - - - - States - - - - - - - -
+  EXPANDABLE: "expandable", // ACTION
+  EXPANDED: "expanded", // ACTION
+  COLLAPSED: "collapsed", // ACTION
+  DISABLED: "disabled" // ACTION
 } as const;
 
-export const ACTION_GROUP_EXPORT_PARTS = joinParts(
-  ACTION_GROUP_PARTS_DICTIONARY
+export const ACTION_MENU_PARTS_DICTIONARY = {
+  EXPANDABLE_BUTTON: "expandable-button"
+};
+
+export const ACTION_MENU_ITEM_EXPORT_PARTS = joinParts(
+  ACTION_MENU_ITEM_PARTS_DICTIONARY
 );
+export const ACTION_MENU_EXPORT_PARTS = joinParts(ACTION_MENU_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
 //             Combo Box Parts
@@ -265,22 +306,6 @@ export const EDIT_EXPORT_PARTS = joinParts(EDIT_PARTS_DICTIONARY);
 export const EDIT_HOST_PARTS = {
   EMPTY_VALUE: "ch-edit--empty-value"
 } as const;
-
-// - - - - - - - - - - - - - - - - - - - -
-//             Dropdown Parts
-// - - - - - - - - - - - - - - - - - - - -
-export const DROPDOWN_PARTS_DICTIONARY = {
-  CONTENT: "content",
-  SHORTCUT: "shortcut",
-  ACTION: "action",
-  BUTTON: "button",
-  LINK: "link",
-  EXPANDABLE_BUTTON: "expandable-button",
-  EXPANDABLE: "expandable",
-  WINDOW: "window"
-} as const;
-
-export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
 //          Flexible Layout Parts

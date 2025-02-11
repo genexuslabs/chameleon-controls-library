@@ -307,15 +307,16 @@ legend {
 
 .action-group-test-main-wrapper {
   display: grid;
-  grid-template-rows: 100px 100px;
+  grid-template-rows: max-content max-content;
   gap: var(--spacing--l, var(--mer-spacing--md));
 
   .fieldset-test {
     display: grid;
-    grid-auto-flow: row;
+    min-block-size: 64px;
     gap: var(--spacing--m, var(--mer-spacing--xs));
     resize: inline;
-    overflow: auto;
+    overflow: hidden;
+    outline: 1px solid color-mix(in srgb, currentColor 50%, transparent);
   }
 }
 

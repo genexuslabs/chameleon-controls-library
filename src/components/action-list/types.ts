@@ -65,6 +65,7 @@ export type ActionListItemActionable = {
 
   selected?: boolean;
 
+  // TODO: Add support to avoid setting this property
   type: ActionListItemTypeActionable;
 };
 

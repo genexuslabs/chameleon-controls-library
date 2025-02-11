@@ -45,11 +45,17 @@ export const config: Config = {
       components: ["ch-accordion-render"] // Make sure the ch-accordion-render control is not bundled with other components
     },
     {
+      components: ["ch-action-menu", "ch-action-menu-render"]
+    },
+    {
       components: [
-        "ch-action-group",
-        "ch-action-group-item",
-        "ch-action-group-render"
-      ]
+        "ch-action-list-render",
+        "ch-action-list-item",
+        "ch-action-list-group"
+      ] // Make sure the Action List control is not bundled with other components
+    },
+    {
+      components: ["ch-action-group-render"] // Make sure the ch-action-group-render control is not bundled with other components
     },
     {
       components: ["ch-code", "ch-markdown-viewer"] // Make sure the ch-code and ch-markdown-viewer control are not bundled with other components
@@ -65,12 +71,6 @@ export const config: Config = {
     },
     {
       components: ["ch-markdown"] // Make sure the ch-markdown control is not bundled with other components
-    },
-    {
-      components: [
-        "ch-dropdown"
-        // "ch-dropdown-render" TODO: Consider adding the ch-dropdown-render, even if the action-group uses it
-      ]
     },
     {
       components: ["ch-flexible-layout", "ch-flexible-layout-render"]
@@ -112,6 +112,9 @@ export const config: Config = {
         "ch-tree-view-item",
         "ch-tree-view-render"
       ]
+    },
+    {
+      components: ["ch-test-flexible-layout"]
     },
     {
       components: ["ch-virtual-scroller"] // Make sure the ch-virtual-scroller control is not bundled with other components

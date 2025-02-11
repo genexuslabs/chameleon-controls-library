@@ -159,8 +159,8 @@ export const showcasePages: NavigationListModel = [
             metadata: EXPERIMENTAL
           },
           {
-            link: { url: "#dropdown" },
-            caption: "Dropdown",
+            link: { url: "#action-menu" },
+            caption: "Action Menu",
             metadata: EXPERIMENTAL
           }
         ]

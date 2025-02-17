@@ -967,12 +967,14 @@ export class ChComboBoxRender
                 ></input>
               </div>,
 
-              true && (
+              this.expanded && comboBoxIsInteractive && (
                 <ch-popover
                   key="popover"
                   id="popover"
                   role="listbox"
-                  aria-hidden="false" // TODO: Remove this and add a unit test
+                  aria-label={
+                    this.#accessibleNameFromExternalLabel ?? this.accessibleName
+                  }
                   part="window"
                   actionById
                   actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it

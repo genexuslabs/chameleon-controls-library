@@ -860,11 +860,11 @@ export class ChComboBoxRender
   }
 
   render() {
-    const filtersAreApplied = this.suggest;
-    const disableTextSelection = !this.disabled && !filtersAreApplied;
+    const suggestMode = this.suggest;
+    const disableTextSelection = !this.disabled && !suggestMode;
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
 
-    const currentItemInInput: ComboBoxItemModel | undefined = filtersAreApplied
+    const currentItemInInput: ComboBoxItemModel | undefined = suggestMode
       ? this.#getCurrentValueMapping()?.item
       : this.activeDescendant;
 
@@ -895,8 +895,8 @@ export class ChComboBoxRender
       <Host
         class={{
           "ch-disabled": this.disabled,
-          "ch-combo-box--normal": !filtersAreApplied,
-          "ch-combo-box--suggest": filtersAreApplied
+          "ch-combo-box--normal": !suggestMode,
+          "ch-combo-box--suggest": suggestMode
         }}
         // TODO: Add unit tests for this feature, since it breaks custom parts
         // rendered outside of the ch-combo-box-render render() method
@@ -911,7 +911,7 @@ export class ChComboBoxRender
         }
         onClickCapture={
           comboBoxIsInteractive &&
-          (!filtersAreApplied || !this.expanded) &&
+          (!suggestMode || !this.expanded) &&
           this.#displayPopover
         }
       >
@@ -950,18 +950,16 @@ export class ChComboBoxRender
                   autocomplete="off"
                   class={{
                     value: true,
-                    "value--readonly": !filtersAreApplied
+                    "value--readonly": !suggestMode
                   }}
-                  disabled={this.disabled || !filtersAreApplied}
+                  disabled={this.disabled || !suggestMode}
                   placeholder={this.placeholder}
-                  readOnly={this.readonly || !filtersAreApplied}
+                  readOnly={this.readonly || !suggestMode}
                   value={
-                    filtersAreApplied
-                      ? this.value
-                      : this.activeDescendant?.caption
+                    suggestMode ? this.value : this.activeDescendant?.caption
                   }
                   onInputCapture={
-                    filtersAreApplied &&
+                    suggestMode &&
                     comboBoxIsInteractive &&
                     this.#handleInputFilterChange
                   }
@@ -969,7 +967,7 @@ export class ChComboBoxRender
                 ></input>
               </div>,
 
-              this.expanded && comboBoxIsInteractive && (
+              true && (
                 <ch-popover
                   key="popover"
                   id="popover"
@@ -995,7 +993,7 @@ export class ChComboBoxRender
                     customComboBoxItemRender(
                       false,
                       this.disabled,
-                      filtersAreApplied && !this.#isModelAlreadyFiltered(),
+                      suggestMode && !this.#isModelAlreadyFiltered(),
                       this.activeDescendant,
                       this.#displayedValues,
                       this.#itemImages,

@@ -156,9 +156,7 @@ export class ChChat {
    */
   @Method()
   async focusChatInput() {
-    if (this.#editRef) {
-      this.#editRef.click();
-    }
+    this.#editRef?.focus();
   }
 
   /**

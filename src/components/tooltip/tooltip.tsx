@@ -15,6 +15,10 @@ const LISTENER_CONFIG = {
   passive: true
 } as const satisfies AddEventListenerOptions;
 
+const ARIA_DESCRIBED_BY = "aria-describedby";
+const ARIA_LABEL = "aria-label";
+const TOOLTIP = "tooltip";
+
 let autoId = 0;
 
 @Component({
@@ -58,9 +62,38 @@ export class ChTooltip implements ComponentInterface {
    */
   @Prop() readonly actionElement?: HTMLButtonElement | undefined | null;
   @Watch("actionElement")
-  actionElementChanged() {
+  actionElementChanged(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _,
+    oldActionElement: HTMLButtonElement | undefined | null
+  ) {
     this.#removeAllListeners();
     this.#addListenersForTheActionElement = true;
+
+    // We have to remove the aria-describedby and aria-label first, because the
+    // actionElement can transition from null to the actual parentElement,
+    // which in the end is the "same action element"
+    this.#removeAriaLabelInActionElement(oldActionElement);
+    this.#removeAriaDescribedByInActionElement(oldActionElement);
+
+    this.#addAriaDescribedByToTheActionElement();
+    this.#addAriaLabelToTheActionElement();
+  }
+
+  /**
+   * Specifies a short string, typically 1 to 3 words, that authors associate
+   * with an element to provide users of assistive technologies with a label
+   * for the actionElement. This property is necessary to provide a label when
+   * the tooltip is not displayed.
+   */
+  @Prop() readonly actionElementAccessibleName: string | undefined;
+  @Watch("actionElementAccessibleName")
+  actionElementAccessibleNameChanged() {
+    if (this.actionElementAccessibleName) {
+      this.#addAriaLabelToTheActionElement();
+    } else {
+      this.#removeAriaLabelInActionElement();
+    }
   }
 
   /**
@@ -139,12 +172,34 @@ export class ChTooltip implements ComponentInterface {
     );
   };
 
-  #getActionElement = (): HTMLButtonElement => {
-    if (this.actionElement === null) {
+  #addAriaDescribedByToTheActionElement = () =>
+    this.#getActionElement()?.setAttribute(ARIA_DESCRIBED_BY, this.#tooltipId);
+
+  #addAriaLabelToTheActionElement = () => {
+    if (this.actionElementAccessibleName) {
+      this.#getActionElement()?.setAttribute(
+        ARIA_LABEL,
+        this.actionElementAccessibleName
+      );
+    }
+  };
+
+  #removeAriaDescribedByInActionElement = (actionElement?: HTMLButtonElement) =>
+    this.#getActionElement(actionElement)?.removeAttribute(ARIA_DESCRIBED_BY);
+
+  #removeAriaLabelInActionElement = (actionElement?: HTMLButtonElement) =>
+    this.#getActionElement(actionElement)?.removeAttribute(ARIA_LABEL);
+
+  #getActionElement = (
+    actionElement?: HTMLButtonElement
+  ): HTMLButtonElement => {
+    const actualActionElement = actionElement ?? this.actionElement;
+
+    if (actualActionElement === null) {
       return this.el.parentElement as HTMLButtonElement;
     }
 
-    return this.actionElement ?? this.#innerActionRef;
+    return actualActionElement ?? this.#innerActionRef;
   };
 
   #removeAllListeners = () => {
@@ -152,8 +207,15 @@ export class ChTooltip implements ComponentInterface {
     this.#removeHideListeners();
   };
 
+  #actionIsInsideShadow = () => this.actionElement === undefined;
+
   connectedCallback() {
     this.#tooltipId ??= `ch-tooltip-${autoId++}`;
+  }
+
+  componentDidLoad() {
+    this.#addAriaDescribedByToTheActionElement();
+    this.#addAriaLabelToTheActionElement();
   }
 
   componentDidRender() {
@@ -167,19 +229,20 @@ export class ChTooltip implements ComponentInterface {
 
   disconnectedCallback() {
     this.#removeAllListeners();
+    this.#removeAriaDescribedByInActionElement();
   }
 
   render() {
-    const actionInsideShadow = this.actionElement === undefined;
+    const actionInsideShadow = this.#actionIsInsideShadow();
 
     return (
       <Host
         id={!actionInsideShadow ? this.#tooltipId : undefined}
-        role={!actionInsideShadow ? "tooltip" : undefined}
+        role={!actionInsideShadow ? TOOLTIP : undefined}
+        aria-hidden={!actionInsideShadow && !this.visible ? "true" : undefined}
       >
         {actionInsideShadow && (
           <button
-            aria-describedby={this.#tooltipId}
             part="action"
             type="button"
             ref={el => (this.#innerActionRef = el)}
@@ -191,7 +254,7 @@ export class ChTooltip implements ComponentInterface {
         {this.visible && (
           <ch-popover
             id={actionInsideShadow ? this.#tooltipId : undefined}
-            role={actionInsideShadow ? "tooltip" : undefined}
+            role={actionInsideShadow ? TOOLTIP : undefined}
             style={{
               "--ch-tooltip-delay": `${this.delay}ms`
             }}

@@ -1,4 +1,13 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { testDefaultProperties } from "../../../testing/utils.e2e";
+
+testDefaultProperties("ch-tooltip", {
+  actionElement: undefined,
+  actionElementAccessibleName: undefined,
+  blockAlign: "outside-end",
+  delay: 100,
+  inlineAlign: "center"
+});
 
 describe("[ch-tooltip][basic]", () => {
   let page: E2EPage;
@@ -9,21 +18,9 @@ describe("[ch-tooltip][basic]", () => {
       html: `<ch-tooltip></ch-tooltip>`,
       failOnConsoleError: true
     });
+
     tooltipRef = await page.find("ch-tooltip");
   });
-
-  const testDefault = (
-    propertyName: string,
-    propertyValue: any,
-    propertyValueDescription: string
-  ) =>
-    it(`the "${propertyName}" property should be ${
-      typeof propertyValue === "string"
-        ? `"${propertyValueDescription}"`
-        : propertyValueDescription
-    } by default`, async () => {
-      expect(await tooltipRef.getProperty(propertyName)).toBe(propertyValue);
-    });
 
   const getCustomVarValue = (customVar: string) =>
     page.evaluate(
@@ -34,30 +31,20 @@ describe("[ch-tooltip][basic]", () => {
       customVar
     );
 
-  it("should have Shadow DOM", async () => {
-    expect(tooltipRef.shadowRoot).toBeTruthy();
-  });
+  it("should have Shadow DOM", () =>
+    expect(tooltipRef.shadowRoot).toBeTruthy());
 
-  testDefault("actionElement", undefined, "undefined");
-  testDefault("blockAlign", "outside-end", "outside-end");
-  testDefault("delay", 100, "100");
-  testDefault("inlineAlign", "center", "center");
+  it('should have "display: contents" by default', async () =>
+    expect((await tooltipRef.getComputedStyle()).display).toBe("contents"));
 
-  it('should have "display: contents" by default', async () => {
-    expect((await tooltipRef.getComputedStyle()).display).toBe("contents");
-  });
+  it('should have "--ch-tooltip-separation: 0px" by default', async () =>
+    expect(await getCustomVarValue("--ch-tooltip-separation")).toBe("0px"));
 
-  it('should have "--ch-tooltip-separation: 0px" by default', async () => {
-    expect(await getCustomVarValue("--ch-tooltip-separation")).toBe("0px");
-  });
+  it('should have "--ch-tooltip-separation-x: 0px" by default', async () =>
+    expect(await getCustomVarValue("--ch-tooltip-separation-x")).toBe("0px"));
 
-  it('should have "--ch-tooltip-separation-x: 0px" by default', async () => {
-    expect(await getCustomVarValue("--ch-tooltip-separation-x")).toBe("0px");
-  });
-
-  it('should have "--ch-tooltip-separation-y: 0px" by default', async () => {
-    expect(await getCustomVarValue("--ch-tooltip-separation-y")).toBe("0px");
-  });
+  it('should have "--ch-tooltip-separation-y: 0px" by default', async () =>
+    expect(await getCustomVarValue("--ch-tooltip-separation-y")).toBe("0px"));
 
   it("should not render the ch-popover by default", async () => {
     const popoverRef = await page.find("ch-tooltip >>> ch-popover");

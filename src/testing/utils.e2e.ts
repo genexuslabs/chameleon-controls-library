@@ -1,4 +1,6 @@
-import { E2EPage } from "@stencil/core/testing";
+import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import type { JSX } from "../components";
+import type { ChameleonControlsTagName } from "../common/types";
 
 export const delayTest = (value: number) =>
   new Promise(resolve => setTimeout(resolve, value));
@@ -47,3 +49,41 @@ export const isActiveElement = async (
 
     return activeElement === elementToCheck;
   }, elementToCheckSelector);
+
+const getBasicTestDescription = (
+  propertyName: string,
+  propertyValue: string | undefined | null | number | boolean
+) =>
+  `the "${propertyName}" property should be ${
+    typeof propertyValue === "string" ? `"${propertyValue}"` : propertyValue
+  } by default`;
+
+export const testDefaultProperties = <T extends ChameleonControlsTagName>(
+  tag: T,
+  properties: Required<{
+    [key in keyof JSX.IntrinsicElements[T]]: JSX.IntrinsicElements[T][key];
+  }>
+) =>
+  describe(`[${tag}][basic]`, () => {
+    let page: E2EPage;
+    let componentRef: E2EElement;
+
+    beforeEach(async () => {
+      page = await newE2EPage({
+        html: `<${tag}></${tag}>`,
+        failOnConsoleError: true
+      });
+
+      componentRef = await page.find(tag);
+    });
+
+    Object.keys(properties).forEach(propertyName =>
+      it(
+        getBasicTestDescription(propertyName, properties[propertyName]),
+        async () =>
+          expect(await componentRef.getProperty(propertyName)).toBe(
+            properties[propertyName]
+          )
+      )
+    );
+  });

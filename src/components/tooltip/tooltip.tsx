@@ -62,22 +62,15 @@ export class ChTooltip implements ComponentInterface {
    */
   @Prop() readonly actionElement?: HTMLButtonElement | undefined | null;
   @Watch("actionElement")
-  actionElementChanged(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _,
-    oldActionElement: HTMLButtonElement | undefined | null
-  ) {
+  actionElementChanged() {
     this.#removeAllListeners();
     this.#addListenersForTheActionElement = true;
 
     // We have to remove the aria-describedby and aria-label first, because the
     // actionElement can transition from null to the actual parentElement,
     // which in the end is the "same action element"
-    this.#removeAriaLabelInActionElement(oldActionElement);
-    this.#removeAriaDescribedByInActionElement(oldActionElement);
-
-    this.#addAriaDescribedByToTheActionElement();
-    this.#addAriaLabelToTheActionElement();
+    this.#removeAriaLabelInActionElement();
+    this.#removeAriaDescribedByInActionElement();
   }
 
   /**
@@ -173,33 +166,29 @@ export class ChTooltip implements ComponentInterface {
   };
 
   #addAriaDescribedByToTheActionElement = () =>
-    this.#getActionElement()?.setAttribute(ARIA_DESCRIBED_BY, this.#tooltipId);
+    this.#actualActionElement?.setAttribute(ARIA_DESCRIBED_BY, this.#tooltipId);
 
   #addAriaLabelToTheActionElement = () => {
     if (this.actionElementAccessibleName) {
-      this.#getActionElement()?.setAttribute(
+      this.#actualActionElement?.setAttribute(
         ARIA_LABEL,
         this.actionElementAccessibleName
       );
     }
   };
 
-  #removeAriaDescribedByInActionElement = (actionElement?: HTMLButtonElement) =>
-    this.#getActionElement(actionElement)?.removeAttribute(ARIA_DESCRIBED_BY);
+  #removeAriaDescribedByInActionElement = () =>
+    this.#actualActionElement?.removeAttribute(ARIA_DESCRIBED_BY);
 
-  #removeAriaLabelInActionElement = (actionElement?: HTMLButtonElement) =>
-    this.#getActionElement(actionElement)?.removeAttribute(ARIA_LABEL);
+  #removeAriaLabelInActionElement = () =>
+    this.#actualActionElement?.removeAttribute(ARIA_LABEL);
 
-  #getActionElement = (
-    actionElement?: HTMLButtonElement
-  ): HTMLButtonElement => {
-    const actualActionElement = actionElement ?? this.actionElement;
-
-    if (actualActionElement === null) {
+  #getActionElement = (): HTMLButtonElement => {
+    if (this.actionElement === null) {
       return this.el.parentElement as HTMLButtonElement;
     }
 
-    return actualActionElement ?? this.#innerActionRef;
+    return this.actionElement ?? this.#innerActionRef;
   };
 
   #removeAllListeners = () => {
@@ -213,23 +202,21 @@ export class ChTooltip implements ComponentInterface {
     this.#tooltipId ??= `ch-tooltip-${autoId++}`;
   }
 
-  componentDidLoad() {
-    this.#addAriaDescribedByToTheActionElement();
-    this.#addAriaLabelToTheActionElement();
-  }
-
   componentDidRender() {
     if (this.#addListenersForTheActionElement) {
       this.#addListenersForTheActionElement = false;
       this.#actualActionElement = this.#getActionElement();
 
       this.#addListenersToDisplayPopover();
+      this.#addAriaDescribedByToTheActionElement();
+      this.#addAriaLabelToTheActionElement();
     }
   }
 
   disconnectedCallback() {
     this.#removeAllListeners();
     this.#removeAriaDescribedByInActionElement();
+    this.#removeAriaLabelInActionElement();
   }
 
   render() {

@@ -4,7 +4,7 @@ export const unanimoShowcase: NavigationListModel = [
   {
     caption: "Controls",
     startImgSrc:
-      "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/projects.svg')",
+      "url('https://unpkg.com/@genexus/unanimo@0.25.0/dist/assets/icons/projects.svg')",
     startImgType: "mask",
     items: [
       {
@@ -44,7 +44,7 @@ export const unanimoShowcase: NavigationListModel = [
   {
     caption: "Navigation",
     startImgSrc:
-      "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/send.svg')",
+      "url('https://unpkg.com/@genexus/unanimo@0.25.0/dist/assets/icons/send.svg')",
     startImgType: "mask",
     items: [
       {
@@ -68,7 +68,7 @@ export const unanimoShowcase: NavigationListModel = [
   {
     caption: "Interaction",
     startImgSrc:
-      "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/profile.svg')",
+      "url('https://unpkg.com/@genexus/unanimo@0.25.0/dist/assets/icons/profile.svg')",
     startImgType: "mask",
     items: [
       {

@@ -70,20 +70,55 @@ const performTest = (
       tooltipRef = await page.find("ch-tooltip");
     });
 
+    const displayPopover = async () => {
+      await anotherButtonRef.focus();
+      await anotherButtonRef.press("Tab");
+      await page.waitForChanges();
+    };
+
+    const getPopoverRef = () => page.find("ch-tooltip >>> ch-popover");
+
     if (actionElementBindingType === "standalone") {
-      it("should not render an aria-hidden when the popover is not visible", async () => {
-        expect(tooltipRef).not.toHaveAttribute("aria-hidden");
+      it("should not have an aria-hidden when the popover is not visible", () =>
+        expect(tooltipRef).not.toHaveAttribute("aria-hidden"));
+
+      it('should not have role="tooltip"', () =>
+        expect(tooltipRef).not.toHaveAttribute("role"));
+
+      it("should not have an id", () =>
+        expect(tooltipRef).not.toHaveAttribute("id"));
+
+      it('the internal popover should have role="tooltip"', async () => {
+        await displayPopover();
+        expect(await getPopoverRef()).toEqualAttribute("role", "tooltip");
+      });
+
+      it("the internal popover should have an id", async () => {
+        await displayPopover();
+        expect(await getPopoverRef()).toHaveAttribute("id");
       });
     } else {
-      it("should render an aria-hidden when the popover is not visible", async () => {
-        expect(tooltipRef).toEqualAttribute("aria-hidden", "true");
+      it("should have an aria-hidden when the popover is not visible", () =>
+        expect(tooltipRef).toEqualAttribute("aria-hidden", "true"));
+
+      it('should have role="tooltip"', () =>
+        expect(tooltipRef).toEqualAttribute("role", "tooltip"));
+
+      it("should have an id", () => expect(tooltipRef).toHaveAttribute("id"));
+
+      it('the internal popover should not have role="tooltip"', async () => {
+        await displayPopover();
+        expect(await getPopoverRef()).not.toEqualAttribute("role", "tooltip");
+      });
+
+      it("the internal popover should not have an id", async () => {
+        await displayPopover();
+        expect(await getPopoverRef()).not.toHaveAttribute("id");
       });
     }
 
     it("should not render an aria-hidden when the popover is visible", async () => {
-      await anotherButtonRef.focus();
-      await anotherButtonRef.press("Tab");
-      await page.waitForChanges();
+      await displayPopover();
       tooltipRef = await page.find("ch-tooltip");
 
       tooltipRef = await page.find("ch-tooltip");
@@ -94,10 +129,7 @@ const performTest = (
       actionElementBindingType === "standalone" ? "not add" : "add";
 
     it(`should ${addOrRemove} the aria-hidden when the popover is dismissed`, async () => {
-      await anotherButtonRef.focus();
-      await anotherButtonRef.press("Tab");
-      await page.waitForChanges();
-      // To this point is visible
+      await displayPopover();
 
       await anotherButtonRef.focus();
       await page.waitForChanges();

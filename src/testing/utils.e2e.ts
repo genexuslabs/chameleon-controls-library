@@ -52,17 +52,29 @@ export const isActiveElement = async (
 
 const getBasicTestDescription = (
   propertyName: string,
-  propertyValue: string | undefined | null | number | boolean
+  propertyValue:
+    | string
+    | undefined
+    | null
+    | number
+    | boolean
+    | Record<string, any>
 ) =>
   `the "${propertyName}" property should be ${
-    typeof propertyValue === "string" ? `"${propertyValue}"` : propertyValue
+    typeof propertyValue === "string"
+      ? `"${propertyValue}"`
+      : JSON.stringify(propertyValue)
   } by default`;
 
 export const testDefaultProperties = <T extends ChameleonControlsTagName>(
   tag: T,
-  properties: Required<{
-    [key in keyof JSX.IntrinsicElements[T]]: JSX.IntrinsicElements[T][key];
-  }>
+  properties: Omit<
+    Required<{
+      [key in keyof JSX.IntrinsicElements[T]]: JSX.IntrinsicElements[T][key];
+    }>,
+    // Omit event emitter and JSX renders. TODO: JSX renders should not be defined as default properties (see ch-chat example)
+    `on${string}` | "renderItem"
+  >
 ) =>
   describe(`[${tag}][basic]`, () => {
     let page: E2EPage;
@@ -81,9 +93,41 @@ export const testDefaultProperties = <T extends ChameleonControlsTagName>(
       it(
         getBasicTestDescription(propertyName, properties[propertyName]),
         async () =>
-          expect(await componentRef.getProperty(propertyName)).toBe(
+          expect(await componentRef.getProperty(propertyName)).toEqual(
             properties[propertyName]
           )
       )
+    );
+  });
+
+export const testDefaultCssProperties = (
+  tag: ChameleonControlsTagName,
+  properties: Record<string, string>
+) =>
+  describe(`[${tag}][basic]`, () => {
+    let page: E2EPage;
+
+    beforeEach(async () => {
+      page = await newE2EPage({
+        html: `<${tag}></${tag}>`,
+        failOnConsoleError: true
+      });
+    });
+
+    const getCustomVarValue = (customVar: string) =>
+      page.evaluate(
+        (tag: ChameleonControlsTagName, customVarName: string) =>
+          getComputedStyle(document.querySelector(tag)).getPropertyValue(
+            customVarName
+          ),
+        tag,
+        customVar
+      );
+
+    Object.keys(properties).forEach(propertyName =>
+      it(`should have "${propertyName}: ${properties[propertyName]}" by default`, async () =>
+        expect(await getCustomVarValue(propertyName)).toBe(
+          properties[propertyName]
+        ))
     );
   });

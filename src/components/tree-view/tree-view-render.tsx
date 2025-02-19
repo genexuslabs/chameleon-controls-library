@@ -12,7 +12,7 @@ import {
   Method,
   Host
 } from "@stencil/core";
-import {
+import type {
   TreeViewDataTransferInfo,
   TreeViewDropCheckInfo,
   TreeViewItemContextMenu,
@@ -49,6 +49,7 @@ import {
 } from "./genexus-implementation";
 import {
   removeTreeViewItems,
+  ROOT_ID,
   scrollIntoVisibleId,
   scrollIntoVisiblePath
 } from "./utils";
@@ -59,6 +60,7 @@ import {
   getControlRegisterProperty,
   registryControlProperty
 } from "../../common/registry-properties";
+import { getItemPath } from "./methods/getItemPath";
 
 // - - - - - - - - - - - - - - - - - - - -
 //                Registry
@@ -86,8 +88,6 @@ const registerDefaultGetImagePathCallback = (treeState: ChTreeViewRender) =>
 // - - - - - - - - - - - - - - - - - - - -
 //                Defaults
 // - - - - - - - - - - - - - - - - - - - -
-
-const ROOT_ID = null;
 
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
@@ -730,6 +730,21 @@ export class ChTreeViewRender {
 
     // Force re-render
     forceUpdate(this);
+  }
+
+  /**
+   * Returns item's path (an ordered array of the UI models that creates the path
+   * from the root to the ID) given the item ID, and null if there is no such item
+   * otherwise.
+   *
+   * This method doesn't change its behavior if the tree view has filters
+   * applied.
+   *
+   * @param itemId The id of the item.
+   */
+  @Method()
+  async getItemPath(itemId: string): Promise<TreeViewItemModel[] | null> {
+    return getItemPath(itemId, this.#flattenedTreeModel);
   }
 
   /**

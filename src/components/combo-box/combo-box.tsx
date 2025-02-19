@@ -28,6 +28,7 @@ import {
 } from "./types";
 import { focusComposedPath } from "../common/helpers";
 import {
+  COMBO_BOX_HOST_PARTS,
   COMBO_BOX_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
@@ -890,6 +891,9 @@ export class ChComboBoxRender
 
     // TODO: Add unit tests for this feature.
     const currentValueMapping = this.#getCurrentValueMapping()?.item.value;
+    const inputValue = filtersAreApplied
+      ? this.value
+      : this.activeDescendant?.caption;
 
     return (
       <Host
@@ -902,6 +906,7 @@ export class ChComboBoxRender
         // rendered outside of the ch-combo-box-render render() method
         part={tokenMap({
           [currentValueMapping]: !!currentValueMapping,
+          [COMBO_BOX_HOST_PARTS.PLACEHOLDER]: !inputValue,
           [this.hostParts]: !!this.hostParts
         })}
         onKeyDown={
@@ -955,11 +960,7 @@ export class ChComboBoxRender
                   disabled={this.disabled || !filtersAreApplied}
                   placeholder={this.placeholder}
                   readOnly={this.readonly || !filtersAreApplied}
-                  value={
-                    filtersAreApplied
-                      ? this.value
-                      : this.activeDescendant?.caption
-                  }
+                  value={inputValue}
                   onInputCapture={
                     filtersAreApplied &&
                     comboBoxIsInteractive &&

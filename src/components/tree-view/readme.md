@@ -67,6 +67,27 @@ Type: `Promise<void>`
 
 
 
+### `getItemPath(itemId: string) => Promise<TreeViewItemModel[] | null>`
+
+Returns item's path (an ordered array of the UI models that creates the path
+from the root to the ID) given the item ID, and null if there is no such item
+otherwise.
+
+This method doesn't change its behavior if the tree view has filters
+applied.
+
+#### Parameters
+
+| Name     | Type     | Description         |
+| -------- | -------- | ------------------- |
+| `itemId` | `string` | The id of the item. |
+
+#### Returns
+
+Type: `Promise<TreeViewItemModel[]>`
+
+
+
 ### `getItemsInfo(itemsId: string[]) => Promise<TreeViewItemModelExtended[]>`
 
 Given a list of ids, it returns an array of the items that exists in the

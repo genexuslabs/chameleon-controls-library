@@ -8,6 +8,7 @@ import {
 import { TREE_VIEW_ITEM_PARTS_DICTIONARY } from "../../common/reserved-names";
 
 export const INITIAL_LEVEL = 0;
+export const ROOT_ID: null = null;
 
 // Parts
 export const getTreeItemLevelPart = (evenLevel: boolean) =>

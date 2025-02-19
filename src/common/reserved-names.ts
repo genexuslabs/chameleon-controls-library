@@ -291,6 +291,10 @@ export const COMBO_BOX_PARTS_DICTIONARY = {
 
 export const COMBO_BOX_EXPORT_PARTS = joinParts(COMBO_BOX_PARTS_DICTIONARY);
 
+export const COMBO_BOX_HOST_PARTS = {
+  PLACEHOLDER: "ch-combo-box-render--placeholder"
+} as const;
+
 // - - - - - - - - - - - - - - - - - - - -
 //               Edit Parts
 // - - - - - - - - - - - - - - - - - - - -

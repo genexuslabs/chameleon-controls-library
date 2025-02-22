@@ -8,10 +8,11 @@ import {
   forceUpdate,
   h
 } from "@stencil/core";
-import {
+import type {
   ChVirtualScrollerCustomEvent,
   VirtualScrollVirtualItems
 } from "../../components";
+import type { ThemeModel } from "../theme/theme-types";
 import {
   ChatContentImages,
   ChatInternalCallbacks,
@@ -52,11 +53,6 @@ export class ChChat {
    * Specifies the callbacks required in the control.
    */
   @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
-
-  /**
-   * This property allows us to implement custom rendering for the code blocks.
-   */
-  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
 
   /**
    * Specifies if all interactions are disabled
@@ -103,6 +99,11 @@ export class ChChat {
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
 
   /**
+   * This property allows us to implement custom rendering for the code blocks.
+   */
+  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
+
+  /**
    * `true` to render a slot named "additional-content" to project elements
    * between the "content" slot (grid messages) and the "send-container" slot.
    *
@@ -110,6 +111,12 @@ export class ChChat {
    * (loadingState !== "all-records-loaded" && items.length > 0).
    */
   @Prop() readonly showAdditionalContent: boolean = false;
+
+  /**
+   * Specifies the theme to be used for rendering the chat.
+   * If `undefined`, no theme will be applied.
+   */
+  @Prop() readonly theme?: ThemeModel | undefined;
 
   /**
    * Specifies the literals required in the control.
@@ -186,6 +193,9 @@ export class ChChat {
     forceUpdate(this);
   }
 
+  // TODO: Add unit tests to validate how the chat message should be copied
+  // into the last chat message, considering that messages can have more
+  // properties that the interface/type has
   /**
    * Update the content of the last message, performing a re-render.
    */
@@ -368,12 +378,10 @@ export class ChChat {
   #removeUploadedImage = (index: number) => (event: MouseEvent) => {
     const buttonToRemove = event.target as HTMLButtonElement;
     const nextFocusedButton = (buttonToRemove.nextElementSibling ??
-      buttonToRemove.previousElementSibling) as HTMLButtonElement;
+      buttonToRemove.previousElementSibling) as HTMLButtonElement | null;
 
     // Focus the next item to improve accessibility
-    if (nextFocusedButton) {
-      nextFocusedButton.focus();
-    }
+    nextFocusedButton?.focus();
 
     // TODO: Remove the file from the image-picker reference
     removeElement(this.imagesToUpload, index);
@@ -503,6 +511,8 @@ export class ChChat {
           canShowAdditionalContent ? "ch-chat--additional-content" : undefined
         }
       >
+        {this.theme && <ch-theme model={this.theme}></ch-theme>}
+
         {this.loadingState === "initial" ? (
           <div class="loading-chat" slot="empty-chat"></div>
         ) : (

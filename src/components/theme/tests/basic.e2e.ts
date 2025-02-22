@@ -2,6 +2,7 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { ChThemeCustomEvent } from "../../../components";
 import { ChThemeLoadedEvent } from "../theme-types";
 import { delayTest } from "../../../testing/utils.e2e";
+import { CSS_SCROLLBAR_MODEL } from "./utils.e2e";
 
 const TIMEOUT = 500;
 const TIMEOUT_DELAY = TIMEOUT + 220;
@@ -72,10 +73,7 @@ describe("[ch-theme][basic]", () => {
   it("should fire the themeLoaded event when setting a valid model", async () => {
     const themeLoadedEvent = themeRef.waitForEvent("themeLoaded");
 
-    themeRef.setProperty("model", {
-      name: "chameleon/scrollbar",
-      url: "showcase/scrollbar.css"
-    });
+    themeRef.setProperty("model", CSS_SCROLLBAR_MODEL);
 
     await page.waitForChanges();
     const eventDetail: ChThemeCustomEvent<ChThemeLoadedEvent> =
@@ -112,10 +110,7 @@ describe("[ch-theme][basic]", () => {
   it("should adopt the stylesheet when the root node is the document", async () => {
     const themeLoadedEvent = themeRef.waitForEvent("themeLoaded");
 
-    themeRef.setProperty("model", {
-      name: "chameleon/scrollbar",
-      url: "showcase/scrollbar.css"
-    });
+    themeRef.setProperty("model", CSS_SCROLLBAR_MODEL);
 
     await page.waitForChanges();
     await themeLoadedEvent;
@@ -140,10 +135,7 @@ describe("[ch-theme][basic]", () => {
   it("should maintain the stylesheet in the document when disconnecting the ch-theme", async () => {
     const themeLoadedEvent = themeRef.waitForEvent("themeLoaded");
 
-    themeRef.setProperty("model", {
-      name: "chameleon/scrollbar",
-      url: "showcase/scrollbar.css"
-    });
+    themeRef.setProperty("model", CSS_SCROLLBAR_MODEL);
 
     await page.waitForChanges();
     await themeLoadedEvent;

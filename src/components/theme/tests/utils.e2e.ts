@@ -8,6 +8,8 @@ export const EMPTY_ADOPTED_STYLESHEETS = [];
 
 export const CSS_NAME = "chameleon/scrollbar";
 export const CSS_URL = "showcase/scrollbar.css";
+export const CSS_SCROLLBAR_MODEL = [{ name: CSS_NAME, url: CSS_URL }];
+
 export const CSS_CONTENT = `:host(.ch-scrollable), .ch-scrollable, .scrollable {
   scrollbar-width: thin; scrollbar-color: var(--accents__primary--hover) transparent;
   &::-webkit-scrollbar { width: 8px; height: 8px; background-color: transparent; }

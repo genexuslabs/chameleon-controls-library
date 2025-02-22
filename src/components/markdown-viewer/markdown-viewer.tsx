@@ -41,7 +41,7 @@ export class ChMarkdownViewer {
    * `true` to visually hide the contents of the root node while the control's
    * style is not loaded. Only works if the `theme` property is set.
    */
-  @Prop() readonly avoidFlashOfUnstyledContent?: boolean = false;
+  @Prop() readonly avoidFlashOfUnstyledContent: boolean = false;
 
   /**
    * `true` to render raw HTML with sanitization.
@@ -51,13 +51,13 @@ export class ChMarkdownViewer {
   /**
    * This property allows us to implement custom rendering for the code blocks.
    */
-  @Prop() readonly renderCode: MarkdownViewerCodeRender = defaultCodeRender;
+  @Prop() readonly renderCode?: MarkdownViewerCodeRender | undefined;
 
   /**
    * Specifies if an indicator is displayed in the last element rendered.
    * Useful for streaming scenarios where a loading indicator is needed.
    */
-  @Prop() readonly showIndicator: boolean;
+  @Prop() readonly showIndicator: boolean = false;
 
   /**
    * Specifies the theme to be used for rendering the control.
@@ -68,7 +68,7 @@ export class ChMarkdownViewer {
   /**
    * Specifies the markdown string to parse.
    */
-  @Prop() readonly value: string;
+  @Prop() readonly value?: string | undefined;
 
   async componentWillRender() {
     if (!this.value) {
@@ -77,7 +77,7 @@ export class ChMarkdownViewer {
 
     this.#JSXTree = await markdownToJSX(this.value, {
       allowDangerousHtml: true, // Allow dangerous in this version
-      codeRender: this.renderCode,
+      codeRender: this.renderCode ?? defaultCodeRender,
       lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
       rawHTML: this.rawHtml,
       showIndicator: this.showIndicator

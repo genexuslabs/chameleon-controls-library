@@ -188,7 +188,7 @@ describe("[ch-markdown-viewer][value]", () => {
     it(`should render ${description} when the "value" property is "${value}"`, async () => {
       markdownViewerRef.setProperty("value", value);
       await page.waitForChanges();
-      markdownViewerRef = await page.find("ch-markdown-viewer");
+      markdownViewerRef = await page.find("ch-markdown-viewer"); // Refresh the reference
 
       expect(markdownViewerRef.shadowRoot).toEqualHtml(
         `<ch-theme class="hydrated" hidden=""></ch-theme>${render}`
@@ -214,4 +214,5 @@ describe("[ch-markdown-viewer][value]", () => {
 
   // TODO: Add unit test for updating the value at runtime
   // TODO: Add unit test for checking that the DOM is reused
+  // TODO: Add unit test for checking the ch-code value bindings
 });

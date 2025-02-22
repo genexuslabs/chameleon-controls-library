@@ -34,7 +34,9 @@ export const config: Config = {
     browserHeadless: "new",
     testPathIgnorePatterns: [
       "node_modules/",
-      "src/testing/",
+      "src/testing/constants.e2e.ts",
+      "src/testing/form.e2e.ts",
+      "src/testing/utils.e2e.ts",
       "dist/",
       "src/components/theme/tests/utils.e2e.ts",
       "src/components/tree-view/tests/utils.e2e.ts"

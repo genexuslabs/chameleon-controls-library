@@ -1,5 +1,4 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { SCROLLABLE_CLASS } from "../../../common/reserved-names";
 
 describe("[ch-code][styles]", () => {
   let page: E2EPage;
@@ -28,10 +27,6 @@ describe("[ch-code][styles]", () => {
 
   it('should have "overflow: auto" to properly display the content', () =>
     expect(computedStyle.overflow).toBe("auto"));
-
-  // TODO: This test should be in a generic test file for the scrollbar styles
-  it(`should have the ${SCROLLABLE_CLASS} class to properly style the scrollbars`, () =>
-    expect(codeRef.className).toContain(SCROLLABLE_CLASS));
 
   it('the internal <code> should inherit the font styles ("font: inherit")', async () => {
     const cssRules = await page.evaluate(() =>

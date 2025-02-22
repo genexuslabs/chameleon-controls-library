@@ -215,7 +215,7 @@ legend {
   margin-block-end: 16px;
 
   form {
-    display: flex;
+    display: grid;
     gap: 8px;
   }
 }
@@ -232,7 +232,7 @@ legend {
 
 .checkbox-test-main-wrapper {
   display: grid;
-  grid-auto-rows: 128px;
+  grid-auto-rows: minmax(156px, max-content);
 }
 
 .combo-box-test-main-wrapper {

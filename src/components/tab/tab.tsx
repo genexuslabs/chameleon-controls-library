@@ -45,8 +45,16 @@ import {
   MouseEventButton,
   MouseEventButtons
 } from "../common/helpers";
-import { CssContainProperty, CssOverflowProperty } from "../../common/types";
-import { KEY_CODES, TAB_PARTS_DICTIONARY } from "../../common/reserved-names";
+import type {
+  CssContainProperty,
+  CssOverflowProperty
+} from "../../common/types";
+import {
+  KEY_CODES,
+  SCROLLABLE_CLASS,
+  TAB_PARTS_DICTIONARY
+} from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
 
 const TAB_BUTTON_CLASS = "tab";
 const CLOSE_BUTTON_CLASS = "close-button";
@@ -1158,7 +1166,11 @@ export class ChTabRender implements DraggableView {
         class={{
           panel: true,
           "panel--selected": item.id === this.selectedId,
-          "panel--hidden": !(item.id === this.selectedId)
+          "panel--hidden": !(item.id === this.selectedId),
+          [SCROLLABLE_CLASS]:
+            hasOverflow &&
+            (overflow.includes("auto" satisfies CssOverflowProperty) ||
+              overflow.includes("scroll" satisfies CssOverflowProperty))
         }}
         style={
           hasContain || hasOverflow
@@ -1249,6 +1261,10 @@ export class ChTabRender implements DraggableView {
   #initializeState = () => {
     this.#updateRenderedPages(this.model);
   };
+
+  connectedCallback() {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+  }
 
   // TODO: Use connectedCallback
   componentWillLoad() {

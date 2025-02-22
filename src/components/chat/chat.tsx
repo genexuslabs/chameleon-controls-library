@@ -55,11 +55,6 @@ export class ChChat {
   @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
 
   /**
-   * This property allows us to implement custom rendering for the code blocks.
-   */
-  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
-
-  /**
    * Specifies if all interactions are disabled
    */
   @Prop() readonly disabled: boolean = false;
@@ -104,6 +99,11 @@ export class ChChat {
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
 
   /**
+   * This property allows us to implement custom rendering for the code blocks.
+   */
+  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
+
+  /**
    * `true` to render a slot named "additional-content" to project elements
    * between the "content" slot (grid messages) and the "send-container" slot.
    *
@@ -111,6 +111,12 @@ export class ChChat {
    * (loadingState !== "all-records-loaded" && items.length > 0).
    */
   @Prop() readonly showAdditionalContent: boolean = false;
+
+  /**
+   * Specifies the theme to be used for rendering the chat.
+   * If `undefined`, no theme will be applied.
+   */
+  @Prop() readonly theme?: ThemeModel | undefined;
 
   /**
    * Specifies the literals required in the control.
@@ -505,6 +511,8 @@ export class ChChat {
           canShowAdditionalContent ? "ch-chat--additional-content" : undefined
         }
       >
+        {this.theme && <ch-theme model={this.theme}></ch-theme>}
+
         {this.loadingState === "initial" ? (
           <div class="loading-chat" slot="empty-chat"></div>
         ) : (

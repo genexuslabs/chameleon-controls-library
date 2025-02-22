@@ -24,14 +24,14 @@ export class ChCode {
   @State() JSXCodeBlock: any;
 
   /**
+   * Specifies the code language to highlight.
+   */
+  @Prop() readonly language?: string | undefined;
+
+  /**
    *
    */
   @Prop() readonly lastNestedChildClass: string = "last-nested-child";
-
-  /**
-   * Specifies the code language to highlight.
-   */
-  @Prop() readonly language: string;
 
   /**
    * Specifies if an indicator is displayed in the last element rendered.
@@ -42,7 +42,7 @@ export class ChCode {
   /**
    * Specifies the code string to highlight.
    */
-  @Prop() readonly value: string;
+  @Prop() readonly value?: string | undefined;
 
   #getLanguageOrDefault = () => this.language || "plaintext";
 

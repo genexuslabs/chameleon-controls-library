@@ -368,29 +368,6 @@ export class ChPopover {
   @Prop() readonly firstLayer: boolean = true;
 
   /**
-   * Specifies whether the popover is hidden or visible.
-   */
-  // TODO: Remove reflect in a future PR (also add a unit test to verify that the
-  // property is not reflected and be careful with the selector `:host([show]) {...}` ).
-  @Prop({ mutable: true, reflect: true }) show: boolean = false;
-  @Watch("show")
-  showChanged(newShowValue: boolean) {
-    // Schedule update for watchers
-    this.#checkBorderSizeWatcher = true;
-    this.#checkPositionWatcher = true;
-
-    // Update the popover visualization
-    if (newShowValue) {
-      this.#showPopover();
-    } else {
-      if (this.firstLayer) {
-        this.#avoidFlickeringInTheNextRender(true);
-      }
-      this.el.hidePopover();
-    }
-  }
-
-  /**
    * Specifies the inline alignment of the window.
    */
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
@@ -466,6 +443,29 @@ export class ChPopover {
   resizableChanged() {
     // Schedule update for border size watcher
     this.#checkBorderSizeWatcher = true;
+  }
+
+  /**
+   * Specifies whether the popover is hidden or visible.
+   */
+  // TODO: Remove reflect in a future PR (also add a unit test to verify that the
+  // property is not reflected and be careful with the selector `:host([show]) {...}` ).
+  @Prop({ mutable: true, reflect: true }) show: boolean = false;
+  @Watch("show")
+  showChanged(newShowValue: boolean) {
+    // Schedule update for watchers
+    this.#checkBorderSizeWatcher = true;
+    this.#checkPositionWatcher = true;
+
+    // Update the popover visualization
+    if (newShowValue) {
+      this.#showPopover();
+    } else {
+      if (this.firstLayer) {
+        this.#avoidFlickeringInTheNextRender(true);
+      }
+      this.el.hidePopover();
+    }
   }
 
   /**

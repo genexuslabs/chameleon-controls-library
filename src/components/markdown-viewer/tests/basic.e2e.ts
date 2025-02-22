@@ -33,4 +33,7 @@ describe("[ch-markdown-viewer][basic]", () => {
 
   it("should have Shadow DOM", () =>
     expect(markdownViewerRef.shadowRoot).toBeTruthy());
+
+  it("should render empty by default", () =>
+    expect(markdownViewerRef.shadowRoot.innerHTML).toBeFalsy());
 });

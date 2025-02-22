@@ -8,10 +8,11 @@ import {
   forceUpdate,
   h
 } from "@stencil/core";
-import {
+import type {
   ChVirtualScrollerCustomEvent,
   VirtualScrollVirtualItems
 } from "../../components";
+import type { ThemeModel } from "../theme/theme-types";
 import {
   ChatContentImages,
   ChatInternalCallbacks,
@@ -186,6 +187,9 @@ export class ChChat {
     forceUpdate(this);
   }
 
+  // TODO: Add unit tests to validate how the chat message should be copied
+  // into the last chat message, considering that messages can have more
+  // properties that the interface/type has
   /**
    * Update the content of the last message, performing a re-render.
    */
@@ -368,12 +372,10 @@ export class ChChat {
   #removeUploadedImage = (index: number) => (event: MouseEvent) => {
     const buttonToRemove = event.target as HTMLButtonElement;
     const nextFocusedButton = (buttonToRemove.nextElementSibling ??
-      buttonToRemove.previousElementSibling) as HTMLButtonElement;
+      buttonToRemove.previousElementSibling) as HTMLButtonElement | null;
 
     // Focus the next item to improve accessibility
-    if (nextFocusedButton) {
-      nextFocusedButton.focus();
-    }
+    nextFocusedButton?.focus();
 
     // TODO: Remove the file from the image-picker reference
     removeElement(this.imagesToUpload, index);

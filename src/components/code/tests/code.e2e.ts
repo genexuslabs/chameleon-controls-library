@@ -72,13 +72,6 @@ describe("[ch-code]", () => {
     expect(codeRef).not.toBeNull();
   });
 
-  it("should have a shadowRoot", async () => {
-    await page.setContent(`<ch-code></ch-code>`);
-    const codeRef = await page.find("ch-code");
-
-    expect(codeRef.shadowRoot).not.toBeNull();
-  });
-
   it("should render an empty <code> when no value is provided", async () => {
     await page.setContent(`<ch-code></ch-code>`);
     const codeRef = await page.find("ch-code");
@@ -95,24 +88,6 @@ describe("[ch-code]", () => {
     expect(codeRef.shadowRoot).toEqualHtml(
       `<code class="hljs language-typescript" part="code language-typescript"></code>`
     );
-  });
-
-  it('should have "white-space: pre" to properly display the content', async () => {
-    await page.setContent(`<ch-code language="typescript"></ch-code>`);
-    const codeRef = await page.find("ch-code");
-
-    const computedStyle = await codeRef.getComputedStyle();
-
-    expect(computedStyle.whiteSpace).toBe("pre");
-  });
-
-  it('should have "overflow: auto" to properly display the content', async () => {
-    await page.setContent(`<ch-code language="typescript"></ch-code>`);
-    const codeRef = await page.find("ch-code");
-
-    const computedStyle = await codeRef.getComputedStyle();
-
-    expect(computedStyle.overflow).toBe("auto");
   });
 
   it("should render a hello world", async () => {

@@ -14,6 +14,9 @@ describe("[scrollbars styling]", () => {
     page = await newE2EPage({ failOnConsoleError: true });
   });
 
+  it('the scrollbar class should be "ch-scrollable"', () =>
+    expect(SCROLLABLE_CLASS).toBe("ch-scrollable"));
+
   const testThemeDownload = (tag: ChameleonControlsTagName) =>
     it(`should style the ${tag}\'s scrollbars when setting a ch-theme with "chameleon/scrollbar"`, async () => {
       await page.setContent(`<ch-theme></ch-theme>

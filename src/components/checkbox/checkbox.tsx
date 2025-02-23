@@ -29,7 +29,10 @@ import {
   DEFAULT_GET_IMAGE_PATH_CALLBACK,
   getControlRegisterProperty
 } from "../../common/registry-properties";
-import { getElementInternalsLabel } from "../../common/analysis/accessibility";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   if (indeterminate) {
@@ -296,6 +299,15 @@ export class ChCheckBox
     this.internals.setFormValue(this.value?.toString());
     const labels = this.internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
+
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-checkbox",
+      labels,
+      this.#accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
   }
 
   render() {

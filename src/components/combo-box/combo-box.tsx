@@ -48,6 +48,10 @@ import { customComboBoxItemRender, nativeItemRender } from "./renders";
 import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
 import { getControlRegisterProperty } from "../../common/registry-properties";
 import { GxImageMultiStateStart } from "../../common/types";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 const SELECTED_ITEM_SELECTOR = `button[part*='${COMBO_BOX_PARTS_DICTIONARY.SELECTED}']`;
 const mobileDevice = isMobileDevice();
@@ -825,14 +829,20 @@ export class ChComboBoxRender
       this.#valueToItemInfo,
       this.#captionToItemInfo
     );
-    this.#setValueInForm(this.value);
 
+    // Accessibility
+    this.internals.setFormValue(this.value);
     const labels = this.internals.labels;
+    this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
-    // Get external aria-label
-    if (labels?.length > 0) {
-      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
-    }
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-combo-box-render",
+      labels,
+      this.#accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
   }
 
   componentWillRender() {

@@ -15,7 +15,10 @@ import {
   SWITCH_PARTS_DICTIONARY
 } from "../../common/reserved-names";
 import { tokenMap } from "../../common/utils";
-import { getElementInternalsLabel } from "../../common/analysis/accessibility";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 /**
  * @status experimental
@@ -126,6 +129,15 @@ export class ChSwitch implements AccessibleNameComponent {
     this.internals.setFormValue(this.value?.toString());
     const labels = this.internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
+
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-switch",
+      labels,
+      this.#accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
   }
 
   render() {

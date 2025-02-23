@@ -12,7 +12,10 @@ import {
 
 import { AccessibleNameComponent } from "../../common/interfaces";
 import { SyncWithRAF } from "../../common/sync-with-frames";
-import { getElementInternalsLabel } from "../../common/analysis/accessibility";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 const DEFAULT_PERCENTAGE_VALUE_WHEN_MIN_EQUALS_MAX = 0;
 
@@ -155,6 +158,15 @@ export class ChSlider implements AccessibleNameComponent {
     this.internals.setFormValue(this.value?.toString());
     const labels = this.internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
+
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-slider",
+      labels,
+      this.#accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
   }
 
   render() {

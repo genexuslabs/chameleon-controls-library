@@ -1,5 +1,12 @@
 /* eslint-disable no-console */
 import type { ChameleonControlsTagName } from "../types";
+import {
+  checkAccessibilityReports,
+  defineChameleonReportsIfNecessary
+} from "./reports";
+
+// Side effect
+defineChameleonReportsIfNecessary();
 
 const howToSetALabel = (
   tag: ChameleonControlsTagName,
@@ -61,6 +68,10 @@ export const analyzeLabelExistence = <T extends ChameleonControlsTagName>(
   externalLabel: string | undefined,
   accessibleName: string | undefined
 ) => {
+  if (!checkAccessibilityReports()) {
+    return;
+  }
+
   const actualAccessibleNameProperty =
     !accessibleName || accessibleName.trim() === ""
       ? undefined

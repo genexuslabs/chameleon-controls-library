@@ -29,6 +29,7 @@ import {
   DEFAULT_GET_IMAGE_PATH_CALLBACK,
   getControlRegisterProperty
 } from "../../common/registry-properties";
+import { getElementInternalsLabel } from "../../common/analysis/accessibility";
 
 const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   if (indeterminate) {
@@ -251,19 +252,15 @@ export class ChCheckBox
     checked: boolean,
     additionalParts: string
   ) => {
-    const accessibleName =
-      this.accessibleName ?? this.#accessibleNameFromExternalLabel;
-
     return (
       <div
         class="container"
         part={`${CHECKBOX_PARTS_DICTIONARY.CONTAINER} ${additionalParts}`}
       >
         <input
+          // TODO: Should we avoid setting the aria-label if the caption has the same value??
           aria-label={
-            accessibleName?.trim() !== "" && accessibleName !== this.caption
-              ? accessibleName
-              : null
+            this.#accessibleNameFromExternalLabel ?? this.accessibleName
           }
           class="input"
           part={`${CHECKBOX_PARTS_DICTIONARY.INPUT} ${additionalParts}`}
@@ -295,15 +292,10 @@ export class ChCheckBox
     // Set initial value to unchecked if empty
     this.value ||= this.unCheckedValue;
 
-    // Set form value
+    // Accessibility
     this.internals.setFormValue(this.value?.toString());
-
     const labels = this.internals.labels;
-
-    // Get external aria-label
-    if (!this.accessibleName && labels?.length > 0) {
-      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
-    }
+    this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
   }
 
   render() {

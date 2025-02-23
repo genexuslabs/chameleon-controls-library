@@ -15,6 +15,7 @@ import {
   SWITCH_PARTS_DICTIONARY
 } from "../../common/reserved-names";
 import { tokenMap } from "../../common/utils";
+import { getElementInternalsLabel } from "../../common/analysis/accessibility";
 
 /**
  * @status experimental
@@ -121,15 +122,10 @@ export class ChSwitch implements AccessibleNameComponent {
     // Set initial value to unchecked if empty
     this.value ||= this.unCheckedValue;
 
-    // Set form value
+    // Accessibility
     this.internals.setFormValue(this.value?.toString());
-
     const labels = this.internals.labels;
-
-    // Get external aria-label
-    if (!this.accessibleName && labels?.length > 0) {
-      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
-    }
+    this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
   }
 
   render() {
@@ -157,7 +153,7 @@ export class ChSwitch implements AccessibleNameComponent {
               role="switch"
               aria-checked={checked ? "true" : "false"}
               aria-label={
-                this.accessibleName ?? this.#accessibleNameFromExternalLabel
+                this.#accessibleNameFromExternalLabel ?? this.accessibleName
               }
               class={{ thumb: true, "thumb--checked": checked }}
               part={tokenMap({

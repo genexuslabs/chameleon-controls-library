@@ -15,10 +15,7 @@ import {
   SWITCH_PARTS_DICTIONARY
 } from "../../common/reserved-names";
 import { tokenMap } from "../../common/utils";
-import {
-  analyzeLabelExistence,
-  getElementInternalsLabel
-} from "../../common/analysis/accessibility";
+import { getElementInternalsLabel } from "../../common/analysis/accessibility";
 
 /**
  * @status experimental
@@ -130,14 +127,14 @@ export class ChSwitch implements AccessibleNameComponent {
     const labels = this.internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
-    // Report any accessibility issue
-    analyzeLabelExistence(
-      this.el,
-      "ch-switch",
-      labels,
-      this.#accessibleNameFromExternalLabel,
-      this.accessibleName
-    );
+    // Report any accessibility issue. // TODO: It should take into account the "caption" properties
+    // analyzeLabelExistence(
+    //   this.el,
+    //   "ch-switch",
+    //   labels,
+    //   this.#accessibleNameFromExternalLabel,
+    //   this.accessibleName
+    // );
   }
 
   render() {

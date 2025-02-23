@@ -29,10 +29,7 @@ import {
   DEFAULT_GET_IMAGE_PATH_CALLBACK,
   getControlRegisterProperty
 } from "../../common/registry-properties";
-import {
-  analyzeLabelExistence,
-  getElementInternalsLabel
-} from "../../common/analysis/accessibility";
+import { getElementInternalsLabel } from "../../common/analysis/accessibility";
 
 const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   if (indeterminate) {
@@ -300,14 +297,14 @@ export class ChCheckBox
     const labels = this.internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
-    // Report any accessibility issue
-    analyzeLabelExistence(
-      this.el,
-      "ch-checkbox",
-      labels,
-      this.#accessibleNameFromExternalLabel,
-      this.accessibleName
-    );
+    // Report any accessibility issue. TODO: It should take into account the caption property
+    // analyzeLabelExistence(
+    //   this.el,
+    //   "ch-checkbox",
+    //   labels,
+    //   this.#accessibleNameFromExternalLabel,
+    //   this.accessibleName
+    // );
   }
 
   render() {

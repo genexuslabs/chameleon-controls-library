@@ -7,7 +7,8 @@ import {
   Listen,
   Prop,
   State,
-  Watch
+  Watch,
+  Build
 } from "@stencil/core";
 import {
   ShowcaseStoryClass,
@@ -76,6 +77,17 @@ import {
 } from "./renders";
 import { findComponentMetadataUsingURLHash } from "./pages";
 import { getDropdownImagePathCallback } from "./action-menu/models";
+import {
+  disableAccessibilityReports,
+  enableAccessibilityReports
+} from "../../../common/analysis/reports";
+
+disableAccessibilityReports();
+
+// Only enable reports in dev mode
+if (Build.isDev) {
+  enableAccessibilityReports();
+}
 
 const SHOWCASE_STYLES: ThemeModel = [
   {

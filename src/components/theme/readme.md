@@ -33,6 +33,7 @@ either in the Document or in a Shadow-Root.
 
 ### Used by
 
+ - [ch-chat](../chat)
  - [ch-flexible-layout-render](../flexible-layout)
  - [ch-markdown-viewer](../markdown-viewer)
  - [ch-showcase](../../showcase/assets/components)
@@ -42,6 +43,7 @@ either in the Document or in a Shadow-Root.
 ### Graph
 ```mermaid
 graph TD;
+  ch-chat --> ch-theme
   ch-flexible-layout-render --> ch-theme
   ch-markdown-viewer --> ch-theme
   ch-showcase --> ch-theme

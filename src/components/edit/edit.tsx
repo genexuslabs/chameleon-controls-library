@@ -31,6 +31,10 @@ import type {
 import { tokenMap, updateDirectionInImageCustomVar } from "../../common/utils";
 import { getControlRegisterProperty } from "../../common/registry-properties";
 import { adoptCommonThemes } from "../../common/theme";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
   imageSrc: string
@@ -446,14 +450,19 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     this.#computeImage();
     this.#computePictureValue(this.value);
 
+    // Accessibility
     this.internals.setFormValue(this.value);
-
     const labels = this.internals.labels;
+    this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
-    // Get external aria-label
-    if (labels?.length > 0) {
-      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
-    }
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-edit",
+      labels,
+      this.#accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
   }
 
   componentWillUpdate() {

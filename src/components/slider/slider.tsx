@@ -12,6 +12,10 @@ import {
 
 import { AccessibleNameComponent } from "../../common/interfaces";
 import { SyncWithRAF } from "../../common/sync-with-frames";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 const DEFAULT_PERCENTAGE_VALUE_WHEN_MIN_EQUALS_MAX = 0;
 
@@ -150,12 +154,19 @@ export class ChSlider implements AccessibleNameComponent {
     // Set form value
     this.internals.setFormValue(this.value.toString());
 
+    // Accessibility
+    this.internals.setFormValue(this.value?.toString());
     const labels = this.internals.labels;
+    this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
-    // Get external aria-label
-    if (!this.accessibleName && labels?.length > 0) {
-      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
-    }
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-slider",
+      labels,
+      this.#accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
   }
 
   render() {
@@ -176,7 +187,7 @@ export class ChSlider implements AccessibleNameComponent {
         <div class="position-absolute-wrapper">
           <input
             aria-label={
-              this.accessibleName ?? this.#accessibleNameFromExternalLabel
+              this.#accessibleNameFromExternalLabel ?? this.accessibleName
             }
             class="slider"
             disabled={this.disabled}

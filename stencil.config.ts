@@ -1,26 +1,45 @@
 import { Config } from "@stencil/core";
+import { OutputTarget } from "@stencil/core/internal";
 import { sass } from "@stencil/sass";
+import { reactOutputTarget } from "@stencil/react-output-target";
+
+import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
+
+const outputTargets: OutputTarget[] = [
+  {
+    type: "dist",
+    esmLoaderPath: "../loader",
+    copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
+  },
+  // dist-custom-elements output target is required for the React output target.
+  // It generates the dist/components folder
+  { type: "dist-custom-elements" },
+  {
+    type: "www",
+    serviceWorker: null,
+    copy: [
+      { src: "common/monaco/output/assets", dest: "assets" },
+      { src: "showcase" }
+    ]
+  },
+  reactOutputTarget({
+    componentCorePackage: "@genexus/chameleon-controls-library",
+    proxiesFile: "dist/react/chameleon-components/index.ts",
+
+    // All Web Components will automatically be registered with the Custom
+    // Elements Registry. This can only be used when lazy loading Web
+    // Components and will not work when includeImportCustomElements is true.
+    includeDefineCustomElements: true,
+    loaderDir: "loader",
+
+    excludeComponents: reactOutputExcludedComponents,
+    customElementsDir: "dist/components"
+  })
+];
 
 export const config: Config = {
   namespace: "chameleon",
-  outputTargets: [
-    {
-      type: "dist",
-      esmLoaderPath: "../loader",
-      copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
-    },
-    // dist-custom-elements output target is required for the React output target.
-    // It generates the dist/components folder
-    { type: "dist-custom-elements" },
-    {
-      type: "www",
-      serviceWorker: null,
-      copy: [
-        { src: "common/monaco/output/assets", dest: "assets" },
-        { src: "showcase" }
-      ]
-    }
-  ],
+  outputTargets,
   plugins: [sass()],
   extras: {
     // Enabling this flag will allow downstream projects that consume a Stencil

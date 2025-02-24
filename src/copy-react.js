@@ -5,8 +5,8 @@ import path from "node:path";
 import { styleText } from "node:util";
 import { fileURLToPath } from "url";
 
-const DEFAULT_OUT_DIR = "./src";
 const FOLDER_NAME_FOR_WRAPPERS = "chameleon-components";
+const DEFAULT_OUT_DIR = path.join("src", FOLDER_NAME_FOR_WRAPPERS);
 
 const ensureDirectoryItsClear = dirPath => {
   if (fs.existsSync(dirPath)) {
@@ -29,7 +29,7 @@ if (!args || !args[0]) {
   console.log(
     styleText(
       "yellow",
-      "  [warning]: Missing output directory for chameleon components. The directory "
+      "[warning]: Missing output directory for chameleon components. The directory "
     ) +
       styleText("cyan", `'${DEFAULT_OUT_DIR}'`) +
       styleText("yellow", " will be used as default.")
@@ -44,8 +44,7 @@ const chameleonWrappersDirectory = path.join(
 );
 const pathToCopyChameleonWrappers = path.join(
   directoryWhereTheScriptIsRunning,
-  outDir,
-  FOLDER_NAME_FOR_WRAPPERS
+  outDir
 );
 
 ensureDirectoryItsClear(pathToCopyChameleonWrappers);

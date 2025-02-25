@@ -831,7 +831,7 @@ export class ChComboBoxRender
     );
 
     // Accessibility
-    this.internals.setFormValue(this.value);
+    this.#setValueInForm(this.value);
     const labels = this.internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 

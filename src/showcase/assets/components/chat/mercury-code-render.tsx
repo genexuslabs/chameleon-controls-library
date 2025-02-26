@@ -25,6 +25,7 @@ export const mercuryCodeRender =
           language={options.language}
           lastNestedChildClass={options.lastNestedChildClass}
           value={options.plainText}
+          showIndicator={options.showIndicator}
         ></ch-code>
       </div>
     );
@@ -58,7 +59,10 @@ export const mercuryChatMessageRender =
                   : "message__content"
               }
               theme={theme}
-              showIndicator={false}
+              showIndicator={
+                messageModel.role === "assistant" &&
+                messageModel.status === "streaming"
+              }
               renderCode={mercuryCodeRender("Copy code")}
               value={messageModel.content as string}
             ></ch-markdown-viewer>

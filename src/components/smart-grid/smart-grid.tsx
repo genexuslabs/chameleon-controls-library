@@ -82,7 +82,7 @@ export class ChSmartGrid
   /**
    * Specifies the loading state of the grid.
    */
-  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
+  @Prop({ mutable: true }) loadingState: SmartGridDataState = "initial";
   // @Watch("loadingState")
   // loadingStateChange(_, oldLoadingState: SmartGridDataState) {
   //   if (oldLoadingState === "initial") {

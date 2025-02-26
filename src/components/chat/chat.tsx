@@ -403,7 +403,7 @@ export class ChChat {
       <slot name="empty-chat"></slot>
     ) : (
       <ch-smart-grid
-        dataProvider
+        dataProvider={this.loadingState === "more-data-to-fetch"}
         loadingState={
           this.virtualItems.length === 0 ? "initial" : this.loadingState
         }

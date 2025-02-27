@@ -184,6 +184,9 @@ export class ChSmartGrid
           <slot name="grid-initial-loading-placeholder" />
         ) : (
           [
+            // TODO: Don't attach the ch-infinite-scroll component if the
+            // smart-grid doesn't have an slot "grid-content" in its Light DOM
+            // Otherwise, the ch-infinite-scroll will break in runtime
             hasRecords && this.inverseLoading && (
               <ch-infinite-scroll
                 dataProvider={this.dataProvider}

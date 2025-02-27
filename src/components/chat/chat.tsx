@@ -82,6 +82,7 @@ export class ChChat {
    */
   @Prop() readonly isMobile?: boolean = false;
 
+  // TODO: Add support for undefined messages.
   /**
    * Specifies the items that the chat will display.
    */
@@ -90,7 +91,7 @@ export class ChChat {
   /**
    * Specifies if the chat is waiting for the data to be loaded.
    */
-  @Prop({ mutable: true }) loadingState?: SmartGridDataState = "initial";
+  @Prop({ mutable: true }) loadingState: SmartGridDataState = "initial";
 
   /**
    * Specifies the theme to be used for rendering the markdown.
@@ -514,6 +515,7 @@ export class ChChat {
         {this.theme && <ch-theme model={this.theme}></ch-theme>}
 
         {this.loadingState === "initial" ? (
+          // TODO: Improve this slot name
           <div class="loading-chat" slot="empty-chat"></div>
         ) : (
           this.#renderChatOrEmpty()

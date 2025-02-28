@@ -21,7 +21,7 @@ const render: ShowcaseRender = designSystem => (
     callbacks={chatCallbacks}
     class="chat"
     generatingResponse={false}
-    loadingState="more-data-to-fetch"
+    loadingState={state.loadingState}
     markdownTheme={
       designSystem === "unanimo"
         ? "unanimo/markdown-viewer"
@@ -66,6 +66,21 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
     caption: "Properties",
     properties: [
       {
+        id: "loadingState",
+        caption: "Loading State",
+        values: [
+          { caption: "initial", value: "initial" },
+          { caption: "loading", value: "loading" },
+          {
+            caption: "more-data-to-fetch",
+            value: "more-data-to-fetch"
+          },
+          { caption: "all-records-loaded", value: "all-records-loaded" }
+        ],
+        value: "all-records-loaded",
+        type: "enum"
+      },
+      {
         id: "showAdditionalContent",
         caption: "Show Additional Content",
         value: false,
@@ -83,6 +98,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       fixed: true,
       value: "controlUIModel",
       type: "function"
+    },
+    {
+      name: "loadingState",
+      defaultValue: "initial",
+      type: "string"
     },
     {
       name: "showAdditionalContent",

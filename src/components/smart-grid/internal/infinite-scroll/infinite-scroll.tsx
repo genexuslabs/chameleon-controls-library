@@ -342,6 +342,8 @@ export class ChInfiniteScroll implements ComponentInterface {
     this.#disconnectInverseLoading();
   }
 
+  // TODO: Ensure the ch-infinite-scroll doesn't crash when is only used by
+  // itself (without a ch-smart-grid as a parent)
   render() {
     return (
       <Host

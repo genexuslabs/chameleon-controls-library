@@ -57,6 +57,7 @@ export const config: Config = {
       "src/testing/form.e2e.ts",
       "src/testing/utils.e2e.ts",
       "dist/",
+      "src/components/chat/tests/utils.e2e.ts",
       "src/components/theme/tests/utils.e2e.ts",
       "src/components/tree-view/tests/utils.e2e.ts"
     ]

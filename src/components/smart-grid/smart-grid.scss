@@ -19,7 +19,7 @@
   grid-template-rows: 1fr max-content;
 }
 
-// TODO: Why do we need this?
+// This class is set when the smart-grid defines its own scroll
 :host(.ch-scrollable) {
   contain: strict;
   overflow: auto;

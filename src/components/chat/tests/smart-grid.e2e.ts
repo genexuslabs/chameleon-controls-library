@@ -1,6 +1,12 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import type { SmartGridDataState } from "../../smart-grid/internal/infinite-scroll/types";
 import { ChatMessage } from "../types";
+import {
+  EMPTY_ITEMS,
+  LOADING_STATE_VALUES,
+  ONE_ITEM,
+  TEN_ITEMS
+} from "./utils.e2e";
 
 const EMPTY_CHAT_SELECTOR = 'ch-chat >>> slot[name="empty-chat"]';
 const LOADING_SELECTOR = 'ch-chat >>> [slot="empty-chat"]';
@@ -8,29 +14,8 @@ const INFINITE_SCROLLER_SELECTOR =
   "ch-chat >>> ch-smart-grid > ch-virtual-scroller";
 const SMART_GRID_SELECTOR = "ch-chat >>> ch-smart-grid";
 
-const EMPTY_ITEMS = [];
-const ONE_ITEM: ChatMessage[] = [{ id: "1", role: "assistant", content: "1" }];
-const TEN_ITEMS: ChatMessage[] = [
-  { id: "1", role: "assistant", content: "Content 1" },
-  { id: "2", role: "error", content: "Content 2" },
-  { id: "3", role: "system", content: "Content 3" },
-  { id: "4", role: "user", content: "Content 4" },
-  { id: "5", role: "assistant", content: "Content 5" },
-  { id: "6", role: "error", content: "Content 6" },
-  { id: "7", role: "system", content: "Content 7" },
-  { id: "8", role: "user", content: "Content 8" },
-  { id: "9", role: "assistant", content: "Content 9" },
-  { id: "10", role: "error", content: "Content 10" }
-];
-
 const ITEMS_VALUE = [EMPTY_ITEMS, ONE_ITEM, TEN_ITEMS];
 const NOT_EMPTY_ITEMS_VALUE = [ONE_ITEM, TEN_ITEMS];
-
-const LOADING_STATE_VALUES: SmartGridDataState[] = [
-  "loading",
-  "more-data-to-fetch",
-  "all-records-loaded"
-];
 
 describe("[ch-chat][smart-grid]", () => {
   let page: E2EPage;

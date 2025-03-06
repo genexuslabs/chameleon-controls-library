@@ -181,6 +181,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
     --ch-tab-button-start-img: var(--ch-start-img--focus);
   }
 
+  &.start-img--selected.selected {
+    --ch-tab-button-start-img: var(--ch-start-img--selected);
+  }
+
   &:disabled.start-img--disabled {
     --ch-tab-button-start-img: var(--ch-start-img--disabled);
   }

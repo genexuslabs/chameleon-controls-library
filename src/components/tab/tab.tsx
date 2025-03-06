@@ -80,7 +80,6 @@ const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 const TAB_LIST_EDGE_START_POSITION = "--ch-tab-list-start";
 const TAB_LIST_EDGE_END_POSITION = "--ch-tab-list-end";
 
-const DECORATIVE_IMAGE = "--ch-tab-decorative-image";
 type KeyEvents =
   | typeof KEY_CODES.ARROW_UP
   | typeof KEY_CODES.ARROW_RIGHT
@@ -1118,6 +1117,7 @@ export class ChTabRender implements DraggableView {
           "no-captions": !this.showCaptions,
 
           sortable: this.sortable,
+          selected: selected,
 
           [`start-img-type--${
             item.startImgType ?? "background"
@@ -1268,10 +1268,13 @@ export class ChTabRender implements DraggableView {
     const startDirection = isStartDirection(this.tabListPosition);
     const selected = draggedElement.id === this.selectedId;
 
-    const decorativeImage = isPseudoElementImg(
-      draggedElement.startImgSrc,
-      draggedElement.startImgType
-    );
+    const startImage = this.#images.get(draggedElement.id);
+    const startImageClasses = startImage?.classes;
+    const isDecorativeImage =
+      isPseudoElementImg(
+        draggedElement.startImgSrc,
+        draggedElement.startImgType
+      ) && !!startImage;
 
     const closeButton = draggedElement.closeButton ?? this.closeButton;
 
@@ -1283,7 +1286,13 @@ export class ChTabRender implements DraggableView {
           [TAB_BUTTON_CLASS]: true,
           [DRAG_PREVIEW]: true,
           "no-captions": !this.showCaptions,
-          "decorative-image": decorativeImage,
+
+          selected: selected,
+
+          [`start-img-type--${
+            draggedElement.startImgType ?? "background"
+          } pseudo-img--start`]: isDecorativeImage,
+          [startImageClasses]: isDecorativeImage && !!startImageClasses,
 
           [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
           [DRAG_PREVIEW_INSIDE_INLINE]:
@@ -1309,11 +1318,7 @@ export class ChTabRender implements DraggableView {
           [TAB_PARTS_DICTIONARY.SELECTED]: selected,
           [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected
         })}
-        style={
-          decorativeImage
-            ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImgSrc}")` }
-            : null
-        }
+        style={isDecorativeImage ? startImage.styles : undefined}
         ref={el => (this.#dragPreviewRef = el)}
       >
         {this.#imgRender(draggedElement)}

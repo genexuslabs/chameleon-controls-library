@@ -10,7 +10,7 @@ import {
   Watch,
   Build
 } from "@stencil/core";
-import {
+import type {
   ShowcaseStoryClass,
   ShowcaseCustomStory,
   ShowcaseRenderProperty,
@@ -25,7 +25,7 @@ import {
   ShowcaseStories,
   ShowcaseRenderPropertyStyle
 } from "./types";
-import {
+import type {
   ChComboBoxRenderCustomEvent,
   ChRadioGroupRenderCustomEvent,
   ComboBoxModel,
@@ -44,10 +44,11 @@ import {
 } from "./utils";
 import { registryProperty } from "../../../common/registry-properties";
 import { getActionListPathCallback } from "./action-list/models";
-import { getAccordionPathCallback } from "./accordion/models";
+import { getImagePathCallbackAccordion } from "./accordion/models";
 import { getComboBoxImagePathCallback } from "./combo-box/models";
 import { getImagePathCallbackEdit } from "./edit/models";
 import { getImagePathCallbackImage } from "./image/models";
+import { getImagePathCallbackTab } from "./tab/models";
 import { getImagePathCallbackTreeView } from "./tree-view/models";
 
 import { getDesignSystem, storeDesignSystem } from "../../models/ds-manager.js";
@@ -131,13 +132,14 @@ const MERCURY_BASE_THEME: ThemeModel = [
 ];
 
 registryProperty("getImagePathCallback", {
+  "ch-accordion-render": getImagePathCallbackAccordion,
   "ch-action-list-render": getActionListPathCallback,
   "ch-action-menu-render": getDropdownImagePathCallback,
-  "ch-accordion-render": getAccordionPathCallback,
   "ch-checkbox": getImagePathCallbackEdit,
   "ch-combo-box-render": getComboBoxImagePathCallback,
   "ch-edit": getImagePathCallbackEdit,
   "ch-image": getImagePathCallbackImage,
+  "ch-tab-render": getImagePathCallbackTab,
   "ch-tree-view-render": getImagePathCallbackTreeView
 });
 

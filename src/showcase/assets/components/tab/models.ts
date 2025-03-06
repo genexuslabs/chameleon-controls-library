@@ -1,6 +1,10 @@
-import { TabModel } from "../../../../components/tab/types";
+import type { GxImageMultiState } from "../../../../common/types";
+import type { TabModel } from "../../../../components/tab/types";
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
+
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
 
 export const simpleModel1: TabModel = [
   { id: "item1", name: "Item 1" },
@@ -18,7 +22,7 @@ export const simpleModel2: TabModel = [
   {
     id: "item2",
     name: "Item 2",
-    startImgSrc: `${ASSETS_PREFIX}api.svg`
+    startImgSrc: MODULE_ICON
   },
   { id: "item3", name: "Item 3" },
   { id: "item4", name: "", startImgSrc: `${ASSETS_PREFIX}dso.svg` }
@@ -51,7 +55,7 @@ export const disabledModel1: TabModel = [
   {
     id: "item2",
     name: "Item 2",
-    startImgSrc: `${ASSETS_PREFIX}api.svg`
+    startImgSrc: FOLDER_ICON
   },
   { id: "item3", name: "Item 3", disabled: true },
   { id: "item4", name: "", startImgSrc: `${ASSETS_PREFIX}dso.svg` }
@@ -121,3 +125,31 @@ export const disabledModel4: TabModel = [
     disabled: true
   }
 ];
+
+export const getImagePathCallbackTab = (
+  startImgSrc: string
+): GxImageMultiState => {
+  if (startImgSrc === MODULE_ICON) {
+    return {
+      base: "var(--icon-module-base)",
+      active: "var(--icon-module-active)",
+      hover: "var(--icon-module-hover)",
+      selected: "var(--icon-stencil-base)",
+      disabled: "var(--icon-module-disabled)"
+    };
+  }
+
+  if (startImgSrc === FOLDER_ICON) {
+    return {
+      base: "var(--icon-folder-base)",
+      active: "var(--icon-folder-active)",
+      hover: "var(--icon-folder-hover)",
+      selected: "var(--icon-stencil-base)",
+      disabled: "var(--icon-folder-disabled)"
+    };
+  }
+
+  return {
+    base: startImgSrc
+  };
+};

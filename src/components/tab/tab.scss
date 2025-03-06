@@ -12,8 +12,20 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :host {
   --ch-tab-transition-duration: 150ms;
-  --ch-tab-mask-image-size: 100%;
-  --ch-tab-image-size: 18px;
+
+  /**
+   * @prop --ch-tab-button__image-size:
+   * Specifies the box size that contains the start images of the tab buttons.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-tab-button__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-tab-button__background-image-size:
+   * Specifies the size of the start images of the tab buttons.
+   * @default 100%
+   */
+  --ch-tab-button__background-image-size: 100%;
 
   /**
    * @prop --ch-tab-close-button__image-size:
@@ -151,17 +163,53 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   -webkit-user-drag: element;
 }
 
-.caption-image,
-.decorative-image::before {
-  display: block;
-  block-size: var(--ch-tab-image-size);
-  inline-size: var(--ch-tab-image-size);
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.tab {
+  --ch-tab-button-start-img: var(--ch-start-img--base);
+
+  &.start-img--hover:hover {
+    --ch-tab-button-start-img: var(--ch-start-img--hover);
+  }
+
+  &.start-img--active:active {
+    --ch-tab-button-start-img: var(--ch-start-img--active);
+  }
+
+  &.start-img--focus:focus {
+    --ch-tab-button-start-img: var(--ch-start-img--focus);
+  }
+
+  &:disabled.start-img--disabled {
+    --ch-tab-button-start-img: var(--ch-start-img--disabled);
+  }
 }
 
-.decorative-image::before {
+.caption-image,
+.pseudo-img--start::before {
+  display: block;
+  block-size: var(--ch-tab-button__image-size);
+  inline-size: var(--ch-tab-button__image-size);
+  min-inline-size: var(--ch-tab-button__image-size);
+}
+
+.pseudo-img--start::before {
   content: "";
-  -webkit-mask: var(--ch-tab-decorative-image) 50% 50% /
-    var(--ch-tab-mask-image-size) var(--ch-tab-mask-image-size) no-repeat;
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-tab-button__image-size);
+}
+
+// Background
+.start-img-type--background::before {
+  background: no-repeat center / var(--ch-tab-button__background-image-size)
+    var(--ch-tab-button-start-img);
+}
+
+// Mask
+.start-img-type--mask::before {
+  -webkit-mask: no-repeat center / var(--ch-tab-button__background-image-size)
+    var(--ch-tab-button-start-img);
   background-color: currentColor;
 }
 

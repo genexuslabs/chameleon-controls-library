@@ -92,19 +92,22 @@ export const defaultLayout: FlexibleLayoutModel = {
               id: KB_EXPLORER,
               name: "KB Explorer",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`,
+              startImgType: "mask"
             },
             {
               id: PREFERENCES,
               name: "Preferences",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`,
+              startImgType: "mask"
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`,
+              startImgType: "mask"
             }
           ]
         },
@@ -133,7 +136,8 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`,
+              startImgType: "mask"
             }
           ]
         }
@@ -148,7 +152,8 @@ export const defaultLayout: FlexibleLayoutModel = {
         {
           id: OUTPUT,
           name: "Output",
-          startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
+          startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`,
+          startImgType: "mask"
         }
       ]
     }
@@ -188,19 +193,22 @@ export const layout2: FlexibleLayoutModel = {
               id: KB_EXPLORER,
               name: "KB Explorer",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`,
+              startImgType: "mask"
             },
             {
               id: PREFERENCES,
               name: "Preferences",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`,
+              startImgType: "mask"
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`,
+              startImgType: "mask"
             }
           ]
         },
@@ -241,7 +249,8 @@ export const layout2: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`,
+              startImgType: "mask"
             }
           ]
         }
@@ -256,7 +265,8 @@ export const layout2: FlexibleLayoutModel = {
         {
           id: OUTPUT,
           name: "Output",
-          startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
+          startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`,
+          startImgType: "mask"
         }
       ]
     }
@@ -301,19 +311,22 @@ export const layout3: FlexibleLayoutModel = {
               id: KB_EXPLORER,
               name: "KB Explorer",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`,
+              startImgType: "mask"
             },
             {
               id: PREFERENCES,
               name: "Preferences",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`,
+              startImgType: "mask"
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
               contain: "none", // Necessary to avoid performance issues
-              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`,
+              startImgType: "mask"
             }
           ]
         },
@@ -341,6 +354,7 @@ export const layout3: FlexibleLayoutModel = {
                       id: START_PAGE,
                       accessibleName: "Start Page",
                       startImgSrc: `${ASSETS_PREFIX}/toolbar/home.svg`,
+                      startImgType: "mask",
                       closeButton: false
                     }
                   ]
@@ -360,6 +374,7 @@ export const layout3: FlexibleLayoutModel = {
                           id: STRUCT_EDITOR,
                           name: "Struct Editor",
                           startImgSrc: `${ASSETS_PREFIX}transaction.svg`,
+                          startImgType: "mask",
                           overflow: "auto"
                         },
                         {
@@ -411,7 +426,8 @@ export const layout3: FlexibleLayoutModel = {
                 {
                   id: OUTPUT,
                   name: "Output",
-                  startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
+                  startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`,
+                  startImgType: "mask"
                 }
               ]
             }
@@ -429,12 +445,14 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`,
+              startImgType: "mask"
             },
             {
               id: TOOLBOX,
               name: "Toolbox",
               startImgSrc: `${ASSETS_PREFIX}toolbar/toolbox.svg`,
+              startImgType: "mask",
               slot: true
             }
           ]

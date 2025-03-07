@@ -158,6 +158,7 @@ export type ChameleonImagePathCallbackControlsTagName = Extract<
   | "ch-edit"
   | "ch-image"
   | "ch-navigation-list-render"
+  | "ch-tab-render"
   | "ch-tree-view-render"
 >;
 

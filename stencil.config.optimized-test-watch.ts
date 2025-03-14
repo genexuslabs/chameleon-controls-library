@@ -7,6 +7,7 @@ const buildReact = argv.includes("--react");
 
 export const config: Config = {
   namespace: defaultConfig.namespace,
+  globalScript: "src/fix-broken-hydrate-on-load.ts",
   outputTargets: defaultConfig.outputTargets!.filter(
     output => output.type === "www" || buildReact
   ),

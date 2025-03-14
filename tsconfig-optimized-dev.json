@@ -38,11 +38,11 @@
     "src/deprecated-components/suggest/",
     "src/deprecated-components/test/",
     "src/deprecated-components/tree/",
-    "src/deprecated-components/tree-item/"
+    "src/deprecated-components/tree-item/",
     // "src/deprecated-components/window/"
 
     // "src/components/code-editor/",
     // "src/components/code-diff-editor/",
-    // "src/components/gx-grid/"
+    "src/components/gx-grid/"
   ]
 }

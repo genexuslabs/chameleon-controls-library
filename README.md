@@ -26,14 +26,26 @@ For this, we recommend consulting our repository [chameleon-integrations](https:
 - Starting with Chameleon version `6.4.0`, there is a CLI to create React Web Component wrappers. To create the wrappers, run the following command:
 
   ```bash
-  chameleon-generate-react <output dir (optional)>
+  npx chameleon-generate-react <output dir (optional)>
   ```
 
   For example:
 
   ```bash
-  chameleon-generate-react ./src/chameleon-components
+  npx chameleon-generate-react ./src/chameleon-components
   ```
+
+- **Tip**: We recommend adding this command to your `package.json` file before running the dev server and production builds, as it takes less than 300ms to execute.
+
+  For example:
+
+  ```json
+  "dev": "npm run build.chameleon && ...",
+  "build": "npm run build.chameleon && ..."
+  "build.chameleon": "chameleon-generate-react <output dir (optional)>"
+  ```
+
+  If you are in a monorepo environment, you may need run the script with `npx chameleon-generate-react`, `yarn chameleon-generate-react`, etc.
 
 - Finally, all you have to do is use the components in your project!
 

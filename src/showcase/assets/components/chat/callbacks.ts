@@ -184,6 +184,7 @@ export const chatTranslations: ChatTranslations = {
     sendInput: "Ask me a question..."
   },
   text: {
+    stopGeneratingAnswerButton: "Stop generating answer",
     copyCodeButton: "Copy code",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
     sourceFiles: "Source files:"

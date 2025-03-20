@@ -13,6 +13,7 @@ export type ChatTranslations = {
     sendInput: string;
   };
   text: {
+    stopGeneratingAnswerButton: string;
     copyCodeButton: string;
     processing: string;
     sourceFiles: string;

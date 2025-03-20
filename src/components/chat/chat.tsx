@@ -137,6 +137,7 @@ export class ChChat {
       sendInput: "Ask me a question..."
     },
     text: {
+      stopGeneratingAnswerButton: "Stop generating answer",
       copyCodeButton: "Copy code",
       processing: `Processing...`,
       sourceFiles: "Source files:"
@@ -497,6 +498,7 @@ export class ChChat {
   }
 
   render() {
+    const text = this.translations.text;
     const accessibleName = this.translations.accessibleName;
 
     const canShowAdditionalContent =
@@ -532,12 +534,18 @@ export class ChChat {
         >
           {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
             <button
+              aria-label={
+                accessibleName.stopGeneratingAnswerButton !==
+                  text.stopGeneratingAnswerButton &&
+                (accessibleName.stopGeneratingAnswerButton ??
+                  text.stopGeneratingAnswerButton)
+              }
               class="stop-generating-answer-button"
               part="stop-generating-answer-button"
               type="button"
               onClick={this.#handleStopGenerating}
             >
-              {accessibleName.stopGeneratingAnswerButton}
+              {text.stopGeneratingAnswerButton}
             </button>
           )}
           {/* 

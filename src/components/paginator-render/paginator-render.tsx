@@ -466,7 +466,11 @@ export class ChPaginatorRender implements ComponentInterface {
   };
 
   #renderItemsPerPage = () => (
-    <form class="form" part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE}>
+    <form
+      class="form"
+      grid-area={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE}
+      part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE}
+    >
       <label
         htmlFor="items-per-page"
         part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE__LABEL}
@@ -488,8 +492,11 @@ export class ChPaginatorRender implements ComponentInterface {
   );
 
   #renderItemsPerPageInfo = () => (
-    <div part={PAGINATOR_PARTS_DICTIONARY.INFO}>
-      <span part={PAGINATOR_PARTS_DICTIONARY.INFO__TEXT}>
+    <div
+      grid-area={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE_INFO}
+      part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE_INFO}
+    >
+      <span part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE_INFO__TEXT}>
         {this.translations.text.showingItems
           .replace(FIRST_ITEM_IN_PAGE, this.#getFirstItemInPage())
           .replace(LAST_ITEM_IN_PAGE, this.#getLastItemInPage())
@@ -500,6 +507,7 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderFirstControl = () => (
     <button
+      grid-area={PAGINATOR_PARTS_DICTIONARY.FIRST}
       part={tokenMap({
         [PAGINATOR_PARTS_DICTIONARY.FIRST]: true,
         [PAGINATOR_PARTS_DICTIONARY.DISABLED]: this.actualPage === 1
@@ -514,6 +522,7 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderLastControl = () => (
     <button
+      grid-area={PAGINATOR_PARTS_DICTIONARY.LAST}
       part={tokenMap({
         [PAGINATOR_PARTS_DICTIONARY.LAST]: true,
         [PAGINATOR_PARTS_DICTIONARY.DISABLED]:
@@ -532,6 +541,7 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderNextControl = () => (
     <button
+      grid-area={PAGINATOR_PARTS_DICTIONARY.NEXT}
       part={tokenMap({
         [PAGINATOR_PARTS_DICTIONARY.NEXT]: true,
         [PAGINATOR_PARTS_DICTIONARY.DISABLED]:
@@ -550,6 +560,7 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderPrevControl = () => (
     <button
+      grid-area={PAGINATOR_PARTS_DICTIONARY.PREV}
       part={tokenMap({
         [PAGINATOR_PARTS_DICTIONARY.PREV]: true,
         [PAGINATOR_PARTS_DICTIONARY.DISABLED]: this.actualPage === 1
@@ -566,6 +577,7 @@ export class ChPaginatorRender implements ComponentInterface {
     <ol
       class="pages"
       onClick={this.#handleSelectedPageChange}
+      grid-area={PAGINATOR_PARTS_DICTIONARY.PAGES}
       part={PAGINATOR_PARTS_DICTIONARY.PAGES}
       role="navigation"
     >
@@ -574,8 +586,11 @@ export class ChPaginatorRender implements ComponentInterface {
   );
 
   #renderNavigationControlsInfo = () => (
-    <div part={PAGINATOR_PARTS_DICTIONARY.INFO}>
-      <span part={PAGINATOR_PARTS_DICTIONARY.INFO__TEXT}>
+    <div
+      part={PAGINATOR_PARTS_DICTIONARY.NAVIGATION_INFO}
+      grid-area={PAGINATOR_PARTS_DICTIONARY.NAVIGATION_INFO}
+    >
+      <span part={PAGINATOR_PARTS_DICTIONARY.NAVIGATION_INFO__TEXT}>
         {this.translations.text.showingPage
           .replace(ACTUAL_PAGE, this.actualPage?.toString())
           .replace(
@@ -588,7 +603,10 @@ export class ChPaginatorRender implements ComponentInterface {
   );
 
   #renderNavigationGoTo = () => (
-    <div part={PAGINATOR_PARTS_DICTIONARY.GO_TO}>
+    <div
+      part={PAGINATOR_PARTS_DICTIONARY.GO_TO}
+      grid-area={PAGINATOR_PARTS_DICTIONARY.GO_TO}
+    >
       <label
         htmlFor="goto-input"
         part={PAGINATOR_PARTS_DICTIONARY.GO_TO__LABEL}
@@ -622,6 +640,7 @@ export class ChPaginatorRender implements ComponentInterface {
             <a
               key={index}
               part={tokenMap({
+                [PAGINATOR_PARTS_DICTIONARY.PAGE]: true,
                 [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
                   this.actualPage === page
               })}
@@ -640,6 +659,7 @@ export class ChPaginatorRender implements ComponentInterface {
               key={index}
               id={page.toString()}
               part={tokenMap({
+                [PAGINATOR_PARTS_DICTIONARY.PAGE]: true,
                 [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
                   this.actualPage === page
               })}
@@ -658,6 +678,7 @@ export class ChPaginatorRender implements ComponentInterface {
           <button
             key={index}
             part={tokenMap({
+              [PAGINATOR_PARTS_DICTIONARY.PAGE]: true,
               [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]: this.actualPage === page
             })}
             value={page}
@@ -671,7 +692,13 @@ export class ChPaginatorRender implements ComponentInterface {
     // if page is "-1", it renders a span with the ellipsis
     return (
       <li>
-        <span key={index} part={PAGINATOR_PARTS_DICTIONARY.ELLIPSIS}>
+        <span
+          key={index}
+          part={
+            (PAGINATOR_PARTS_DICTIONARY.PAGE,
+            PAGINATOR_PARTS_DICTIONARY.ELLIPSIS)
+          }
+        >
           {this.translations.text.ellipsis}
         </span>
       </li>

@@ -194,16 +194,22 @@ const render = () => (
       ></ch-paginator-render>
     </fieldset>
     <fieldset class="fieldset-test">
-      <legend class="heading-4 field-legend-test">Paginator Information</legend>
+      <legend class="heading-4 field-legend-test">Unanimo Paginator</legend>
       <ch-paginator-render
         model={state.model}
         itemsPerPageOptions={itemsPerPageOptionsModel}
         selectedPage={state.selectedPage}
         itemsPerPage={state.itemsPerPage}
+        maxPagesToShowLeft={2}
+        maxPagesToShowRight={2}
+        showFirstControl={false}
         showItemsPerPage
         showItemsPerPageInfo
-        showNavigationGoTo
+        showLastControl={false}
+        showNavigationGoTo={false}
         showNavigationControlsInfo={state.showNavigationControlsInfo}
+        showNextControl
+        showPrevControl
         totalItems={state.totalItems}
         translations={{
           accessibleName: {
@@ -212,16 +218,64 @@ const render = () => (
           },
           text: {
             goToButton: "Go",
-            itemsPerPage: "Items per page",
+            itemsPerPage: "Show",
             of: "of ",
             ellipsis: "...",
-            first: "First",
-            prev: "Prev",
-            next: "Next",
-            last: "Last",
+            first: "",
+            prev: "",
+            next: "",
+            last: "",
             unknownPages: "many",
             unknownItems: "many",
             showingItems: `Showing ${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} out of ${TOTAL_ITEMS} items`,
+            page: "",
+            showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
+          }
+        }}
+      ></ch-paginator-render>
+    </fieldset>
+    <fieldset class="fieldset-test">
+      <legend class="heading-4 field-legend-test">Mercury Paginator</legend>
+      <ch-paginator-render
+        model={state.model}
+        itemsPerPageOptions={itemsPerPageOptionsModel}
+        selectedPage={state.selectedPage}
+        itemsPerPage={state.itemsPerPage}
+        order={{
+          itemsPerPage: 1,
+          itemsPerPageInfo: 2,
+          firstControl: 3,
+          prevControl: 4,
+          navigationGoTo: 5,
+          nextControl: 6,
+          lastControl: 7
+        }}
+        showFirstControl
+        showItemsPerPage
+        showItemsPerPageInfo
+        showLastControl
+        showNavigationControls={false}
+        showNavigationGoTo
+        showNextControl
+        showPrevControl
+        totalItems={state.totalItems}
+        translations={{
+          accessibleName: {
+            goToInput: "Go to page",
+            itemsPerPageOptions: "Select amount of items to show"
+          },
+          text: {
+            goToButton: "",
+            itemsPerPage: "Items per page",
+            of: "of ",
+            ellipsis: "...",
+            first: "",
+            prev: "",
+            next: "",
+            last: "",
+            unknownPages: "many",
+            unknownItems: "many",
+            showingItems: `${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} of ${TOTAL_ITEMS} items`,
             page: "",
             showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
           }

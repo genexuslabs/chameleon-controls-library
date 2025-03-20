@@ -29,6 +29,7 @@ testDefaultProperties("ch-chat", {
       sendInput: "Ask me a question..."
     },
     text: {
+      stopGeneratingAnswerButton: "Stop generating answer",
       copyCodeButton: "Copy code",
       processing: `Processing...`,
       sourceFiles: "Source files:"

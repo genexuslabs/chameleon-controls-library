@@ -281,6 +281,7 @@ export const COMBO_BOX_PARTS_DICTIONARY = {
   GROUP_CONTENT: "group__content",
   ITEM: "item",
   SECTION: "section",
+  WINDOW: "window",
 
   DISABLED: "disabled", // GROUP, EXPANDABLE
   EXPANDED: "expanded", // GROUP_HEADER, EXPANDABLE
@@ -376,6 +377,31 @@ export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
 export const NAVIGATION_LIST_ITEM_EXPORT_PARTS = joinParts(
   NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
 );
+
+// - - - - - - - - - - - - - - - - - - - -
+//            Paginator Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const PAGINATOR_PARTS_DICTIONARY = {
+  DISABLED: "disabled",
+  ELLIPSIS: "ellipsis",
+  FIRST: "first__button",
+  GO_TO__INPUT: "go-to__input",
+  GO_TO__LABEL: "go-to__label",
+  GO_TO: "go-to",
+  ITEMS_PER_PAGE__COMBO_BOX: "items-per-page__combo-box",
+  ITEMS_PER_PAGE__LABEL: "items-per-page__label",
+  ITEMS_PER_PAGE_INFO__TEXT: "items-per-page-info__text",
+  ITEMS_PER_PAGE_INFO: "items-per-page-info",
+  ITEMS_PER_PAGE: "items-per-page",
+  LAST: "last__button",
+  NAVIGATION_INFO__TEXT: "navigation-info__text",
+  NAVIGATION_INFO: "navigation-info",
+  NEXT: "next__button",
+  PAGE_ACTIVE: "page-active",
+  PAGE: "page",
+  PAGES: "pages",
+  PREV: "prev__button"
+} as const;
 
 // - - - - - - - - - - - - - - - - - - - -
 //            Radio item Parts

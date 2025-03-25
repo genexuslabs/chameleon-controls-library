@@ -14,12 +14,42 @@ li {
   display: contents;
 }
 
+.go-to {
+  grid-area: go-to;
+}
+
 .pages {
-  display: flex;
   align-items: center;
+  display: flex;
+  grid-area: pages;
   @include reset-list;
 }
 
-.form {
+.navigation-info {
+  grid-area: navigation-info;
+}
+
+.items-per-page {
   display: flex;
+  grid-area: items-per-page;
+}
+
+.items-per-page-info {
+  grid-area: items-per-page-info;
+}
+
+.first-button {
+  grid-area: first__button;
+}
+
+.last-button {
+  grid-area: last__button;
+}
+
+.next-button {
+  grid-area: next__button;
+}
+
+.prev-button {
+  grid-area: prev__button;
 }

@@ -35,6 +35,7 @@ export class ChTestFlexibleLayout {
         <ch-action-group-render
           slot={MENU_BAR}
           key={MENU_BAR}
+          class="action-group dropdown dropdown-secondary elevation-2"
           model={GXWebModel}
         ></ch-action-group-render>
         <ch-action-list-render

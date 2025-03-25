@@ -59,6 +59,7 @@ const render: ShowcaseRender = designSystem => (
       <ch-tab-render
         class="tab"
         accessibleName={state.accessibleName}
+        contain={state.contain}
         closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
         tabListPosition={state.tabListPosition}
@@ -66,6 +67,7 @@ const render: ShowcaseRender = designSystem => (
         dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
+        overflow={state.overflow}
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
         showTabListEnd={state.showTabListEnd}
@@ -110,6 +112,7 @@ const render: ShowcaseRender = designSystem => (
       <ch-tab-render
         class="tab"
         accessibleName={state.accessibleName}
+        contain={state.contain}
         closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
         tabListPosition={state.tabListPosition}
@@ -117,6 +120,7 @@ const render: ShowcaseRender = designSystem => (
         dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
+        overflow={state.overflow}
         selectedId={state.selectedId}
         showCaptions={state.showCaptions}
         showTabListEnd={state.showTabListEnd}

@@ -75,7 +75,10 @@ To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tild
 
 const sendChatToLLM = () => {
   // This is a WA to get the chat reference
-  const chatRef = document.querySelector("ch-chat") as HTMLChChatElement;
+  const chatRef = document
+    .querySelector("ch-flexible-layout-render")!
+    .shadowRoot.querySelector("ch-flexible-layout-render")!
+    .shadowRoot.querySelector("ch-chat");
 
   chatRef.addNewMessage({
     id: `${new Date().getTime()}`,
@@ -113,21 +116,23 @@ function dummyStreaming(
       chatRef.updateLastMessage(
         {
           role: "assistant",
-          content: {
-            message: stringToDisplay.substring(counter - 20, counter),
-            files: streamingCompleted
-              ? [
-                  {
-                    url: "https://next.genexus.ai",
-                    caption: "Mars Exploration Contract"
-                  },
-                  {
-                    url: "https://gx-chameleon.netlify.app",
-                    caption: "Venus Exploration Contract"
-                  }
-                ]
-              : undefined
-          },
+          content: stringToDisplay.substring(counter - 20, counter),
+
+          // {
+          //   message: stringToDisplay.substring(counter - 20, counter),
+          //   files: streamingCompleted
+          //     ? [
+          //         {
+          //           url: "https://next.genexus.ai",
+          //           caption: "Mars Exploration Contract"
+          //         },
+          //         {
+          //           url: "https://gx-chameleon.netlify.app",
+          //           caption: "Venus Exploration Contract"
+          //         }
+          //       ]
+          //     : undefined
+          // },
           status: streamingCompleted ? "complete" : "streaming"
         },
         mode
@@ -179,6 +184,7 @@ export const chatTranslations: ChatTranslations = {
     sendInput: "Ask me a question..."
   },
   text: {
+    stopGeneratingAnswerButton: "Stop generating answer",
     copyCodeButton: "Copy code",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
     sourceFiles: "Source files:"

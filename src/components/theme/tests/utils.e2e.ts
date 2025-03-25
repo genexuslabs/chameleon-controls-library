@@ -8,6 +8,8 @@ export const EMPTY_ADOPTED_STYLESHEETS = [];
 
 export const CSS_NAME = "chameleon/scrollbar";
 export const CSS_URL = "showcase/scrollbar.css";
+export const CSS_SCROLLBAR_MODEL = [{ name: CSS_NAME, url: CSS_URL }];
+
 export const CSS_CONTENT = `:host(.ch-scrollable), .ch-scrollable, .scrollable {
   scrollbar-width: thin; scrollbar-color: var(--accents__primary--hover) transparent;
   &::-webkit-scrollbar { width: 8px; height: 8px; background-color: transparent; }
@@ -19,19 +21,25 @@ export const STYLE_SHEET2_NAME = "stylesheet 2";
 export const STYLE_SHEET1 = ".custom-rule { background-color: red; }";
 export const STYLE_SHEET2 = ".custom-rule-2 { color: black; }";
 
-export const URL_MODEL = [
+export const TEST_URL_MODEL_ARRAY = [
   { name: URL_NAME, url: "showcase/theme-test.css" }
 ] as const satisfies ThemeModel;
 
-export const INLINE_MODEL_1 = [
+// TODO: Add this test in the ch-theme
+export const TEST_URL_MODEL_OBJECT = {
+  name: URL_NAME,
+  url: "showcase/theme-test.css"
+} as const satisfies ThemeModel;
+
+export const TEST_INLINE_MODEL_1 = [
   { name: STYLE_SHEET1_NAME, styleSheet: STYLE_SHEET1 }
 ] as const satisfies ThemeModel;
 
-export const INLINE_MODEL_2 = [
+export const TEST_INLINE_MODEL_2 = [
   { name: STYLE_SHEET2_NAME, styleSheet: STYLE_SHEET2 }
 ] as const satisfies ThemeModel;
 
-export const MULTIPLE_MODEL = [
+export const TEST_MULTIPLE_MODEL = [
   { name: URL_NAME, url: "showcase/theme-test.css" },
   { name: STYLE_SHEET2_NAME, styleSheet: STYLE_SHEET2 }
 ] as const satisfies ThemeModel;

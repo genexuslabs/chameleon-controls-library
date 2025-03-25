@@ -1,4 +1,41 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { testDefaultProperties } from "../../../testing/utils.e2e";
+
+testDefaultProperties("ch-chat", {
+  callbacks: undefined,
+  disabled: false,
+  generatingResponse: false,
+  hyperlinkToDownloadFile: undefined,
+  imageUpload: false,
+  isMobile: false,
+  items: [],
+  loadingState: "initial",
+  markdownTheme: "ch-markdown-viewer",
+  renderCode: undefined,
+  showAdditionalContent: false,
+  theme: undefined,
+  translations: {
+    accessibleName: {
+      clearChat: "Clear chat",
+      copyResponseButton: "Copy assistant response",
+      downloadCodeButton: "Download code",
+      imagePicker: "Select images",
+      removeUploadedImage: "Remove uploaded image",
+      sendButton: "Send",
+      sendInput: "Message",
+      stopGeneratingAnswerButton: "Stop generating answer"
+    },
+    placeholder: {
+      sendInput: "Ask me a question..."
+    },
+    text: {
+      stopGeneratingAnswerButton: "Stop generating answer",
+      copyCodeButton: "Copy code",
+      processing: `Processing...`,
+      sourceFiles: "Source files:"
+    }
+  }
+});
 
 describe("[ch-chat][basic]", () => {
   let page: E2EPage;
@@ -12,56 +49,5 @@ describe("[ch-chat][basic]", () => {
     chatRef = await page.find("ch-chat");
   });
 
-  const testDefault = (
-    propertyName: string,
-    propertyValue: any,
-    propertyValueDescription: string
-  ) =>
-    it(`the "${propertyName}" property should be ${
-      typeof propertyValue === "string"
-        ? `"${propertyValueDescription}"`
-        : propertyValueDescription
-    } by default`, async () => {
-      expect(await chatRef.getProperty(propertyName)).toEqual(propertyValue);
-    });
-
-  it("should have Shadow DOM", async () => {
-    expect(chatRef.shadowRoot).toBeTruthy();
-  });
-
-  testDefault("callbacks", undefined, "undefined");
-  testDefault("disabled", false, "false");
-  testDefault("generatingResponse", false, "false");
-  testDefault("imageUpload", false, "false");
-  testDefault("isMobile", false, "false");
-  testDefault("items", [], "[]");
-  testDefault("loadingState", "initial", "initial");
-  testDefault("markdownTheme", "ch-markdown-viewer", "ch-markdown-viewer");
-  testDefault("showAdditionalContent", false, "false");
-  testDefault(
-    "translations",
-    {
-      accessibleName: {
-        clearChat: "Clear chat",
-        copyResponseButton: "Copy assistant response",
-        downloadCodeButton: "Download code",
-        imagePicker: "Select images",
-        removeUploadedImage: "Remove uploaded image",
-        sendButton: "Send",
-        sendInput: "Message",
-        stopGeneratingAnswerButton: "Stop generating answer"
-      },
-      placeholder: {
-        sendInput: "Ask me a question..."
-      },
-      text: {
-        copyCodeButton: "Copy code",
-        processing: `Processing...`,
-        sourceFiles: "Source files:"
-      }
-    },
-    "(object with translations)"
-  );
-  testDefault("renderCode", undefined, "undefined");
-  testDefault("renderItem", undefined, "undefined");
+  it("should have Shadow DOM", () => expect(chatRef.shadowRoot).toBeTruthy());
 });

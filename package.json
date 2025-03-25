@@ -1,6 +1,6 @@
 {
   "name": "@genexus/chameleon-controls-library",
-  "version": "6.1.2",
+  "version": "6.5.0",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "npm run build.monaco && npm run build.light && npm run build.extras",
-    "build.light": "stencil build --docs",
+    "build.light": "stencil build --docs --react",
     "build.extras": "tsc --project tsconfig-collection.json && node copy-files.mjs",
     "build.monaco": "vite build",
     "generate": "stencil generate",
@@ -26,7 +26,8 @@
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "npm run build.monaco && npm run start.light",
     "start.light": "stencil build --dev --watch --serve",
-    "start.optimized": "stencil build --dev --watch --serve --config stencil.config.optimized-dev.ts",
+    "start.optimized": "stencil build --watch --serve --config stencil.config.optimized-dev.ts",
+    "start.o": "npm run start.optimized",
     "test": "stencil test --spec --e2e --maxWorkers=1",
     "test.spec": "stencil test --spec --coverage --no-cache",
     "test.watch": "npm run test -- --watchAll --config stencil.config.optimized-test-watch.ts",
@@ -34,6 +35,9 @@
     "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug && npm run build.extras"
   },
   "license": "MIT",
+  "bin": {
+    "chameleon-generate-react": "dist/react/copy-react.js"
+  },
   "dependencies": {
     "@genexus/markdown-parser": "~0.1.1",
     "html5-qrcode": "^2.3.8",
@@ -46,6 +50,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@stencil-community/eslint-plugin": "~0.7.1",
     "@stencil/core": "~4.16.0",
+    "@stencil/react-output-target": "~0.5.3",
     "@stencil/sass": "~3.0.11",
     "@types/hast": "^3.0.4",
     "@types/jest": "~29.5.1",

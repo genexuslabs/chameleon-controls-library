@@ -1,26 +1,45 @@
 import { Config } from "@stencil/core";
+import { OutputTarget } from "@stencil/core/internal";
 import { sass } from "@stencil/sass";
+import { reactOutputTarget } from "@stencil/react-output-target";
+
+import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
+
+const outputTargets: OutputTarget[] = [
+  {
+    type: "dist",
+    esmLoaderPath: "../loader",
+    copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
+  },
+  // dist-custom-elements output target is required for the React output target.
+  // It generates the dist/components folder
+  { type: "dist-custom-elements" },
+  {
+    type: "www",
+    serviceWorker: null,
+    copy: [
+      { src: "common/monaco/output/assets", dest: "assets" },
+      { src: "showcase" }
+    ]
+  },
+  reactOutputTarget({
+    componentCorePackage: "@genexus/chameleon-controls-library",
+    proxiesFile: "dist/react/chameleon-components/index.ts",
+
+    // All Web Components will automatically be registered with the Custom
+    // Elements Registry. This can only be used when lazy loading Web
+    // Components and will not work when includeImportCustomElements is true.
+    includeDefineCustomElements: true,
+    loaderDir: "loader",
+
+    excludeComponents: reactOutputExcludedComponents,
+    customElementsDir: "dist/components"
+  })
+];
 
 export const config: Config = {
   namespace: "chameleon",
-  outputTargets: [
-    {
-      type: "dist",
-      esmLoaderPath: "../loader",
-      copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
-    },
-    // dist-custom-elements output target is required for the React output target.
-    // It generates the dist/components folder
-    { type: "dist-custom-elements" },
-    {
-      type: "www",
-      serviceWorker: null,
-      copy: [
-        { src: "common/monaco/output/assets", dest: "assets" },
-        { src: "showcase" }
-      ]
-    }
-  ],
+  outputTargets,
   plugins: [sass()],
   extras: {
     // Enabling this flag will allow downstream projects that consume a Stencil
@@ -34,8 +53,11 @@ export const config: Config = {
     browserHeadless: "new",
     testPathIgnorePatterns: [
       "node_modules/",
-      "src/testing/",
+      "src/testing/constants.e2e.ts",
+      "src/testing/form.e2e.ts",
+      "src/testing/utils.e2e.ts",
       "dist/",
+      "src/components/chat/tests/utils.e2e.ts",
       "src/components/theme/tests/utils.e2e.ts",
       "src/components/tree-view/tests/utils.e2e.ts"
     ]
@@ -45,11 +67,17 @@ export const config: Config = {
       components: ["ch-accordion-render"] // Make sure the ch-accordion-render control is not bundled with other components
     },
     {
+      components: ["ch-action-menu", "ch-action-menu-render"]
+    },
+    {
       components: [
-        "ch-action-group",
-        "ch-action-group-item",
-        "ch-action-group-render"
-      ]
+        "ch-action-list-render",
+        "ch-action-list-item",
+        "ch-action-list-group"
+      ] // Make sure the Action List control is not bundled with other components
+    },
+    {
+      components: ["ch-action-group-render"] // Make sure the ch-action-group-render control is not bundled with other components
     },
     {
       components: ["ch-code", "ch-markdown-viewer"] // Make sure the ch-code and ch-markdown-viewer control are not bundled with other components
@@ -65,12 +93,6 @@ export const config: Config = {
     },
     {
       components: ["ch-markdown"] // Make sure the ch-markdown control is not bundled with other components
-    },
-    {
-      components: [
-        "ch-dropdown"
-        // "ch-dropdown-render" TODO: Consider adding the ch-dropdown-render, even if the action-group uses it
-      ]
     },
     {
       components: ["ch-flexible-layout", "ch-flexible-layout-render"]
@@ -112,6 +134,9 @@ export const config: Config = {
         "ch-tree-view-item",
         "ch-tree-view-render"
       ]
+    },
+    {
+      components: ["ch-test-flexible-layout"]
     },
     {
       components: ["ch-virtual-scroller"] // Make sure the ch-virtual-scroller control is not bundled with other components

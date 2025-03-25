@@ -15,6 +15,40 @@ There are four strategies we recommend for using these web components.
 
 For this, we recommend consulting our repository [chameleon-integrations](https://github.com/genexuslabs/chameleon-integrations) that contains various examples demonstrating how to effectively use the Chameleon Controls Library in different frameworks and with different design systems.
 
+#### React
+
+- Run
+
+  ```bash
+  npm i @genexus/chameleon-controls-library --save
+  ```
+
+- Starting with Chameleon version `6.4.0`, there is a CLI to create React Web Component wrappers. To create the wrappers, run the following command:
+
+  ```bash
+  npx chameleon-generate-react <output dir (optional)>
+  ```
+
+  For example:
+
+  ```bash
+  npx chameleon-generate-react ./src/chameleon-components
+  ```
+
+- **Tip**: We recommend adding this command to your `package.json` file before running the dev server and production builds, as it takes less than 300ms to execute.
+
+  For example:
+
+  ```json
+  "dev": "npm run build.chameleon && ...",
+  "build": "npm run build.chameleon && ..."
+  "build.chameleon": "chameleon-generate-react <output dir (optional)>"
+  ```
+
+  If you are in a monorepo environment, you may need run the script with `npx chameleon-generate-react`, `yarn chameleon-generate-react`, etc.
+
+- Finally, all you have to do is use the components in your project!
+
 ### In a Stencil project
 
 - Run

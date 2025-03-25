@@ -8,10 +8,11 @@ import {
   forceUpdate,
   h
 } from "@stencil/core";
-import {
+import type {
   ChVirtualScrollerCustomEvent,
   VirtualScrollVirtualItems
 } from "../../components";
+import type { ThemeModel } from "../theme/theme-types";
 import {
   ChatContentImages,
   ChatInternalCallbacks,
@@ -54,11 +55,6 @@ export class ChChat {
   @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
 
   /**
-   * This property allows us to implement custom rendering for the code blocks.
-   */
-  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
-
-  /**
    * Specifies if all interactions are disabled
    */
   @Prop() readonly disabled: boolean = false;
@@ -86,6 +82,7 @@ export class ChChat {
    */
   @Prop() readonly isMobile?: boolean = false;
 
+  // TODO: Add support for undefined messages.
   /**
    * Specifies the items that the chat will display.
    */
@@ -94,13 +91,18 @@ export class ChChat {
   /**
    * Specifies if the chat is waiting for the data to be loaded.
    */
-  @Prop({ mutable: true }) loadingState?: SmartGridDataState = "initial";
+  @Prop({ mutable: true }) loadingState: SmartGridDataState = "initial";
 
   /**
    * Specifies the theme to be used for rendering the markdown.
    * If `null`, no theme will be applied.
    */
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
+
+  /**
+   * This property allows us to implement custom rendering for the code blocks.
+   */
+  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
 
   /**
    * `true` to render a slot named "additional-content" to project elements
@@ -110,6 +112,12 @@ export class ChChat {
    * (loadingState !== "all-records-loaded" && items.length > 0).
    */
   @Prop() readonly showAdditionalContent: boolean = false;
+
+  /**
+   * Specifies the theme to be used for rendering the chat.
+   * If `undefined`, no theme will be applied.
+   */
+  @Prop() readonly theme?: ThemeModel | undefined;
 
   /**
    * Specifies the literals required in the control.
@@ -129,6 +137,7 @@ export class ChChat {
       sendInput: "Ask me a question..."
     },
     text: {
+      stopGeneratingAnswerButton: "Stop generating answer",
       copyCodeButton: "Copy code",
       processing: `Processing...`,
       sourceFiles: "Source files:"
@@ -156,9 +165,7 @@ export class ChChat {
    */
   @Method()
   async focusChatInput() {
-    if (this.#editRef) {
-      this.#editRef.click();
-    }
+    this.#editRef?.focus();
   }
 
   /**
@@ -188,6 +195,9 @@ export class ChChat {
     forceUpdate(this);
   }
 
+  // TODO: Add unit tests to validate how the chat message should be copied
+  // into the last chat message, considering that messages can have more
+  // properties that the interface/type has
   /**
    * Update the content of the last message, performing a re-render.
    */
@@ -370,12 +380,10 @@ export class ChChat {
   #removeUploadedImage = (index: number) => (event: MouseEvent) => {
     const buttonToRemove = event.target as HTMLButtonElement;
     const nextFocusedButton = (buttonToRemove.nextElementSibling ??
-      buttonToRemove.previousElementSibling) as HTMLButtonElement;
+      buttonToRemove.previousElementSibling) as HTMLButtonElement | null;
 
     // Focus the next item to improve accessibility
-    if (nextFocusedButton) {
-      nextFocusedButton.focus();
-    }
+    nextFocusedButton?.focus();
 
     // TODO: Remove the file from the image-picker reference
     removeElement(this.imagesToUpload, index);
@@ -397,7 +405,7 @@ export class ChChat {
       <slot name="empty-chat"></slot>
     ) : (
       <ch-smart-grid
-        dataProvider
+        dataProvider={this.loadingState === "more-data-to-fetch"}
         loadingState={
           this.virtualItems.length === 0 ? "initial" : this.loadingState
         }
@@ -490,6 +498,7 @@ export class ChChat {
   }
 
   render() {
+    const text = this.translations.text;
     const accessibleName = this.translations.accessibleName;
 
     const canShowAdditionalContent =
@@ -505,7 +514,10 @@ export class ChChat {
           canShowAdditionalContent ? "ch-chat--additional-content" : undefined
         }
       >
+        {this.theme && <ch-theme model={this.theme}></ch-theme>}
+
         {this.loadingState === "initial" ? (
+          // TODO: Improve this slot name
           <div class="loading-chat" slot="empty-chat"></div>
         ) : (
           this.#renderChatOrEmpty()
@@ -522,12 +534,18 @@ export class ChChat {
         >
           {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
             <button
+              aria-label={
+                accessibleName.stopGeneratingAnswerButton !==
+                  text.stopGeneratingAnswerButton &&
+                (accessibleName.stopGeneratingAnswerButton ??
+                  text.stopGeneratingAnswerButton)
+              }
               class="stop-generating-answer-button"
               part="stop-generating-answer-button"
               type="button"
               onClick={this.#handleStopGenerating}
             >
-              {accessibleName.stopGeneratingAnswerButton}
+              {text.stopGeneratingAnswerButton}
             </button>
           )}
           {/* 

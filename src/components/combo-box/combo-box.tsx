@@ -28,6 +28,7 @@ import {
 } from "./types";
 import { focusComposedPath } from "../common/helpers";
 import {
+  COMBO_BOX_HOST_PARTS,
   COMBO_BOX_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
@@ -47,6 +48,10 @@ import { customComboBoxItemRender, nativeItemRender } from "./renders";
 import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
 import { getControlRegisterProperty } from "../../common/registry-properties";
 import { GxImageMultiStateStart } from "../../common/types";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 const SELECTED_ITEM_SELECTOR = `button[part*='${COMBO_BOX_PARTS_DICTIONARY.SELECTED}']`;
 const mobileDevice = isMobileDevice();
@@ -824,14 +829,20 @@ export class ChComboBoxRender
       this.#valueToItemInfo,
       this.#captionToItemInfo
     );
+
+    // Accessibility
     this.#setValueInForm(this.value);
-
     const labels = this.internals.labels;
+    this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
-    // Get external aria-label
-    if (labels?.length > 0) {
-      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
-    }
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-combo-box-render",
+      labels,
+      this.#accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
   }
 
   componentWillRender() {
@@ -890,6 +901,9 @@ export class ChComboBoxRender
 
     // TODO: Add unit tests for this feature.
     const currentValueMapping = this.#getCurrentValueMapping()?.item.value;
+    const inputValue = filtersAreApplied
+      ? this.value
+      : this.activeDescendant?.caption;
 
     return (
       <Host
@@ -902,6 +916,7 @@ export class ChComboBoxRender
         // rendered outside of the ch-combo-box-render render() method
         part={tokenMap({
           [currentValueMapping]: !!currentValueMapping,
+          [COMBO_BOX_HOST_PARTS.PLACEHOLDER]: !inputValue,
           [this.hostParts]: !!this.hostParts
         })}
         onKeyDown={
@@ -955,11 +970,7 @@ export class ChComboBoxRender
                   disabled={this.disabled || !filtersAreApplied}
                   placeholder={this.placeholder}
                   readOnly={this.readonly || !filtersAreApplied}
-                  value={
-                    filtersAreApplied
-                      ? this.value
-                      : this.activeDescendant?.caption
-                  }
+                  value={inputValue}
                   onInputCapture={
                     filtersAreApplied &&
                     comboBoxIsInteractive &&

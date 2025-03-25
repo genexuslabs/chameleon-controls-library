@@ -6,9 +6,6 @@ const EXTERNAL_LABEL_TEXT = "EXTERNAL label";
 const ACCESSIBLE_NAME = "INNER label";
 const FORM_NAME = "form-element";
 
-const INITIAL_VALUE = "Initial value";
-const UPDATED_VALUE = "Updated value";
-
 const getFormValues = async (page: E2EPage) =>
   await page.evaluate(() => {
     const formElement = document.querySelector("form") as HTMLFormElement;
@@ -25,7 +22,7 @@ const formElementTemplate = (
     disabled?: boolean;
     readonly?: boolean;
   },
-  value?: string
+  value?: string | number
 ) =>
   options.externalLabel
     ? `<button>Dummy button</button>
@@ -65,6 +62,7 @@ export const performFormTests = (
     formElementTagName: ChameleonControlsTagName;
     hasReadonlySupport: boolean;
     hasAutoFocusSupport?: boolean;
+    valueIsNumeric?: boolean;
     hasTextSelectionSupport?: boolean | undefined;
     pressEnterToConfirmValue?: boolean;
     focusIsOnHostElement?: boolean;
@@ -78,11 +76,15 @@ export const performFormTests = (
     hasReadonlySupport,
     hasAutoFocusSupport,
     hasTextSelectionSupport,
+    valueIsNumeric,
     additionalAttributes,
     focusIsOnHostElement,
     pressEnterToConfirmValue,
     valueCanBeUpdatedByTheUser
   } = testOptions;
+
+  const INITIAL_VALUE = valueIsNumeric ? 2 : "Initial value";
+  const UPDATED_VALUE = valueIsNumeric ? 4 : "Updated value";
 
   const ariaLabelElementSelector = focusIsOnHostElement
     ? formElementTagName
@@ -214,7 +216,12 @@ export const performFormTests = (
       return Object.fromEntries(formData.entries());
     });
 
-    expect(formValues[FORM_NAME]).toBeUndefined();
+    // TODO: Add a property to set the default value
+    if (valueIsNumeric) {
+      expect(formValues[FORM_NAME]).toBe("0");
+    } else {
+      expect(formValues[FORM_NAME]).toBeUndefined();
+    }
   });
 
   it("the form value for the element should be defined if a value is set as an attribute of the tag", async () => {
@@ -232,7 +239,7 @@ export const performFormTests = (
 
     const formValues = await getFormValues(page);
 
-    expect(formValues[FORM_NAME]).toBe(INITIAL_VALUE);
+    expect(formValues[FORM_NAME]).toBe(INITIAL_VALUE.toString());
   });
 
   it("the form value for the element should be updated if the value binding is updated at runtime", async () => {
@@ -249,7 +256,7 @@ export const performFormTests = (
     });
     let formValues = await getFormValues(page);
 
-    expect(formValues[FORM_NAME]).toBe(INITIAL_VALUE);
+    expect(formValues[FORM_NAME]).toBe(INITIAL_VALUE.toString());
 
     // Update the binding
     const formElement = await page.find(formElementTagName);
@@ -257,7 +264,7 @@ export const performFormTests = (
     await page.waitForChanges();
 
     formValues = await getFormValues(page);
-    expect(formValues[FORM_NAME]).toBe(UPDATED_VALUE);
+    expect(formValues[FORM_NAME]).toBe(UPDATED_VALUE.toString());
   });
 
   if (valueCanBeUpdatedByTheUser) {

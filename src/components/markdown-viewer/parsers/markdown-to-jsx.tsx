@@ -173,7 +173,7 @@ export const renderDictionary: {
       lastNestedChildClass: metadata.lastNestedChildClass,
       language: element.lang,
       plainText: element.value,
-      showIndicator: isLastNestedChildClass(element)
+      showIndicator: metadata.showIndicator && isLastNestedChildClass(element)
     }),
 
   definition: element => setLinkDefinition(element.identifier, element.url),

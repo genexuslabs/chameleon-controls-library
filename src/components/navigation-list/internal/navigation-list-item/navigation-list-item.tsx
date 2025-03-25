@@ -22,6 +22,7 @@ import {
 import { NavigationListItemModel } from "../../types";
 import { getNavigationListItemLevelPart } from "./utils";
 import {
+  DISABLED_CLASS,
   NAVIGATION_LIST_ITEM_EXPORT_PARTS,
   NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
@@ -184,6 +185,7 @@ export class ChNavigationListItem implements ComponentInterface {
         // focusable elements generate issue with the "mouseleave" and
         // "focusout" events
         actionElement={(this.#actionRef as HTMLButtonElement) ?? null}
+        actionElementAccessibleName={this.caption}
         blockAlign="center"
         inlineAlign="outside-end"
         delay={this.tooltipDelay}
@@ -243,7 +245,7 @@ export class ChNavigationListItem implements ComponentInterface {
       action: true,
       "action--navigation-list-collapsed": navigationListCollapsed,
 
-      "ch-disabled": this.disabled,
+      [DISABLED_CLASS]: this.disabled,
 
       [`start-img-type--${
         this.startImgType ?? "background"
@@ -380,6 +382,7 @@ export class ChNavigationListItem implements ComponentInterface {
 
         {this.expandable && (
           <div
+            role="list"
             class={{
               expandable: true,
               "expandable--collapsed": !this.expanded

@@ -7,9 +7,10 @@ import {
   Listen,
   Prop,
   State,
-  Watch
+  Watch,
+  Build
 } from "@stencil/core";
-import {
+import type {
   ShowcaseStoryClass,
   ShowcaseCustomStory,
   ShowcaseRenderProperty,
@@ -24,7 +25,7 @@ import {
   ShowcaseStories,
   ShowcaseRenderPropertyStyle
 } from "./types";
-import {
+import type {
   ChComboBoxRenderCustomEvent,
   ChRadioGroupRenderCustomEvent,
   ComboBoxModel,
@@ -43,10 +44,11 @@ import {
 } from "./utils";
 import { registryProperty } from "../../../common/registry-properties";
 import { getActionListPathCallback } from "./action-list/models";
-import { getAccordionPathCallback } from "./accordion/models";
+import { getImagePathCallbackAccordion } from "./accordion/models";
 import { getComboBoxImagePathCallback } from "./combo-box/models";
 import { getImagePathCallbackEdit } from "./edit/models";
 import { getImagePathCallbackImage } from "./image/models";
+import { getImagePathCallbackTab } from "./tab/models";
 import { getImagePathCallbackTreeView } from "./tree-view/models";
 
 import { getDesignSystem, storeDesignSystem } from "../../models/ds-manager.js";
@@ -75,6 +77,18 @@ import {
   USAGE_STENCIL_JS
 } from "./renders";
 import { findComponentMetadataUsingURLHash } from "./pages";
+import { getDropdownImagePathCallback } from "./action-menu/models";
+import {
+  disableAccessibilityReports,
+  enableAccessibilityReports
+} from "../../../common/analysis/reports";
+
+disableAccessibilityReports();
+
+// Only enable reports in dev mode
+if (Build.isDev) {
+  enableAccessibilityReports();
+}
 
 const SHOWCASE_STYLES: ThemeModel = [
   {
@@ -118,12 +132,14 @@ const MERCURY_BASE_THEME: ThemeModel = [
 ];
 
 registryProperty("getImagePathCallback", {
+  "ch-accordion-render": getImagePathCallbackAccordion,
   "ch-action-list-render": getActionListPathCallback,
-  "ch-accordion-render": getAccordionPathCallback,
+  "ch-action-menu-render": getDropdownImagePathCallback,
   "ch-checkbox": getImagePathCallbackEdit,
   "ch-combo-box-render": getComboBoxImagePathCallback,
   "ch-edit": getImagePathCallbackEdit,
   "ch-image": getImagePathCallbackImage,
+  "ch-tab-render": getImagePathCallbackTab,
   "ch-tree-view-render": getImagePathCallbackTreeView
 });
 

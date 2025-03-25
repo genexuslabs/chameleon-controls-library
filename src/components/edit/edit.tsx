@@ -11,7 +11,7 @@ import {
   h
 } from "@stencil/core";
 
-import {
+import type {
   AccessibleNameComponent,
   DisableableComponent
 } from "../../common/interfaces";
@@ -19,16 +19,22 @@ import {
 import {
   DISABLED_CLASS,
   EDIT_HOST_PARTS,
-  EDIT_PARTS_DICTIONARY
+  EDIT_PARTS_DICTIONARY,
+  SCROLLABLE_CLASS
 } from "../../common/reserved-names";
-import { EditInputMode, EditType } from "./types";
-import {
+import type { EditInputMode, EditType } from "./types";
+import type {
   GxImageMultiState,
   GxImageMultiStateStart,
   ImageRender
 } from "../../common/types";
 import { tokenMap, updateDirectionInImageCustomVar } from "../../common/utils";
 import { getControlRegisterProperty } from "../../common/registry-properties";
+import { adoptCommonThemes } from "../../common/theme";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
   imageSrc: string
@@ -51,6 +57,8 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
   date: "0001-01-01",
   "datetime-local": "0001-01-01T00:00:00"
 };
+
+const TEXTAREA_CLASSES = `content autofill multiline ${SCROLLABLE_CLASS}`;
 
 /**
  * A wrapper for the input and textarea elements. It additionally provides:
@@ -432,6 +440,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   };
 
   connectedCallback() {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+
     // Initialize default getImagePathCallback
     GET_IMAGE_PATH_CALLBACK_REGISTRY ??=
       getControlRegisterProperty("getImagePathCallback", "ch-edit") ??
@@ -440,14 +450,19 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     this.#computeImage();
     this.#computePictureValue(this.value);
 
+    // Accessibility
     this.internals.setFormValue(this.value);
-
     const labels = this.internals.labels;
+    this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
-    // Get external aria-label
-    if (labels?.length > 0) {
-      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
-    }
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-edit",
+      labels,
+      this.#accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
   }
 
   componentWillUpdate() {
@@ -463,6 +478,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     }
   }
 
+  // TODO: Remove the icon with multiline and add overflow: clip in the Host with multiline
   render() {
     const isDateType = DATE_TYPES.includes(this.type);
     const showDatePLaceholder = isDateType && this.placeholder && !this.value;
@@ -505,7 +521,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 }
                 autoCapitalize={this.autocapitalize}
                 autoComplete={this.autocomplete}
-                class="content autofill multiline"
+                class={TEXTAREA_CLASSES}
                 disabled={this.disabled}
                 maxLength={this.maxLength}
                 placeholder={this.placeholder}

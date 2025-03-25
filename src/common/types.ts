@@ -36,6 +36,9 @@ export type GxImageMultiState = {
   disabled?: string;
 };
 
+export type GxImageMultiStateByDirection<T extends "start" | "end"> =
+  T extends "start" ? GxImageMultiStateStart : GxImageMultiStateEnd;
+
 export type GxImageMultiStateStart = {
   classes: string;
   styles: GxImageMultiStateStartStyles;
@@ -149,11 +152,13 @@ export type ChameleonImagePathCallbackControlsTagName = Extract<
   ChameleonControlsTagName,
   | "ch-accordion-render"
   | "ch-action-list-render"
+  | "ch-action-menu-render"
   | "ch-checkbox"
   | "ch-combo-box-render"
   | "ch-edit"
   | "ch-image"
   | "ch-navigation-list-render"
+  | "ch-tab-render"
   | "ch-tree-view-render"
 >;
 

@@ -7,7 +7,10 @@ import type {
 declare global {
   interface Window {
     chameleonControlsLibrary: {
-      getImagePathCallback: Partial<RegistryGetImagePathCallback>;
+      getImagePathCallback?: Partial<RegistryGetImagePathCallback>;
+      reports?: {
+        accessibility: boolean;
+      };
     };
   }
 }

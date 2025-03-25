@@ -19,7 +19,8 @@ import {
   inBetween,
   isPseudoElementImg,
   isRTL,
-  tokenMap
+  tokenMap,
+  updateDirectionInImageCustomVar
 } from "../../common/utils";
 import {
   TabElementSize,
@@ -45,8 +46,19 @@ import {
   MouseEventButton,
   MouseEventButtons
 } from "../common/helpers";
-import { CssContainProperty, CssOverflowProperty } from "../../common/types";
-import { KEY_CODES, TAB_PARTS_DICTIONARY } from "../../common/reserved-names";
+import type {
+  CssContainProperty,
+  CssOverflowProperty,
+  GxImageMultiState,
+  GxImageMultiStateStart
+} from "../../common/types";
+import { getControlRegisterProperty } from "../../common/registry-properties";
+import {
+  KEY_CODES,
+  SCROLLABLE_CLASS,
+  TAB_PARTS_DICTIONARY
+} from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
 
 const TAB_BUTTON_CLASS = "tab";
 const CLOSE_BUTTON_CLASS = "close-button";
@@ -68,7 +80,6 @@ const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 const TAB_LIST_EDGE_START_POSITION = "--ch-tab-list-start";
 const TAB_LIST_EDGE_END_POSITION = "--ch-tab-list-end";
 
-const DECORATIVE_IMAGE = "--ch-tab-decorative-image";
 type KeyEvents =
   | typeof KEY_CODES.ARROW_UP
   | typeof KEY_CODES.ARROW_RIGHT
@@ -208,6 +219,14 @@ const focusNextOrPreviousCaption = (
   nextFocusedCaption.click();
 };
 
+let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
+  imageSrc: string
+) => GxImageMultiState | undefined;
+
+const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
+  imageSrc: string
+) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
+
 @Component({
   shadow: true,
   styleUrl: "tab.scss",
@@ -225,6 +244,9 @@ export class ChTabRender implements DraggableView {
 
   // Allocated at runtime to reduce memory usage
   #itemSizes: number[];
+
+  // TODO: Allocate at runtime to reduce memory usage
+  #images: Map<string, GxImageMultiStateStart | undefined> = new Map();
 
   /**
    * This variable represents the boundaries of the box where the mouse can be
@@ -358,11 +380,24 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly expanded: boolean = true;
 
   /**
+   * This property specifies a callback that is executed when the path for an
+   * startImgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+  @Watch("getImagePathCallback")
+  getImagePathCallbackChanged() {
+    this.#computeImages();
+  }
+
+  /**
    * Specifies the items of the tab control.
    */
   @Prop() readonly model: TabModel;
   @Watch("model")
   modelChanged(newModel: TabModel) {
+    this.#computeImages();
     this.#updateRenderedPages(newModel);
   }
 
@@ -495,6 +530,42 @@ export class ChTabRender implements DraggableView {
       forceUpdate(this);
     }
   }
+
+  // TODO: This code is exactly the same as the ch-accordion-render. We should
+  // find the way to avoid this duplication
+  #computeImage = (
+    imageSrc: string | undefined
+  ): GxImageMultiStateStart | undefined => {
+    if (!imageSrc) {
+      return undefined;
+    }
+    const getImagePathCallback =
+      this.getImagePathCallback ?? GET_IMAGE_PATH_CALLBACK_REGISTRY;
+
+    if (!getImagePathCallback) {
+      return undefined;
+    }
+    const img = getImagePathCallback(imageSrc);
+
+    return img
+      ? (updateDirectionInImageCustomVar(
+          img,
+          "start"
+        ) as GxImageMultiStateStart)
+      : undefined;
+  };
+
+  #computeImages = () => {
+    this.#images.clear();
+
+    this.model?.forEach(itemUIModel => {
+      const itemImage = this.#computeImage(itemUIModel.startImgSrc);
+
+      if (itemImage) {
+        this.#images.set(itemUIModel.id, itemImage);
+      }
+    });
+  };
 
   #buttonIsCloseButton = (buttonRef: HTMLButtonElement) =>
     buttonRef.className === CLOSE_BUTTON_CLASS;
@@ -1026,6 +1097,11 @@ export class ChTabRender implements DraggableView {
     const selected = item.id === this.selectedId;
     this.#itemIdToIndex.set(item.id, index);
 
+    const startImage = this.#images.get(item.id);
+    const startImageClasses = startImage?.classes;
+    const isDecorativeImage =
+      isPseudoElementImg(item.startImgSrc, item.startImgType) && !!startImage;
+
     return (
       <button
         key={item.id}
@@ -1041,11 +1117,12 @@ export class ChTabRender implements DraggableView {
           "no-captions": !this.showCaptions,
 
           sortable: this.sortable,
+          selected: selected,
 
-          "decorative-image": isPseudoElementImg(
-            item.startImgSrc,
-            item.startImgType
-          ),
+          [`start-img-type--${
+            item.startImgType ?? "background"
+          } pseudo-img--start`]: isDecorativeImage,
+          [startImageClasses]: isDecorativeImage && !!startImageClasses,
 
           "dragged-element": this.draggedElementIndex === index,
           "dragged-element--outside":
@@ -1079,11 +1156,7 @@ export class ChTabRender implements DraggableView {
           [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
         })}
         disabled={isDisabled}
-        style={
-          isPseudoElementImg(item.startImgSrc, item.startImgType)
-            ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
-            : null
-        }
+        style={isDecorativeImage ? startImage.styles : undefined}
         // onDblClick={
         //   this.direction === "main" ? this.#handleItemDblClick : null
         // }
@@ -1158,7 +1231,11 @@ export class ChTabRender implements DraggableView {
         class={{
           panel: true,
           "panel--selected": item.id === this.selectedId,
-          "panel--hidden": !(item.id === this.selectedId)
+          "panel--hidden": !(item.id === this.selectedId),
+          [SCROLLABLE_CLASS]:
+            hasOverflow &&
+            (overflow.includes("auto" satisfies CssOverflowProperty) ||
+              overflow.includes("scroll" satisfies CssOverflowProperty))
         }}
         style={
           hasContain || hasOverflow
@@ -1191,10 +1268,13 @@ export class ChTabRender implements DraggableView {
     const startDirection = isStartDirection(this.tabListPosition);
     const selected = draggedElement.id === this.selectedId;
 
-    const decorativeImage = isPseudoElementImg(
-      draggedElement.startImgSrc,
-      draggedElement.startImgType
-    );
+    const startImage = this.#images.get(draggedElement.id);
+    const startImageClasses = startImage?.classes;
+    const isDecorativeImage =
+      isPseudoElementImg(
+        draggedElement.startImgSrc,
+        draggedElement.startImgType
+      ) && !!startImage;
 
     const closeButton = draggedElement.closeButton ?? this.closeButton;
 
@@ -1206,7 +1286,13 @@ export class ChTabRender implements DraggableView {
           [TAB_BUTTON_CLASS]: true,
           [DRAG_PREVIEW]: true,
           "no-captions": !this.showCaptions,
-          "decorative-image": decorativeImage,
+
+          selected: selected,
+
+          [`start-img-type--${
+            draggedElement.startImgType ?? "background"
+          } pseudo-img--start`]: isDecorativeImage,
+          [startImageClasses]: isDecorativeImage && !!startImageClasses,
 
           [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
           [DRAG_PREVIEW_INSIDE_INLINE]:
@@ -1232,11 +1318,7 @@ export class ChTabRender implements DraggableView {
           [TAB_PARTS_DICTIONARY.SELECTED]: selected,
           [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected
         })}
-        style={
-          decorativeImage
-            ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImgSrc}")` }
-            : null
-        }
+        style={isDecorativeImage ? startImage.styles : undefined}
         ref={el => (this.#dragPreviewRef = el)}
       >
         {this.#imgRender(draggedElement)}
@@ -1249,6 +1331,17 @@ export class ChTabRender implements DraggableView {
   #initializeState = () => {
     this.#updateRenderedPages(this.model);
   };
+
+  connectedCallback() {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+
+    // Initialize default getImagePathCallback
+    GET_IMAGE_PATH_CALLBACK_REGISTRY ??=
+      getControlRegisterProperty("getImagePathCallback", "ch-tab-render") ??
+      DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
+    this.#computeImages();
+  }
 
   // TODO: Use connectedCallback
   componentWillLoad() {

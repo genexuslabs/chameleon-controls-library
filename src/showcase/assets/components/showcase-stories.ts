@@ -17,6 +17,7 @@ import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.s
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
 import { navigationListShowcaseStory } from "./navigation-list/navigation-list.showcase";
 import { paginatorShowcaseStory } from "./paginator/paginator.showcase";
+import { paginatorRenderShowcaseStory } from "./paginator-render/paginator-render.showcase";
 import { popoverShowcaseStory } from "./popover/popover.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
@@ -48,6 +49,7 @@ export const showcaseStories = {
   image: imageShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,
   "navigation-list": navigationListShowcaseStory,
+  "paginator-render": paginatorRenderShowcaseStory,
   popover: popoverShowcaseStory,
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,

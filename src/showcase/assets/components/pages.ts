@@ -252,6 +252,11 @@ export const showcasePages: NavigationListModel = [
 
           { link: { url: "#chat" }, caption: "Chat", metadata: EXPERIMENTAL },
           {
+            link: { url: "#progress" },
+            caption: "Progress",
+            metadata: EXPERIMENTAL
+          },
+          {
             link: { url: "#textblock" },
             caption: "TextBlock",
             metadata: DEVELOPER_PREVIEW

@@ -19,6 +19,7 @@ import { navigationListShowcaseStory } from "./navigation-list/navigation-list.s
 import { paginatorShowcaseStory } from "./paginator/paginator.showcase";
 import { paginatorRenderShowcaseStory } from "./paginator-render/paginator-render.showcase";
 import { popoverShowcaseStory } from "./popover/popover.showcase";
+import { progressShowcaseStory } from "./progress/progress.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
 import { segmentedControlShowcaseStory } from "./segmented-control/segmented-control.showcase";
@@ -51,6 +52,7 @@ export const showcaseStories = {
   "navigation-list": navigationListShowcaseStory,
   "paginator-render": paginatorRenderShowcaseStory,
   popover: popoverShowcaseStory,
+  progress: progressShowcaseStory,
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,
   "segmented-control": segmentedControlShowcaseStory,

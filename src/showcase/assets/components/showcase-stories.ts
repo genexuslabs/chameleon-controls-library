@@ -33,7 +33,6 @@ import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 import { ChameleonCustomStories, ChameleonStories } from "./types";
-import { progressShowcaseStory } from "./progress/progress.showcase";
 
 export const showcaseStories = {
   accordion: accordionShowcaseStory,
@@ -52,7 +51,6 @@ export const showcaseStories = {
   "navigation-list": navigationListShowcaseStory,
   "paginator-render": paginatorRenderShowcaseStory,
   popover: popoverShowcaseStory,
-  progress: progressShowcaseStory,
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,
   "segmented-control": segmentedControlShowcaseStory,

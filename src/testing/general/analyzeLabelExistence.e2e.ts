@@ -160,6 +160,7 @@ const testLabelExistence = (tag: ChameleonControlsTagName) =>
 // testLabelExistence("ch-checkbox");
 testLabelExistence("ch-combo-box-render");
 testLabelExistence("ch-edit");
+testLabelExistence("ch-progress");
 testLabelExistence("ch-slider");
 
 // TODO: Something similar as the checkbox happens two for the ch-switch

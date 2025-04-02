@@ -24,6 +24,7 @@ describe("[ch-chat][callbacks]", () => {
     chatRef.setProperty("items", []);
     chatRef.setProperty("loadingState", "all-records-loaded");
 
+    // TODO: Add unit tests for async validateSendChatMessage
     if (setCallbacks) {
       if (validateCallback) {
         await page.evaluate(() => {

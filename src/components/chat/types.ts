@@ -151,5 +151,5 @@ export type ChatInternalCallbacks = {
    * Specifies a callback to validate if the current chat message of the user
    * can be send. If `false`, the `sendChatToLLM` won't be executed.
    */
-  validateSendChatMessage?: (chat: ChatMessage) => boolean;
+  validateSendChatMessage?: (chat: ChatMessage) => boolean | Promise<boolean>;
 };

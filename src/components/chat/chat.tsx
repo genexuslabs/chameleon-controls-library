@@ -306,7 +306,7 @@ export class ChChat {
         content: this.#editRef.value
       };
 
-      if (!this.#chatMessageCanBeSent(userMessageToAdd)) {
+      if (!(await this.#chatMessageCanBeSent(userMessageToAdd))) {
         return;
       }
 

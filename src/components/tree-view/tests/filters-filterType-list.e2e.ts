@@ -109,6 +109,39 @@ describe('[ch-tree-view-render][filters][filterType="list"]', () => {
     );
   });
 
+  it("should work filtering items on the initial load", async () => {
+    await page.setContent("");
+    await page.waitForChanges();
+
+    // This is a WA to create the element and assign the properties before it's
+    // connected to the DOM. Otherwise, we would trigger an extra render
+    await page.evaluate(
+      (model, filterList) => {
+        const treeView = document.createElement("ch-tree-view-render");
+        treeView.filterType = "list";
+        treeView.filterList = filterList;
+        treeView.filterDebounce = 0;
+        treeView.model = model;
+
+        document.body.appendChild(treeView);
+      },
+      kbExplorerModel,
+      ["root"]
+    );
+
+    treeViewRef = await page.find("ch-tree-view-render");
+    await page.waitForChanges();
+
+    const filteredHTML = await getTreeViewRenderedContent();
+
+    expect(filteredHTML).toEqual(
+      TREE_VIEW_NODE(
+        `<ch-tree-view-item id="root" role="treeitem" aria-level="1" exportparts="${ITEM_EXPORT_PARTS}" class="hydrated" part="item" style="--level: 0;"></ch-tree-view-item>`
+      )
+    );
+  });
+
+  // TODO: We should add all this test for the initial load too
   it("should render two items if the filterList only contains a direct descendant of the root", async () => {
     treeViewRef.setProperty("filterType", "list");
     treeViewRef.setProperty("filterList", ["Main_Programs"]);

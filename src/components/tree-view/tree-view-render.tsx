@@ -1572,7 +1572,8 @@ export class ChTreeViewRender {
         new Map();
 
       if (this.filterType === "list") {
-        this.#filterListAsSet ??= new Set();
+        // TODO: Add unit tests for this case (?? [])
+        this.#filterListAsSet ??= new Set(this.filterList ?? []);
       }
 
       this.#filterSubModel(

@@ -498,6 +498,9 @@ export class ChLayoutSplitter implements ChComponent {
     return (
       // TODO: Add unit test for checking that the dialog is not closed when
       // a layout-splitter's bar is dragged
+      // TODO: We should also add a dummy node in the ch-dialog or something
+      // like that to not close the dialog when the mouse is released outside
+      // of the ch-layout-splitter but inside the ch-dialog
       <Host class={this.dragging ? "ch-layout-splitter--dragging" : undefined}>
         <div
           class={DIRECTION_CLASS(layoutModel.direction)}

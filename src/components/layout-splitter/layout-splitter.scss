@@ -11,6 +11,27 @@
   inline-size: 100%;
 }
 
+// When a bar of the layout-splitter is being drag, we remove all pointers from
+// the application to improve the UX, because it removes any hover effect from
+// the app.
+//
+// When the "mouseup" event is fired (the drag bar is released), the click
+// event is fired with a composedPath that only contains the [html, body],
+// since all pointer events where removed during the drag. This causes the
+// ch-dialog to close when a layout-splitter is used inside the dialog, because
+// the dialog always detect that the release of the drag bar is performed
+// outside of the dialog (because the composedPath only containing [html, body]).
+//
+// To fix this issue, we have to add a dummy node in the path when dragging a
+// bar without impacting in the UX. This node is the ch-layout-splitter Host
+:host(.ch-layout-splitter--dragging) {
+  pointer-events: all;
+
+  & > .group {
+    pointer-events: none;
+  }
+}
+
 // - - - - - - - - - - - - - - - -
 //               Bar
 // - - - - - - - - - - - - - - - -

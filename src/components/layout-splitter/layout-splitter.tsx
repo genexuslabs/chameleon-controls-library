@@ -1,8 +1,10 @@
 import {
   Component,
   Element,
+  Host,
   Method,
   Prop,
+  State,
   Watch,
   forceUpdate,
   h
@@ -102,6 +104,8 @@ export class ChLayoutSplitter implements ChComponent {
   #itemsInfo: Map<string, ItemExtended> = new Map();
 
   @Element() el: HTMLChLayoutSplitterElement;
+
+  @State() dragging = false;
 
   /**
    * This attribute lets you specify the label for the drag bar.
@@ -247,6 +251,8 @@ export class ChLayoutSplitter implements ChComponent {
 
   // Remove mousemove and mouseup handlers when mouseup
   #mouseUpHandler = () => {
+    this.dragging = false;
+
     // Cancel RAF to prevent access to undefined references
     if (this.#dragRAF) {
       this.#dragRAF.cancel();
@@ -294,6 +300,8 @@ export class ChLayoutSplitter implements ChComponent {
   #mouseDownHandler =
     (direction: LayoutSplitterDirection, index: number, layoutItems: Item[]) =>
     (event: MouseEvent) => {
+      this.dragging = true;
+
       // Necessary to prevent selecting the inner image (or other elements) of
       // the bar item when the mouse is down
       event.preventDefault();
@@ -488,20 +496,27 @@ export class ChLayoutSplitter implements ChComponent {
     }
 
     return (
-      <div
-        class={DIRECTION_CLASS(layoutModel.direction)}
-        style={TEMPLATE_STYLE(
-          layoutModel.items,
-          this.#itemsInfo,
-          this.#fixedSizesSumRoot
-        )}
-      >
-        {this.#renderItems(
-          layoutModel.direction,
-          layoutModel.items,
-          layoutModel.items.length - 1
-        )}
-      </div>
+      // TODO: Add unit test for checking that the dialog is not closed when
+      // a layout-splitter's bar is dragged
+      // TODO: We should also add a dummy node in the ch-dialog or something
+      // like that to not close the dialog when the mouse is released outside
+      // of the ch-layout-splitter but inside the ch-dialog
+      <Host class={this.dragging ? "ch-layout-splitter--dragging" : undefined}>
+        <div
+          class={DIRECTION_CLASS(layoutModel.direction)}
+          style={TEMPLATE_STYLE(
+            layoutModel.items,
+            this.#itemsInfo,
+            this.#fixedSizesSumRoot
+          )}
+        >
+          {this.#renderItems(
+            layoutModel.direction,
+            layoutModel.items,
+            layoutModel.items.length - 1
+          )}
+        </div>
+      </Host>
     );
   }
 }

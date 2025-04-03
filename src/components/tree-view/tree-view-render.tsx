@@ -356,6 +356,11 @@ export class ChTreeViewRender {
    * Set this attribute if you want display a checkbox in all items by default.
    */
   @Prop() readonly checkbox: boolean = false;
+  @Watch("checkbox")
+  checkboxChange() {
+    this.#scheduleCheckedItemsChange();
+    this.#scheduleFilterProcessing();
+  }
 
   /**
    * Set this attribute if you want the checkbox to be checked in all items by
@@ -363,6 +368,11 @@ export class ChTreeViewRender {
    * Only works if `checkbox = true`
    */
   @Prop() readonly checked: boolean = false;
+  @Watch("checked")
+  checkedChange() {
+    this.#scheduleCheckedItemsChange();
+    this.#scheduleFilterProcessing();
+  }
 
   /**
    * Callback that is executed when an element tries to drop in another item of

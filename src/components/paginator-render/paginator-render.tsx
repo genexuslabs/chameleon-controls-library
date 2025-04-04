@@ -470,12 +470,14 @@ export class ChPaginatorRender implements ComponentInterface {
       class="items-per-page"
       part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE}
     >
-      <label
-        htmlFor="items-per-page"
-        part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE__LABEL}
-      >
-        {this.translations.text.itemsPerPage}
-      </label>
+      {this.translations.text.itemsPerPage && (
+        <label
+          htmlFor="items-per-page"
+          part={PAGINATOR_PARTS_DICTIONARY.ITEMS_PER_PAGE__LABEL}
+        >
+          {this.translations.text.itemsPerPage}
+        </label>
+      )}
       <ch-combo-box-render
         class="combo-box"
         id="items-per-page"
@@ -602,12 +604,14 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderNavigationGoTo = () => (
     <div part={PAGINATOR_PARTS_DICTIONARY.GO_TO} class="go-to">
-      <label
-        htmlFor="goto-input"
-        part={PAGINATOR_PARTS_DICTIONARY.GO_TO__LABEL}
-      >
-        {this.translations.text.page}
-      </label>
+      {this.translations.text.page && (
+        <label
+          htmlFor="goto-input"
+          part={PAGINATOR_PARTS_DICTIONARY.GO_TO__LABEL}
+        >
+          {this.translations.text.page}
+        </label>
+      )}
       <input
         id="goto-input"
         part={PAGINATOR_PARTS_DICTIONARY.GO_TO__INPUT}
@@ -619,10 +623,12 @@ export class ChPaginatorRender implements ComponentInterface {
         onBlur={this.#handleGoToOnBlur}
         aria-label={this.translations.accessibleName.goToInput}
       />
-      {this.translations.text.of}
-      {this.translations.text.of &&
-        ((this.totalPages > 0 && this.totalPages?.toString()) ||
-          this.translations.text.unknownPages)}
+      <span>
+        {this.translations.text.of}
+        {this.translations.text.of &&
+          ((this.totalPages > 0 && this.totalPages?.toString()) ||
+            this.translations.text.unknownPages)}
+      </span>
     </div>
   );
 

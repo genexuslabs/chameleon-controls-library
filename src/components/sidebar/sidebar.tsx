@@ -6,13 +6,19 @@ import {
   Prop,
   Host,
   h,
-  Watch
+  Watch,
+  State
 } from "@stencil/core";
 import {
   addObservable,
   notifySubscribers,
   removeObservable
 } from "./expanded-change-obervables";
+import {
+  isRTL,
+  subscribeToRTLChanges,
+  unsubscribeToRTLChanges
+} from "../../common/utils";
 
 let autoId = 0;
 
@@ -31,6 +37,8 @@ export class ChSidebar {
   #sidebarId: string;
 
   @Element() el: HTMLChSidebarElement;
+
+  @State() rtl: boolean = false;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -85,8 +93,12 @@ export class ChSidebar {
     this.expandedChange.emit(newExpandedValue);
   };
 
+  #updatePositionWithRTL = (rtl: boolean) => {
+    this.rtl = rtl;
+  };
+
   connectedCallback() {
-    this.#sidebarId ||= `ch-sidebar-${autoId++}`;
+    this.#sidebarId ??= `ch-sidebar-${autoId++}`;
 
     // The ID MUST be set in this instance, because when searching for the
     // ancestors in `syncStateWithObservableAncestors` we use the DOM id and
@@ -96,10 +108,19 @@ export class ChSidebar {
 
     addObservable(this.#sidebarId, this.expanded);
     notifySubscribers(this.#sidebarId, this.expanded); // Must run after the ID and the observable has been configured
+
+    // Set RTL watcher
+    subscribeToRTLChanges(this.#sidebarId, this.#updatePositionWithRTL);
+
+    // Initialize RTL position
+    this.#updatePositionWithRTL(isRTL());
   }
 
   disconnectedCallback() {
     removeObservable(this.#sidebarId);
+
+    // Disconnect RTL watcher to avoid memory leaks
+    unsubscribeToRTLChanges(this.#sidebarId);
   }
 
   render() {
@@ -122,7 +143,9 @@ export class ChSidebar {
             aria-label={accessibleName !== caption ? accessibleName : undefined}
             class={{
               "expand-button": true,
-              "expand-button--collapsed": !this.expanded
+              "expand-button--expanded-ltr": this.expanded && !this.rtl,
+              "expand-button--collapsed": !this.expanded,
+              "expand-button--collapsed-rtl": !this.expanded && this.rtl
             }}
             part={`expand-button ${this.expanded ? "expanded" : "collapsed"}`}
             type="button"

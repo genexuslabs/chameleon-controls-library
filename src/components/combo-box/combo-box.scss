@@ -219,7 +219,14 @@ ch-popover {
   }
 
   &--collapsed::before {
-    transform: rotate(-90deg); // TODO: Add RTL support
+    transform: rotate(-90deg);
+  }
+
+  // TODO: We should probably not use the ch-popover-rtl class, since it does
+  // not belong to this control, it is an internal class used for implementing
+  // the RTL in the ch-popover
+  .ch-popover-rtl &--collapsed::before {
+    transform: rotate(90deg);
   }
 
   &__content {

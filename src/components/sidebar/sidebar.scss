@@ -39,10 +39,13 @@
 }
 
 .expand-button {
+  --ch-sidebar-expand-button-rtl: 1;
+
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;
   align-items: center;
+  justify-content: flex-end;
 
   &::before {
     content: "";
@@ -60,6 +63,16 @@
 
     &::before {
       transform: rotate(-90deg);
+    }
+  }
+
+  &--rtl {
+    &::before {
+      transform: rotate(-90deg);
+    }
+
+    &.expand-button--collapsed::before {
+      transform: rotate(90deg);
     }
   }
 }

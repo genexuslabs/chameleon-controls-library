@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "lib": ["DOM", "ES2022", "DOM.Iterable"],
+    "module": "esnext",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "noEmitOnError": false,
+
+    // Linting
+    "allowUnreachableCode": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    // "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    // "strict": true
+
+    "typeRoots": ["src/components.d.ts", "src/common/types.ts"],
+    "outDir": "./dist/collection/"
+  },
+  "exclude": ["node_modules"],
+  "include": ["src/index.ts"]
+}

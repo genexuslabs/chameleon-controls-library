@@ -6,58 +6,62 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>Stencil Component Starter</title>
+    <meta
+      name="description"
+      content="A library of white-label, highly-customizable and reusable web components.
+      "
+    />
+    <title>Chameleon</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="./showcase/assets/icons/favicon.ico"
+    />
+
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
-    <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./pages/assets/styles/styles.css" />
-    <script>
-      const components = [
-        "accordion",
-        "action-group",
-        "drag-bar",
-        "dropdown",
-        "checkbox",
-        "grid",
-        "icon",
-        "notifications",
-        "paginator",
-        "qr",
-        "select",
-        "sidebar",
-        "step-list",
-        "textblock",
-        "tree",
-        "window",
-        "suggest",
-        "step-list",
-        "alert",
-        "style"
-      ];
-    </script>
+
+    <link href="showcase/base.css" rel="stylesheet" rel="preload" as="style" />
+
+    <style>
+      /* Avoid FOUC (Flash Of Unstyled Content) */
+      html:not(.hydrated) {
+        visibility: hidden;
+      }
+    </style>
   </head>
-  <body class="home dark">
-    <div class="container">
-      <h1 class="title h2">Chameleon</h1>
-      <p>
-        About A library of white-label, highly-customizable and reusable web
-        components.
-      </p>
-      <ul class="list unstyled" id="componentsList">
-        <!-- populated dinamically with javascript -->
-      </ul>
-    </div>
+  <body>
     <script>
-      //Completed
-      const componentsList = document.getElementById("componentsList");
-      components.sort().forEach(el => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.setAttribute("href", `/pages/${el}.html`);
-        a.innerText = el;
-        li.appendChild(a);
-        componentsList.appendChild(li);
-      });
+      const themeRef = document.createElement("ch-theme");
+      themeRef.model = [
+        {
+          name: "chameleon/scrollbar",
+          url: "showcase/scrollbar.css",
+          attachStyleSheet: false
+        },
+        {
+          name: "unanimo/markdown-viewer",
+          url: "https://unpkg.com/@genexus/unanimo@latest/dist/bundles/css/components/markdown-viewer.css",
+          attachStyleSheet: false
+        },
+        {
+          name: "mercury/markdown-viewer",
+          url: "https://unpkg.com/@genexus/mercury@latest/dist/bundles/css/components/markdown-viewer.css",
+          attachStyleSheet: false
+        }
+      ];
+      document.body.append(themeRef);
+
+      // Get the latest version
+      fetch(
+        `https://registry.npmjs.org/@genexus/chameleon-controls-library/latest`
+      )
+        .then(response => response.json())
+        .then(data => {
+          document.querySelector("ch-showcase").packageVersion = data.version;
+        });
     </script>
+
+    <ch-showcase></ch-showcase>
   </body>
 </html>

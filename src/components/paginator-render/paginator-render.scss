@@ -1,0 +1,55 @@
+@import "../../common/base";
+@import "../common/reset.scss";
+
+@include input-reset();
+@include button-reset(); // Should be placed before the box-sizing reset
+@include box-sizing();
+
+:host {
+  display: flex;
+  align-items: center;
+}
+
+li {
+  display: contents;
+}
+
+.go-to {
+  grid-area: go-to;
+}
+
+.pages {
+  align-items: center;
+  display: flex;
+  grid-area: pages;
+  @include reset-list;
+}
+
+.navigation-info {
+  grid-area: navigation-info;
+}
+
+.items-per-page {
+  display: flex;
+  grid-area: items-per-page;
+}
+
+.items-per-page-info {
+  grid-area: items-per-page-info;
+}
+
+.first-button {
+  grid-area: first__button;
+}
+
+.last-button {
+  grid-area: last__button;
+}
+
+.next-button {
+  grid-area: next__button;
+}
+
+.prev-button {
+  grid-area: prev__button;
+}

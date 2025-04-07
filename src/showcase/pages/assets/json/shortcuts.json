@@ -1,0 +1,29 @@
+[
+  {
+    "selector": "#nombre",
+    "keyShortcuts": "Alt+N"
+  },
+  {
+    "selector": "#email",
+    "keyShortcuts": "Alt+E"
+  },
+  {
+    "selector": "#mensaje",
+    "keyShortcuts": "Alt+M"
+  },
+  {
+    "selector": "#enviar",
+    "keyShortcuts": "Enter",
+    "conditions": {
+      "focusExclude": "#email"
+    },
+    "action": "click"
+  },
+  {
+    "selector": "#enviar",
+    "keyShortcuts": "ArrowDown",
+    "conditions": {
+      "focusInclude": "#nombre"
+    }
+  }
+]

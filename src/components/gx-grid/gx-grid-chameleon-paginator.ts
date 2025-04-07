@@ -36,6 +36,7 @@ export function paginationGoToPage(grid: GxGrid, page: number) {
   if (page === 1) {
     grid.changeGridPage("FIRST");
   } else {
+    grid.eof = 0;
     grid.firstRecordOnPage = (
       grid.pageSize * (page - 1) -
       grid.pageSize

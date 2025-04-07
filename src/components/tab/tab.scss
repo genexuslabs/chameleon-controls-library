@@ -1,0 +1,334 @@
+@import "../../common/base";
+@import "../../common/icons";
+
+// - - - - - - - - - - - - - - - -
+//         Caption button
+// - - - - - - - - - - - - - - - -
+@include button-reset();
+
+@include box-sizing();
+
+$z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
+
+:host {
+  --ch-tab-transition-duration: 150ms;
+
+  /**
+   * @prop --ch-tab-button__image-size:
+   * Specifies the box size that contains the start images of the tab buttons.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-tab-button__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-tab-button__background-image-size:
+   * Specifies the size of the start images of the tab buttons.
+   * @default 100%
+   */
+  --ch-tab-button__background-image-size: 100%;
+
+  /**
+   * @prop --ch-tab-close-button__image-size:
+   * Specifies the box size that contains an image for the close button.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-tab-close-button__image-size: #{$default-decorative-image-size};
+
+  /**
+    * @prop --ch-tab-close-button__background-image-size:
+    * Specifies the image size of the close button.
+    * @default 100%
+    */
+  --ch-tab-close-button__background-image-size: 100%;
+
+  display: grid;
+}
+
+:host(.ch-tab--block-start) {
+  grid-template:
+    "list-start list list-end" max-content
+    "panel-container panel-container panel-container" 1fr / max-content 1fr max-content;
+}
+
+:host(.ch-tab--block-end) {
+  grid-template:
+    "panel-container panel-container panel-container" 1fr
+    "list-start list list-end" max-content / max-content 1fr max-content;
+}
+
+:host(.ch-tab--inline-start) {
+  grid-template:
+    "list-start panel-container" max-content
+    "list panel-container" 1fr
+    "list-end panel-container" max-content / max-content 1fr;
+}
+
+:host(.ch-tab--inline-end) {
+  grid-template:
+    "panel-container list-start" max-content
+    "panel-container list" 1fr
+    "panel-container list-end" max-content / 1fr max-content;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                Tab lists
+// - - - - - - - - - - - - - - - - - - - -
+.tab-list {
+  grid-area: list;
+  display: grid;
+
+  &-start {
+    grid-area: list-start;
+  }
+
+  &-end {
+    grid-area: list-end;
+  }
+
+  &-start,
+  &-end {
+    display: flex;
+    align-items: center;
+  }
+
+  &--inline {
+    grid-auto-flow: row;
+    grid-auto-rows: max-content;
+  }
+
+  &--block {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//             Panel container
+// - - - - - - - - - - - - - - - - - - - -
+.panel-container {
+  grid-area: panel-container;
+  display: grid;
+  grid-template: "selected" 1fr / 1fr;
+}
+
+.panel {
+  display: grid;
+
+  &--selected {
+    grid-area: selected;
+  }
+}
+
+// content-visibility: hidden is faster for rendering the content back, as
+// it preserves the rendering state of the content (display: none does not)
+@supports (content-visibility: hidden) {
+  .panel-container--collapsed,
+  .panel--hidden {
+    content-visibility: hidden;
+  }
+
+  .panel-container--collapsed {
+    inline-size: 0;
+  }
+}
+
+@supports not (content-visibility: hidden) {
+  .panel-container--collapsed,
+  .panel--hidden {
+    display: none; // Destroys the render state. Ctrl + Z and Ctrl + C won't work properly
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                   Tab
+// - - - - - - - - - - - - - - - - - - - -
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:hover > .close-button::after,
+  &:focus-within > .close-button::after,
+  &[aria-selected="true"] > .close-button::after {
+    opacity: 1;
+  }
+}
+
+.no-captions {
+  justify-content: center;
+}
+
+.sortable {
+  // Allow user drag
+  -webkit-user-drag: element;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.tab {
+  --ch-tab-button-start-img: var(--ch-start-img--base);
+
+  &.start-img--hover:hover {
+    --ch-tab-button-start-img: var(--ch-start-img--hover);
+  }
+
+  &.start-img--active:active {
+    --ch-tab-button-start-img: var(--ch-start-img--active);
+  }
+
+  &.start-img--focus:focus {
+    --ch-tab-button-start-img: var(--ch-start-img--focus);
+  }
+
+  &.start-img--selected.selected {
+    --ch-tab-button-start-img: var(--ch-start-img--selected);
+  }
+
+  &:disabled.start-img--disabled {
+    --ch-tab-button-start-img: var(--ch-start-img--disabled);
+  }
+}
+
+.caption-image,
+.pseudo-img--start::before {
+  display: block;
+  block-size: var(--ch-tab-button__image-size);
+  inline-size: var(--ch-tab-button__image-size);
+  min-inline-size: var(--ch-tab-button__image-size);
+}
+
+.pseudo-img--start::before {
+  content: "";
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-tab-button__image-size);
+}
+
+// Background
+.start-img-type--background::before {
+  background: no-repeat center / var(--ch-tab-button__background-image-size)
+    var(--ch-tab-button-start-img);
+}
+
+// Mask
+.start-img-type--mask::before {
+  -webkit-mask: no-repeat center / var(--ch-tab-button__background-image-size)
+    var(--ch-tab-button-start-img);
+  background-color: currentColor;
+}
+
+.close-button {
+  &::after {
+    content: "";
+    display: flex;
+    block-size: var(--ch-tab-close-button__image-size);
+    inline-size: var(--ch-tab-close-button__image-size);
+    -webkit-mask: no-repeat center /
+      var(--ch-tab-close-button__background-image-size) #{$close-icon};
+    background-color: currentColor;
+    opacity: 0;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//          Drag preview
+// - - - - - - - - - - - - - - - -
+// "Hide" the dragged element, without removing it from the accessibility tree
+.dragged-element {
+  opacity: 0;
+
+  &--outside {
+    display: none;
+  }
+}
+
+.drag-preview {
+  // "clamp" implements snap to the edges
+  --ch-tab-snap-drag-preview: clamp(
+    var(--ch-tab-list-start),
+    var(--ch-tab-mouse-position),
+    var(--ch-tab-list-end)
+  );
+
+  position: fixed;
+  left: 0; // Necessary since the custom vars are physical values
+  top: 0; // Necessary since the custom vars are physical values
+  z-index: $z-index-gx-navbar-item + 1;
+  cursor: grabbing;
+
+  &:popover-open {
+    // Reset popover's browser defaults
+    padding: 0;
+    margin: 0;
+    border: unset;
+    color: unset;
+
+    // Native popovers have "inset: 0", so we need to reset that property with
+    // the physical values again to support RTL
+    inset: unset;
+    left: 0;
+    top: 0;
+
+    // The preview MUST NOT capture pointer-events in order to properly show
+    // the droppable areas
+    pointer-events: none;
+  }
+
+  // Drag outside
+  &--outside-tab-list {
+    transform: translate(
+      calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
+      calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
+    );
+  }
+
+  // Drag inside (block)
+  &--inside-tab-list__block {
+    --ch-tab-mouse-position: calc(
+      var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)
+    );
+
+    transform: translate(
+      var(--ch-tab-snap-drag-preview),
+      var(--ch-tab-button-position-y)
+    );
+  }
+
+  // Drag inside (inline)
+  &--inside-tab-list__inline {
+    --ch-tab-mouse-position: calc(
+      var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y)
+    );
+
+    transform: translate(
+      var(--ch-tab-button-position-x),
+      var(--ch-tab-snap-drag-preview)
+    );
+  }
+}
+
+.shifted-element {
+  transition: transform var(--ch-tab-transition-duration);
+}
+
+:host(.ch-tab--block-start),
+:host(.ch-tab--block-end) {
+  .shifted-element--start {
+    transform: translate(calc(var(--ch-tab-button-size) * -1), 0);
+  }
+
+  .shifted-element--end {
+    transform: translate(var(--ch-tab-button-size), 0);
+  }
+}
+
+:host(.ch-tab--inline-start),
+:host(.ch-tab--inline-end) {
+  .shifted-element--start {
+    transform: translateY(calc(var(--ch-tab-button-size) * -1));
+  }
+
+  .shifted-element--end {
+    transform: translateY(var(--ch-tab-button-size));
+  }
+}

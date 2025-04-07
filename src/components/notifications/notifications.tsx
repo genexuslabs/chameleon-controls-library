@@ -121,8 +121,8 @@ export class ChNotifications implements ChComponent {
         this.lastNotificationID++;
       }
 
-      notification["id"] = notificationID;
-      notification["delayToAnimate"] = delayToAnimate;
+      notification.Id = notificationID;
+      notification.delayToAnimate = delayToAnimate;
       this.currentNotifications.set(notificationID, notification);
       delayToAnimate++;
     });

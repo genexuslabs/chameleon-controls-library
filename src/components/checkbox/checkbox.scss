@@ -1,85 +1,185 @@
-$option-size: min(1em, 20px);
+@import "../../common/_base";
 
-$option-checked-background-color: var(--option-checked-color, #ffffff00);
-$option-checked-border-color: var(--option-border-color, #000);
-$option-checked-color: #000;
-$option-checked-box-shadow: var(--option-highlight-color, #000);
-$option-checked-box-shadow-size: min(0.15em, 2px);
+$option-checked-border-color: currentColor;
+$option-checked-color: currentColor;
 
-$space-between-container-and-label: min(0.35em, 7px);
-
-*,
-::before,
-::after {
-  box-sizing: border-box;
-}
+@include box-sizing();
 
 :host {
-  display: flex;
-  align-items: center;
-  align-self: stretch;
+  /**
+   * @prop --ch-checkbox__container-size:
+   * Specifies the size for the container of the `input` and `option` elements.
+   * @default min(1em, 20px)
+   */
+  --ch-checkbox__container-size: min(1em, 20px);
 
-  // Remove outline of the focus state. This selector must not have higher
-  // specificity, since it should be overridden by the class applied to the control
-  outline: unset;
+  /**
+   * @prop --ch-checkbox__checked-image:
+   * Specifies the image of the checkbox when is checked.
+   * @default url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")
+   */
+  --ch-checkbox__option-checked-image: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>");
+
+  /**
+   * @prop --ch-checkbox__option-indeterminate-image:
+   * Specifies the image of the checkbox when is indeterminate.
+   * @default url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")
+   */
+  --ch-checkbox__option-indeterminate-image: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><rect width='8' height='8'/></svg>");
+
+  /**
+   * @prop --ch-checkbox__option-size:
+   * Specifies the size for the `option` element.
+   * @default 50%
+   */
+  --ch-checkbox__option-size: 50%;
+
+  /**
+   * @prop --ch-checkbox__option-image-size:
+   * Specifies the image size of the `option` element.
+   * @default 100%
+   */
+  --ch-checkbox__option-image-size: 100%;
+
+  /**
+   * @prop --ch-checkbox__image-size:
+   * Specifies the box size that contains the start image of the control.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-checkbox__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-checkbox__background-image-size:
+   * Specifies the size of the start image of the control.
+   * @default 100%
+   */
+  --ch-checkbox__background-image-size: 100%;
 
   // Avoid zooming on double tap
   touch-action: manipulation;
 
   // Remove text selection on double click
   user-select: none;
+
+  // Necessary to implement to focus delegation to the input when clicking on
+  // external labels
+  pointer-events: none;
+}
+
+:host,
+.label {
+  display: inline-grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  align-items: center;
 }
 
 :host(.ch-checkbox--actionable) :is(.input, .label) {
   cursor: pointer;
+
+  // Necessary to implement to focus delegation to the input when clicking on
+  // external labels
+  pointer-events: all;
 }
 
 .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  width: $option-size;
-  height: $option-size;
-  border: 1px solid $option-checked-border-color;
-  border-radius: 18.75%;
+  inline-size: var(--ch-checkbox__container-size);
+  block-size: var(--ch-checkbox__container-size);
 
-  &--checked {
-    background-color: $option-checked-background-color;
-  }
-
-  &:focus-within {
-    box-shadow: 0 0 1px 1px #00000040;
-  }
+  // TODO: Add a unit test for this
+  // Place the option before the icon
+  order: -1;
 }
 
 .input {
   display: flex;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
+  inline-size: 100%;
+  block-size: 100%;
+
+  // Reset browser defaults
+  appearance: none;
   margin: 0;
   padding: 0;
+  outline: unset;
+
+  border: 1px solid $option-checked-border-color;
 }
 
 .option {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 50%;
+  inline-size: var(--ch-checkbox__option-size);
+  block-size: var(--ch-checkbox__option-size);
   background-color: $option-checked-color;
-  opacity: 0;
   pointer-events: none;
 
   &--checked {
-    opacity: 1;
-    -webkit-mask: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' %3E%3Cpath fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z' /%3E%3C/svg%3E");
+    -webkit-mask: no-repeat center / var(--ch-checkbox__option-image-size)
+      var(--ch-checkbox__option-checked-image);
   }
 
   &--indeterminate {
-    opacity: 1;
+    -webkit-mask: no-repeat center / var(--ch-checkbox__option-image-size)
+      var(--ch-checkbox__option-indeterminate-image);
+  }
+
+  &--not-displayed {
+    opacity: 0;
+    visibility: hidden;
   }
 }
 
 .label {
-  margin-inline-start: $space-between-container-and-label;
+  // Base image
+  --ch-start-img: var(--ch-start-img--base);
+
+  display: inline-grid;
+  max-inline-size: max-content;
+  gap: inherit;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.start-img--hover:hover {
+  --ch-start-img: var(--ch-start-img--hover);
+}
+
+// TODO: Add unit test for checking the hover state when disabled=true and the
+// mouse is over an external label
+.start-img--active:active {
+  --ch-start-img: var(--ch-start-img--active);
+}
+
+.start-img--focus:focus {
+  --ch-start-img: var(--ch-start-img--focus);
+}
+
+:host(.ch-disabled) > .start-img--disabled {
+  --ch-start-img: var(--ch-start-img--disabled);
+}
+
+.pseudo-img--start::before {
+  content: "";
+  display: block;
+  inline-size: var(--ch-checkbox__image-size);
+  // Necessary to properly size the image, due to the Host has display: flex
+  min-inline-size: var(--ch-checkbox__image-size);
+  block-size: var(--ch-checkbox__image-size);
+}
+
+// Background
+.start-img-type--background::before {
+  background: no-repeat center / var(--ch-checkbox__background-image-size)
+    var(--ch-start-img);
+}
+
+// Mask
+.start-img-type--mask::before {
+  -webkit-mask: no-repeat center / var(--ch-checkbox__background-image-size)
+    var(--ch-start-img);
+  background-color: currentColor;
 }

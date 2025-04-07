@@ -1,0 +1,32 @@
+:host {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr;
+}
+
+:host(.ch-smart-grid--loaded-render-delay) {
+  opacity: 0;
+
+  // Disable scroll actions on intial load
+  pointer-events: none;
+}
+
+:host(.ch-smart-grid--inverse-loading) {
+  grid-template-rows: max-content 1fr;
+}
+
+:host(.ch-smart-grid--data-provider) {
+  grid-template-rows: 1fr max-content;
+}
+
+// This class is set when the smart-grid defines its own scroll
+:host(.ch-scrollable) {
+  contain: strict;
+  overflow: auto;
+  overflow-anchor: none;
+}
+
+::slotted([slot="grid-content"]) {
+  display: grid;
+  grid-auto-rows: max-content;
+}

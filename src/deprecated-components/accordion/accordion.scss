@@ -1,0 +1,58 @@
+// Reset browser defaults
+:where(button) {
+  all: unset;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+:host {
+  --chevron: url('data:image/svg+xml,<svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.645 0.5L7 4.83019L12.355 0.5L14 1.83962L7 7.5L0 1.83962L1.645 0.5Z" fill="%23000"/></svg>');
+
+  display: grid;
+  grid-template-rows: min-content min-content;
+  width: 100%;
+  height: 100%;
+  text-align: start;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  grid-template-rows: 1fr;
+  text-align: start;
+  cursor: pointer;
+}
+
+.chevron {
+  align-self: center;
+  width: 14px;
+  height: 8px;
+  -webkit-mask: var(--chevron);
+  background-color: #000;
+  transition: transform 250ms;
+
+  &--expanded {
+    transform: rotate(180deg);
+  }
+}
+
+.expandable {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 250ms;
+}
+
+.expanded {
+  visibility: visible;
+  grid-template-rows: 1fr;
+}
+
+.expandable ::slotted(*) {
+  height: 100%;
+  overflow: hidden;
+}

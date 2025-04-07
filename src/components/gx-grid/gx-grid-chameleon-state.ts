@@ -1,7 +1,7 @@
 import {
   ChGridColumnFreeze,
   ChGridColumnSortDirection
-} from "../grid/grid-column/ch-grid-column-types";
+} from "../../deprecated-components/grid/grid-column/ch-grid-column-types";
 import { GxGrid } from "./genexus";
 
 export class GridChameleonManagerState {
@@ -11,7 +11,7 @@ export class GridChameleonManagerState {
   static load(grid: GxGrid, state: GridChameleonState) {
     this.grid = grid;
     this.state = state ?? {};
-    this.state.Columns = this.state.Columns ?? [];
+    this.state.Columns ??= [];
 
     this.loadLocal();
     this.apply();
@@ -75,7 +75,9 @@ export class GridChameleonManagerState {
       );
 
       if (column) {
-        column.Hidden = stateColumn.Hidden ? -1 : 0;
+        if (typeof stateColumn.Hidden === "boolean") {
+          column.Hidden = stateColumn.Hidden ? -1 : 0;
+        }
 
         if (stateColumn.Size) {
           column.Size = "length";
@@ -148,9 +150,7 @@ export class GridChameleonManagerState {
   private static getColumnFilter(name: string): GridChameleonStateColumnFilter {
     const column = this.getColumn(name);
 
-    if (!column.Filter) {
-      column.Filter = {};
-    }
+    column.Filter ||= {};
 
     return column.Filter;
   }

@@ -19,7 +19,7 @@ export class SessionStorageWorker {
 
   constructor() {
     this.sessionStorageSupported =
-      typeof window.sessionStorage != "undefined" &&
+      typeof window.sessionStorage !== "undefined" &&
       window.sessionStorage != null;
   }
 
@@ -64,9 +64,8 @@ export class SessionStorageWorker {
     if (this.sessionStorageSupported) {
       const item = sessionStorage.getItem(key);
       return item;
-    } else {
-      return null;
     }
+    return null;
   }
 
   // remove value from storage

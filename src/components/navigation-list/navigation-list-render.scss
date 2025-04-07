@@ -1,0 +1,186 @@
+@import "../../common/base";
+@import "../../common/icons";
+
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-navigation-list-collapsed-size:
+   * Specifies the inline-size when the navigation list is collapsed
+   * @default var(--ch-sidebar-inline-size--collapsed, auto)
+   */
+  --ch-navigation-list-collapsed-size: var(
+    --ch-sidebar-inline-size--collapsed,
+    auto
+  );
+
+  /**
+   * @prop --ch-navigation-list-item-custom-padding-inline-start:
+   * Specifies an additional value for the padding-inline-start of the items
+   * without breaking the indentation of the items.
+   * @default 0px
+   */
+  --ch-navigation-list-item-custom-padding-inline-start: 0px;
+
+  /**
+   * @prop --ch-navigation-list-item-expand-collapse-duration
+   * Specifies duration of the expand and collapse animation
+   * @default 0ms
+   */
+  --ch-navigation-list-item-expand-collapse-duration: 0ms;
+
+  /**
+    * @prop --ch-navigation-list-item-expand-collapse-timing-function
+    * Specifies timing function of the expand and collapse animation
+    * @default linear
+    */
+  --ch-navigation-list-item-expand-collapse-timing-function: linear;
+
+  /**
+   * @prop --ch-navigation-list-item-gap:
+   * Specifies the spacing between the images, text and the expandable button
+   * of the items.
+   * @default 0px
+   */
+  --ch-navigation-list-item-gap: 0px;
+
+  /**
+   * @prop --ch-navigation-list-item__expandable-button-size:
+   * Specifies the expandable button size of the items.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-navigation-list-item__expandable-button-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-navigation-list-item__expandable-button-image-size:
+   * Specifies the image size of the expandable button.
+   * @default 100%
+   */
+  --ch-navigation-list-item__expandable-button-image-size: 100%;
+
+  /**
+   * @prop --ch-navigation-list-item__image-size:
+   * Specifies the box size that contains the start image of the items.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-navigation-list-item__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-navigation-list-item__image-size:
+   * Specifies the size of the start image of the items.
+   * @default 100%
+   */
+  --ch-navigation-list-item__background-image-size: 100%;
+
+  /**
+   * @prop --ch-navigation-list-item__tooltip-separation:
+   * Specifies the separation between the action and the displayed tooltip.
+   * @default 0px
+   */
+  --ch-navigation-list-item__tooltip-separation: 0px;
+
+  /**
+   * @prop --ch-navigation-list-item__tooltip-separation-x:
+   * Specifies the separation between the action and the tooltip displayed
+   * on the x-axis.
+   * @default var(--ch-navigation-list-item__tooltip-separation)
+   */
+  --ch-navigation-list-item__tooltip-separation-x: var(
+    --ch-navigation-list-item__tooltip-separation
+  );
+
+  /**
+   * @prop --ch-navigation-list-item__tooltip-separation-y:
+   * Specifies the separation between the action and the tooltip displayed
+   * on the y-axis.
+   * @default var(--ch-navigation-list-item__tooltip-separation)
+   */
+  --ch-navigation-list-item__tooltip-separation-y: var(
+    --ch-navigation-list-item__tooltip-separation
+  );
+
+  --ch-navigation-list-tab-size: calc(
+    var(--ch-navigation-list-item__image-size) +
+      var(--ch-navigation-list-item__expandable-button-size) +
+      (var(--ch-navigation-list-item-gap) * 2)
+  );
+
+  display: grid;
+  grid-auto-rows: max-content;
+  overflow: auto;
+}
+
+:host(.ch-navigation-list--contain) {
+  contain: strict;
+}
+
+:host(.ch-navigation-list--collapsed) {
+  inline-size: var(--ch-navigation-list-collapsed-size);
+}
+
+// - - - - - - - - - - - - - - - -
+//        Item indentation
+// - - - - - - - - - - - - - - - -
+::part(item__action) {
+  --own-offset: 0px;
+
+  --ch-navigation-list-item-indentation: calc(
+    var(--ch-navigation-list-tab-size) * var(--level) - var(--own-offset) -
+      var(--parent-offset, 0px) +
+      var(--ch-navigation-list-item-custom-padding-inline-start)
+  );
+}
+
+::part(item__action expand-button start) {
+  --own-offset: calc(
+    var(--ch-navigation-list-item__expandable-button-size) +
+      var(--ch-navigation-list-item-gap)
+  );
+}
+
+::part(item__action expand-button start level-0) {
+  --own-offset: 0px;
+}
+
+// Even level
+::part(item__action even-level) {
+  --parent-offset: var(--parent-offset-odd);
+}
+
+// Odd level
+::part(item__action odd-level) {
+  --parent-offset: var(--parent-offset-even);
+}
+
+::part(item__group level-0 end) {
+  --parent-offset-even: calc(
+    var(--ch-navigation-list-item-gap) +
+      var(--ch-navigation-list-item__expandable-button-size)
+  );
+}
+
+// ::part(item__group even-level before) {
+//   --parent-offset-even: calc(
+//     var(--ch-navigation-list-item-gap) + var(--parent-offset-odd, 0px)
+//   );
+// }
+
+::part(item__group even-level) {
+  --parent-offset-even: calc(
+    var(--ch-navigation-list-item__expandable-button-size) +
+      var(--ch-navigation-list-item-gap) + var(--parent-offset-odd, 0px)
+  );
+}
+
+// ::part(item__group odd-level before) {
+//   --parent-offset-odd: calc(
+//     var(--ch-navigation-list-item-gap) + var(--parent-offset-even, 0px)
+//   );
+// }
+
+::part(item__group odd-level) {
+  --parent-offset-odd: calc(
+    var(--ch-navigation-list-item__expandable-button-size) +
+      var(--ch-navigation-list-item-gap) + var(--parent-offset-even, 0px)
+  );
+}

@@ -26,6 +26,7 @@ declare let gx: Gx;
   styleUrl: "gx-grid-chameleon-column-filter.scss",
   shadow: true
 })
+// eslint-disable-next-line @stencil-community/required-prefix
 export class GridChameleonColumnFilter {
   private filterEnum: GridChameleonColumnFilterEnum[] = [];
   private inputEqual: HTMLInputElement | HTMLSelectElement;
@@ -163,11 +164,10 @@ export class GridChameleonColumnFilter {
       return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
         date.getDate()
       )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    } else {
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-        date.getDate()
-      )}`;
     }
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+      date.getDate()
+    )}`;
   }
 
   private getFilterInputType(dataType: GxControlDataType): string {

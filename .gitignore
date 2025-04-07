@@ -31,6 +31,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+src/common/monaco/output
 
 # TypeScript v1 declaration files
 typings/
@@ -78,6 +79,7 @@ log.txt
 .sass-cache/
 .versions/
 $RECYCLE.BIN/
+components.d.ts
 
 .DS_Store
 Thumbs.db

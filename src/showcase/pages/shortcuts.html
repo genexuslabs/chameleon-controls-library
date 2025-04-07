@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-shortcuts</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link href="../base.css" rel="stylesheet" />
+    <script type="module">
+      import { setDesignSystemInBrowser } from "../models/ds-manager.js";
+      import { setThemeInBrowser } from "../models/theme-manager.js";
+
+      window.addEventListener("message", event => {
+        if (event.data === "light" || event.data === "dark") {
+          setThemeInBrowser(event.data);
+        }
+
+        if (event.data === "unanimo" || event.data === "mercury") {
+          setDesignSystemInBrowser(event.data);
+        }
+      });
+    </script>
+
+    <style>
+      /* Avoid FOUC (Flash Of Unstyled Content) */
+      html:not(.hydrated) {
+        visibility: hidden;
+      }
+
+      ch-shortcuts::part(tooltip) {
+        display: flex;
+        padding-left: 5px;
+      }
+      ch-shortcuts::part(key) {
+        color: white;
+        background-color: darkslategray;
+        border-radius: 3px;
+        font-size: 11px;
+        padding: 3px;
+      }
+      ch-shortcuts::part(slash),
+      ch-shortcuts::part(plus) {
+        font-size: 11px;
+        color: darkslategray;
+        padding: 3px 2px;
+      }
+      ch-shortcuts::part(element) {
+        outline: 2px dotted darkblue;
+        outline-offset: -1px;
+      }
+    </style>
+    <script>
+      document.addEventListener("keyShortcutPressed", eventInfo => {
+        console.log(eventInfo.detail);
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <section class="section-dev" data-title="shortcut">
+        <h2>Formulario de Contacto</h2>
+
+        <div>
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" data-shortcut="Alt+N" />
+        </div>
+
+        <div>
+          <label for="email">Correo Electrónico:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            data-shortcut="Alt+E"
+            data-shortcut-prevent="Enter"
+            aria-keyshortcuts="Alt+E"
+          />
+        </div>
+
+        <div>
+          <label for="mensaje">Mensaje:</label>
+          <textarea
+            id="mensaje"
+            name="mensaje"
+            rows="4"
+            data-shortcut="Alt+M"
+          ></textarea>
+        </div>
+
+        <div>
+          <button
+            id="enviar"
+            data-shortcut="Enter"
+            data-shortcut-action="click"
+            onclick="alert('Enviado...')"
+          >
+            Enviar
+          </button>
+        </div>
+
+        <ch-paginator-pages total-pages="5"></ch-paginator-pages>
+        <ch-shortcuts src="./assets/json/shortcuts.json"></ch-shortcuts>
+      </section>
+    </div>
+
+    <script src="./assets/scripts/common.js"></script>
+  </body>
+</html>

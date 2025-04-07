@@ -1,18 +1,27 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false,
     "declaration": false,
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["dom", "es2017"],
-    "moduleResolution": "node",
+    "lib": ["DOM", "ES2022", "DOM.Iterable"],
     "module": "esnext",
-    "target": "es2017",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "target": "ES2022",
+    "moduleResolution": "node",
     "jsx": "react",
-    "jsxFactory": "h"
+    "jsxFactory": "h",
+
+    // Linting
+    "allowUnreachableCode": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    // "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+    // "strict": true
   },
-  "include": ["src", "stencil.config.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src"],
+  "exclude": ["node_modules", "src/common/monaco/output/"]
 }

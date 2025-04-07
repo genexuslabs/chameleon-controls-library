@@ -12,7 +12,7 @@ import {
 } from "@stencil/core";
 import { Component as ChComponent } from "../../../common/interfaces";
 import { EntityItemType, EntityNameToATTs } from "../data-modeling/data-model";
-import { KEY_CODES } from "../../../common/reserverd-names";
+import { KEY_CODES } from "../../../common/reserved-names";
 
 export type ErrorText =
   | "Empty"
@@ -201,7 +201,7 @@ export class NextDataModelingSubitem implements ChComponent {
    * This attribute lets you specify if the element is disabled.
    * If disabled, it will not fire any user interaction related event.
    */
-  @Prop() readonly disabled = false;
+  @Prop() readonly disabled: boolean = false;
 
   /**
    * This property maps entities of the current dataModel with their
@@ -238,6 +238,13 @@ export class NextDataModelingSubitem implements ChComponent {
    * The name of the field.
    */
   @Prop() readonly name: string = "";
+
+  /**
+   * This attribute indicates that the user cannot modify the value of the control.
+   * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
+   * attribute for `input` elements.
+   */
+  @Prop() readonly readonly: boolean = false;
 
   /**
    * `true` to show the new field button when `mode === "add"`
@@ -729,7 +736,9 @@ export class NextDataModelingSubitem implements ChComponent {
         header: true,
         "edit-mode": this.mode === "edit"
       }}
-      part={`${PART_PREFIX}header-content`}
+      part={`${PART_PREFIX}header-content ${
+        this.level !== 0 ? this.type.toLowerCase() : ""
+      }`}
       tabindex={this.level !== 0 ? "0" : undefined}
     >
       {this.level === 2 && (
@@ -748,7 +757,7 @@ export class NextDataModelingSubitem implements ChComponent {
             showWaitingModeTexts ? this.lastEditInfo.type : this.type
           )}
 
-      {this.actionsVisible && (
+      {!this.readonly && this.actionsVisible && (
         <div
           class={{
             "delete-mode": this.mode === "delete",
@@ -829,6 +838,7 @@ export class NextDataModelingSubitem implements ChComponent {
       >
         {
           // Add new field layout (last cell of the collection/entity)
+          // eslint-disable-next-line no-nested-ternary
           this.mode === "add" && this.waitingMode !== "adding" ? (
             this.newFieldMode(captions, errorPart, disabledPart, actions)
           ) : this.level === 0 ? ( // Normal mode. Level === 0

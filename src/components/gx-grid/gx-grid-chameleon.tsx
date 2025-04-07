@@ -1,7 +1,7 @@
 import {
   ChGridRowClickedEvent,
   ChGridSelectionChangedEvent
-} from "../grid/ch-grid-types";
+} from "../../deprecated-components/grid/ch-grid-types";
 import { Component, Host, Listen, Prop, h, Watch } from "@stencil/core";
 import {
   paginationGoToFirstPage,
@@ -18,7 +18,7 @@ import {
   ChGridColumnOrderChangedEvent,
   ChGridColumnSizeChangedEvent,
   ChGridColumnSortChangedEvent
-} from "../grid/grid-column/ch-grid-column-types";
+} from "../../deprecated-components/grid/grid-column/ch-grid-column-types";
 import {
   GridChameleonManagerState,
   GridChameleonState
@@ -34,6 +34,7 @@ declare let gx: Gx;
   styleUrl: "gx-grid-chameleon.scss",
   tag: "gx-grid-chameleon"
 })
+// eslint-disable-next-line @stencil-community/required-prefix
 export class GridChameleon {
   /**
    * The GxGrid instance representing the data to be displayed in the grid.
@@ -417,19 +418,21 @@ export class GridChameleon {
   }
 
   private renderPaginator() {
+    const hasRecordCount =
+      !!this.grid.ParentObject[`sub${this.grid.ControlName}_Recordcount`];
     const recordCount =
       this.grid.ParentObject[`sub${this.grid.ControlName}_Recordcount`] ?? 0;
     const hasNextPage = !this.grid.isLastPage();
     const activePage = Math.ceil(
       (parseInt(this.grid.firstRecordOnPage) + 1) / this.grid.pageSize
     );
-    const totalPages = Math.ceil(recordCount / this.grid.pageSize);
+    const totalPages = Math.max(1, Math.ceil(recordCount / this.grid.pageSize));
 
     return (
       <ch-paginator
-        has-next-page={totalPages === 0 ? hasNextPage : null}
+        has-next-page={hasRecordCount ? null : hasNextPage}
         active-page={activePage}
-        total-pages={totalPages !== 0 ? totalPages : null}
+        total-pages={hasRecordCount ? totalPages : -1}
         class={this.grid.pagingBarClass}
         slot="footer"
       >
@@ -480,6 +483,35 @@ export class GridChameleon {
     );
   }
 
+  private renderPaginationInfo() {
+    const recordCount =
+      this.grid.ParentObject[`sub${this.grid.ControlName}_Recordcount`] ?? 0;
+    let mask = this.grid.PaginatorInfoEmptyTextMask;
+    let recordStart = 0;
+    let recordEnd = 0;
+
+    if (recordCount > 0) {
+      mask = this.grid.PaginatorInfoTextMask;
+      recordStart = parseInt(this.grid.firstRecordOnPage) + 1;
+      recordEnd = Math.min(recordStart + this.grid.pageSize - 1, recordCount);
+    }
+
+    const replacements = {
+      "record-count": recordCount,
+      "record-start": recordStart,
+      "record-end": recordEnd
+    };
+    const text = mask.replace(/\{([^}]+)\}/g, (_match, capture) => {
+      return replacements[capture] ?? capture;
+    });
+
+    return (
+      <div class={this.grid.PaginatorInfoClass} slot="footer">
+        {text}
+      </div>
+    );
+  }
+
   render() {
     return (
       <Host>
@@ -494,6 +526,10 @@ export class GridChameleon {
           {this.renderActionbar("footer", this.grid.ActionbarFooterClass)}
           {this.renderColumns()}
           {this.renderRows()}
+          {this.grid.PaginatorShow &&
+            this.grid.PaginatorInfoShow &&
+            this.grid.pageSize > 0 &&
+            this.renderPaginationInfo()}
           {this.grid.PaginatorShow &&
             this.grid.pageSize > 0 &&
             this.renderPaginator()}

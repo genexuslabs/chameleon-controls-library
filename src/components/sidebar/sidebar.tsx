@@ -143,8 +143,9 @@ export class ChSidebar {
             aria-label={accessibleName !== caption ? accessibleName : undefined}
             class={{
               "expand-button": true,
+              "expand-button--expanded-ltr": this.expanded && !this.rtl,
               "expand-button--collapsed": !this.expanded,
-              "expand-button--rtl": this.rtl
+              "expand-button--collapsed-rtl": !this.expanded && this.rtl
             }}
             part={`expand-button ${this.expanded ? "expanded" : "collapsed"}`}
             type="button"

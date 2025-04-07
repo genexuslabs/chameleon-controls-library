@@ -10,7 +10,12 @@ import {
   h
 } from "@stencil/core";
 import { ChDialogResizeElement } from "./types";
-import { forceCSSMinMax, isRTL } from "../../common/utils";
+import {
+  forceCSSMinMax,
+  isRTL,
+  subscribeToRTLChanges,
+  unsubscribeToRTLChanges
+} from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 
 // Custom vars
@@ -68,6 +73,8 @@ const fromPxToNumber = (pxValue: string) =>
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
 
+let autoId = 0;
+
 /**
  * The `ch-dialog` component represents a modal or non-modal dialog box or other
  * interactive component.
@@ -98,6 +105,8 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
   shadow: true
 })
 export class ChDialog {
+  #dialogId = `${autoId++}`;
+
   // Sync computations with frames
   #borderSizeRAF: SyncWithRAF; // Don't allocate memory until the control is rendered
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
@@ -107,7 +116,6 @@ export class ChDialog {
   #checkPositionWatcher = false;
   #checkBorderSizeWatcher = false;
   #borderSizeObserver: ResizeObserver;
-  #rtlWatcher: MutationObserver;
 
   // Drag
   #draggedDistanceX: number = 0;
@@ -325,22 +333,10 @@ export class ChDialog {
 
   connectedCallback() {
     // Set RTL watcher
-    this.#rtlWatcher = new MutationObserver(() => {
-      this.#isRTLDirection = isRTL();
+    subscribeToRTLChanges(this.#dialogId, this.#updatePositionWithRTL);
 
-      if (this.#isRTLDirection) {
-        this.el.style.setProperty(DIALOG_RTL, DIALOG_RTL_VALUE);
-        this.el.classList.add(DIALOG_RTL_CLASS);
-      } else {
-        this.el.style.removeProperty(DIALOG_RTL);
-        this.el.classList.remove(DIALOG_RTL_CLASS);
-      }
-    });
-
-    // Observe the dir attribute in the document
-    this.#rtlWatcher.observe(document.documentElement, {
-      attributeFilter: ["dir"]
-    });
+    // Initialize RTL position
+    this.#updatePositionWithRTL(isRTL());
   }
 
   componentWillRender() {
@@ -371,16 +367,25 @@ export class ChDialog {
     this.#handleDragEnd();
     this.#removeBorderSizeWatcher();
 
-    // Disconnect RTL watcher
-    if (this.#rtlWatcher) {
-      this.#rtlWatcher.disconnect();
-      this.#rtlWatcher = null; // Free the memory
-    }
+    // Disconnect RTL watcher to avoid memory leaks
+    unsubscribeToRTLChanges(this.#dialogId);
 
     document.removeEventListener("click", this.#evaluateClickOnDocument, {
       capture: true
     });
   }
+
+  #updatePositionWithRTL = (rtl: boolean) => {
+    this.#isRTLDirection = rtl;
+
+    if (rtl) {
+      this.el.style.setProperty(DIALOG_RTL, DIALOG_RTL_VALUE);
+      this.el.classList.add(DIALOG_RTL_CLASS);
+    } else {
+      this.el.style.removeProperty(DIALOG_RTL);
+      this.el.classList.remove(DIALOG_RTL_CLASS);
+    }
+  };
 
   #addDraggingClass = () => {
     if (!this.#dragging) {

@@ -16,7 +16,12 @@ import {
   PopoverActionElement
 } from "./types";
 import { adoptCommonThemes } from "../../common/theme";
-import { forceCSSMinMax, isRTL } from "../../common/utils";
+import {
+  forceCSSMinMax,
+  isRTL,
+  subscribeToRTLChanges,
+  unsubscribeToRTLChanges
+} from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { fromPxToNumber, setResponsiveAlignment } from "./utils";
 import { KEY_CODES, SCROLLABLE_CLASS } from "../../common/reserved-names";
@@ -108,6 +113,8 @@ const removePopoverTargetElement = (actionElement: PopoverActionElement) => {
   }
 };
 
+let autoId = 0;
+
 /**
  * The `ch-popover` component represents a popover container that is positioned
  * relative to an element, but placed on the top layer using `position: fixed`.
@@ -118,6 +125,8 @@ const removePopoverTargetElement = (actionElement: PopoverActionElement) => {
   shadow: true
 })
 export class ChPopover {
+  #popoverId = `${autoId++}`;
+
   // Sync computations with frames
   #borderSizeRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
@@ -131,7 +140,6 @@ export class ChPopover {
   #checkBorderSizeWatcher = false;
   #borderSizeObserver: ResizeObserver;
   #resizeObserver: ResizeObserver;
-  #rtlWatcher: MutationObserver;
 
   // Drag
   #draggedDistanceX: number = 0;
@@ -1069,30 +1077,30 @@ export class ChPopover {
     this.#borderSizeRAF = null; // Free the memory
   };
 
+  #updatePositionWithRTL = (rtl: boolean) => {
+    this.#isRTLDirection = rtl;
+
+    if (rtl) {
+      this.el.style.setProperty(POPOVER_RTL, POPOVER_RTL_VALUE);
+      this.el.classList.add(POPOVER_RTL_CLASS);
+    } else {
+      this.el.style.removeProperty(POPOVER_RTL);
+      this.el.classList.remove(POPOVER_RTL_CLASS);
+    }
+  };
+
   connectedCallback() {
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
 
     // Set RTL watcher
-    this.#rtlWatcher = new MutationObserver(() => {
-      this.#isRTLDirection = isRTL();
+    subscribeToRTLChanges(this.#popoverId, this.#updatePositionWithRTL);
 
-      if (this.#isRTLDirection) {
-        this.el.style.setProperty(POPOVER_RTL, POPOVER_RTL_VALUE);
-        this.el.classList.add(POPOVER_RTL_CLASS);
-      } else {
-        this.el.style.removeProperty(POPOVER_RTL);
-        this.el.classList.remove(POPOVER_RTL_CLASS);
-      }
-    });
+    // Initialize RTL position
+    this.#updatePositionWithRTL(isRTL());
 
     if (this.firstLayer) {
       this.#avoidFlickeringInTheNextRender(true);
     }
-
-    // Observe the dir attribute in the document
-    this.#rtlWatcher.observe(document.documentElement, {
-      attributeFilter: ["dir"]
-    });
   }
 
   componentWillRender() {
@@ -1162,11 +1170,8 @@ export class ChPopover {
     // Avoid leaving handlers in the document
     this.#removeClickOutsideWatcher();
 
-    // Disconnect RTL watcher
-    if (this.#rtlWatcher) {
-      this.#rtlWatcher.disconnect();
-      this.#rtlWatcher = null; // Free the memory
-    }
+    // Disconnect RTL watcher to avoid memory leaks
+    unsubscribeToRTLChanges(this.#popoverId);
   }
 
   render() {

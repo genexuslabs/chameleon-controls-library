@@ -281,6 +281,11 @@ export class ChChat {
     await this.#pushMessage(userMessage);
   };
 
+  #chatMessageCanBeSent = (chat: ChatMessage) =>
+    !this.callbacks ||
+    !this.callbacks.validateSendChatMessage ||
+    this.callbacks.validateSendChatMessage(chat);
+
   #sendMessage = async () => {
     if (
       !this.#editRef.value ||
@@ -301,6 +306,10 @@ export class ChChat {
         content: this.#editRef.value
       };
 
+      if (!(await this.#chatMessageCanBeSent(userMessageToAdd))) {
+        return;
+      }
+
       await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
       this.callbacks?.sendChatToLLM(this.items);
 
@@ -315,6 +324,7 @@ export class ChChat {
       { type: "text", text: this.#editRef.value }
     ] as ChatContentImages;
 
+    // TODO: See how we can validate the sendChat callback
     this.imagesToUpload.forEach((imageToUpload, index) => {
       // Add the image with empty src, since it's not in the server yet
       userContent.push({

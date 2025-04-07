@@ -25,9 +25,9 @@
   /**
    * @prop --ch-sidebar__chevron-background-image:
    * Specifies the image of expand button.
-   * @default #{$expandable-icon}
+   * @default #{$arrow-right-icon}
    */
-  --ch-sidebar__chevron-background-image: #{$expandable-icon};
+  --ch-sidebar__chevron-background-image: #{$arrow-right-icon};
 
   display: grid;
   grid-template-rows: 1fr max-content;
@@ -39,10 +39,13 @@
 }
 
 .expand-button {
+  --ch-sidebar-expand-button-rtl: 1;
+
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;
   align-items: center;
+  justify-content: flex-end;
 
   &::before {
     content: "";
@@ -52,14 +55,17 @@
     -webkit-mask: no-repeat center / var(--ch-sidebar__chevron-image-size)
       var(--ch-sidebar__chevron-background-image);
     background-color: currentColor;
-    transform: rotate(90deg);
+  }
+
+  &--expanded-ltr::before {
+    transform: rotate(180deg);
   }
 
   &--collapsed {
     justify-content: center;
+  }
 
-    &::before {
-      transform: rotate(-90deg);
-    }
+  &--collapsed-rtl::before {
+    transform: rotate(180deg);
   }
 }

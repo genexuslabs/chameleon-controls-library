@@ -170,6 +170,7 @@ export type ChameleonStories = {
   dialog: ShowcaseStory<HTMLChDialogElement>;
   edit: ShowcaseStory<HTMLChEditElement>;
   image: ShowcaseStory<HTMLChImageElement>;
+  "live-kit-room": ShowcaseStory<HTMLChLiveKitRoomElement>;
   "layout-splitter": ShowcaseStory<HTMLChLayoutSplitterElement>;
   "navigation-list": ShowcaseStory<HTMLChNavigationListRenderElement>;
   popover: ShowcaseStory<HTMLChPopoverElement>;

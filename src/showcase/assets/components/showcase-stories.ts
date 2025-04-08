@@ -32,6 +32,7 @@ import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 import { ChameleonCustomStories, ChameleonStories } from "./types";
+import { liveKitRoomShowcaseStory } from "./live-kit-room/live-kit-room.showcase";
 
 export const showcaseStories = {
   accordion: accordionShowcaseStory,
@@ -48,6 +49,7 @@ export const showcaseStories = {
   image: imageShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,
   "navigation-list": navigationListShowcaseStory,
+  "live-kit-room": liveKitRoomShowcaseStory,
   popover: popoverShowcaseStory,
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,

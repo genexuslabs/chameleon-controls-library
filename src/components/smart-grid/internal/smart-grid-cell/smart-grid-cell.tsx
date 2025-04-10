@@ -17,7 +17,7 @@ export class ChSmartGridCell implements ComponentInterface {
   /**
    * Specifies the ID of the cell.
    */
-  @Prop() readonly cellId!: string;
+  @Prop({ reflect: true }) readonly cellId!: string;
 
   /**
    * Fired when the component and all its child did render for the first time.

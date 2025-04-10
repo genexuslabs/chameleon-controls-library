@@ -42,6 +42,11 @@ export class ChInfiniteScroll implements ComponentInterface {
   @Element() el!: HTMLChInfiniteScrollElement;
 
   /**
+   * TODO.
+   */
+  @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
+
+  /**
    * `true` if the infinite scroll is used in a grid that has data provider.
    * This attribute determine the utility of the infinite scroll, because in
    * certain configurations the infinite scroll can be used only to implement
@@ -284,10 +289,14 @@ export class ChInfiniteScroll implements ComponentInterface {
       this.#lastClientHeight + this.#lastScrollTop + PRECISION_OFFSET;
 
     // The scroll is only adjusted if the grid has a data provider or the
-    // scroll was at the bottom position. When the grid has a data provider
-    // items can be loaded via infinite scroll, so the scroll position needs
-    // adjusted when new items are added
-    if (this.dataProvider || scrollWasAtTheBottom) {
+    // scroll was at the bottom position (and has to keep the scroll at the
+    // bottom).
+    // When the grid has a data provider items can be loaded via infinite
+    // scroll, so the scroll position needs adjusted when new items are added
+    if (
+      this.dataProvider ||
+      (this.autoScroll === "at-scroll-end" && scrollWasAtTheBottom)
+    ) {
       const scrollOffset = currentScrollHeight - this.#lastScrollHeight;
       const clientHeightOffset =
         currentClientHeight < this.#lastClientHeight

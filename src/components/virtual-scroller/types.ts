@@ -1,4 +1,4 @@
-import { SmartGridModel } from "../components/smart-grid/types";
+import type { SmartGridModel } from "../smart-grid/types";
 
 export type VirtualScrollVirtualItems = {
   virtualItems: SmartGridModel;

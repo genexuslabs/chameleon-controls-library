@@ -50,6 +50,16 @@ export class ChChat {
   @State() virtualItems: ChatMessage[] = [];
 
   /**
+   * TODO.
+   */
+  @Prop() readonly alignNewMessage: "start" | "end" = "end";
+
+  /**
+   * TODO.
+   */
+  @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
+
+  /**
    * Specifies the callbacks required in the control.
    */
   @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;

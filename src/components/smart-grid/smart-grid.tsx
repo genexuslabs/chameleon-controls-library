@@ -6,19 +6,25 @@ import {
   EventEmitter,
   Host,
   Listen,
+  Method,
   Prop,
   State,
   // Watch,
   h
 } from "@stencil/core";
-import { AccessibleNameComponent } from "../../common/interfaces";
-import { SmartGridDataState } from "./internal/infinite-scroll/types";
-import { VirtualScrollVirtualItems } from "../../virtual-scroller/types";
-import { ChVirtualScrollerCustomEvent } from "../../components";
+import type { AccessibleNameComponent } from "../../common/interfaces";
+import type { SmartGridDataState } from "./internal/infinite-scroll/types";
+import type { VirtualScrollVirtualItems } from "../virtual-scroller/types";
+import type { ChVirtualScrollerCustomEvent } from "../../components";
+import type { ChameleonControlsTagName } from "../../common/types";
+
 import { SCROLLABLE_CLASS } from "../../common/reserved-names";
 import { adoptCommonThemes } from "../../common/theme";
 
 const HIDE_CONTENT_AFTER_LOADING_CLASS = "ch-smart-grid--loaded-render-delay";
+
+const SMART_GRID_CELL_TAG_NAME =
+  "ch-smart-grid-cell" satisfies ChameleonControlsTagName;
 
 @Component({
   shadow: true,
@@ -57,6 +63,13 @@ export class ChSmartGrid
    * if the content overflows.
    */
   @Prop() readonly autoGrow: boolean = false;
+
+  /**
+   * TODO.
+   *
+   * Only used when inverseLoading = true.
+   */
+  @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
 
   /**
    * `true` if the control has a data provider and therefore must implement a
@@ -105,6 +118,30 @@ export class ChSmartGrid
    * for infinite scrolling grids.
    */
   @Event({ bubbles: false }) infiniteThresholdReached: EventEmitter<void>;
+
+  /**
+   * Given the cell ID, it position the item at the top of the scrollbar,
+   * reserving the necessary space to visualize the item at the top if the
+   * content is not large enough.
+   *
+   * This behavior is the same as the Monaco editor does for reserving space
+   * when visualizing the last lines positioned at the top of the editor.
+   */
+  @Method()
+  async scrollEndContentToTop(cellId: string) {
+    const cellRef = this.el.querySelector(
+      `${SMART_GRID_CELL_TAG_NAME}[cell-id="${cellId}"]`
+    ) as HTMLChSmartGridElement | null;
+    console.log("scrollEndContentToTop...", "cellId " + cellId);
+
+    if (!cellRef) {
+      return;
+    }
+
+    console.log("cellRef scrolltop", cellRef.scrollTop);
+
+    this.el.scrollTo(0, cellRef.scrollTop);
+  }
 
   @Listen("virtualItemsChanged")
   handleVirtualItemsChanged(
@@ -189,6 +226,7 @@ export class ChSmartGrid
             // Otherwise, the ch-infinite-scroll will break in runtime
             hasRecords && this.inverseLoading && (
               <ch-infinite-scroll
+                autoScroll={this.autoScroll}
                 dataProvider={this.dataProvider}
                 disabled={!this.infiniteScrollEnabled}
                 infiniteThresholdReachedCallback={

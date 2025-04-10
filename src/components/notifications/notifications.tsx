@@ -5,7 +5,7 @@ import {
   NotificationsPositions,
   NotificationsAlign
 } from "./notifications-types";
-import { ChWindowAlign } from "../window/ch-window";
+import { ChWindowAlign } from "../../deprecated-components/window/ch-window";
 
 const mapNotificationsAlignToChWindowAlign: {
   [key in NotificationsAlign]: ChWindowAlign;

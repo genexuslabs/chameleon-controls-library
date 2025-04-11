@@ -132,15 +132,12 @@ export class ChSmartGrid
     const cellRef = this.el.querySelector(
       `${SMART_GRID_CELL_TAG_NAME}[cell-id="${cellId}"]`
     ) as HTMLChSmartGridElement | null;
-    console.log("scrollEndContentToTop...", "cellId " + cellId);
 
     if (!cellRef) {
       return;
     }
 
-    console.log("cellRef scrolltop", cellRef.scrollTop);
-
-    this.el.scrollTo(0, cellRef.scrollTop);
+    this.el.scrollTop = cellRef.offsetTop;
   }
 
   @Listen("virtualItemsChanged")

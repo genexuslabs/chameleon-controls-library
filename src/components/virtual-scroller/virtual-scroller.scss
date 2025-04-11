@@ -1,6 +1,7 @@
 :host {
   --ch-virtual-scroll__scroll-start-size: 0px;
   --ch-virtual-scroll__scroll-end-size: 0px;
+  --ch-virtual-scroll__scroll-end-reserved-size: 0px;
 
   --ch-virtual-scroll__scroll-start-display: none;
   --ch-virtual-scroll__scroll-end-display: none;
@@ -30,7 +31,7 @@
   &::before {
     content: "";
     display: var(--ch-virtual-scroll__scroll-start-display);
-    block-size: calc(var(--ch-virtual-scroll__scroll-start-size));
+    block-size: var(--ch-virtual-scroll__scroll-start-size);
     inline-size: 0px;
     pointer-events: none;
   }
@@ -38,8 +39,12 @@
   &::after {
     content: "";
     display: var(--ch-virtual-scroll__scroll-end-display);
-    block-size: calc(var(--ch-virtual-scroll__scroll-end-size));
-    inline-size: 0px;
+    block-size: calc(
+      var(--ch-virtual-scroll__scroll-end-size) +
+        var(--ch-virtual-scroll__scroll-end-reserved-size)
+    );
+    inline-size: 2px;
     pointer-events: none;
+    background-color: red;
   }
 }

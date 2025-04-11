@@ -40,8 +40,11 @@ const ENTER_KEY = "Enter";
   shadow: true
 })
 export class ChChat {
+  #cellAnchorId: string | undefined;
+
+  // Refs
   #editRef!: HTMLChEditElement;
-  #scrollRef: HTMLChSmartGridElement | undefined;
+  #smartGridRef: HTMLChSmartGridElement | undefined;
   #virtualScrollRef: HTMLChVirtualScrollerElement | undefined;
 
   @Element() el!: HTMLChChatElement;
@@ -50,6 +53,8 @@ export class ChChat {
   @State() uploadingImagesToTheServer = 0;
   @State() virtualItems: ChatMessage[] = [];
 
+  @State() cellAnchorRef: HTMLChSmartGridCellElement | undefined;
+  @State() lastCellRef: HTMLChSmartGridCellElement | undefined;
   @State() renderSpaceAtTheEnd = false;
 
   /**
@@ -58,7 +63,7 @@ export class ChChat {
   @Prop() readonly alignNewMessage: "start" | "end" = "end";
   @Watch("alignNewMessage")
   alignNewMessageChanged() {
-    if (this.alignNewMessage === "start") {
+    if (this.alignNewMessage === "end") {
       this.renderSpaceAtTheEnd = false;
     }
   }
@@ -181,10 +186,6 @@ export class ChChat {
   @Method()
   async addNewMessage(message: ChatMessage) {
     this.#pushMessage(message);
-
-    if (this.alignNewMessage === "end") {
-      this.renderSpaceAtTheEnd = true;
-    }
   }
 
   /**
@@ -301,8 +302,8 @@ export class ChChat {
     this.#editRef.click();
 
     // Scroll to bottom
-    if (this.#scrollRef) {
-      this.#scrollRef.scrollTop = this.#scrollRef.scrollHeight;
+    if (this.#smartGridRef && this.alignNewMessage === "end") {
+      this.#smartGridRef.scrollTop = this.#smartGridRef.scrollHeight;
     }
 
     await this.#pushMessage(userMessage);
@@ -312,6 +313,24 @@ export class ChChat {
     !this.callbacks ||
     !this.callbacks.validateSendChatMessage ||
     this.callbacks.validateSendChatMessage(chat);
+
+  #sendChat = () => {
+    const lastCell = this.items.at(-1);
+
+    if (this.alignNewMessage === "start") {
+      this.renderSpaceAtTheEnd = true;
+      this.#cellAnchorId = lastCell.id;
+
+      requestAnimationFrame(() =>
+        setTimeout(
+          () => this.#smartGridRef?.scrollEndContentToTop(lastCell.id),
+          100
+        )
+      );
+    }
+
+    this.callbacks?.sendChatToLLM(this.items);
+  };
 
   #sendMessage = async () => {
     if (
@@ -338,7 +357,7 @@ export class ChChat {
       }
 
       await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.callbacks?.sendChatToLLM(this.items);
+      this.#sendChat();
 
       // Queue a new re-render
       forceUpdate(this);
@@ -372,7 +391,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks?.sendChatToLLM(this.items);
+            this.#sendChat();
           }
         })
         .catch(() => {
@@ -382,7 +401,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks?.sendChatToLLM(this.items);
+            this.#sendChat();
           }
         });
     });
@@ -449,13 +468,16 @@ export class ChChat {
         inverseLoading
         itemsCount={this.virtualItems.length}
         onInfiniteThresholdReached={this.#loadMoreItems}
-        ref={el => (this.#scrollRef = el as HTMLChSmartGridElement)}
+        ref={el => (this.#smartGridRef = el as HTMLChSmartGridElement)}
       >
         <ch-virtual-scroller
           role="row"
           slot="grid-content"
           class="grid-content"
           part="content"
+          alignNewMessage={
+            this.renderSpaceAtTheEnd ? this.alignNewMessage : "end"
+          }
           inverseLoading
           // mode="lazy-render"
           items={this.items}
@@ -466,8 +488,14 @@ export class ChChat {
           }
         >
           {this.virtualItems.map(this.#renderItem)}
-          {this.renderSpaceAtTheEnd && (
-            <div aria-hidden="true" class="reserved-space"></div>
+          {this.renderSpaceAtTheEnd && this.cellAnchorRef && (
+            <ch-smart-grid-virtual-space-end
+              cellAnchorRef={this.cellAnchorRef}
+              lastCellRef={this.lastCellRef}
+              smartGridContentRef={this.#virtualScrollRef}
+              smartGridRef={this.#smartGridRef}
+              // smartGridRef={this.#smartGridRef}
+            ></ch-smart-grid-virtual-space-end>
           )}
         </ch-virtual-scroller>
       </ch-smart-grid>
@@ -535,6 +563,17 @@ export class ChChat {
   connectedCallback() {
     // Scrollbar styles
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+  }
+
+  componentDidRender() {
+    if (this.alignNewMessage === "start" && this.#cellAnchorId) {
+      this.cellAnchorRef = this.#virtualScrollRef.querySelector(
+        `[cell-id='${this.#cellAnchorId}']`
+      );
+
+      this.lastCellRef = this.#virtualScrollRef
+        .lastElementChild as HTMLChSmartGridCellElement;
+    }
   }
 
   render() {

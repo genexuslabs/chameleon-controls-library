@@ -89,7 +89,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
           { caption: "Start", value: "start" },
           { caption: "End", value: "end" }
         ],
-        value: "end",
+        value: "start",
         render: "radio-group",
         type: "enum"
       },

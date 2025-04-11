@@ -80,27 +80,34 @@ const sendChatToLLM = () => {
     .shadowRoot.querySelector("ch-flexible-layout-render")!
     .shadowRoot.querySelector("ch-chat");
 
-  chatRef.addNewMessage({
-    id: `${new Date().getTime()}`,
-    role: "assistant",
-    content: "Analyzing",
-    status: "waiting"
-  });
-
-  timeOut = setTimeout(() => {
-    chatRef.updateLastMessage(
-      {
-        role: "assistant",
-        content: "Processing with Chat with LLMs",
-        status: "waiting"
-      },
-      "replace"
-    );
+  setTimeout(() => {
+    chatRef.addNewMessage({
+      id: `${new Date().getTime()}`,
+      role: "assistant",
+      content: "Analyzing",
+      status: "waiting"
+    });
 
     timeOut = setTimeout(() => {
-      dummyStreaming(chatRef, 20, ASSISTANT_RESPONSE_MARKDOWN, "replace");
+      chatRef.updateLastMessage(
+        {
+          role: "assistant",
+          content: "Processing with Chat with LLMs",
+          status: "waiting"
+        },
+        "replace"
+      );
+
+      timeOut = setTimeout(() => {
+        dummyStreaming(
+          chatRef,
+          20,
+          ASSISTANT_RESPONSE_SHORT_MARKDOWN,
+          "replace"
+        );
+      }, 200);
     }, 200);
-  }, 200);
+  }, 20000);
 };
 
 function dummyStreaming(

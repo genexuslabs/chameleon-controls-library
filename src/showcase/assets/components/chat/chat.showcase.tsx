@@ -18,6 +18,8 @@ const state: Partial<HTMLChChatElement> = {};
 
 const render: ShowcaseRender = designSystem => (
   <ch-chat
+    autoScroll={state.autoScroll}
+    alignNewMessage={state.alignNewMessage}
     callbacks={chatCallbacks}
     class="chat"
     generatingResponse={false}
@@ -78,6 +80,28 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
           { caption: "all-records-loaded", value: "all-records-loaded" }
         ],
         value: "all-records-loaded",
+        type: "enum"
+      },
+      {
+        id: "alignNewMessage",
+        caption: "Align New Message",
+        values: [
+          { caption: "Start", value: "start" },
+          { caption: "End", value: "end" }
+        ],
+        value: "end",
+        render: "radio-group",
+        type: "enum"
+      },
+      {
+        id: "autoScroll",
+        caption: "Auto Scroll",
+        values: [
+          { caption: "Never", value: "never" },
+          { caption: "At scroll end", value: "at-scroll-end" }
+        ],
+        value: "at-scroll-end",
+        render: "radio-group",
         type: "enum"
       },
       {

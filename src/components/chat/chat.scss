@@ -19,6 +19,11 @@
   contain: paint;
 }
 
+.reserved-space {
+  background-color: red;
+  block-size: 100%;
+}
+
 .message-with-images {
   display: grid;
 }

@@ -5,6 +5,7 @@ import {
   Method,
   Prop,
   State,
+  Watch,
   forceUpdate,
   h
 } from "@stencil/core";
@@ -49,10 +50,18 @@ export class ChChat {
   @State() uploadingImagesToTheServer = 0;
   @State() virtualItems: ChatMessage[] = [];
 
+  @State() renderSpaceAtTheEnd = false;
+
   /**
    * TODO.
    */
   @Prop() readonly alignNewMessage: "start" | "end" = "end";
+  @Watch("alignNewMessage")
+  alignNewMessageChanged() {
+    if (this.alignNewMessage === "start") {
+      this.renderSpaceAtTheEnd = false;
+    }
+  }
 
   /**
    * TODO.
@@ -97,6 +106,10 @@ export class ChChat {
    * Specifies the items that the chat will display.
    */
   @Prop({ mutable: true }) items: ChatMessage[] = [];
+  @Watch("items")
+  itemsChanged() {
+    this.renderSpaceAtTheEnd = false;
+  }
 
   /**
    * Specifies if the chat is waiting for the data to be loaded.
@@ -168,6 +181,10 @@ export class ChChat {
   @Method()
   async addNewMessage(message: ChatMessage) {
     this.#pushMessage(message);
+
+    if (this.alignNewMessage === "end") {
+      this.renderSpaceAtTheEnd = true;
+    }
   }
 
   /**
@@ -449,6 +466,9 @@ export class ChChat {
           }
         >
           {this.virtualItems.map(this.#renderItem)}
+          {this.renderSpaceAtTheEnd && (
+            <div aria-hidden="true" class="reserved-space"></div>
+          )}
         </ch-virtual-scroller>
       </ch-smart-grid>
     );

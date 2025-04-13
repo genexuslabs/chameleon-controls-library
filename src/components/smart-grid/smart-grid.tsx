@@ -9,13 +9,17 @@ import {
   Method,
   Prop,
   State,
+  Watch,
   // Watch,
   h
 } from "@stencil/core";
 import type { AccessibleNameComponent } from "../../common/interfaces";
 import type { SmartGridDataState } from "./internal/infinite-scroll/types";
 import type { VirtualScrollVirtualItems } from "../virtual-scroller/types";
-import type { ChVirtualScrollerCustomEvent } from "../../components";
+import type {
+  ChSmartGridCellCustomEvent,
+  ChVirtualScrollerCustomEvent
+} from "../../components";
 import type { ChameleonControlsTagName } from "../../common/types";
 
 import { SCROLLABLE_CLASS } from "../../common/reserved-names";
@@ -34,11 +38,51 @@ const SMART_GRID_CELL_TAG_NAME =
 export class ChSmartGrid
   implements AccessibleNameComponent, ComponentInterface
 {
+  #lastCellRef: HTMLChSmartGridCellElement | undefined;
+
   /**
    * Used in virtual scroll scenarios. Enables infinite scrolling if the
    * virtual items are closer to the real threshold.
    */
   @State() infiniteScrollEnabled = true;
+
+  @State() cellRefAlignedAtTheTop: HTMLChSmartGridCellElement | null = null;
+  @Watch("cellRefAlignedAtTheTop")
+  cellRefAlignedAtTheTopChanged(
+    newValue: HTMLChSmartGridCellElement | null,
+    oldValue: HTMLChSmartGridCellElement | null
+  ) {
+    console.log("cellRefAlignedAtTheTop", this.cellRefAlignedAtTheTop);
+
+    this.#reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart();
+
+    if (newValue !== null) {
+      this.el.scrollTop = newValue.offsetTop;
+    }
+
+    // Connect watcher to keep the anchor cell aligned
+    if (oldValue === null) {
+      this.el.addEventListener(
+        "smartCellDidLoad",
+        this.#reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart
+      );
+      this.el.addEventListener(
+        "smartCellDisconnectedCallback",
+        this.#observeCellRemovals
+      );
+    }
+    // The anchor cell no longer exists, remove watcher
+    else if (newValue === null) {
+      this.el.removeEventListener(
+        "smartCellDidLoad",
+        this.#reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart
+      );
+      this.el.removeEventListener(
+        "smartCellDisconnectedCallback",
+        this.#observeCellRemovals
+      );
+    }
+  }
 
   /**
    * This variable is used to avoid layout shifts (CLS) at the initial load,
@@ -129,15 +173,9 @@ export class ChSmartGrid
    */
   @Method()
   async scrollEndContentToTop(cellId: string) {
-    const cellRef = this.el.querySelector(
+    this.cellRefAlignedAtTheTop = this.el.querySelector(
       `${SMART_GRID_CELL_TAG_NAME}[cell-id="${cellId}"]`
-    ) as HTMLChSmartGridElement | null;
-
-    if (!cellRef) {
-      return;
-    }
-
-    this.el.scrollTop = cellRef.offsetTop;
+    ) as HTMLChSmartGridCellElement | null;
   }
 
   @Listen("virtualItemsChanged")
@@ -170,6 +208,35 @@ export class ChSmartGrid
     requestAnimationFrame(() => {
       this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS);
     });
+  };
+
+  #reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart = () => {
+    // Remove min-block-size from the last cell, since the anchor cell doesn't
+    // exists
+    if (!this.cellRefAlignedAtTheTop) {
+      this.#lastCellRef?.removeAttribute("style");
+      return;
+    }
+
+    const newLastCell = this.el.querySelector(
+      `:scope > [slot="grid-content"] > ${SMART_GRID_CELL_TAG_NAME}:last-child`
+    ) as HTMLChSmartGridCellElement | null;
+
+    console.log("newLastCell", newLastCell);
+
+    if (this.#lastCellRef !== newLastCell) {
+      this.#lastCellRef?.removeAttribute("style");
+      this.#lastCellRef = newLastCell;
+
+      // TODO: Properly recalculate
+      if (this.#lastCellRef) {
+        this.#lastCellRef.style.setProperty("min-block-size", "500px");
+      }
+    }
+  };
+
+  #observeCellRemovals = (event: ChSmartGridCellCustomEvent<string>) => {
+    console.log("smartCellDisconnectedCallback", event.detail);
   };
 
   connectedCallback(): void {

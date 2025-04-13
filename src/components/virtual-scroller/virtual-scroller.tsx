@@ -85,15 +85,6 @@ export class ChVirtualScroller implements ComponentInterface {
   }
 
   /**
-   * TODO.
-   */
-  @Prop() readonly alignNewMessage: "start" | "end" = "end";
-  @Watch("alignNewMessage")
-  alignNewMessageChanged() {
-    this.#toggleVirtualScrollEndVisibility();
-  }
-
-  /**
    * The number of elements to be rendered above and below the current
    * container's viewport.
    */
@@ -172,8 +163,7 @@ export class ChVirtualScroller implements ComponentInterface {
   }
 
   #toggleVirtualScrollEndVisibility = () => {
-    const makeVisible =
-      this.alignNewMessage === "start" || this.#virtualEndSize !== 0;
+    const makeVisible = this.#virtualEndSize !== 0;
 
     if (makeVisible) {
       this.el.style.setProperty(VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR, "block");

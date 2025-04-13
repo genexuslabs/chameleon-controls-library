@@ -40,7 +40,8 @@ const ENTER_KEY = "Enter";
   shadow: true
 })
 export class ChChat {
-  #cellAnchorId: string | undefined;
+  #cellAlignedAtTheStartId: string | undefined;
+  #cellHasToReserveSpace: Set<string> | undefined;
 
   // Refs
   #editRef!: HTMLChEditElement;
@@ -53,8 +54,6 @@ export class ChChat {
   @State() uploadingImagesToTheServer = 0;
   @State() virtualItems: ChatMessage[] = [];
 
-  @State() cellAnchorRef: HTMLChSmartGridCellElement | undefined;
-  @State() lastCellRef: HTMLChSmartGridCellElement | undefined;
   @State() renderSpaceAtTheEnd = false;
 
   /**
@@ -64,6 +63,7 @@ export class ChChat {
   @Watch("alignNewMessage")
   alignNewMessageChanged() {
     if (this.alignNewMessage === "end") {
+      this.#cellAlignedAtTheStartId = undefined;
       this.renderSpaceAtTheEnd = false;
     }
   }
@@ -113,7 +113,12 @@ export class ChChat {
   @Prop({ mutable: true }) items: ChatMessage[] = [];
   @Watch("items")
   itemsChanged() {
+    this.#cellAlignedAtTheStartId = undefined;
     this.renderSpaceAtTheEnd = false;
+
+    // Free the memory, since no cells will have reserved space as the model
+    // is different
+    this.#cellHasToReserveSpace = undefined;
   }
 
   /**
@@ -185,6 +190,10 @@ export class ChChat {
    */
   @Method()
   async addNewMessage(message: ChatMessage) {
+    if (this.renderSpaceAtTheEnd) {
+      this.#cellHasToReserveSpace.add(message.id);
+    }
+
     this.#pushMessage(message);
   }
 
@@ -319,14 +328,9 @@ export class ChChat {
 
     if (this.alignNewMessage === "start") {
       this.renderSpaceAtTheEnd = true;
-      this.#cellAnchorId = lastCell.id;
-
-      requestAnimationFrame(() =>
-        setTimeout(
-          () => this.#smartGridRef?.scrollEndContentToTop(lastCell.id),
-          100
-        )
-      );
+      this.#cellHasToReserveSpace ??= new Set();
+      this.#cellHasToReserveSpace.add(lastCell.id);
+      this.#cellAlignedAtTheStartId = lastCell.id;
     }
 
     this.callbacks?.sendChatToLLM(this.items);
@@ -450,6 +454,9 @@ export class ChChat {
     URL.revokeObjectURL(imageFile); // Free the memory
   };
 
+  #alignAtTheStartWhenRendered = () =>
+    this.#smartGridRef.scrollEndContentToTop(this.#cellAlignedAtTheStartId);
+
   #virtualItemsChanged = (
     event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
   ) => {
@@ -461,6 +468,11 @@ export class ChChat {
       <slot name="empty-chat"></slot>
     ) : (
       <ch-smart-grid
+        autoScroll={
+          this.autoScroll === "never" && this.renderSpaceAtTheEnd
+            ? "never"
+            : "at-scroll-end"
+        }
         dataProvider={this.loadingState === "more-data-to-fetch"}
         loadingState={
           this.virtualItems.length === 0 ? "initial" : this.loadingState
@@ -475,9 +487,6 @@ export class ChChat {
           slot="grid-content"
           class="grid-content"
           part="content"
-          alignNewMessage={
-            this.renderSpaceAtTheEnd ? this.alignNewMessage : "end"
-          }
           inverseLoading
           // mode="lazy-render"
           items={this.items}
@@ -488,36 +497,52 @@ export class ChChat {
           }
         >
           {this.virtualItems.map(this.#renderItem)}
-          {this.renderSpaceAtTheEnd && this.cellAnchorRef && (
-            <ch-smart-grid-virtual-space-end
-              cellAnchorRef={this.cellAnchorRef}
-              lastCellRef={this.lastCellRef}
-              smartGridContentRef={this.#virtualScrollRef}
-              smartGridRef={this.#smartGridRef}
-              // smartGridRef={this.#smartGridRef}
-            ></ch-smart-grid-virtual-space-end>
-          )}
         </ch-virtual-scroller>
       </ch-smart-grid>
     );
 
-  #renderItem = (messageModel: ChatMessage) =>
-    messageModel.role !== "system" && (
+  #renderItem = (message: ChatMessage) => {
+    if (message.role === "system") {
+      return "";
+    }
+
+    const parts = tokenMap({
+      [`message ${message.role}`]: true,
+      [message.parts]: !!message.parts,
+      [(message as ChatMessageByRole<"assistant">).status]:
+        message.role === "assistant"
+    });
+
+    const renderedContent = this.renderItem
+      ? this.renderItem(message)
+      : defaultChatRender(this.el)(message);
+
+    const messageIsCellAlignedAtTheStart =
+      message.id === this.#cellAlignedAtTheStartId;
+
+    const hasToRenderAnExtraDiv =
+      this.#cellHasToReserveSpace !== undefined &&
+      this.#cellHasToReserveSpace.has(message.id);
+
+    return (
       <ch-smart-grid-cell
-        key={messageModel.id}
-        cellId={messageModel.id}
-        part={tokenMap({
-          [`message ${messageModel.role}`]: true,
-          [messageModel.parts]: !!messageModel.parts,
-          [(messageModel as ChatMessageByRole<"assistant">).status]:
-            messageModel.role === "assistant"
-        })}
+        key={message.id}
+        cellId={message.id}
+        part={hasToRenderAnExtraDiv ? undefined : parts}
+        onSmartCellDidLoad={
+          messageIsCellAlignedAtTheStart
+            ? this.#alignAtTheStartWhenRendered
+            : undefined
+        }
       >
-        {this.renderItem
-          ? this.renderItem(messageModel)
-          : defaultChatRender(this.el)(messageModel)}
+        {hasToRenderAnExtraDiv ? (
+          <div part={parts}>{renderedContent}</div>
+        ) : (
+          renderedContent
+        )}
       </ch-smart-grid-cell>
     );
+  };
 
   #loadMoreItems = () => {
     this.loadingState = "loading";
@@ -563,17 +588,6 @@ export class ChChat {
   connectedCallback() {
     // Scrollbar styles
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
-  }
-
-  componentDidRender() {
-    if (this.alignNewMessage === "start" && this.#cellAnchorId) {
-      this.cellAnchorRef = this.#virtualScrollRef.querySelector(
-        `[cell-id='${this.#cellAnchorId}']`
-      );
-
-      this.lastCellRef = this.#virtualScrollRef
-        .lastElementChild as HTMLChSmartGridCellElement;
-    }
   }
 
   render() {

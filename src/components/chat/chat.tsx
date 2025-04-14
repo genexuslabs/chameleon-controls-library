@@ -66,22 +66,16 @@ export class ChChat {
   @State() messageWasAdded = false;
 
   /**
-   * TODO.
-   */
-  @Prop() readonly alignNewMessage: "start" | "end" = "end";
-  @Watch("alignNewMessage")
-  alignNewMessageChanged() {
-    if (this.alignNewMessage === "end") {
-      this.#cellIdAlignedWhenRendered = undefined;
-
-      // Don't reset the `cellHasToReserveSpace` Set here, because the render
-      // of the items that belongs to the Set will be destroyed and re-created
-      // to only remove one div
-    }
-  }
-
-  /**
-   * TODO.
+   * Specifies how the scroll position will be adjusted when the chat messages
+   * are updated with the methods `addNewMessage`, `updateChatMessage` or
+   * `updateLastMessage`.
+   *
+   *   - "at-scroll-end": If the scroll is positioned at the end of the content,
+   *   the chat will maintain the scroll at the end while the content of the
+   *   messages is being updated.
+   *
+   *  - "never": The scroll position won't be adjusted when the content of the
+   *   messages is being updated.
    */
   @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
 
@@ -145,6 +139,35 @@ export class ChChat {
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
 
   /**
+   * Specifies how the messages added by the `addNewMessage` method will be
+   * aligned in the chat.
+   *
+   * If `newMessageAlignment === "start"` the chat will reserve the necessary
+   * space to visualize the item at the start of the content viewport if the
+   * content is not large enough.
+   * This behavior is the same as the Monaco editor does for reserving space
+   * when visualizing the last lines positioned at the top of the editor.
+   */
+  @Prop() readonly newMessageAlignment: "start" | "end" = "end";
+  @Watch("newMessageAlignment")
+  newMessageAlignmentChanged() {
+    if (this.newMessageAlignment === "end") {
+      this.#cellIdAlignedWhenRendered = undefined;
+
+      // Don't reset the `cellHasToReserveSpace` Set here, because the render
+      // of the items that belongs to the Set will be destroyed and re-created
+      // to only remove one div
+    }
+  }
+
+  /**
+   * Specifies how the chat will scroll to the position of the messages added
+   * by the `addNewMessage` method.
+   */
+  @Prop() readonly newMessageScrollBehavior: Exclude<ScrollBehavior, "auto"> =
+    "instant";
+
+  /**
    * This property allows us to implement custom rendering for the code blocks.
    */
   @Prop() readonly renderCode?: MarkdownViewerCodeRender;
@@ -204,7 +227,7 @@ export class ChChat {
   async addNewMessage(message: ChatMessage) {
     this.messageWasAdded = true;
 
-    if (this.alignNewMessage === "start") {
+    if (this.newMessageAlignment === "start") {
       this.#cellHasToReserveSpace ??= new Set();
       this.#cellHasToReserveSpace.add(message.id);
     }
@@ -242,6 +265,7 @@ export class ChChat {
     if (this.items.length === 0 || !this.items[messageIndex]) {
       return;
     }
+    this.messageWasAdded = true;
     this.#updateMessage(messageIndex, message, mode);
 
     forceUpdate(this);
@@ -261,6 +285,7 @@ export class ChChat {
     if (this.items.length === 0) {
       return;
     }
+    this.messageWasAdded = true;
     this.#updateMessage(this.items.length - 1, message, mode);
 
     // Sync the last virtual item with the real item that is updated
@@ -338,7 +363,7 @@ export class ChChat {
 
     this.#cellIdAlignedWhenRendered = lastCell.id;
 
-    if (this.alignNewMessage === "start") {
+    if (this.newMessageAlignment === "start") {
       this.messageWasAdded = true;
       this.#cellHasToReserveSpace ??= new Set();
       this.#cellHasToReserveSpace.add(lastCell.id);
@@ -468,7 +493,10 @@ export class ChChat {
   #alignCellWhenRendered = () =>
     this.#smartGridRef.scrollEndContentToPosition(
       this.#cellIdAlignedWhenRendered,
-      { position: this.alignNewMessage }
+      {
+        position: this.newMessageAlignment,
+        behavior: this.newMessageScrollBehavior
+      }
     );
 
   #virtualItemsChanged = (

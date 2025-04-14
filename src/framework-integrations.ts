@@ -14,7 +14,6 @@ const chameleonComponents: {
   "ch-action-list-render": 0,
   "ch-action-menu": 0,
   "ch-action-menu-render": 0,
-  "ch-alert": 0,
   "ch-barcode-scanner": 0,
   "ch-chat": 0,
   "ch-checkbox": 0,

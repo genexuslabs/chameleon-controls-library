@@ -58,19 +58,6 @@ export class ChSmartGrid
   ) {
     this.#reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart();
 
-    if (newValue !== null) {
-      // Since the space reservation is performed in a rAF, we have to perform
-      // the scroll repositioning in the same frame calling rAF
-      setTimeout(
-        () =>
-          this.el.scrollBy({
-            top: newValue.offsetTop
-            // behavior: "smooth"
-          })
-        // 100
-      );
-    }
-
     // Connect watcher to keep the anchor cell aligned
     if (oldValue === null) {
       this.el.addEventListener(
@@ -175,18 +162,37 @@ export class ChSmartGrid
   @Event({ bubbles: false }) infiniteThresholdReached: EventEmitter<void>;
 
   /**
-   * Given the cell ID, it position the item at the top of the scrollbar,
-   * reserving the necessary space to visualize the item at the top if the
-   * content is not large enough.
+   * Given the cell ID, it position the item at the start or end of the
+   * scrollbar.
    *
+   * If `position === "start"` it will reserve the necessary space to visualize
+   * the item at the start of the `ch-smart-grid` viewport if the content is
+   * not large enough.
    * This behavior is the same as the Monaco editor does for reserving space
    * when visualizing the last lines positioned at the top of the editor.
    */
   @Method()
-  async scrollEndContentToTop(cellId: string) {
-    this.cellRefAlignedAtTheTop = this.el.querySelector(
-      `${SMART_GRID_CELL_TAG_NAME}[cell-id="${cellId}"]`
-    ) as HTMLChSmartGridCellElement | null;
+  async scrollEndContentToPosition(
+    cellId: string,
+    options: { position: "start" | "end"; behavior?: ScrollBehavior }
+  ) {
+    const cellRef = this.#getCellById(cellId);
+    this.cellRefAlignedAtTheTop = options.position === "start" ? cellRef : null;
+
+    if (cellRef) {
+      // Since the space reservation is performed in a rAF, we have to perform
+      // the scroll repositioning in the same frame calling rAF
+      requestAnimationFrame(
+        () =>
+          setTimeout(() =>
+            this.el.scrollBy({
+              top: cellRef.offsetTop,
+              behavior: options.behavior ?? "auto"
+            })
+          )
+        // 100
+      );
+    }
   }
 
   @Listen("virtualItemsChanged")
@@ -199,6 +205,11 @@ export class ChSmartGrid
       (this.inverseLoading && startIndex === 0) ||
       (!this.inverseLoading && endIndex === totalItems - 1);
   }
+
+  #getCellById = (cellId: string) =>
+    this.el.querySelector(
+      `${SMART_GRID_CELL_TAG_NAME}[cell-id="${cellId}"]`
+    ) as HTMLChSmartGridCellElement | null;
 
   #infiniteThresholdReachedCallback = () => {
     this.loadingState = "loading";
@@ -221,12 +232,20 @@ export class ChSmartGrid
     });
   };
 
-  #reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart = () => {
-    // Remove min-block-size from the last cell, since the anchor cell doesn't
-    // exists
+  #checkIfAnchorWasRemoved = (): boolean => {
     if (this.cellRefAlignedAtTheTop === null) {
       this.#lastCellRef?.removeAttribute("style");
       this.#lastCellRef = null;
+      return true;
+    }
+
+    return false;
+  };
+
+  #reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart = () => {
+    // Remove min-block-size from the last cell, since the anchor cell doesn't
+    // exists
+    if (this.#checkIfAnchorWasRemoved()) {
       return;
     }
 
@@ -235,6 +254,13 @@ export class ChSmartGrid
     // the cell doesn't have that attribute in the virtual-scroller scenario,
     // it has "display: none" to avoid any flickering
     setTimeout(() => {
+      // We have to check this condition here too, since the timeout can be
+      // queued before the removal of the anchor and then executed after the
+      // anchor has been removed
+      if (this.#checkIfAnchorWasRemoved()) {
+        return;
+      }
+
       // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
       const newLastCell = this.el.querySelector(
         `:scope > [slot="grid-content"] > ${SMART_GRID_CELL_TAG_NAME}:last-child`

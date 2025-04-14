@@ -40,7 +40,7 @@ const ENTER_KEY = "Enter";
   shadow: true
 })
 export class ChChat {
-  #cellAlignedAtTheStartId: string | undefined;
+  #cellIdAlignedWhenRendered: string | undefined;
   #cellHasToReserveSpace: Set<string> | undefined;
 
   // Refs
@@ -72,7 +72,7 @@ export class ChChat {
   @Watch("alignNewMessage")
   alignNewMessageChanged() {
     if (this.alignNewMessage === "end") {
-      this.#cellAlignedAtTheStartId = undefined;
+      this.#cellIdAlignedWhenRendered = undefined;
 
       // Don't reset the `cellHasToReserveSpace` Set here, because the render
       // of the items that belongs to the Set will be destroyed and re-created
@@ -125,7 +125,7 @@ export class ChChat {
   @Prop({ mutable: true }) items: ChatMessage[] = [];
   @Watch("items")
   itemsChanged() {
-    this.#cellAlignedAtTheStartId = undefined;
+    this.#cellIdAlignedWhenRendered = undefined;
     this.messageWasAdded = false;
 
     // Free the memory, since no cells will have reserved space as the model
@@ -325,11 +325,6 @@ export class ChChat {
     this.#editRef.value = "";
     this.#editRef.click();
 
-    // Scroll to bottom
-    if (this.#smartGridRef && this.alignNewMessage === "end") {
-      this.#smartGridRef.scrollTop = this.#smartGridRef.scrollHeight;
-    }
-
     await this.#pushMessage(userMessage);
   };
 
@@ -341,11 +336,12 @@ export class ChChat {
   #sendChat = () => {
     const lastCell = this.items.at(-1);
 
+    this.#cellIdAlignedWhenRendered = lastCell.id;
+
     if (this.alignNewMessage === "start") {
       this.messageWasAdded = true;
       this.#cellHasToReserveSpace ??= new Set();
       this.#cellHasToReserveSpace.add(lastCell.id);
-      this.#cellAlignedAtTheStartId = lastCell.id;
     }
 
     this.callbacks?.sendChatToLLM(this.items);
@@ -469,8 +465,11 @@ export class ChChat {
     URL.revokeObjectURL(imageFile); // Free the memory
   };
 
-  #alignAtTheStartWhenRendered = () =>
-    this.#smartGridRef.scrollEndContentToTop(this.#cellAlignedAtTheStartId);
+  #alignCellWhenRendered = () =>
+    this.#smartGridRef.scrollEndContentToPosition(
+      this.#cellIdAlignedWhenRendered,
+      { position: this.alignNewMessage }
+    );
 
   #virtualItemsChanged = (
     event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
@@ -535,7 +534,7 @@ export class ChChat {
       : defaultChatRender(this.el)(message);
 
     const messageIsCellAlignedAtTheStart =
-      message.id === this.#cellAlignedAtTheStartId;
+      message.id === this.#cellIdAlignedWhenRendered;
 
     const hasToRenderAnExtraDiv =
       this.#cellHasToReserveSpace !== undefined &&
@@ -549,7 +548,7 @@ export class ChChat {
         smartGridRef={this.#smartGridRef}
         onSmartCellDidLoad={
           messageIsCellAlignedAtTheStart
-            ? this.#alignAtTheStartWhenRendered
+            ? this.#alignCellWhenRendered
             : undefined
         }
       >

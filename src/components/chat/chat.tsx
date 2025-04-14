@@ -54,7 +54,16 @@ export class ChChat {
   @State() uploadingImagesToTheServer = 0;
   @State() virtualItems: ChatMessage[] = [];
 
-  @State() renderSpaceAtTheEnd = false;
+  /**
+   * `true` if a message was added by executing the `addNewMessage` method.
+   *
+   * This flag is useful to determinate when the initial load of the chat has
+   * finished. If we always take into account the `autoScroll` property value,
+   * in the initial load the scroll would not be positioned correctly at the
+   * end, so we only take into account the `autoScroll` value after the first
+   * message is added by the host of the component.
+   */
+  @State() messageWasAdded = false;
 
   /**
    * TODO.
@@ -64,7 +73,10 @@ export class ChChat {
   alignNewMessageChanged() {
     if (this.alignNewMessage === "end") {
       this.#cellAlignedAtTheStartId = undefined;
-      this.renderSpaceAtTheEnd = false;
+
+      // Don't reset the `cellHasToReserveSpace` Set here, because the render
+      // of the items that belongs to the Set will be destroyed and re-created
+      // to only remove one div
     }
   }
 
@@ -114,7 +126,7 @@ export class ChChat {
   @Watch("items")
   itemsChanged() {
     this.#cellAlignedAtTheStartId = undefined;
-    this.renderSpaceAtTheEnd = false;
+    this.messageWasAdded = false;
 
     // Free the memory, since no cells will have reserved space as the model
     // is different
@@ -190,7 +202,10 @@ export class ChChat {
    */
   @Method()
   async addNewMessage(message: ChatMessage) {
-    if (this.renderSpaceAtTheEnd) {
+    this.messageWasAdded = true;
+
+    if (this.alignNewMessage === "start") {
+      this.#cellHasToReserveSpace ??= new Set();
       this.#cellHasToReserveSpace.add(message.id);
     }
 
@@ -327,7 +342,7 @@ export class ChChat {
     const lastCell = this.items.at(-1);
 
     if (this.alignNewMessage === "start") {
-      this.renderSpaceAtTheEnd = true;
+      this.messageWasAdded = true;
       this.#cellHasToReserveSpace ??= new Set();
       this.#cellHasToReserveSpace.add(lastCell.id);
       this.#cellAlignedAtTheStartId = lastCell.id;
@@ -469,9 +484,11 @@ export class ChChat {
     ) : (
       <ch-smart-grid
         autoScroll={
-          this.autoScroll === "never" && this.renderSpaceAtTheEnd
-            ? "never"
-            : "at-scroll-end"
+          // We have to bind the property this way to make sure the scroll is
+          // positioned correctly at the initial load. Otherwise, if really
+          // hard to position the scroll if we don't know somehow when the
+          // initial load has finished
+          this.messageWasAdded ? this.autoScroll : "at-scroll-end"
         }
         dataProvider={this.loadingState === "more-data-to-fetch"}
         loadingState={

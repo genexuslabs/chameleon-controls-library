@@ -42,7 +42,7 @@ const RESERVED_SPACE_CUSTOM_VAR =
 export class ChSmartGrid
   implements AccessibleNameComponent, ComponentInterface
 {
-  #lastCellRef: HTMLChSmartGridCellElement | undefined;
+  #lastCellRef: HTMLChSmartGridCellElement | null = null;
 
   /**
    * Used in virtual scroll scenarios. Enables infinite scrolling if the
@@ -224,8 +224,9 @@ export class ChSmartGrid
   #reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart = () => {
     // Remove min-block-size from the last cell, since the anchor cell doesn't
     // exists
-    if (!this.cellRefAlignedAtTheTop) {
+    if (this.cellRefAlignedAtTheTop === null) {
       this.#lastCellRef?.removeAttribute("style");
+      this.#lastCellRef = null;
       return;
     }
 
@@ -265,8 +266,24 @@ export class ChSmartGrid
     });
   };
 
-  #observeCellRemovals = (event: ChSmartGridCellCustomEvent<string>) => {
-    console.log("smartCellDisconnectedCallback", event.detail);
+  #observeCellRemovals = (
+    event: ChSmartGridCellCustomEvent<HTMLChSmartGridCellElement>
+  ) => {
+    const removedCellRef = event.detail;
+
+    // Removed the anchor cell
+    if (this.cellRefAlignedAtTheTop === removedCellRef) {
+      // TODO: StencilJS' algorithm for reconciliate list has several side
+      // effects that will trigger the following line when it is not necessary
+      // so we are commenting it at the moment to make work the
+      // scrollEndContentToTop feature
+      // this.cellRefAlignedAtTheTop = null;
+    }
+    // Removed the last cell
+    else if (this.#lastCellRef === removedCellRef) {
+      this.#lastCellRef = null;
+      this.#reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart();
+    }
   };
 
   connectedCallback(): void {

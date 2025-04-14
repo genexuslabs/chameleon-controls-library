@@ -12,6 +12,8 @@ import {
   tag: "ch-smart-grid-cell"
 })
 export class ChSmartGridCell implements ComponentInterface {
+  #actualSmartGridRef: HTMLChSmartGridElement;
+
   @Element() el: HTMLChSmartGridCellElement;
 
   /**
@@ -25,21 +27,25 @@ export class ChSmartGridCell implements ComponentInterface {
   @Prop({ reflect: true }) readonly cellId!: string;
 
   /**
+   * Specifies the reference for the smart grid parent.
+   *
+   * This property is useful to avoid the cell from queering the ch-smart-grid
+   * ref on the initial load.
+   */
+  @Prop() readonly smartGridRef?: HTMLChSmartGridElement;
+
+  /**
    * Fired when the component and all its child did render for the first time.
    *
    * It contains the `cellId`.
    */
   @Event() smartCellDidLoad: EventEmitter<string>;
 
-  /**
-   * Fired when the component is disconnected from the DOM.
-   *
-   * It contains the `cellId`.
-   */
-  @Event() smartCellDisconnectedCallback: EventEmitter<string>;
-
   connectedCallback() {
     this.el.setAttribute("role", "gridcell");
+
+    this.#actualSmartGridRef =
+      this.smartGridRef ?? this.el.closest("ch-smart-grid")!;
   }
 
   componentDidLoad() {
@@ -50,10 +56,8 @@ export class ChSmartGridCell implements ComponentInterface {
   }
 
   disconnectedCallback() {
-    this.el.dispatchEvent(
-      new CustomEvent("smartCellDisconnectedCallback", { detail: this.cellId })
+    this.#actualSmartGridRef.dispatchEvent(
+      new CustomEvent("smartCellDisconnectedCallback", { detail: this.el })
     );
-
-    this.smartCellDisconnectedCallback.emit(this.cellId);
   }
 }

@@ -118,6 +118,16 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
   [
     { name: "class", fixed: true, value: "chat", type: "string" },
     {
+      name: "alignNewMessage",
+      defaultValue: "end",
+      type: "string"
+    },
+    {
+      name: "autoScroll",
+      defaultValue: "at-scroll-end",
+      type: "string"
+    },
+    {
       name: "items",
       fixed: true,
       value: "controlUIModel",

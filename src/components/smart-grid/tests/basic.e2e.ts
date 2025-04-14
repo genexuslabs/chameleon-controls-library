@@ -5,8 +5,9 @@ import {
 } from "../../../testing/utils.e2e";
 
 testDefaultProperties("ch-smart-grid", {
-  autoGrow: false,
   accessibleName: undefined,
+  autoGrow: false,
+  autoScroll: "at-scroll-end",
   dataProvider: false,
   inverseLoading: false,
   itemsCount: undefined,

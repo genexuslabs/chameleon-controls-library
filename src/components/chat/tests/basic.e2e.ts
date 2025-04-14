@@ -2,6 +2,8 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { testDefaultProperties } from "../../../testing/utils.e2e";
 
 testDefaultProperties("ch-chat", {
+  alignNewMessage: "end",
+  autoScroll: "at-scroll-end",
   callbacks: undefined,
   disabled: false,
   generatingResponse: false,

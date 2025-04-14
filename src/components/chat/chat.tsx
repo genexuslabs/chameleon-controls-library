@@ -529,6 +529,7 @@ export class ChChat {
         key={message.id}
         cellId={message.id}
         part={hasToRenderAnExtraDiv ? undefined : parts}
+        smartGridRef={this.#smartGridRef}
         onSmartCellDidLoad={
           messageIsCellAlignedAtTheStart
             ? this.#alignAtTheStartWhenRendered

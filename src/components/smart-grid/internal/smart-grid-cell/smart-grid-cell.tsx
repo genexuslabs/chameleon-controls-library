@@ -36,8 +36,7 @@ export class ChSmartGridCell implements ComponentInterface {
    *
    * It contains the `cellId`.
    */
-  @Event()
-  smartCellDisconnectedCallback: EventEmitter<string>;
+  @Event() smartCellDisconnectedCallback: EventEmitter<string>;
 
   connectedCallback() {
     this.el.setAttribute("role", "gridcell");
@@ -51,7 +50,9 @@ export class ChSmartGridCell implements ComponentInterface {
   }
 
   disconnectedCallback() {
-    console.log("EMIT EVENT....");
+    this.el.dispatchEvent(
+      new CustomEvent("smartCellDisconnectedCallback", { detail: this.cellId })
+    );
 
     this.smartCellDisconnectedCallback.emit(this.cellId);
   }

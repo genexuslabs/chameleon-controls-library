@@ -10,7 +10,6 @@ import {
   Prop,
   State,
   Watch,
-  // Watch,
   h
 } from "@stencil/core";
 import type { AccessibleNameComponent } from "../../common/interfaces";
@@ -24,11 +23,16 @@ import type { ChameleonControlsTagName } from "../../common/types";
 
 import { SCROLLABLE_CLASS } from "../../common/reserved-names";
 import { adoptCommonThemes } from "../../common/theme";
+import { calculateSpaceToReserve } from "./calculate-space-to-reserve";
 
 const HIDE_CONTENT_AFTER_LOADING_CLASS = "ch-smart-grid--loaded-render-delay";
 
 const SMART_GRID_CELL_TAG_NAME =
   "ch-smart-grid-cell" satisfies ChameleonControlsTagName;
+
+const RESERVED_SPACE_CLASS_NAME = "ch-smart-grid-cell-reserve-space";
+const RESERVED_SPACE_CUSTOM_VAR =
+  "--ch-smart-grid-smart-cell-reserved-space-size";
 
 @Component({
   shadow: true,
@@ -52,12 +56,19 @@ export class ChSmartGrid
     newValue: HTMLChSmartGridCellElement | null,
     oldValue: HTMLChSmartGridCellElement | null
   ) {
-    console.log("cellRefAlignedAtTheTop", this.cellRefAlignedAtTheTop);
-
     this.#reserveSpaceInLastCellToKeepAnchorCellAlignedAtTheStart();
 
     if (newValue !== null) {
-      this.el.scrollTop = newValue.offsetTop;
+      // Since the space reservation is performed in a rAF, we have to perform
+      // the scroll repositioning in the same frame calling rAF
+      setTimeout(
+        () =>
+          this.el.scrollBy({
+            top: newValue.offsetTop
+            // behavior: "smooth"
+          })
+        // 100
+      );
     }
 
     // Connect watcher to keep the anchor cell aligned
@@ -218,21 +229,40 @@ export class ChSmartGrid
       return;
     }
 
-    const newLastCell = this.el.querySelector(
-      `:scope > [slot="grid-content"] > ${SMART_GRID_CELL_TAG_NAME}:last-child`
-    ) as HTMLChSmartGridCellElement | null;
+    // We have to wait until the data-did-load attr is attached to the rendered
+    // cell in order to properly calculate the distance to the DOM, since when
+    // the cell doesn't have that attribute in the virtual-scroller scenario,
+    // it has "display: none" to avoid any flickering
+    setTimeout(() => {
+      // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
+      const newLastCell = this.el.querySelector(
+        `:scope > [slot="grid-content"] > ${SMART_GRID_CELL_TAG_NAME}:last-child`
+      ) as HTMLChSmartGridCellElement | null;
 
-    console.log("newLastCell", newLastCell);
+      if (this.#lastCellRef !== newLastCell) {
+        const newSize = newLastCell
+          ? calculateSpaceToReserve(
+              this.el,
+              this.cellRefAlignedAtTheTop,
+              newLastCell
+            )
+          : 0;
 
-    if (this.#lastCellRef !== newLastCell) {
-      this.#lastCellRef?.removeAttribute("style");
-      this.#lastCellRef = newLastCell;
+        // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+        this.#lastCellRef?.removeAttribute("style");
+        this.#lastCellRef?.classList.remove(RESERVED_SPACE_CLASS_NAME);
+        this.#lastCellRef = newLastCell;
 
-      // TODO: Properly recalculate
-      if (this.#lastCellRef) {
-        this.#lastCellRef.style.setProperty("min-block-size", "500px");
+        // TODO: Properly recalculate
+        if (newLastCell) {
+          newLastCell.classList.add(RESERVED_SPACE_CLASS_NAME);
+          newLastCell.style.setProperty(
+            RESERVED_SPACE_CUSTOM_VAR,
+            newSize + "px"
+          );
+        }
       }
-    }
+    });
   };
 
   #observeCellRemovals = (event: ChSmartGridCellCustomEvent<string>) => {

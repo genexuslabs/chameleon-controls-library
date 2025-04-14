@@ -2,6 +2,15 @@ smart-grid-cell {
   display: flex;
 }
 
-// ch-smart-grid-cell:last-child {
-//   min-block-size: var(--ch-smart-grid-last-cell-reserved-space);
-// }
+ch-smart-grid-cell.ch-smart-grid-cell-reserve-space {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inline-size: 2px;
+    block-size: var(--ch-smart-grid-smart-cell-reserved-space-size);
+    visibility: hidden;
+    pointer-events: none;
+  }
+}

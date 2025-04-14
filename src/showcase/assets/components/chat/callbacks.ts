@@ -99,15 +99,10 @@ const sendChatToLLM = () => {
       );
 
       timeOut = setTimeout(() => {
-        dummyStreaming(
-          chatRef,
-          20,
-          ASSISTANT_RESPONSE_SHORT_MARKDOWN,
-          "replace"
-        );
+        dummyStreaming(chatRef, 20, ASSISTANT_RESPONSE_MARKDOWN, "replace");
       }, 200);
     }, 200);
-  }, 20000);
+  }, 500);
 };
 
 function dummyStreaming(

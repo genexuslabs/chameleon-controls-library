@@ -107,9 +107,14 @@ export class ChSmartGrid
   @Prop() readonly autoGrow: boolean = false;
 
   /**
-   * TODO.
+   * Specifies how the scroll position will be adjusted when the content size
+   * changes.
+   *   - "at-scroll-end": If the scroll is positioned at the end of the content,
+   *   the chat will maintain the scroll at the end while the content size
+   *   changes.
    *
-   * Only used when inverseLoading = true.
+   *  - "never": The scroll position won't be adjusted when the content size
+   *   changes.
    */
   @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
 
@@ -195,6 +200,19 @@ export class ChSmartGrid
     }
   }
 
+  // TODO: This method should probably not exists. We should find a better way
+  // to implement this.
+  /**
+   * Removes the cell reference that is aligned at the start of the viewport.
+   *
+   * In other words, removes the reserved space that is used to aligned
+   * `scrollEndContentToPosition(cellId, { position: "start" })`
+   */
+  @Method()
+  async removeScrollEndContentReference() {
+    this.cellRefAlignedAtTheTop = null;
+  }
+
   @Listen("virtualItemsChanged")
   handleVirtualItemsChanged(
     event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
@@ -227,14 +245,14 @@ export class ChSmartGrid
     this.#contentIsHidden = false;
     this.el.removeEventListener("virtualScrollerDidLoad", this.#removeAvoidCLS);
 
-    requestAnimationFrame(() => {
-      this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS);
-    });
+    requestAnimationFrame(() =>
+      this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS)
+    );
   };
 
   #checkIfAnchorWasRemoved = (): boolean => {
     if (this.cellRefAlignedAtTheTop === null) {
-      this.#lastCellRef?.removeAttribute("style");
+      this.el.style.removeProperty(RESERVED_SPACE_CUSTOM_VAR);
       this.#lastCellRef = null;
       return true;
     }
@@ -276,17 +294,14 @@ export class ChSmartGrid
           : 0;
 
         // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-        this.#lastCellRef?.removeAttribute("style");
+        this.el.style.removeProperty(RESERVED_SPACE_CUSTOM_VAR);
         this.#lastCellRef?.classList.remove(RESERVED_SPACE_CLASS_NAME);
         this.#lastCellRef = newLastCell;
 
         // TODO: Properly recalculate
         if (newLastCell) {
           newLastCell.classList.add(RESERVED_SPACE_CLASS_NAME);
-          newLastCell.style.setProperty(
-            RESERVED_SPACE_CUSTOM_VAR,
-            newSize + "px"
-          );
+          this.el.style.setProperty(RESERVED_SPACE_CUSTOM_VAR, newSize + "px");
         }
       }
     });

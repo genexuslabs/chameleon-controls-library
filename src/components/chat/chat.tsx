@@ -69,7 +69,6 @@ export class ChChat {
    * Specifies how the scroll position will be adjusted when the chat messages
    * are updated with the methods `addNewMessage`, `updateChatMessage` or
    * `updateLastMessage`.
-   *
    *   - "at-scroll-end": If the scroll is positioned at the end of the content,
    *   the chat will maintain the scroll at the end while the content of the
    *   messages is being updated.
@@ -125,6 +124,11 @@ export class ChChat {
     // Free the memory, since no cells will have reserved space as the model
     // is different
     this.#cellHasToReserveSpace = undefined;
+
+    // TODO: This is a WA to remove the anchor cell when the model changes. We
+    // should find a better way to remove the reserved space for the anchor
+    // cell
+    this.#smartGridRef?.removeScrollEndContentReference();
   }
 
   /**

@@ -108,7 +108,7 @@ export class ChSmartGrid
 
   /**
    * Specifies how the scroll position will be adjusted when the content size
-   * changes.
+   * changes when using `inverseLoading = true`.
    *   - "at-scroll-end": If the scroll is positioned at the end of the content,
    *   the chat will maintain the scroll at the end while the content size
    *   changes.
@@ -183,6 +183,10 @@ export class ChSmartGrid
   ) {
     const cellRef = this.#getCellById(cellId);
     this.cellRefAlignedAtTheTop = options.position === "start" ? cellRef : null;
+
+    console.log("scrollEndContentToPosition...", !!cellRef, cellRef.offsetTop);
+
+    console.log("SCROLL SIZE", this.el.scrollHeight, this.loadingState);
 
     if (cellRef) {
       // Since the space reservation is performed in a rAF, we have to perform

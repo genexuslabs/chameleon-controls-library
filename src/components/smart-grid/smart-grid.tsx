@@ -184,10 +184,6 @@ export class ChSmartGrid
     const cellRef = this.#getCellById(cellId);
     this.cellRefAlignedAtTheTop = options.position === "start" ? cellRef : null;
 
-    console.log("scrollEndContentToPosition...", !!cellRef, cellRef.offsetTop);
-
-    console.log("SCROLL SIZE", this.el.scrollHeight, this.loadingState);
-
     if (cellRef) {
       // Since the space reservation is performed in a rAF, we have to perform
       // the scroll repositioning in the same frame calling rAF

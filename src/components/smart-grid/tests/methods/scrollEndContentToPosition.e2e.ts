@@ -34,7 +34,10 @@ describe("[ch-smart-grid][scrollEndContentToPosition]", () => {
     loadingState: HTMLChSmartGridElement["loadingState"]
   ) => {
     await page.setContent(
-      `<ch-smart-grid style="block-size: 500px; inline-size: 300px" loading-state="${loadingState}">
+      `<style>*, ::before { box-sizing: border-box } </style>
+      <ch-smart-grid style="block-size: 500px; inline-size: 500px" loading-state="${loadingState}" items-count="${
+        items.length
+      }">
         <div slot="grid-content">
           ${items.map(
             item =>
@@ -49,20 +52,36 @@ describe("[ch-smart-grid][scrollEndContentToPosition]", () => {
   };
 
   const getScrollPosition = () =>
-    page.evaluate(() => document.querySelector("ch-smart-grid").scrollTop);
+    page.evaluate(() => {
+      const smartGrid = document.querySelector("ch-smart-grid");
+      return {
+        scrollTop: smartGrid.scrollTop,
+        scrollHeight: smartGrid.scrollHeight
+      };
+    });
 
   const testScrollPosition = (
     items: DummyItem[],
     loadingState: HTMLChSmartGridElement["loadingState"],
     scrollEndContentToPositionArgs: ScrollEndContentToPositionArgTypes,
-    scrollPosition: { initial: number; expected: number }
+    expectedSizes: {
+      scrollTopInitial: number;
+      scrollTopAfter: number;
+      scrollHeightInitial: number;
+      scrollHeightAfter: number;
+    }
   ) =>
     it(`should correctly position the scroll when using ${JSON.stringify(
       scrollEndContentToPositionArgs
     )}`, async () => {
       await setContent(items, loadingState);
 
-      expect(await getScrollPosition()).toBe(scrollPosition.initial);
+      await page.waitForChanges();
+
+      expect(await getScrollPosition()).toEqual({
+        scrollTop: expectedSizes.scrollTopInitial,
+        scrollHeight: expectedSizes.scrollHeightInitial
+      });
 
       await smartGridRef.callMethod(
         "scrollEndContentToPosition" satisfies keyof HTMLChSmartGridElement,
@@ -70,16 +89,22 @@ describe("[ch-smart-grid][scrollEndContentToPosition]", () => {
       );
 
       await page.waitForChanges();
-      await page.waitForChanges();
-      await page.waitForChanges();
 
-      expect(await getScrollPosition()).toBe(scrollPosition.expected);
+      expect(await getScrollPosition()).toEqual({
+        scrollTop: expectedSizes.scrollTopAfter,
+        scrollHeight: expectedSizes.scrollHeightAfter
+      });
     });
 
   testScrollPosition(
     BASIC_ITEMS,
     "all-records-loaded",
-    ["index 4", { position: "start", behavior: "instant" }],
-    { initial: 0, expected: 800 }
+    ["index 5", { position: "end", behavior: "instant" }],
+    {
+      scrollTopInitial: 0,
+      scrollHeightInitial: 1398,
+      scrollTopAfter: 898,
+      scrollHeightAfter: 1398
+    }
   );
 });

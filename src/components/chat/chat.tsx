@@ -143,11 +143,11 @@ export class ChChat {
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
 
   /**
-   * Specifies how the messages added by the `addNewMessage` method will be
+   * Specifies how the messages added by the user interaction method will be
    * aligned in the chat.
    *
    * If `newMessageAlignment === "start"` the chat will reserve the necessary
-   * space to visualize the item at the start of the content viewport if the
+   * space to visualize the message at the start of the content viewport if the
    * content is not large enough.
    * This behavior is the same as the Monaco editor does for reserving space
    * when visualizing the last lines positioned at the top of the editor.
@@ -166,7 +166,7 @@ export class ChChat {
 
   /**
    * Specifies how the chat will scroll to the position of the messages added
-   * by the `addNewMessage` method.
+   * by user interaction.
    */
   @Prop() readonly newMessageScrollBehavior: Exclude<ScrollBehavior, "auto"> =
     "instant";

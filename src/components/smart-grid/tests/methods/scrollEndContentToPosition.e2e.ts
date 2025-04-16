@@ -38,9 +38,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 0,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -49,9 +49,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 0,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -60,9 +60,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 237,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -71,9 +71,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 237,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -82,9 +82,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 474,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -93,9 +93,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 474,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -104,9 +104,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 710,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -115,9 +115,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 710,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -126,7 +126,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 946,
       scrollHeightAfter: 1447
     }
@@ -137,9 +137,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 902,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   },
   {
@@ -148,7 +148,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 1184,
       scrollHeightAfter: 1684
     }
@@ -159,9 +159,9 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
       scrollTopInitial: inverseLoading
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
-      scrollHeightInitial: 1402,
+      scrollHeightInitial: 1398,
       scrollTopAfter: 902,
-      scrollHeightAfter: 1402
+      scrollHeightAfter: 1398
     }
   }
 ];

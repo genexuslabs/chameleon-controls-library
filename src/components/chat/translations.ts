@@ -3,8 +3,6 @@ export type ChatTranslations = {
     clearChat: string;
     copyResponseButton: string;
     downloadCodeButton: string;
-    imagePicker: string;
-    removeUploadedImage: string;
     sendButton: string;
     sendInput: string;
     stopGeneratingAnswerButton: string;

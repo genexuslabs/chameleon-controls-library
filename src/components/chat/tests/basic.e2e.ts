@@ -22,8 +22,6 @@ testDefaultProperties("ch-chat", {
       clearChat: "Clear chat",
       copyResponseButton: "Copy assistant response",
       downloadCodeButton: "Download code",
-      imagePicker: "Select images",
-      removeUploadedImage: "Remove uploaded image",
       sendButton: "Send",
       sendInput: "Message",
       stopGeneratingAnswerButton: "Stop generating answer"

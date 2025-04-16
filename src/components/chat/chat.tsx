@@ -145,19 +145,19 @@ export class ChChat {
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
 
   /**
-   * Specifies how the messages added by the user interaction method will be
-   * aligned in the chat.
+   * Specifies how the messages added by the user interaction will be aligned
+   * in the chat.
    *
-   * If `newMessageAlignment === "start"` the chat will reserve the necessary
-   * space to visualize the message at the start of the content viewport if the
-   * content is not large enough.
+   * If `newUserMessageAlignment === "start"` the chat will reserve the
+   * necessary space to visualize the message at the start of the content
+   * viewport if the content is not large enough.
    * This behavior is the same as the Monaco editor does for reserving space
    * when visualizing the last lines positioned at the top of the editor.
    */
-  @Prop() readonly newMessageAlignment: "start" | "end" = "end";
-  @Watch("newMessageAlignment")
-  newMessageAlignmentChanged() {
-    if (this.newMessageAlignment === "end") {
+  @Prop() readonly newUserMessageAlignment: "start" | "end" = "end";
+  @Watch("newUserMessageAlignment")
+  newUserMessageAlignmentChanged() {
+    if (this.newUserMessageAlignment === "end") {
       this.#cellIdAlignedWhenRendered = undefined;
 
       // Don't reset the `cellHasToReserveSpace` Set here, because the render
@@ -170,8 +170,10 @@ export class ChChat {
    * Specifies how the chat will scroll to the position of the messages added
    * by user interaction.
    */
-  @Prop() readonly newMessageScrollBehavior: Exclude<ScrollBehavior, "auto"> =
-    "instant";
+  @Prop() readonly newUserMessageScrollBehavior: Exclude<
+    ScrollBehavior,
+    "auto"
+  > = "instant";
 
   /**
    * This property allows us to implement custom rendering for the code blocks.
@@ -233,7 +235,7 @@ export class ChChat {
   async addNewMessage(message: ChatMessage) {
     this.initialLoadHasEnded = true;
 
-    if (this.newMessageAlignment === "start") {
+    if (this.newUserMessageAlignment === "start") {
       this.#cellHasToReserveSpace ??= new Set();
       this.#cellHasToReserveSpace.add(message.id);
     }
@@ -369,7 +371,7 @@ export class ChChat {
 
     this.#cellIdAlignedWhenRendered = lastCell.id;
 
-    if (this.newMessageAlignment === "start") {
+    if (this.newUserMessageAlignment === "start") {
       this.initialLoadHasEnded = true;
       this.#cellHasToReserveSpace ??= new Set();
       this.#cellHasToReserveSpace.add(lastCell.id);
@@ -500,8 +502,8 @@ export class ChChat {
     this.#smartGridRef.scrollEndContentToPosition(
       this.#cellIdAlignedWhenRendered,
       {
-        position: this.newMessageAlignment,
-        behavior: this.newMessageScrollBehavior
+        position: this.newUserMessageAlignment,
+        behavior: this.newUserMessageScrollBehavior
       }
     );
 

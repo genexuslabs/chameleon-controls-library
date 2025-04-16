@@ -28,8 +28,8 @@ const render: ShowcaseRender = designSystem => (
         ? "unanimo/markdown-viewer"
         : "mercury/markdown-viewer"
     }
-    newMessageAlignment={state.newMessageAlignment}
-    newMessageScrollBehavior={state.newMessageScrollBehavior}
+    newUserMessageAlignment={state.newUserMessageAlignment}
+    newUserMessageScrollBehavior={state.newUserMessageScrollBehavior}
     renderItem={
       designSystem === "unanimo"
         ? undefined
@@ -84,8 +84,8 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "enum"
       },
       {
-        id: "newMessageAlignment",
-        caption: "New Message Alignment",
+        id: "newUserMessageAlignment",
+        caption: "New User Message Alignment",
         values: [
           { caption: "Start", value: "start" },
           { caption: "End", value: "end" }
@@ -95,8 +95,8 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "enum"
       },
       {
-        id: "newMessageScrollBehavior",
-        caption: "New Message Scroll Behavior",
+        id: "newUserMessageScrollBehavior",
+        caption: "New User Message Scroll Behavior",
         values: [
           { caption: "Instant", value: "instant" },
           { caption: "Smooth", value: "smooth" }
@@ -130,12 +130,12 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
   [
     { name: "class", fixed: true, value: "chat", type: "string" },
     {
-      name: "newMessageAlignment",
+      name: "newUserMessageAlignment",
       defaultValue: "end",
       type: "string"
     },
     {
-      name: "newMessageScrollBehavior",
+      name: "newUserMessageScrollBehavior",
       defaultValue: "instant",
       type: "string"
     },

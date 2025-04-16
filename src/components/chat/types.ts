@@ -127,8 +127,6 @@ export type ChatContentImage = {
 };
 
 export type ChatInternalCallbacks = {
-  clear: () => Promise<void>;
-
   /**
    * Specifies a callback to execute when the user adds a new message to the
    * chat and waits a response.

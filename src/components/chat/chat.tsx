@@ -355,7 +355,7 @@ export class ChChat {
       this.#cellHasToReserveSpace.add(lastCell.id);
     }
 
-    this.callbacks?.sendChatToLLM(this.items);
+    this.callbacks?.sendChatMessages(this.items);
   };
 
   #sendMessage = async () => {

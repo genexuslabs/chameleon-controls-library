@@ -73,7 +73,7 @@ To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tild
 \`\`\`
 `;
 
-const sendChatToLLM = () => {
+const sendChatMessages = () => {
   // This is a WA to get the chat reference
   const chatRef = document
     .querySelector("ch-flexible-layout-render")!
@@ -149,9 +149,7 @@ function dummyStreaming(
 }
 
 export const chatCallbacks: ChatInternalCallbacks = {
-  clear: () => new Promise(resolve => resolve()),
-  sendChatToLLM: sendChatToLLM,
-  uploadImage: () => new Promise(resolve => resolve("")),
+  sendChatMessages,
   stopGeneratingAnswer: () => {
     clearTimeout(timeOut);
 

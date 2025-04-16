@@ -32,7 +32,7 @@ describe("[ch-chat][callbacks]", () => {
             clear: () => Promise.resolve(),
             validateSendChatMessage: (chat: ChatMessage) =>
               chat.content !== "error",
-            sendChatToLLM: () => {},
+            sendChatMessages: () => {},
             uploadImage: () => Promise.resolve("")
           } satisfies HTMLChChatElement["callbacks"];
         });
@@ -40,7 +40,7 @@ describe("[ch-chat][callbacks]", () => {
         await page.evaluate(() => {
           document.querySelector("ch-chat").callbacks = {
             clear: () => Promise.resolve(),
-            sendChatToLLM: () => {},
+            sendChatMessages: () => {},
             uploadImage: () => Promise.resolve("")
           } satisfies HTMLChChatElement["callbacks"];
         });

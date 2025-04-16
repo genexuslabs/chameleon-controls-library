@@ -131,7 +131,7 @@ export type ChatInternalCallbacks = {
    * Specifies a callback to execute when the user adds a new message to the
    * chat and waits a response.
    */
-  sendChatToLLM: (chat: ChatMessage[]) => void;
+  sendChatMessages: (chat: ChatMessage[]) => void;
 
   /**
    * Specifies a callback to execute when clicking the stop-generate-answer
@@ -141,7 +141,7 @@ export type ChatInternalCallbacks = {
 
   /**
    * Specifies a callback to validate if the current chat message of the user
-   * can be send. If `false`, the `sendChatToLLM` won't be executed.
+   * can be send. If `false`, the `sendChatMessages` won't be executed.
    */
   validateSendChatMessage?: (chat: ChatMessage) => boolean | Promise<boolean>;
 };

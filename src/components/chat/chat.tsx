@@ -91,11 +91,6 @@ export class ChChat {
    */
   @Prop() readonly generatingResponse?: boolean = false;
 
-  /**
-   * Specifies if the chat is used in a mobile device.
-   */
-  @Prop() readonly isMobile?: boolean = false;
-
   // TODO: Add support for undefined messages.
   /**
    * Specifies the items that the chat will display.

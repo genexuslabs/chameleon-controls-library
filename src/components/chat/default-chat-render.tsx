@@ -1,9 +1,5 @@
 import { h } from "@stencil/core";
-import {
-  ChatAssistantContentFiles,
-  ChatContentImage,
-  ChatMessageByRole
-} from "./types";
+import { ChatContentFiles, ChatContentImage, ChatMessageByRole } from "./types";
 import { ChatTranslations } from "./translations";
 import { copyToTheClipboard } from "../../common/utils";
 import {
@@ -131,8 +127,7 @@ const renderDefaultAssistantMessage = (
       ? messageModel.content
       : messageModel.content.message;
 
-  const files =
-    (messageModel.content as ChatAssistantContentFiles).files ?? null;
+  const files = (messageModel.content as ChatContentFiles).files ?? null;
 
   const translations = chatRef.translations;
 

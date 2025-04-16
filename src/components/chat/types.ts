@@ -1,29 +1,49 @@
+import type { ChMimeType } from "../../common/mime-types";
+
 /**
  * Valid examples:
  * @example
- *   const systemMessage: GxEAIChatMessage = {
+ *   const systemMessage: ChatMessage = {
  *     role: "system",
  *     content: "A useful assistant."
  *   };
  *
- *   const assistantMessage: GxEAIChatMessage = {
+ *   const assistantMessage: ChatMessage = {
  *     role: "assistant",
- *     content: "Processing with Chat with LLMs",
+ *     content: "How can I help you?",
  *     status: "waiting"
  *   };
  *
- *   const userMessage: GxEAIChatMessage = {
+ *   const assistantMessageWithFiles: ChatMessage = {
+ *     role: "assistant",
+ *     content: {
+ *       message: "How can I help you?",
+ *       files: [
+ *         { url: "...", mimeType: "audio/mpeg", accessibleName: "..." },
+ *         { url: "...", mimeType: "image/png", alternativeText: "..." },
+ *         { url: "...", mimeType: "video/mp4", accessibleName: "..." },
+ *         { url: "...", mimeType: "any string" }
+ *       ]
+ *     },
+ *     status: "waiting"
+ *   };
+ *
+ *   const userMessage: ChatMessage = {
  *     role: "user",
  *     content: "Hello world!"
  *   };
  *
- *   const userMessageWithImage: GxEAIChatMessage = {
+ *   const userMessageWithFiles: ChatMessage = {
  *     role: "user",
- *     content: [
- *       { type: "text", text: "Hello world!" },
- *       { type: "image_url", image_url: { url: "..." } },
- *       { type: "image_url", image_url: { url: "..." } },
- *     ]
+ *     content: {
+ *       message: "Hello world!",
+ *       files: [
+ *         { url: "...", mimeType: "audio/mpeg", accessibleName: "..." },
+ *         { url: "...", mimeType: "image/png", alternativeText: "..." },
+ *         { url: "...", mimeType: "video/mp4", accessibleName: "..." },
+ *         { url: "...", mimeType: "any string" }
+ *       ]
+ *     }
  *   };
  */
 export type ChatMessage = ChatMessageByRole<ChatMessageRole>;
@@ -50,13 +70,13 @@ export type ChatMessageSystem = {
   id: string;
   role: "system";
   metadata?: string;
-  content: string;
+  content: ChatContent;
 };
 
 export type ChatMessageUser = {
   id: string;
   role: "user";
-  content: ChatUserContent;
+  content: ChatContent;
   metadata?: string;
 
   /**
@@ -68,7 +88,7 @@ export type ChatMessageUser = {
 export type ChatMessageAssistant = {
   id: string;
   role: "assistant";
-  content?: ChatAssistantContent;
+  content?: ChatContent;
   metadata?: string;
 
   /**
@@ -86,7 +106,7 @@ export type ChatMessageAssistant = {
 export type ChatMessageError = {
   id: string;
   role: "error";
-  content: string;
+  content: ChatContent;
   metadata?: string;
 
   /**
@@ -97,33 +117,24 @@ export type ChatMessageError = {
 
 export type ChatMessageRole = "system" | "user" | "assistant" | "error";
 
-export type ChatAssistantContent = string | ChatAssistantContentFiles;
+export type ChatContent = string | ChatContentFiles;
 
-export type ChatAssistantContentFiles = {
+export type ChatContentFiles = {
   message: string;
-  files?: ChatAssistantContentFilesFile[];
+  files?: ChatFiles;
 };
 
-export type ChatAssistantContentFilesFile = {
+export type ChatFiles = ChatFile[];
+
+export type ChatFile = {
+  accessibleName?: string;
+  alternativeText?: string;
+  caption?: string;
+
+  // The (string & Record<never, never>) is necessary to allow any string as
+  // the mimeType without removing the VSCode suggestions
+  mimeType: ChMimeType | (string & Record<never, never>); // TODO: Which is the mimeType for hrefs?
   url: string;
-  caption: string;
-};
-
-export type ChatUserContent = string | ChatContentImages;
-
-export type ChatContentImages = [
-  {
-    type: "text";
-    text: string;
-  },
-  ...ChatContentImage[]
-];
-
-export type ChatContentImage = {
-  type: "image_url";
-  image_url: {
-    url: string;
-  };
 };
 
 export type ChatInternalCallbacks = {

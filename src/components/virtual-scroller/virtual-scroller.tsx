@@ -11,12 +11,16 @@ import {
   State,
   Watch
 } from "@stencil/core";
+import type { ChSmartGridCellCustomEvent } from "../../components";
+
 import { emptyItems } from "./utils";
-import { SyncWithRAF } from "../common/sync-with-frames";
-import { SmartGridModel } from "../components/smart-grid/types";
-import { SmartGridCellVirtualSize, VirtualScrollVirtualItems } from "./types";
+import { SyncWithRAF } from "../../common/sync-with-frames";
+import type { SmartGridModel } from "../smart-grid/types";
+import type {
+  SmartGridCellVirtualSize,
+  VirtualScrollVirtualItems
+} from "./types";
 import { updateVirtualScrollSize } from "./update-virtual-scroll";
-import { ChSmartGridCellCustomEvent } from "../components";
 import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible";
 import { getNewStartAndEndIndexes } from "./get-new-start-and-end-indexes";
 
@@ -158,6 +162,19 @@ export class ChVirtualScroller implements ComponentInterface {
     this.#handleSmartGridContentScroll();
   }
 
+  #toggleVirtualScrollEndVisibility = () => {
+    const makeVisible = this.#virtualEndSize !== 0;
+
+    if (makeVisible) {
+      this.el.style.setProperty(VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR, "block");
+    }
+    // The virtual size must be "destroyed" to avoid displaying and
+    // unnecessary gap at the end of the scroll
+    else {
+      this.el.style.removeProperty(VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR);
+    }
+  };
+
   // TODO: Check what happens when the cells has margin
   #updateVirtualScrollSize = (removedCells?: HTMLChSmartGridCellElement[]) => {
     this.#virtualStartSize = 0;
@@ -251,12 +268,7 @@ export class ChVirtualScroller implements ComponentInterface {
       VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR,
       `${this.#virtualEndSize}px`
     );
-    this.el.style.setProperty(
-      VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR,
-      // The virtual size must be "destroyed" to avoid displaying and
-      // unnecessary gap at the end of the scroll
-      this.#virtualEndSize === 0 ? "none" : "block"
-    );
+    this.#toggleVirtualScrollEndVisibility();
   };
 
   #handleSmartGridContentScroll = () => {

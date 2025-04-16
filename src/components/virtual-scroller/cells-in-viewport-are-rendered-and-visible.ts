@@ -1,4 +1,4 @@
-import { inBetween } from "../common/utils";
+import { inBetween } from "../../common/utils";
 import {
   cellIsRendered,
   getSmartCells,

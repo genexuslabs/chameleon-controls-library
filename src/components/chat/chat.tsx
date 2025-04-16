@@ -5,6 +5,7 @@ import {
   Method,
   Prop,
   State,
+  Watch,
   forceUpdate,
   h
 } from "@stencil/core";
@@ -39,8 +40,12 @@ const ENTER_KEY = "Enter";
   shadow: true
 })
 export class ChChat {
+  #cellIdAlignedWhenRendered: string | undefined;
+  #cellHasToReserveSpace: Set<string> | undefined;
+
+  // Refs
   #editRef!: HTMLChEditElement;
-  #scrollRef: HTMLChSmartGridElement | undefined;
+  #smartGridRef: HTMLChSmartGridElement | undefined;
   #virtualScrollRef: HTMLChVirtualScrollerElement | undefined;
 
   @Element() el!: HTMLChChatElement;
@@ -48,6 +53,32 @@ export class ChChat {
   @State() imagesToUpload: { src: string; file: File }[] = [];
   @State() uploadingImagesToTheServer = 0;
   @State() virtualItems: ChatMessage[] = [];
+
+  /**
+   * `true` if a message was added by user interaction or one of the following
+   * methods were executed: `addNewMessage`, `updateChatMessage` or
+   * `updateLastMessage`.
+   *
+   * This flag is useful to determinate when the initial load of the chat has
+   * finished. If we always take into account the `autoScroll` property value,
+   * in the initial load the scroll would not be positioned correctly at the
+   * end, so we only take into account the `autoScroll` value after the first
+   * message is added by the host of the component.
+   */
+  @State() initialLoadHasEnded = false;
+
+  /**
+   * Specifies how the scroll position will be adjusted when the chat messages
+   * are updated with the methods `addNewMessage`, `updateChatMessage` or
+   * `updateLastMessage`.
+   *   - "at-scroll-end": If the scroll is positioned at the end of the content,
+   *   the chat will maintain the scroll at the end while the content of the
+   *   messages is being updated.
+   *
+   *  - "never": The scroll position won't be adjusted when the content of the
+   *   messages is being updated.
+   */
+  @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
 
   /**
    * Specifies the callbacks required in the control.
@@ -87,6 +118,20 @@ export class ChChat {
    * Specifies the items that the chat will display.
    */
   @Prop({ mutable: true }) items: ChatMessage[] = [];
+  @Watch("items")
+  itemsChanged() {
+    this.#cellIdAlignedWhenRendered = undefined;
+    this.initialLoadHasEnded = false;
+
+    // Free the memory, since no cells will have reserved space as the model
+    // is different
+    this.#cellHasToReserveSpace = undefined;
+
+    // TODO: This is a WA to remove the anchor cell when the model changes. We
+    // should find a better way to remove the reserved space for the anchor
+    // cell
+    this.#smartGridRef?.removeScrollEndContentReference();
+  }
 
   /**
    * Specifies if the chat is waiting for the data to be loaded.
@@ -98,6 +143,37 @@ export class ChChat {
    * If `null`, no theme will be applied.
    */
   @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
+
+  /**
+   * Specifies how the messages added by the user interaction will be aligned
+   * in the chat.
+   *
+   * If `newUserMessageAlignment === "start"` the chat will reserve the
+   * necessary space to visualize the message at the start of the content
+   * viewport if the content is not large enough.
+   * This behavior is the same as the Monaco editor does for reserving space
+   * when visualizing the last lines positioned at the top of the editor.
+   */
+  @Prop() readonly newUserMessageAlignment: "start" | "end" = "end";
+  @Watch("newUserMessageAlignment")
+  newUserMessageAlignmentChanged() {
+    if (this.newUserMessageAlignment === "end") {
+      this.#cellIdAlignedWhenRendered = undefined;
+
+      // Don't reset the `cellHasToReserveSpace` Set here, because the render
+      // of the items that belongs to the Set will be destroyed and re-created
+      // to only remove one div
+    }
+  }
+
+  /**
+   * Specifies how the chat will scroll to the position of the messages added
+   * by user interaction.
+   */
+  @Prop() readonly newUserMessageScrollBehavior: Exclude<
+    ScrollBehavior,
+    "auto"
+  > = "instant";
 
   /**
    * This property allows us to implement custom rendering for the code blocks.
@@ -157,6 +233,13 @@ export class ChChat {
    */
   @Method()
   async addNewMessage(message: ChatMessage) {
+    this.initialLoadHasEnded = true;
+
+    if (this.newUserMessageAlignment === "start") {
+      this.#cellHasToReserveSpace ??= new Set();
+      this.#cellHasToReserveSpace.add(message.id);
+    }
+
     this.#pushMessage(message);
   }
 
@@ -190,6 +273,7 @@ export class ChChat {
     if (this.items.length === 0 || !this.items[messageIndex]) {
       return;
     }
+    this.initialLoadHasEnded = true;
     this.#updateMessage(messageIndex, message, mode);
 
     forceUpdate(this);
@@ -209,6 +293,7 @@ export class ChChat {
     if (this.items.length === 0) {
       return;
     }
+    this.initialLoadHasEnded = true;
     this.#updateMessage(this.items.length - 1, message, mode);
 
     // Sync the last virtual item with the real item that is updated
@@ -273,11 +358,6 @@ export class ChChat {
     this.#editRef.value = "";
     this.#editRef.click();
 
-    // Scroll to bottom
-    if (this.#scrollRef) {
-      this.#scrollRef.scrollTop = this.#scrollRef.scrollHeight;
-    }
-
     await this.#pushMessage(userMessage);
   };
 
@@ -285,6 +365,20 @@ export class ChChat {
     !this.callbacks ||
     !this.callbacks.validateSendChatMessage ||
     this.callbacks.validateSendChatMessage(chat);
+
+  #sendChat = () => {
+    const lastCell = this.items.at(-1);
+
+    this.#cellIdAlignedWhenRendered = lastCell.id;
+
+    if (this.newUserMessageAlignment === "start") {
+      this.initialLoadHasEnded = true;
+      this.#cellHasToReserveSpace ??= new Set();
+      this.#cellHasToReserveSpace.add(lastCell.id);
+    }
+
+    this.callbacks?.sendChatToLLM(this.items);
+  };
 
   #sendMessage = async () => {
     if (
@@ -311,7 +405,7 @@ export class ChChat {
       }
 
       await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.callbacks?.sendChatToLLM(this.items);
+      this.#sendChat();
 
       // Queue a new re-render
       forceUpdate(this);
@@ -345,7 +439,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks?.sendChatToLLM(this.items);
+            this.#sendChat();
           }
         })
         .catch(() => {
@@ -355,7 +449,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks?.sendChatToLLM(this.items);
+            this.#sendChat();
           }
         });
     });
@@ -404,6 +498,15 @@ export class ChChat {
     URL.revokeObjectURL(imageFile); // Free the memory
   };
 
+  #alignCellWhenRendered = () =>
+    this.#smartGridRef.scrollEndContentToPosition(
+      this.#cellIdAlignedWhenRendered,
+      {
+        position: this.newUserMessageAlignment,
+        behavior: this.newUserMessageScrollBehavior
+      }
+    );
+
   #virtualItemsChanged = (
     event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
   ) => {
@@ -415,6 +518,13 @@ export class ChChat {
       <slot name="empty-chat"></slot>
     ) : (
       <ch-smart-grid
+        autoScroll={
+          // We have to bind the property this way to make sure the scroll is
+          // positioned correctly at the initial load. Otherwise, if really
+          // hard to position the scroll if we don't know somehow when the
+          // initial load has finished
+          this.initialLoadHasEnded ? this.autoScroll : "at-scroll-end"
+        }
         dataProvider={this.loadingState === "more-data-to-fetch"}
         loadingState={
           this.virtualItems.length === 0 ? "initial" : this.loadingState
@@ -422,7 +532,7 @@ export class ChChat {
         inverseLoading
         itemsCount={this.virtualItems.length}
         onInfiniteThresholdReached={this.#loadMoreItems}
-        ref={el => (this.#scrollRef = el as HTMLChSmartGridElement)}
+        ref={el => (this.#smartGridRef = el as HTMLChSmartGridElement)}
       >
         <ch-virtual-scroller
           role="row"
@@ -443,23 +553,49 @@ export class ChChat {
       </ch-smart-grid>
     );
 
-  #renderItem = (messageModel: ChatMessage) =>
-    messageModel.role !== "system" && (
+  #renderItem = (message: ChatMessage) => {
+    if (message.role === "system") {
+      return "";
+    }
+
+    const parts = tokenMap({
+      [`message ${message.role}`]: true,
+      [message.parts]: !!message.parts,
+      [(message as ChatMessageByRole<"assistant">).status]:
+        message.role === "assistant"
+    });
+
+    const renderedContent = this.renderItem
+      ? this.renderItem(message)
+      : defaultChatRender(this.el)(message);
+
+    const messageIsCellAlignedAtTheStart =
+      message.id === this.#cellIdAlignedWhenRendered;
+
+    const hasToRenderAnExtraDiv =
+      this.#cellHasToReserveSpace !== undefined &&
+      this.#cellHasToReserveSpace.has(message.id);
+
+    return (
       <ch-smart-grid-cell
-        key={messageModel.id}
-        cellId={messageModel.id}
-        part={tokenMap({
-          [`message ${messageModel.role}`]: true,
-          [messageModel.parts]: !!messageModel.parts,
-          [(messageModel as ChatMessageByRole<"assistant">).status]:
-            messageModel.role === "assistant"
-        })}
+        key={message.id}
+        cellId={message.id}
+        part={hasToRenderAnExtraDiv ? undefined : parts}
+        smartGridRef={this.#smartGridRef}
+        onSmartCellDidLoad={
+          messageIsCellAlignedAtTheStart
+            ? this.#alignCellWhenRendered
+            : undefined
+        }
       >
-        {this.renderItem
-          ? this.renderItem(messageModel)
-          : defaultChatRender(this.el)(messageModel)}
+        {hasToRenderAnExtraDiv ? (
+          <div part={parts}>{renderedContent}</div>
+        ) : (
+          renderedContent
+        )}
       </ch-smart-grid-cell>
     );
+  };
 
   #loadMoreItems = () => {
     this.loadingState = "loading";

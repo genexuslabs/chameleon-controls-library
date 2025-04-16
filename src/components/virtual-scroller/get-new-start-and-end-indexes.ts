@@ -1,6 +1,9 @@
-import { inBetween } from "../common/utils";
-import { SmartGridModel } from "../components/smart-grid/types";
-import { SmartGridVirtualPosition, SmartGridCellVirtualSize } from "./types";
+import { inBetween } from "../../common/utils";
+import type { SmartGridModel } from "../smart-grid/types";
+import type {
+  SmartGridVirtualPosition,
+  SmartGridCellVirtualSize
+} from "./types";
 import {
   cellIsRendered,
   getSmartCells,

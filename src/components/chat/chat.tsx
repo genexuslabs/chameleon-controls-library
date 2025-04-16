@@ -319,6 +319,7 @@ export class ChChat {
     this.items[messageIndex] = Object.assign({ id: messageId }, message);
   };
 
+  // TODO: This should be a property
   #sendMessageKeyboard = (event: KeyboardEvent) => {
     if (event.key !== ENTER_KEY || event.shiftKey) {
       return;
@@ -556,8 +557,7 @@ export class ChChat {
         {this.theme && <ch-theme model={this.theme}></ch-theme>}
 
         {this.loadingState === "initial" ? (
-          // TODO: Improve this slot name
-          <div class="loading-chat" slot="empty-chat"></div>
+          <slot name="loading-chat"></slot>
         ) : (
           this.#renderChatOrEmpty()
         )}

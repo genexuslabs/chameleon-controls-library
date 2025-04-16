@@ -61,7 +61,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 237,
+      scrollTopAfter: 236,
       scrollHeightAfter: 1398
     }
   },
@@ -72,7 +72,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 237,
+      scrollTopAfter: 236,
       scrollHeightAfter: 1398
     }
   },
@@ -83,7 +83,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 474,
+      scrollTopAfter: 472,
       scrollHeightAfter: 1398
     }
   },
@@ -94,7 +94,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 474,
+      scrollTopAfter: 472,
       scrollHeightAfter: 1398
     }
   },
@@ -105,7 +105,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 710,
+      scrollTopAfter: 708,
       scrollHeightAfter: 1398
     }
   },
@@ -116,7 +116,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 710,
+      scrollTopAfter: 708,
       scrollHeightAfter: 1398
     }
   },
@@ -127,7 +127,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 946,
+      scrollTopAfter: 944,
       scrollHeightAfter: 1447
     }
   },
@@ -138,7 +138,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 902,
+      scrollTopAfter: 898,
       scrollHeightAfter: 1398
     }
   },
@@ -149,7 +149,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 1184,
+      scrollTopAfter: 1180,
       scrollHeightAfter: 1684
     }
   },
@@ -160,7 +160,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         ? INITIAL_SCROLL_TOP_INVERSE_LOADING
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
-      scrollTopAfter: 902,
+      scrollTopAfter: 898,
       scrollHeightAfter: 1398
     }
   }

@@ -142,12 +142,6 @@ export type ChatInternalCallbacks = {
   stopGeneratingAnswer?: () => Promise<void>;
 
   /**
-   * Given the image file, it uploads the image to the server and returns the
-   * URL of the public image that will be used in the user chat message.
-   */
-  uploadImage: (imageFile: File) => Promise<string>;
-
-  /**
    * Specifies a callback to validate if the current chat message of the user
    * can be send. If `false`, the `sendChatToLLM` won't be executed.
    */

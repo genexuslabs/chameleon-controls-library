@@ -15,14 +15,12 @@ import type {
 } from "../../components";
 import type { ThemeModel } from "../theme/theme-types";
 import {
-  ChatContentImages,
   ChatInternalCallbacks,
   ChatMessage,
   ChatMessageByRole,
   ChatMessageByRoleNoId
 } from "./types";
 import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
-import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
 import { adoptCommonThemes } from "../../common/theme";
@@ -50,8 +48,6 @@ export class ChChat {
 
   @Element() el!: HTMLChChatElement;
 
-  @State() imagesToUpload: { src: string; file: File }[] = [];
-  @State() uploadingImagesToTheServer = 0;
   @State() virtualItems: ChatMessage[] = [];
 
   /**
@@ -101,12 +97,6 @@ export class ChChat {
    * block.
    */
   @Prop() readonly hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement };
-
-  /**
-   * Specifies if the control can render a button to load images from the file
-   * system.
-   */
-  @Prop() readonly imageUpload: boolean = false;
 
   /**
    * Specifies if the chat is used in a mobile device.
@@ -386,116 +376,33 @@ export class ChChat {
       this.disabled ||
       this.loadingState === "initial" ||
       this.loadingState === "loading" ||
-      this.generatingResponse ||
-      this.uploadingImagesToTheServer > 0
+      this.generatingResponse
     ) {
       return;
     }
 
     // Message without resources
-    if (!this.imageUpload || this.imagesToUpload.length === 0) {
-      const userMessageToAdd: ChatMessageByRole<"user"> = {
-        id: `${new Date().getTime()}`,
-        role: "user",
-        content: this.#editRef.value
-      };
-
-      if (!(await this.#chatMessageCanBeSent(userMessageToAdd))) {
-        return;
-      }
-
-      await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.#sendChat();
-
-      // Queue a new re-render
-      forceUpdate(this);
-      return;
-    }
-
-    this.uploadingImagesToTheServer = this.imagesToUpload.length;
-
-    const userContent: ChatContentImages = [
-      { type: "text", text: this.#editRef.value }
-    ] as ChatContentImages;
-
-    // TODO: See how we can validate the sendChat callback
-    this.imagesToUpload.forEach((imageToUpload, index) => {
-      // Add the image with empty src, since it's not in the server yet
-      userContent.push({
-        type: "image_url",
-        image_url: { url: "" }
-      });
-
-      // Upload the image to the server asynchronously
-      this.callbacks
-        ?.uploadImage(imageToUpload.file)
-        .then(imageSrc => {
-          userContent[index + 1] = {
-            type: "image_url",
-            image_url: { url: imageSrc }
-          };
-
-          // Queue a new re-render
-          this.uploadingImagesToTheServer--;
-
-          if (this.uploadingImagesToTheServer === 0) {
-            this.#sendChat();
-          }
-        })
-        .catch(() => {
-          // console.log("Reject...", reason);
-          // TODO: Error uploading the image
-
-          this.uploadingImagesToTheServer--;
-
-          if (this.uploadingImagesToTheServer === 0) {
-            this.#sendChat();
-          }
-        });
-    });
-
     const userMessageToAdd: ChatMessageByRole<"user"> = {
       id: `${new Date().getTime()}`,
       role: "user",
-      content: userContent
+      content: this.#editRef.value
     };
-    await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
 
-    // Free the memory
-    this.imagesToUpload = [];
+    if (!(await this.#chatMessageCanBeSent(userMessageToAdd))) {
+      return;
+    }
+
+    await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+    this.#sendChat();
+
+    // Queue a new re-render
+    forceUpdate(this);
   };
 
   #handleStopGenerating = (event: MouseEvent) => {
     event.stopPropagation();
 
     this.callbacks?.stopGeneratingAnswer!();
-  };
-
-  // #handleFilesChanged = (event: ImagePickerCustomEvent<FileList | null>) => {
-  //   this.imagesToUpload =
-  //     event.detail === null
-  //       ? []
-  //       : [...event.detail].map(imageFile => ({
-  //           file: imageFile,
-  //           src: URL.createObjectURL(imageFile)
-  //         }));
-  // };
-
-  #removeUploadedImage = (index: number) => (event: MouseEvent) => {
-    const buttonToRemove = event.target as HTMLButtonElement;
-    const nextFocusedButton = (buttonToRemove.nextElementSibling ??
-      buttonToRemove.previousElementSibling) as HTMLButtonElement | null;
-
-    // Focus the next item to improve accessibility
-    nextFocusedButton?.focus();
-
-    // TODO: Remove the file from the image-picker reference
-    removeElement(this.imagesToUpload, index);
-    forceUpdate(this);
-  };
-
-  #removeImageResource = (imageFile: string) => () => {
-    URL.revokeObjectURL(imageFile); // Free the memory
   };
 
   #alignCellWhenRendered = () =>
@@ -671,13 +578,7 @@ export class ChChat {
 
         {canShowAdditionalContent && <slot name="additional-content" />}
 
-        <div
-          class={{
-            "send-container": true,
-            "send-container--file-uploading": this.imageUpload
-          }}
-          part="send-container"
-        >
+        <div class="send-container" part="send-container">
           {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
             <button
               aria-label={
@@ -694,40 +595,8 @@ export class ChChat {
               {text.stopGeneratingAnswerButton}
             </button>
           )}
-          {/* 
-          {this.imageUpload && (
-            <gx-eai-image-picker
-              part="image-picker"
-              translations={this.translations}
-              onFilesChanged={this.#handleFilesChanged}
-            ></gx-eai-image-picker>
-          )} */}
 
           <div class="send-input-wrapper" part="send-input-wrapper">
-            {this.imagesToUpload.length > 0 && (
-              <div class="images-to-upload" part="images-to-upload">
-                {this.imagesToUpload.map((imageFile, index) => (
-                  <button
-                    key={imageFile.src}
-                    aria-label={accessibleName.removeUploadedImage}
-                    title={accessibleName.removeUploadedImage}
-                    part="remove-image-to-upload-button"
-                    type="button"
-                    onClick={this.#removeUploadedImage(index)}
-                  >
-                    <img
-                      part="image-to-upload"
-                      aria-hidden="true"
-                      src={imageFile.src}
-                      alt=""
-                      loading="lazy"
-                      onLoad={this.#removeImageResource(imageFile.src)}
-                    ></img>
-                  </button>
-                ))}
-              </div>
-            )}
-
             <ch-edit
               accessibleName={accessibleName.sendInput}
               autoGrow

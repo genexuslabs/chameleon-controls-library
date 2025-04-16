@@ -128,7 +128,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
       scrollTopAfter: 944,
-      scrollHeightAfter: 1447
+      scrollHeightAfter: 1444
     }
   },
   {
@@ -150,7 +150,7 @@ const METHOD_TESTS: (inverseLoading: boolean) => {
         : INITIAL_SCROLL_TOP_NO_INVERSE_LOADING,
       scrollHeightInitial: 1398,
       scrollTopAfter: 1180,
-      scrollHeightAfter: 1684
+      scrollHeightAfter: 1680
     }
   },
   {

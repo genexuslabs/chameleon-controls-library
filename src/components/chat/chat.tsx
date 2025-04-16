@@ -55,7 +55,9 @@ export class ChChat {
   @State() virtualItems: ChatMessage[] = [];
 
   /**
-   * `true` if a message was added by executing the `addNewMessage` method.
+   * `true` if a message was added by user interaction or one of the following
+   * methods were executed: `addNewMessage`, `updateChatMessage` or
+   * `updateLastMessage`.
    *
    * This flag is useful to determinate when the initial load of the chat has
    * finished. If we always take into account the `autoScroll` property value,
@@ -63,7 +65,7 @@ export class ChChat {
    * end, so we only take into account the `autoScroll` value after the first
    * message is added by the host of the component.
    */
-  @State() messageWasAdded = false;
+  @State() initialLoadHasEnded = false;
 
   /**
    * Specifies how the scroll position will be adjusted when the chat messages
@@ -119,7 +121,7 @@ export class ChChat {
   @Watch("items")
   itemsChanged() {
     this.#cellIdAlignedWhenRendered = undefined;
-    this.messageWasAdded = false;
+    this.initialLoadHasEnded = false;
 
     // Free the memory, since no cells will have reserved space as the model
     // is different
@@ -229,7 +231,7 @@ export class ChChat {
    */
   @Method()
   async addNewMessage(message: ChatMessage) {
-    this.messageWasAdded = true;
+    this.initialLoadHasEnded = true;
 
     if (this.newMessageAlignment === "start") {
       this.#cellHasToReserveSpace ??= new Set();
@@ -269,7 +271,7 @@ export class ChChat {
     if (this.items.length === 0 || !this.items[messageIndex]) {
       return;
     }
-    this.messageWasAdded = true;
+    this.initialLoadHasEnded = true;
     this.#updateMessage(messageIndex, message, mode);
 
     forceUpdate(this);
@@ -289,7 +291,7 @@ export class ChChat {
     if (this.items.length === 0) {
       return;
     }
-    this.messageWasAdded = true;
+    this.initialLoadHasEnded = true;
     this.#updateMessage(this.items.length - 1, message, mode);
 
     // Sync the last virtual item with the real item that is updated
@@ -368,7 +370,7 @@ export class ChChat {
     this.#cellIdAlignedWhenRendered = lastCell.id;
 
     if (this.newMessageAlignment === "start") {
-      this.messageWasAdded = true;
+      this.initialLoadHasEnded = true;
       this.#cellHasToReserveSpace ??= new Set();
       this.#cellHasToReserveSpace.add(lastCell.id);
     }
@@ -519,7 +521,7 @@ export class ChChat {
           // positioned correctly at the initial load. Otherwise, if really
           // hard to position the scroll if we don't know somehow when the
           // initial load has finished
-          this.messageWasAdded ? this.autoScroll : "at-scroll-end"
+          this.initialLoadHasEnded ? this.autoScroll : "at-scroll-end"
         }
         dataProvider={this.loadingState === "more-data-to-fetch"}
         loadingState={

@@ -17,7 +17,9 @@ import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.s
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
 import { navigationListShowcaseStory } from "./navigation-list/navigation-list.showcase";
 import { paginatorShowcaseStory } from "./paginator/paginator.showcase";
+import { paginatorRenderShowcaseStory } from "./paginator-render/paginator-render.showcase";
 import { popoverShowcaseStory } from "./popover/popover.showcase";
+import { progressShowcaseStory } from "./progress/progress.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
 import { segmentedControlShowcaseStory } from "./segmented-control/segmented-control.showcase";
@@ -50,7 +52,9 @@ export const showcaseStories = {
   "layout-splitter": layoutSplitterShowcaseStory,
   "navigation-list": navigationListShowcaseStory,
   "live-kit-room": liveKitRoomShowcaseStory,
+  "paginator-render": paginatorRenderShowcaseStory,
   popover: popoverShowcaseStory,
+  progress: progressShowcaseStory,
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,
   "segmented-control": segmentedControlShowcaseStory,

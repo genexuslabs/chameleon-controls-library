@@ -173,7 +173,9 @@ export type ChameleonStories = {
   "live-kit-room": ShowcaseStory<HTMLChLiveKitRoomElement>;
   "layout-splitter": ShowcaseStory<HTMLChLayoutSplitterElement>;
   "navigation-list": ShowcaseStory<HTMLChNavigationListRenderElement>;
+  "paginator-render": ShowcaseStory<HTMLChPaginatorRenderElement>;
   popover: ShowcaseStory<HTMLChPopoverElement>;
+  progress: ShowcaseStory<HTMLChProgressElement>;
   qr: ShowcaseStory<HTMLChQrElement>;
   "radio-group": ShowcaseStory<HTMLChRadioGroupRenderElement>;
   "segmented-control": ShowcaseStory<HTMLChSegmentedControlRenderElement>;

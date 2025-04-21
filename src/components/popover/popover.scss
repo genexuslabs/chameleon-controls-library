@@ -167,6 +167,12 @@ $ch-popover-y--same-layer: calc(
   translate: max(0px, var(--ch-popover-x)) max(0px, var(--ch-popover-y));
 }
 
+// TODO: We should add min values
+:host(.ch-popover-rtl[overflow-behavior="add-scroll"]) {
+  // Alignment and Drag
+  translate: max(-100dvw, var(--ch-popover-x)) max(0px, var(--ch-popover-y));
+}
+
 :host([show]) {
   display: grid; // Necessary to support gap property
 }

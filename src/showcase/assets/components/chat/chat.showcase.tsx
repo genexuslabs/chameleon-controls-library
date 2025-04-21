@@ -18,6 +18,7 @@ const state: Partial<HTMLChChatElement> = {};
 
 const render: ShowcaseRender = designSystem => (
   <ch-chat
+    autoScroll={state.autoScroll}
     callbacks={chatCallbacks}
     class="chat"
     generatingResponse={false}
@@ -27,6 +28,8 @@ const render: ShowcaseRender = designSystem => (
         ? "unanimo/markdown-viewer"
         : "mercury/markdown-viewer"
     }
+    newUserMessageAlignment={state.newUserMessageAlignment}
+    newUserMessageScrollBehavior={state.newUserMessageScrollBehavior}
     renderItem={
       designSystem === "unanimo"
         ? undefined
@@ -81,6 +84,39 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "enum"
       },
       {
+        id: "newUserMessageAlignment",
+        caption: "New User Message Alignment",
+        values: [
+          { caption: "Start", value: "start" },
+          { caption: "End", value: "end" }
+        ],
+        value: "start",
+        render: "radio-group",
+        type: "enum"
+      },
+      {
+        id: "newUserMessageScrollBehavior",
+        caption: "New User Message Scroll Behavior",
+        values: [
+          { caption: "Instant", value: "instant" },
+          { caption: "Smooth", value: "smooth" }
+        ],
+        value: "instant",
+        render: "radio-group",
+        type: "enum"
+      },
+      {
+        id: "autoScroll",
+        caption: "Auto Scroll",
+        values: [
+          { caption: "Never", value: "never" },
+          { caption: "At scroll end", value: "at-scroll-end" }
+        ],
+        value: "at-scroll-end",
+        render: "radio-group",
+        type: "enum"
+      },
+      {
         id: "showAdditionalContent",
         caption: "Show Additional Content",
         value: false,
@@ -93,6 +129,21 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
 const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] =
   [
     { name: "class", fixed: true, value: "chat", type: "string" },
+    {
+      name: "newUserMessageAlignment",
+      defaultValue: "end",
+      type: "string"
+    },
+    {
+      name: "newUserMessageScrollBehavior",
+      defaultValue: "instant",
+      type: "string"
+    },
+    {
+      name: "autoScroll",
+      defaultValue: "at-scroll-end",
+      type: "string"
+    },
     {
       name: "items",
       fixed: true,

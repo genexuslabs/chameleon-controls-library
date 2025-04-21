@@ -43,11 +43,11 @@ const chatModel2: ChatMessage[] = [
   }
 ];
 
-const USER_CELL = <T extends string>(content: T) =>
-  `<ch-smart-grid-cell part="message user" role="gridcell" class="hydrated" data-did-load="true">${content}</ch-smart-grid-cell>`;
+const USER_CELL = <I extends string, T extends string>(id: I, content: T) =>
+  `<ch-smart-grid-cell part="message user" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true">${content}</ch-smart-grid-cell>`;
 
-const ASSISTANT_CELL = () =>
-  `<ch-smart-grid-cell part="message assistant undefined" role="gridcell" class="hydrated" data-did-load="true"><div aria-live="polite" aria-busy="false" class="assistant-content" part="assistant-content"><ch-markdown-viewer class="hydrated"></ch-markdown-viewer><button aria-label="Copy assistant response" title="Copy assistant response" part="copy-response-button" type="button"></button></div></ch-smart-grid-cell>`;
+const ASSISTANT_CELL = <I extends string>(id: I) =>
+  `<ch-smart-grid-cell part="message assistant undefined" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true"><div aria-live="polite" aria-busy="false" class="assistant-content" part="assistant-content"><ch-markdown-viewer class="hydrated"></ch-markdown-viewer><button aria-label="Copy assistant response" title="Copy assistant response" part="copy-response-button" type="button"></button></div></ch-smart-grid-cell>`;
 
 describe("[ch-chat][items reactivity]", () => {
   let page: E2EPage;
@@ -109,7 +109,9 @@ describe("[ch-chat][items reactivity]", () => {
     await page.waitForChanges();
 
     expect(await getChatRenderedItems()).toEqual(
-      USER_CELL("Something") + ASSISTANT_CELL() + USER_CELL("Something 3")
+      USER_CELL("1", "Something") +
+        ASSISTANT_CELL("2") +
+        USER_CELL("3", "Something 3")
     );
   });
 
@@ -122,16 +124,18 @@ describe("[ch-chat][items reactivity]", () => {
     await page.waitForChanges();
 
     expect(await getChatRenderedItems()).toEqual(
-      USER_CELL("Something") + ASSISTANT_CELL() + USER_CELL("Something 3")
+      USER_CELL("1", "Something") +
+        ASSISTANT_CELL("2") +
+        USER_CELL("3", "Something 3")
     );
 
     await chatRef.setProperty("items", chatModel2);
     await page.waitForChanges();
 
     expect(await getChatRenderedItems()).toEqual(
-      USER_CELL("A different text") +
-        ASSISTANT_CELL() +
-        USER_CELL("A different text 3")
+      USER_CELL("1", "A different text") +
+        ASSISTANT_CELL("2") +
+        USER_CELL("3", "A different text 3")
     );
   });
 });

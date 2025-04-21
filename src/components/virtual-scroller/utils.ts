@@ -1,6 +1,6 @@
-import { inBetween } from "../common/utils";
-import { SmartGridModel } from "../components/smart-grid/types";
-import { SmartGridCellVirtualSize } from "./types";
+import { inBetween } from "../../common/utils";
+import type { SmartGridModel } from "../smart-grid/types";
+import type { SmartGridCellVirtualSize } from "./types";
 
 export const cellIsRendered = (cell: HTMLElement) =>
   cell.hasAttribute("data-did-load") && cell.style.display !== "none";

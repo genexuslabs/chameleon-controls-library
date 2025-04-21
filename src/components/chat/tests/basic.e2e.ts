@@ -2,6 +2,7 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { testDefaultProperties } from "../../../testing/utils.e2e";
 
 testDefaultProperties("ch-chat", {
+  autoScroll: "at-scroll-end",
   callbacks: undefined,
   disabled: false,
   generatingResponse: false,
@@ -11,6 +12,8 @@ testDefaultProperties("ch-chat", {
   items: [],
   loadingState: "initial",
   markdownTheme: "ch-markdown-viewer",
+  newUserMessageAlignment: "end",
+  newUserMessageScrollBehavior: "instant",
   renderCode: undefined,
   showAdditionalContent: false,
   theme: undefined,
@@ -29,6 +32,7 @@ testDefaultProperties("ch-chat", {
       sendInput: "Ask me a question..."
     },
     text: {
+      stopGeneratingAnswerButton: "Stop generating answer",
       copyCodeButton: "Copy code",
       processing: `Processing...`,
       sourceFiles: "Source files:"

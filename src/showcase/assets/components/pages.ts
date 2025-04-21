@@ -116,6 +116,11 @@ export const showcasePages: NavigationListModel = [
             metadata: STABLE
           },
           {
+            link: { url: "#paginator-render" },
+            caption: "Paginator Render",
+            metadata: EXPERIMENTAL
+          },
+          {
             link: { url: "#tabular-grid" },
             caption: "Tabular Grid",
             metadata: STABLE
@@ -246,6 +251,11 @@ export const showcasePages: NavigationListModel = [
           // { link: { url: "#alert" }, caption: "Alert", metadata: EXPERIMENTAL },
 
           { link: { url: "#chat" }, caption: "Chat", metadata: EXPERIMENTAL },
+          {
+            link: { url: "#progress" },
+            caption: "Progress",
+            metadata: EXPERIMENTAL
+          },
           {
             link: { url: "#textblock" },
             caption: "TextBlock",

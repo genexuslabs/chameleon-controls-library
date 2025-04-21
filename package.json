@@ -1,6 +1,6 @@
 {
   "name": "@genexus/chameleon-controls-library",
-  "version": "6.5.0",
+  "version": "6.7.1",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -26,7 +26,7 @@
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "npm run build.monaco && npm run start.light",
     "start.light": "stencil build --dev --watch --serve",
-    "start.optimized": "stencil build --watch --serve --config stencil.config.optimized-dev.ts",
+    "start.optimized": "stencil build --watch --serve --dev --config stencil.config.optimized-dev.ts",
     "start.o": "npm run start.optimized",
     "test": "stencil test --spec --e2e --maxWorkers=1",
     "test.spec": "stencil test --spec --coverage --no-cache",

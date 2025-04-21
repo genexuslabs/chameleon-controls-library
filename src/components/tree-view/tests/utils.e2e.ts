@@ -1,3 +1,5 @@
+import type { TreeViewModel } from "../types";
+
 type TreeViewNodeTest =
   | {
       id: string;
@@ -28,3 +30,172 @@ const TREE_VIEW_ITEM_NODE = (options: TreeViewNodeTest, level: number) => {
 
 export const TREE_VIEW_NODE_RENDER = (children: TreeViewNodeTest[]) =>
   TREE_VIEW_NODE(children.map(node => TREE_VIEW_ITEM_NODE(node, 1)).join(""));
+
+export const testTreeViewModel: TreeViewModel = [
+  {
+    id: "root",
+    caption: "/",
+    editable: false,
+    expanded: true,
+    dragDisabled: true,
+    dropDisabled: true,
+    items: [
+      {
+        id: "dev",
+        caption: "dev",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "etc",
+        caption: "etc",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        items: [
+          {
+            id: "cups",
+            caption: "cups",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          },
+          {
+            id: "httpd",
+            caption: "httpd",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          },
+          {
+            id: "init",
+            caption: "init.d",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          }
+        ]
+      },
+      {
+        id: "sbin",
+        caption: "sbin",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "tmp",
+        caption: "tmp",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "Users",
+        caption: "Users",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        items: [
+          {
+            id: "jdoe",
+            caption: "jdoe",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          },
+          {
+            id: "jmiller",
+            caption: "jmiller",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          },
+          {
+            id: "mysql",
+            caption: "mysql",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          }
+        ]
+      },
+      {
+        id: "usr",
+        caption: "usr",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        items: [
+          {
+            id: "bin",
+            caption: "bin",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          },
+          {
+            id: "lib",
+            caption: "lib",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          },
+          {
+            id: "local",
+            caption: "local",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          }
+        ]
+      },
+      {
+        id: "var",
+        caption: "var",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        items: [
+          {
+            id: "log",
+            caption: "log",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          },
+          {
+            id: "spool",
+            caption: "spool",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          },
+          {
+            id: "yp",
+            caption: "yp",
+            editable: false,
+            dragDisabled: true,
+            dropDisabled: true,
+            leaf: true
+          }
+        ]
+      }
+    ]
+  }
+];

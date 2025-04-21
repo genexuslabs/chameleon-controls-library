@@ -11,6 +11,7 @@ import {
   showcaseTemplateClassProperty,
   updateShowcase
 } from "../utils";
+import type { LayoutSplitterModel } from "../../../../components/layout-splitter/types";
 
 const state: Partial<HTMLChDialogElement> = {};
 
@@ -32,6 +33,15 @@ const handleDialogOpen = () => {
   updateShowcase();
 };
 
+const layoutSplitterModel: LayoutSplitterModel = {
+  id: "root",
+  direction: "columns",
+  items: [
+    { id: "start", size: "1fr", minSize: "150px", dragBar: { size: 2 } },
+    { id: "end", size: "1fr", minSize: "150px" }
+  ]
+};
+
 const render = () => [
   <button class="button-primary" type="button" onClick={handleDialogOpen}>
     Open dialog
@@ -50,22 +60,28 @@ const render = () => [
     showHeader={state.showHeader}
     onDialogClosed={handleClose}
   >
-    <label htmlFor="some-input">Any data</label>
-    <input id="some-input" class="input" type="text" />
+    <ch-layout-splitter class="layout-splitter" model={layoutSplitterModel}>
+      <div slot="start">
+        <label htmlFor="some-input">Any data</label>
+        <input id="some-input" class="input" type="text" />
+      </div>
 
-    <button class="button-primary">button</button>
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
-      repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste amet
-      laudantium deleniti iusto, commodi dolor omnis laboriosam quod magni, quis
-      voluptatem.
-    </p>
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
-      repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste amet
-      laudantium deleniti iusto, commodi dolor omnis laboriosam quod magni, quis
-      voluptatem.
-    </p>
+      <div slot="end">
+        <button class="button-primary">button</button>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
+          repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste
+          amet laudantium deleniti iusto, commodi dolor omnis laboriosam quod
+          magni, quis voluptatem.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
+          repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste
+          amet laudantium deleniti iusto, commodi dolor omnis laboriosam quod
+          magni, quis voluptatem.
+        </p>
+      </div>
+    </ch-layout-splitter>
     <div class="box"></div>
 
     <button slot="footer" type="button" class="button-secondary">

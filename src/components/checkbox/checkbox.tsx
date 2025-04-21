@@ -19,7 +19,8 @@ import {
   DisableableComponent,
   FormComponent
 } from "../../common/interfaces";
-import {
+import type {
+  ChameleonControlsTagName,
   GxImageMultiState,
   GxImageMultiStateStart,
   ImageRender
@@ -225,7 +226,19 @@ export class ChCheckBox
     // When the internal label is clicked it provokes a click in the input with
     // event.detail === 0
     if (event.composedPath()[0] !== this.#getInputRef()) {
-      this.#updateCheckedValueAndEmitEvent(!this.#getInputRef().checked);
+      return this.#updateCheckedValueAndEmitEvent(!this.#getInputRef().checked);
+    }
+
+    const rootNode = this.el.getRootNode();
+
+    // TODO: This is a WA to make work again the ch-checkbox inside the
+    // ch-tree-view-item, because the Space key is not working
+    if (
+      rootNode instanceof ShadowRoot &&
+      rootNode.host.tagName.toLowerCase() ===
+        ("ch-tree-view-item" as ChameleonControlsTagName)
+    ) {
+      this.#updateCheckedValueAndEmitEvent(this.#getInputRef().checked);
     }
   };
 

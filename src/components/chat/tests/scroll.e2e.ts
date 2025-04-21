@@ -8,16 +8,12 @@ import {
 } from "./utils.e2e";
 import { SmartGridDataState } from "../../smart-grid/internal/infinite-scroll/types";
 import { ChatMessage } from "../types";
+import { ArgumentTypes } from "../../../common/types";
 
 const FLOATING_POINT_ERROR_PRECISION = 1;
 
 const valuesAreEqualInMarginOfError = (a: number, b: number) =>
   Math.abs(a - b) <= FLOATING_POINT_ERROR_PRECISION;
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type ArgumentTypes<F extends Function> = F extends (...args: infer A) => any
-  ? A
-  : never;
 
 type UpdateLastChatMessageArgTypes = ArgumentTypes<
   HTMLChChatElement["updateLastMessage"]

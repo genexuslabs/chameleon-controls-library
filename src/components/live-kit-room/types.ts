@@ -1,9 +1,34 @@
+import {
+  ConnectionQuality,
+  Participant,
+  TrackPublication,
+  TranscriptionSegment
+} from "livekit-client";
+
 export type LiveKitCallbacks = {
-  connectToRoom: (participants: {
-    user: HTMLDivElement;
-    agent: HTMLDivElement;
-  }) => void;
-  disconnectRoom: () => void;
-  muteMic: () => void;
-  unmuteMic: () => void;
+  muteMic?: () => void;
+  unmuteMic?: () => void;
+  connectionEvents?: LiveKitConnectionListener;
+  updateTranscriptions?: (segments: TranscriptionSegment[]) => void;
 };
+
+export type LiveKitConnectionListener = {
+  trackMuted?: (
+    participant: Participant,
+    publication: TrackPublication
+  ) => void;
+  trackUnmuted?: (
+    participant: Participant,
+    publication: TrackPublication
+  ) => void;
+  isSpeakingChanged?: (participant: Participant, speaking: boolean) => void;
+  connectionQualityChanged?: (
+    participant: Participant,
+    connectionQuality: ConnectionQuality
+  ) => void;
+};
+
+export type AddOrRemoveType = (
+  participant: Participant,
+  action: "add" | "remove"
+) => void;

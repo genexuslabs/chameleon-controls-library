@@ -1,6 +1,16 @@
-import { Component, Host, h, Prop, Element } from "@stencil/core";
-import { ImageRender } from "../../common/types";
+import {
+  Component,
+  Host,
+  h,
+  Prop,
+  Element,
+  Watch,
+  forceUpdate
+} from "@stencil/core";
 import { LiveKitCallbacks } from "./types";
+import { connectToRoom } from "./connect";
+import { Participant, RemoteParticipant, Room, Track } from "livekit-client";
+import { removeElement } from "../../common/array";
 
 /**
  * TODO.
@@ -11,11 +21,15 @@ import { LiveKitCallbacks } from "./types";
   shadow: true
 })
 export class ChLiveKitRoom {
-  #userRef: undefined | HTMLDivElement;
-
-  #agentRef: undefined | HTMLDivElement;
-
   @Element() el!: HTMLChLiveKitRoomElement;
+
+  #participants: {
+    participant: Participant | RemoteParticipant;
+    ref?: HTMLAudioElement;
+    shouldUpdate?: boolean;
+  }[] = [];
+
+  #currentRoom: Room;
 
   /**
    * Specifies the callbacks required in the control.
@@ -23,90 +37,135 @@ export class ChLiveKitRoom {
   @Prop() readonly callbacks?: LiveKitCallbacks | undefined;
 
   /**
-   * Specifies how the image will be rendered.
+   * TODO
    */
-  @Prop() readonly type: Exclude<ImageRender, "img"> = "background";
+  @Prop() readonly url: string = "";
+
+  /**
+   * TODO
+   */
+  @Prop() readonly token: string = "";
 
   /**
    * Specifies the room state.
    */
   @Prop() readonly connected: boolean = false;
 
+  @Watch("connected")
+  connectedChanged() {
+    if (this.connected) {
+      this.#connect();
+    } else {
+      this.#disconnectRoom();
+    }
+  }
+
+  /**
+   * Specifies the room state.
+   */
+  @Prop() readonly micEnable: boolean = false;
+
+  @Watch("micEnable")
+  micEnableChanged() {
+    if (this.connected) {
+      if (this.micEnable) {
+        this.#muteMic();
+      } else {
+        this.#unmuteMic();
+      }
+    }
+  }
+
   #connect = () => {
-    this.callbacks?.connectToRoom!({
-      user: this.#userRef,
-      agent: this.#agentRef
+    connectToRoom(
+      this.url,
+      this.token,
+      this.#addOrRemoveParticipant,
+      this.callbacks.updateTranscriptions
+    ).then(room => {
+      this.#currentRoom = room;
     });
   };
 
   #disconnectRoom = () => {
-    this.callbacks?.disconnectRoom!();
+    if (this.#currentRoom) {
+      this.#currentRoom.disconnect();
+    }
+  };
+
+  #findParticipantIndex = (participant: Participant) =>
+    this.#participants.findIndex(
+      p => p.participant.identity === participant.identity
+    );
+
+  #addOrRemoveParticipant = (
+    participant: Participant,
+    action: "add" | "remove"
+  ) => {
+    const participantIndex = this.#findParticipantIndex(participant);
+
+    if (action === "add") {
+      if (participantIndex === -1) {
+        this.#participants.push({ participant, shouldUpdate: true });
+      } else {
+        this.#participants[participantIndex].shouldUpdate = true;
+      }
+    } else {
+      removeElement(this.#participants, participantIndex);
+    }
+
+    forceUpdate(this);
   };
 
   #muteMic = () => {
-    this.callbacks?.muteMic!();
+    this.#currentRoom?.localParticipant.setMicrophoneEnabled(false);
   };
 
   #unmuteMic = () => {
-    this.callbacks?.unmuteMic!();
+    this.#currentRoom?.localParticipant.setMicrophoneEnabled(true);
   };
+
+  connectedCallback() {
+    if (this.connected) {
+      this.#connect();
+    }
+  }
+
+  componentDidRender() {
+    this.#participants.forEach(participant => {
+      if (participant.shouldUpdate) {
+        participant.shouldUpdate = false;
+
+        if (!participant.participant.isLocal) {
+          if (participant.participant instanceof RemoteParticipant) {
+            participant.participant.setVolume(1);
+          }
+
+          const micPub = participant.participant.getTrackPublication(
+            Track.Source.Microphone
+          );
+          micPub?.audioTrack?.attach(participant.ref);
+        }
+      }
+    });
+  }
+
+  disconnectedCallback() {
+    if (this.connected) {
+      this.#disconnectRoom();
+    }
+  }
 
   render() {
     return (
       <Host>
-        <div class="button-container" part="button-container">
-          {true && (
-            <button
-              aria-label="Mute"
-              title="Mute"
-              class="mute-button"
-              part="mute-button"
-              disabled={false}
-              type="button"
-              onClick={this.#muteMic}
-            ></button>
-          )}
-
-          {true && (
-            <button
-              aria-label="Unmute"
-              title="Unmute"
-              class="unmute-button"
-              part="unmute-button"
-              disabled={false}
-              type="button"
-              onClick={this.#unmuteMic}
-            ></button>
-          )}
-
-          <div ref={el => (this.#userRef = el)}></div>
-
-          <div ref={el => (this.#agentRef = el)}></div>
-
-          {!this.connected && (
-            <button
-              aria-label="Connect"
-              title="Connect"
-              class="connect-button"
-              part="connect-button"
-              disabled={false}
-              type="button"
-              onClick={this.#connect}
-            ></button>
-          )}
-
-          {true && (
-            <button
-              aria-label="Disconnect"
-              title="Disconnect"
-              class="disconnect-button"
-              part="disconnect-button"
-              disabled={false}
-              type="button"
-              onClick={this.#disconnectRoom}
-            ></button>
-          )}
-        </div>
+        <slot />
+        {this.#participants.map(participant => (
+          <audio
+            key={participant.participant.identity}
+            ref={el => (participant.ref = el)}
+          />
+        ))}
       </Host>
     );
   }

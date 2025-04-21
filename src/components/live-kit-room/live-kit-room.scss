@@ -1,47 +1,8 @@
 @import "../../common/base";
 @import "../../common/icons";
 
-// - - - - - - - - - - - - - - - - - - - -
-//                 Images
-// - - - - - - - - - - - - - - - - - - - -
-@include images-without-pseudo-elements(
-  $image-path-custom-var: var(--ch-start-start),
-  $image-size-custom-var: var(--ch-action-list-item__image-size),
-  $background-image-size-custom-var:
-    var(--ch-action-list-item__background-image-size)
-);
-
-@include images-with-pseudo-elements(
-  $start-image-path-custom-var: var(--ch-start-start),
-  $end-image-path-custom-var: var(--ch-end-img),
-  $image-size-custom-var: var(--ch-action-list-item__image-size),
-  $background-image-size-custom-var:
-    var(--ch-action-list-item__background-image-size)
-);
-
 .button-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 8px;
-}
-
-.unmute-button::before {
-  content: "";
-  display: inline-block;
-  inline-size: var(--ch-action-list-item__image-size);
-  block-size: var(--ch-action-list-item__image-size);
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-action-list-item__image-size);
-  -webkit-mask: no-repeat center /
-    var(--ch-action-list-item__background-image-size) var(--ch-start-start);
-  background-color: var(--ch-action-list-item__action-color);
-}
-
-.mute-button::before {
-  content: "";
-  display: block;
-  inline-size: var(--ch-accordion__header-image-size);
-  block-size: var(--ch-accordion__header-image-size);
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-accordion__header-image-size);
 }

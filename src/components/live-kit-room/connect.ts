@@ -23,17 +23,7 @@ export const connectToRoom = async (
   updateTranscriptions?: (segments: TranscriptionSegment[]) => void
 ) => {
   // creates a new room with options
-  const room = new Room({
-    adaptiveStream: true,
-    dynacast: true,
-    audioOutput: {
-      deviceId: "default"
-    },
-    publishDefaults: {
-      simulcast: true,
-      scalabilityMode: "L3T3_KEY"
-    }
-  });
+  const room = new Room();
 
   // pre-warm connection, this can be called as early as your page is loaded
   room.prepareConnection(url, token);

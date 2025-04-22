@@ -1,7 +1,6 @@
-# ch-image
+# ch-live-kit-room
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -18,7 +17,6 @@ active or disabled) of a parent element.
 | `src`                  | `src`      | Specifies the src for the image.                                                                                                                                                                 | `string`                                  | `undefined`    |
 | `type`                 | `type`     | Specifies how the image will be rendered.                                                                                                                                                        | `"background" \| "mask"`                  | `"background"` |
 
-
 ## CSS Custom Properties
 
 | Name                         | Description                                                      |
@@ -26,7 +24,6 @@ active or disabled) of a parent element.
 | `--ch-image-background-size` | Specifies the size of the image. @default 100%                   |
 | `--ch-image-size`            | Specifies the box size that contains the image. @default 0.875em |
 
+---
 
-----------------------------------------------
-
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_

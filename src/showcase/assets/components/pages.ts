@@ -275,7 +275,7 @@ export const showcasePages: NavigationListModel = [
           {
             link: { url: "#live-kit-room" },
             caption: "Room",
-            metadata: DEVELOPER_PREVIEW
+            metadata: EXPERIMENTAL
           }
         ]
       }

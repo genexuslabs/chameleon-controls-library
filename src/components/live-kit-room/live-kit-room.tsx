@@ -12,9 +12,6 @@ import { connectToRoom } from "./connect";
 import { Participant, RemoteParticipant, Room, Track } from "livekit-client";
 import { removeElement } from "../../common/array";
 
-/**
- * TODO.
- */
 @Component({
   tag: "ch-live-kit-room",
   styleUrl: "live-kit-room.scss",
@@ -23,28 +20,18 @@ import { removeElement } from "../../common/array";
 export class ChLiveKitRoom {
   @Element() el!: HTMLChLiveKitRoomElement;
 
+  #currentRoom: Room;
+
   #participants: {
     participant: Participant | RemoteParticipant;
     ref?: HTMLAudioElement;
     shouldUpdate?: boolean;
   }[] = [];
 
-  #currentRoom: Room;
-
   /**
    * Specifies the callbacks required in the control.
    */
   @Prop() readonly callbacks?: LiveKitCallbacks | undefined;
-
-  /**
-   * TODO
-   */
-  @Prop() readonly url: string = "";
-
-  /**
-   * TODO
-   */
-  @Prop() readonly token: string = "";
 
   /**
    * Specifies the room state.
@@ -59,22 +46,49 @@ export class ChLiveKitRoom {
       this.#disconnectRoom();
     }
   }
-
   /**
-   * Specifies the room state.
+   * Specifies the microphone state.
    */
-  @Prop() readonly micEnable: boolean = false;
+  @Prop() readonly microphoneEnabled: boolean = false;
 
-  @Watch("micEnable")
-  micEnableChanged() {
+  @Watch("microphoneEnabled")
+  microphoneEnabledChanged() {
     if (this.connected) {
-      if (this.micEnable) {
+      if (this.microphoneEnabled) {
         this.#muteMic();
       } else {
         this.#unmuteMic();
       }
     }
   }
+  /**
+   * Specifies the token to connect to the room
+   */
+  @Prop() readonly token: string = "";
+
+  /**
+   * Specifies the url to connect to the room
+   */
+  @Prop() readonly url: string = "";
+
+  #addOrRemoveParticipant = (
+    participant: Participant,
+    action: "add" | "remove"
+  ) => {
+    const participantIndex = this.#findParticipantIndex(participant);
+
+    if (action === "add") {
+      if (participantIndex === -1) {
+        this.#participants.push({ participant, shouldUpdate: true });
+      } else {
+        this.#participants[participantIndex].shouldUpdate = true;
+      }
+    } else {
+      removeElement(this.#participants, participantIndex);
+    }
+
+    forceUpdate(this);
+  };
 
   #connect = () => {
     connectToRoom(
@@ -97,25 +111,6 @@ export class ChLiveKitRoom {
     this.#participants.findIndex(
       p => p.participant.identity === participant.identity
     );
-
-  #addOrRemoveParticipant = (
-    participant: Participant,
-    action: "add" | "remove"
-  ) => {
-    const participantIndex = this.#findParticipantIndex(participant);
-
-    if (action === "add") {
-      if (participantIndex === -1) {
-        this.#participants.push({ participant, shouldUpdate: true });
-      } else {
-        this.#participants[participantIndex].shouldUpdate = true;
-      }
-    } else {
-      removeElement(this.#participants, participantIndex);
-    }
-
-    forceUpdate(this);
-  };
 
   #muteMic = () => {
     this.#currentRoom?.localParticipant.setMicrophoneEnabled(false);

@@ -22,12 +22,12 @@ const handleDisconnect = () => {
 };
 
 const handleMute = () => {
-  state.micEnable = false;
+  state.microphoneEnabled = false;
   updateShowcase();
 };
 
 const handleUnmute = () => {
-  state.micEnable = true;
+  state.microphoneEnabled = true;
   updateShowcase();
 };
 
@@ -36,35 +36,19 @@ const render = () => (
     <ch-live-kit-room
       callbacks={liveKitCallbacks}
       connected={state.connected}
-      micEnable={state.micEnable}
+      microphoneEnabled={state.microphoneEnabled}
       url={state.url}
       token={state.token}
     >
       <div class="button-container" part="button-container">
-        {state.connected && state.micEnable && (
-          <button
-            aria-label="Mute"
-            title="Mute"
-            class="button-primary"
-            part="mute-button"
-            disabled={false}
-            type="button"
-            onClick={handleMute}
-          >
+        {state.connected && state.microphoneEnabled && (
+          <button class="button-primary" onClick={handleMute}>
             Mute
           </button>
         )}
 
-        {state.connected && !state.micEnable && (
-          <button
-            aria-label="Unmute"
-            title="Unmute"
-            class="button-primary"
-            part="unmute-button"
-            disabled={false}
-            type="button"
-            onClick={handleUnmute}
-          >
+        {state.connected && !state.microphoneEnabled && (
+          <button class="button-primary" onClick={handleUnmute}>
             Unmute
           </button>
         )}
@@ -103,6 +87,20 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChLiveKitRoomElemen
           value: "",
           render: "input",
           type: "string"
+        },
+        {
+          id: "connected",
+          caption: "Connected",
+          value: false,
+          render: "checkbox",
+          type: "boolean"
+        },
+        {
+          id: "microphoneEnabled",
+          caption: "Microphone Enabled",
+          value: false,
+          render: "checkbox",
+          type: "boolean"
         }
       ]
     }
@@ -111,7 +109,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChLiveKitRoomElemen
 const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChLiveKitRoomElement>[] =
   [
     { name: "url", fixed: true, value: "", type: "string" },
-    { name: "token", fixed: true, value: "", type: "string" }
+    { name: "token", fixed: true, value: "", type: "string" },
+    { name: "connected", defaultValue: false, type: "boolean" },
+    {
+      name: "microphoneEnabled",
+      defaultValue: true,
+      type: "boolean"
+    }
   ];
 
 export const liveKitRoomShowcaseStory: ShowcaseStory<HTMLChLiveKitRoomElement> =

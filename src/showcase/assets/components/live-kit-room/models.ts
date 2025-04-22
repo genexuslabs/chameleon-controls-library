@@ -1,6 +1,4 @@
-import { NavigationListModel } from "../../../../components/navigation-list/types";
-
-export const unanimoShowcase: NavigationListModel = [
+export const unanimoShowcase = [
   {
     caption: "Controls",
     startImgSrc:

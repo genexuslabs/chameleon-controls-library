@@ -1,8 +1,6 @@
-@import "../../common/base";
-@import "../../common/icons";
-
-.button-container {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
+:host {
+  display: contents;
+}
+audio {
+  display: none;
 }

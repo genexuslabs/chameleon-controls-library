@@ -240,7 +240,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         columnSpan: 2,
         caption: "Max Length",
         type: "number",
-        value: 10
+        value: 1000
       },
       {
         id: "pattern",
@@ -455,7 +455,11 @@ export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
       </label>
 
       <ChEdit${renderShowcaseProperties(state, "react", showcasePropertiesInfo)}
-      ></ChEdit>`,
+      >${
+        state.showAdditionalContent
+          ? '\n        <div slot="additional-content">Your content here...</div>\n      '
+          : ""
+      }</ChEdit>`,
 
     stencil: () => `<label ${showcaseTemplateClassProperty(
       "stencil",
@@ -469,7 +473,11 @@ export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
           "stencil",
           showcasePropertiesInfo
         )}
-        ></ch-edit>`
+        >${
+          state.showAdditionalContent
+            ? '\n          <div slot="additional-content">Your content here...</div>\n        '
+            : ""
+        }</ch-edit>`
   },
   render: render,
   state: state

@@ -10,6 +10,7 @@ import {
   updateShowcase
 } from "../utils";
 import { dummyPictureCallback } from "./models";
+import { dataTypeInGeneXus } from "../combo-box/models";
 
 const state: Partial<HTMLChEditElement> = {};
 const formRefs: {
@@ -43,7 +44,7 @@ const handleValueInput =
 
 const render = () => (
   <div class="checkbox-test-main-wrapper">
-    <fieldset class="fieldset-test">
+    <fieldset class="fieldset-test form-test-edit">
       <legend class="heading-4 field-legend-test">No label</legend>
       <form id="form-edit-1" ref={el => (formRefs["form-edit-1"] = el)}>
         <ch-edit
@@ -63,22 +64,34 @@ const render = () => (
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
           value={state.value}
-          showTrigger={state.showTrigger}
+          showAdditionalContent={state.showAdditionalContent}
           spellcheck={state.spellcheck}
           startImgSrc={state.startImgSrc}
           startImgType={state.startImgType}
           type={state.type}
-          triggerButtonAccessibleName={state.triggerButtonAccessibleName}
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-1", "edit-1")}
-        ></ch-edit>
+        >
+          {state.showAdditionalContent && (
+            <ch-combo-box-render
+              slot="additional-content"
+              accessibleName="Data Types"
+              class="combo-box"
+              model={dataTypeInGeneXus}
+            ></ch-combo-box-render>
+          )}
+        </ch-edit>
       </form>
       Form value: {formValues["edit-1"]}
     </fieldset>
 
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
-      <form id="form-edit-2" ref={el => (formRefs["form-edit-2"] = el)}>
+      <form
+        id="form-edit-2"
+        class="form-test-edit"
+        ref={el => (formRefs["form-edit-2"] = el)}
+      >
         <label class="label" htmlFor="edit-2">
           Label for edit 2
         </label>
@@ -101,15 +114,23 @@ const render = () => (
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
           value={state.value}
-          showTrigger={state.showTrigger}
+          showAdditionalContent={state.showAdditionalContent}
           spellcheck={state.spellcheck}
           startImgSrc={state.startImgSrc}
           startImgType={state.startImgType}
           type={state.type}
-          triggerButtonAccessibleName={state.triggerButtonAccessibleName}
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-2", "edit-2")}
-        ></ch-edit>
+        >
+          {state.showAdditionalContent && (
+            <ch-combo-box-render
+              slot="additional-content"
+              accessibleName="Data Types"
+              class="combo-box"
+              model={dataTypeInGeneXus}
+            ></ch-combo-box-render>
+          )}
+        </ch-edit>
       </form>
       Form value: {formValues["edit-2"]}
     </fieldset>
@@ -118,7 +139,11 @@ const render = () => (
       <legend class="heading-4 field-legend-test">
         Component inside label
       </legend>
-      <form id="form-edit-3" ref={el => (formRefs["form-edit-3"] = el)}>
+      <form
+        id="form-edit-3"
+        class="form-test-edit"
+        ref={el => (formRefs["form-edit-3"] = el)}
+      >
         <label class="label" htmlFor="edit-3">
           Label for edit 3
           <ch-edit
@@ -139,15 +164,23 @@ const render = () => (
             picture={state.picture}
             pictureCallback={dummyPictureCallback}
             value={state.value}
-            showTrigger={state.showTrigger}
+            showAdditionalContent={state.showAdditionalContent}
             spellcheck={state.spellcheck}
             startImgSrc={state.startImgSrc}
             startImgType={state.startImgType}
             type={state.type}
-            triggerButtonAccessibleName={state.triggerButtonAccessibleName}
             readonly={state.readonly}
             onInput={handleValueInput("form-edit-3", "edit-3")}
-          ></ch-edit>
+          >
+            {state.showAdditionalContent && (
+              <ch-combo-box-render
+                slot="additional-content"
+                accessibleName="Data Types"
+                class="combo-box"
+                model={dataTypeInGeneXus}
+              ></ch-combo-box-render>
+            )}
+          </ch-edit>
         </label>
       </form>
       Form value: {formValues["edit-3"]}
@@ -337,17 +370,10 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "string"
       },
       {
-        id: "showTrigger",
-        caption: "Show Trigger",
+        id: "showAdditionalContent",
+        caption: "Show Additional Content",
         value: false,
         type: "boolean"
-      },
-      {
-        id: "triggerButtonAccessibleName",
-        caption: "Trigger Button Accessible Name",
-        columnSpan: 2,
-        value: undefined,
-        type: "string"
       }
     ]
   }
@@ -404,15 +430,10 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
     },
     { name: "placeholder", defaultValue: undefined, type: "string" },
     { name: "readonly", defaultValue: false, type: "boolean" },
+    { name: "showAdditionalActions", defaultValue: false, type: "boolean" },
     { name: "spellcheck", defaultValue: false, type: "boolean" },
-    { name: "showTrigger", defaultValue: false, type: "boolean" },
     { name: "startImgSrc", defaultValue: undefined, type: "string" },
     { name: "startImgType", defaultValue: "background", type: "string" },
-    {
-      name: "triggerButtonAccessibleName",
-      defaultValue: undefined,
-      type: "string"
-    },
     { name: "type", defaultValue: "text", type: "string" },
     { name: "value", defaultValue: undefined, type: "string" },
     {

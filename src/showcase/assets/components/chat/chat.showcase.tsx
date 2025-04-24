@@ -38,6 +38,7 @@ const render: ShowcaseRender = designSystem => (
     isMobile={false}
     items={state.items}
     showAdditionalContent={state.showAdditionalContent}
+    showSendInputAdditionalContent={state.showSendInputAdditionalContent}
     translations={chatTranslations}
   >
     <div slot="additional-content">
@@ -121,6 +122,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         caption: "Show Additional Content",
         value: false,
         type: "boolean"
+      },
+      {
+        id: "showSendInputAdditionalContent",
+        caption: "Show Send Input Additional Content",
+        value: false,
+        type: "boolean"
       }
     ]
   }
@@ -157,6 +164,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
     },
     {
       name: "showAdditionalContent",
+      defaultValue: false,
+      type: "boolean"
+    },
+    {
+      name: "showSendInputAdditionalContent",
       defaultValue: false,
       type: "boolean"
     }

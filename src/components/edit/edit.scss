@@ -56,12 +56,10 @@
    */
   --ch-edit__clear-button-image: #{$close-icon};
 
-  // --ch-edit-trigger-button-inline-size: #{$ch-icon-size};
-
   display: grid; // With inline-grid it doesn't render well in the ch-chat
   align-items: center;
   position: relative;
-  grid-template: "content" 1fr / 1fr;
+  grid-template: "ch-edit-content" 1fr / 1fr;
 
   // Base image
   --ch-start-img: var(--ch-start-img--base);
@@ -98,7 +96,7 @@
 
 .input,
 .multiline-container {
-  grid-area: content;
+  grid-area: ch-edit-content;
 }
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -125,14 +123,14 @@
 }
 
 :host(.ch-edit-pseudo-img--start) {
-  grid-template: "start-img-src content" 1fr / max-content 1fr;
+  grid-template: "ch-edit-start-img-src ch-edit-content" 1fr / max-content 1fr;
 
   & > .content {
     margin-inline-start: var(--ch-edit-gap);
   }
 
   &::before {
-    grid-area: start-img-src;
+    grid-area: ch-edit-start-img-src;
     content: "";
     display: block;
     inline-size: var(--ch-edit__image-size);
@@ -261,16 +259,16 @@
 }
 
 :host(.ch-edit--clear-button) {
-  grid-template: "content clear-button" 1fr / 1fr max-content;
+  grid-template: "ch-edit-content ch-edit-clear-button" 1fr / 1fr max-content;
 }
 
 // With icon
 :host(.ch-edit--clear-button.ch-edit-pseudo-img--start) {
-  grid-template: "start-img-src content clear-button" 1fr / max-content 1fr max-content;
+  grid-template: "ch-edit-start-img-src ch-edit-content clear-button" 1fr / max-content 1fr max-content;
 }
 
 .clear-button {
-  grid-area: clear-button;
+  grid-area: ch-edit-clear-button;
   display: inline-grid;
   align-items: center;
   justify-content: center;

@@ -58,7 +58,7 @@
 
   // --ch-edit-trigger-button-inline-size: #{$ch-icon-size};
 
-  display: inline-grid;
+  display: grid; // With inline-grid it doesn't render well in the ch-chat
   align-items: center;
   position: relative;
   grid-template: "content" 1fr / 1fr;

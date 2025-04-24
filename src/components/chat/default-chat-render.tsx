@@ -1,5 +1,5 @@
 import { h } from "@stencil/core";
-import { ChatContentFiles, ChatContentImage, ChatMessageByRole } from "./types";
+import { ChatContentFiles, ChatMessageByRole } from "./types";
 import { ChatTranslations } from "./translations";
 import { copyToTheClipboard } from "../../common/utils";
 import {
@@ -56,18 +56,18 @@ const defaultCodeRender =
             part="code-block__header-actions"
           >
             <button
-              aria-label={
-                chatRef.isMobile ? translations.text.copyCodeButton : undefined
-              }
+              // aria-label={
+              //   chatRef.isMobile ? translations.text.copyCodeButton : undefined
+              // }
               class="code-block__copy-code-button"
               part="code-block__copy-code-button"
               type="button"
               onClick={copy(options.plainText)}
             >
-              {!chatRef.isMobile && translations.text.copyCodeButton}
+              {translations.text.copyCodeButton}
             </button>
 
-            {chatRef.hyperlinkToDownloadFile && (
+            {/* {chatRef.hyperlinkToDownloadFile && (
               <button
                 aria-label={translations.accessibleName.downloadCodeButton}
                 title={translations.accessibleName.downloadCodeButton}
@@ -75,7 +75,7 @@ const defaultCodeRender =
                 part="code-block__download-code-button"
                 onClick={downloadCode(options, chatRef.hyperlinkToDownloadFile)}
               ></button>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -98,7 +98,7 @@ const renderUserMessage = (userMessage: ChatMessageByRole<"user">) => {
         {userMessage.content[0].text}
       </span>
 
-      {(userMessage.content.slice(1) as ChatContentImage[]).map(
+      {/* {(userMessage.content.slice(1) as ChatContentImage[]).map(
         imageContent => (
           <img
             aria-hidden="true"
@@ -113,7 +113,7 @@ const renderUserMessage = (userMessage: ChatMessageByRole<"user">) => {
             loading="lazy"
           ></img>
         )
-      )}
+      )} */}
     </div>
   );
 };
@@ -193,7 +193,8 @@ const renderErrorMessage = (
       chatRef.renderCode ?? defaultCodeRender(chatRef, chatRef.translations)
     }
     theme={chatRef.markdownTheme}
-    value={messageModel.content}
+    // TODO: Fix this
+    value={messageModel.content as string}
   ></ch-markdown-viewer>
 );
 

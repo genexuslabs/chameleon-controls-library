@@ -64,7 +64,8 @@ const render = () => (
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
           value={state.value}
-          showAdditionalContent={state.showAdditionalContent}
+          showAdditionalContentAfter={state.showAdditionalContentAfter}
+          showAdditionalContentBefore={state.showAdditionalContentBefore}
           spellcheck={state.spellcheck}
           startImgSrc={state.startImgSrc}
           startImgType={state.startImgType}
@@ -72,7 +73,7 @@ const render = () => (
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-1", "edit-1")}
         >
-          {state.showAdditionalContent && (
+          {state.showAdditionalContentAfter && (
             <ch-combo-box-render
               slot="additional-content"
               accessibleName="Data Types"
@@ -114,7 +115,8 @@ const render = () => (
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
           value={state.value}
-          showAdditionalContent={state.showAdditionalContent}
+          showAdditionalContentAfter={state.showAdditionalContentAfter}
+          showAdditionalContentBefore={state.showAdditionalContentBefore}
           spellcheck={state.spellcheck}
           startImgSrc={state.startImgSrc}
           startImgType={state.startImgType}
@@ -122,7 +124,7 @@ const render = () => (
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-2", "edit-2")}
         >
-          {state.showAdditionalContent && (
+          {state.showAdditionalContentAfter && (
             <ch-combo-box-render
               slot="additional-content"
               accessibleName="Data Types"
@@ -164,7 +166,8 @@ const render = () => (
             picture={state.picture}
             pictureCallback={dummyPictureCallback}
             value={state.value}
-            showAdditionalContent={state.showAdditionalContent}
+            showAdditionalContentAfter={state.showAdditionalContentAfter}
+            showAdditionalContentBefore={state.showAdditionalContentBefore}
             spellcheck={state.spellcheck}
             startImgSrc={state.startImgSrc}
             startImgType={state.startImgType}
@@ -172,7 +175,7 @@ const render = () => (
             readonly={state.readonly}
             onInput={handleValueInput("form-edit-3", "edit-3")}
           >
-            {state.showAdditionalContent && (
+            {state.showAdditionalContentAfter && (
               <ch-combo-box-render
                 slot="additional-content"
                 accessibleName="Data Types"
@@ -370,8 +373,16 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "string"
       },
       {
-        id: "showAdditionalContent",
-        caption: "Show Additional Content",
+        id: "showAdditionalContentBefore",
+        caption: "Show Additional Content Before",
+        columnSpan: 2,
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "showAdditionalContentAfter",
+        caption: "Show Additional Content After",
+        columnSpan: 2,
         value: false,
         type: "boolean"
       }
@@ -430,7 +441,16 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
     },
     { name: "placeholder", defaultValue: undefined, type: "string" },
     { name: "readonly", defaultValue: false, type: "boolean" },
-    { name: "showAdditionalActions", defaultValue: false, type: "boolean" },
+    {
+      name: "showAdditionalContentBefore",
+      defaultValue: false,
+      type: "boolean"
+    },
+    {
+      name: "showAdditionalContentAfter",
+      defaultValue: false,
+      type: "boolean"
+    },
     { name: "spellcheck", defaultValue: false, type: "boolean" },
     { name: "startImgSrc", defaultValue: undefined, type: "string" },
     { name: "startImgType", defaultValue: "background", type: "string" },
@@ -456,10 +476,14 @@ export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
 
       <ChEdit${renderShowcaseProperties(state, "react", showcasePropertiesInfo)}
       >${
-        state.showAdditionalContent
-          ? '\n        <div slot="additional-content">Your content here...</div>\n      '
+        state.showAdditionalContentBefore
+          ? '\n        <div slot="additional-content-before">Your content here...</div>\n      '
           : ""
-      }</ChEdit>`,
+      }${
+      state.showAdditionalContentAfter
+        ? '\n        <div slot="additional-content-after">Your content here...</div>\n      '
+        : ""
+    }</ChEdit>`,
 
     stencil: () => `<label ${showcaseTemplateClassProperty(
       "stencil",
@@ -474,10 +498,14 @@ export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
           showcasePropertiesInfo
         )}
         >${
-          state.showAdditionalContent
-            ? '\n          <div slot="additional-content">Your content here...</div>\n        '
+          state.showAdditionalContentBefore
+            ? '\n          <div slot="additional-content-before">Your content here...</div>\n        '
             : ""
-        }</ch-edit>`
+        }${
+      state.showAdditionalContentAfter
+        ? '\n          <div slot="additional-content-after">Your content here...</div>\n        '
+        : ""
+    }</ch-edit>`
   },
   render: render,
   state: state

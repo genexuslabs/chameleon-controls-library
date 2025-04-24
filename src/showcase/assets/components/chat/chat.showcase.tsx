@@ -39,13 +39,18 @@ const render: ShowcaseRender = designSystem => (
     isMobile={false}
     items={state.items}
     showAdditionalContent={state.showAdditionalContent}
-    showSendInputAdditionalContent={state.showSendInputAdditionalContent}
+    showSendInputAdditionalContentAfter={
+      state.showSendInputAdditionalContentAfter
+    }
+    showSendInputAdditionalContentBefore={
+      state.showSendInputAdditionalContentBefore
+    }
     translations={chatTranslations}
   >
     <div slot="additional-content">
       Custom content that is rendered when the chat renders content
     </div>
-    {state.showSendInputAdditionalContent && (
+    {state.showSendInputAdditionalContentAfter && (
       <ch-combo-box-render
         slot="send-input-additional-content"
         accessibleName="Data Types"
@@ -133,8 +138,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "boolean"
       },
       {
-        id: "showSendInputAdditionalContent",
-        caption: "Show Send Input Additional Content",
+        id: "showSendInputAdditionalContentBefore",
+        caption: "Show Send Input Additional Content Before",
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "showSendInputAdditionalContentAfter",
+        caption: "Show Send Input Additional Content After",
         value: false,
         type: "boolean"
       }
@@ -199,8 +210,12 @@ export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
           ? '\n        <div slot="additional-content">Your content here...</div>\n      '
           : ""
       }${
-        state.showSendInputAdditionalContent
-          ? '\n        <div slot="send-input-additional-content">Your content here...</div>\n      '
+        state.showSendInputAdditionalContentBefore
+          ? '\n        <div slot="send-input-additional-content-before">Your content here...</div>\n      '
+          : ""
+      }${
+        state.showSendInputAdditionalContentAfter
+          ? '\n        <div slot="send-input-additional-content-after">Your content here...</div>\n      '
           : ""
       }</ChChat>`,
 
@@ -214,8 +229,12 @@ export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
             ? '\n          <div slot="additional-content">Your content here...</div>\n        '
             : ""
         }${
-        state.showSendInputAdditionalContent
-          ? '\n          <div slot="send-input-additional-content">Your content here...</div>\n        '
+        state.showSendInputAdditionalContentBefore
+          ? '\n          <div slot="send-input-additional-content-before">Your content here...</div>\n        '
+          : ""
+      }${
+        state.showSendInputAdditionalContentAfter
+          ? '\n          <div slot="send-input-additional-content-after">Your content here...</div>\n        '
           : ""
       }</ch-chat>`
     }

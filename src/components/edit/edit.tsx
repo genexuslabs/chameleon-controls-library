@@ -91,9 +91,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   // Refs
   // TODO: StencilJS issue. We have to use two refs because StencilJS does not,
-  // update the ref when updating the multiline property
+  // update the ref when updating the multiline property or the DOM element is
+  // moved
   #inputRef: HTMLInputElement | undefined;
   #textareaRef: HTMLTextAreaElement | undefined;
+  #textareaInsideContainerRef: HTMLTextAreaElement | undefined;
 
   @State() isFocusOnControl = false;
 
@@ -329,7 +331,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    */
   @Event() input: EventEmitter<string>;
 
-  #getInputRef = () => this.#inputRef ?? this.#textareaRef;
+  #getInputRef = () =>
+    this.#inputRef ?? this.#textareaRef ?? this.#textareaInsideContainerRef;
 
   #computeImage = () => {
     if (!this.startImgSrc) {
@@ -443,7 +446,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       onChange={canAddListeners && this.#handleChange}
       onInput={canAddListeners && this.#handleValueChanging}
       onAnimationStart={canAddListeners && this.#handleAutoFill}
-      ref={el => (this.#textareaRef = el)}
+      ref={el =>
+        // This is a WA due to a StencilJS bug not refreshing the ref when the
+        // element is moved
+        this.autoGrow && this.showAdditionalContent
+          ? (this.#textareaInsideContainerRef = el)
+          : (this.#textareaRef = el)
+      }
     ></textarea>
   );
 

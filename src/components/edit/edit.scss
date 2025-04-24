@@ -80,6 +80,7 @@
 }
 
 .content {
+  grid-area: content;
   inline-size: 100%;
   cursor: inherit;
 
@@ -156,11 +157,22 @@
 // - - - - - - - - - - - - - - - - - - - -
 // Hide textarea resize button
 .multiline {
-  position: absolute;
-  inset: 0;
-  block-size: 100%; // Necessary for Mozilla Firefox
-  padding: inherit;
-  resize: unset;
+  &-floating {
+    position: absolute;
+    inset: 0;
+    block-size: 100%; // Necessary for Mozilla Firefox
+    padding: inherit; // Necessary to properly align the placeholder
+    resize: unset;
+  }
+
+  &-inline {
+    display: grid;
+    resize: unset;
+  }
+
+  &-container {
+    position: relative;
+  }
 }
 
 // Auto grow = True and multiline = true
@@ -174,13 +186,19 @@
   block-size: 100%;
 
   // Implement line breaks
-  white-space: pre-wrap;
+  white-space: break-spaces;
 
   // Break words that do not enter in a single line
   word-break: break-word;
 
   // Hide from the accessibility tree but take space in the layout
   visibility: hidden;
+
+  // Without this line-breaks will flickering when a new character is added at
+  // the start of the line
+  &::after {
+    content: " ";
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -236,6 +254,7 @@
 }
 
 .clear-button {
+  grid-area: clear-button;
   display: inline-grid;
   align-items: center;
   justify-content: center;

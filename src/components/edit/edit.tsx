@@ -58,7 +58,8 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
   "datetime-local": "0001-01-01T00:00:00"
 };
 
-const TEXTAREA_CLASSES = `content autofill multiline ${SCROLLABLE_CLASS}`;
+const TEXTAREA_FLOATING_CLASSES = `content autofill multiline-floating ${SCROLLABLE_CLASS}`;
+const TEXTAREA_INLINE_CLASSES = `content autofill multiline-inline ${SCROLLABLE_CLASS}`;
 
 /**
  * A wrapper for the input and textarea elements. It additionally provides:
@@ -72,10 +73,8 @@ const TEXTAREA_CLASSES = `content autofill multiline ${SCROLLABLE_CLASS}`;
  *  - Support for debouncing the input event.
  *
  * @part date-placeholder - A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.
- * @part hidden-multiline - The auxiliary content rendered in the control to implement the auto-grow. This part only applies when `multiline="true"`.
- * @part trigger-button - The trigger button displayed on the right side of the control when `show-trigger="true"`.
  *
- * @slot trigger-content - The slot used for the content of the trigger button.
+ * @slot additional-content - The slot used for the additional content when `showAdditionalContent === true`.
  */
 @Component({
   formAssociated: true,
@@ -421,6 +420,63 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     this.isFocusOnControl = false;
   };
 
+  #renderTextarea = (canAddListeners: boolean) => (
+    <textarea
+      autoFocus={this.autoFocus}
+      aria-label={
+        this.#accessibleNameFromExternalLabel || this.accessibleName || null
+      }
+      autoCapitalize={this.autocapitalize}
+      autoComplete={this.autocomplete}
+      class={
+        this.showAdditionalContent && !this.autoGrow
+          ? TEXTAREA_INLINE_CLASSES
+          : TEXTAREA_FLOATING_CLASSES
+      }
+      disabled={this.disabled}
+      maxLength={this.maxLength}
+      placeholder={this.placeholder}
+      readOnly={this.readonly}
+      spellcheck={this.spellcheck}
+      value={this.value}
+      // Event listeners
+      onChange={canAddListeners && this.#handleChange}
+      onInput={canAddListeners && this.#handleValueChanging}
+      onAnimationStart={canAddListeners && this.#handleAutoFill}
+      ref={el => (this.#textareaRef = el)}
+    ></textarea>
+  );
+
+  #renderTextareaWithAdditionalContent = (canAddListeners: boolean) => {
+    // Floating as a "normal textarea"
+    if (!this.showAdditionalContent) {
+      return [
+        this.#renderTextarea(canAddListeners),
+        this.autoGrow && (
+          <div aria-hidden="true" class="hidden-multiline">
+            {this.value}
+          </div>
+        )
+      ];
+    }
+
+    // Inline case
+    if (!this.autoGrow) {
+      return this.#renderTextarea(canAddListeners);
+    }
+
+    // Floating inside a container to implement the Auto Grow
+    return (
+      <div class="multiline-container">
+        {this.#renderTextarea(canAddListeners)}
+
+        <div aria-hidden="true" class="hidden-multiline">
+          {this.value}
+        </div>
+      </div>
+    );
+  };
+
   connectedCallback() {
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
 
@@ -492,37 +548,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
         data-valign={!this.multiline ? "" : undefined}
       >
         {this.multiline
-          ? [
-              <textarea
-                autoFocus={this.autoFocus}
-                aria-label={
-                  this.#accessibleNameFromExternalLabel ||
-                  this.accessibleName ||
-                  null
-                }
-                autoCapitalize={this.autocapitalize}
-                autoComplete={this.autocomplete}
-                class={TEXTAREA_CLASSES}
-                disabled={this.disabled}
-                maxLength={this.maxLength}
-                placeholder={this.placeholder}
-                readOnly={this.readonly}
-                spellcheck={this.spellcheck}
-                value={this.value}
-                // Event listeners
-                onChange={canAddListeners && this.#handleChange}
-                onInput={canAddListeners && this.#handleValueChanging}
-                onAnimationStart={canAddListeners && this.#handleAutoFill}
-                ref={el => (this.#textareaRef = el)}
-              ></textarea>,
-
-              // The space at the end of the value is necessary to correctly display the enters
-              this.autoGrow && (
-                <div class="hidden-multiline" part="hidden-multiline">
-                  {this.value}{" "}
-                </div>
-              )
-            ]
+          ? this.#renderTextareaWithAdditionalContent(canAddListeners)
           : [
               <input
                 autoFocus={this.autoFocus}

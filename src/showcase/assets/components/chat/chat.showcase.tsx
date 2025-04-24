@@ -13,6 +13,7 @@ import {
 } from "./callbacks";
 import { mercuryChatMessageRender } from "./mercury-code-render";
 import { renderShowcaseProperties } from "../utils";
+import { dataTypeInGeneXus } from "../combo-box/models";
 
 const state: Partial<HTMLChChatElement> = {};
 
@@ -44,6 +45,14 @@ const render: ShowcaseRender = designSystem => (
     <div slot="additional-content">
       Custom content that is rendered when the chat renders content
     </div>
+    {state.showSendInputAdditionalContent && (
+      <ch-combo-box-render
+        slot="send-input-additional-content"
+        accessibleName="Data Types"
+        class="combo-box"
+        model={dataTypeInGeneXus}
+      ></ch-combo-box-render>
+    )}
   </ch-chat>
 );
 
@@ -185,14 +194,30 @@ export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
         "react",
         showcasePropertiesInfo
       )}
-      ></ChChat>`,
+      >${
+        state.showAdditionalContent
+          ? '\n        <div slot="additional-content">Your content here...</div>\n      '
+          : ""
+      }${
+        state.showSendInputAdditionalContent
+          ? '\n        <div slot="send-input-additional-content">Your content here...</div>\n      '
+          : ""
+      }</ChChat>`,
 
       stencil: () => `<ch-chat${renderShowcaseProperties(
         state,
         "stencil",
         showcasePropertiesInfo
       )}
-        ></ch-chat>`
+        >${
+          state.showAdditionalContent
+            ? '\n          <div slot="additional-content">Your content here...</div>\n        '
+            : ""
+        }${
+        state.showSendInputAdditionalContent
+          ? '\n          <div slot="send-input-additional-content">Your content here...</div>\n        '
+          : ""
+      }</ch-chat>`
     }
   },
   render: render,

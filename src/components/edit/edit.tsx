@@ -476,7 +476,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           "ch-edit--multiline": this.multiline && this.autoGrow,
 
           [`ch-edit-start-img-type--${this.startImgType} ch-edit-pseudo-img--start`]:
-            !!this.#startImage,
+            !this.multiline && !!this.#startImage,
 
           [DISABLED_CLASS]: this.disabled
         }}
@@ -486,7 +486,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           [EDIT_HOST_PARTS.EMPTY_VALUE]: !this.value,
           [this.hostParts]: !!this.hostParts
         })}
-        style={this.#startImage?.styles ?? undefined}
+        style={!this.multiline ? this.#startImage?.styles ?? undefined : null}
         // Alignment
         data-text-align=""
         data-valign={!this.multiline ? "" : undefined}

@@ -243,13 +243,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly readonly: boolean = false;
 
   /**
-   * If true, a trigger button is shown next to the edit field. The button can
-   * be customized adding a child element with `slot="trigger-content"`
-   * attribute to specify the content inside the trigger button.
-   */
-  @Prop() readonly showTrigger: boolean;
-
-  /**
    * Specifies whether the element may be checked for spelling errors
    */
   // eslint-disable-next-line @stencil-community/reserved-member-names
@@ -268,12 +261,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Specifies the source of the start image.
    */
   @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
-
-  /**
-   * This attribute lets you specify the label for the trigger button.
-   * Important for accessibility.
-   */
-  @Prop() readonly triggerButtonAccessibleName: string;
 
   /**
    * The type of control to render. A subset of the types supported by the `input` element is supported:
@@ -335,11 +322,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * This event is debounced by the `debounce` property.
    */
   @Event() input: EventEmitter<string>;
-
-  /**
-   * Fired when the trigger button is clicked.
-   */
-  @Event() triggerClick: EventEmitter;
 
   #getInputRef = () => this.#inputRef ?? this.#textareaRef;
 
@@ -404,13 +386,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     }
 
     this.#setValueAndEmitInputEventWithDebounce(this.#getValueFromEvent(event));
-  };
-
-  #handleTriggerClick = (event: UIEvent) => {
-    if (!this.disabled) {
-      event.stopPropagation();
-    }
-    this.triggerClick.emit(event);
   };
 
   #clearValue = (event: PointerEvent) => {
@@ -492,7 +467,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           "ch-edit--cursor-text": !isDateType && !this.disabled,
           "ch-edit--editable-date": isDateType && !this.readonly,
           "ch-edit--multiline": this.multiline && this.autoGrow,
-          "ch-edit__trigger-button-space": this.showTrigger,
 
           [`ch-edit-start-img-type--${this.startImgType} ch-edit-pseudo-img--start`]:
             !!this.#startImage,
@@ -590,22 +564,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 }
                 ref={el => (this.#inputRef = el)}
               />,
-
-              this.showTrigger && (
-                <button
-                  aria-label={this.triggerButtonAccessibleName}
-                  class={{
-                    "trigger-button": true,
-                    disabled: this.disabled
-                  }}
-                  part="trigger-button"
-                  type="button"
-                  disabled={this.disabled}
-                  onClick={canAddListeners && this.#handleTriggerClick}
-                >
-                  <slot name="trigger-content" />
-                </button>
-              ),
 
               // Implements a non-native placeholder for date types. TODO: Add unit tests for this
               showDatePLaceholder && (

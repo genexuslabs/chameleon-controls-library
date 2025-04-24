@@ -228,27 +228,6 @@
 }
 
 // - - - - - - - - - - - - - - - - - - - -
-//             Trigger button
-// - - - - - - - - - - - - - - - - - - - -
-:host(.ch-edit__trigger-button-space)::after {
-  content: "";
-  block-size: 100%;
-  margin-inline-start: var(--ch-edit-trigger-button-inline-size);
-  padding-inline-start: inherit;
-}
-
-.trigger-button {
-  display: flex;
-  align-items: center;
-  justify-items: center;
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: 0;
-  padding-inline: inherit;
-  cursor: pointer;
-}
-
-// - - - - - - - - - - - - - - - - - - - -
 //              Clear button
 // - - - - - - - - - - - - - - - - - - - -
 [type="search"]::-webkit-search-decoration,

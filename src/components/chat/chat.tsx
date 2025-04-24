@@ -191,10 +191,19 @@ export class ChChat {
 
   /**
    * If `true`, a slot is rendered in the `send-input` with
-   * `"send-input-additional-content"` name. This slot is intended to customize
-   * the internal content of the edit by adding additional elements.
+   * `"send-input-additional-content-after"` name. This slot is intended to customize
+   * the internal content of the send-input by adding additional elements
+   * after the send-input content.
    */
-  @Prop() readonly showSendInputAdditionalContent: boolean = false;
+  @Prop() readonly showSendInputAdditionalContentAfter: boolean = false;
+
+  /**
+   * If `true`, a slot is rendered in the `send-input` with
+   * `"send-input-additional-content-before"` name. This slot is intended to customize
+   * the internal content of the send-input by adding additional elements
+   * before the send-input content.
+   */
+  @Prop() readonly showSendInputAdditionalContentBefore: boolean = false;
 
   /**
    * Specifies the theme to be used for rendering the chat.
@@ -741,14 +750,25 @@ export class ChChat {
               hostParts="send-input"
               multiline
               placeholder={this.translations.placeholder.sendInput}
-              showAdditionalContent={this.showSendInputAdditionalContent}
+              showAdditionalContentAfter={
+                this.showSendInputAdditionalContentAfter
+              }
+              showAdditionalContentBefore={
+                this.showSendInputAdditionalContentBefore
+              }
               onKeyDown={this.#sendMessageKeyboard}
               ref={el => (this.#editRef = el as HTMLChEditElement)}
             >
-              {this.showSendInputAdditionalContent && (
+              {this.showSendInputAdditionalContentBefore && (
                 <slot
-                  slot="additional-content"
-                  name="send-input-additional-content"
+                  slot="additional-content-before"
+                  name="send-input-additional-content-before"
+                />
+              )}
+              {this.showSendInputAdditionalContentAfter && (
+                <slot
+                  slot="additional-content-after"
+                  name="send-input-additional-content-after"
                 />
               )}
             </ch-edit>

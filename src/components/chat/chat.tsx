@@ -190,6 +190,13 @@ export class ChChat {
   @Prop() readonly showAdditionalContent: boolean = false;
 
   /**
+   * If `true`, a slot is rendered in the `send-input` with
+   * `"send-input-additional-content"` name. This slot is intended to customize
+   * the internal content of the edit by adding additional elements.
+   */
+  @Prop() readonly showSendInputAdditionalContent: boolean = false;
+
+  /**
    * Specifies the theme to be used for rendering the chat.
    * If `undefined`, no theme will be applied.
    */
@@ -734,9 +741,17 @@ export class ChChat {
               hostParts="send-input"
               multiline
               placeholder={this.translations.placeholder.sendInput}
+              showAdditionalContent={this.showSendInputAdditionalContent}
               onKeyDown={this.#sendMessageKeyboard}
               ref={el => (this.#editRef = el as HTMLChEditElement)}
-            ></ch-edit>
+            >
+              {this.showSendInputAdditionalContent && (
+                <slot
+                  slot="additional-content"
+                  name="send-input-additional-content"
+                />
+              )}
+            </ch-edit>
           </div>
 
           <button

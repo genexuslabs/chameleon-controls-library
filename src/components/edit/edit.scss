@@ -58,9 +58,10 @@
 
   // --ch-edit-trigger-button-inline-size: #{$ch-icon-size};
 
-  display: flex;
+  display: inline-grid;
   align-items: center;
   position: relative;
+  grid-template: "content" 1fr / 1fr;
 
   // Base image
   --ch-start-img: var(--ch-start-img--base);
@@ -80,7 +81,6 @@
 }
 
 .content {
-  grid-area: content;
   inline-size: 100%;
   cursor: inherit;
 
@@ -94,6 +94,11 @@
   }
 
   // @include scrollbar-customization-for-one-element();
+}
+
+.input,
+.multiline-container {
+  grid-area: content;
 }
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -120,11 +125,14 @@
 }
 
 :host(.ch-edit-pseudo-img--start) {
+  grid-template: "start-img-src content" 1fr / max-content 1fr;
+
   & > .content {
     margin-inline-start: var(--ch-edit-gap);
   }
 
   &::before {
+    grid-area: start-img-src;
     content: "";
     display: block;
     inline-size: var(--ch-edit__image-size);
@@ -166,7 +174,6 @@
   }
 
   &-inline {
-    display: grid;
     resize: unset;
   }
 
@@ -251,6 +258,15 @@
 [type="search"]::-webkit-search-decoration,
 [type="search"]::-webkit-search-cancel-button {
   appearance: none;
+}
+
+:host(.ch-edit--clear-button) {
+  grid-template: "content clear-button" 1fr / 1fr max-content;
+}
+
+// With icon
+:host(.ch-edit--clear-button.ch-edit-pseudo-img--start) {
+  grid-template: "start-img-src content clear-button" 1fr / max-content 1fr max-content;
 }
 
 .clear-button {

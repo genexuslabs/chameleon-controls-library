@@ -519,9 +519,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   // TODO: Remove the icon with multiline and add overflow: clip in the Host with multiline
   render() {
     const isDateType = DATE_TYPES.includes(this.type);
-    const showDatePLaceholder = isDateType && this.placeholder && !this.value;
+    const showDatePlaceholder = isDateType && this.placeholder && !this.value;
     const shouldDisplayPicture = this.#hasPictureApplied();
     const canAddListeners = !this.disabled && !this.readonly;
+    const renderClearButton =
+      !this.multiline && this.type === "search" && !!this.value;
 
     return (
       <Host
@@ -530,6 +532,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           "ch-edit--cursor-text": !isDateType && !this.disabled,
           "ch-edit--editable-date": isDateType && !this.readonly,
           "ch-edit--multiline": this.multiline && this.autoGrow,
+          "ch-edit--clear-button": renderClearButton,
 
           [`ch-edit-start-img-type--${this.startImgType} ch-edit-pseudo-img--start`]:
             !this.multiline && !!this.#startImage,
@@ -560,8 +563,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 autoCapitalize={this.autocapitalize}
                 autoComplete={this.autocomplete}
                 class={{
-                  "content autofill": true,
-                  "null-date": showDatePLaceholder
+                  "content input autofill": true,
+                  "null-date": showDatePlaceholder
                 }}
                 disabled={this.disabled}
                 inputMode={this.mode}
@@ -599,7 +602,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
               />,
 
               // Implements a non-native placeholder for date types. TODO: Add unit tests for this
-              showDatePLaceholder && (
+              showDatePlaceholder && (
                 <div
                   aria-hidden="true"
                   class="date-placeholder"
@@ -612,7 +615,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
         {this.showAdditionalContent && <slot name="additional-content" />}
 
-        {!this.multiline && this.type === "search" && !!this.value && (
+        {renderClearButton && (
           <button
             aria-label={this.clearSearchButtonAccessibleName}
             class="clear-button"

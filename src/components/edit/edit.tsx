@@ -243,6 +243,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly readonly: boolean = false;
 
   /**
+   * If `true`, a slot is rendered in the edit with `"additional-content"` name.
+   * This slot is intended to customize the internal content of the edit by
+   * adding additional elements.
+   */
+  @Prop() readonly showAdditionalContent: boolean;
+
+  /**
    * Specifies whether the element may be checked for spelling errors
    */
   // eslint-disable-next-line @stencil-community/reserved-member-names
@@ -574,21 +581,23 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 >
                   {this.placeholder}
                 </div>
-              ),
-
-              this.type === "search" && !!this.value && (
-                <button
-                  aria-label={this.clearSearchButtonAccessibleName}
-                  class="clear-button"
-                  part={tokenMap({
-                    [EDIT_PARTS_DICTIONARY.CLEAR_BUTTON]: true,
-                    [EDIT_PARTS_DICTIONARY.DISABLED]: this.disabled
-                  })}
-                  type="button"
-                  onClick={!this.disabled && this.#clearValue}
-                ></button>
               )
             ]}
+
+        {this.showAdditionalContent && <slot name="additional-content" />}
+
+        {!this.multiline && this.type === "search" && !!this.value && (
+          <button
+            aria-label={this.clearSearchButtonAccessibleName}
+            class="clear-button"
+            part={tokenMap({
+              [EDIT_PARTS_DICTIONARY.CLEAR_BUTTON]: true,
+              [EDIT_PARTS_DICTIONARY.DISABLED]: this.disabled
+            })}
+            type="button"
+            onClick={!this.disabled && this.#clearValue}
+          ></button>
+        )}
       </Host>
     );
   }

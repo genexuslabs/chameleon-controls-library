@@ -74,7 +74,8 @@ const TEXTAREA_INLINE_CLASSES = `content autofill multiline-inline ${SCROLLABLE_
  *
  * @part date-placeholder - A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.
  *
- * @slot additional-content - The slot used for the additional content when `showAdditionalContent === true`.
+ * @slot additional-content-before - The slot used for the additional content when `showAdditionalContentBefore === true`.
+ * @slot additional-content-after - The slot used for the additional content when `showAdditionalContentAfter === true`.
  */
 @Component({
   formAssociated: true,
@@ -244,11 +245,20 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly readonly: boolean = false;
 
   /**
-   * If `true`, a slot is rendered in the edit with `"additional-content"` name.
+   * If `true`, a slot is rendered in the edit with `"additional-content-after"`
+   * name.
    * This slot is intended to customize the internal content of the edit by
-   * adding additional elements.
+   * adding additional elements after the edit content.
    */
-  @Prop() readonly showAdditionalContent: boolean;
+  @Prop() readonly showAdditionalContentAfter: boolean;
+
+  /**
+   * If `true`, a slot is rendered in the edit with `"additional-content-before"`
+   * name.
+   * This slot is intended to customize the internal content of the edit by
+   * adding additional elements before the edit content.
+   */
+  @Prop() readonly showAdditionalContentBefore: boolean;
 
   /**
    * Specifies whether the element may be checked for spelling errors
@@ -432,7 +442,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       autoCapitalize={this.autocapitalize}
       autoComplete={this.autocomplete}
       class={
-        this.showAdditionalContent && !this.autoGrow
+        this.showAdditionalContentBefore && !this.autoGrow
           ? TEXTAREA_INLINE_CLASSES
           : TEXTAREA_FLOATING_CLASSES
       }
@@ -449,7 +459,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       ref={el =>
         // This is a WA due to a StencilJS bug not refreshing the ref when the
         // element is moved
-        this.autoGrow && this.showAdditionalContent
+        this.autoGrow && this.showAdditionalContentBefore
           ? (this.#textareaInsideContainerRef = el)
           : (this.#textareaRef = el)
       }
@@ -458,7 +468,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   #renderTextareaWithAdditionalContent = (canAddListeners: boolean) => {
     // Floating as a "normal textarea"
-    if (!this.showAdditionalContent) {
+    if (!this.showAdditionalContentBefore) {
       return [
         this.#renderTextarea(canAddListeners),
         this.autoGrow && (
@@ -559,6 +569,10 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
         data-text-align=""
         data-valign={!this.multiline ? "" : undefined}
       >
+        {this.showAdditionalContentBefore && (
+          <slot name="additional-content-before" />
+        )}
+
         {this.multiline
           ? this.#renderTextareaWithAdditionalContent(canAddListeners)
           : [
@@ -622,7 +636,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
               )
             ]}
 
-        {this.showAdditionalContent && <slot name="additional-content" />}
+        {this.showAdditionalContentAfter && (
+          <slot name="additional-content-after" />
+        )}
 
         {renderClearButton && (
           <button

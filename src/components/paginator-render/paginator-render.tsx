@@ -214,7 +214,7 @@ export class ChPaginatorRender implements ComponentInterface {
       unknownPages: "many",
       unknownItems: "many",
       showingItems: `Showing ${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} of ${TOTAL_ITEMS} items`,
-      page: "Page:",
+      goToInputLabel: "Page:",
       showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
     }
   };
@@ -604,12 +604,12 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderNavigationGoTo = () => (
     <div part={PAGINATOR_PARTS_DICTIONARY.GO_TO} class="go-to">
-      {this.translations.text.page && (
+      {this.translations.text.goToInputLabel && (
         <label
           htmlFor="goto-input"
           part={PAGINATOR_PARTS_DICTIONARY.GO_TO__LABEL}
         >
-          {this.translations.text.page}
+          {this.translations.text.goToInputLabel}
         </label>
       )}
       <input
@@ -621,7 +621,13 @@ export class ChPaginatorRender implements ComponentInterface {
         value={this.actualPage}
         onKeyDown={this.#handleGoToOnKeyDown}
         onBlur={this.#handleGoToOnBlur}
-        aria-label={this.translations.accessibleName.goToInput}
+        aria-label={
+          this.translations.text.goToInputLabel ||
+          this.translations.text.goToInputLabel ===
+            this.translations.accessibleName.goToInput
+            ? undefined
+            : this.translations.accessibleName.goToInput
+        }
       />
       <span>
         {this.translations.text.of}

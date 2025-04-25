@@ -11,7 +11,7 @@ export type PaginatorTranslations = {
     ellipsis: string;
     last: string;
     next: string;
-    page: string;
+    goToInputLabel: string;
     prev: string;
     showingItems: string;
     showingPage: string;

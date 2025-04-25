@@ -19,9 +19,9 @@
   contain: paint;
 }
 
-.message-with-images {
-  display: grid;
-}
+// .message-with-images {
+//   display: grid;
+// }
 
 img {
   display: block;
@@ -43,31 +43,31 @@ img {
   align-items: center;
 }
 
-.file-skeleton {
-  position: relative;
+// .file-skeleton {
+//   position: relative;
 
-  &::before,
-  &::after {
-    content: "";
-    display: inline-flex;
-  }
-}
+//   &::before,
+//   &::after {
+//     content: "";
+//     display: inline-flex;
+//   }
+// }
 
 // - - - - - - - - - - - - - - - -
 //         Send container
 // - - - - - - - - - - - - - - - -
-.stop-generating-answer-button {
-  grid-area: input-wrapper;
-  position: absolute;
-  inset-block-start: 0;
-  justify-self: center;
-  transform: translateY(-100%);
-}
+// .stop-generating-answer-button {
+//   grid-area: input-wrapper;
+//   position: absolute;
+//   inset-block-start: 0;
+//   justify-self: center;
+//   transform: translateY(-100%);
+// }
 
-.images-to-upload {
-  display: flex;
-  flex-wrap: wrap;
-}
+// .images-to-upload {
+//   display: flex;
+//   flex-wrap: wrap;
+// }
 
 .send-container {
   display: grid;

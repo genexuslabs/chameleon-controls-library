@@ -15,6 +15,7 @@ import type {
 } from "../../components";
 import type { ThemeModel } from "../theme/theme-types";
 import {
+  ChatFiles,
   ChatInternalCallbacks,
   ChatMessage,
   ChatMessageByRole,
@@ -26,6 +27,7 @@ import { defaultChatRender } from "./default-chat-render";
 import { adoptCommonThemes } from "../../common/theme";
 import { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 import { tokenMap } from "../../common/utils";
+import { ChMimeType } from "../../common/mime-types";
 
 const ENTER_KEY = "Enter";
 
@@ -47,6 +49,8 @@ export class ChChat {
   #virtualScrollRef: HTMLChVirtualScrollerElement | undefined;
 
   @Element() el!: HTMLChChatElement;
+
+  @State() uploadingFiles = 0;
 
   @State() virtualItems: ChatMessage[] = [];
 
@@ -246,6 +250,9 @@ export class ChChat {
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
+    // TODO: Don't update chat message if it has role="user" and it is
+    // uploading file messages
+
     if (this.items.length === 0 || !this.items[messageIndex]) {
       return;
     }
@@ -266,6 +273,9 @@ export class ChChat {
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
+    // TODO: Don't update last chat message if it has role="user" and it is
+    // uploading file messages
+
     if (this.items.length === 0) {
       return;
     }
@@ -338,14 +348,67 @@ export class ChChat {
     await this.#pushMessage(userMessage);
   };
 
-  #chatMessageCanBeSent = (chat: ChatMessage) =>
+  #chatMessageCanBeSent = (chat: ChatMessage, files: File[]) =>
     !this.callbacks ||
     !this.callbacks.validateSendChatMessage ||
-    this.callbacks.validateSendChatMessage(chat);
+    this.callbacks.validateSendChatMessage(chat, files);
+
+  #getChatFiles = () =>
+    !this.callbacks || !this.callbacks.getChatMessageFiles
+      ? []
+      : this.callbacks.getChatMessageFiles();
+
+  #uploadFiles = (
+    userMessageToAdd: ChatMessageByRole<"user">,
+    sendInputValue: string,
+    filesToUpload: File[]
+  ) => {
+    if (!this.callbacks) {
+      return console.warn(
+        'The "callbacks" property is not defined, so files can not be uploaded'
+      );
+    }
+    if (!this.callbacks.uploadFile) {
+      return console.warn(
+        'The "uploadFile" member is not defined in the "callbacks" property, so files can not be uploaded'
+      );
+    }
+
+    const chatFiles: ChatFiles = [];
+    userMessageToAdd.content = {
+      message: sendInputValue,
+      files: chatFiles
+    };
+
+    for (let fileIndex = 0; fileIndex < filesToUpload.length; fileIndex++) {
+      const file = filesToUpload[fileIndex];
+      const temporalFileURL = URL.createObjectURL(file);
+
+      chatFiles.push({
+        caption: file.name,
+        mimeType: file.type as ChMimeType,
+        uploadState: "in-progress",
+        url: temporalFileURL
+      });
+
+      this.uploadingFiles++;
+
+      this.callbacks
+        .uploadFile(file)
+        .then(uploadedFile => {
+          chatFiles[fileIndex] = uploadedFile;
+        })
+        .finally(() => {
+          this.uploadingFiles--;
+
+          // Free the resource to avoid memory leaks
+          URL.revokeObjectURL(temporalFileURL);
+        });
+    }
+  };
 
   #sendChat = () => {
     const lastCell = this.items.at(-1);
-
     this.#cellIdAlignedWhenRendered = lastCell.id;
 
     if (this.newUserMessageAlignment === "start") {
@@ -354,12 +417,25 @@ export class ChChat {
       this.#cellHasToReserveSpace.add(lastCell.id);
     }
 
-    this.callbacks?.sendChatMessages(this.items);
+    if (!this.callbacks) {
+      return console.warn(
+        'The "callbacks" property is not defined, so the "sendChatMessages" function can not be executed to emit the new chat'
+      );
+    }
+
+    this.callbacks.sendChatMessages(this.items);
   };
 
   #sendMessage = async () => {
+    const filesToUpload = await this.#getChatFiles();
+    const sendInputValue = this.#editRef.value;
+    const hasFiles = filesToUpload.length !== 0;
+    const emptySendInput =
+      (!sendInputValue || sendInputValue.trim() === "") && !hasFiles;
+
+    // TODO: Add unit tests for this
     if (
-      !this.#editRef.value ||
+      emptySendInput ||
       this.disabled ||
       this.loadingState === "initial" ||
       this.loadingState === "loading" ||
@@ -368,15 +444,21 @@ export class ChChat {
       return;
     }
 
-    // Message without resources
+    // Message
     const userMessageToAdd: ChatMessageByRole<"user"> = {
       id: `${new Date().getTime()}`,
       role: "user",
-      content: this.#editRef.value
+      content: sendInputValue
     };
 
-    if (!(await this.#chatMessageCanBeSent(userMessageToAdd))) {
+    // Validate message with callback
+    if (!(await this.#chatMessageCanBeSent(userMessageToAdd, filesToUpload))) {
       return;
+    }
+
+    // Upload files to the server
+    if (hasFiles) {
+      this.#uploadFiles(userMessageToAdd, sendInputValue, filesToUpload);
     }
 
     await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
@@ -388,8 +470,7 @@ export class ChChat {
 
   #handleStopGenerating = (event: MouseEvent) => {
     event.stopPropagation();
-
-    this.callbacks?.stopGeneratingAnswer!();
+    this.callbacks!.stopGeneratingAnswer!();
   };
 
   #alignCellWhenRendered = () =>

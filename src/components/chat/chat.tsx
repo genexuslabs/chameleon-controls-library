@@ -1,6 +1,8 @@
 import {
   Component,
   Element,
+  Event,
+  EventEmitter,
   Host,
   Method,
   Prop,
@@ -219,6 +221,15 @@ export class ChChat {
       sourceFiles: "Source files:"
     }
   };
+
+  /**
+   * Fired when a new user message is added in the chat by an user interaction.
+   *
+   * This callback is useful for cleaning up the files for any custom render of
+   * the files or even blocking user interactions before the sendChatMessages
+   * callback is executed.
+   */
+  @Event() userMessageAdded: EventEmitter<ChatMessageByRole<"user">>;
 
   /**
    * Add a new message at the end of the record, performing a re-render.

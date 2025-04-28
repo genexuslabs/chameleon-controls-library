@@ -83,6 +83,22 @@ For this, we recommend consulting our repository [chameleon-integrations](https:
 
 - Then you can use the web components anywhere in your template, JSX, html etc
 
+## Accessibility checker
+
+Starting with Chameleon version `6.4.0` there is a new accessibility utility that checks if form elements have a valid label and notifies (`console.warn`) when they don't accomplish this condition. At this moment, it's supported in the following components:
+
+- `ch-combo-box-render`
+- `ch-edit`
+- `ch-slider`
+
+The accessibility checker is enabled by default and can be disabled as follows:
+
+```ts
+import { disableAccessibilityReports } from "@genexus/chameleon-controls-library/dist/collection";
+
+disableAccessibilityReports();
+```
+
 ## Meaning of development status in each control
 
 | Category              | Description                                                                                                                                                                                                                                                                               |

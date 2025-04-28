@@ -295,6 +295,27 @@ export const codeFixerRecord: ChatMessage[] = [
     id: "9",
     role: "assistant",
     status: "complete",
-    content: ASSISTANT_RESPONSE_SHORT_MARKDOWN
+    content: {
+      message: ASSISTANT_RESPONSE_SHORT_MARKDOWN,
+      files: [
+        {
+          mimeType: "image/png",
+          url: "https://www.genexus.com/media/images/logo_genexus_desktop_2024.png?timestamp=20241113105731"
+        },
+        {
+          mimeType: "video/mp4",
+          url: "https://www.w3schools.com/tags/movie.mp4"
+        },
+        {
+          mimeType: "audio/mpeg",
+          url: "https://www.w3schools.com/html/horse.ogg"
+        },
+        {
+          caption: "Chameleon",
+          mimeType: "text/plain",
+          url: "https://github.com/genexuslabs/chameleon-controls-library"
+        }
+      ]
+    }
   }
 ];

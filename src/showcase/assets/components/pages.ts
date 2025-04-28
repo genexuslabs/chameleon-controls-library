@@ -262,6 +262,22 @@ export const showcasePages: NavigationListModel = [
             metadata: DEVELOPER_PREVIEW
           }
         ]
+      },
+
+      {
+        caption: "LiveKit",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/light-mode.svg')",
+        startImgType: "mask",
+        items: [
+          // Temporally disabled
+          // { link: { url: "#alert" }, caption: "Alert", metadata: EXPERIMENTAL },
+          {
+            link: { url: "#live-kit-room" },
+            caption: "Room",
+            metadata: EXPERIMENTAL
+          }
+        ]
       }
 
       // {link: { url: "#notifications", caption: "Notifications", metadata: EXPERIMENTAL], // Temporally disabled

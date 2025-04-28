@@ -71,18 +71,18 @@ import { tokenMap } from "../../../common/utils";
 // };
 
 const defaultAssistantContentRender: ChatContentRender = (
-  messageModel: ChatMessageByRole<"assistant">,
+  message: ChatMessageByRole<"assistant">,
   chatRef: HTMLChChatElement,
   codeBlockRender: ChatCodeBlockRender
 ) => {
-  const messageContent = getMessageContent(messageModel);
+  const messageContent = getMessageContent(message);
 
-  return messageModel.status === "waiting" ? (
+  return message.status === "waiting" ? (
     <div
       class="assistant-loading"
       part={tokenMap({
-        "assistant content waiting": true,
-        [messageModel.parts]: !!messageModel.parts
+        [`assistant content waiting ${message.id}`]: true,
+        [message.parts]: !!message.parts
       })}
     >
       {/* {spinner()} */}
@@ -92,14 +92,14 @@ const defaultAssistantContentRender: ChatContentRender = (
     messageContent && (
       <ch-markdown-viewer
         part={tokenMap({
-          [`assistant content ${
-            messageModel.status ?? DEFAULT_ASSISTANT_STATUS
+          [`assistant content ${message.id} ${
+            message.status ?? DEFAULT_ASSISTANT_STATUS
           }`]: true,
-          [messageModel.parts]: !!messageModel.parts
+          [message.parts]: !!message.parts
         })}
         // TODO: Fix the way to optimize this re-render
         renderCode={codeBlockRender(chatRef)}
-        showIndicator={messageModel.status === "streaming"}
+        showIndicator={message.status === "streaming"}
         theme={chatRef.markdownTheme}
         value={messageContent}
       ></ch-markdown-viewer>
@@ -108,16 +108,19 @@ const defaultAssistantContentRender: ChatContentRender = (
 };
 
 const defaultErrorContentRender: ChatContentRender = (
-  messageModel: ChatMessageByRole<"error">,
+  message: ChatMessageByRole<"error">,
   chatRef: HTMLChChatElement,
   codeBlockRender
 ) => {
-  const errorContent = getMessageContent(messageModel);
+  const errorContent = getMessageContent(message);
 
   return (
     errorContent && (
       <ch-markdown-viewer
-        part="error content"
+        part={tokenMap({
+          [`error content ${message.id}`]: true,
+          [message.parts]: !!message.parts
+        })}
         renderCode={codeBlockRender(chatRef)}
         theme={chatRef.markdownTheme}
         value={errorContent}

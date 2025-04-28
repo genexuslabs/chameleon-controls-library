@@ -104,7 +104,7 @@ export type ChatMessageAssistant = {
 
   /**
    * Specifies the status of the message. If not defined, it will default
-   * to "complete"
+   * to `"complete"`
    */
   status?: "complete" | "waiting" | "streaming";
 };

@@ -41,7 +41,7 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
   return (
     <div
       part={tokenMap({
-        [`content-container ${message.role}`]: true,
+        [`content-container ${message.role} ${message.id}`]: true,
         [assistantStatus]: !!assistantStatus,
         [message.parts]: !!message.parts
       })}
@@ -51,7 +51,7 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
       {chatFiles.length !== 0 && (
         <div
           part={tokenMap({
-            [`files-container ${message.role}`]: true,
+            [`files-container ${message.role} ${message.id}`]: true,
             [assistantStatus]: !!assistantStatus,
             [message.parts]: !!message.parts
           })}

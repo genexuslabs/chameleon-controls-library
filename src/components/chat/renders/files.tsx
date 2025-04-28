@@ -29,7 +29,7 @@ const getFileContainerParts = (
   file: ChatFile,
   fileFormat: keyof ChMimeTypeFormatMap
 ) =>
-  `file format-${fileFormat} ${file.mimeType} ${
+  `file-container format-${fileFormat} ${file.mimeType} ${
     file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
   }${file.extension ? " " + file.extension : ""}` as const;
 

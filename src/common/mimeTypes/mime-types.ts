@@ -1,4 +1,4 @@
-import type { FilterByPrefix, Prettify } from "./types";
+import type { FilterByPrefix, Prettify } from "../types";
 
 export type ChMimeType =
   | "audio/aac" // aac

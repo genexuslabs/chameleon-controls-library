@@ -1,4 +1,10 @@
-import type { ChMimeType } from "../../common/mime-types";
+import type {
+  ChMimeType,
+  ChMimeTypeFormatMap
+} from "../../common/mimeTypes/mime-types";
+import type { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
+
+export type ChatMessageRole = "assistant" | "error" | "system" | "user";
 
 /**
  * Valid examples:
@@ -115,8 +121,6 @@ export type ChatMessageError = {
   parts?: string;
 };
 
-export type ChatMessageRole = "system" | "user" | "assistant" | "error";
-
 export type ChatContent = string | ChatContentFiles;
 
 export type ChatContentFiles = {
@@ -130,6 +134,8 @@ export type ChatFile = {
   accessibleName?: string;
   alternativeText?: string;
   caption?: string;
+
+  extension?: string;
 
   // The (string & Record<never, never>) is necessary to allow any string as
   // the mimeType without removing the VSCode suggestions
@@ -199,3 +205,70 @@ export type ChatInternalCallbacks = {
    */
   uploadFile?: (file: File) => Promise<ChatFile>;
 };
+
+export type ChatMessageRenderByItem = (
+  messageModel: ChatMessageByRole<"assistant" | "error" | "user">
+) => any;
+
+export type ChatMessageRenderBySections = {
+  /**
+   * Render for code blocks.
+   *
+   * If `undefined`, a default code block render will be used.
+   */
+  codeBlock?: ChatCodeBlockRender;
+
+  /**
+   * Render for the content of the message.
+   *
+   * If `undefined`, a default content render will be used.
+   */
+  content?: ChatContentRender;
+
+  /**
+   * Renders for each file type of the message
+   *
+   * If `undefined`, a default render for the files will be used.
+   */
+  files?: ChatFilesRender;
+
+  /**
+   * Render for the general structure of the message.
+   *
+   * This render is useful for adding extra elements and widgets for
+   * customizing the message structure and content. This render has direct
+   * access for all sub-renders of the message (`codeBlock`, `content`, and
+   * `files`) for allowing to relocate those render according to the developer
+   * needs.
+   *
+   * If `undefined`, a default structure render will be used.
+   */
+  messageStructure?: ChatMessageStructureRender;
+};
+
+export type ChatCodeBlockRender = (
+  chatRef: HTMLChChatElement
+) => MarkdownViewerCodeRender;
+
+export type ChatContentRender = (
+  message: ChatMessage,
+  chatRef: HTMLChChatElement,
+  codeBlockRender: ChatCodeBlockRender
+) => any;
+
+export type ChatFilesRender = {
+  [key in keyof ChMimeTypeFormatMap]: (
+    file: ChatFile,
+    chatRef: HTMLChChatElement
+  ) => any;
+};
+
+export type ChatMessageStructureRender = (
+  message: ChatMessage,
+  chatRef: HTMLChChatElement,
+  renders: {
+    codeBlock: ChatCodeBlockRender;
+    content: ChatContentRender;
+    files: ChatFilesRender;
+  }
+) => any;

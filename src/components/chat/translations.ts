@@ -3,6 +3,10 @@ export type ChatTranslations = {
     clearChat: string;
     copyResponseButton: string;
     downloadCodeButton: string;
+    // retryAudioUpload?: string;
+    // retryFileUpload?: string;
+    // retryImageUpload?: string;
+    // retryVideoUpload?: string;
     sendButton: string;
     sendInput: string;
     stopGeneratingAnswerButton: string;
@@ -11,9 +15,13 @@ export type ChatTranslations = {
     sendInput: string;
   };
   text: {
-    stopGeneratingAnswerButton: string;
     copyCodeButton: string;
     processing: string;
+    // retryAudioUpload?: string;
+    // retryFileUpload?: string;
+    // retryImageUpload?: string;
+    // retryVideoUpload?: string;
     sourceFiles: string;
+    stopGeneratingAnswerButton: string;
   };
 };

@@ -14,22 +14,31 @@ import type {
   VirtualScrollVirtualItems
 } from "../../components";
 import type { ThemeModel } from "../theme/theme-types";
-import {
+import type {
   ChatFiles,
   ChatInternalCallbacks,
   ChatMessage,
+  ChatMessageAssistant,
   ChatMessageByRole,
-  ChatMessageByRoleNoId
+  ChatMessageByRoleNoId,
+  ChatMessageError,
+  ChatMessageRenderByItem,
+  ChatMessageRenderBySections,
+  ChatMessageUser
 } from "./types";
-import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
-import { ChatTranslations } from "./translations";
-import { defaultChatRender } from "./default-chat-render";
+import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
+import type { ChatTranslations } from "./translations";
+import type { ChMimeType } from "../../common/mimeTypes/mime-types";
 import { adoptCommonThemes } from "../../common/theme";
-import { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 import { tokenMap } from "../../common/utils";
-import { ChMimeType } from "../../common/mime-types";
+import { getMessageContent, getMessageFiles } from "./utils";
+import { renderContentBySections } from "./renders/renders";
 
 const ENTER_KEY = "Enter";
+
+const getAriaBusyValue = (
+  status?: "complete" | "waiting" | "streaming" | undefined
+): "true" | "false" => (status === "streaming" ? "true" : "false");
 
 /**
  * TODO: Add description
@@ -158,9 +167,20 @@ export class ChChat {
   > = "instant";
 
   /**
-   * This property allows us to implement custom rendering for the code blocks.
+   * This property allows us to implement custom rendering of chat items.
+   *
+   * This works by providing a custom render of the cell content in two
+   * possible ways:
+   *   1. Replacing the render of the entire cell with a function of the
+   *   message model.
+   *
+   *   2. Replacing the render of specific parts of the message by providing an
+   *   object with the specific renders of the message sections (`codeBlock`,
+   *   `content`, `files` and/or `messageStructure`).
    */
-  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
+  @Prop() readonly renderItem?:
+    | ChatMessageRenderByItem
+    | ChatMessageRenderBySections;
 
   /**
    * `true` to render a slot named "additional-content" to project elements
@@ -199,14 +219,6 @@ export class ChChat {
       sourceFiles: "Source files:"
     }
   };
-
-  /**
-   * This property allows us to implement custom rendering of chat items.
-   * If allow us to implement the render of the cell content.
-   */
-  @Prop() readonly renderItem?: (
-    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
-  ) => any;
 
   /**
    * Add a new message at the end of the record, performing a re-render.
@@ -297,27 +309,35 @@ export class ChChat {
     }
   };
 
-  #getMessageContent = (
-    message: ChatMessageByRoleNoId<"system" | "assistant">
-  ) =>
-    typeof message.content === "string"
-      ? message.content
-      : message.content.message;
-
   #updateMessage = (
     messageIndex: number,
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) => {
     if (mode === "concat") {
-      // Temporal store for the new message
-      const newMessageContent =
-        this.#getMessageContent(
-          this.items[messageIndex] as ChatMessageByRole<"system" | "assistant">
-        ) + this.#getMessageContent(message);
+      const messageInIndex = this.items[messageIndex] as ChatMessageByRole<
+        "system" | "assistant"
+      >;
 
-      // Reuse the message ref to correctly update the message content
-      if (typeof message.content === "string") {
+      // Temporal store for the new message content
+      const newMessageContent =
+        getMessageContent(messageInIndex) + getMessageContent(message);
+
+      // Temporal store for the new message files
+      const newMessageFiles: ChatFiles = getMessageFiles(messageInIndex);
+      newMessageFiles.push(...getMessageFiles(message));
+
+      // Update the message object, since the current message could not be an
+      // object with files
+      if (newMessageFiles.length !== 0) {
+        // Reuse the message parameter reference to correctly update the
+        // message content. We are doing this since it can contain new member
+        // the message that are not present in the current message
+        message.content = {
+          message: newMessageContent,
+          files: newMessageFiles
+        };
+      } else if (typeof message.content === "string") {
         message.content = newMessageContent;
       } else {
         message.content.message = newMessageContent;
@@ -343,7 +363,7 @@ export class ChChat {
     userMessage: ChatMessageByRole<"user">
   ) => {
     this.#editRef.value = "";
-    this.#editRef.click();
+    this.#editRef.click(); // TODO: Should it be focus???
 
     await this.#pushMessage(userMessage);
   };
@@ -363,12 +383,16 @@ export class ChChat {
     sendInputValue: string,
     filesToUpload: File[]
   ) => {
-    if (!this.callbacks) {
+    const callbacks = this.callbacks;
+
+    if (!callbacks) {
+      // eslint-disable-next-line no-console
       return console.warn(
         'The "callbacks" property is not defined, so files can not be uploaded'
       );
     }
-    if (!this.callbacks.uploadFile) {
+    if (!callbacks.uploadFile) {
+      // eslint-disable-next-line no-console
       return console.warn(
         'The "uploadFile" member is not defined in the "callbacks" property, so files can not be uploaded'
       );
@@ -380,6 +404,8 @@ export class ChChat {
       files: chatFiles
     };
 
+    // Add all files as "in-progress" state and update them to the server in
+    // parallel
     for (let fileIndex = 0; fileIndex < filesToUpload.length; fileIndex++) {
       const file = filesToUpload[fileIndex];
       const temporalFileURL = URL.createObjectURL(file);
@@ -393,21 +419,37 @@ export class ChChat {
 
       this.uploadingFiles++;
 
-      this.callbacks
+      callbacks
         .uploadFile(file)
         .then(uploadedFile => {
+          uploadedFile.uploadState = "uploaded";
           chatFiles[fileIndex] = uploadedFile;
         })
-        .finally(() => {
+        .catch(() => {
+          chatFiles[fileIndex].uploadState = "failed";
+        })
+        .finally(async () => {
           this.uploadingFiles--;
 
+          // TODO: If the file upload fails, the preview will be removed
+          // without replacing it with the actual public URL
           // Free the resource to avoid memory leaks
           URL.revokeObjectURL(temporalFileURL);
+
+          if (this.uploadingFiles === 0) {
+            this.#sendChat(userMessageToAdd);
+          }
         });
+    }
+
+    if (callbacks.clearChatMessageFiles) {
+      callbacks.clearChatMessageFiles();
     }
   };
 
-  #sendChat = () => {
+  #sendChat = async (userMessageToAdd: ChatMessageUser) => {
+    await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+
     const lastCell = this.items.at(-1);
     this.#cellIdAlignedWhenRendered = lastCell.id;
 
@@ -418,6 +460,7 @@ export class ChChat {
     }
 
     if (!this.callbacks) {
+      // eslint-disable-next-line no-console
       return console.warn(
         'The "callbacks" property is not defined, so the "sendChatMessages" function can not be executed to emit the new chat'
       );
@@ -461,8 +504,9 @@ export class ChChat {
       this.#uploadFiles(userMessageToAdd, sendInputValue, filesToUpload);
     }
 
-    await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-    this.#sendChat();
+    if (this.uploadingFiles === 0) {
+      await this.#sendChat(userMessageToAdd);
+    }
 
     // Queue a new re-render
     forceUpdate(this);
@@ -528,21 +572,33 @@ export class ChChat {
       </ch-smart-grid>
     );
 
+  #getMessageRenderedContent = (
+    message: ChatMessageUser | ChatMessageAssistant | ChatMessageError
+  ) => {
+    // Default render
+    if (!this.renderItem) {
+      return renderContentBySections(message, this.el, {});
+    }
+
+    return typeof this.renderItem === "function"
+      ? this.renderItem(message)
+      : renderContentBySections(message, this.el, this.renderItem); // The custom render is separated by sections
+  };
+
   #renderItem = (message: ChatMessage) => {
     if (message.role === "system") {
       return "";
     }
 
+    const isAssistantMessage = message.role === "assistant";
+
     const parts = tokenMap({
-      [`message ${message.role}`]: true,
+      [`cell message ${message.role}`]: true,
       [message.parts]: !!message.parts,
-      [(message as ChatMessageByRole<"assistant">).status]:
-        message.role === "assistant"
+      [(message as ChatMessageByRole<"assistant">).status]: isAssistantMessage
     });
 
-    const renderedContent = this.renderItem
-      ? this.renderItem(message)
-      : defaultChatRender(this.el)(message);
+    const renderedContent = this.#getMessageRenderedContent(message);
 
     const messageIsCellAlignedAtTheStart =
       message.id === this.#cellIdAlignedWhenRendered;
@@ -555,6 +611,12 @@ export class ChChat {
       <ch-smart-grid-cell
         key={message.id}
         cellId={message.id}
+        aria-live={isAssistantMessage ? "polite" : undefined}
+        // Wait until all changes are made to prevents assistive
+        // technologies from announcing changes before updates are done
+        aria-busy={
+          isAssistantMessage ? getAriaBusyValue(message.status) : undefined
+        }
         part={hasToRenderAnExtraDiv ? undefined : parts}
         smartGridRef={this.#smartGridRef}
         onSmartCellDidLoad={

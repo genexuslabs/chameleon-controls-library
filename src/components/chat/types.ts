@@ -75,27 +75,30 @@ export type ChatMessageByRoleNoId<T extends ChatMessageRole> =
 export type ChatMessageSystem = {
   id: string;
   role: "system";
-  metadata?: string;
+  metadata?: any;
   content: ChatContent;
+  sources?: ChatMessageSources;
 };
 
 export type ChatMessageUser = {
   id: string;
   role: "user";
   content: ChatContent;
-  metadata?: string;
+  metadata?: any;
 
   /**
    * Added to the parts of the cell.
    */
   parts?: string;
+
+  sources?: ChatMessageSources;
 };
 
 export type ChatMessageAssistant = {
   id: string;
   role: "assistant";
   content?: ChatContent;
-  metadata?: string;
+  metadata?: any;
 
   /**
    * Added to the parts of the cell.
@@ -107,18 +110,22 @@ export type ChatMessageAssistant = {
    * to `"complete"`
    */
   status?: "complete" | "waiting" | "streaming";
+
+  sources?: ChatMessageSources;
 };
 
 export type ChatMessageError = {
   id: string;
   role: "error";
   content: ChatContent;
-  metadata?: string;
+  metadata?: any;
 
   /**
    * Added to the parts of the cell.
    */
   parts?: string;
+
+  sources?: ChatMessageSources;
 };
 
 export type ChatContent = string | ChatContentFiles;
@@ -139,7 +146,7 @@ export type ChatFile = {
 
   // The (string & Record<never, never>) is necessary to allow any string as
   // the mimeType without removing the VSCode suggestions
-  mimeType: ChMimeType | (string & Record<never, never>); // TODO: Which is the mimeType for hrefs?
+  mimeType: ChMimeType | (string & Record<never, never>);
 
   /**
    * Specifies the uploading state of the files.
@@ -152,6 +159,15 @@ export type ChatFile = {
 };
 
 export type ChatFileUploadState = "failed" | "in-progress" | "uploaded";
+
+export type ChatMessageSources = ChatMessageSource[];
+
+export type ChatMessageSource = {
+  accessibleName?: string;
+  caption?: string;
+  url: string;
+  parts?: string;
+};
 
 export type ChatInternalCallbacks = {
   /**
@@ -196,8 +212,8 @@ export type ChatInternalCallbacks = {
   ) => boolean | Promise<boolean>;
 
   /**
-   * Upload a chat file returning a `ChatFile` type object containing the
-   * public URL where the file is stored.
+   * Upload a file returning a `ChatFile` type object containing the public URL
+   * where the file is stored.
    *
    * When the promise resolve, the `ch-chat` will ensure the returned `ChatFile`
    * has `uploadedState === "uploaded"`. If the promise is reject, the `ch-chat`
@@ -244,6 +260,13 @@ export type ChatMessageRenderBySections = {
    * If `undefined`, a default structure render will be used.
    */
   messageStructure?: ChatMessageStructureRender;
+
+  /**
+   * Render for the sources of the message.
+   *
+   * If `undefined`, a default render for the sources will be used.
+   */
+  sources?: ChatSourcesRender;
 };
 
 export type ChatCodeBlockRender = (
@@ -270,5 +293,11 @@ export type ChatMessageStructureRender = (
     codeBlock: ChatCodeBlockRender;
     content: ChatContentRender;
     files: ChatFilesRender;
+    sources: ChatSourcesRender;
   }
+) => any;
+
+export type ChatSourcesRender = (
+  message: ChatMessage,
+  chatRef: HTMLChChatElement
 ) => any;

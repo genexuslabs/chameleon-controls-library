@@ -1,12 +1,23 @@
 import { h } from "@stencil/core";
 import type { MarkdownViewerCodeRenderOptions } from "../../markdown-viewer/parsers/types";
-import type { ChatCodeBlockRender } from "../types";
+import type { ChatCodeBlockRender, ChatInternalCallbacks } from "../types";
 import { copy } from "../utils";
+
+const downloadCodeBlockCallback =
+  (
+    plainText: string,
+    language: string,
+    downloadCodeBlock: ChatInternalCallbacks["downloadCodeBlock"]
+  ) =>
+  () =>
+    downloadCodeBlock(plainText, language);
 
 export const defaultCodeBlockRender: ChatCodeBlockRender =
   (chatRef: HTMLChChatElement) =>
-  (options: MarkdownViewerCodeRenderOptions): any =>
-    (
+  (options: MarkdownViewerCodeRenderOptions): any => {
+    const { accessibleName, text } = chatRef.translations;
+
+    return (
       <div part="code-block">
         <div class="code-block__header" part="code-block__header">
           {options.language}
@@ -24,18 +35,25 @@ export const defaultCodeBlockRender: ChatCodeBlockRender =
               type="button"
               onClick={copy(options.plainText)}
             >
-              {chatRef.translations.text.copyCodeButton}
+              {text.copyCodeButton}
             </button>
 
-            {/* {chatRef.hyperlinkToDownloadFile && (
+            {chatRef.callbacks?.downloadCodeBlock && (
               <button
-                aria-label={translations.accessibleName.downloadCodeButton}
-                title={translations.accessibleName.downloadCodeButton}
-                class="code-block__download-code-button"
+                // TODO: Don't set aria-label if it equals to the caption
+                aria-label={accessibleName.downloadCodeButton}
+                // title={accessibleName.downloadCodeButton}
+                // class="code-block__download-code-button"
                 part="code-block__download-code-button"
-                onClick={downloadCode(options, chatRef.hyperlinkToDownloadFile)}
-              ></button>
-            )} */}
+                onClick={downloadCodeBlockCallback(
+                  options.plainText,
+                  options.language,
+                  chatRef.callbacks.downloadCodeBlock
+                )}
+              >
+                {text.downloadCodeButton}
+              </button>
+            )}
           </div>
         </div>
 
@@ -48,3 +66,4 @@ export const defaultCodeBlockRender: ChatCodeBlockRender =
         ></ch-code>
       </div>
     );
+  };

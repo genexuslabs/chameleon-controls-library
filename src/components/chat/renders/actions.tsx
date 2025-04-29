@@ -13,6 +13,7 @@ export const defaultActionsRender: ChatActionsRender = (
     message.role === "assistant" &&
     (message.status === "complete" || !message.status) && (
       <button
+        // TODO: Don't set aria-label if it equals to the caption
         aria-label={accessibleName.copyMessageContent}
         part={tokenMap({
           [`assistant copy-message-content ${message.id}`]: true,

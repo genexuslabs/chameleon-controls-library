@@ -2,7 +2,7 @@ export type ChatTranslations = {
   accessibleName: {
     clearChat: string;
     copyMessageContent?: string;
-    downloadCodeButton: string;
+    downloadCodeButton?: string;
     // retryAudioUpload?: string;
     // retryFileUpload?: string;
     // retryImageUpload?: string;
@@ -17,6 +17,7 @@ export type ChatTranslations = {
   text: {
     copyCodeButton: string;
     copyMessageContent?: string;
+    downloadCodeButton?: string;
     processing?: string;
     // retryAudioUpload?: string;
     // retryFileUpload?: string;

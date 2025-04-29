@@ -242,6 +242,19 @@ export type ChatMessageSource = {
 
 export type ChatInternalCallbacks = {
   /**
+   * Specifies a callback that is executed when the user wants to download the
+   * code block as a file.
+   *
+   * This callback is useful to implement any custom render to manage this
+   * action. For example, displaying a dialog to customize the file name that
+   * contains the code block to download.
+   *
+   * If specified, in the default code block render a "download code" button will
+   * be displayed in the `code-block__header-actions`.
+   */
+  downloadCodeBlock?: (plainText: string, language: string) => void;
+
+  /**
    * Specifies a callback to execute before the user adds a new message in the
    * chat. This callbacks is intended to get retrieve the files that the user
    * wants to add in the message.

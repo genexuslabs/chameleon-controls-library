@@ -27,6 +27,11 @@ export type Prettify<T> = {
   [K in keyof T]: T[K];
 };
 
+export type FilterByPrefix<
+  T,
+  Prefix extends string
+> = T extends `${Prefix}${string}` ? T : never;
+
 export type GxImageMultiState = {
   base: string;
   hover?: string;

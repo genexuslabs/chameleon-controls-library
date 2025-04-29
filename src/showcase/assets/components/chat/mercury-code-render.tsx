@@ -3,7 +3,7 @@ import {
   MarkdownViewerCodeRender,
   MarkdownViewerCodeRenderOptions
 } from "../../../../components/markdown-viewer/parsers/types";
-import { ChatMessageByRole } from "../../../../components";
+import { ChatMessageByRole } from "../../../../components/chat/types";
 
 const copy = (text: string) => () => navigator.clipboard.writeText(text);
 

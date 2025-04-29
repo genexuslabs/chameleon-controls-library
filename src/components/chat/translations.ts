@@ -1,21 +1,29 @@
 export type ChatTranslations = {
   accessibleName: {
     clearChat: string;
-    copyResponseButton: string;
-    downloadCodeButton: string;
-    imagePicker: string;
-    removeUploadedImage: string;
+    copyMessageContent?: string;
+    downloadCodeButton?: string;
+    // retryAudioUpload?: string;
+    // retryFileUpload?: string;
+    // retryImageUpload?: string;
+    // retryVideoUpload?: string;
     sendButton: string;
     sendInput: string;
-    stopGeneratingAnswerButton: string;
+    stopGeneratingAnswerButton?: string;
   };
   placeholder: {
     sendInput: string;
   };
   text: {
-    stopGeneratingAnswerButton: string;
     copyCodeButton: string;
-    processing: string;
-    sourceFiles: string;
+    copyMessageContent?: string;
+    downloadCodeButton?: string;
+    processing?: string;
+    // retryAudioUpload?: string;
+    // retryFileUpload?: string;
+    // retryImageUpload?: string;
+    // retryVideoUpload?: string;
+    sourceFiles?: string;
+    stopGeneratingAnswerButton?: string;
   };
 };

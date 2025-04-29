@@ -9,7 +9,7 @@ import {
 } from "./utils.e2e";
 
 const EMPTY_CHAT_SELECTOR = 'ch-chat >>> slot[name="empty-chat"]';
-const LOADING_SELECTOR = 'ch-chat >>> [slot="empty-chat"]';
+const LOADING_SELECTOR = 'ch-chat >>> slot[name="loading-chat"]';
 const INFINITE_SCROLLER_SELECTOR =
   "ch-chat >>> ch-smart-grid > ch-virtual-scroller";
 const SMART_GRID_SELECTOR = "ch-chat >>> ch-smart-grid";

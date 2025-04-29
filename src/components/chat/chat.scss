@@ -19,9 +19,9 @@
   contain: paint;
 }
 
-.message-with-images {
-  display: grid;
-}
+// .message-with-images {
+//   display: grid;
+// }
 
 img {
   display: block;
@@ -36,38 +36,65 @@ img {
   align-items: center;
 }
 
-.assistant-files {
-  grid-area: 2 / 2;
+// .assistant-files {
+//   grid-area: 2 / 2;
+//   display: flex;
+//   flex-wrap: wrap;
+//   align-items: center;
+// }
+
+::part(code-block__header) {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+}
+
+// - - - - - - - - - - - - - - - -
+//              Files
+// - - - - - - - - - - - - - - - -
+.contents {
+  display: contents;
+}
+
+.file-container {
+  display: block;
+}
+
+.sources-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
 }
 
-.file-skeleton {
-  position: relative;
-
-  &::before,
-  &::after {
-    content: "";
-    display: inline-flex;
-  }
+.files-container,
+.sources-container {
+  margin: 0;
+  padding: 0;
 }
+
+// .file-skeleton {
+//   position: relative;
+
+//   &::before,
+//   &::after {
+//     content: "";
+//     display: inline-flex;
+//   }
+// }
 
 // - - - - - - - - - - - - - - - -
 //         Send container
 // - - - - - - - - - - - - - - - -
-.stop-generating-answer-button {
-  grid-area: input-wrapper;
-  position: absolute;
-  inset-block-start: 0;
-  justify-self: center;
-  transform: translateY(-100%);
-}
+// .stop-generating-answer-button {
+//   grid-area: input-wrapper;
+//   position: absolute;
+//   inset-block-start: 0;
+//   justify-self: center;
+//   transform: translateY(-100%);
+// }
 
-.images-to-upload {
-  display: flex;
-  flex-wrap: wrap;
-}
+// .images-to-upload {
+//   display: flex;
+//   flex-wrap: wrap;
+// }
 
 .send-container {
   display: grid;
@@ -75,9 +102,9 @@ img {
   position: relative;
   align-items: end;
 
-  &--file-uploading {
-    grid-template: "upload-image input-wrapper send-or-audio" 1fr / max-content 1fr max-content;
-  }
+  // &--file-uploading {
+  //   grid-template: "upload-image input-wrapper send-or-audio" 1fr / max-content 1fr max-content;
+  // }
 }
 
 .send-input-wrapper {

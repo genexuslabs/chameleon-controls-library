@@ -1,7 +1,4 @@
-import {
-  ChatInternalCallbacks,
-  ChatMessage
-} from "../../../../components/chat/types";
+import { ChatCallbacks, ChatMessage } from "../../../../components/chat/types";
 import { ChatTranslations } from "../../../../components/chat/translations";
 
 const PROCESSING_PLACEHOLDER = "{{ASSISTANT_NAME}}";
@@ -73,7 +70,7 @@ To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tild
 \`\`\`
 `;
 
-const sendChatToLLM = () => {
+const sendChatMessages = () => {
   // This is a WA to get the chat reference
   const chatRef = document
     .querySelector("ch-flexible-layout-render")!
@@ -148,10 +145,15 @@ function dummyStreaming(
   );
 }
 
-export const chatCallbacks: ChatInternalCallbacks = {
-  clear: () => new Promise(resolve => resolve()),
-  sendChatToLLM: sendChatToLLM,
-  uploadImage: () => new Promise(resolve => resolve("")),
+// let returnFiles = true;
+
+export const chatCallbacks: ChatCallbacks = {
+  // getChatMessageFiles: () => {
+  //   returnFiles = !returnFiles;
+
+  //   return returnFiles ? [] : [];
+  // },
+  sendChatMessages,
   stopGeneratingAnswer: () => {
     clearTimeout(timeOut);
 
@@ -174,10 +176,8 @@ export const chatCallbacks: ChatInternalCallbacks = {
 export const chatTranslations: ChatTranslations = {
   accessibleName: {
     clearChat: "Clear chat",
-    copyResponseButton: "Copy assistant response",
+    copyMessageContent: "Copy message content",
     downloadCodeButton: "Download code",
-    imagePicker: "Select images",
-    removeUploadedImage: "Remove uploaded image",
     sendButton: "Send",
     sendInput: "Message",
     stopGeneratingAnswerButton: "Stop generating answer"
@@ -186,10 +186,12 @@ export const chatTranslations: ChatTranslations = {
     sendInput: "Ask me a question..."
   },
   text: {
-    stopGeneratingAnswerButton: "Stop generating answer",
     copyCodeButton: "Copy code",
+    copyMessageContent: "Copy",
+    downloadCodeButton: "Download",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
-    sourceFiles: "Source files:"
+    sourceFiles: "Source files:",
+    stopGeneratingAnswerButton: "Stop generating answer"
   }
 };
 
@@ -299,6 +301,38 @@ export const codeFixerRecord: ChatMessage[] = [
     id: "9",
     role: "assistant",
     status: "complete",
-    content: ASSISTANT_RESPONSE_SHORT_MARKDOWN
+    content: {
+      message: ASSISTANT_RESPONSE_SHORT_MARKDOWN,
+      files: [
+        {
+          mimeType: "image/png",
+          url: "https://www.genexus.com/media/images/logo_genexus_desktop_2024.png?timestamp=20241113105731"
+        },
+        {
+          mimeType: "video/mp4",
+          url: "https://www.w3schools.com/tags/movie.mp4"
+        },
+        {
+          mimeType: "audio/mpeg",
+          url: "https://www.w3schools.com/html/horse.ogg"
+        },
+        {
+          caption: "Chameleon",
+          mimeType: "text/plain",
+          url: "https://github.com/genexuslabs/chameleon-controls-library"
+        }
+      ],
+      sources: [
+        {
+          caption: "Chameleon",
+          url: "https://github.com/genexuslabs/chameleon-controls-library"
+        },
+        {
+          caption: "GeneXus",
+          url: "www.genexus.com",
+          parts: "genexus"
+        }
+      ]
+    }
   }
 ];

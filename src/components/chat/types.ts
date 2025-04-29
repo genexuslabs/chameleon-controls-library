@@ -190,16 +190,6 @@ export type ChatMessageSource = {
 
 export type ChatInternalCallbacks = {
   /**
-   * Specifies a callback that is executed after the user adds a new message to
-   * the chat.
-   *
-   * Since developers can define their own render for file attachment, this
-   * callback serves to synchronize the cleanup of the send-input with the
-   * cleanup of the custom file attachment.
-   */
-  clearChatMessageFiles?: () => void;
-
-  /**
    * Specifies a callback to execute before the user adds a new message in the
    * chat. This callbacks is intended to get retrieve the files that the user
    * wants to add in the message.

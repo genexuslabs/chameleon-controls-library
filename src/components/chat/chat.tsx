@@ -223,11 +223,12 @@ export class ChChat {
   };
 
   /**
-   * Fired when a new user message is added in the chat by an user interaction.
+   * Fired when a new user message is added in the chat via user interaction.
    *
-   * This callback is useful for cleaning up the files for any custom render of
-   * the files or even blocking user interactions before the sendChatMessages
-   * callback is executed.
+   * Since developers can define their own render for file attachment, this
+   * event serves to synchronize the cleanup of the `send-input` with the
+   * cleanup of the custom file attachment, or or even blocking user
+   * interactions before the `sendChatMessages` callback is executed.
    */
   @Event() userMessageAdded: EventEmitter<ChatMessageByRole<"user">>;
 
@@ -452,10 +453,6 @@ export class ChChat {
             this.#sendChat();
           }
         });
-    }
-
-    if (callbacks.clearChatMessageFiles) {
-      callbacks.clearChatMessageFiles();
     }
   };
 

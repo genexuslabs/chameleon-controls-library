@@ -606,7 +606,7 @@ export class ChChat {
     const isAssistantMessage = message.role === "assistant";
 
     const parts = tokenMap({
-      [`cell message ${message.role} ${message.id}`]: true,
+      [`message ${message.role} ${message.id}`]: true,
       [message.parts]: !!message.parts,
       [(message as ChatMessageByRole<"assistant">).status]: isAssistantMessage
     });

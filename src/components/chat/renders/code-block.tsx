@@ -19,18 +19,12 @@ export const defaultCodeBlockRender: ChatCodeBlockRender =
 
     return (
       <div part="code-block">
-        <div class="code-block__header" part="code-block__header">
-          {options.language}
+        <div part="code-block__header">
+          <span part="code-block__header-caption">{options.language}</span>
 
-          <div
-            class="code-block__header-actions"
-            part="code-block__header-actions"
-          >
+          <div part="code-block__header-actions">
             <button
-              // aria-label={
-              //   chatRef.isMobile ? translations.text.copyCodeButton : undefined
-              // }
-              class="code-block__copy-code-button"
+              aria-label={text.copyCodeButton}
               part="code-block__copy-code-button"
               type="button"
               onClick={copy(options.plainText)}
@@ -58,9 +52,9 @@ export const defaultCodeBlockRender: ChatCodeBlockRender =
         </div>
 
         <ch-code
-          class="code-block__content"
           language={options.language}
           lastNestedChildClass={options.lastNestedChildClass}
+          part="code-block__content"
           showIndicator={options.showIndicator}
           value={options.plainText}
         ></ch-code>

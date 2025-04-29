@@ -43,6 +43,11 @@ img {
 //   align-items: center;
 // }
 
+::part(code-block__header) {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+}
+
 // - - - - - - - - - - - - - - - -
 //              Files
 // - - - - - - - - - - - - - - - -

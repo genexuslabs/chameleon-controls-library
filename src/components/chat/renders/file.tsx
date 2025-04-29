@@ -1,10 +1,13 @@
 import { h } from "@stencil/core";
-import type { ChatFile, ChatFileRender } from "../types";
+import type { ChatMessageFile, ChatFileRender } from "../types";
 import type { ChMimeTypeFormatMap } from "../../../common/mimeTypes/mime-types";
 import { DEFAULT_FILE_UPLOAD_STATE } from "../utils";
 import { tokenMap } from "../../../common/utils";
 
-const fileSkeleton = (file: ChatFile, fileFormat: keyof ChMimeTypeFormatMap) =>
+const fileSkeleton = (
+  file: ChatMessageFile,
+  fileFormat: keyof ChMimeTypeFormatMap
+) =>
   file.uploadState === "in-progress" && (
     <div
       part={tokenMap({
@@ -31,7 +34,7 @@ const fileSkeleton = (file: ChatFile, fileFormat: keyof ChMimeTypeFormatMap) =>
 //   );
 
 const getFileContainerParts = (
-  file: ChatFile,
+  file: ChatMessageFile,
   fileFormat: keyof ChMimeTypeFormatMap
 ) =>
   tokenMap({
@@ -42,7 +45,10 @@ const getFileContainerParts = (
     [file.parts]: !!file.parts
   });
 
-const getFileParts = (file: ChatFile, fileFormat: keyof ChMimeTypeFormatMap) =>
+const getFileParts = (
+  file: ChatMessageFile,
+  fileFormat: keyof ChMimeTypeFormatMap
+) =>
   tokenMap({
     [`file format-${fileFormat} ${file.mimeType} ${
       file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
@@ -54,8 +60,8 @@ const getFileParts = (file: ChatFile, fileFormat: keyof ChMimeTypeFormatMap) =>
 // TODO: Improve accessibility by exposing progress or spin states while
 // uploading
 export const defaultFileRender: ChatFileRender = {
-  audio: (file: ChatFile) => (
-    <li class="contents" part={getFileContainerParts(file, "audio")}>
+  audio: (file: ChatMessageFile) => (
+    <li class="file-container" part={getFileContainerParts(file, "audio")}>
       <audio
         aria-label={file.accessibleName}
         part={getFileParts(file, "audio")}
@@ -66,8 +72,8 @@ export const defaultFileRender: ChatFileRender = {
       {fileSkeleton(file, "audio")}
     </li>
   ),
-  video: (file: ChatFile) => (
-    <li class="contents" part={getFileContainerParts(file, "video")}>
+  video: (file: ChatMessageFile) => (
+    <li class="file-container" part={getFileContainerParts(file, "video")}>
       <video
         aria-label={file.accessibleName}
         part={getFileParts(file, "video")}
@@ -79,8 +85,8 @@ export const defaultFileRender: ChatFileRender = {
     </li>
   ),
 
-  image: (file: ChatFile) => (
-    <li class="contents" part={getFileContainerParts(file, "image")}>
+  image: (file: ChatMessageFile) => (
+    <li class="file-container" part={getFileContainerParts(file, "image")}>
       <img
         aria-label={file.accessibleName}
         part={getFileParts(file, "image")}
@@ -94,11 +100,11 @@ export const defaultFileRender: ChatFileRender = {
     </li>
   ),
 
-  file: (file: ChatFile) => {
+  file: (file: ChatMessageFile) => {
     const disabledWhileUploading = file.uploadState === "in-progress";
 
     return (
-      <li class="contents" part={getFileContainerParts(file, "file")}>
+      <li class="file-container" part={getFileContainerParts(file, "file")}>
         <a
           aria-label={file.accessibleName}
           role={disabledWhileUploading ? "link" : undefined}

@@ -1,7 +1,7 @@
 export type ChatTranslations = {
   accessibleName: {
     clearChat: string;
-    copyResponseButton: string;
+    copyMessageContent?: string;
     downloadCodeButton: string;
     // retryAudioUpload?: string;
     // retryFileUpload?: string;
@@ -9,19 +9,20 @@ export type ChatTranslations = {
     // retryVideoUpload?: string;
     sendButton: string;
     sendInput: string;
-    stopGeneratingAnswerButton: string;
+    stopGeneratingAnswerButton?: string;
   };
   placeholder: {
     sendInput: string;
   };
   text: {
     copyCodeButton: string;
-    processing: string;
+    copyMessageContent?: string;
+    processing?: string;
     // retryAudioUpload?: string;
     // retryFileUpload?: string;
     // retryImageUpload?: string;
     // retryVideoUpload?: string;
-    sourceFiles: string;
-    stopGeneratingAnswerButton: string;
+    sourceFiles?: string;
+    stopGeneratingAnswerButton?: string;
   };
 };

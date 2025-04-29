@@ -1,5 +1,5 @@
 import { h } from "@stencil/core";
-import { ChatMessageSource, ChatSourceRender } from "../types";
+import type { ChatMessageSource, ChatSourceRender } from "../types";
 import { tokenMap } from "../../../common/utils";
 
 export const defaultSourceRender: ChatSourceRender = (

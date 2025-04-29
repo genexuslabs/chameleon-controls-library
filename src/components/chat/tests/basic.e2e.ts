@@ -16,7 +16,7 @@ testDefaultProperties("ch-chat", {
   translations: {
     accessibleName: {
       clearChat: "Clear chat",
-      copyResponseButton: "Copy assistant response",
+      copyMessageContent: "Copy assistant response",
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",

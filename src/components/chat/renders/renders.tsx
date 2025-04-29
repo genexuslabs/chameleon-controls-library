@@ -1,4 +1,5 @@
 import { ChatMessage, ChatMessageRenderBySections } from "../types";
+import { defaultActionsRender } from "./actions";
 import { defaultCodeBlockRender } from "./code-block";
 import { defaultContentRender } from "./content";
 import { defaultFileRender } from "./file";
@@ -14,6 +15,7 @@ export const renderContentBySections = (
     message,
     chatRef,
     {
+      actions: rendersBySections.actions ?? defaultActionsRender,
       codeBlock: rendersBySections.codeBlock ?? defaultCodeBlockRender,
       content: rendersBySections.content ?? defaultContentRender,
       file: {

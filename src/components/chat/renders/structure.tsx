@@ -1,16 +1,14 @@
 import { h } from "@stencil/core";
 import type {
-  ChatCodeBlockRender,
-  ChatContentRender,
-  ChatFile,
+  ChatMessageFile,
   ChatFileRender,
   ChatMessageByRole,
   ChatMessageRole,
   ChatMessageStructureRender,
-  ChatSourceRender
+  ChatMessageRenderBySections
 } from "../types";
 import { tokenMap } from "../../../common/utils";
-import { DEFAULT_ASSISTANT_STATUS, getMessageFiles } from "../utils";
+import { DEFAULT_ASSISTANT_STATUS, getMessageFilesAndSources } from "../utils";
 import { getMimeTypeFileFormat } from "../../../common/mimeTypes/mime-types-utils";
 
 type ChatMessageNoSystem = ChatMessageByRole<
@@ -18,7 +16,7 @@ type ChatMessageNoSystem = ChatMessageByRole<
 >;
 
 const applyFileRenders = (
-  file: ChatFile,
+  file: ChatMessageFile,
   chatRef: HTMLChChatElement,
   renders: ChatFileRender
 ) => renders[getMimeTypeFileFormat(file.mimeType)](file, chatRef);
@@ -26,20 +24,14 @@ const applyFileRenders = (
 export const defaultMessageStructureRender: ChatMessageStructureRender = (
   message: ChatMessageNoSystem,
   chatRef: HTMLChChatElement,
-  renders: {
-    codeBlock: ChatCodeBlockRender;
-    content: ChatContentRender;
-    file: ChatFileRender;
-    source: ChatSourceRender;
-  }
+  renders: Required<Omit<ChatMessageRenderBySections, "messageStructure">>
 ) => {
   const assistantStatus =
     message.role === "assistant"
       ? message.status ?? DEFAULT_ASSISTANT_STATUS
       : undefined;
 
-  const messageFiles = getMessageFiles(message);
-  const messageSources = message.sources ?? [];
+  const { files, sources } = getMessageFilesAndSources(message);
   const { sourceFiles } = chatRef.translations.text;
 
   return (
@@ -54,25 +46,25 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
 
       {
         // Files
-        messageFiles.length !== 0 && (
+        files.length !== 0 && (
           <ul
+            class="files-container"
             part={tokenMap({
               [`files-container ${message.role} ${message.id}`]: true,
               [assistantStatus]: !!assistantStatus,
               [message.parts]: !!message.parts
             })}
           >
-            {messageFiles.map(file =>
-              applyFileRenders(file, chatRef, renders.file)
-            )}
+            {files.map(file => applyFileRenders(file, chatRef, renders.file))}
           </ul>
         )
       }
 
       {
         // Sources
-        messageSources.length !== 0 && (
+        sources.length !== 0 && (
           <ul
+            class="sources-container"
             part={tokenMap({
               [`sources-container ${message.role} ${message.id}`]: true,
               [assistantStatus]: !!assistantStatus,
@@ -92,10 +84,12 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
               </span>
             )}
 
-            {messageSources.map(source => renders.source(source, chatRef))}
+            {sources.map(source => renders.source(source, chatRef))}
           </ul>
         )
       }
+
+      {renders.actions(message, chatRef)}
     </div>
   );
 };

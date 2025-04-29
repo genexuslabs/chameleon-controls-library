@@ -84,14 +84,21 @@ export type ChatMessageSystem = {
    */
   metadata?: any;
 
-  content: ChatContent;
-  sources?: ChatMessageSources;
+  content: ChatMessageContent;
+
+  /**
+   * Parts for the cell, message content, `files-container` and
+   * `sources-container`.
+   *
+   * It is not added to the parts of the files and sources.
+   */
+  parts?: string;
 };
 
 export type ChatMessageUser = {
   id: string;
   role: "user";
-  content: ChatContent;
+  content: ChatMessageContent;
 
   /**
    * A field for adding any extra information that must be stored for the
@@ -109,14 +116,12 @@ export type ChatMessageUser = {
    * It is not added to the parts of the files and sources.
    */
   parts?: string;
-
-  sources?: ChatMessageSources;
 };
 
 export type ChatMessageAssistant = {
   id: string;
   role: "assistant";
-  content?: ChatContent;
+  content: ChatMessageContent;
 
   /**
    * A field for adding any extra information that must be stored for the
@@ -140,14 +145,12 @@ export type ChatMessageAssistant = {
    * to `"complete"`
    */
   status?: "complete" | "waiting" | "streaming";
-
-  sources?: ChatMessageSources;
 };
 
 export type ChatMessageError = {
   id: string;
   role: "error";
-  content: ChatContent;
+  content: ChatMessageContent;
 
   /**
    * A field for adding any extra information that must be stored for the
@@ -165,20 +168,19 @@ export type ChatMessageError = {
    * It is not added to the parts of the files and sources.
    */
   parts?: string;
+};
 
+export type ChatMessageContent = string | ChatMessageContentFilesAndSources;
+
+export type ChatMessageContentFilesAndSources = {
+  message: string;
+  files?: ChatMessageFiles;
   sources?: ChatMessageSources;
 };
 
-export type ChatContent = string | ChatContentFiles;
+export type ChatMessageFiles = ChatMessageFile[];
 
-export type ChatContentFiles = {
-  message: string;
-  files?: ChatFiles;
-};
-
-export type ChatFiles = ChatFile[];
-
-export type ChatFile = {
+export type ChatMessageFile = {
   accessibleName?: string;
   alternativeText?: string;
   caption?: string;
@@ -278,7 +280,7 @@ export type ChatInternalCallbacks = {
    * has `uploadedState === "uploaded"`. If the promise is reject, the `ch-chat`
    * will set `uploadedState === "failed"` in the returned `ChatFile`.
    */
-  uploadFile?: (file: File) => Promise<ChatFile>;
+  uploadFile?: (file: File) => Promise<ChatMessageFile>;
 };
 
 export type ChatMessageRenderByItem = (
@@ -286,6 +288,13 @@ export type ChatMessageRenderByItem = (
 ) => any;
 
 export type ChatMessageRenderBySections = {
+  /**
+   * Render for additional actions of the message.
+   *
+   * If `undefined`, a default render for the additional actions will be used.
+   */
+  actions?: ChatActionsRender;
+
   /**
    * Render for code blocks.
    *
@@ -328,6 +337,11 @@ export type ChatMessageRenderBySections = {
   source?: ChatSourceRender;
 };
 
+export type ChatActionsRender = (
+  message: ChatMessage,
+  chatRef: HTMLChChatElement
+) => any;
+
 export type ChatCodeBlockRender = (
   chatRef: HTMLChChatElement
 ) => MarkdownViewerCodeRender;
@@ -340,7 +354,7 @@ export type ChatContentRender = (
 
 export type ChatFileRender = {
   [key in keyof ChMimeTypeFormatMap]?: (
-    file: ChatFile,
+    file: ChatMessageFile,
     chatRef: HTMLChChatElement
   ) => any;
 };
@@ -348,15 +362,10 @@ export type ChatFileRender = {
 export type ChatMessageStructureRender = (
   message: ChatMessage,
   chatRef: HTMLChChatElement,
-  renders: {
-    codeBlock: ChatCodeBlockRender;
-    content: ChatContentRender;
-    file: ChatFileRender;
-    source: ChatSourceRender;
-  }
+  renders: Required<Omit<ChatMessageRenderBySections, "messageStructure">>
 ) => any;
 
 export type ChatSourceRender = (
-  sources: ChatMessageSource,
+  source: ChatMessageSource,
   chatRef: HTMLChChatElement
 ) => any;

@@ -17,7 +17,7 @@ import type {
 } from "../../components";
 import type { ThemeModel } from "../theme/theme-types";
 import type {
-  ChatFiles,
+  ChatMessageFiles,
   ChatInternalCallbacks,
   ChatMessage,
   ChatMessageAssistant,
@@ -33,7 +33,11 @@ import type { ChatTranslations } from "./translations";
 import type { ChMimeType } from "../../common/mimeTypes/mime-types";
 import { adoptCommonThemes } from "../../common/theme";
 import { tokenMap } from "../../common/utils";
-import { getMessageContent, getMessageFiles } from "./utils";
+import {
+  DEFAULT_ASSISTANT_STATUS,
+  getMessageContent,
+  getMessageFiles
+} from "./utils";
 import { renderContentBySections } from "./renders/renders";
 
 const ENTER_KEY = "Enter";
@@ -205,7 +209,7 @@ export class ChChat {
   @Prop() readonly translations: ChatTranslations = {
     accessibleName: {
       clearChat: "Clear chat",
-      copyResponseButton: "Copy assistant response",
+      copyMessageContent: "Copy message content",
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",
@@ -215,10 +219,11 @@ export class ChChat {
       sendInput: "Ask me a question..."
     },
     text: {
-      stopGeneratingAnswerButton: "Stop generating answer",
       copyCodeButton: "Copy code",
+      copyMessageContent: "Copy",
       processing: `Processing...`,
-      sourceFiles: "Source files:"
+      sourceFiles: "Source files:",
+      stopGeneratingAnswerButton: "Stop generating answer"
     }
   };
 
@@ -336,7 +341,7 @@ export class ChChat {
         getMessageContent(messageInIndex) + getMessageContent(message);
 
       // Temporal store for the new message files
-      const newMessageFiles: ChatFiles = getMessageFiles(messageInIndex);
+      const newMessageFiles: ChatMessageFiles = getMessageFiles(messageInIndex);
       newMessageFiles.push(...getMessageFiles(message));
 
       // Update the message object, since the current message could not be an
@@ -411,7 +416,7 @@ export class ChChat {
       );
     }
 
-    const chatFiles: ChatFiles = [];
+    const chatFiles: ChatMessageFiles = [];
     userMessageToAdd.content = {
       message: sendInputValue,
       files: chatFiles
@@ -608,7 +613,8 @@ export class ChChat {
     const parts = tokenMap({
       [`message ${message.role} ${message.id}`]: true,
       [message.parts]: !!message.parts,
-      [(message as ChatMessageByRole<"assistant">).status]: isAssistantMessage
+      [(message as ChatMessageByRole<"assistant">).status ??
+      DEFAULT_ASSISTANT_STATUS]: isAssistantMessage
     });
 
     const renderedContent = this.#getMessageRenderedContent(message);

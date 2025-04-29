@@ -75,7 +75,15 @@ export type ChatMessageByRoleNoId<T extends ChatMessageRole> =
 export type ChatMessageSystem = {
   id: string;
   role: "system";
+
+  /**
+   * A field for adding any extra information that must be stored for the
+   * message.
+   *
+   * The `metadata` field can be used for any purpose.
+   */
   metadata?: any;
+
   content: ChatContent;
   sources?: ChatMessageSources;
 };
@@ -84,6 +92,14 @@ export type ChatMessageUser = {
   id: string;
   role: "user";
   content: ChatContent;
+
+  /**
+   * A field for adding any extra information that must be stored for the
+   * message.
+   *
+   * The `metadata` field can be used for any purpose, for example, adding more
+   * information to customize the render.
+   */
   metadata?: any;
 
   /**
@@ -101,6 +117,14 @@ export type ChatMessageAssistant = {
   id: string;
   role: "assistant";
   content?: ChatContent;
+
+  /**
+   * A field for adding any extra information that must be stored for the
+   * message.
+   *
+   * The `metadata` field can be used for any purpose, for example, adding more
+   * information to customize the render.
+   */
   metadata?: any;
 
   /**
@@ -124,6 +148,14 @@ export type ChatMessageError = {
   id: string;
   role: "error";
   content: ChatContent;
+
+  /**
+   * A field for adding any extra information that must be stored for the
+   * message.
+   *
+   * The `metadata` field can be used for any purpose, for example, adding more
+   * information to customize the render.
+   */
   metadata?: any;
 
   /**
@@ -153,6 +185,15 @@ export type ChatFile = {
 
   extension?: string;
 
+  /**
+   * A field for adding any extra information that must be stored for the
+   * file.
+   *
+   * The `metadata` field can be used for any purpose, for example, adding more
+   * information to customize the render.
+   */
+  metadata?: any;
+
   // The (string & Record<never, never>) is necessary to allow any string as
   // the mimeType without removing the VSCode suggestions
   mimeType: ChMimeType | (string & Record<never, never>);
@@ -179,6 +220,15 @@ export type ChatMessageSources = ChatMessageSource[];
 export type ChatMessageSource = {
   accessibleName?: string;
   caption?: string;
+
+  /**
+   * A field for adding any extra information that must be stored for the
+   * source.
+   *
+   * The `metadata` field can be used for any purpose, for example, adding more
+   * information to customize the render.
+   */
+  metadata?: any;
 
   /**
    * Parts for the source.

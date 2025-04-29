@@ -55,7 +55,7 @@ const getFileParts = (file: ChatFile, fileFormat: keyof ChMimeTypeFormatMap) =>
 // uploading
 export const defaultFileRender: ChatFileRender = {
   audio: (file: ChatFile) => (
-    <div part={getFileContainerParts(file, "audio")}>
+    <li class="contents" part={getFileContainerParts(file, "audio")}>
       <audio
         aria-label={file.accessibleName}
         part={getFileParts(file, "audio")}
@@ -64,10 +64,10 @@ export const defaultFileRender: ChatFileRender = {
       ></audio>
 
       {fileSkeleton(file, "audio")}
-    </div>
+    </li>
   ),
   video: (file: ChatFile) => (
-    <div part={getFileContainerParts(file, "video")}>
+    <li class="contents" part={getFileContainerParts(file, "video")}>
       <video
         aria-label={file.accessibleName}
         part={getFileParts(file, "video")}
@@ -76,11 +76,11 @@ export const defaultFileRender: ChatFileRender = {
       ></video>
 
       {fileSkeleton(file, "video")}
-    </div>
+    </li>
   ),
 
   image: (file: ChatFile) => (
-    <div part={getFileContainerParts(file, "image")}>
+    <li class="contents" part={getFileContainerParts(file, "image")}>
       <img
         aria-label={file.accessibleName}
         part={getFileParts(file, "image")}
@@ -91,14 +91,14 @@ export const defaultFileRender: ChatFileRender = {
       ></img>
 
       {fileSkeleton(file, "image")}
-    </div>
+    </li>
   ),
 
   file: (file: ChatFile) => {
     const disabledWhileUploading = file.uploadState === "in-progress";
 
     return (
-      <div part={getFileContainerParts(file, "file")}>
+      <li class="contents" part={getFileContainerParts(file, "file")}>
         <a
           aria-label={file.accessibleName}
           role={disabledWhileUploading ? "link" : undefined}
@@ -130,7 +130,7 @@ export const defaultFileRender: ChatFileRender = {
         </a>
 
         {fileSkeleton(file, "file")}
-      </div>
+      </li>
     );
   }
 };

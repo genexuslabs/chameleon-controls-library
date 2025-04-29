@@ -40,6 +40,7 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
 
   const messageFiles = getMessageFiles(message);
   const messageSources = message.sources ?? [];
+  const { sourceFiles } = chatRef.translations.text;
 
   return (
     <div
@@ -54,7 +55,7 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
       {
         // Files
         messageFiles.length !== 0 && (
-          <div
+          <ul
             part={tokenMap({
               [`files-container ${message.role} ${message.id}`]: true,
               [assistantStatus]: !!assistantStatus,
@@ -64,22 +65,35 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
             {messageFiles.map(file =>
               applyFileRenders(file, chatRef, renders.file)
             )}
-          </div>
+          </ul>
         )
       }
 
       {
         // Sources
         messageSources.length !== 0 && (
-          <div
+          <ul
             part={tokenMap({
               [`sources-container ${message.role} ${message.id}`]: true,
               [assistantStatus]: !!assistantStatus,
               [message.parts]: !!message.parts
             })}
           >
+            {sourceFiles && (
+              // TODO: Test the accessibility of this span
+              <span
+                part={tokenMap({
+                  [`sources-caption ${message.role} ${message.id}`]: true,
+                  [assistantStatus]: !!assistantStatus,
+                  [message.parts]: !!message.parts
+                })}
+              >
+                {sourceFiles}
+              </span>
+            )}
+
             {messageSources.map(source => renders.source(source, chatRef))}
-          </div>
+          </ul>
         )
       }
     </div>

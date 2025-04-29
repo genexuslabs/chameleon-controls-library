@@ -6,15 +6,11 @@ testDefaultProperties("ch-chat", {
   callbacks: undefined,
   disabled: false,
   generatingResponse: false,
-  hyperlinkToDownloadFile: undefined,
-  imageUpload: false,
-  isMobile: false,
   items: [],
   loadingState: "initial",
   markdownTheme: "ch-markdown-viewer",
   newUserMessageAlignment: "end",
   newUserMessageScrollBehavior: "instant",
-  renderCode: undefined,
   showAdditionalContent: false,
   theme: undefined,
   translations: {
@@ -30,10 +26,10 @@ testDefaultProperties("ch-chat", {
       sendInput: "Ask me a question..."
     },
     text: {
-      stopGeneratingAnswerButton: "Stop generating answer",
       copyCodeButton: "Copy code",
       processing: `Processing...`,
-      sourceFiles: "Source files:"
+      sourceFiles: "Source files:",
+      stopGeneratingAnswerButton: "Stop generating answer"
     }
   }
 });

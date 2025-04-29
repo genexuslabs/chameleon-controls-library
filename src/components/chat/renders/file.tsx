@@ -1,14 +1,19 @@
 import { h } from "@stencil/core";
-import type { ChatFile, ChatFilesRender } from "../types";
+import type { ChatFile, ChatFileRender } from "../types";
 import type { ChMimeTypeFormatMap } from "../../../common/mimeTypes/mime-types";
 import { DEFAULT_FILE_UPLOAD_STATE } from "../utils";
+import { tokenMap } from "../../../common/utils";
 
 const fileSkeleton = (file: ChatFile, fileFormat: keyof ChMimeTypeFormatMap) =>
   file.uploadState === "in-progress" && (
     <div
-      part={`file-skeleton format-${fileFormat} ${
-        file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-      }${file.extension ? " " + file.extension : ""}`}
+      part={tokenMap({
+        [`file-skeleton format-${fileFormat} ${file.mimeType} ${
+          file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
+        }`]: true,
+        [file.extension]: !!file.extension,
+        [file.parts]: !!file.parts
+      })}
     ></div>
   );
 
@@ -29,18 +34,26 @@ const getFileContainerParts = (
   file: ChatFile,
   fileFormat: keyof ChMimeTypeFormatMap
 ) =>
-  `file-container format-${fileFormat} ${file.mimeType} ${
-    file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-  }${file.extension ? " " + file.extension : ""}` as const;
+  tokenMap({
+    [`file-container format-${fileFormat} ${file.mimeType} ${
+      file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
+    }`]: true,
+    [file.extension]: !!file.extension,
+    [file.parts]: !!file.parts
+  });
 
 const getFileParts = (file: ChatFile, fileFormat: keyof ChMimeTypeFormatMap) =>
-  `file format-${fileFormat} ${file.mimeType} ${
-    file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-  }${file.extension ? " " + file.extension : ""}` as const;
+  tokenMap({
+    [`file format-${fileFormat} ${file.mimeType} ${
+      file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
+    }`]: true,
+    [file.extension]: !!file.extension,
+    [file.parts]: !!file.parts
+  });
 
 // TODO: Improve accessibility by exposing progress or spin states while
 // uploading
-export const defaultFilesRender: ChatFilesRender = {
+export const defaultFileRender: ChatFileRender = {
   audio: (file: ChatFile) => (
     <div part={getFileContainerParts(file, "audio")}>
       <audio

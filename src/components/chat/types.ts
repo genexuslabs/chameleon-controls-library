@@ -87,7 +87,10 @@ export type ChatMessageUser = {
   metadata?: any;
 
   /**
-   * Added to the parts of the cell.
+   * Parts for the cell, message content, `files-container` and
+   * `sources-container`.
+   *
+   * It is not added to the parts of the files and sources.
    */
   parts?: string;
 
@@ -101,7 +104,10 @@ export type ChatMessageAssistant = {
   metadata?: any;
 
   /**
-   * Added to the parts of the cell.
+   * Parts for the cell, message content, `files-container` and
+   * `sources-container`.
+   *
+   * It is not added to the parts of the files and sources.
    */
   parts?: string;
 
@@ -121,7 +127,10 @@ export type ChatMessageError = {
   metadata?: any;
 
   /**
-   * Added to the parts of the cell.
+   * Parts for the cell, message content, `files-container` and
+   * `sources-container`.
+   *
+   * It is not added to the parts of the files and sources.
    */
   parts?: string;
 
@@ -149,6 +158,11 @@ export type ChatFile = {
   mimeType: ChMimeType | (string & Record<never, never>);
 
   /**
+   * Parts for the file.
+   */
+  parts?: string;
+
+  /**
    * Specifies the uploading state of the files.
    *
    * By default is `"uploaded"`.
@@ -165,8 +179,13 @@ export type ChatMessageSources = ChatMessageSource[];
 export type ChatMessageSource = {
   accessibleName?: string;
   caption?: string;
-  url: string;
+
+  /**
+   * Parts for the source.
+   */
   parts?: string;
+
+  url: string;
 };
 
 export type ChatInternalCallbacks = {
@@ -246,7 +265,7 @@ export type ChatMessageRenderBySections = {
    *
    * If `undefined`, a default render for the files will be used.
    */
-  files?: ChatFilesRender;
+  file?: ChatFileRender;
 
   /**
    * Render for the general structure of the message.
@@ -262,11 +281,11 @@ export type ChatMessageRenderBySections = {
   messageStructure?: ChatMessageStructureRender;
 
   /**
-   * Render for the sources of the message.
+   * Render for each source of the message.
    *
    * If `undefined`, a default render for the sources will be used.
    */
-  sources?: ChatSourcesRender;
+  source?: ChatSourceRender;
 };
 
 export type ChatCodeBlockRender = (
@@ -279,8 +298,8 @@ export type ChatContentRender = (
   codeBlockRender: ChatCodeBlockRender
 ) => any;
 
-export type ChatFilesRender = {
-  [key in keyof ChMimeTypeFormatMap]: (
+export type ChatFileRender = {
+  [key in keyof ChMimeTypeFormatMap]?: (
     file: ChatFile,
     chatRef: HTMLChChatElement
   ) => any;
@@ -292,12 +311,12 @@ export type ChatMessageStructureRender = (
   renders: {
     codeBlock: ChatCodeBlockRender;
     content: ChatContentRender;
-    files: ChatFilesRender;
-    sources: ChatSourcesRender;
+    file: ChatFileRender;
+    source: ChatSourceRender;
   }
 ) => any;
 
-export type ChatSourcesRender = (
-  message: ChatMessage,
+export type ChatSourceRender = (
+  sources: ChatMessageSource,
   chatRef: HTMLChChatElement
 ) => any;

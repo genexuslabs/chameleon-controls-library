@@ -1,14 +1,12 @@
 import { h } from "@stencil/core";
 import { copyToTheClipboard } from "../../../common/utils";
-import type {
-  MarkdownViewerCodeRender,
-  MarkdownViewerCodeRenderOptions
-} from "../../markdown-viewer/parsers/types";
+import type { MarkdownViewerCodeRenderOptions } from "../../markdown-viewer/parsers/types";
+import type { ChatCodeBlockRender } from "../types";
 
 const copy = (text: string) => () => copyToTheClipboard(text);
 
-export const defaultCodeBlockRender =
-  (chatRef: HTMLChChatElement): MarkdownViewerCodeRender =>
+export const defaultCodeBlockRender: ChatCodeBlockRender =
+  (chatRef: HTMLChChatElement) =>
   (options: MarkdownViewerCodeRenderOptions): any =>
     (
       <div part="code-block">

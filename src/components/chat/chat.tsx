@@ -1,6 +1,8 @@
 import {
   Component,
   Element,
+  Event,
+  EventEmitter,
   Host,
   Method,
   Prop,
@@ -14,22 +16,35 @@ import type {
   VirtualScrollVirtualItems
 } from "../../components";
 import type { ThemeModel } from "../theme/theme-types";
-import {
-  ChatContentImages,
-  ChatInternalCallbacks,
+import type {
+  ChatMessageFiles,
+  ChatCallbacks,
   ChatMessage,
+  ChatMessageAssistant,
   ChatMessageByRole,
-  ChatMessageByRoleNoId
+  ChatMessageByRoleNoId,
+  ChatMessageError,
+  ChatMessageRenderByItem,
+  ChatMessageRenderBySections,
+  ChatMessageUser
 } from "./types";
-import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
-import { removeElement } from "../../common/array";
-import { ChatTranslations } from "./translations";
-import { defaultChatRender } from "./default-chat-render";
+import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
+import type { ChatTranslations } from "./translations";
+import type { ChMimeType } from "../../common/mimeTypes/mime-types";
 import { adoptCommonThemes } from "../../common/theme";
-import { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 import { tokenMap } from "../../common/utils";
+import {
+  DEFAULT_ASSISTANT_STATUS,
+  getMessageContent,
+  getMessageFiles
+} from "./utils";
+import { renderContentBySections } from "./renders/renders";
 
 const ENTER_KEY = "Enter";
+
+const getAriaBusyValue = (
+  status?: "complete" | "waiting" | "streaming" | undefined
+): "true" | "false" => (status === "streaming" ? "true" : "false");
 
 /**
  * TODO: Add description
@@ -50,8 +65,8 @@ export class ChChat {
 
   @Element() el!: HTMLChChatElement;
 
-  @State() imagesToUpload: { src: string; file: File }[] = [];
-  @State() uploadingImagesToTheServer = 0;
+  @State() uploadingFiles = 0;
+
   @State() virtualItems: ChatMessage[] = [];
 
   /**
@@ -83,7 +98,7 @@ export class ChChat {
   /**
    * Specifies the callbacks required in the control.
    */
-  @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
+  @Prop() readonly callbacks?: ChatCallbacks | undefined;
 
   /**
    * Specifies if all interactions are disabled
@@ -94,24 +109,6 @@ export class ChChat {
    * `true` if a response for the assistant is being generated.
    */
   @Prop() readonly generatingResponse?: boolean = false;
-
-  /**
-   * Specifies an object containing an HTMLAnchorElement reference. Use this
-   * property to render a button to download the code when displaying a code
-   * block.
-   */
-  @Prop() readonly hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement };
-
-  /**
-   * Specifies if the control can render a button to load images from the file
-   * system.
-   */
-  @Prop() readonly imageUpload: boolean = false;
-
-  /**
-   * Specifies if the chat is used in a mobile device.
-   */
-  @Prop() readonly isMobile?: boolean = false;
 
   // TODO: Add support for undefined messages.
   /**
@@ -176,9 +173,20 @@ export class ChChat {
   > = "instant";
 
   /**
-   * This property allows us to implement custom rendering for the code blocks.
+   * This property allows us to implement custom rendering of chat items.
+   *
+   * This works by providing a custom render of the cell content in two
+   * possible ways:
+   *   1. Replacing the render of the entire cell with a function of the
+   *   message model.
+   *
+   *   2. Replacing the render of specific parts of the message by providing an
+   *   object with the specific renders of the message sections (`codeBlock`,
+   *   `content`, `files` and/or `messageStructure`).
    */
-  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
+  @Prop() readonly renderItem?:
+    | ChatMessageRenderByItem
+    | ChatMessageRenderBySections;
 
   /**
    * `true` to render a slot named "additional-content" to project elements
@@ -201,10 +209,8 @@ export class ChChat {
   @Prop() readonly translations: ChatTranslations = {
     accessibleName: {
       clearChat: "Clear chat",
-      copyResponseButton: "Copy assistant response",
+      copyMessageContent: "Copy message content",
       downloadCodeButton: "Download code",
-      imagePicker: "Select images",
-      removeUploadedImage: "Remove uploaded image",
       sendButton: "Send",
       sendInput: "Message",
       stopGeneratingAnswerButton: "Stop generating answer"
@@ -213,20 +219,23 @@ export class ChChat {
       sendInput: "Ask me a question..."
     },
     text: {
-      stopGeneratingAnswerButton: "Stop generating answer",
       copyCodeButton: "Copy code",
+      copyMessageContent: "Copy",
       processing: `Processing...`,
-      sourceFiles: "Source files:"
+      sourceFiles: "Source files:",
+      stopGeneratingAnswerButton: "Stop generating answer"
     }
   };
 
   /**
-   * This property allows us to implement custom rendering of chat items.
-   * If allow us to implement the render of the cell content.
+   * Fired when a new user message is added in the chat via user interaction.
+   *
+   * Since developers can define their own render for file attachment, this
+   * event serves to synchronize the cleanup of the `send-input` with the
+   * cleanup of the custom file attachment, or or even blocking user
+   * interactions before the `sendChatMessages` callback is executed.
    */
-  @Prop() readonly renderItem?: (
-    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
-  ) => any;
+  @Event() userMessageAdded: EventEmitter<ChatMessageByRole<"user">>;
 
   /**
    * Add a new message at the end of the record, performing a re-render.
@@ -270,6 +279,9 @@ export class ChChat {
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
+    // TODO: Don't update chat message if it has role="user" and it is
+    // uploading file messages
+
     if (this.items.length === 0 || !this.items[messageIndex]) {
       return;
     }
@@ -290,6 +302,9 @@ export class ChChat {
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
+    // TODO: Don't update last chat message if it has role="user" and it is
+    // uploading file messages
+
     if (this.items.length === 0) {
       return;
     }
@@ -311,27 +326,35 @@ export class ChChat {
     }
   };
 
-  #getMessageContent = (
-    message: ChatMessageByRoleNoId<"system" | "assistant">
-  ) =>
-    typeof message.content === "string"
-      ? message.content
-      : message.content.message;
-
   #updateMessage = (
     messageIndex: number,
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) => {
     if (mode === "concat") {
-      // Temporal store for the new message
-      const newMessageContent =
-        this.#getMessageContent(
-          this.items[messageIndex] as ChatMessageByRole<"system" | "assistant">
-        ) + this.#getMessageContent(message);
+      const messageInIndex = this.items[messageIndex] as ChatMessageByRole<
+        "system" | "assistant"
+      >;
 
-      // Reuse the message ref to correctly update the message content
-      if (typeof message.content === "string") {
+      // Temporal store for the new message content
+      const newMessageContent =
+        getMessageContent(messageInIndex) + getMessageContent(message);
+
+      // Temporal store for the new message files
+      const newMessageFiles: ChatMessageFiles = getMessageFiles(messageInIndex);
+      newMessageFiles.push(...getMessageFiles(message));
+
+      // Update the message object, since the current message could not be an
+      // object with files
+      if (newMessageFiles.length !== 0) {
+        // Reuse the message parameter reference to correctly update the
+        // message content. We are doing this since it can contain new member
+        // the message that are not present in the current message
+        message.content = {
+          message: newMessageContent,
+          files: newMessageFiles
+        };
+      } else if (typeof message.content === "string") {
         message.content = newMessageContent;
       } else {
         message.content.message = newMessageContent;
@@ -343,6 +366,7 @@ export class ChChat {
     this.items[messageIndex] = Object.assign({ id: messageId }, message);
   };
 
+  // TODO: This should be a property
   #sendMessageKeyboard = (event: KeyboardEvent) => {
     if (event.key !== ENTER_KEY || event.shiftKey) {
       return;
@@ -356,19 +380,89 @@ export class ChChat {
     userMessage: ChatMessageByRole<"user">
   ) => {
     this.#editRef.value = "";
-    this.#editRef.click();
+    this.#editRef.click(); // TODO: Should it be focus???
 
     await this.#pushMessage(userMessage);
+    this.userMessageAdded.emit(userMessage);
   };
 
-  #chatMessageCanBeSent = (chat: ChatMessage) =>
+  #chatMessageCanBeSent = (chat: ChatMessage, files: File[]) =>
     !this.callbacks ||
     !this.callbacks.validateSendChatMessage ||
-    this.callbacks.validateSendChatMessage(chat);
+    this.callbacks.validateSendChatMessage(chat, files);
+
+  #getChatFiles = () =>
+    !this.callbacks || !this.callbacks.getChatMessageFiles
+      ? []
+      : this.callbacks.getChatMessageFiles();
+
+  #uploadFiles = (
+    userMessageToAdd: ChatMessageByRole<"user">,
+    sendInputValue: string,
+    filesToUpload: File[]
+  ) => {
+    const callbacks = this.callbacks;
+
+    if (!callbacks) {
+      // eslint-disable-next-line no-console
+      return console.warn(
+        'The "callbacks" property is not defined, so files can not be uploaded'
+      );
+    }
+    if (!callbacks.uploadFile) {
+      // eslint-disable-next-line no-console
+      return console.warn(
+        'The "uploadFile" member is not defined in the "callbacks" property, so files can not be uploaded'
+      );
+    }
+
+    const chatFiles: ChatMessageFiles = [];
+    userMessageToAdd.content = {
+      message: sendInputValue,
+      files: chatFiles
+    };
+
+    // Add all files as "in-progress" state and update them to the server in
+    // parallel
+    for (let fileIndex = 0; fileIndex < filesToUpload.length; fileIndex++) {
+      const file = filesToUpload[fileIndex];
+      const temporalFileURL = URL.createObjectURL(file);
+
+      chatFiles.push({
+        caption: file.name,
+        mimeType: file.type as ChMimeType,
+        uploadState: "in-progress",
+        url: temporalFileURL
+      });
+
+      this.uploadingFiles++;
+
+      callbacks
+        .uploadFile(file)
+        .then(uploadedFile => {
+          uploadedFile.uploadState = "uploaded";
+          chatFiles[fileIndex] = uploadedFile;
+        })
+        .catch(() => {
+          chatFiles[fileIndex].uploadState = "failed";
+        })
+        .finally(async () => {
+          this.uploadingFiles--;
+
+          // TODO: If the file upload fails, the preview will be removed
+          // without replacing it with the actual public URL
+          // Free the resource to avoid memory leaks
+          URL.revokeObjectURL(temporalFileURL);
+
+          if (this.uploadingFiles === 0) {
+            this.#sendChat();
+          }
+        });
+    }
+  };
 
   #sendChat = () => {
     const lastCell = this.items.at(-1);
-
     this.#cellIdAlignedWhenRendered = lastCell.id;
 
     if (this.newUserMessageAlignment === "start") {
@@ -377,125 +471,68 @@ export class ChChat {
       this.#cellHasToReserveSpace.add(lastCell.id);
     }
 
-    this.callbacks?.sendChatToLLM(this.items);
+    if (!this.callbacks) {
+      // eslint-disable-next-line no-console
+      return console.warn(
+        'The "callbacks" property is not defined, so the "sendChatMessages" function can not be executed to emit the new chat'
+      );
+    }
+
+    this.callbacks.sendChatMessages(this.items);
   };
 
   #sendMessage = async () => {
+    const filesToUpload = await this.#getChatFiles();
+    const sendInputValue = this.#editRef.value;
+    const hasFiles = filesToUpload.length !== 0;
+    const emptySendInput =
+      (!sendInputValue || sendInputValue.trim() === "") && !hasFiles;
+
+    // TODO: Add unit tests for this
     if (
-      !this.#editRef.value ||
+      emptySendInput ||
       this.disabled ||
+      this.generatingResponse ||
       this.loadingState === "initial" ||
       this.loadingState === "loading" ||
-      this.generatingResponse ||
-      this.uploadingImagesToTheServer > 0
+      this.uploadingFiles !== 0
     ) {
       return;
     }
 
-    // Message without resources
-    if (!this.imageUpload || this.imagesToUpload.length === 0) {
-      const userMessageToAdd: ChatMessageByRole<"user"> = {
-        id: `${new Date().getTime()}`,
-        role: "user",
-        content: this.#editRef.value
-      };
-
-      if (!(await this.#chatMessageCanBeSent(userMessageToAdd))) {
-        return;
-      }
-
-      await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.#sendChat();
-
-      // Queue a new re-render
-      forceUpdate(this);
-      return;
-    }
-
-    this.uploadingImagesToTheServer = this.imagesToUpload.length;
-
-    const userContent: ChatContentImages = [
-      { type: "text", text: this.#editRef.value }
-    ] as ChatContentImages;
-
-    // TODO: See how we can validate the sendChat callback
-    this.imagesToUpload.forEach((imageToUpload, index) => {
-      // Add the image with empty src, since it's not in the server yet
-      userContent.push({
-        type: "image_url",
-        image_url: { url: "" }
-      });
-
-      // Upload the image to the server asynchronously
-      this.callbacks
-        ?.uploadImage(imageToUpload.file)
-        .then(imageSrc => {
-          userContent[index + 1] = {
-            type: "image_url",
-            image_url: { url: imageSrc }
-          };
-
-          // Queue a new re-render
-          this.uploadingImagesToTheServer--;
-
-          if (this.uploadingImagesToTheServer === 0) {
-            this.#sendChat();
-          }
-        })
-        .catch(() => {
-          // console.log("Reject...", reason);
-          // TODO: Error uploading the image
-
-          this.uploadingImagesToTheServer--;
-
-          if (this.uploadingImagesToTheServer === 0) {
-            this.#sendChat();
-          }
-        });
-    });
-
+    // Message
     const userMessageToAdd: ChatMessageByRole<"user"> = {
       id: `${new Date().getTime()}`,
       role: "user",
-      content: userContent
+      content: sendInputValue
     };
+
+    // Validate message with callback
+    if (!(await this.#chatMessageCanBeSent(userMessageToAdd, filesToUpload))) {
+      return;
+    }
+
+    // Upload files to the server as soon as possible
+    if (hasFiles) {
+      this.#uploadFiles(userMessageToAdd, sendInputValue, filesToUpload);
+    }
+
+    // TODO: Should we do something if the uploadFile callback is not defined??
     await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
 
-    // Free the memory
-    this.imagesToUpload = [];
+    // Only send the chat if the user message didn't have files. Otherwise, the
+    // chat sending will be resolved in the uploadFiles
+    if (!hasFiles) {
+      this.#sendChat();
+    }
+
+    // Queue a new re-render
+    forceUpdate(this);
   };
 
   #handleStopGenerating = (event: MouseEvent) => {
     event.stopPropagation();
-
-    this.callbacks?.stopGeneratingAnswer!();
-  };
-
-  // #handleFilesChanged = (event: ImagePickerCustomEvent<FileList | null>) => {
-  //   this.imagesToUpload =
-  //     event.detail === null
-  //       ? []
-  //       : [...event.detail].map(imageFile => ({
-  //           file: imageFile,
-  //           src: URL.createObjectURL(imageFile)
-  //         }));
-  // };
-
-  #removeUploadedImage = (index: number) => (event: MouseEvent) => {
-    const buttonToRemove = event.target as HTMLButtonElement;
-    const nextFocusedButton = (buttonToRemove.nextElementSibling ??
-      buttonToRemove.previousElementSibling) as HTMLButtonElement | null;
-
-    // Focus the next item to improve accessibility
-    nextFocusedButton?.focus();
-
-    // TODO: Remove the file from the image-picker reference
-    removeElement(this.imagesToUpload, index);
-    forceUpdate(this);
-  };
-
-  #removeImageResource = (imageFile: string) => () => {
-    URL.revokeObjectURL(imageFile); // Free the memory
+    this.callbacks!.stopGeneratingAnswer!();
   };
 
   #alignCellWhenRendered = () =>
@@ -553,21 +590,34 @@ export class ChChat {
       </ch-smart-grid>
     );
 
+  #getMessageRenderedContent = (
+    message: ChatMessageUser | ChatMessageAssistant | ChatMessageError
+  ) => {
+    // Default render
+    if (!this.renderItem) {
+      return renderContentBySections(message, this.el, {});
+    }
+
+    return typeof this.renderItem === "function"
+      ? this.renderItem(message)
+      : renderContentBySections(message, this.el, this.renderItem); // The custom render is separated by sections
+  };
+
   #renderItem = (message: ChatMessage) => {
     if (message.role === "system") {
       return "";
     }
 
+    const isAssistantMessage = message.role === "assistant";
+
     const parts = tokenMap({
-      [`message ${message.role}`]: true,
+      [`message ${message.role} ${message.id}`]: true,
       [message.parts]: !!message.parts,
-      [(message as ChatMessageByRole<"assistant">).status]:
-        message.role === "assistant"
+      [(message as ChatMessageByRole<"assistant">).status ??
+      DEFAULT_ASSISTANT_STATUS]: isAssistantMessage
     });
 
-    const renderedContent = this.renderItem
-      ? this.renderItem(message)
-      : defaultChatRender(this.el)(message);
+    const renderedContent = this.#getMessageRenderedContent(message);
 
     const messageIsCellAlignedAtTheStart =
       message.id === this.#cellIdAlignedWhenRendered;
@@ -580,6 +630,12 @@ export class ChChat {
       <ch-smart-grid-cell
         key={message.id}
         cellId={message.id}
+        aria-live={isAssistantMessage ? "polite" : undefined}
+        // Wait until all changes are made to prevents assistive
+        // technologies from announcing changes before updates are done
+        aria-busy={
+          isAssistantMessage ? getAriaBusyValue(message.status) : undefined
+        }
         part={hasToRenderAnExtraDiv ? undefined : parts}
         smartGridRef={this.#smartGridRef}
         onSmartCellDidLoad={
@@ -663,21 +719,14 @@ export class ChChat {
         {this.theme && <ch-theme model={this.theme}></ch-theme>}
 
         {this.loadingState === "initial" ? (
-          // TODO: Improve this slot name
-          <div class="loading-chat" slot="empty-chat"></div>
+          <slot name="loading-chat"></slot>
         ) : (
           this.#renderChatOrEmpty()
         )}
 
         {canShowAdditionalContent && <slot name="additional-content" />}
 
-        <div
-          class={{
-            "send-container": true,
-            "send-container--file-uploading": this.imageUpload
-          }}
-          part="send-container"
-        >
+        <div class="send-container" part="send-container">
           {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
             <button
               aria-label={
@@ -694,40 +743,8 @@ export class ChChat {
               {text.stopGeneratingAnswerButton}
             </button>
           )}
-          {/* 
-          {this.imageUpload && (
-            <gx-eai-image-picker
-              part="image-picker"
-              translations={this.translations}
-              onFilesChanged={this.#handleFilesChanged}
-            ></gx-eai-image-picker>
-          )} */}
 
           <div class="send-input-wrapper" part="send-input-wrapper">
-            {this.imagesToUpload.length > 0 && (
-              <div class="images-to-upload" part="images-to-upload">
-                {this.imagesToUpload.map((imageFile, index) => (
-                  <button
-                    key={imageFile.src}
-                    aria-label={accessibleName.removeUploadedImage}
-                    title={accessibleName.removeUploadedImage}
-                    part="remove-image-to-upload-button"
-                    type="button"
-                    onClick={this.#removeUploadedImage(index)}
-                  >
-                    <img
-                      part="image-to-upload"
-                      aria-hidden="true"
-                      src={imageFile.src}
-                      alt=""
-                      loading="lazy"
-                      onLoad={this.#removeImageResource(imageFile.src)}
-                    ></img>
-                  </button>
-                ))}
-              </div>
-            )}
-
             <ch-edit
               accessibleName={accessibleName.sendInput}
               autoGrow

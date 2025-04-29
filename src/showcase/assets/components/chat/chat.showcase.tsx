@@ -35,7 +35,6 @@ const render: ShowcaseRender = designSystem => (
         ? undefined
         : mercuryChatMessageRender("mercury/markdown-viewer")
     }
-    isMobile={false}
     items={state.items}
     showAdditionalContent={state.showAdditionalContent}
     translations={chatTranslations}

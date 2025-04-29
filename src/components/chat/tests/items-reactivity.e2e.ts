@@ -1,8 +1,8 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { ChatMessage } from "../types";
+import { ChatMessage, ChatMessageByRole } from "../types";
 
 const INITIAL_LOAD_RENDERED_CONTENT =
-  '<div class="loading-chat" slot="empty-chat"></div><div class="send-container" part="send-container"><div class="send-input-wrapper" part="send-input-wrapper"><ch-edit class="ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit></div><button aria-label="Send" title="Send" class="send-or-audio-button" part="send-button" type="button"></button></div>';
+  '<slot name="loading-chat"></slot><div class="send-container" part="send-container"><div class="send-input-wrapper" part="send-input-wrapper"><ch-edit class="ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit></div><button aria-label="Send" title="Send" class="send-or-audio-button" part="send-button" type="button"></button></div>';
 
 const EMPTY_RENDERED_CONTENT =
   '<slot name="empty-chat"></slot><div class="send-container" part="send-container"><div class="send-input-wrapper" part="send-input-wrapper"><ch-edit class="ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit></div><button aria-label="Send" title="Send" class="send-or-audio-button" part="send-button" type="button"></button></div>';
@@ -44,10 +44,13 @@ const chatModel2: ChatMessage[] = [
 ];
 
 const USER_CELL = <I extends string, T extends string>(id: I, content: T) =>
-  `<ch-smart-grid-cell part="message user" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true">${content}</ch-smart-grid-cell>`;
+  `<ch-smart-grid-cell part="message user ${id}" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true"><div part="content-container user ${id}">${content}</div></ch-smart-grid-cell>`;
 
-const ASSISTANT_CELL = <I extends string>(id: I) =>
-  `<ch-smart-grid-cell part="message assistant undefined" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true"><div aria-live="polite" aria-busy="false" class="assistant-content" part="assistant-content"><ch-markdown-viewer class="hydrated"></ch-markdown-viewer><button aria-label="Copy assistant response" title="Copy assistant response" part="copy-response-button" type="button"></button></div></ch-smart-grid-cell>`;
+const ASSISTANT_CELL = <I extends string>(
+  id: I,
+  assistantState: ChatMessageByRole<"assistant">["status"]
+) =>
+  `<ch-smart-grid-cell aria-live="polite" aria-busy="false" part="message assistant ${id} ${assistantState}" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true"><div part="content-container assistant ${id} ${assistantState}"><ch-markdown-viewer part="assistant content ${id} ${assistantState}" class="hydrated"></ch-markdown-viewer><button aria-label="Copy message content" part="assistant copy-message-content ${id}" type="button">Copy</button></div></ch-smart-grid-cell>`;
 
 describe("[ch-chat][items reactivity]", () => {
   let page: E2EPage;
@@ -110,7 +113,7 @@ describe("[ch-chat][items reactivity]", () => {
 
     expect(await getChatRenderedItems()).toEqual(
       USER_CELL("1", "Something") +
-        ASSISTANT_CELL("2") +
+        ASSISTANT_CELL("2", "complete") +
         USER_CELL("3", "Something 3")
     );
   });
@@ -125,7 +128,7 @@ describe("[ch-chat][items reactivity]", () => {
 
     expect(await getChatRenderedItems()).toEqual(
       USER_CELL("1", "Something") +
-        ASSISTANT_CELL("2") +
+        ASSISTANT_CELL("2", "complete") +
         USER_CELL("3", "Something 3")
     );
 
@@ -134,7 +137,7 @@ describe("[ch-chat][items reactivity]", () => {
 
     expect(await getChatRenderedItems()).toEqual(
       USER_CELL("1", "A different text") +
-        ASSISTANT_CELL("2") +
+        ASSISTANT_CELL("2", "complete") +
         USER_CELL("3", "A different text 3")
     );
   });

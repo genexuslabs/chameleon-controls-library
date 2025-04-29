@@ -377,6 +377,7 @@ export class ChChat {
     this.#editRef.click(); // TODO: Should it be focus???
 
     await this.#pushMessage(userMessage);
+    this.userMessageAdded.emit(userMessage);
   };
 
   #chatMessageCanBeSent = (chat: ChatMessage, files: File[]) =>
@@ -448,7 +449,7 @@ export class ChChat {
           URL.revokeObjectURL(temporalFileURL);
 
           if (this.uploadingFiles === 0) {
-            this.#sendChat(userMessageToAdd);
+            this.#sendChat();
           }
         });
     }
@@ -458,9 +459,7 @@ export class ChChat {
     }
   };
 
-  #sendChat = async (userMessageToAdd: ChatMessageUser) => {
-    await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-
+  #sendChat = () => {
     const lastCell = this.items.at(-1);
     this.#cellIdAlignedWhenRendered = lastCell.id;
 
@@ -491,9 +490,10 @@ export class ChChat {
     if (
       emptySendInput ||
       this.disabled ||
+      this.generatingResponse ||
       this.loadingState === "initial" ||
       this.loadingState === "loading" ||
-      this.generatingResponse
+      this.uploadingFiles !== 0
     ) {
       return;
     }
@@ -510,13 +510,18 @@ export class ChChat {
       return;
     }
 
-    // Upload files to the server
+    // Upload files to the server as soon as possible
     if (hasFiles) {
       this.#uploadFiles(userMessageToAdd, sendInputValue, filesToUpload);
     }
 
-    if (this.uploadingFiles === 0) {
-      await this.#sendChat(userMessageToAdd);
+    // TODO: Should we do something if the uploadFile callback is not defined??
+    await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+
+    // Only send the chat if the user message didn't have files. Otherwise, the
+    // chat sending will be resolved in the uploadFiles
+    if (!hasFiles) {
+      this.#sendChat();
     }
 
     // Queue a new re-render

@@ -148,7 +148,14 @@ function dummyStreaming(
   );
 }
 
+// let returnFiles = true;
+
 export const chatCallbacks: ChatInternalCallbacks = {
+  // getChatMessageFiles: () => {
+  //   returnFiles = !returnFiles;
+
+  //   return returnFiles ? [] : [];
+  // },
   sendChatMessages,
   stopGeneratingAnswer: () => {
     clearTimeout(timeOut);
@@ -172,7 +179,7 @@ export const chatCallbacks: ChatInternalCallbacks = {
 export const chatTranslations: ChatTranslations = {
   accessibleName: {
     clearChat: "Clear chat",
-    copyResponseButton: "Copy assistant response",
+    copyMessageContent: "Copy message content",
     downloadCodeButton: "Download code",
     sendButton: "Send",
     sendInput: "Message",
@@ -182,10 +189,11 @@ export const chatTranslations: ChatTranslations = {
     sendInput: "Ask me a question..."
   },
   text: {
-    stopGeneratingAnswerButton: "Stop generating answer",
     copyCodeButton: "Copy code",
+    copyMessageContent: "Copy",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
-    sourceFiles: "Source files:"
+    sourceFiles: "Source files:",
+    stopGeneratingAnswerButton: "Stop generating answer"
   }
 };
 
@@ -314,6 +322,17 @@ export const codeFixerRecord: ChatMessage[] = [
           caption: "Chameleon",
           mimeType: "text/plain",
           url: "https://github.com/genexuslabs/chameleon-controls-library"
+        }
+      ],
+      sources: [
+        {
+          caption: "Chameleon",
+          url: "https://github.com/genexuslabs/chameleon-controls-library"
+        },
+        {
+          caption: "GeneXus",
+          url: "www.genexus.com",
+          parts: "genexus"
         }
       ]
     }

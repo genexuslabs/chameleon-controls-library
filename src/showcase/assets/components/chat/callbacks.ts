@@ -191,6 +191,7 @@ export const chatTranslations: ChatTranslations = {
   text: {
     copyCodeButton: "Copy code",
     copyMessageContent: "Copy",
+    downloadCodeButton: "Download",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
     sourceFiles: "Source files:",
     stopGeneratingAnswerButton: "Stop generating answer"

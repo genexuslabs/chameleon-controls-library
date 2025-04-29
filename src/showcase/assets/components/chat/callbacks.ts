@@ -1,7 +1,4 @@
-import {
-  ChatInternalCallbacks,
-  ChatMessage
-} from "../../../../components/chat/types";
+import { ChatCallbacks, ChatMessage } from "../../../../components/chat/types";
 import { ChatTranslations } from "../../../../components/chat/translations";
 
 const PROCESSING_PLACEHOLDER = "{{ASSISTANT_NAME}}";
@@ -150,7 +147,7 @@ function dummyStreaming(
 
 // let returnFiles = true;
 
-export const chatCallbacks: ChatInternalCallbacks = {
+export const chatCallbacks: ChatCallbacks = {
   // getChatMessageFiles: () => {
   //   returnFiles = !returnFiles;
 

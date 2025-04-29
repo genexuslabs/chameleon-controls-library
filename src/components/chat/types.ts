@@ -240,7 +240,7 @@ export type ChatMessageSource = {
   url: string;
 };
 
-export type ChatInternalCallbacks = {
+export type ChatCallbacks = {
   /**
    * Specifies a callback that is executed when the user wants to download the
    * code block as a file.

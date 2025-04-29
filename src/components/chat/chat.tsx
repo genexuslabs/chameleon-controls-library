@@ -18,7 +18,7 @@ import type {
 import type { ThemeModel } from "../theme/theme-types";
 import type {
   ChatMessageFiles,
-  ChatInternalCallbacks,
+  ChatCallbacks,
   ChatMessage,
   ChatMessageAssistant,
   ChatMessageByRole,
@@ -98,7 +98,7 @@ export class ChChat {
   /**
    * Specifies the callbacks required in the control.
    */
-  @Prop() readonly callbacks?: ChatInternalCallbacks | undefined;
+  @Prop() readonly callbacks?: ChatCallbacks | undefined;
 
   /**
    * Specifies if all interactions are disabled

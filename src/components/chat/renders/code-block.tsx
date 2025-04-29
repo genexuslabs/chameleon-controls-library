@@ -1,13 +1,13 @@
 import { h } from "@stencil/core";
 import type { MarkdownViewerCodeRenderOptions } from "../../markdown-viewer/parsers/types";
-import type { ChatCodeBlockRender, ChatInternalCallbacks } from "../types";
+import type { ChatCodeBlockRender, ChatCallbacks } from "../types";
 import { copy } from "../utils";
 
 const downloadCodeBlockCallback =
   (
     plainText: string,
     language: string,
-    downloadCodeBlock: ChatInternalCallbacks["downloadCodeBlock"]
+    downloadCodeBlock: ChatCallbacks["downloadCodeBlock"]
   ) =>
   () =>
     downloadCodeBlock(plainText, language);

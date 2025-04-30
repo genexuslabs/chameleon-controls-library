@@ -44,13 +44,13 @@ const chatModel2: ChatMessage[] = [
 ];
 
 const USER_CELL = <I extends string, T extends string>(id: I, content: T) =>
-  `<ch-smart-grid-cell part="message user ${id}" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true"><div part="content-container user ${id}">${content}</div></ch-smart-grid-cell>`;
+  `<ch-smart-grid-cell part="message user ${id} has-content" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true"><div part="content-container user ${id}">${content}</div></ch-smart-grid-cell>`;
 
 const ASSISTANT_CELL = <I extends string>(
   id: I,
   assistantState: ChatMessageByRole<"assistant">["status"]
 ) =>
-  `<ch-smart-grid-cell aria-live="polite" aria-busy="false" part="message assistant ${id} ${assistantState}" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true"><div part="content-container assistant ${id} ${assistantState}"><ch-markdown-viewer part="assistant content ${id} ${assistantState}" class="hydrated"></ch-markdown-viewer><button aria-label="Copy message content" part="assistant copy-message-content ${id}" type="button">Copy</button></div></ch-smart-grid-cell>`;
+  `<ch-smart-grid-cell aria-live="polite" aria-busy="false" part="message assistant ${id} has-content ${assistantState}" role="gridcell" cell-id="${id}" class="hydrated" data-did-load="true"><div part="content-container assistant ${id} ${assistantState}"><ch-markdown-viewer part="assistant content ${id} ${assistantState}" class="hydrated"></ch-markdown-viewer><button aria-label="Copy message content" part="assistant copy-message-content ${id}" type="button">Copy</button></div></ch-smart-grid-cell>`;
 
 describe("[ch-chat][items reactivity]", () => {
   let page: E2EPage;

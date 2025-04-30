@@ -415,7 +415,7 @@ export class ChChat {
 
   #uploadFiles = (
     userMessageToAdd: ChatMessageByRole<"user">,
-    sendInputValue: string,
+    sendInputValue: string | undefined,
     filesToUpload: File[]
   ) => {
     const callbacks = this.callbacks;

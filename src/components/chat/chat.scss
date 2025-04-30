@@ -19,10 +19,6 @@
   contain: paint;
 }
 
-// .message-with-images {
-//   display: grid;
-// }
-
 img {
   display: block;
   // Necessary to avoid overflowing the cell width when the window does not
@@ -35,13 +31,6 @@ img {
   grid-template-columns: max-content 1fr;
   align-items: center;
 }
-
-// .assistant-files {
-//   grid-area: 2 / 2;
-//   display: flex;
-//   flex-wrap: wrap;
-//   align-items: center;
-// }
 
 ::part(code-block__header) {
   display: grid;
@@ -89,11 +78,6 @@ img {
 //   inset-block-start: 0;
 //   justify-self: center;
 //   transform: translateY(-100%);
-// }
-
-// .images-to-upload {
-//   display: flex;
-//   flex-wrap: wrap;
 // }
 
 .send-container {

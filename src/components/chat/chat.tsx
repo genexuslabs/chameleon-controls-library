@@ -36,7 +36,8 @@ import { tokenMap } from "../../common/utils";
 import {
   DEFAULT_ASSISTANT_STATUS,
   getMessageContent,
-  getMessageFiles
+  getMessageFiles,
+  getMessageFilesAndSources
 } from "./utils";
 import { renderContentBySections } from "./renders/renders";
 
@@ -625,9 +626,13 @@ export class ChChat {
     }
 
     const isAssistantMessage = message.role === "assistant";
+    const filesAndSources = getMessageFilesAndSources(message);
 
     const parts = tokenMap({
       [`message ${message.role} ${message.id}`]: true,
+      "has-content": (getMessageContent(message) ?? "").trim() !== "",
+      "has-files": filesAndSources.files.length !== 0,
+      "has-sources": filesAndSources.sources.length !== 0,
       [message.parts]: !!message.parts,
       [(message as ChatMessageByRole<"assistant">).status ??
       DEFAULT_ASSISTANT_STATUS]: isAssistantMessage

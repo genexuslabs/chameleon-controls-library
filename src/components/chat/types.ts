@@ -173,7 +173,7 @@ export type ChatMessageError = {
 export type ChatMessageContent = string | ChatMessageContentFilesAndSources;
 
 export type ChatMessageContentFilesAndSources = {
-  message: string;
+  message?: string;
   files?: ChatMessageFiles;
   sources?: ChatMessageSources;
 };
@@ -196,9 +196,7 @@ export type ChatMessageFile = {
    */
   metadata?: any;
 
-  // The (string & Record<never, never>) is necessary to allow any string as
-  // the mimeType without removing the VSCode suggestions
-  mimeType: ChMimeType | (string & Record<never, never>);
+  mimeType: ChMimeType;
 
   /**
    * Parts for the file.
@@ -375,7 +373,11 @@ export type ChatFileRender = {
 export type ChatMessageStructureRender = (
   message: ChatMessage,
   chatRef: HTMLChChatElement,
-  renders: Required<Omit<ChatMessageRenderBySections, "messageStructure">>
+  renders: Required<
+    Omit<ChatMessageRenderBySections, "messageStructure" | "file">
+  > & {
+    file: Required<ChatFileRender>;
+  }
 ) => any;
 
 export type ChatSourceRender = (

@@ -58,7 +58,8 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
   "datetime-local": "0001-01-01T00:00:00"
 };
 
-const TEXTAREA_CLASSES = `content autofill multiline ${SCROLLABLE_CLASS}`;
+const TEXTAREA_FLOATING_CLASSES = `content autofill multiline-floating ${SCROLLABLE_CLASS}`;
+const TEXTAREA_INLINE_CLASSES = `content autofill multiline-inline ${SCROLLABLE_CLASS}`;
 
 /**
  * A wrapper for the input and textarea elements. It additionally provides:
@@ -72,10 +73,9 @@ const TEXTAREA_CLASSES = `content autofill multiline ${SCROLLABLE_CLASS}`;
  *  - Support for debouncing the input event.
  *
  * @part date-placeholder - A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.
- * @part hidden-multiline - The auxiliary content rendered in the control to implement the auto-grow. This part only applies when `multiline="true"`.
- * @part trigger-button - The trigger button displayed on the right side of the control when `show-trigger="true"`.
  *
- * @slot trigger-content - The slot used for the content of the trigger button.
+ * @slot additional-content-before - The slot used for the additional content when `showAdditionalContentBefore === true`.
+ * @slot additional-content-after - The slot used for the additional content when `showAdditionalContentAfter === true`.
  */
 @Component({
   formAssociated: true,
@@ -92,9 +92,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   // Refs
   // TODO: StencilJS issue. We have to use two refs because StencilJS does not,
-  // update the ref when updating the multiline property
+  // update the ref when updating the multiline property or the DOM element is
+  // moved
   #inputRef: HTMLInputElement | undefined;
   #textareaRef: HTMLTextAreaElement | undefined;
+  #textareaInsideContainerRef: HTMLTextAreaElement | undefined;
 
   @State() isFocusOnControl = false;
 
@@ -243,11 +245,20 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly readonly: boolean = false;
 
   /**
-   * If true, a trigger button is shown next to the edit field. The button can
-   * be customized adding a child element with `slot="trigger-content"`
-   * attribute to specify the content inside the trigger button.
+   * If `true`, a slot is rendered in the edit with `"additional-content-after"`
+   * name.
+   * This slot is intended to customize the internal content of the edit by
+   * adding additional elements after the edit content.
    */
-  @Prop() readonly showTrigger: boolean;
+  @Prop() readonly showAdditionalContentAfter: boolean;
+
+  /**
+   * If `true`, a slot is rendered in the edit with `"additional-content-before"`
+   * name.
+   * This slot is intended to customize the internal content of the edit by
+   * adding additional elements before the edit content.
+   */
+  @Prop() readonly showAdditionalContentBefore: boolean;
 
   /**
    * Specifies whether the element may be checked for spelling errors
@@ -268,12 +279,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Specifies the source of the start image.
    */
   @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
-
-  /**
-   * This attribute lets you specify the label for the trigger button.
-   * Important for accessibility.
-   */
-  @Prop() readonly triggerButtonAccessibleName: string;
 
   /**
    * The type of control to render. A subset of the types supported by the `input` element is supported:
@@ -336,12 +341,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    */
   @Event() input: EventEmitter<string>;
 
-  /**
-   * Fired when the trigger button is clicked.
-   */
-  @Event() triggerClick: EventEmitter;
-
-  #getInputRef = () => this.#inputRef ?? this.#textareaRef;
+  #getInputRef = () =>
+    this.#inputRef ?? this.#textareaRef ?? this.#textareaInsideContainerRef;
 
   #computeImage = () => {
     if (!this.startImgSrc) {
@@ -406,19 +407,15 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     this.#setValueAndEmitInputEventWithDebounce(this.#getValueFromEvent(event));
   };
 
-  #handleTriggerClick = (event: UIEvent) => {
-    if (!this.disabled) {
-      event.stopPropagation();
-    }
-    this.triggerClick.emit(event);
-  };
-
   #clearValue = (event: PointerEvent) => {
     event.stopPropagation();
     this.#setValueAndEmitInputEventWithDebounce("");
 
     requestAnimationFrame(() => this.el.focus());
   };
+
+  #hasAdditionalContent = () =>
+    this.showAdditionalContentBefore || this.showAdditionalContentAfter;
 
   // - - - - - - - - - - - - - - - - - - - - - -
   //                  Pictures
@@ -437,6 +434,69 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   #removePictureOnBlur = () => {
     this.isFocusOnControl = false;
+  };
+
+  #renderTextarea = (canAddListeners: boolean) => (
+    <textarea
+      autoFocus={this.autoFocus}
+      aria-label={
+        this.#accessibleNameFromExternalLabel || this.accessibleName || null
+      }
+      autoCapitalize={this.autocapitalize}
+      autoComplete={this.autocomplete}
+      class={
+        this.#hasAdditionalContent() && !this.autoGrow
+          ? TEXTAREA_INLINE_CLASSES
+          : TEXTAREA_FLOATING_CLASSES
+      }
+      disabled={this.disabled}
+      maxLength={this.maxLength}
+      placeholder={this.placeholder}
+      readOnly={this.readonly}
+      spellcheck={this.spellcheck}
+      value={this.value}
+      // Event listeners
+      onChange={canAddListeners && this.#handleChange}
+      onInput={canAddListeners && this.#handleValueChanging}
+      onAnimationStart={canAddListeners && this.#handleAutoFill}
+      ref={el =>
+        // This is a WA due to a StencilJS bug not refreshing the ref when the
+        // element is moved
+        this.autoGrow && this.#hasAdditionalContent()
+          ? (this.#textareaInsideContainerRef = el)
+          : (this.#textareaRef = el)
+      }
+    ></textarea>
+  );
+
+  #renderTextareaWithAdditionalContent = (canAddListeners: boolean) => {
+    // Floating as a "normal textarea"
+    if (!this.#hasAdditionalContent()) {
+      return [
+        this.#renderTextarea(canAddListeners),
+        this.autoGrow && (
+          <div aria-hidden="true" class="hidden-multiline">
+            {this.value}
+          </div>
+        )
+      ];
+    }
+
+    // Inline case
+    if (!this.autoGrow) {
+      return this.#renderTextarea(canAddListeners);
+    }
+
+    // Floating inside a container to implement the Auto Grow
+    return (
+      <div class="multiline-container">
+        {this.#renderTextarea(canAddListeners)}
+
+        <div aria-hidden="true" class="hidden-multiline">
+          {this.value}
+        </div>
+      </div>
+    );
   };
 
   connectedCallback() {
@@ -481,9 +541,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   // TODO: Remove the icon with multiline and add overflow: clip in the Host with multiline
   render() {
     const isDateType = DATE_TYPES.includes(this.type);
-    const showDatePLaceholder = isDateType && this.placeholder && !this.value;
+    const showDatePlaceholder = isDateType && this.placeholder && !this.value;
     const shouldDisplayPicture = this.#hasPictureApplied();
     const canAddListeners = !this.disabled && !this.readonly;
+    const renderClearButton =
+      !this.multiline && this.type === "search" && !!this.value;
 
     return (
       <Host
@@ -492,10 +554,10 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           "ch-edit--cursor-text": !isDateType && !this.disabled,
           "ch-edit--editable-date": isDateType && !this.readonly,
           "ch-edit--multiline": this.multiline && this.autoGrow,
-          "ch-edit__trigger-button-space": this.showTrigger,
+          "ch-edit--clear-button": renderClearButton,
 
           [`ch-edit-start-img-type--${this.startImgType} ch-edit-pseudo-img--start`]:
-            !!this.#startImage,
+            !this.multiline && !!this.#startImage,
 
           [DISABLED_CLASS]: this.disabled
         }}
@@ -505,43 +567,17 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           [EDIT_HOST_PARTS.EMPTY_VALUE]: !this.value,
           [this.hostParts]: !!this.hostParts
         })}
-        style={this.#startImage?.styles ?? undefined}
+        style={!this.multiline ? this.#startImage?.styles ?? undefined : null}
         // Alignment
         data-text-align=""
         data-valign={!this.multiline ? "" : undefined}
       >
-        {this.multiline
-          ? [
-              <textarea
-                autoFocus={this.autoFocus}
-                aria-label={
-                  this.#accessibleNameFromExternalLabel ||
-                  this.accessibleName ||
-                  null
-                }
-                autoCapitalize={this.autocapitalize}
-                autoComplete={this.autocomplete}
-                class={TEXTAREA_CLASSES}
-                disabled={this.disabled}
-                maxLength={this.maxLength}
-                placeholder={this.placeholder}
-                readOnly={this.readonly}
-                spellcheck={this.spellcheck}
-                value={this.value}
-                // Event listeners
-                onChange={canAddListeners && this.#handleChange}
-                onInput={canAddListeners && this.#handleValueChanging}
-                onAnimationStart={canAddListeners && this.#handleAutoFill}
-                ref={el => (this.#textareaRef = el)}
-              ></textarea>,
+        {this.showAdditionalContentBefore && (
+          <slot name="additional-content-before" />
+        )}
 
-              // The space at the end of the value is necessary to correctly display the enters
-              this.autoGrow && (
-                <div class="hidden-multiline" part="hidden-multiline">
-                  {this.value}{" "}
-                </div>
-              )
-            ]
+        {this.multiline
+          ? this.#renderTextareaWithAdditionalContent(canAddListeners)
           : [
               <input
                 autoFocus={this.autoFocus}
@@ -553,8 +589,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 autoCapitalize={this.autocapitalize}
                 autoComplete={this.autocomplete}
                 class={{
-                  "content autofill": true,
-                  "null-date": showDatePLaceholder
+                  "content input autofill": true,
+                  "null-date": showDatePlaceholder
                 }}
                 disabled={this.disabled}
                 inputMode={this.mode}
@@ -591,24 +627,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 ref={el => (this.#inputRef = el)}
               />,
 
-              this.showTrigger && (
-                <button
-                  aria-label={this.triggerButtonAccessibleName}
-                  class={{
-                    "trigger-button": true,
-                    disabled: this.disabled
-                  }}
-                  part="trigger-button"
-                  type="button"
-                  disabled={this.disabled}
-                  onClick={canAddListeners && this.#handleTriggerClick}
-                >
-                  <slot name="trigger-content" />
-                </button>
-              ),
-
               // Implements a non-native placeholder for date types. TODO: Add unit tests for this
-              showDatePLaceholder && (
+              showDatePlaceholder && (
                 <div
                   aria-hidden="true"
                   class="date-placeholder"
@@ -616,21 +636,25 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 >
                   {this.placeholder}
                 </div>
-              ),
-
-              this.type === "search" && !!this.value && (
-                <button
-                  aria-label={this.clearSearchButtonAccessibleName}
-                  class="clear-button"
-                  part={tokenMap({
-                    [EDIT_PARTS_DICTIONARY.CLEAR_BUTTON]: true,
-                    [EDIT_PARTS_DICTIONARY.DISABLED]: this.disabled
-                  })}
-                  type="button"
-                  onClick={!this.disabled && this.#clearValue}
-                ></button>
               )
             ]}
+
+        {this.showAdditionalContentAfter && (
+          <slot name="additional-content-after" />
+        )}
+
+        {renderClearButton && (
+          <button
+            aria-label={this.clearSearchButtonAccessibleName}
+            class="clear-button"
+            part={tokenMap({
+              [EDIT_PARTS_DICTIONARY.CLEAR_BUTTON]: true,
+              [EDIT_PARTS_DICTIONARY.DISABLED]: this.disabled
+            })}
+            type="button"
+            onClick={!this.disabled && this.#clearValue}
+          ></button>
+        )}
       </Host>
     );
   }

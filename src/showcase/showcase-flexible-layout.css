@@ -220,6 +220,10 @@ legend {
   }
 }
 
+.form-test-edit {
+  min-block-size: 100px;
+}
+
 .field-legend-test {
   padding-inline: 16px;
 }

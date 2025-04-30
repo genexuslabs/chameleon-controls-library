@@ -47,6 +47,7 @@ const chameleonComponents: {
   "ch-infinite-scroll": 0,
   "ch-intersection-observer": 0,
   "ch-layout-splitter": 0,
+  "ch-live-kit-room": 0,
   "ch-markdown": 0,
   "ch-markdown-viewer": 0,
   "ch-navigation-list-item": 0,

@@ -12,6 +12,8 @@ testDefaultProperties("ch-chat", {
   newUserMessageAlignment: "end",
   newUserMessageScrollBehavior: "instant",
   showAdditionalContent: false,
+  showSendInputAdditionalContentAfter: false,
+  showSendInputAdditionalContentBefore: false,
   theme: undefined,
   translations: {
     accessibleName: {

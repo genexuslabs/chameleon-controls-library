@@ -36,7 +36,8 @@ import { tokenMap } from "../../common/utils";
 import {
   DEFAULT_ASSISTANT_STATUS,
   getMessageContent,
-  getMessageFiles
+  getMessageFiles,
+  getMessageFilesAndSources
 } from "./utils";
 import { renderContentBySections } from "./renders/renders";
 
@@ -196,6 +197,22 @@ export class ChChat {
    * (loadingState !== "all-records-loaded" && items.length > 0).
    */
   @Prop() readonly showAdditionalContent: boolean = false;
+
+  /**
+   * If `true`, a slot is rendered in the `send-input` with
+   * `"send-input-additional-content-after"` name. This slot is intended to customize
+   * the internal content of the send-input by adding additional elements
+   * after the send-input content.
+   */
+  @Prop() readonly showSendInputAdditionalContentAfter: boolean = false;
+
+  /**
+   * If `true`, a slot is rendered in the `send-input` with
+   * `"send-input-additional-content-before"` name. This slot is intended to customize
+   * the internal content of the send-input by adding additional elements
+   * before the send-input content.
+   */
+  @Prop() readonly showSendInputAdditionalContentBefore: boolean = false;
 
   /**
    * Specifies the theme to be used for rendering the chat.
@@ -398,7 +415,7 @@ export class ChChat {
 
   #uploadFiles = (
     userMessageToAdd: ChatMessageByRole<"user">,
-    sendInputValue: string,
+    sendInputValue: string | undefined,
     filesToUpload: File[]
   ) => {
     const callbacks = this.callbacks;
@@ -609,9 +626,13 @@ export class ChChat {
     }
 
     const isAssistantMessage = message.role === "assistant";
+    const filesAndSources = getMessageFilesAndSources(message);
 
     const parts = tokenMap({
       [`message ${message.role} ${message.id}`]: true,
+      "has-content": (getMessageContent(message) ?? "").trim() !== "",
+      "has-files": filesAndSources.files.length !== 0,
+      "has-sources": filesAndSources.sources.length !== 0,
       [message.parts]: !!message.parts,
       [(message as ChatMessageByRole<"assistant">).status ??
       DEFAULT_ASSISTANT_STATUS]: isAssistantMessage
@@ -751,9 +772,28 @@ export class ChChat {
               hostParts="send-input"
               multiline
               placeholder={this.translations.placeholder.sendInput}
+              showAdditionalContentAfter={
+                this.showSendInputAdditionalContentAfter
+              }
+              showAdditionalContentBefore={
+                this.showSendInputAdditionalContentBefore
+              }
               onKeyDown={this.#sendMessageKeyboard}
               ref={el => (this.#editRef = el as HTMLChEditElement)}
-            ></ch-edit>
+            >
+              {this.showSendInputAdditionalContentBefore && (
+                <slot
+                  slot="additional-content-before"
+                  name="send-input-additional-content-before"
+                />
+              )}
+              {this.showSendInputAdditionalContentAfter && (
+                <slot
+                  slot="additional-content-after"
+                  name="send-input-additional-content-after"
+                />
+              )}
+            </ch-edit>
           </div>
 
           <button

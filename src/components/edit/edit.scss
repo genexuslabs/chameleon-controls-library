@@ -56,11 +56,10 @@
    */
   --ch-edit__clear-button-image: #{$close-icon};
 
-  // --ch-edit-trigger-button-inline-size: #{$ch-icon-size};
-
-  display: flex;
+  display: grid; // With inline-grid it doesn't render well in the ch-chat
   align-items: center;
   position: relative;
+  grid-template: "ch-edit-content" 1fr / 1fr;
 
   // Base image
   --ch-start-img: var(--ch-start-img--base);
@@ -95,6 +94,11 @@
   // @include scrollbar-customization-for-one-element();
 }
 
+.input,
+.multiline-container {
+  grid-area: ch-edit-content;
+}
+
 // - - - - - - - - - - - - - - - - - - - -
 //                 Images
 // - - - - - - - - - - - - - - - - - - - -
@@ -119,11 +123,14 @@
 }
 
 :host(.ch-edit-pseudo-img--start) {
+  grid-template: "ch-edit-start-img-src ch-edit-content" 1fr / max-content 1fr;
+
   & > .content {
     margin-inline-start: var(--ch-edit-gap);
   }
 
   &::before {
+    grid-area: ch-edit-start-img-src;
     content: "";
     display: block;
     inline-size: var(--ch-edit__image-size);
@@ -156,11 +163,21 @@
 // - - - - - - - - - - - - - - - - - - - -
 // Hide textarea resize button
 .multiline {
-  position: absolute;
-  inset: 0;
-  block-size: 100%; // Necessary for Mozilla Firefox
-  padding: inherit;
-  resize: unset;
+  &-floating {
+    position: absolute;
+    inset: 0;
+    block-size: 100%; // Necessary for Mozilla Firefox
+    padding: inherit; // Necessary to properly align the placeholder
+    resize: unset;
+  }
+
+  &-inline {
+    resize: unset;
+  }
+
+  &-container {
+    position: relative;
+  }
 }
 
 // Auto grow = True and multiline = true
@@ -174,13 +191,19 @@
   block-size: 100%;
 
   // Implement line breaks
-  white-space: pre-wrap;
+  white-space: break-spaces;
 
   // Break words that do not enter in a single line
   word-break: break-word;
 
   // Hide from the accessibility tree but take space in the layout
   visibility: hidden;
+
+  // Without this line-breaks will flickering when a new character is added at
+  // the start of the line
+  &::after {
+    content: " ";
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -228,27 +251,6 @@
 }
 
 // - - - - - - - - - - - - - - - - - - - -
-//             Trigger button
-// - - - - - - - - - - - - - - - - - - - -
-:host(.ch-edit__trigger-button-space)::after {
-  content: "";
-  block-size: 100%;
-  margin-inline-start: var(--ch-edit-trigger-button-inline-size);
-  padding-inline-start: inherit;
-}
-
-.trigger-button {
-  display: flex;
-  align-items: center;
-  justify-items: center;
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: 0;
-  padding-inline: inherit;
-  cursor: pointer;
-}
-
-// - - - - - - - - - - - - - - - - - - - -
 //              Clear button
 // - - - - - - - - - - - - - - - - - - - -
 [type="search"]::-webkit-search-decoration,
@@ -256,7 +258,17 @@
   appearance: none;
 }
 
+:host(.ch-edit--clear-button) {
+  grid-template: "ch-edit-content ch-edit-clear-button" 1fr / 1fr max-content;
+}
+
+// With icon
+:host(.ch-edit--clear-button.ch-edit-pseudo-img--start) {
+  grid-template: "ch-edit-start-img-src ch-edit-content clear-button" 1fr / max-content 1fr max-content;
+}
+
 .clear-button {
+  grid-area: ch-edit-clear-button;
   display: inline-grid;
   align-items: center;
   justify-content: center;

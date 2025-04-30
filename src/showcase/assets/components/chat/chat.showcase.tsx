@@ -13,6 +13,7 @@ import {
 } from "./callbacks";
 import { mercuryChatMessageRender } from "./mercury-code-render";
 import { renderShowcaseProperties } from "../utils";
+import { dataTypeInGeneXus } from "../combo-box/models";
 
 const state: Partial<HTMLChChatElement> = {};
 
@@ -37,11 +38,34 @@ const render: ShowcaseRender = designSystem => (
     }
     items={state.items}
     showAdditionalContent={state.showAdditionalContent}
+    showSendInputAdditionalContentAfter={
+      state.showSendInputAdditionalContentAfter
+    }
+    showSendInputAdditionalContentBefore={
+      state.showSendInputAdditionalContentBefore
+    }
     translations={chatTranslations}
   >
     <div slot="additional-content">
       Custom content that is rendered when the chat renders content
     </div>
+    {state.showSendInputAdditionalContentBefore && (
+      <button
+        slot="send-input-additional-content-before"
+        class="button-primary"
+      >
+        Action
+      </button>
+    )}
+
+    {state.showSendInputAdditionalContentAfter && (
+      <ch-combo-box-render
+        slot="send-input-additional-content-after"
+        accessibleName="Data Types"
+        class="combo-box"
+        model={dataTypeInGeneXus}
+      ></ch-combo-box-render>
+    )}
   </ch-chat>
 );
 
@@ -120,6 +144,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         caption: "Show Additional Content",
         value: false,
         type: "boolean"
+      },
+      {
+        id: "showSendInputAdditionalContentBefore",
+        caption: "Show Send Input Additional Content Before",
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "showSendInputAdditionalContentAfter",
+        caption: "Show Send Input Additional Content After",
+        value: false,
+        type: "boolean"
       }
     ]
   }
@@ -158,6 +194,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       name: "showAdditionalContent",
       defaultValue: false,
       type: "boolean"
+    },
+    {
+      name: "showSendInputAdditionalContent",
+      defaultValue: false,
+      type: "boolean"
     }
   ];
 
@@ -172,14 +213,38 @@ export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
         "react",
         showcasePropertiesInfo
       )}
-      ></ChChat>`,
+      >${
+        state.showAdditionalContent
+          ? '\n        <div slot="additional-content">Your content here...</div>\n      '
+          : ""
+      }${
+        state.showSendInputAdditionalContentBefore
+          ? '\n        <div slot="send-input-additional-content-before">Your content here...</div>\n      '
+          : ""
+      }${
+        state.showSendInputAdditionalContentAfter
+          ? '\n        <div slot="send-input-additional-content-after">Your content here...</div>\n      '
+          : ""
+      }</ChChat>`,
 
       stencil: () => `<ch-chat${renderShowcaseProperties(
         state,
         "stencil",
         showcasePropertiesInfo
       )}
-        ></ch-chat>`
+        >${
+          state.showAdditionalContent
+            ? '\n          <div slot="additional-content">Your content here...</div>\n        '
+            : ""
+        }${
+        state.showSendInputAdditionalContentBefore
+          ? '\n          <div slot="send-input-additional-content-before">Your content here...</div>\n        '
+          : ""
+      }${
+        state.showSendInputAdditionalContentAfter
+          ? '\n          <div slot="send-input-additional-content-after">Your content here...</div>\n        '
+          : ""
+      }</ch-chat>`
     }
   },
   render: render,

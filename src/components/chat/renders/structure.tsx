@@ -4,12 +4,12 @@ import type {
   ChatFileRender,
   ChatMessageByRole,
   ChatMessageRole,
-  ChatMessageStructureRender,
-  ChatMessageRenderBySections
+  ChatMessageStructureRender
 } from "../types";
 import { tokenMap } from "../../../common/utils";
 import { DEFAULT_ASSISTANT_STATUS, getMessageFilesAndSources } from "../utils";
 import { getMimeTypeFileFormat } from "../../../common/mimeTypes/mime-types-utils";
+import { ArgumentTypes } from "../../../common/types";
 
 type ChatMessageNoSystem = ChatMessageByRole<
   Exclude<ChatMessageRole, "system">
@@ -18,13 +18,13 @@ type ChatMessageNoSystem = ChatMessageByRole<
 const applyFileRenders = (
   file: ChatMessageFile,
   chatRef: HTMLChChatElement,
-  renders: ChatFileRender
+  renders: Required<ChatFileRender>
 ) => renders[getMimeTypeFileFormat(file.mimeType)](file, chatRef);
 
 export const defaultMessageStructureRender: ChatMessageStructureRender = (
   message: ChatMessageNoSystem,
   chatRef: HTMLChChatElement,
-  renders: Required<Omit<ChatMessageRenderBySections, "messageStructure">>
+  renders: ArgumentTypes<ChatMessageStructureRender>[2]
 ) => {
   const assistantStatus =
     message.role === "assistant"

@@ -414,6 +414,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     requestAnimationFrame(() => this.el.focus());
   };
 
+  #hasAdditionalContent = () =>
+    this.showAdditionalContentBefore || this.showAdditionalContentAfter;
+
   // - - - - - - - - - - - - - - - - - - - - - -
   //                  Pictures
   // - - - - - - - - - - - - - - - - - - - - - -
@@ -442,7 +445,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       autoCapitalize={this.autocapitalize}
       autoComplete={this.autocomplete}
       class={
-        this.showAdditionalContentBefore && !this.autoGrow
+        this.#hasAdditionalContent() && !this.autoGrow
           ? TEXTAREA_INLINE_CLASSES
           : TEXTAREA_FLOATING_CLASSES
       }
@@ -459,7 +462,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       ref={el =>
         // This is a WA due to a StencilJS bug not refreshing the ref when the
         // element is moved
-        this.autoGrow && this.showAdditionalContentBefore
+        this.autoGrow && this.#hasAdditionalContent()
           ? (this.#textareaInsideContainerRef = el)
           : (this.#textareaRef = el)
       }
@@ -468,7 +471,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   #renderTextareaWithAdditionalContent = (canAddListeners: boolean) => {
     // Floating as a "normal textarea"
-    if (!this.showAdditionalContentBefore) {
+    if (!this.#hasAdditionalContent()) {
       return [
         this.#renderTextarea(canAddListeners),
         this.autoGrow && (

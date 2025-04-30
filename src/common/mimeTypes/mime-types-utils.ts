@@ -1,7 +1,7 @@
 import type { ChMimeType, ChMimeTypeFormatMap } from "./mime-types";
 
 export const getMimeTypeFileFormat = (
-  mimeType: ChMimeType | (string & Record<never, never>)
+  mimeType: ChMimeType
 ): keyof ChMimeTypeFormatMap => {
   const format = mimeType.substring(0, 5);
 

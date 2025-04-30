@@ -35,7 +35,11 @@ export type ChMimeType =
   | "video/mp4" // mp4
   | "video/quicktime" // mov
   | "video/x-msvideo" // avi
-  | "video/x-ms-wmv"; // wmv
+  | "video/x-ms-wmv" // wmv
+
+  // The (string & Record<never, never>) is necessary to allow any string as
+  // the mimeType without removing the VSCode suggestions
+  | (string & Record<never, never>); // Any extension
 
 export type ChMimeTypeAudio = FilterByPrefix<ChMimeType, "audio">;
 
@@ -48,8 +52,10 @@ export type ChMimeTypeImage = FilterByPrefix<ChMimeType, "image">;
 export type ChMimeTypeVideo = FilterByPrefix<ChMimeType, "video">;
 
 export interface ChMimeTypeFormatMap {
-  audio: ChMimeTypeFile;
+  audio: ChMimeTypeAudio;
   file: ChMimeTypeFile;
   image: ChMimeTypeImage;
   video: ChMimeTypeVideo;
 }
+
+export type ChMimeTypeFormat = Prettify<keyof ChMimeTypeFormatMap>;

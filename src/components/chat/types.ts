@@ -196,9 +196,7 @@ export type ChatMessageFile = {
    */
   metadata?: any;
 
-  // The (string & Record<never, never>) is necessary to allow any string as
-  // the mimeType without removing the VSCode suggestions
-  mimeType: ChMimeType | (string & Record<never, never>);
+  mimeType: ChMimeType;
 
   /**
    * Parts for the file.

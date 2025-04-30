@@ -49,9 +49,18 @@ const render: ShowcaseRender = designSystem => (
     <div slot="additional-content">
       Custom content that is rendered when the chat renders content
     </div>
+    {state.showSendInputAdditionalContentBefore && (
+      <button
+        slot="send-input-additional-content-before"
+        class="button-primary"
+      >
+        Action
+      </button>
+    )}
+
     {state.showSendInputAdditionalContentAfter && (
       <ch-combo-box-render
-        slot="send-input-additional-content"
+        slot="send-input-additional-content-after"
         accessibleName="Data Types"
         class="combo-box"
         model={dataTypeInGeneXus}

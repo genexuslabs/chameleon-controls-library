@@ -6,24 +6,20 @@ testDefaultProperties("ch-chat", {
   callbacks: undefined,
   disabled: false,
   generatingResponse: false,
-  hyperlinkToDownloadFile: undefined,
-  imageUpload: false,
-  isMobile: false,
   items: [],
   loadingState: "initial",
   markdownTheme: "ch-markdown-viewer",
   newUserMessageAlignment: "end",
   newUserMessageScrollBehavior: "instant",
-  renderCode: undefined,
   showAdditionalContent: false,
+  showSendInputAdditionalContentAfter: false,
+  showSendInputAdditionalContentBefore: false,
   theme: undefined,
   translations: {
     accessibleName: {
       clearChat: "Clear chat",
-      copyResponseButton: "Copy assistant response",
+      copyMessageContent: "Copy message content",
       downloadCodeButton: "Download code",
-      imagePicker: "Select images",
-      removeUploadedImage: "Remove uploaded image",
       sendButton: "Send",
       sendInput: "Message",
       stopGeneratingAnswerButton: "Stop generating answer"
@@ -32,10 +28,11 @@ testDefaultProperties("ch-chat", {
       sendInput: "Ask me a question..."
     },
     text: {
-      stopGeneratingAnswerButton: "Stop generating answer",
       copyCodeButton: "Copy code",
+      copyMessageContent: "Copy",
       processing: `Processing...`,
-      sourceFiles: "Source files:"
+      sourceFiles: "Source files:",
+      stopGeneratingAnswerButton: "Stop generating answer"
     }
   }
 });

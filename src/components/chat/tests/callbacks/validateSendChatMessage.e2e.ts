@@ -29,19 +29,15 @@ describe("[ch-chat][callbacks]", () => {
       if (validateCallback) {
         await page.evaluate(() => {
           document.querySelector("ch-chat").callbacks = {
-            clear: () => Promise.resolve(),
             validateSendChatMessage: (chat: ChatMessage) =>
               chat.content !== "error",
-            sendChatToLLM: () => {},
-            uploadImage: () => Promise.resolve("")
+            sendChatMessages: () => {}
           } satisfies HTMLChChatElement["callbacks"];
         });
       } else {
         await page.evaluate(() => {
           document.querySelector("ch-chat").callbacks = {
-            clear: () => Promise.resolve(),
-            sendChatToLLM: () => {},
-            uploadImage: () => Promise.resolve("")
+            sendChatMessages: () => {}
           } satisfies HTMLChChatElement["callbacks"];
         });
       }

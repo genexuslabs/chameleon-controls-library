@@ -645,6 +645,7 @@ export class ChPaginatorRender implements ComponentInterface {
         return (
           <li>
             <a
+              class={{ page: true, "page-active": this.actualPage === page }}
               key={index}
               part={tokenMap({
                 [PAGINATOR_PARTS_DICTIONARY.PAGE]: true,
@@ -663,6 +664,7 @@ export class ChPaginatorRender implements ComponentInterface {
         return (
           <li>
             <a
+              class={{ page: true, "page-active": this.actualPage === page }}
               key={index}
               id={page.toString()}
               part={tokenMap({
@@ -683,6 +685,7 @@ export class ChPaginatorRender implements ComponentInterface {
       return (
         <li>
           <button
+            class={{ page: true, "page-active": this.actualPage === page }}
             key={index}
             part={tokenMap({
               [PAGINATOR_PARTS_DICTIONARY.PAGE]: true,

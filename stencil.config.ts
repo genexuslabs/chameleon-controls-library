@@ -41,6 +41,7 @@ export const config: Config = {
   namespace: "chameleon",
   outputTargets,
   plugins: [sass()],
+  globalScript: "src/fix-broken-hydrate-on-load.ts",
   extras: {
     // Enabling this flag will allow downstream projects that consume a Stencil
     // library and use a bundler such as Vite to lazily load the Stencil
@@ -50,7 +51,7 @@ export const config: Config = {
   testing: {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
     verbose: true,
-    browserHeadless: "new",
+    browserHeadless: "shell",
     testPathIgnorePatterns: [
       "node_modules/",
       "src/testing/constants.e2e.ts",

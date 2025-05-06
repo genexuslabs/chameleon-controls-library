@@ -264,7 +264,7 @@
 
 // With icon
 :host(.ch-edit--clear-button.ch-edit-pseudo-img--start) {
-  grid-template: "ch-edit-start-img-src ch-edit-content clear-button" 1fr / max-content 1fr max-content;
+  grid-template: "ch-edit-start-img-src ch-edit-content ch-edit-clear-button" 1fr / max-content 1fr max-content;
 }
 
 .clear-button {

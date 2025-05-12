@@ -5,6 +5,7 @@ const state: Partial<HTMLChTextblockElement> = {};
 
 const render = () => (
   <ch-textblock
+    accessibleRole={state.accessibleRole}
     autoGrow={state.autoGrow}
     caption={state.caption}
     format={state.format}
@@ -87,6 +88,21 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTextblockElement>
   Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sunt hic quos quia provident odit ad praesentium voluptas! Id aspernatur eum veniam odio consequuntur ea culpa aut unde, reprehenderit fugit perspiciatis.`,
           render: "textarea",
           type: "string"
+        },
+        {
+          id: "accessibleRole",
+          caption: "Accessible Role",
+          value: "p",
+          values: [
+            { caption: "Heading 1", value: "h1" },
+            { caption: "Heading 2", value: "h2" },
+            { caption: "Heading 3", value: "h3" },
+            { caption: "Heading 4", value: "h4" },
+            { caption: "Heading 5", value: "h5" },
+            { caption: "Heading 6", value: "h6" },
+            { caption: "Paragraph", value: "p" }
+          ],
+          type: "enum"
         },
         {
           id: "format",

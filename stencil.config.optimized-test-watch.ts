@@ -12,5 +12,8 @@ export const config: Config = {
   ),
   plugins: [sass()],
   testing: defaultConfig.testing,
+  bundles: defaultConfig.bundles?.filter(
+    bundle => bundle.components[0] !== "ch-markdown"
+  ),
   tsconfig: "tsconfig-optimized-test-watch.json"
 };

@@ -53,6 +53,19 @@ export class ChTextBlock implements ComponentInterface {
   @Element() el: HTMLChTextblockElement;
 
   /**
+   * Specifies the accessible role of the component, which improves the
+   * semantic that the component models.
+   */
+  @Prop() readonly accessibleRole:
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "h5"
+    | "h6"
+    | "p" = "p";
+
+  /**
    * This property defines if the control size will grow automatically, to
    * adjust to its content size.
    *
@@ -70,7 +83,7 @@ export class ChTextBlock implements ComponentInterface {
   /**
    * Specifies the content to be displayed when the control has `format = text`.
    */
-  @Prop() readonly caption: string;
+  @Prop() readonly caption: string | undefined;
 
   /**
    * Specifies the character used to measure the line height
@@ -233,9 +246,9 @@ export class ChTextBlock implements ComponentInterface {
     </div>,
 
     this.format === "text" ? (
-      <p class="content" ref={el => (this.#contentRef = el)}>
+      <div class="content" ref={el => (this.#contentRef = el)}>
         {this.caption}
-      </p>
+      </div>
     ) : (
       <div class="html-content" ref={el => (this.#htmlContentRef = el)}>
         <slot />
@@ -260,7 +273,8 @@ export class ChTextBlock implements ComponentInterface {
   render() {
     return (
       <Host
-        // role={this.format === "Text" && !this.lineClamp ? "paragraph" : null}
+        role={this.accessibleRole === "p" ? "paragraph" : "heading"}
+        aria-level={this.accessibleRole === "p" ? null : this.accessibleRole[1]}
         class={!this.autoGrow ? "ch-textblock--no-auto-grow" : undefined}
         title={
           this.showTooltipOnOverflow &&

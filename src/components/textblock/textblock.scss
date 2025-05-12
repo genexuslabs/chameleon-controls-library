@@ -1,7 +1,6 @@
 @import "../../common/_base";
 
 @include box-sizing();
-@include typography-reset();
 
 :host {
   --ch-textblock-displayed-lines: 1;

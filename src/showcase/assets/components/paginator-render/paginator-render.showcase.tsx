@@ -6,10 +6,10 @@ import {
 } from "../types";
 import {
   itemsPerPageOptionsModel,
-  PaginatorRenderHyperlinkModel,
+  paginatorRenderHyperlinkModel,
   paginatorRenderNumericModel,
-  PaginatorRenderNumericModelWithoutUrlMapping,
-  PaginatorRenderNumericModelWithoutTotalPages
+  paginatorRenderNumericModelWithoutUrlMapping,
+  paginatorRenderNumericModelWithoutTotalPages
 } from "./models";
 import { renderShowcaseProperties } from "../utils";
 import {
@@ -38,15 +38,15 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChPaginatorRenderEl
             },
             {
               caption: "Hyperlinks Model",
-              value: PaginatorRenderHyperlinkModel
+              value: paginatorRenderHyperlinkModel
             },
             {
               caption: "Numeric Model without urlMapping",
-              value: PaginatorRenderNumericModelWithoutUrlMapping
+              value: paginatorRenderNumericModelWithoutUrlMapping
             },
             {
               caption: "Numeric Model without total pages",
-              value: PaginatorRenderNumericModelWithoutTotalPages
+              value: paginatorRenderNumericModelWithoutTotalPages
             }
           ],
           value: paginatorRenderNumericModel
@@ -228,7 +228,7 @@ const render = () => (
             unknownPages: "many",
             unknownItems: "many",
             showingItems: `Showing ${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} out of ${TOTAL_ITEMS} items`,
-            page: "",
+            goToInputLabel: "",
             showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
           }
         }}
@@ -276,7 +276,7 @@ const render = () => (
             unknownPages: "many",
             unknownItems: "many",
             showingItems: `${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} of ${TOTAL_ITEMS} items`,
-            page: "",
+            goToInputLabel: "",
             showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
           }
         }}

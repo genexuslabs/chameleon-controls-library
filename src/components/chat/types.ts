@@ -384,3 +384,11 @@ export type ChatSourceRender = (
   source: ChatMessageSource,
   chatRef: HTMLChChatElement
 ) => any;
+
+export type ChatLiveAudioModeConfiguration = {
+  url: string;
+  token: string;
+  localParticipant?: {
+    microphoneEnabled?: boolean;
+  };
+};

@@ -3,6 +3,7 @@ import {
   ParticipantEvent,
   Room,
   RoomEvent,
+  TrackPublication,
   TranscriptionSegment
 } from "livekit-client";
 import { AddOrRemoveType } from "./types";
@@ -20,7 +21,11 @@ export const connectToRoom = async (
   url: string,
   token: string,
   addOrRemoveParticipant: AddOrRemoveType,
-  updateTranscriptions?: (segments: TranscriptionSegment[]) => void
+  updateTranscriptions?: (
+    segments: TranscriptionSegment[],
+    participant?: Participant,
+    publication?: TrackPublication
+  ) => void
 ) => {
   // creates a new room with options
   const room = new Room();
@@ -39,11 +44,18 @@ export const connectToRoom = async (
       addOrRemoveParticipant(room.localParticipant, "add");
       participantConnected(room.localParticipant, addOrRemoveParticipant);
     })
-    .on(RoomEvent.TranscriptionReceived, (segments: TranscriptionSegment[]) => {
-      if (updateTranscriptions) {
-        updateTranscriptions(segments);
+    .on(
+      RoomEvent.TranscriptionReceived,
+      (
+        segments: TranscriptionSegment[],
+        participant?: Participant,
+        publication?: TrackPublication
+      ) => {
+        if (updateTranscriptions) {
+          updateTranscriptions(segments, participant, publication);
+        }
       }
-    });
+    );
 
   // connect to room
   await room.connect(url, token);

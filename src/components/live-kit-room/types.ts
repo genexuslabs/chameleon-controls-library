@@ -9,7 +9,11 @@ export type LiveKitCallbacks = {
   muteMic?: () => void;
   unmuteMic?: () => void;
   connectionEvents?: LiveKitConnectionListener;
-  updateTranscriptions?: (segments: TranscriptionSegment[]) => void;
+  updateTranscriptions?: (
+    segments: TranscriptionSegment[],
+    participant?: Participant,
+    publication?: TrackPublication
+  ) => void;
 };
 
 export type LiveKitConnectionListener = {

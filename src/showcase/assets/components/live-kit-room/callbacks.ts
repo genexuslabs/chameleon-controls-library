@@ -3,6 +3,6 @@ import { LiveKitCallbacks } from "../../../../components";
 
 export const liveKitCallbacks: LiveKitCallbacks = {
   updateTranscriptions: (segments: TranscriptionSegment[]) => {
-    console.log(segments);
+    console.log(JSON.stringify(segments, undefined, 2));
   }
 };

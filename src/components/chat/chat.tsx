@@ -11,35 +11,40 @@ import {
   forceUpdate,
   h
 } from "@stencil/core";
+
+import { TranscriptionSegment } from "livekit-client";
+import type { ChMimeType } from "../../common/mimeTypes/mime-types";
+import { adoptCommonThemes } from "../../common/theme";
+import { tokenMap } from "../../common/utils";
 import type {
   ChVirtualScrollerCustomEvent,
   VirtualScrollVirtualItems
 } from "../../components";
+import { EMPTY_LIVE_KIT_ROOM_MESSAGE } from "../live-kit-room/constants";
+import type { LiveKitCallbacks } from "../live-kit-room/types";
+import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
 import type { ThemeModel } from "../theme/theme-types";
+import { renderContentBySections } from "./renders/renders";
+import type { ChatTranslations } from "./translations";
 import type {
-  ChatMessageFiles,
   ChatCallbacks,
+  ChatLiveAudioModeConfiguration,
   ChatMessage,
   ChatMessageAssistant,
   ChatMessageByRole,
   ChatMessageByRoleNoId,
   ChatMessageError,
+  ChatMessageFiles,
   ChatMessageRenderByItem,
   ChatMessageRenderBySections,
   ChatMessageUser
 } from "./types";
-import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
-import type { ChatTranslations } from "./translations";
-import type { ChMimeType } from "../../common/mimeTypes/mime-types";
-import { adoptCommonThemes } from "../../common/theme";
-import { tokenMap } from "../../common/utils";
 import {
   DEFAULT_ASSISTANT_STATUS,
   getMessageContent,
   getMessageFiles,
   getMessageFilesAndSources
 } from "./utils";
-import { renderContentBySections } from "./renders/renders";
 
 const ENTER_KEY = "Enter";
 
@@ -58,6 +63,49 @@ const getAriaBusyValue = (
 export class ChChat {
   #cellIdAlignedWhenRendered: string | undefined;
   #cellHasToReserveSpace: Set<string> | undefined;
+
+  #liveKitCallbacks: LiveKitCallbacks = {
+    updateTranscriptions: (segments, participant) => {
+      let lastSegmentWithContent: TranscriptionSegment | undefined;
+
+      for (let index = 0; index < segments.length; index++) {
+        const segment = segments[index];
+
+        if (segment.text !== EMPTY_LIVE_KIT_ROOM_MESSAGE) {
+          lastSegmentWithContent = segment;
+        }
+      }
+
+      if (lastSegmentWithContent === undefined) {
+        return;
+      }
+
+      const messageIndex = this.#getMessageIndexById(lastSegmentWithContent.id);
+
+      const chatMessage: ChatMessage = participant.isLocal
+        ? {
+            id: lastSegmentWithContent.id,
+            content: lastSegmentWithContent.text,
+            role: "user"
+          }
+        : {
+            id: lastSegmentWithContent.id,
+            content: lastSegmentWithContent.text,
+            role: "assistant",
+            status: lastSegmentWithContent.final ? "complete" : "streaming"
+          };
+
+      if (messageIndex === -1) {
+        this.addNewMessage(chatMessage);
+      } else {
+        this.updateChatMessage(
+          messageIndex,
+          chatMessage as ChatMessageByRoleNoId<"system" | "assistant">,
+          "replace"
+        );
+      }
+    }
+  };
 
   // Refs
   #editRef!: HTMLChEditElement;
@@ -130,6 +178,34 @@ export class ChChat {
     // cell
     this.#smartGridRef?.removeScrollEndContentReference();
   }
+
+  /**
+   * Specifies if the live audio mode is set.
+   *
+   * When this mode is enabled, the chat will disable sending messages by user
+   * interactions and the only way to send messages will be throughout the
+   * voice. The user will have to enable the microphone input in their Operative
+   * System and it will voice chat with the remote participants.
+   *
+   * When any participant speaks, the transcribed conversation will be added as
+   * new messages in the chat (`items` property).
+   */
+  @Prop() readonly liveAudioMode: boolean = false;
+
+  /**
+   * Specifies if the live audio mode is set.
+   *
+   * When this mode is enabled, the chat will disable sending messages by user
+   * interactions and the only way to send messages will be throughout the
+   * voice. The user will have to enable the microphone input in their Operative
+   * System and it will voice chat with the remote participants.
+   *
+   * When any participant speaks, the transcribed conversation will be added as
+   * new messages in the chat (`items` property).
+   */
+  @Prop() readonly liveAudioModeConfiguration:
+    | ChatLiveAudioModeConfiguration
+    | undefined;
 
   /**
    * Specifies if the chat is waiting for the data to be loaded.
@@ -305,6 +381,16 @@ export class ChChat {
     this.initialLoadHasEnded = true;
     this.#updateMessage(messageIndex, message, mode);
 
+    const updatedMessage = this.items[messageIndex];
+    const virtualItemIndex = this.virtualItems.findIndex(
+      virtualItem => virtualItem.id === updatedMessage.id
+    );
+
+    // Sync the last virtual item with the real item that is updated
+    if (virtualItemIndex !== -1) {
+      this.virtualItems[virtualItemIndex] = updatedMessage;
+    }
+
     forceUpdate(this);
   }
 
@@ -333,6 +419,9 @@ export class ChChat {
 
     forceUpdate(this);
   }
+
+  #getMessageIndexById = (id: string) =>
+    this.items.findIndex(message => message.id === id);
 
   #pushMessage = async (message: ChatMessage) => {
     if (this.items.length === 0) {
@@ -412,6 +501,24 @@ export class ChChat {
     !this.callbacks || !this.callbacks.getChatMessageFiles
       ? []
       : this.callbacks.getChatMessageFiles();
+
+  #renderLiveKitRoom = () => {
+    const config = this.liveAudioModeConfiguration;
+    const canRenderLiveKitRoom =
+      this.liveAudioMode && config && !!config.url && !!config.token;
+
+    return (
+      canRenderLiveKitRoom && (
+        <ch-live-kit-room
+          callbacks={this.#liveKitCallbacks}
+          connected
+          microphoneEnabled={config.localParticipant?.microphoneEnabled ?? true}
+          token={config.token}
+          url={config.url}
+        ></ch-live-kit-room>
+      )
+    );
+  };
 
   #uploadFiles = (
     userMessageToAdd: ChatMessageByRole<"user">,
@@ -778,7 +885,7 @@ export class ChChat {
               showAdditionalContentBefore={
                 this.showSendInputAdditionalContentBefore
               }
-              onKeyDown={this.#sendMessageKeyboard}
+              onKeyDown={!this.liveAudioMode ? this.#sendMessageKeyboard : null}
               ref={el => (this.#editRef = el as HTMLChEditElement)}
             >
               {this.showSendInputAdditionalContentBefore && (
@@ -804,10 +911,14 @@ export class ChChat {
             disabled={this.disabled}
             type="button"
             onClick={
-              this.loadingState !== "initial" ? this.#sendMessage : undefined
+              this.loadingState !== "initial" && !this.liveAudioMode
+                ? this.#sendMessage
+                : undefined
             }
           ></button>
         </div>
+
+        {this.#renderLiveKitRoom()}
       </Host>
     );
   }

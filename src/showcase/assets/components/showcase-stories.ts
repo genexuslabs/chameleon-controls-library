@@ -35,6 +35,7 @@ import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 import { ChameleonCustomStories, ChameleonStories } from "./types";
 import { liveKitRoomShowcaseStory } from "./live-kit-room/live-kit-room.showcase";
+import { ratingShowcaseStory } from "./rating/rating.showcase";
 
 export const showcaseStories = {
   accordion: accordionShowcaseStory,
@@ -56,6 +57,7 @@ export const showcaseStories = {
   popover: popoverShowcaseStory,
   progress: progressShowcaseStory,
   qr: qrShowcaseStory,
+  rating: ratingShowcaseStory,
   "radio-group": radioGroupShowcaseStory,
   "segmented-control": segmentedControlShowcaseStory,
   sidebar: sidebarShowcaseStory,

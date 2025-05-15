@@ -65,6 +65,7 @@ export const connectToRoom = async (
   });
   participantConnected(room.localParticipant, addOrRemoveParticipant);
 
+  // TODO: Remove this as this is done outside
   room.localParticipant.setMicrophoneEnabled(true);
 
   return room;

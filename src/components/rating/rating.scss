@@ -5,6 +5,24 @@
   */
   --ch-rating-star-size: 1.75em;
 
+  /**
+   * @prop --ch-rating-star__selected-background-color:
+   * Specifies the background-color of the selected portion of the star. 
+   * @default color-mix(in srgb, currentColor 15%, transparent)
+   */
+  --ch-rating-star__selected-background-color: currentColor;
+
+  /**
+   * @prop --ch-rating-star__unselected-background-color:
+   * Specifies the background-color of the unselected portion of the star. 
+   * @default color-mix(in srgb, currentColor 15%, transparent)
+   */
+  --ch-rating-star__unselected-background-color: color-mix(
+    in srgb,
+    currentColor 50%,
+    transparent 50%
+  );
+
   display: inline-grid;
 }
 
@@ -45,13 +63,13 @@ input {
   block-size: var(--ch-rating-star-size);
   inline-size: var(--ch-rating-star-size);
   pointer-events: none;
-  background-color: color-mix(in srgb, currentColor 50%, transparent 50%);
+  background-color: var(--ch-rating-star__unselected-background-color);
 
   &::before {
     content: "";
     display: block;
     block-size: 100%;
-    inline-size: calc(var(--start-selected-value) * 100%);
-    background-color: currentColor;
+    inline-size: calc(var(--star-selected-value) * 100%);
+    background-color: var(--ch-rating-star__selected-background-color);
   }
 }

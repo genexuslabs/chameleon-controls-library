@@ -12,6 +12,7 @@ import {
   analyzeLabelExistence,
   getElementInternalsLabel
 } from "../../common/analysis/accessibility";
+import { tokenMap } from "../../common/utils";
 
 /**
  * @status experimental
@@ -107,6 +108,30 @@ export class ChRating {
       `${this.#calculateValue(this.#calculateMaxValue())}`
     );
 
+  #renderStar = (calculatedValue: number, index: number) => {
+    const starValue = Math.min(
+      Math.max(0, calculatedValue - index), // At least 0
+      1 // At most 1
+    );
+
+    return (
+      <div
+        key={index}
+        aria-hidden="true"
+        class="star"
+        part={tokenMap({
+          star: true,
+          selected: starValue === 1,
+          unselected: starValue === 0,
+          "partial-selected": starValue !== 0 && starValue !== 1
+        })}
+        style={{
+          "--star-selected-value": `${starValue}`
+        }}
+      ></div>
+    );
+  };
+
   connectedCallback() {
     // Accessibility
     this.#updateFormValue();
@@ -144,20 +169,9 @@ export class ChRating {
           onInput={this.#syncValue}
         />
 
-        {this.#starsArray.map(index => (
-          <div
-            key={index}
-            aria-hidden="true"
-            class="star"
-            part="star"
-            style={{
-              "--start-selected-value": `${Math.min(
-                Math.max(0, calculatedValue - index),
-                1
-              )}`
-            }}
-          ></div>
-        ))}
+        {this.#starsArray.map(index =>
+          this.#renderStar(calculatedValue, index)
+        )}
       </div>
     );
   }

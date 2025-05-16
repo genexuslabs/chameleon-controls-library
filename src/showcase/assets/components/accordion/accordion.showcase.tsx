@@ -40,18 +40,21 @@ const expandedItemChangeHandler = (
 
 const render = () => (
   <ch-accordion-render
-    class="accordion-filled"
+    class="accordion-filled elevation-2"
     disabled={state.disabled}
+    expandableButtonPosition={state.expandableButtonPosition}
     model={state.model}
     singleItemExpanded={state.singleItemExpanded}
     onExpandedChange={expandedItemChangeHandler}
   >
     {renderedItems.has("item 1") && (
-      <div slot="item 1">Content of the item 1</div>
+      <div slot="item 1" class="spacing-body">
+        Content of the item 1
+      </div>
     )}
 
     {renderedItems.has("item 2") && (
-      <div slot="item 2">
+      <div slot="item 2" class="spacing-body">
         Content of the item 2
         <button class="button-primary" type="button">
           Some action
@@ -72,7 +75,7 @@ const render = () => (
     )}
 
     {renderedItems.has("item 3") && (
-      <div slot="item 3">
+      <div slot="item 3" class="spacing-body">
         Content of the item 3
         <button class="button-secondary" type="button">
           Some action
@@ -97,7 +100,7 @@ const render = () => (
     </div>
 
     {renderedItems.has("item 4") && (
-      <div slot="item 4">
+      <div slot="item 4" class="spacing-body">
         Content of the item 4
         <button class="button-tertiary" type="button">
           Some action
@@ -131,6 +134,17 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChAccordionRenderEl
           caption: "Single Item Expanded",
           type: "boolean",
           value: false
+        },
+        {
+          id: "expandableButtonPosition",
+          caption: "Expandable Button Position",
+          type: "enum",
+          value: "end",
+          values: [
+            { caption: "Start", value: "start" },
+            { caption: "End", value: "end" }
+          ],
+          render: "radio-group"
         },
         {
           id: "disabled",
@@ -256,8 +270,9 @@ const lightDOMMarkupStencil = insertSpacesAtTheBeginningExceptForTheFirstLine(
 
 const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChAccordionRenderElement>[] =
   [
-    { name: "class", fixed: true, value: "accordion", type: "string" },
+    { name: "class", fixed: true, value: "accordion-filled", type: "string" },
     { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "expandableButtonPosition", defaultValue: "end", type: "string" },
     {
       name: "getImagePathCallback",
       fixed: true,

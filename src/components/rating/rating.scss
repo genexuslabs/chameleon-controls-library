@@ -1,0 +1,75 @@
+:host {
+  /**
+   * @prop --ch-rating-star__size:
+   * Specifies the size of the star.
+   */
+  --ch-rating-star__size: 1.75em;
+
+  /**
+   * @prop --ch-rating-star__selected-background-color:
+   * Specifies the background-color of the selected portion of the star. 
+   * @default color-mix(in srgb, currentColor 15%, transparent)
+   */
+  --ch-rating-star__selected-background-color: currentColor;
+
+  /**
+   * @prop --ch-rating-star__unselected-background-color:
+   * Specifies the background-color of the unselected portion of the star. 
+   * @default color-mix(in srgb, currentColor 15%, transparent)
+   */
+  --ch-rating-star__unselected-background-color: color-mix(
+    in srgb,
+    currentColor 50%,
+    transparent 50%
+  );
+
+  display: inline-grid;
+}
+
+:host(:disabled) {
+  pointer-events: none;
+}
+
+.container {
+  display: flex;
+  position: relative;
+  inline-size: max-content;
+  block-size: max-content;
+}
+
+input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  appearance: none;
+  margin: 0;
+  outline: unset;
+  cursor: pointer;
+}
+
+.star {
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  block-size: var(--ch-rating-star__size);
+  inline-size: var(--ch-rating-star__size);
+  pointer-events: none;
+  background-color: var(--ch-rating-star__unselected-background-color);
+
+  &::before {
+    content: "";
+    display: block;
+    block-size: 100%;
+    inline-size: calc(var(--star-selected-value) * 100%);
+    background-color: var(--ch-rating-star__selected-background-color);
+  }
+}

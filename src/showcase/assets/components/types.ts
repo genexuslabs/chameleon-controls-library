@@ -177,6 +177,7 @@ export type ChameleonStories = {
   popover: ShowcaseStory<HTMLChPopoverElement>;
   progress: ShowcaseStory<HTMLChProgressElement>;
   qr: ShowcaseStory<HTMLChQrElement>;
+  rating: ShowcaseStory<HTMLChRatingElement>;
   "radio-group": ShowcaseStory<HTMLChRadioGroupRenderElement>;
   "segmented-control": ShowcaseStory<HTMLChSegmentedControlRenderElement>;
   sidebar: ShowcaseStory<

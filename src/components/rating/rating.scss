@@ -1,9 +1,9 @@
 :host {
   /**
-   * @prop --ch-rating-star-size:
+   * @prop --ch-rating-star__size:
    * Specifies the size of the star.
-  */
-  --ch-rating-star-size: 1.75em;
+   */
+  --ch-rating-star__size: 1.75em;
 
   /**
    * @prop --ch-rating-star__selected-background-color:
@@ -60,8 +60,8 @@ input {
     2% 35%,
     39% 35%
   );
-  block-size: var(--ch-rating-star-size);
-  inline-size: var(--ch-rating-star-size);
+  block-size: var(--ch-rating-star__size);
+  inline-size: var(--ch-rating-star__size);
   pointer-events: none;
   background-color: var(--ch-rating-star__unselected-background-color);
 

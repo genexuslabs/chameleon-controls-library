@@ -68,6 +68,12 @@ export class ChAccordionRender implements ComponentInterface {
   @Prop() readonly disabled: boolean = false;
 
   /**
+   * Specifies the position of the expandable button in the header of the
+   * panels.
+   */
+  @Prop() readonly expandableButtonPosition: "start" | "end" = "end";
+
+  /**
    * This property specifies a callback that is executed when the path for an
    * startImgSrc needs to be resolved.
    */
@@ -241,8 +247,12 @@ export class ChAccordionRender implements ComponentInterface {
           aria-expanded={item.expanded ? "true" : "false"}
           class={{
             header: true,
+            [`header--expand-button-${this.expandableButtonPosition}`]: true,
+            [`header--expand-button-${this.expandableButtonPosition}-collapsed`]:
+              !item.expanded,
+            [`header--expand-button-${this.expandableButtonPosition}-expanded`]:
+              item.expanded,
             [DISABLED_CLASS]: isDisabled,
-            "header--expanded": item.expanded,
             [`start-img-type--${
               item.startImgType ?? "background"
             } pseudo-img--start`]: !!startImage,

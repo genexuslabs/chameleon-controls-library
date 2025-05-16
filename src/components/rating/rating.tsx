@@ -4,7 +4,9 @@ import {
   h,
   Prop,
   AttachInternals,
-  Watch
+  Watch,
+  Event,
+  EventEmitter
 } from "@stencil/core";
 import {
   analyzeLabelExistence,
@@ -43,12 +45,18 @@ export class ChRating {
   @Prop({ reflect: true }) readonly disabled: boolean = false;
 
   /**
+   * This property specifies the `name` of the control when used in a form.
+   */
+  @Prop({ reflect: true }) readonly name?: string;
+
+  /**
    * This property determine the number of stars displayed.
    */
   @Prop() readonly stars: number = 5;
   @Watch("stars")
   startsChanged() {
     this.#computeArray();
+    this.#updateFormValue();
   }
 
   /**
@@ -61,6 +69,18 @@ export class ChRating {
    * The current value displayed by the component.
    */
   @Prop({ mutable: true }) value: number = 0;
+  @Watch("value")
+  valueChanged() {
+    this.#updateFormValue();
+  }
+
+  /**
+   * The `input` event is emitted when a change to the element's value is
+   * committed by the user.
+   *
+   * It contains the new value of the control.
+   */
+  @Event() input: EventEmitter<number>;
 
   #computeArray = () => {
     this.#starsArray = [...Array(Math.max(0, this.stars)).keys()];
@@ -68,11 +88,28 @@ export class ChRating {
 
   #syncValue = (event: InputEvent) => {
     this.value = Number((event.target as HTMLInputElement).value);
+
+    this.#updateFormValue();
+    this.input.emit(this.value);
   };
+
+  #calculateValue = (calculatedMaxValue: number) =>
+    Math.min(
+      Math.max(this.value, 0), // At least 0
+      calculatedMaxValue // At most this.maxValue
+    );
+
+  // Max value should not be negative
+  #calculateMaxValue = () => Math.max(this.stars, 0);
+
+  #updateFormValue = () =>
+    this.internals.setFormValue(
+      `${this.#calculateValue(this.#calculateMaxValue())}`
+    );
 
   connectedCallback() {
     // Accessibility
-    this.internals.setFormValue(this.value?.toString());
+    this.#updateFormValue();
     const labels = this.internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
@@ -89,13 +126,8 @@ export class ChRating {
   }
 
   render() {
-    // Max value should not be negative
-    const calculatedMaxValue = Math.max(this.stars, 0);
-
-    const calculatedValue = Math.min(
-      Math.max(this.value, 0), // At least 0
-      calculatedMaxValue // At most this.maxValue
-    );
+    const calculatedMaxValue = this.#calculateMaxValue();
+    const calculatedValue = this.#calculateValue(calculatedMaxValue);
 
     return (
       <div class="container" part="stars-container">

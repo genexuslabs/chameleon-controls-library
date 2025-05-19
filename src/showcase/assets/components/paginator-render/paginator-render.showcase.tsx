@@ -12,13 +12,6 @@ import {
   paginatorRenderNumericModelWithoutTotalPages
 } from "./models";
 import { renderShowcaseProperties } from "../utils";
-import {
-  FIRST_ITEM_IN_PAGE,
-  LAST_ITEM_IN_PAGE,
-  TOTAL_ITEMS,
-  ACTUAL_PAGE,
-  TOTAL_PAGES
-} from "../../../../components/paginator-render/constants";
 
 const state: Partial<HTMLChPaginatorRenderElement> = {};
 
@@ -65,9 +58,15 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChPaginatorRenderEl
         },
         {
           id: "selectedPage",
-          caption: "selected page",
+          caption: "Selected page",
           value: "1",
           type: "string"
+        },
+        {
+          id: "itemsPerPage",
+          caption: "Items per page",
+          value: 10,
+          type: "number"
         },
         {
           id: "showFirstControl",
@@ -211,27 +210,6 @@ const render = () => (
         showNextControl
         showPrevControl
         totalItems={state.totalItems}
-        translations={{
-          accessibleName: {
-            goToInput: "Go to page",
-            itemsPerPageOptions: "Select amount of items to show"
-          },
-          text: {
-            goToButton: "Go",
-            itemsPerPage: "Show",
-            of: "of ",
-            ellipsis: "...",
-            first: "",
-            prev: "",
-            next: "",
-            last: "",
-            unknownPages: "many",
-            unknownItems: "many",
-            showingItems: `Showing ${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} out of ${TOTAL_ITEMS} items`,
-            goToInputLabel: "",
-            showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
-          }
-        }}
       ></ch-paginator-render>
     </fieldset>
     <fieldset class="fieldset-test">
@@ -259,27 +237,6 @@ const render = () => (
         showNextControl
         showPrevControl
         totalItems={state.totalItems}
-        translations={{
-          accessibleName: {
-            goToInput: "Go to page",
-            itemsPerPageOptions: "Select amount of items to show"
-          },
-          text: {
-            goToButton: "",
-            itemsPerPage: "Items per page",
-            of: "of ",
-            ellipsis: "...",
-            first: "",
-            prev: "",
-            next: "",
-            last: "",
-            unknownPages: "many",
-            unknownItems: "many",
-            showingItems: `${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} of ${TOTAL_ITEMS} items`,
-            goToInputLabel: "",
-            showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
-          }
-        }}
       ></ch-paginator-render>
     </fieldset>
   </div>

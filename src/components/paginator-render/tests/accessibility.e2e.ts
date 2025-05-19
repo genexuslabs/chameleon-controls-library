@@ -374,7 +374,7 @@ describe("[ch-paginator-render][accessibility] - Paginator Numeric Model without
     await page.waitForChanges();
   });
 
-  it("should have an ordered list with a nav tag when using the Paginator Numeric Model", async () => {
+  it("should have an ordered list with a nav tag", async () => {
     const navigationOrderedList = await page.find(
       "ch-paginator-render >>> nav[part*='pages']"
     );
@@ -413,7 +413,7 @@ describe("[ch-paginator-render][accessibility] - Paginator Hyperlink Model", () 
     await page.waitForChanges();
   });
 
-  it("should have an ordered list with a nav tag when using the Paginator Hyperlink Model", async () => {
+  it("should have an ordered list with a nav tag", async () => {
     const navigationOrderedList = await page.find(
       "ch-paginator-render >>> nav[part*='pages']"
     );

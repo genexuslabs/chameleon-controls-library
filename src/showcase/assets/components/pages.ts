@@ -87,6 +87,11 @@ export const showcasePages: NavigationListModel = [
             metadata: EXPERIMENTAL
           },
           {
+            link: { url: "#rating" },
+            caption: "Rating",
+            metadata: EXPERIMENTAL
+          },
+          {
             link: { url: "#segmented-control" },
             caption: "Segmented Control",
             metadata: EXPERIMENTAL

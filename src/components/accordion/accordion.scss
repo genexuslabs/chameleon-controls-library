@@ -10,21 +10,21 @@
    * Specifies the box size of the chevron.
    * @default #{$default-decorative-image-size}
    */
-  --ch-accordion__chevron-size: #{$default-decorative-image-size};
+  --ch-accordion__chevron-size: #{$default-decorative-image-size}; // TODO: rename "chevron" to "expandable-button"
 
   /**
    * @prop --ch-accordion__chevron-image-size:
    * Specifies the image size of the chevron.
    * @default 100%
    */
-  --ch-accordion__chevron-image-size: 100%;
+  --ch-accordion__chevron-image-size: 100%; // TODO: rename "chevron" to "expandable-button"
 
   /**
    * @prop --ch-accordion__chevron-color:
    * Specifies the color of the chevron.
    * @default 100%
    */
-  --ch-accordion__chevron-color: currentColor;
+  --ch-accordion__chevron-color: currentColor; // TODO: rename "chevron" to "expandable-button"
 
   /**
    * @prop --ch-accordion-expand-collapse-duration
@@ -91,7 +91,6 @@
     content: "";
     inline-size: var(--ch-accordion__chevron-size);
     block-size: var(--ch-accordion__chevron-size);
-    margin-inline-start: auto;
     background-color: var(--ch-accordion__chevron-color);
 
     -webkit-mask: no-repeat center / var(--ch-accordion__chevron-image-size)
@@ -101,8 +100,24 @@
       var(--ch-accordion-expand-collapse-timing-function);
   }
 
-  &--expanded::after {
-    transform: rotate(-180deg); // TODO: Add support for RTL
+  &--expand-button-start {
+    &::after {
+      order: -1;
+    }
+
+    &-collapsed::after {
+      transform: rotate(-90deg); // TODO: Add support for RTL
+    }
+  }
+
+  &--expand-button-end {
+    &::after {
+      margin-inline-start: auto;
+    }
+
+    &-expanded::after {
+      transform: rotate(-180deg); // TODO: Add support for RTL
+    }
   }
 }
 

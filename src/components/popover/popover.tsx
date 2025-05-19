@@ -472,23 +472,48 @@ export class ChPopover {
       if (this.firstLayer) {
         this.#avoidFlickeringInTheNextRender(true);
       }
-      this.el.hidePopover();
+
+      this.#hidePopover();
     }
   }
 
   /**
-   * Emitted when the popover is opened.
+   * Emitted when the popover is opened by an user interaction.
+   *
+   * This event can be prevented (`preventDefault()`), interrupting the
+   * ch-popover's opening.
    */
   @Event() popoverOpened: EventEmitter;
 
   /**
-   * Emitted when the popover is closed.
+   * Emitted when the popover is closed by an user interaction.
+   *
+   * This event can be prevented (`preventDefault()`), interrupting the
+   * ch-popover's closing.
    */
   @Event() popoverClosed: EventEmitter;
 
   #showPopover = () => {
     this.el.showPopover();
     this.#addClickOutsideWatcherIfNecessary();
+  };
+
+  #hidePopover = () => {
+    this.el.hidePopover();
+    this.#removeClickOutsideWatcher(); // TODO: Add unit test for this, since it avoid memory leaks
+  };
+
+  // TODO: Add unit tests for this feature
+  #closePopoverIfNotDefaultPrevented = (event: Event) => {
+    const eventInfo = this.popoverClosed.emit();
+
+    if (eventInfo.defaultPrevented) {
+      event.preventDefault();
+      return;
+    }
+
+    // Only close the popover if the action was not prevented
+    this.show = false;
   };
 
   #handlePopoverCloseOnClickOutside = (event: MouseEvent) => {
@@ -500,19 +525,13 @@ export class ChPopover {
       // determine if the popover should be closed
       !composedPath.includes(this.actionElement)
     ) {
-      this.#removeClickOutsideWatcher();
-
-      this.show = false;
-      this.popoverClosed.emit();
+      this.#closePopoverIfNotDefaultPrevented(event);
     }
   };
 
   #handlePopoverCloseOnEscapeKey = (event: KeyboardEvent) => {
     if (event.code === KEY_CODES.ESCAPE) {
-      this.#removeClickOutsideWatcher();
-
-      this.show = false;
-      this.popoverClosed.emit();
+      this.#closePopoverIfNotDefaultPrevented(event);
     }
   };
 
@@ -810,14 +829,23 @@ export class ChPopover {
 
   #handlePopoverToggle = (event: ToggleEvent) => {
     const willBeOpen = event.newState === "open";
-    this.show = willBeOpen;
+    let eventInfo: CustomEvent<any> | undefined;
 
     // Emit events only when the action is committed by the user
     if (willBeOpen) {
-      this.popoverOpened.emit();
+      eventInfo = this.popoverOpened.emit();
     } else {
-      this.popoverClosed.emit();
+      eventInfo = this.popoverClosed.emit();
     }
+
+    // TODO: Add unit tests for this feature
+    if (eventInfo.defaultPrevented) {
+      event.preventDefault();
+      return;
+    }
+
+    // Only open the popover if the action was not prevented
+    this.show = willBeOpen;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1168,7 +1196,7 @@ export class ChPopover {
     this.#handleDragEnd();
 
     // Avoid leaving handlers in the document
-    this.#removeClickOutsideWatcher();
+    this.#removeClickOutsideWatcher(); // TODO: Add unit test for this, since it avoid memory leaks
 
     // Disconnect RTL watcher to avoid memory leaks
     unsubscribeToRTLChanges(this.#popoverId);

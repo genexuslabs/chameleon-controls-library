@@ -382,7 +382,6 @@ export const NAVIGATION_LIST_ITEM_EXPORT_PARTS = joinParts(
 //            Paginator Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const PAGINATOR_PARTS_DICTIONARY = {
-  DISABLED: "disabled",
   ELLIPSIS: "ellipsis",
   FIRST: "first__button",
   GO_TO__INPUT: "go-to__input",
@@ -397,10 +396,15 @@ export const PAGINATOR_PARTS_DICTIONARY = {
   NAVIGATION_INFO__TEXT: "navigation-info__text",
   NAVIGATION_INFO: "navigation-info",
   NEXT: "next__button",
-  PAGE_ACTIVE: "page-active",
   PAGE: "page",
   PAGES: "pages",
-  PREV: "prev__button"
+  PREV: "prev__button",
+
+  // - - - - - - - - States - - - - - - - -
+
+  DISABLED: "disabled", // FIRST, LAST, NEXT, PREV
+  PAGE_SELECTED: "selected", // PAGE
+  PAGE_NOT_SELECTED: "not-selected" // PAGE
 } as const;
 
 // - - - - - - - - - - - - - - - - - - - -

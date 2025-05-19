@@ -12,13 +12,13 @@ export const paginatorRenderNumericModel: PaginatorRenderNumericModel = {
   urlMapping: mapping
 };
 
-export const PaginatorRenderNumericModelWithoutUrlMapping: PaginatorRenderNumericModel =
+export const paginatorRenderNumericModelWithoutUrlMapping: PaginatorRenderNumericModel =
   { totalPages: 20 };
 
-export const PaginatorRenderNumericModelWithoutTotalPages: PaginatorRenderNumericModel =
+export const paginatorRenderNumericModelWithoutTotalPages: PaginatorRenderNumericModel =
   { urlMapping: mapping };
 
-export const PaginatorRenderHyperlinkModel: PaginatorRenderHyperlinkItemModel[] =
+export const paginatorRenderHyperlinkModel: PaginatorRenderHyperlinkItemModel[] =
   [
     `http://localhost:3333/#paginator-render?page=1`,
     `http://localhost:3333/#paginator-render?page=2`,

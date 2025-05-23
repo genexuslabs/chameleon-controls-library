@@ -6,7 +6,7 @@ import {
   TrackPublication,
   TranscriptionSegment
 } from "livekit-client";
-import { AddOrRemoveType } from "./types";
+import { AddOrRemoveType, LiveKitCallbacks } from "./types";
 
 function participantConnected(
   participant: Participant,
@@ -21,16 +21,12 @@ export const connectToRoom = async (
   url: string,
   token: string,
   addOrRemoveParticipant: AddOrRemoveType,
-  updateTranscriptions?: (
-    segments: TranscriptionSegment[],
-    participant?: Participant,
-    publication?: TrackPublication
-  ) => void
+  callbacks?: LiveKitCallbacks
 ) => {
-  // creates a new room with options
+  // Creates a new room with options
   const room = new Room();
 
-  // pre-warm connection, this can be called as early as your page is loaded
+  // Pre-warm connection, this can be called as early as your page is loaded
   room.prepareConnection(url, token);
 
   room
@@ -39,6 +35,12 @@ export const connectToRoom = async (
     })
     .on(RoomEvent.ParticipantDisconnected, participant =>
       addOrRemoveParticipant(participant, "remove")
+    )
+    .on(
+      RoomEvent.ActiveSpeakersChanged,
+      participants =>
+        callbacks?.activeSpeakersChanged &&
+        callbacks.activeSpeakersChanged(participants)
     )
     .on(RoomEvent.LocalTrackPublished, () => {
       addOrRemoveParticipant(room.localParticipant, "add");
@@ -51,22 +53,19 @@ export const connectToRoom = async (
         participant?: Participant,
         publication?: TrackPublication
       ) => {
-        if (updateTranscriptions) {
-          updateTranscriptions(segments, participant, publication);
+        if (callbacks?.updateTranscriptions) {
+          callbacks.updateTranscriptions(segments, participant, publication);
         }
       }
     );
 
-  // connect to room
+  // Connect to room
   await room.connect(url, token);
 
   room.remoteParticipants.forEach(participant => {
     participantConnected(participant, addOrRemoveParticipant);
   });
   participantConnected(room.localParticipant, addOrRemoveParticipant);
-
-  // TODO: Remove this as this is done outside
-  room.localParticipant.setMicrophoneEnabled(true);
 
   return room;
 };

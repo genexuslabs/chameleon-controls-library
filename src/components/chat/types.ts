@@ -2,6 +2,7 @@ import type {
   ChMimeType,
   ChMimeTypeFormatMap
 } from "../../common/mimeTypes/mime-types";
+import { LiveKitCallbacks } from "../live-kit-room/types";
 import type { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 
 export type ChatMessageRole = "assistant" | "error" | "system" | "user";
@@ -261,6 +262,11 @@ export type ChatCallbacks = {
    * attaching files.
    */
   getChatMessageFiles?: () => File[] | Promise<File[]>;
+
+  /**
+   * Specifies a set of callback to manage `liveAudioMode` events.
+   */
+  liveAudioMode?: Pick<LiveKitCallbacks, "activeSpeakersChanged">;
 
   /**
    * Specifies a callback to execute when the user adds a new message to the

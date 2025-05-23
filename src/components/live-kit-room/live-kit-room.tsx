@@ -93,7 +93,7 @@ export class ChLiveKitRoom {
       this.url,
       this.token,
       this.#addOrRemoveParticipant,
-      this.callbacks.updateTranscriptions
+      this.callbacks
     ).then(room => {
       this.#currentRoom = room;
       this.#toggleLocalParticipantMic();

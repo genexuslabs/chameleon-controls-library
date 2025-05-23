@@ -193,8 +193,11 @@ export class ChChat {
    * voice. The user will have to enable the microphone input in their Operative
    * System and it will voice chat with the remote participants.
    *
-   * When any participant speaks, the transcribed conversation will be added as
-   * new messages in the chat (`items` property).
+   * When any participant speaks, the transcribed conversation will be displayed
+   * as new messages in the chat (`items` property).
+   *
+   * When the `liveAudioMode` ends, the transcribed conversation will be pushed
+   * to the `items` of the chat.
    */
   @Prop() readonly liveAudioMode: boolean = false;
   @Watch("liveAudioMode")
@@ -442,9 +445,6 @@ export class ChChat {
 
     forceUpdate(this);
   }
-
-  #getMessageIndexById = (id: string) =>
-    this.items.findIndex(message => message.id === id);
 
   #pushMessage = async (message: ChatMessage) => {
     if (this.items.length === 0) {

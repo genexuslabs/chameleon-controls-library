@@ -1,23 +1,25 @@
 import { h } from "@stencil/core";
+import { ChComboBoxRenderCustomEvent } from "../../../../components";
+import {
+  ComboBoxItemModel,
+  ComboBoxSuggestOptions
+} from "../../../../components/combo-box/types";
 import {
   ShowcaseRenderProperties,
   ShowcaseRenderProperty,
   ShowcaseStory,
   ShowcaseTemplatePropertyInfo
 } from "../types";
+import { renderShowcaseProperties, updateShowcase } from "../utils";
 import {
   comboBoxFilterChange,
   dataTypeInGeneXus,
+  largeCollapsedModel,
+  largeModel,
   simpleModelComboBox1,
   simpleModelComboBoxWithIcons,
   smallModel
 } from "./models";
-import {
-  ComboBoxSuggestOptions,
-  ComboBoxItemModel
-} from "../../../../components/combo-box/types";
-import { ChComboBoxRenderCustomEvent } from "../../../../components";
-import { renderShowcaseProperties, updateShowcase } from "../utils";
 
 const state: Partial<HTMLChComboBoxRenderElement> = {};
 let itemsFilteredByTheServer: ComboBoxItemModel[] = comboBoxFilterChange({
@@ -205,6 +207,11 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
               value: simpleModelComboBoxWithIcons
             },
             { caption: "Small Model", value: smallModel },
+            { caption: "Large Model (100x100)", value: largeModel },
+            {
+              caption: "Large collapsed Model (100x100)",
+              value: largeCollapsedModel
+            },
             { caption: "Data Type Model in GeneXus", value: dataTypeInGeneXus }
           ],
           value: simpleModelComboBox1

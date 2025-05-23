@@ -88,21 +88,18 @@ export class ChChat {
       for (let index = 0; index < segments.length; index++) {
         const segment = segments[index];
 
-        if (segment.text !== EMPTY_LIVE_KIT_ROOM_MESSAGE) {
+        if (
+          segment.text.trim() !== "" &&
+          segment.text !== EMPTY_LIVE_KIT_ROOM_MESSAGE
+        ) {
           lastSegmentWithContent = segment;
         }
       }
 
+      // Don't add empty messages
       if (lastSegmentWithContent === undefined) {
-        console.log("RETURN..............", segments);
         return;
       }
-
-      console.log(
-        "lastSegmentWithContent",
-        participant.isLocal ? "user" : "assistant",
-        JSON.stringify(lastSegmentWithContent, undefined, 2)
-      );
 
       const messageRole = participant.isLocal ? "user" : "assistant";
 
@@ -112,6 +109,7 @@ export class ChChat {
       );
 
       this.#liveKitMessages = mergeSortedArrays(this.#liveKitTranscriptions);
+      forceUpdate(this);
     }
   };
 
@@ -208,7 +206,12 @@ export class ChChat {
       this.#virtualScrollRef?.addItems("end", ...this.#liveKitMessages);
 
       this.#liveKitTranscriptions = undefined;
-      this.#liveKitMessages = undefined;
+
+      // Wait for the virtual scroller to emit the new message, in order to
+      // reduce flickering
+      requestAnimationFrame(() => {
+        this.#liveKitMessages = undefined;
+      });
     }
   }
 

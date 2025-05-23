@@ -24,6 +24,7 @@ import { EMPTY_LIVE_KIT_ROOM_MESSAGE } from "../live-kit-room/constants";
 import type { LiveKitCallbacks } from "../live-kit-room/types";
 import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
 import type { ThemeModel } from "../theme/theme-types";
+import { mergeSortedArrays } from "./merge-sort-live-kit-messages";
 import { renderContentBySections } from "./renders/renders";
 import type { ChatTranslations } from "./translations";
 import type {
@@ -52,6 +53,14 @@ const getAriaBusyValue = (
   status?: "complete" | "waiting" | "streaming" | undefined
 ): "true" | "false" => (status === "streaming" ? "true" : "false");
 
+const createLiveKitMessagesStore = (): {
+  user: Map<string, TranscriptionSegment>;
+  assistant: Map<string, TranscriptionSegment>;
+} => ({
+  assistant: new Map(),
+  user: new Map()
+});
+
 /**
  * TODO: Add description
  */
@@ -63,6 +72,14 @@ const getAriaBusyValue = (
 export class ChChat {
   #cellIdAlignedWhenRendered: string | undefined;
   #cellHasToReserveSpace: Set<string> | undefined;
+
+  #liveKitTranscriptions:
+    | {
+        user: Map<string, TranscriptionSegment>;
+        assistant: Map<string, TranscriptionSegment>;
+      }
+    | undefined; // Allocated at runtime to save resources
+  #liveKitMessages: ChatMessage[] | undefined; // Allocated at runtime to save resources
 
   #liveKitCallbacks: LiveKitCallbacks = {
     updateTranscriptions: (segments, participant) => {
@@ -77,33 +94,24 @@ export class ChChat {
       }
 
       if (lastSegmentWithContent === undefined) {
+        console.log("RETURN..............", segments);
         return;
       }
 
-      const messageIndex = this.#getMessageIndexById(lastSegmentWithContent.id);
+      console.log(
+        "lastSegmentWithContent",
+        participant.isLocal ? "user" : "assistant",
+        JSON.stringify(lastSegmentWithContent, undefined, 2)
+      );
 
-      const chatMessage: ChatMessage = participant.isLocal
-        ? {
-            id: lastSegmentWithContent.id,
-            content: lastSegmentWithContent.text,
-            role: "user"
-          }
-        : {
-            id: lastSegmentWithContent.id,
-            content: lastSegmentWithContent.text,
-            role: "assistant",
-            status: lastSegmentWithContent.final ? "complete" : "streaming"
-          };
+      const messageRole = participant.isLocal ? "user" : "assistant";
 
-      if (messageIndex === -1) {
-        this.addNewMessage(chatMessage);
-      } else {
-        this.updateChatMessage(
-          messageIndex,
-          chatMessage as ChatMessageByRoleNoId<"system" | "assistant">,
-          "replace"
-        );
-      }
+      this.#liveKitTranscriptions[messageRole].set(
+        lastSegmentWithContent.id,
+        lastSegmentWithContent
+      );
+
+      this.#liveKitMessages = mergeSortedArrays(this.#liveKitTranscriptions);
     }
   };
 
@@ -191,6 +199,18 @@ export class ChChat {
    * new messages in the chat (`items` property).
    */
   @Prop() readonly liveAudioMode: boolean = false;
+  @Watch("liveAudioMode")
+  liveAudioModeChanged() {
+    if (this.liveAudioMode) {
+      this.#liveKitTranscriptions = createLiveKitMessagesStore();
+      this.#liveKitMessages = [];
+    } else {
+      this.#virtualScrollRef?.addItems("end", ...this.#liveKitMessages);
+
+      this.#liveKitTranscriptions = undefined;
+      this.#liveKitMessages = undefined;
+    }
+  }
 
   /**
    * Specifies if the live audio mode is set.
@@ -710,6 +730,7 @@ export class ChChat {
           }
         >
           {this.virtualItems.map(this.#renderItem)}
+          {this.#liveKitMessages?.map(this.#renderItem)}
         </ch-virtual-scroller>
       </ch-smart-grid>
     );
@@ -825,6 +846,11 @@ export class ChChat {
   connectedCallback() {
     // Scrollbar styles
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+
+    if (this.liveAudioMode) {
+      this.#liveKitTranscriptions = createLiveKitMessagesStore();
+      this.#liveKitMessages = [];
+    }
   }
 
   render() {

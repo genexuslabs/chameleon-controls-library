@@ -1,49 +1,46 @@
-import { h } from "@stencil/core";
+import { html } from "lit";
+import { when } from "lit/directives/when";
+import { tokenMap } from "../../../../common/utils";
 import type {
   ChatCodeBlockRender,
   ChatContentRender,
   ChatMessage,
   ChatMessageByRole,
   ChatMessageRole
-} from "../types";
-import { DEFAULT_ASSISTANT_STATUS, getMessageContent } from "../utils";
-import { tokenMap } from "../../../common/utils";
+} from "../../types";
+import { DEFAULT_ASSISTANT_STATUS, getMessageContent } from "../../utils";
 
 const defaultAssistantContentRender: ChatContentRender = (
   message: ChatMessageByRole<"assistant">,
-  chatRef: HTMLChChatElement,
-  codeBlockRender: ChatCodeBlockRender
+  chatRef: HTMLChChatElement
+  // codeBlockRender: ChatCodeBlockRender
 ) => {
   const messageContent = getMessageContent(message);
 
-  return message.status === "waiting" ? (
-    <div
-      class="assistant-loading"
-      part={tokenMap({
-        [`assistant content waiting ${message.id}`]: true,
-        [message.parts]: !!message.parts
-      })}
-    >
-      {/* {spinner()} */}
-      {messageContent}
-    </div>
-  ) : (
-    messageContent && (
-      <ch-markdown-viewer
-        part={tokenMap({
-          [`assistant content ${message.id} ${
-            message.status ?? DEFAULT_ASSISTANT_STATUS
-          }`]: true,
+  return message.status === "waiting"
+    ? html`<div
+        class="assistant-loading"
+        part=${tokenMap({
+          [`assistant content waiting ${message.id}`]: true,
           [message.parts]: !!message.parts
         })}
-        // TODO: Fix the way to optimize this re-render
-        renderCode={codeBlockRender(chatRef)}
-        showIndicator={message.status === "streaming"}
-        theme={chatRef.markdownTheme}
-        value={messageContent}
-      ></ch-markdown-viewer>
-    )
-  );
+      >
+        ${messageContent}
+      </div>`
+    : when(
+        messageContent,
+        () => html`<ch-markdown-viewer
+          part=${tokenMap({
+            [`assistant content ${message.id} ${
+              message.status ?? DEFAULT_ASSISTANT_STATUS
+            }`]: true,
+            [message.parts]: !!message.parts
+          })}
+          .showIndicator=${message.status === "streaming"}
+          .theme=${chatRef.markdownTheme}
+          .value=${messageContent}
+        ></ch-markdown-viewer>`
+      );
 };
 
 const defaultErrorContentRender: ChatContentRender = (
@@ -53,18 +50,18 @@ const defaultErrorContentRender: ChatContentRender = (
 ) => {
   const errorContent = getMessageContent(message);
 
-  return (
-    errorContent && (
-      <ch-markdown-viewer
-        part={tokenMap({
+  return when(
+    errorContent,
+    () =>
+      html`<ch-markdown-viewer
+        part=${tokenMap({
           [`error content ${message.id}`]: true,
           [message.parts]: !!message.parts
         })}
-        renderCode={codeBlockRender(chatRef)}
-        theme={chatRef.markdownTheme}
-        value={errorContent}
-      ></ch-markdown-viewer>
-    )
+        .renderCode=${codeBlockRender(chatRef)}
+        .theme=${chatRef.markdownTheme}
+        .value=${errorContent}
+      ></ch-markdown-viewer>`
   );
 };
 

@@ -11,41 +11,31 @@ import {
   forceUpdate,
   h
 } from "@stencil/core";
+import type { ChMimeType } from "../../common/mimeTypes/mime-types";
+import { adoptCommonThemes } from "../../common/theme";
 import type {
   ChVirtualScrollerCustomEvent,
   VirtualScrollVirtualItems
 } from "../../components";
+import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
 import type { ThemeModel } from "../theme/theme-types";
+import type { ChChatLit } from "./internal/chat.lit";
+import type { ChatTranslations } from "./translations";
 import type {
-  ChatMessageFiles,
   ChatCallbacks,
   ChatMessage,
-  ChatMessageAssistant,
   ChatMessageByRole,
   ChatMessageByRoleNoId,
-  ChatMessageError,
+  ChatMessageFiles,
   ChatMessageRenderByItem,
-  ChatMessageRenderBySections,
-  ChatMessageUser
+  ChatMessageRenderBySections
 } from "./types";
-import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
-import type { ChatTranslations } from "./translations";
-import type { ChMimeType } from "../../common/mimeTypes/mime-types";
-import { adoptCommonThemes } from "../../common/theme";
-import { tokenMap } from "../../common/utils";
-import {
-  DEFAULT_ASSISTANT_STATUS,
-  getMessageContent,
-  getMessageFiles,
-  getMessageFilesAndSources
-} from "./utils";
-import { renderContentBySections } from "./renders/renders";
+import { getMessageContent, getMessageFiles } from "./utils";
+
+// Side effect to define the ch-chat-lit custom element
+import "./internal/chat.lit";
 
 const ENTER_KEY = "Enter";
-
-const getAriaBusyValue = (
-  status?: "complete" | "waiting" | "streaming" | undefined
-): "true" | "false" => (status === "streaming" ? "true" : "false");
 
 /**
  * TODO: Add description
@@ -56,10 +46,28 @@ const getAriaBusyValue = (
   shadow: true
 })
 export class ChChat {
+  /**
+   * Specifies the ID of the cell that is aligned to the start of the scroll
+   * position.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #cellIdAlignedWhenRendered: string | undefined;
+
+  /**
+   * Specifies a Set of cells that must render an additional div to correctly
+   * reserve space. This space is used to align the cell at the start scroll
+   * position.
+   *
+   * Even if only one cell is aligned to the start of the scroll, all cells
+   * that participated in this behavior must maintain the additional rendered
+   * div to avoid destroying the DOM and thus causing some side effects on
+   * elements whose state the chat can not control.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #cellHasToReserveSpace: Set<string> | undefined;
 
   // Refs
+  #chatLitRef: ChChatLit | undefined;
   #editRef!: HTMLChEditElement;
   #smartGridRef: HTMLChSmartGridElement | undefined;
   #virtualScrollRef: HTMLChVirtualScrollerElement | undefined;
@@ -187,7 +195,8 @@ export class ChChat {
    */
   @Prop() readonly renderItem?:
     | ChatMessageRenderByItem
-    | ChatMessageRenderBySections;
+    | ChatMessageRenderBySections
+    | undefined;
 
   /**
    * `true` to render a slot named "additional-content" to project elements
@@ -552,15 +561,6 @@ export class ChChat {
     this.callbacks!.stopGeneratingAnswer!();
   };
 
-  #alignCellWhenRendered = () =>
-    this.#smartGridRef.scrollEndContentToPosition(
-      this.#cellIdAlignedWhenRendered,
-      {
-        position: this.newUserMessageAlignment,
-        behavior: this.newUserMessageScrollBehavior
-      }
-    );
-
   #virtualItemsChanged = (
     event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
   ) => {
@@ -602,77 +602,20 @@ export class ChChat {
             (this.#virtualScrollRef = el as HTMLChVirtualScrollerElement)
           }
         >
-          {this.virtualItems.map(this.#renderItem)}
+          <ch-chat-lit
+            cellHasToReserveSpace={this.#cellHasToReserveSpace}
+            cellIdAlignedWhenRendered={this.#cellIdAlignedWhenRendered}
+            chatRef={this.el}
+            newUserMessageAlignment={this.newUserMessageAlignment}
+            newUserMessageScrollBehavior={this.newUserMessageScrollBehavior}
+            renderItem={this.renderItem}
+            smartGridRef={this.#smartGridRef}
+            virtualItems={this.virtualItems}
+            ref={el => (this.#chatLitRef = el)}
+          ></ch-chat-lit>
         </ch-virtual-scroller>
       </ch-smart-grid>
     );
-
-  #getMessageRenderedContent = (
-    message: ChatMessageUser | ChatMessageAssistant | ChatMessageError
-  ) => {
-    // Default render
-    if (!this.renderItem) {
-      return renderContentBySections(message, this.el, {});
-    }
-
-    return typeof this.renderItem === "function"
-      ? this.renderItem(message)
-      : renderContentBySections(message, this.el, this.renderItem); // The custom render is separated by sections
-  };
-
-  #renderItem = (message: ChatMessage) => {
-    if (message.role === "system") {
-      return "";
-    }
-
-    const isAssistantMessage = message.role === "assistant";
-    const filesAndSources = getMessageFilesAndSources(message);
-
-    const parts = tokenMap({
-      [`message ${message.role} ${message.id}`]: true,
-      "has-content": (getMessageContent(message) ?? "").trim() !== "",
-      "has-files": filesAndSources.files.length !== 0,
-      "has-sources": filesAndSources.sources.length !== 0,
-      [message.parts]: !!message.parts,
-      [(message as ChatMessageByRole<"assistant">).status ??
-      DEFAULT_ASSISTANT_STATUS]: isAssistantMessage
-    });
-
-    const renderedContent = this.#getMessageRenderedContent(message);
-
-    const messageIsCellAlignedAtTheStart =
-      message.id === this.#cellIdAlignedWhenRendered;
-
-    const hasToRenderAnExtraDiv =
-      this.#cellHasToReserveSpace !== undefined &&
-      this.#cellHasToReserveSpace.has(message.id);
-
-    return (
-      <ch-smart-grid-cell
-        key={message.id}
-        cellId={message.id}
-        aria-live={isAssistantMessage ? "polite" : undefined}
-        // Wait until all changes are made to prevents assistive
-        // technologies from announcing changes before updates are done
-        aria-busy={
-          isAssistantMessage ? getAriaBusyValue(message.status) : undefined
-        }
-        part={hasToRenderAnExtraDiv ? undefined : parts}
-        smartGridRef={this.#smartGridRef}
-        onSmartCellDidLoad={
-          messageIsCellAlignedAtTheStart
-            ? this.#alignCellWhenRendered
-            : undefined
-        }
-      >
-        {hasToRenderAnExtraDiv ? (
-          <div part={parts}>{renderedContent}</div>
-        ) : (
-          renderedContent
-        )}
-      </ch-smart-grid-cell>
-    );
-  };
 
   #loadMoreItems = () => {
     this.loadingState = "loading";
@@ -718,6 +661,12 @@ export class ChChat {
   connectedCallback() {
     // Scrollbar styles
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+  }
+
+  componentDidUpdate() {
+    // At this moment, for safety we should always re-render the ch-chat-lit
+    // when the ch-chat is re-rendered
+    this.#chatLitRef?.requestUpdate();
   }
 
   render() {

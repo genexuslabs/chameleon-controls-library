@@ -1,3 +1,4 @@
+import type { TemplateResult } from "lit";
 import type {
   ChMimeType,
   ChMimeTypeFormatMap
@@ -296,7 +297,7 @@ export type ChatCallbacks = {
 
 export type ChatMessageRenderByItem = (
   messageModel: ChatMessageByRole<"assistant" | "error" | "user">
-) => any;
+) => TemplateResult | string;
 
 export type ChatMessageRenderBySections = {
   /**
@@ -351,7 +352,7 @@ export type ChatMessageRenderBySections = {
 export type ChatActionsRender = (
   message: ChatMessage,
   chatRef: HTMLChChatElement
-) => any;
+) => TemplateResult | string;
 
 export type ChatCodeBlockRender = (
   chatRef: HTMLChChatElement
@@ -361,13 +362,13 @@ export type ChatContentRender = (
   message: ChatMessage,
   chatRef: HTMLChChatElement,
   codeBlockRender: ChatCodeBlockRender
-) => any;
+) => TemplateResult | string;
 
 export type ChatFileRender = {
   [key in keyof ChMimeTypeFormatMap]?: (
     file: ChatMessageFile,
     chatRef: HTMLChChatElement
-  ) => any;
+  ) => TemplateResult | string;
 };
 
 export type ChatMessageStructureRender = (
@@ -378,9 +379,9 @@ export type ChatMessageStructureRender = (
   > & {
     file: Required<ChatFileRender>;
   }
-) => any;
+) => TemplateResult | string;
 
 export type ChatSourceRender = (
   source: ChatMessageSource,
   chatRef: HTMLChChatElement
-) => any;
+) => TemplateResult | string;

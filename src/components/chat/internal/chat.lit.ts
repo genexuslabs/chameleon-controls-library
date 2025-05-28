@@ -3,6 +3,7 @@
 /* eslint-disable @stencil-community/no-unused-watch */
 import { html, LitElement } from "lit";
 import { property } from "lit/decorators/property.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
 import { tokenMap } from "../../../common/utils";
@@ -160,13 +161,15 @@ export class ChChatLit extends LitElement {
 
     return html`<ch-smart-grid-cell
       .cellId=${message.id}
-      aria-live=${isAssistantMessage ? "polite" : undefined}
+      aria-live=${ifDefined(isAssistantMessage ? "polite" : undefined)}
       aria-busy=${
         // Wait until all changes are made to prevents assistive
         // technologies from announcing changes before updates are done
-        isAssistantMessage ? getAriaBusyValue(message.status) : undefined
+        ifDefined(
+          isAssistantMessage ? getAriaBusyValue(message.status) : undefined
+        )
       }
-      part=${hasToRenderAnExtraDiv ? undefined : parts}
+      part=${ifDefined(hasToRenderAnExtraDiv ? undefined : parts)}
       .smartGridRef=${
         // TODO: This is a WA to avoid a type error in runtime
         this.smartGridRef as any as HTMLChSmartGridElement

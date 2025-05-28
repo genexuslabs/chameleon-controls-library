@@ -1,5 +1,7 @@
 import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined";
 import { when } from "lit/directives/when";
+
 import type { ChMimeTypeFormatMap } from "../../../../common/mimeTypes/mime-types";
 import { tokenMap } from "../../../../common/utils";
 import type { ChatFileRender, ChatMessageFile } from "../../types";
@@ -70,7 +72,9 @@ export const defaultFileRender: ChatFileRender = {
       <audio
         aria-label=${file.accessibleName}
         part=${getFileParts(file, "audio")}
-        src=${file.uploadState === "in-progress" ? undefined : file.url}
+        src=${ifDefined(
+          file.uploadState === "in-progress" ? undefined : file.url
+        )}
         controls
       ></audio>
 
@@ -84,7 +88,9 @@ export const defaultFileRender: ChatFileRender = {
       <video
         aria-label=${file.accessibleName}
         part=${getFileParts(file, "video")}
-        src=${file.uploadState === "in-progress" ? undefined : file.url}
+        src=${ifDefined(
+          file.uploadState === "in-progress" ? undefined : file.url
+        )}
         controls
       ></video>
 
@@ -116,10 +122,10 @@ export const defaultFileRender: ChatFileRender = {
     >
       <a
         aria-label=${file.accessibleName}
-        role=${disabledWhileUploading ? "link" : undefined}
-        aria-disabled=${disabledWhileUploading ? "true" : undefined}
+        role=${ifDefined(disabledWhileUploading ? "link" : undefined)}
+        aria-disabled=${ifDefined(disabledWhileUploading ? "true" : undefined)}
         part=${getFileParts(file, "file")}
-        href=${disabledWhileUploading ? undefined : file.url}
+        href=${ifDefined(disabledWhileUploading ? undefined : file.url)}
         target="_blank"
       >
         ${when(

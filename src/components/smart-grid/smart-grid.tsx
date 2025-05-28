@@ -13,13 +13,13 @@ import {
   h
 } from "@stencil/core";
 import type { AccessibleNameComponent } from "../../common/interfaces";
-import type { SmartGridDataState } from "./internal/infinite-scroll/types";
-import type { VirtualScrollVirtualItems } from "../virtual-scroller/types";
+import type { ChameleonControlsTagName } from "../../common/types";
 import type {
   ChSmartGridCellCustomEvent,
   ChVirtualScrollerCustomEvent
 } from "../../components";
-import type { ChameleonControlsTagName } from "../../common/types";
+import type { VirtualScrollVirtualItems } from "../virtual-scroller/types";
+import type { SmartGridDataState } from "./internal/infinite-scroll/types";
 
 import { SCROLLABLE_CLASS } from "../../common/reserved-names";
 import { adoptCommonThemes } from "../../common/theme";
@@ -281,7 +281,10 @@ export class ChSmartGrid
 
       // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
       const newLastCell = this.el.querySelector(
-        `:scope > [slot="grid-content"] > ${SMART_GRID_CELL_TAG_NAME}:last-child`
+        // TODO: This is a WA to make work the ch-chat with the Lit render.
+        // This WA won't be necessary when we fully migrate the ch-chat to Lit
+        `:scope > [slot="grid-content"] > ch-chat-lit > ${SMART_GRID_CELL_TAG_NAME}:last-child`
+        // `:scope > [slot="grid-content"] > ${SMART_GRID_CELL_TAG_NAME}:last-child`
       ) as HTMLChSmartGridCellElement | null;
 
       if (this.#lastCellRef !== newLastCell) {

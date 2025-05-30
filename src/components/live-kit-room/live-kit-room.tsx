@@ -1,16 +1,16 @@
 import {
   Component,
-  Host,
-  h,
-  Prop,
   Element,
+  Host,
+  Prop,
   Watch,
-  forceUpdate
+  forceUpdate,
+  h
 } from "@stencil/core";
-import { LiveKitCallbacks } from "./types";
-import { connectToRoom } from "./connect";
 import { Participant, RemoteParticipant, Room, Track } from "livekit-client";
 import { removeElement } from "../../common/array";
+import { connectToRoom } from "./connect";
+import { LiveKitCallbacks } from "./types";
 
 @Component({
   tag: "ch-live-kit-room",
@@ -46,6 +46,7 @@ export class ChLiveKitRoom {
       this.#disconnectRoom();
     }
   }
+
   /**
    * Specifies the microphone state.
    */
@@ -54,13 +55,10 @@ export class ChLiveKitRoom {
   @Watch("microphoneEnabled")
   microphoneEnabledChanged() {
     if (this.connected) {
-      if (this.microphoneEnabled) {
-        this.#muteMic();
-      } else {
-        this.#unmuteMic();
-      }
+      this.#toggleLocalParticipantMic();
     }
   }
+
   /**
    * Specifies the token to connect to the room
    */
@@ -90,16 +88,16 @@ export class ChLiveKitRoom {
     forceUpdate(this);
   };
 
-  #connect = () => {
+  #connect = () =>
     connectToRoom(
       this.url,
       this.token,
       this.#addOrRemoveParticipant,
-      this.callbacks.updateTranscriptions
+      this.callbacks
     ).then(room => {
       this.#currentRoom = room;
+      this.#toggleLocalParticipantMic();
     });
-  };
 
   #disconnectRoom = () => {
     if (this.#currentRoom) {
@@ -112,13 +110,10 @@ export class ChLiveKitRoom {
       p => p.participant.identity === participant.identity
     );
 
-  #muteMic = () => {
-    this.#currentRoom?.localParticipant.setMicrophoneEnabled(false);
-  };
-
-  #unmuteMic = () => {
-    this.#currentRoom?.localParticipant.setMicrophoneEnabled(true);
-  };
+  #toggleLocalParticipantMic = () =>
+    this.#currentRoom?.localParticipant.setMicrophoneEnabled(
+      this.microphoneEnabled
+    );
 
   connectedCallback() {
     if (this.connected) {

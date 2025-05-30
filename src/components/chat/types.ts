@@ -2,6 +2,7 @@ import type {
   ChMimeType,
   ChMimeTypeFormatMap
 } from "../../common/mimeTypes/mime-types";
+import { LiveKitCallbacks } from "../live-kit-room/types";
 import type { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 
 export type ChatMessageRole = "assistant" | "error" | "system" | "user";
@@ -116,6 +117,11 @@ export type ChatMessageUser = {
    * It is not added to the parts of the files and sources.
    */
   parts?: string;
+
+  /**
+   * `true` if the message content was transcribed by using the live mode.
+   */
+  transcribed?: boolean;
 };
 
 export type ChatMessageAssistant = {
@@ -145,6 +151,11 @@ export type ChatMessageAssistant = {
    * to `"complete"`
    */
   status?: "complete" | "waiting" | "streaming";
+
+  /**
+   * `true` if the message content was transcribed by using the live mode.
+   */
+  transcribed?: boolean;
 };
 
 export type ChatMessageError = {
@@ -261,6 +272,11 @@ export type ChatCallbacks = {
    * attaching files.
    */
   getChatMessageFiles?: () => File[] | Promise<File[]>;
+
+  /**
+   * Specifies a set of callback to manage `liveMode` events.
+   */
+  liveMode?: Pick<LiveKitCallbacks, "activeSpeakersChanged">;
 
   /**
    * Specifies a callback to execute when the user adds a new message to the
@@ -384,3 +400,11 @@ export type ChatSourceRender = (
   source: ChatMessageSource,
   chatRef: HTMLChChatElement
 ) => any;
+
+export type ChatLiveModeConfiguration = {
+  url: string;
+  token: string;
+  localParticipant?: {
+    microphoneEnabled?: boolean;
+  };
+};

@@ -11,41 +11,55 @@ import {
   forceUpdate,
   h
 } from "@stencil/core";
+
+import { TranscriptionSegment } from "livekit-client";
+import type { ChMimeType } from "../../common/mimeTypes/mime-types";
+import { adoptCommonThemes } from "../../common/theme";
+import { tokenMap } from "../../common/utils";
 import type {
   ChVirtualScrollerCustomEvent,
   VirtualScrollVirtualItems
 } from "../../components";
+import { EMPTY_LIVE_KIT_ROOM_MESSAGE } from "../live-kit-room/constants";
+import type { LiveKitCallbacks } from "../live-kit-room/types";
+import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
 import type { ThemeModel } from "../theme/theme-types";
+import { mergeSortedArrays } from "./merge-sort-live-kit-messages";
+import { renderContentBySections } from "./renders/renders";
+import type { ChatTranslations } from "./translations";
 import type {
-  ChatMessageFiles,
   ChatCallbacks,
+  ChatLiveModeConfiguration,
   ChatMessage,
   ChatMessageAssistant,
   ChatMessageByRole,
   ChatMessageByRoleNoId,
   ChatMessageError,
+  ChatMessageFiles,
   ChatMessageRenderByItem,
   ChatMessageRenderBySections,
   ChatMessageUser
 } from "./types";
-import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
-import type { ChatTranslations } from "./translations";
-import type { ChMimeType } from "../../common/mimeTypes/mime-types";
-import { adoptCommonThemes } from "../../common/theme";
-import { tokenMap } from "../../common/utils";
 import {
   DEFAULT_ASSISTANT_STATUS,
   getMessageContent,
   getMessageFiles,
   getMessageFilesAndSources
 } from "./utils";
-import { renderContentBySections } from "./renders/renders";
 
 const ENTER_KEY = "Enter";
 
 const getAriaBusyValue = (
   status?: "complete" | "waiting" | "streaming" | undefined
 ): "true" | "false" => (status === "streaming" ? "true" : "false");
+
+const createLiveKitMessagesStore = (): {
+  user: Map<string, TranscriptionSegment>;
+  assistant: Map<string, TranscriptionSegment>;
+} => ({
+  assistant: new Map(),
+  user: new Map()
+});
 
 /**
  * TODO: Add description
@@ -58,6 +72,49 @@ const getAriaBusyValue = (
 export class ChChat {
   #cellIdAlignedWhenRendered: string | undefined;
   #cellHasToReserveSpace: Set<string> | undefined;
+
+  #liveKitTranscriptions:
+    | {
+        user: Map<string, TranscriptionSegment>;
+        assistant: Map<string, TranscriptionSegment>;
+      }
+    | undefined; // Allocated at runtime to save resources
+  #liveKitMessages: ChatMessage[] | undefined; // Allocated at runtime to save resources
+
+  #liveKitCallbacks: LiveKitCallbacks = {
+    activeSpeakersChanged: participant =>
+      this.callbacks?.liveMode?.activeSpeakersChanged(participant),
+
+    updateTranscriptions: (segments, participant) => {
+      let lastSegmentWithContent: TranscriptionSegment | undefined;
+
+      for (let index = 0; index < segments.length; index++) {
+        const segment = segments[index];
+
+        if (
+          segment.text.trim() !== "" &&
+          segment.text !== EMPTY_LIVE_KIT_ROOM_MESSAGE
+        ) {
+          lastSegmentWithContent = segment;
+        }
+      }
+
+      // Don't add empty messages
+      if (lastSegmentWithContent === undefined) {
+        return;
+      }
+
+      const messageRole = participant.isLocal ? "user" : "assistant";
+
+      this.#liveKitTranscriptions[messageRole].set(
+        lastSegmentWithContent.id,
+        lastSegmentWithContent
+      );
+
+      this.#liveKitMessages = mergeSortedArrays(this.#liveKitTranscriptions);
+      forceUpdate(this);
+    }
+  };
 
   // Refs
   #editRef!: HTMLChEditElement;
@@ -132,6 +189,45 @@ export class ChChat {
   }
 
   /**
+   * Specifies if the live mode is set.
+   *
+   * When this mode is enabled, the chat will disable sending messages by user
+   * interactions and the only way to send messages will be throughout the
+   * voice. The user will have to enable the microphone input in their Operative
+   * System and it will voice chat with the remote participants.
+   *
+   * When any participant speaks, the transcribed conversation will be displayed
+   * as new messages in the chat (`items` property).
+   *
+   * When the `liveMode` ends, the transcribed conversation will be pushed
+   * to the `items` of the chat.
+   */
+  @Prop() readonly liveMode: boolean = false;
+  @Watch("liveMode")
+  liveModeChanged() {
+    if (this.liveMode) {
+      this.#liveKitTranscriptions = createLiveKitMessagesStore();
+      this.#liveKitMessages = [];
+    } else {
+      this.#virtualScrollRef?.addItems("end", ...this.#liveKitMessages);
+
+      this.#liveKitTranscriptions = undefined;
+
+      // Wait for the virtual scroller to emit the new message, in order to
+      // reduce flickering
+      requestAnimationFrame(() => {
+        this.#liveKitMessages = undefined;
+      });
+    }
+  }
+
+  /**
+   * Specifies the live mode configuration. The `token` and `url` are required
+   * to enable the `liveMode`.
+   */
+  @Prop() readonly liveModeConfiguration: ChatLiveModeConfiguration | undefined;
+
+  /**
    * Specifies if the chat is waiting for the data to be loaded.
    */
   @Prop({ mutable: true }) loadingState: SmartGridDataState = "initial";
@@ -188,6 +284,16 @@ export class ChChat {
   @Prop() readonly renderItem?:
     | ChatMessageRenderByItem
     | ChatMessageRenderBySections;
+
+  /**
+   * `true` to disable the send-button element.
+   */
+  @Prop() readonly sendButtonDisabled: boolean = false;
+
+  /**
+   * `true` to disable the send-input element.
+   */
+  @Prop() readonly sendInputDisabled: boolean = false;
 
   /**
    * `true` to render a slot named "additional-content" to project elements
@@ -305,6 +411,16 @@ export class ChChat {
     this.initialLoadHasEnded = true;
     this.#updateMessage(messageIndex, message, mode);
 
+    const updatedMessage = this.items[messageIndex];
+    const virtualItemIndex = this.virtualItems.findIndex(
+      virtualItem => virtualItem.id === updatedMessage.id
+    );
+
+    // Sync the last virtual item with the real item that is updated
+    if (virtualItemIndex !== -1) {
+      this.virtualItems[virtualItemIndex] = updatedMessage;
+    }
+
     forceUpdate(this);
   }
 
@@ -413,6 +529,27 @@ export class ChChat {
       ? []
       : this.callbacks.getChatMessageFiles();
 
+  #liveModeIsDisplayed = () => {
+    const config = this.liveModeConfiguration;
+    return this.liveMode && config && !!config.url && !!config.token;
+  };
+
+  #renderLiveKitRoom = () => {
+    const config = this.liveModeConfiguration;
+
+    return (
+      this.#liveModeIsDisplayed() && (
+        <ch-live-kit-room
+          callbacks={this.#liveKitCallbacks}
+          connected
+          microphoneEnabled={config.localParticipant?.microphoneEnabled ?? true}
+          token={config.token}
+          url={config.url}
+        ></ch-live-kit-room>
+      )
+    );
+  };
+
   #uploadFiles = (
     userMessageToAdd: ChatMessageByRole<"user">,
     sendInputValue: string | undefined,
@@ -509,6 +646,7 @@ export class ChChat {
     if (
       emptySendInput ||
       this.disabled ||
+      this.#liveModeIsDisplayed() ||
       this.generatingResponse ||
       this.loadingState === "initial" ||
       this.loadingState === "loading" ||
@@ -603,6 +741,7 @@ export class ChChat {
           }
         >
           {this.virtualItems.map(this.#renderItem)}
+          {this.#liveKitMessages?.map(this.#renderItem)}
         </ch-virtual-scroller>
       </ch-smart-grid>
     );
@@ -718,6 +857,11 @@ export class ChChat {
   connectedCallback() {
     // Scrollbar styles
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+
+    if (this.liveMode) {
+      this.#liveKitTranscriptions = createLiveKitMessagesStore();
+      this.#liveKitMessages = [];
+    }
   }
 
   render() {
@@ -730,6 +874,17 @@ export class ChChat {
       this.loadingState !== "initial" &&
       // It's not the empty chat
       !(this.items.length === 0 && this.loadingState === "all-records-loaded");
+
+    const liveModeIsDisplayed = this.#liveModeIsDisplayed();
+
+    const sendInputDisabled =
+      this.sendInputDisabled || this.disabled || liveModeIsDisplayed;
+
+    const sendButtonDisabled =
+      this.sendButtonDisabled ||
+      this.disabled ||
+      liveModeIsDisplayed ||
+      this.loadingState === "initial";
 
     return (
       <Host
@@ -769,6 +924,7 @@ export class ChChat {
             <ch-edit
               accessibleName={accessibleName.sendInput}
               autoGrow
+              disabled={sendInputDisabled}
               hostParts="send-input"
               multiline
               placeholder={this.translations.placeholder.sendInput}
@@ -778,7 +934,9 @@ export class ChChat {
               showAdditionalContentBefore={
                 this.showSendInputAdditionalContentBefore
               }
-              onKeyDown={this.#sendMessageKeyboard}
+              onKeyDown={
+                sendInputDisabled ? undefined : this.#sendMessageKeyboard
+              }
               ref={el => (this.#editRef = el as HTMLChEditElement)}
             >
               {this.showSendInputAdditionalContentBefore && (
@@ -801,13 +959,13 @@ export class ChChat {
             title={accessibleName.sendButton}
             class="send-or-audio-button"
             part="send-button"
-            disabled={this.disabled}
+            disabled={sendButtonDisabled}
             type="button"
-            onClick={
-              this.loadingState !== "initial" ? this.#sendMessage : undefined
-            }
+            onClick={sendButtonDisabled ? undefined : this.#sendMessage}
           ></button>
         </div>
+
+        {this.#renderLiveKitRoom()}
       </Host>
     );
   }

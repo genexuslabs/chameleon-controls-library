@@ -1,10 +1,10 @@
 import { GxImageMultiState } from "../../../../common/types";
 import {
-  ComboBoxSuggestInfo,
-  ComboBoxSuggestOptions,
   ComboBoxItemGroup,
   ComboBoxItemModel,
-  ComboBoxModel
+  ComboBoxModel,
+  ComboBoxSuggestInfo,
+  ComboBoxSuggestOptions
 } from "../../../../components/combo-box/types";
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
@@ -288,6 +288,28 @@ export const smallModel: ComboBoxModel = [
   { value: "strawberry", caption: "Strawberry" },
   { value: "vanilla", caption: "Vanilla" }
 ];
+
+export const largeModel: ComboBoxModel = [...Array(100).keys()].map(index => ({
+  value: `item-${index}`,
+  caption: `item-${index}`,
+  items: [...Array(100).keys()].map(indexChild => ({
+    value: `item-${index}-${indexChild}`,
+    caption: `item-${index}-${indexChild}`
+  }))
+}));
+
+export const largeCollapsedModel: ComboBoxModel = [...Array(100).keys()].map(
+  index => ({
+    value: `item-${index}`,
+    caption: `item-${index}`,
+    expandable: true,
+    expanded: false,
+    items: [...Array(100).keys()].map(indexChild => ({
+      value: `item-${index}-${indexChild}`,
+      caption: `item-${index}-${indexChild}`
+    }))
+  })
+);
 
 export const dataTypeInGeneXus: ComboBoxModel = [
   {

@@ -117,9 +117,20 @@
   );
 }
 
-:host(.ch-disabled) {
+// TODO: Add a unit test for this
+:host(:disabled) {
   pointer-events: none;
   --ch-start-img: var(--ch-start-img--disabled, var(--ch-start-img--base));
+
+  // TODO: Add a unit test for this
+  // Re enable pointer-events in all elements that has the attribute slot.
+  // We can explicitly used the "additional-content-*" slots, because this
+  // selector won't work if the slot "is a nested slot", in other words, when
+  // using a slot that re-projects another slot, the ::slotted selector selects
+  // the first level slot
+  ::slotted([slot]) {
+    pointer-events: all;
+  }
 }
 
 :host(.ch-edit-pseudo-img--start) {

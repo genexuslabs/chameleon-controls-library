@@ -29,7 +29,7 @@ import { renderContentBySections } from "./renders/renders";
 import type { ChatTranslations } from "./translations";
 import type {
   ChatCallbacks,
-  ChatLiveAudioModeConfiguration,
+  ChatLiveModeConfiguration,
   ChatMessage,
   ChatMessageAssistant,
   ChatMessageByRole,
@@ -82,6 +82,9 @@ export class ChChat {
   #liveKitMessages: ChatMessage[] | undefined; // Allocated at runtime to save resources
 
   #liveKitCallbacks: LiveKitCallbacks = {
+    activeSpeakersChanged: participant =>
+      this.callbacks?.liveMode?.activeSpeakersChanged(participant),
+
     updateTranscriptions: (segments, participant) => {
       let lastSegmentWithContent: TranscriptionSegment | undefined;
 
@@ -186,7 +189,7 @@ export class ChChat {
   }
 
   /**
-   * Specifies if the live audio mode is set.
+   * Specifies if the live mode is set.
    *
    * When this mode is enabled, the chat will disable sending messages by user
    * interactions and the only way to send messages will be throughout the
@@ -196,13 +199,13 @@ export class ChChat {
    * When any participant speaks, the transcribed conversation will be displayed
    * as new messages in the chat (`items` property).
    *
-   * When the `liveAudioMode` ends, the transcribed conversation will be pushed
+   * When the `liveMode` ends, the transcribed conversation will be pushed
    * to the `items` of the chat.
    */
-  @Prop() readonly liveAudioMode: boolean = false;
-  @Watch("liveAudioMode")
-  liveAudioModeChanged() {
-    if (this.liveAudioMode) {
+  @Prop() readonly liveMode: boolean = false;
+  @Watch("liveMode")
+  liveModeChanged() {
+    if (this.liveMode) {
       this.#liveKitTranscriptions = createLiveKitMessagesStore();
       this.#liveKitMessages = [];
     } else {
@@ -219,7 +222,7 @@ export class ChChat {
   }
 
   /**
-   * Specifies if the live audio mode is set.
+   * Specifies if the live mode is set.
    *
    * When this mode is enabled, the chat will disable sending messages by user
    * interactions and the only way to send messages will be throughout the
@@ -229,9 +232,7 @@ export class ChChat {
    * When any participant speaks, the transcribed conversation will be added as
    * new messages in the chat (`items` property).
    */
-  @Prop() readonly liveAudioModeConfiguration:
-    | ChatLiveAudioModeConfiguration
-    | undefined;
+  @Prop() readonly liveModeConfiguration: ChatLiveModeConfiguration | undefined;
 
   /**
    * Specifies if the chat is waiting for the data to be loaded.
@@ -290,6 +291,16 @@ export class ChChat {
   @Prop() readonly renderItem?:
     | ChatMessageRenderByItem
     | ChatMessageRenderBySections;
+
+  /**
+   * `true` to disable the send-button element.
+   */
+  @Prop() readonly sendButtonDisabled: boolean = false;
+
+  /**
+   * `true` to disable the send-input element.
+   */
+  @Prop() readonly sendInputDisabled: boolean = false;
 
   /**
    * `true` to render a slot named "additional-content" to project elements
@@ -525,13 +536,16 @@ export class ChChat {
       ? []
       : this.callbacks.getChatMessageFiles();
 
+  #liveModeIsDisplayed = () => {
+    const config = this.liveModeConfiguration;
+    return this.liveMode && config && !!config.url && !!config.token;
+  };
+
   #renderLiveKitRoom = () => {
-    const config = this.liveAudioModeConfiguration;
-    const canRenderLiveKitRoom =
-      this.liveAudioMode && config && !!config.url && !!config.token;
+    const config = this.liveModeConfiguration;
 
     return (
-      canRenderLiveKitRoom && (
+      this.#liveModeIsDisplayed() && (
         <ch-live-kit-room
           callbacks={this.#liveKitCallbacks}
           connected
@@ -639,6 +653,7 @@ export class ChChat {
     if (
       emptySendInput ||
       this.disabled ||
+      this.#liveModeIsDisplayed() ||
       this.generatingResponse ||
       this.loadingState === "initial" ||
       this.loadingState === "loading" ||
@@ -850,7 +865,7 @@ export class ChChat {
     // Scrollbar styles
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
 
-    if (this.liveAudioMode) {
+    if (this.liveMode) {
       this.#liveKitTranscriptions = createLiveKitMessagesStore();
       this.#liveKitMessages = [];
     }
@@ -866,6 +881,17 @@ export class ChChat {
       this.loadingState !== "initial" &&
       // It's not the empty chat
       !(this.items.length === 0 && this.loadingState === "all-records-loaded");
+
+    const liveModeIsDisplayed = this.#liveModeIsDisplayed();
+
+    const sendInputDisabled =
+      this.sendInputDisabled || this.disabled || liveModeIsDisplayed;
+
+    const sendButtonDisabled =
+      this.sendButtonDisabled ||
+      this.disabled ||
+      liveModeIsDisplayed ||
+      this.loadingState === "initial";
 
     return (
       <Host
@@ -905,6 +931,7 @@ export class ChChat {
             <ch-edit
               accessibleName={accessibleName.sendInput}
               autoGrow
+              disabled={sendInputDisabled}
               hostParts="send-input"
               multiline
               placeholder={this.translations.placeholder.sendInput}
@@ -914,7 +941,9 @@ export class ChChat {
               showAdditionalContentBefore={
                 this.showSendInputAdditionalContentBefore
               }
-              onKeyDown={!this.liveAudioMode ? this.#sendMessageKeyboard : null}
+              onKeyDown={
+                sendInputDisabled ? undefined : this.#sendMessageKeyboard
+              }
               ref={el => (this.#editRef = el as HTMLChEditElement)}
             >
               {this.showSendInputAdditionalContentBefore && (
@@ -937,13 +966,9 @@ export class ChChat {
             title={accessibleName.sendButton}
             class="send-or-audio-button"
             part="send-button"
-            disabled={this.disabled}
+            disabled={sendButtonDisabled}
             type="button"
-            onClick={
-              this.loadingState !== "initial" && !this.liveAudioMode
-                ? this.#sendMessage
-                : undefined
-            }
+            onClick={sendButtonDisabled ? undefined : this.#sendMessage}
           ></button>
         </div>
 

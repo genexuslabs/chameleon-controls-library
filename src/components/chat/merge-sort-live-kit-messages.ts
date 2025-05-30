@@ -7,7 +7,8 @@ const getAssistantMessageByTranscription = (
   id: transcription.id,
   content: transcription.text,
   role: "assistant",
-  status: transcription.final ? "complete" : "streaming"
+  status: transcription.final ? "complete" : "streaming",
+  transcribed: true
 });
 
 const getUserMessageByTranscription = (
@@ -15,7 +16,8 @@ const getUserMessageByTranscription = (
 ): ChatMessageByRole<"user"> => ({
   id: transcription.id,
   content: transcription.text,
-  role: "user"
+  role: "user",
+  transcribed: true
 });
 
 export const mergeSortedArrays = (liveKitMessages: {

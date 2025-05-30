@@ -30,10 +30,10 @@ relative to an element, but placed on the top layer using `position: fixed`.
 
 ## Events
 
-| Event           | Description                         | Type               |
-| --------------- | ----------------------------------- | ------------------ |
-| `popoverClosed` | Emitted when the popover is closed. | `CustomEvent<any>` |
-| `popoverOpened` | Emitted when the popover is opened. | `CustomEvent<any>` |
+| Event           | Description                                                                                                                                          | Type               |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `popoverClosed` | Emitted when the popover is closed by an user interaction.  This event can be prevented (`preventDefault()`), interrupting the ch-popover's closing. | `CustomEvent<any>` |
+| `popoverOpened` | Emitted when the popover is opened by an user interaction.  This event can be prevented (`preventDefault()`), interrupting the ch-popover's opening. | `CustomEvent<any>` |
 
 
 ## Shadow Parts

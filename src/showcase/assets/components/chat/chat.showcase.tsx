@@ -1,5 +1,5 @@
 import { h } from "@stencil/core";
-import { ChatLiveAudioModeConfiguration } from "../../../../components";
+import { ChatLiveModeConfiguration } from "../../../../components";
 import { dataTypeInGeneXus } from "../combo-box/models";
 import {
   ShowcaseRender,
@@ -39,8 +39,10 @@ const render: ShowcaseRender = designSystem => (
         : mercuryChatMessageRender("mercury/markdown-viewer")
     }
     items={state.items}
-    liveAudioMode={state.liveAudioMode}
-    liveAudioModeConfiguration={state.liveAudioModeConfiguration}
+    liveMode={state.liveMode}
+    liveModeConfiguration={state.liveModeConfiguration}
+    sendButtonDisabled={state.sendButtonDisabled}
+    sendInputDisabled={state.sendInputDisabled}
     showAdditionalContent={state.showAdditionalContent}
     showSendInputAdditionalContentAfter={
       state.showSendInputAdditionalContentAfter
@@ -144,6 +146,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "enum"
       },
       {
+        id: "sendButtonDisabled",
+        caption: "Send Button Disabled",
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "sendInputDisabled",
+        caption: "Send Input Disabled",
+        value: false,
+        type: "boolean"
+      },
+      {
         id: "showAdditionalContent",
         caption: "Show Additional Content",
         value: false,
@@ -164,16 +178,16 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
     ]
   },
   {
-    caption: "Live Audio Mode",
+    caption: "Live Mode",
     properties: [
       {
-        id: "liveAudioMode",
+        id: "liveMode",
         caption: "Enabled",
         value: false,
         type: "boolean"
       },
       {
-        id: "liveAudioModeConfiguration",
+        id: "liveModeConfiguration",
         caption: "Configuration",
         type: "object",
         render: "independent-properties",
@@ -190,7 +204,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
             value: undefined,
             type: "string"
           }
-        ] satisfies ShowcaseRenderProperty<ChatLiveAudioModeConfiguration>[]
+        ] satisfies ShowcaseRenderProperty<ChatLiveModeConfiguration>[]
       }
     ]
   }
@@ -224,6 +238,16 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       name: "loadingState",
       defaultValue: "initial",
       type: "string"
+    },
+    {
+      name: "sendButtonDisabled",
+      defaultValue: false,
+      type: "boolean"
+    },
+    {
+      name: "sendInputDisabled",
+      defaultValue: false,
+      type: "boolean"
     },
     {
       name: "showAdditionalContent",

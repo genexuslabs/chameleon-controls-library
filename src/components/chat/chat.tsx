@@ -222,15 +222,8 @@ export class ChChat {
   }
 
   /**
-   * Specifies if the live mode is set.
-   *
-   * When this mode is enabled, the chat will disable sending messages by user
-   * interactions and the only way to send messages will be throughout the
-   * voice. The user will have to enable the microphone input in their Operative
-   * System and it will voice chat with the remote participants.
-   *
-   * When any participant speaks, the transcribed conversation will be added as
-   * new messages in the chat (`items` property).
+   * Specifies if the live mode configuration. The `token` and `url` are
+   * required to enable the `liveMode`.
    */
   @Prop() readonly liveModeConfiguration: ChatLiveModeConfiguration | undefined;
 

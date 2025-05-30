@@ -222,8 +222,8 @@ export class ChChat {
   }
 
   /**
-   * Specifies if the live mode configuration. The `token` and `url` are
-   * required to enable the `liveMode`.
+   * Specifies the live mode configuration. The `token` and `url` are required
+   * to enable the `liveMode`.
    */
   @Prop() readonly liveModeConfiguration: ChatLiveModeConfiguration | undefined;
 

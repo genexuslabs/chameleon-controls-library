@@ -1,5 +1,5 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
-import { TemplateResult } from "lit";
+import type { TemplateResult } from "lit";
 import { defaultCodeRender } from "./parsers/code-render.lit";
 import {
   LAST_NESTED_CHILD_CLASS,

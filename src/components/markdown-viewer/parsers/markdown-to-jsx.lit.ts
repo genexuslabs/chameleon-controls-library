@@ -37,6 +37,27 @@ const checkAndGetLastNestedChildClass = (
 ): typeof LAST_NESTED_CHILD_CLASS | typeof nothing =>
   isLastNestedChildClass(element) ? LAST_NESTED_CHILD_CLASS : nothing;
 
+const renderDefinedValues = <T>(
+  renderedContent: PromiseSettledResult<T>[]
+): T[] => {
+  const result = [];
+
+  // We have to filter undefined values, otherwise Lit will ender those values
+  // with a comment <!----> which causes flickering, because in some occasions
+  // comments are appended above DOM content, which destroys/re-creates the DOM
+  // content
+  for (let index = 0; index < renderedContent.length; index++) {
+    const content = (renderedContent[index] as PromiseFulfilledResult<any>)
+      .value;
+
+    if (content) {
+      result.push(content);
+    }
+  }
+
+  return result;
+};
+
 const depthToHeading = {
   1: (
     content: any,
@@ -103,17 +124,14 @@ const tableRender = async (
     });
   });
 
-  // Wait for all results to be completed in parallel
+  // Wait for all results to be completed in parallel.
+  // TODO: Process in parallel these two promises
   const tableHeadContent = await Promise.allSettled(headCellPromises);
   const tableBodyContent = await Promise.allSettled(bodyCellPromises);
 
   // Return the JSX array
-  const headCells = tableHeadContent.map(
-    jsx => (jsx as PromiseFulfilledResult<any>).value
-  );
-  const bodyCells = tableBodyContent.map(
-    jsx => (jsx as PromiseFulfilledResult<any>).value
-  );
+  const headCells = renderDefinedValues(tableHeadContent);
+  const bodyCells = renderDefinedValues(tableBodyContent);
 
   const alignments = table.align.map(
     alignment => tableAlignmentDictionary[alignment]
@@ -373,7 +391,7 @@ const findLastNestedChild = (
 async function mdASTtoJSX(
   root: ElementsWithChildren | Root,
   metadata: MarkdownViewerToJSXCommonMetadata
-) {
+): Promise<TemplateResult[]> {
   const childrenLength = root.children.length;
   const asyncJSX = new Array(childrenLength);
 
@@ -387,8 +405,8 @@ async function mdASTtoJSX(
   // Wait for all results to be completed in parallel
   const renderedContent = await Promise.allSettled(asyncJSX);
 
-  // Return the JSX array
-  return renderedContent.map(jsx => (jsx as PromiseFulfilledResult<any>).value);
+  // Return the Template array. TODO: Avoid additional array generation
+  return renderDefinedValues(renderedContent);
 }
 
 export const markdownToJSX = async (

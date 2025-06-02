@@ -1,4 +1,5 @@
 import { h } from "@stencil/core";
+import { dataTypeInGeneXus } from "../combo-box/models";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -10,7 +11,6 @@ import {
   updateShowcase
 } from "../utils";
 import { dummyPictureCallback } from "./models";
-import { dataTypeInGeneXus } from "../combo-box/models";
 
 const state: Partial<HTMLChEditElement> = {};
 const formRefs: {
@@ -73,9 +73,19 @@ const render = () => (
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-1", "edit-1")}
         >
+          {state.showAdditionalContentBefore && (
+            <button
+              slot="additional-content-before"
+              class="button-primary"
+              type="button"
+            >
+              Action
+            </button>
+          )}
+
           {state.showAdditionalContentAfter && (
             <ch-combo-box-render
-              slot="additional-content"
+              slot="additional-content-after"
               accessibleName="Data Types"
               class="combo-box"
               model={dataTypeInGeneXus}
@@ -124,9 +134,19 @@ const render = () => (
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-2", "edit-2")}
         >
+          {state.showAdditionalContentBefore && (
+            <button
+              slot="additional-content-before"
+              class="button-primary"
+              type="button"
+            >
+              Action
+            </button>
+          )}
+
           {state.showAdditionalContentAfter && (
             <ch-combo-box-render
-              slot="additional-content"
+              slot="additional-content-after"
               accessibleName="Data Types"
               class="combo-box"
               model={dataTypeInGeneXus}
@@ -175,9 +195,19 @@ const render = () => (
             readonly={state.readonly}
             onInput={handleValueInput("form-edit-3", "edit-3")}
           >
+            {state.showAdditionalContentBefore && (
+              <button
+                slot="additional-content-before"
+                class="button-primary"
+                type="button"
+              >
+                Action
+              </button>
+            )}
+
             {state.showAdditionalContentAfter && (
               <ch-combo-box-render
-                slot="additional-content"
+                slot="additional-content-after"
                 accessibleName="Data Types"
                 class="combo-box"
                 model={dataTypeInGeneXus}

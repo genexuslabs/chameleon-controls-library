@@ -17,24 +17,23 @@ import type {
 } from "../../common/interfaces";
 
 import {
-  DISABLED_CLASS,
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
+import { getControlRegisterProperty } from "../../common/registry-properties";
+import {
   EDIT_HOST_PARTS,
   EDIT_PARTS_DICTIONARY,
   SCROLLABLE_CLASS
 } from "../../common/reserved-names";
-import type { EditInputMode, EditType } from "./types";
+import { adoptCommonThemes } from "../../common/theme";
 import type {
   GxImageMultiState,
   GxImageMultiStateStart,
   ImageRender
 } from "../../common/types";
 import { tokenMap, updateDirectionInImageCustomVar } from "../../common/utils";
-import { getControlRegisterProperty } from "../../common/registry-properties";
-import { adoptCommonThemes } from "../../common/theme";
-import {
-  analyzeLabelExistence,
-  getElementInternalsLabel
-} from "../../common/analysis/accessibility";
+import type { EditInputMode, EditType } from "./types";
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
   imageSrc: string
@@ -557,9 +556,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           "ch-edit--clear-button": renderClearButton,
 
           [`ch-edit-start-img-type--${this.startImgType} ch-edit-pseudo-img--start`]:
-            !this.multiline && !!this.#startImage,
-
-          [DISABLED_CLASS]: this.disabled
+            !this.multiline && !!this.#startImage
         }}
         // TODO: Add unit tests for this feature, since it breaks custom parts
         // rendered outside of the ch-edit render() method

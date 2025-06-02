@@ -1,19 +1,21 @@
 import { h } from "@stencil/core";
+import { ChatLiveModeConfiguration } from "../../../../components";
+import { dataTypeInGeneXus } from "../combo-box/models";
 import {
   ShowcaseRender,
   ShowcaseRenderProperties,
+  ShowcaseRenderProperty,
   ShowcaseStory,
   ShowcaseTemplatePropertyInfo
 } from "../types";
+import { renderShowcaseProperties } from "../utils";
 import {
   chatCallbacks,
-  longChatRecord,
   chatTranslations,
-  codeFixerRecord
+  codeFixerRecord,
+  longChatRecord
 } from "./callbacks";
 // import { mercuryChatMessageRender } from "./mercury-code-render";
-import { renderShowcaseProperties } from "../utils";
-import { dataTypeInGeneXus } from "../combo-box/models";
 
 const state: Partial<HTMLChChatElement> = {};
 
@@ -37,6 +39,10 @@ const render: ShowcaseRender = designSystem => (
     //     : mercuryChatMessageRender("mercury/markdown-viewer")
     // }
     items={state.items}
+    liveMode={state.liveMode}
+    liveModeConfiguration={state.liveModeConfiguration}
+    sendButtonDisabled={state.sendButtonDisabled}
+    sendInputDisabled={state.sendInputDisabled}
     showAdditionalContent={state.showAdditionalContent}
     showSendInputAdditionalContentAfter={
       state.showSendInputAdditionalContentAfter
@@ -140,6 +146,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "enum"
       },
       {
+        id: "sendButtonDisabled",
+        caption: "Send Button Disabled",
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "sendInputDisabled",
+        caption: "Send Input Disabled",
+        value: false,
+        type: "boolean"
+      },
+      {
         id: "showAdditionalContent",
         caption: "Show Additional Content",
         value: false,
@@ -156,6 +174,37 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         caption: "Show Send Input Additional Content After",
         value: false,
         type: "boolean"
+      }
+    ]
+  },
+  {
+    caption: "Live Mode",
+    properties: [
+      {
+        id: "liveMode",
+        caption: "Enabled",
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "liveModeConfiguration",
+        caption: "Configuration",
+        type: "object",
+        render: "independent-properties",
+        properties: [
+          {
+            id: "url",
+            caption: "URL",
+            value: undefined,
+            type: "string"
+          },
+          {
+            id: "token",
+            caption: "Token",
+            value: undefined,
+            type: "string"
+          }
+        ] satisfies ShowcaseRenderProperty<ChatLiveModeConfiguration>[]
       }
     ]
   }
@@ -189,6 +238,16 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       name: "loadingState",
       defaultValue: "initial",
       type: "string"
+    },
+    {
+      name: "sendButtonDisabled",
+      defaultValue: false,
+      type: "boolean"
+    },
+    {
+      name: "sendInputDisabled",
+      defaultValue: false,
+      type: "boolean"
     },
     {
       name: "showAdditionalContent",

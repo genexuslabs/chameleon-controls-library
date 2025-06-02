@@ -6,10 +6,25 @@ import {
 } from "livekit-client";
 
 export type LiveKitCallbacks = {
-  muteMic?: () => void;
-  unmuteMic?: () => void;
+  /**
+   * Active speakers changed. List of speakers are ordered by their audio level.
+   * Loudest speakers first. This will include the LocalParticipant too.
+   *
+   * Speaker updates are sent only to the publishing participant and their subscribers.
+   */
+  activeSpeakersChanged?: (participant: Participant[]) => void;
+
   connectionEvents?: LiveKitConnectionListener;
-  updateTranscriptions?: (segments: TranscriptionSegment[]) => void;
+
+  muteMic?: () => void;
+
+  unmuteMic?: () => void;
+
+  updateTranscriptions?: (
+    segments: TranscriptionSegment[],
+    participant?: Participant,
+    publication?: TrackPublication
+  ) => void;
 };
 
 export type LiveKitConnectionListener = {

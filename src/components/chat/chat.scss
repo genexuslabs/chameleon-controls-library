@@ -13,6 +13,10 @@
   grid-template-rows: 1fr max-content max-content;
 }
 
+ch-chat-lit {
+  display: contents;
+}
+
 .assistant-content,
 .user-content {
   // Improve rendering performance by not rendering off-screen messages

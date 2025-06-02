@@ -1,8 +1,10 @@
-import { h } from "@stencil/core";
 import { fromHTMLStringToHast } from "@genexus/markdown-parser/dist/parse-html.js";
 // import { Root, RootContent, RootContentMap } from "hast";
+import { spreadProps } from "@open-wc/lit-helpers";
 import { Element as HElement, Root, RootContentMap } from "hast";
-import { LAST_NESTED_CHILD_CLASS } from "./markdown-to-jsx";
+import type { TemplateResult } from "lit";
+import { html, unsafeStatic } from "lit/static-html.js";
+import { LAST_NESTED_CHILD_CLASS } from "./markdown-to-jsx.lit";
 
 const tagsToSanitize = new Set([
   "base",
@@ -62,7 +64,7 @@ const renderDictionary: {
       (element.tagName === "a" &&
         (properties.href as string)?.includes("javascript:"))
     ) {
-      return;
+      return "";
     }
 
     // Remove native attr listeners
@@ -97,11 +99,13 @@ const renderDictionary: {
         : LAST_NESTED_CHILD_CLASS;
     }
 
-    return (
-      <element.tagName {...properties}>
-        {renderChildren(element, showIndicator, lastElementChild)}
-      </element.tagName>
-    );
+    return html`<${unsafeStatic(element.tagName)} ${spreadProps(
+      properties
+    )}>${renderChildren(
+      element,
+      showIndicator,
+      lastElementChild
+    )}</${unsafeStatic(element.tagName)}>`;
   },
   text: element => element.value,
   doctype: () => ""
@@ -132,7 +136,7 @@ export const rawHTMLToJSX = (
   htmlString: string,
   allowDangerousHtml: boolean,
   showIndicator: boolean
-) => {
+): TemplateResult[] => {
   const hast: Root = fromHTMLStringToHast(htmlString, allowDangerousHtml, {
     fragment: true
   });

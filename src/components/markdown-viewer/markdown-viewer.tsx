@@ -1,10 +1,14 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
+import type { TemplateResult } from "lit";
+import { defaultCodeRender } from "./parsers/code-render.lit";
 import {
   LAST_NESTED_CHILD_CLASS,
   markdownToJSX
-} from "./parsers/markdown-to-jsx";
+} from "./parsers/markdown-to-jsx.lit";
 import { MarkdownViewerCodeRender } from "./parsers/types";
-import { defaultCodeRender } from "./parsers/code-render";
+
+// Side effect to define the ch-markdown-viewer-lit
+import "./internal/markdown-viewer.lit";
 
 /**
  * A control to render markdown syntax. It supports GitHub Flavored Markdown
@@ -27,7 +31,7 @@ import { defaultCodeRender } from "./parsers/code-render";
   tag: "ch-markdown-viewer"
 })
 export class ChMarkdownViewer {
-  #JSXTree: any;
+  #JSXTree: TemplateResult[];
 
   @Element() el: HTMLChMarkdownViewerElement;
 
@@ -102,7 +106,8 @@ export class ChMarkdownViewer {
             model={this.theme}
           ></ch-theme>
         )}
-        {this.#JSXTree}
+
+        <ch-markdown-viewer-lit value={this.#JSXTree}></ch-markdown-viewer-lit>
       </Host>
     );
   }

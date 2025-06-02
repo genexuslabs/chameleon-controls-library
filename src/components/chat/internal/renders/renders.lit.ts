@@ -1,10 +1,10 @@
-import { ChatMessage, ChatMessageRenderBySections } from "../types";
-import { defaultActionsRender } from "./actions";
-import { defaultCodeBlockRender } from "./code-block";
-import { defaultContentRender } from "./content";
-import { defaultFileRender } from "./file";
-import { defaultSourceRender } from "./source";
-import { defaultMessageStructureRender } from "./structure";
+import { ChatMessage, ChatMessageRenderBySections } from "../../types";
+import { defaultActionsRender } from "./actions.lit";
+import { defaultCodeBlockRender } from "./code-block.lit";
+import { defaultContentRender } from "./content.lit";
+import { defaultFileRender } from "./file.lit";
+import { defaultSourceRender } from "./source.lit";
+import { defaultMessageStructureRender } from "./structure.lit";
 
 export const renderContentBySections = (
   message: ChatMessage,

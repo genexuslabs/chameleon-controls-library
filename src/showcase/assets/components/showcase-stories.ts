@@ -14,28 +14,29 @@ import { editShowcaseStory } from "./edit/edit.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { imageShowcaseStory } from "./image/image.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
+import { liveKitRoomShowcaseStory } from "./live-kit-room/live-kit-room.showcase";
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
+import { mermaidShowcaseStory } from "./mermaid/mermaid.showcase";
 import { navigationListShowcaseStory } from "./navigation-list/navigation-list.showcase";
-import { paginatorShowcaseStory } from "./paginator/paginator.showcase";
 import { paginatorRenderShowcaseStory } from "./paginator-render/paginator-render.showcase";
+import { paginatorShowcaseStory } from "./paginator/paginator.showcase";
 import { popoverShowcaseStory } from "./popover/popover.showcase";
 import { progressShowcaseStory } from "./progress/progress.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
+import { ratingShowcaseStory } from "./rating/rating.showcase";
 import { segmentedControlShowcaseStory } from "./segmented-control/segmented-control.showcase";
 import { shortcutsShowcaseStory } from "./shortcuts/shortcuts.showcase";
 import { sidebarShowcaseStory } from "./sidebar/sidebar.showcase";
 import { sliderShowcaseStory } from "./slider/slider.showcase";
 import { switchShowcaseStory } from "./switch/switch.showcase";
 import { tabShowcaseStory } from "./tab/tab.showcase";
-import { tabularGridShowcaseStory } from "./tabular-grid/tabular-grid.showcase";
 import { tabularGridRenderShowcaseStory } from "./tabular-grid-render/tabular-grid-render.showcase";
+import { tabularGridShowcaseStory } from "./tabular-grid/tabular-grid.showcase";
 import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 import { ChameleonCustomStories, ChameleonStories } from "./types";
-import { liveKitRoomShowcaseStory } from "./live-kit-room/live-kit-room.showcase";
-import { ratingShowcaseStory } from "./rating/rating.showcase";
 
 export const showcaseStories = {
   accordion: accordionShowcaseStory,
@@ -75,6 +76,7 @@ export const showcaseCustomStories = {
   "code-diff-editor": codeDiffEditorShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,
   "markdown-viewer": markdownShowcaseStory,
+  mermaid: mermaidShowcaseStory,
   paginator: paginatorShowcaseStory,
   shortcuts: shortcutsShowcaseStory,
   "tabular-grid": tabularGridShowcaseStory

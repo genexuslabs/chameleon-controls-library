@@ -242,6 +242,11 @@ export const showcasePages: NavigationListModel = [
             link: { url: "#markdown-viewer" },
             caption: "Markdown Viewer",
             metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#mermaid" },
+            caption: "Mermaid",
+            metadata: EXPERIMENTAL
           }
         ]
       },

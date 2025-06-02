@@ -1,7 +1,7 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { LIT_COMMENTS_REGEX } from "../../../testing/constants.e2e";
 
 const LAST_NESTED_CHILD_CLASS = ' class="last-nested-child"';
-const LIT_COMMENTS_REGEX = /(<\!\-\-\-\->|<\!\-\-\?lit\$\d+\$\-\->)/g;
 
 const getTestData: (text: string) => [string, string, string][] = text => [
   [`# ${text}`, `<h1${LAST_NESTED_CHILD_CLASS}>${text}</h1>`, "the h1"],

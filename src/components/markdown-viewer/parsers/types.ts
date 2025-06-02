@@ -1,3 +1,4 @@
+import type { TemplateResult } from "lit";
 import {
   Break,
   Code,
@@ -44,7 +45,7 @@ export type MarkdownViewerToJSXCommonMetadata = {
 
 export type MarkdownViewerCodeRender = (
   options: MarkdownViewerCodeRenderOptions
-) => any;
+) => TemplateResult;
 
 export type MarkdownViewerCodeRenderOptions = {
   language: string;

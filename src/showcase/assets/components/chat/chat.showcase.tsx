@@ -15,7 +15,7 @@ import {
   codeFixerRecord,
   longChatRecord
 } from "./callbacks";
-import { mercuryChatMessageRender } from "./mercury-code-render";
+// import { mercuryChatMessageRender } from "./mercury-code-render";
 
 const state: Partial<HTMLChChatElement> = {};
 
@@ -33,11 +33,11 @@ const render: ShowcaseRender = designSystem => (
     }
     newUserMessageAlignment={state.newUserMessageAlignment}
     newUserMessageScrollBehavior={state.newUserMessageScrollBehavior}
-    renderItem={
-      designSystem === "unanimo"
-        ? undefined
-        : mercuryChatMessageRender("mercury/markdown-viewer")
-    }
+    // renderItem={
+    //   designSystem === "unanimo"
+    //     ? undefined
+    //     : mercuryChatMessageRender("mercury/markdown-viewer")
+    // }
     items={state.items}
     liveMode={state.liveMode}
     liveModeConfiguration={state.liveModeConfiguration}
@@ -89,7 +89,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
           },
           { caption: "Code Fixer", value: codeFixerRecord }
         ],
-        value: longChatRecord,
+        value: codeFixerRecord,
         type: "enum"
       }
     ]

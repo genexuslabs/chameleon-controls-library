@@ -1,4 +1,7 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { ArgumentTypes } from "../../../common/types";
+import { SmartGridDataState } from "../../smart-grid/internal/infinite-scroll/types";
+import { ChatMessage } from "../types";
 import {
   FIFTEEN_ITEMS,
   LOADING_STATE_VALUES,
@@ -6,9 +9,6 @@ import {
   TWENTY_FIVE_ITEMS,
   TWENTY_ITEMS
 } from "./utils.e2e";
-import { SmartGridDataState } from "../../smart-grid/internal/infinite-scroll/types";
-import { ChatMessage } from "../types";
-import { ArgumentTypes } from "../../../common/types";
 
 const FLOATING_POINT_ERROR_PRECISION = 1;
 
@@ -214,6 +214,10 @@ describe("[ch-chat][scroll]", () => {
         } satisfies UpdateLastChatMessageArgTypes[0],
         "concat" satisfies UpdateLastChatMessageArgTypes[1]
       );
+      await page.waitForChanges();
+
+      // This extra await is necessary since the ch-chat has to wait for the
+      // re-render in the ch-chat-lit component
       await page.waitForChanges();
 
       const sizesAfterUpdate = await getContentScrollPosition();

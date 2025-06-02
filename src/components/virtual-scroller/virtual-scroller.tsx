@@ -13,16 +13,16 @@ import {
 } from "@stencil/core";
 import type { ChSmartGridCellCustomEvent } from "../../components";
 
-import { emptyItems } from "./utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import type { SmartGridModel } from "../smart-grid/types";
+import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible";
+import { getNewStartAndEndIndexes } from "./get-new-start-and-end-indexes";
 import type {
   SmartGridCellVirtualSize,
   VirtualScrollVirtualItems
 } from "./types";
 import { updateVirtualScrollSize } from "./update-virtual-scroll";
-import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible";
-import { getNewStartAndEndIndexes } from "./get-new-start-and-end-indexes";
+import { emptyItems } from "./utils";
 
 const VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX = "--ch-virtual-scroll__scroll-";
 

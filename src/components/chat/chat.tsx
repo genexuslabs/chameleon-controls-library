@@ -460,7 +460,10 @@ export class ChChat {
   }
 
   #pushMessage = async (message: ChatMessage) => {
-    if (this.items.length === 0) {
+    // We should also check for the virtual-scroller to be defined, because the
+    // user can add two messages at once, without waiting for the
+    // virtual-scroller to be defined
+    if (this.items.length === 0 || !this.#virtualScrollRef) {
       this.items.push(message);
       forceUpdate(this);
     } else {

@@ -63,7 +63,7 @@ export const mercuryChatMessageRender =
                 messageModel.role === "assistant" &&
                 messageModel.status === "streaming"
               }
-              renderCode={mercuryCodeRender("Copy code")}
+              // renderCode={mercuryCodeRender("Copy code")}
               value={messageModel.content as string}
             ></ch-markdown-viewer>
           )

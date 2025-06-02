@@ -11,7 +11,7 @@ import {
   chatTranslations,
   codeFixerRecord
 } from "./callbacks";
-import { mercuryChatMessageRender } from "./mercury-code-render";
+// import { mercuryChatMessageRender } from "./mercury-code-render";
 import { renderShowcaseProperties } from "../utils";
 import { dataTypeInGeneXus } from "../combo-box/models";
 
@@ -31,11 +31,11 @@ const render: ShowcaseRender = designSystem => (
     }
     newUserMessageAlignment={state.newUserMessageAlignment}
     newUserMessageScrollBehavior={state.newUserMessageScrollBehavior}
-    renderItem={
-      designSystem === "unanimo"
-        ? undefined
-        : mercuryChatMessageRender("mercury/markdown-viewer")
-    }
+    // renderItem={
+    //   designSystem === "unanimo"
+    //     ? undefined
+    //     : mercuryChatMessageRender("mercury/markdown-viewer")
+    // }
     items={state.items}
     showAdditionalContent={state.showAdditionalContent}
     showSendInputAdditionalContentAfter={
@@ -83,7 +83,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
           },
           { caption: "Code Fixer", value: codeFixerRecord }
         ],
-        value: longChatRecord,
+        value: codeFixerRecord,
         type: "enum"
       }
     ]

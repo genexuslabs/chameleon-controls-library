@@ -1,7 +1,7 @@
 /* eslint-disable @stencil-community/own-props-must-be-private */
 /* eslint-disable @stencil-community/own-methods-must-be-private */
 /* eslint-disable @stencil-community/no-unused-watch */
-import { html, LitElement } from "lit";
+import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -54,6 +54,12 @@ export class ChChatLit extends LitElement {
    */
   @property({ attribute: false }) accessor chatRef: HTMLDivElement | undefined =
     undefined; // TODO: This is a WA to avoid a type error in runtime
+
+  /**
+   * Specifies the live kit messages that are rendered when liveMode = true in
+   * the `ch-chat`
+   */
+  @property({ attribute: false }) accessor liveKitMessages: ChatMessage[] = [];
 
   /**
    * Specifies how the messages added by the user interaction will be aligned
@@ -185,7 +191,13 @@ export class ChChatLit extends LitElement {
   };
 
   render() {
-    return repeat(this.virtualItems, item => item.id, this.#renderItem);
+    return html`${repeat(
+      this.virtualItems,
+      item => item.id,
+      this.#renderItem
+    )}${this.liveKitMessages
+      ? repeat(this.liveKitMessages, item => item.id, this.#renderItem)
+      : nothing}`;
   }
 }
 

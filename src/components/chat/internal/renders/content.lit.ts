@@ -12,8 +12,8 @@ import { DEFAULT_ASSISTANT_STATUS, getMessageContent } from "../../utils";
 
 const defaultAssistantContentRender: ChatContentRender = (
   message: ChatMessageByRole<"assistant">,
-  chatRef: HTMLChChatElement
-  // codeBlockRender: ChatCodeBlockRender
+  chatRef: HTMLChChatElement,
+  codeBlockRender: ChatCodeBlockRender
 ) => {
   const messageContent = getMessageContent(message);
 
@@ -36,6 +36,7 @@ const defaultAssistantContentRender: ChatContentRender = (
             }`]: true,
             [message.parts]: !!message.parts
           })}
+          .renderCode=${codeBlockRender(chatRef)}
           .showIndicator=${message.status === "streaming"}
           .theme=${chatRef.markdownTheme}
           .value=${messageContent}

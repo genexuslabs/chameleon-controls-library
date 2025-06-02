@@ -144,9 +144,9 @@ export type FilterKeys<T, U> = {
 }[keyof T];
 
 // Filter custom elements that start with "ch-"
-export type ChameleonControlsTagName = FilterKeys<
-  HTMLElementTagNameMap,
-  `ch-${string}`
+export type ChameleonControlsTagName = Exclude<
+  FilterKeys<HTMLElementTagNameMap, `ch-${string}`>,
+  "ch-chat-lit" | "ch-markdown-viewer-lit"
 >;
 
 export type ChameleonControls = {

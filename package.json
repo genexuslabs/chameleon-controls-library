@@ -45,6 +45,7 @@
     "livekit-client": "^2.9.6",
     "monaco-editor": "^0.48.0",
     "monaco-yaml": "^5.1.1",
+    "@open-wc/lit-helpers": "0.7.0",
     "qr-creator": "^1.0.0",
     "stencil-click-outside": "^1.8.0"
   },

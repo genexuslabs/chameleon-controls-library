@@ -1,18 +1,19 @@
-import { h } from "@stencil/core";
-import { AlignType, Code, Html, Root, Table } from "mdast";
 import { markdownToMdAST } from "@genexus/markdown-parser";
+import { html, nothing, type TemplateResult } from "lit";
+import { classMap } from "lit/directives/class-map.js";
+import { AlignType, Code, Html, Root, Table } from "mdast";
 
-import {
-  ElementsWithChildren,
-  ElementsWithoutCustomRender,
-  MarkdownViewerToJSXCommonMetadata
-} from "./types";
-import { rawHTMLToJSX } from "./raw-html-to-jsx";
 import {
   clearLinkDefinitions,
   getLinkDefinition,
   setLinkDefinition
 } from "./link-resolver";
+import { rawHTMLToJSX } from "./raw-html-to-jsx.lit";
+import {
+  ElementsWithChildren,
+  ElementsWithoutCustomRender,
+  MarkdownViewerToJSXCommonMetadata
+} from "./types";
 
 /**
  * Regex to match the id of the heading.
@@ -33,40 +34,45 @@ const isLastNestedChildClass = (element: ElementsWithChildren | Code | Html) =>
 
 const checkAndGetLastNestedChildClass = (
   element: ElementsWithChildren
-): typeof LAST_NESTED_CHILD_CLASS | undefined =>
-  isLastNestedChildClass(element) ? LAST_NESTED_CHILD_CLASS : undefined;
+): typeof LAST_NESTED_CHILD_CLASS | typeof nothing =>
+  isLastNestedChildClass(element) ? LAST_NESTED_CHILD_CLASS : nothing;
 
 const depthToHeading = {
-  1: (content: any, classes: string | null, id?: string) => (
-    <h1 class={classes} id={id}>
-      {content}
-    </h1>
-  ),
-  2: (content: any, classes: string | null, id?: string) => (
-    <h2 class={classes} id={id}>
-      {content}
-    </h2>
-  ),
-  3: (content: any, classes: string | null, id?: string) => (
-    <h3 class={classes} id={id}>
-      {content}
-    </h3>
-  ),
-  4: (content: any, classes: string | null, id?: string) => (
-    <h4 class={classes} id={id}>
-      {content}
-    </h4>
-  ),
-  5: (content: any, classes: string | null, id?: string) => (
-    <h5 class={classes} id={id}>
-      {content}
-    </h5>
-  ),
-  6: (content: any, classes: string | null, id?: string) => (
-    <h6 class={classes} id={id}>
-      {content}
-    </h6>
-  )
+  1: (
+    content: any,
+    classes: string | typeof nothing,
+    id: string | typeof nothing
+  ) => html`<h1 class=${classes} id=${id}>${content}</h1>`,
+
+  2: (
+    content: any,
+    classes: string | typeof nothing,
+    id: string | typeof nothing
+  ) => html`<h2 class=${classes} id=${id}>${content}</h2>`,
+
+  3: (
+    content: any,
+    classes: string | typeof nothing,
+    id: string | typeof nothing
+  ) => html`<h3 class=${classes} id=${id}>${content}</h3>`,
+
+  4: (
+    content: any,
+    classes: string | typeof nothing,
+    id: string | typeof nothing
+  ) => html`<h4 class=${classes} id=${id}>${content}</h4>`,
+
+  5: (
+    content: any,
+    classes: string | typeof nothing,
+    id: string | typeof nothing
+  ) => html`<h5 class=${classes} id=${id}>${content}</h5>`,
+
+  6: (
+    content: any,
+    classes: string | typeof nothing,
+    id: string | typeof nothing
+  ) => html`<h6 class=${classes} id=${id}>${content}</h6>`
 } as const;
 
 const tableAlignmentDictionary: { [key in AlignType]: string } = {
@@ -113,41 +119,42 @@ const tableRender = async (
     alignment => tableAlignmentDictionary[alignment]
   );
 
-  return (
-    <table>
-      <thead>
-        <tr>
-          {tableHeadRow.children.map((tableCell, index) => (
-            <th
-              class={{
+  return html`<table>
+    <thead>
+      <tr>
+        ${tableHeadRow.children.map(
+          (tableCell, index) =>
+            html`<th
+              class=${classMap({
                 [alignments[index]]: !!alignments[index],
                 [LAST_NESTED_CHILD_CLASS]: tableCell === lastNestedChild
-              }}
+              })}
             >
-              {headCells[index]}
-            </th>
-          ))}
-        </tr>
-      </thead>
+              ${headCells[index]}
+            </th>`
+        )}
+      </tr>
+    </thead>
 
-      <tbody>
-        {tableBodyRows.map((tableHead, rowIndex) => (
-          <tr>
-            {tableHead.children.map((tableCell, cellIndex) => (
-              <td
-                class={{
-                  [alignments[cellIndex]]: !!alignments[cellIndex],
-                  [LAST_NESTED_CHILD_CLASS]: tableCell === lastNestedChild
-                }}
-              >
-                {bodyCells[columnCount * rowIndex + cellIndex]}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+    <tbody>
+      ${tableBodyRows.map(
+        (tableHead, rowIndex) =>
+          html`<tr>
+            ${tableHead.children.map(
+              (tableCell, cellIndex) =>
+                html`<td
+                  class=${classMap({
+                    [alignments[cellIndex]]: !!alignments[cellIndex],
+                    [LAST_NESTED_CHILD_CLASS]: tableCell === lastNestedChild
+                  })}
+                >
+                  ${bodyCells[columnCount * rowIndex + cellIndex]}
+                </td>`
+            )}
+          </tr>`
+      )}
+    </tbody>
+  </table>`;
 };
 
 export const renderDictionary: {
@@ -159,14 +166,12 @@ export const renderDictionary: {
   blockquote: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return (
-      <blockquote class={checkAndGetLastNestedChildClass(element)}>
-        {content}
-      </blockquote>
-    );
+    return html`<blockquote class=${checkAndGetLastNestedChildClass(element)}>
+      ${content}
+    </blockquote>`;
   }, // TODO: Check if code can be inside this tag
 
-  break: () => <br />,
+  break: () => html`<br />`,
 
   code: (element, metadata) =>
     metadata.codeRender({
@@ -181,15 +186,17 @@ export const renderDictionary: {
   delete: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return (
-      <del class={checkAndGetLastNestedChildClass(element)}>{content}</del>
-    );
+    return html`<del class=${checkAndGetLastNestedChildClass(element)}
+      >${content}</del
+    >`;
   }, // TODO: Check if code can be inside this tag
 
   emphasis: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <em class={checkAndGetLastNestedChildClass(element)}>{content}</em>;
+    return html`<em class=${checkAndGetLastNestedChildClass(element)}
+      >${content}</em
+    >`;
   }, // TODO: Check if code can be inside this tag
 
   footnoteDefinition: () => "",
@@ -216,13 +223,17 @@ export const renderDictionary: {
     const content = await mdASTtoJSX(element, metadata);
     const classes = checkAndGetLastNestedChildClass(element);
 
-    return depthToHeading[element.depth](content, classes, headingId); // TODO: Add anchor icon at the start of the heading
+    return depthToHeading[element.depth](
+      content,
+      classes,
+      headingId || nothing
+    ); // TODO: Add anchor icon at the start of the heading
   },
 
   html: async (element, metadata) => {
     if (metadata.rawHTML && !HTMLToJSX) {
       // Load the parser implementation
-      HTMLToJSX = (await import("./raw-html-to-jsx")).rawHTMLToJSX;
+      HTMLToJSX = (await import("./raw-html-to-jsx.lit")).rawHTMLToJSX;
     }
 
     return metadata.rawHTML
@@ -235,37 +246,34 @@ export const renderDictionary: {
       : element.value;
   },
 
-  image: element => (
-    <img
-      src={element.url}
-      alt={element.alt}
-      title={element.title}
+  image: element =>
+    html`<img
+      src=${element.url}
+      alt=${element.alt}
+      title=${element.title}
       loading="lazy"
-    />
-  ),
+    />`,
 
   imageReference: () => "",
 
-  inlineCode: element => <code class="hljs">{element.value}</code>,
+  inlineCode: element => html`<code class="hljs">${element.value}</code>`,
 
   link: async (element, metadata) => {
     // Sanitize scripts
     if (element.url.includes("javascript:")) {
-      return;
+      return "";
     }
 
     const content = await mdASTtoJSX(element, metadata);
 
-    return (
-      <a
-        aria-label={element.title || null}
-        title={element.title || null}
-        class={checkAndGetLastNestedChildClass(element)}
-        href={element.url}
-      >
-        {content}
-      </a>
-    );
+    return html`<a
+      aria-label=${element.title || nothing}
+      title=${element.title || nothing}
+      class=${checkAndGetLastNestedChildClass(element)}
+      href=${element.url}
+    >
+      ${content}
+    </a>`;
   }, // TODO: Sanitize href?
 
   linkReference: async (element, metadata) => {
@@ -282,62 +290,62 @@ export const renderDictionary: {
 
     // Sanitize scripts
     if (url.includes("javascript:")) {
-      return;
+      return "";
     }
 
-    return (
-      <a
-        aria-label={element.label || null}
-        class={checkAndGetLastNestedChildClass(element)}
-        href={url}
-      >
-        {content}
-      </a>
-    );
+    return html`<a
+      aria-label=${element.label || nothing}
+      class=${checkAndGetLastNestedChildClass(element)}
+      href=${url}
+    >
+      ${content}
+    </a>`;
   },
 
   list: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return element.ordered ? (
-      <ol
-        class={checkAndGetLastNestedChildClass(element)}
-        start={element.start}
-      >
-        {content}
-      </ol> // TODO: Implement spread  // TODO: Check if code can be inside this tag
-    ) : (
-      <ul class={checkAndGetLastNestedChildClass(element)}>{content}</ul> // TODO: Implement spread  // TODO: Check if code can be inside this tag
-    );
+    return element.ordered
+      ? html`<ol
+          class=${checkAndGetLastNestedChildClass(element)}
+          start=${element.start}
+        >
+          ${content}
+        </ol>` // TODO: Implement spread  // TODO: Check if code can be inside this tag
+      : html`<ul class=${checkAndGetLastNestedChildClass(element)}>
+          ${content}
+        </ul>`; // TODO: Implement spread  // TODO: Check if code can be inside this tag
   },
 
   listItem: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <li class={checkAndGetLastNestedChildClass(element)}>{content}</li>;
+    return html`<li class=${checkAndGetLastNestedChildClass(element)}>
+      ${content}
+    </li>`;
   }, // TODO: Implement spread  // TODO: Check if code can be inside this tag
 
   paragraph: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <p class={checkAndGetLastNestedChildClass(element)}>{content}</p>;
+    return html`<p class=${checkAndGetLastNestedChildClass(element)}>
+      ${content}
+    </p>`;
   }, // TODO: Check if code can be inside this tag
 
   strong: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return (
-      <strong class={checkAndGetLastNestedChildClass(element)}>
-        {content}
-      </strong>
-    );
+    return html`<strong class=${checkAndGetLastNestedChildClass(element)}>
+      ${content}
+    </strong>`;
   }, // TODO: Check if code can be inside this tag
 
   table: tableRender, // TODO: Check if code can be inside this tag
 
   text: element => element.value,
 
-  thematicBreak: () => <hr />,
+  thematicBreak: () => html`<hr />`,
 
   yaml: () => ""
 } as const;
@@ -386,7 +394,7 @@ async function mdASTtoJSX(
 export const markdownToJSX = async (
   markdown: string,
   metadata: MarkdownViewerToJSXCommonMetadata
-) => {
+): Promise<TemplateResult[]> => {
   const mdAST: Root = markdownToMdAST(markdown);
 
   // First, find the last nested child. Useful to set a marker in the element

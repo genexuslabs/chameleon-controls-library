@@ -248,6 +248,8 @@ const defaultRenderItem = <T extends true | false>(
 
 const defaultSortItemsCallback = (subModel: TreeViewModel): void => {
   subModel.sort((a, b) => {
+    // TODO: Add unit test for this, because the current tests doesn't catch
+    // this case
     const orderA = a.order ?? DEFAULT_ORDER_VALUE;
     const orderB = b.order ?? DEFAULT_ORDER_VALUE;
 

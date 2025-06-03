@@ -1,6 +1,6 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { isActiveElement } from "../../../testing/utils.e2e";
-import type { SmartGridDataState } from "../../smart-grid/internal/infinite-scroll/types";
+import { isActiveElement } from "../../../../testing/utils.e2e";
+import type { SmartGridDataState } from "../../../smart-grid/internal/infinite-scroll/types";
 
 const TEXTAREA_SELECTOR = "ch-chat >>> ch-edit >>> textarea";
 

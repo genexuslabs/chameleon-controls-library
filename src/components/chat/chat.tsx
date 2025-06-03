@@ -404,9 +404,13 @@ export class ChChat {
   }
 
   /**
-   * Send the current message of the ch-chat's `send-input` element.
+   * Send the current message of the ch-chat's `send-input` element. This
+   * method executes the same callbacks and interoperates with the same
+   * features as if the message were sent through user interaction. The only
+   * things to keep in mind are the following:
    *  - If the `content` parameter is provided, it will be used in replacement
    *    of the input content.
+   *
    *  - If the `files` parameter is provided, the `getChatMessageFiles`
    *    callback won't be executed to get the current files of the chat.
    *
@@ -414,7 +418,7 @@ export class ChChat {
    * will be cleared.
    */
   @Method()
-  async sendChatMessage(content?: ChatMessageUser, files?: File[]) {
+  async sendChatMessage(content?: ChatMessageUser | undefined, files?: File[]) {
     return this.#sendMessage(content, files);
   }
 

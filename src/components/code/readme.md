@@ -76,15 +76,11 @@ A control to highlight code blocks.
 
 ### Used by
 
- - [ch-chat](../chat)
- - [ch-markdown-viewer](../markdown-viewer)
  - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-chat --> ch-code
-  ch-markdown-viewer --> ch-code
   ch-showcase --> ch-code
   style ch-code fill:#f9f,stroke:#333,stroke-width:4px
 ```

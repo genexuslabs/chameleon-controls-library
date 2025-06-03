@@ -414,8 +414,8 @@ export class ChChat {
    *  - If the `files` parameter is provided, the `getChatMessageFiles`
    *    callback won't be executed to get the current files of the chat.
    *
-   * Whether or not the `content` parameter is provided, the content of the input
-   * will be cleared.
+   * Whether or not the `content` parameter is provided, the content of the
+   * `send-input` element will be cleared.
    */
   @Method()
   async sendChatMessage(content?: ChatMessageUser | undefined, files?: File[]) {

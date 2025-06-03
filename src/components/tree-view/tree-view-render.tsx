@@ -3,27 +3,45 @@ import {
   Element,
   Event,
   EventEmitter,
-  h,
-  Prop,
-  Listen,
-  Watch,
-  State,
   forceUpdate,
+  h,
+  Host,
+  Listen,
   Method,
-  Host
+  Prop,
+  State,
+  Watch
 } from "@stencil/core";
+import { insertIntoIndex, removeElement } from "../../common/array";
+import {
+  getControlRegisterProperty,
+  registryControlProperty
+} from "../../common/registry-properties";
+import { GxDataTransferInfo } from "../../common/types";
+import {
+  ChTreeViewCustomEvent,
+  ChTreeViewItemCustomEvent
+} from "../../components";
+import {
+  fromGxImageToURL,
+  GXRender,
+  TreeViewGXItemModel
+} from "./genexus-implementation";
+import { computeFilter, itemHasCheckbox } from "./helpers";
 import type {
   TreeViewDataTransferInfo,
   TreeViewDropCheckInfo,
-  TreeViewItemContextMenu,
-  TreeViewLines,
+  TreeViewDropType,
   TreeViewItemCheckedInfo,
+  TreeViewItemContextMenu,
   TreeViewItemExpandedInfo,
   TreeViewItemNewCaption,
   TreeViewItemOpenReferenceInfo,
   TreeViewItemSelectedInfo,
-  TreeViewDropType
+  TreeViewLines
 } from "./internal/tree-view/types";
+import { getItemPath } from "./methods/getItemPath";
+import { reloadItems } from "./reload-items";
 import {
   LazyLoadTreeItemsCallback,
   TreeViewFilterInfo,
@@ -36,31 +54,13 @@ import {
   TreeViewOperationStatusModifyCaption,
   TreeViewRemoveItemsResult
 } from "./types";
-import {
-  ChTreeViewCustomEvent,
-  ChTreeViewItemCustomEvent
-} from "../../components";
-import { GxDataTransferInfo } from "../../common/types";
-import { computeFilter, itemHasCheckbox } from "./helpers";
-import {
-  GXRender,
-  TreeViewGXItemModel,
-  fromGxImageToURL
-} from "./genexus-implementation";
+import { updateItemProperty } from "./update-item-property";
 import {
   removeTreeViewItems,
   ROOT_ID,
   scrollIntoVisibleId,
   scrollIntoVisiblePath
 } from "./utils";
-import { reloadItems } from "./reload-items";
-import { updateItemProperty } from "./update-item-property";
-import { insertIntoIndex, removeElement } from "../../common/array";
-import {
-  getControlRegisterProperty,
-  registryControlProperty
-} from "../../common/registry-properties";
-import { getItemPath } from "./methods/getItemPath";
 
 // - - - - - - - - - - - - - - - - - - - -
 //                Registry
@@ -248,11 +248,14 @@ const defaultRenderItem = <T extends true | false>(
 
 const defaultSortItemsCallback = (subModel: TreeViewModel): void => {
   subModel.sort((a, b) => {
-    if (a.order < b.order) {
+    const orderA = a.order ?? DEFAULT_ORDER_VALUE;
+    const orderB = b.order ?? DEFAULT_ORDER_VALUE;
+
+    if (orderA < orderB) {
       return -1;
     }
 
-    if (a.order > b.order) {
+    if (orderA > orderB) {
       return 0;
     }
 
@@ -1362,8 +1365,8 @@ export class ChTreeViewRender {
         });
       }
 
-      // Make sure the properties are with their default values to avoid issues
-      // when reusing DOM nodes
+      // TODO: We should remove these defaults and fallback to them without the
+      // need for creating this side-effect in the `model`
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
       item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;
@@ -1658,9 +1661,7 @@ export class ChTreeViewRender {
 
     // Accessibility
     this.el.setAttribute("role", "tree");
-  }
 
-  componentWillLoad() {
     this.#flattenModel();
   }
 

@@ -1,10 +1,10 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { isActiveElement } from "../../../testing/utils.e2e";
-import type { SmartGridDataState } from "../../smart-grid/internal/infinite-scroll/types";
+import { isActiveElement } from "../../../../testing/utils.e2e";
+import type { SmartGridDataState } from "../../../smart-grid/internal/infinite-scroll/types";
 
 const TEXTAREA_SELECTOR = "ch-chat >>> ch-edit >>> textarea";
 
-describe("[ch-chat][methods]", () => {
+describe("[ch-chat][focusChatInput]", () => {
   let page: E2EPage;
   let chatRef: E2EElement;
 
@@ -16,7 +16,7 @@ describe("[ch-chat][methods]", () => {
     chatRef = await page.find("ch-chat");
   });
 
-  it("[focusChatInput] should focus the textarea", async () => {
+  it("should focus the textarea", async () => {
     expect(await isActiveElement(page, TEXTAREA_SELECTOR)).toBeFalsy();
 
     await chatRef.callMethod("focusChatInput");
@@ -26,7 +26,7 @@ describe("[ch-chat][methods]", () => {
   });
 
   const runTestFocusWithLoadingState = (loadingState: SmartGridDataState) =>
-    it(`[focusChatInput] should focus the textarea, loadingState = "${loadingState}"`, async () => {
+    it(`should focus the textarea, loadingState = "${loadingState}"`, async () => {
       chatRef.setProperty("loadingState", loadingState);
       await page.waitForChanges();
 

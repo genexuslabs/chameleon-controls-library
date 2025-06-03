@@ -34,7 +34,8 @@ import type {
   ChatMessageByRoleNoId,
   ChatMessageFiles,
   ChatMessageRenderByItem,
-  ChatMessageRenderBySections
+  ChatMessageRenderBySections,
+  ChatMessageUser
 } from "./types";
 import { getMessageContent, getMessageFiles } from "./utils";
 
@@ -403,6 +404,25 @@ export class ChChat {
   }
 
   /**
+   * Send the current message of the ch-chat's `send-input` element. This
+   * method executes the same callbacks and interoperates with the same
+   * features as if the message were sent through user interaction. The only
+   * things to keep in mind are the following:
+   *  - If the `content` parameter is provided, it will be used in replacement
+   *    of the input content.
+   *
+   *  - If the `files` parameter is provided, the `getChatMessageFiles`
+   *    callback won't be executed to get the current files of the chat.
+   *
+   * Whether or not the `content` parameter is provided, the content of the
+   * `send-input` element will be cleared.
+   */
+  @Method()
+  async sendChatMessage(content?: ChatMessageUser | undefined, files?: File[]) {
+    return this.#sendMessage(content, files);
+  }
+
+  /**
    * Given the id of the message, it updates the content of the indexed message.
    */
   @Method()
@@ -460,7 +480,10 @@ export class ChChat {
   }
 
   #pushMessage = async (message: ChatMessage) => {
-    if (this.items.length === 0) {
+    // We should also check for the virtual-scroller to be defined, because the
+    // user can add two messages at once, without waiting for the
+    // virtual-scroller to be defined
+    if (this.items.length === 0 || !this.#virtualScrollRef) {
       this.items.push(message);
       forceUpdate(this);
     } else {
@@ -508,7 +531,7 @@ export class ChChat {
     this.items[messageIndex] = Object.assign({ id: messageId }, message);
   };
 
-  // TODO: This should be a property
+  // TODO: Sending the chat by pressing the Enter key should be a property
   #sendMessageKeyboard = (event: KeyboardEvent) => {
     if (event.key !== ENTER_KEY || event.shiftKey) {
       return;
@@ -644,19 +667,12 @@ export class ChChat {
     this.callbacks.sendChatMessages(this.items);
   };
 
-  #sendMessage = async () => {
-    const filesToUpload = await this.#getChatFiles();
-    const sendInputValue = this.#editRef.value;
-    const hasFiles = filesToUpload.length !== 0;
-    const emptySendInput =
-      (!sendInputValue || sendInputValue.trim() === "") && !hasFiles;
-
+  #sendMessage = async (content?: ChatMessageUser, files?: File[]) => {
     // TODO: Add unit tests for this
     if (
-      emptySendInput ||
-      this.disabled ||
-      this.#liveModeIsDisplayed() ||
       this.generatingResponse ||
+      this.disabled ||
+      this.liveMode ||
       this.loadingState === "initial" ||
       this.loadingState === "loading" ||
       this.uploadingFiles !== 0
@@ -664,8 +680,20 @@ export class ChChat {
       return;
     }
 
+    const filesToUpload = files ?? (await this.#getChatFiles());
+    const sendInputValue = content
+      ? getMessageContent(content)
+      : this.#editRef.value;
+    const hasFiles = filesToUpload.length !== 0;
+    const emptySendInput =
+      (!sendInputValue || sendInputValue.trim() === "") && !hasFiles;
+
+    if (emptySendInput) {
+      return;
+    }
+
     // Message
-    const userMessageToAdd: ChatMessageByRole<"user"> = {
+    const userMessageToAdd: ChatMessageByRole<"user"> = content ?? {
       id: `${new Date().getTime()}`,
       role: "user",
       content: sendInputValue
@@ -693,6 +721,8 @@ export class ChChat {
     // Queue a new re-render
     forceUpdate(this);
   };
+
+  #sendMessageWithSendButton = () => this.#sendMessage();
 
   #handleStopGenerating = (event: MouseEvent) => {
     event.stopPropagation();
@@ -883,7 +913,9 @@ export class ChChat {
                 this.showSendInputAdditionalContentBefore
               }
               onKeyDown={
-                sendInputDisabled ? undefined : this.#sendMessageKeyboard
+                sendInputDisabled || this.liveMode
+                  ? undefined
+                  : this.#sendMessageKeyboard
               }
               ref={el => (this.#editRef = el as HTMLChEditElement)}
             >
@@ -909,7 +941,9 @@ export class ChChat {
             part="send-button"
             disabled={sendButtonDisabled}
             type="button"
-            onClick={sendButtonDisabled ? undefined : this.#sendMessage}
+            onClick={
+              sendButtonDisabled ? undefined : this.#sendMessageWithSendButton
+            }
           ></button>
         </div>
 

@@ -67,6 +67,7 @@ const render = () => (
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
           showPassword={state.showPassword}
+          showPasswordButton={state.showPasswordButton}
           spellcheck={state.spellcheck}
           startImgSrc={state.startImgSrc}
           startImgType={state.startImgType}
@@ -129,6 +130,7 @@ const render = () => (
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
           showPassword={state.showPassword}
+          showPasswordButton={state.showPasswordButton}
           spellcheck={state.spellcheck}
           startImgSrc={state.startImgSrc}
           startImgType={state.startImgType}
@@ -191,6 +193,7 @@ const render = () => (
             showAdditionalContentAfter={state.showAdditionalContentAfter}
             showAdditionalContentBefore={state.showAdditionalContentBefore}
             showPassword={state.showPassword}
+            showPasswordButton={state.showPasswordButton}
             spellcheck={state.spellcheck}
             startImgSrc={state.startImgSrc}
             startImgType={state.startImgType}
@@ -404,15 +407,15 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "boolean"
       },
       {
-        id: "clearSearchButtonAccessibleName",
-        caption: "Clear Search Button Accessible Name",
-        columnSpan: 2,
-        value: "Clear search",
-        type: "string"
-      },
-      {
         id: "showPassword",
         caption: "Show Password",
+        columnSpan: 2,
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "showPasswordButton",
+        caption: "Show Password Button",
         columnSpan: 2,
         value: false,
         type: "boolean"
@@ -459,11 +462,6 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
       value: "input",
       type: "string"
     },
-    {
-      name: "clearSearchButtonAccessibleName",
-      defaultValue: "Clear search",
-      type: "string"
-    },
     { name: "debounce", defaultValue: 0, type: "number" },
     { name: "disabled", defaultValue: false, type: "boolean" },
     {
@@ -497,6 +495,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
       type: "boolean"
     },
     { name: "showPassword", defaultValue: false, type: "boolean" },
+    {
+      name: "showPasswordButton",
+      defaultValue: false,
+      type: "boolean"
+    },
     { name: "spellcheck", defaultValue: false, type: "boolean" },
     { name: "startImgSrc", defaultValue: undefined, type: "string" },
     { name: "startImgType", defaultValue: "background", type: "string" },

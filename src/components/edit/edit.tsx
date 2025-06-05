@@ -262,7 +262,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop({ mutable: true }) showPassword: boolean = false;
 
   /**
-   * Specifies if the show password button is displayed.
+   * Specifies if the show password button is displayed when using
+   * `type = "password"`.
    */
   @Prop() readonly showPasswordButton: boolean = false;
 
@@ -360,7 +361,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   /**
    * Fired when the visibility of the password (when using `type="password"`)
-   * is changed by clicking the show password button.
+   * is changed by clicking on the show password button.
    *
    * The detail contains the new value of the `showPassword` property.
    */

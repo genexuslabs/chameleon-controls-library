@@ -56,6 +56,20 @@
    */
   --ch-edit__clear-button-image: #{$close-icon};
 
+  /**
+   * @prop --ch-edit__password-displayed-image:
+   * Specifies the image for the show password button when the password is displayed.
+   * @default #{$password-hidden}
+   */
+  --ch-edit__password-displayed-image: #{$password-hidden};
+
+  /**
+   * @prop --ch-edit__password-hidden-image:
+   * Specifies the image for the show password button when the password is hidden.
+   * @default #{$password-visible}
+   */
+  --ch-edit__password-hidden-image: #{$password-visible};
+
   display: grid; // With inline-grid it doesn't render well in the ch-chat
   align-items: center;
   position: relative;
@@ -262,6 +276,49 @@
 }
 
 // - - - - - - - - - - - - - - - - - - - -
+//          Show password button
+// - - - - - - - - - - - - - - - - - - - -
+.clear-button,
+.show-password-button {
+  display: inline-grid;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: "";
+    display: block;
+    inline-size: var(--ch-edit__image-size);
+    // Necessary to properly size the image, due to the Host has display: flex
+    min-inline-size: var(--ch-edit__image-size);
+    block-size: var(--ch-edit__image-size);
+    background-color: currentColor;
+  }
+}
+
+:host(.ch-edit--show-password-button) {
+  grid-template: "ch-edit-content ch-edit-show-password-button" 1fr / 1fr max-content;
+}
+
+// With icon
+:host(.ch-edit--show-password-button.ch-edit-pseudo-img--start) {
+  grid-template: "ch-edit-start-img-src ch-edit-content ch-edit-show-password-button" 1fr / max-content 1fr max-content;
+}
+
+.show-password-button {
+  grid-area: ch-edit-show-password-button;
+
+  &::before {
+    -webkit-mask: no-repeat center / var(--ch-edit__background-image-size)
+      var(--ch-edit__password-displayed-image);
+  }
+
+  &--hidden::before {
+    -webkit-mask: no-repeat center / var(--ch-edit__background-image-size)
+      var(--ch-edit__password-hidden-image);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - -
 //              Clear button
 // - - - - - - - - - - - - - - - - - - - -
 [type="search"]::-webkit-search-decoration,
@@ -280,20 +337,10 @@
 
 .clear-button {
   grid-area: ch-edit-clear-button;
-  display: inline-grid;
-  align-items: center;
-  justify-content: center;
 
   &::before {
-    content: "";
-    display: block;
-    inline-size: var(--ch-edit__image-size);
-    // Necessary to properly size the image, due to the Host has display: flex
-    min-inline-size: var(--ch-edit__image-size);
-    block-size: var(--ch-edit__image-size);
     -webkit-mask: no-repeat center / var(--ch-edit__background-image-size)
       var(--ch-edit__clear-button-image);
-    background-color: currentColor;
   }
 }
 

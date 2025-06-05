@@ -7,7 +7,6 @@ testDefaultProperties("ch-edit", {
   autocomplete: "off",
   autoFocus: false,
   autoGrow: false,
-  clearSearchButtonAccessibleName: "Clear search",
   debounce: 0,
   disabled: false,
   getImagePathCallback: undefined,
@@ -24,9 +23,17 @@ testDefaultProperties("ch-edit", {
   showAdditionalContentAfter: false,
   showAdditionalContentBefore: false,
   showPassword: false,
+  showPasswordButton: false,
   spellcheck: false,
   startImgSrc: undefined,
   startImgType: "background",
+  translations: {
+    accessibleName: {
+      clearSearchButton: "Clear search",
+      hidePasswordButton: "Hide password",
+      showPasswordButton: "Show password"
+    }
+  },
   type: "text",
   value: undefined
 });

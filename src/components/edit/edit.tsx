@@ -129,7 +129,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * automatically completed by the browser. Same as [autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-autocomplete)
    * attribute for `input` elements.
    */
-  @Prop() readonly autocomplete: "on" | "off" = "off";
+  @Prop() readonly autocomplete:
+    | "on"
+    | "off"
+    | "current-password"
+    | "new-password" = "off";
 
   /**
    * Specifies if the control automatically get focus when the page loads.
@@ -249,7 +253,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * This slot is intended to customize the internal content of the edit by
    * adding additional elements after the edit content.
    */
-  @Prop() readonly showAdditionalContentAfter: boolean;
+  @Prop() readonly showAdditionalContentAfter: boolean = false;
 
   /**
    * If `true`, a slot is rendered in the edit with `"additional-content-before"`
@@ -257,7 +261,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * This slot is intended to customize the internal content of the edit by
    * adding additional elements before the edit content.
    */
-  @Prop() readonly showAdditionalContentBefore: boolean;
+  @Prop() readonly showAdditionalContentBefore: boolean = false;
+
+  /**
+   * Specifies if the password is displayed as plain text when using
+   * `type = "password"`.
+   */
+  @Prop() readonly showPassword: boolean = false;
 
   /**
    * Specifies whether the element may be checked for spelling errors
@@ -599,7 +609,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 readOnly={this.readonly}
                 spellcheck={this.spellcheck}
                 step={isDateType ? "1" : undefined}
-                type={this.type}
+                type={
+                  this.type === "password" && this.showPassword
+                    ? "text"
+                    : this.type
+                }
                 value={
                   shouldDisplayPicture && !this.isFocusOnControl
                     ? this.pictureValue

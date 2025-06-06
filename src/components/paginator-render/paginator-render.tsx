@@ -135,9 +135,11 @@ export class ChPaginatorRender implements ComponentInterface {
   selectedPageChanged() {
     if (this.hasHyperlink) {
       this.actualPage =
-        (this.model as PaginatorRenderHyperlinkModel).indexOf(
-          this.selectedPage.toString()
-        ) + 1;
+        typeof this.selectedPage === "number"
+          ? this.selectedPage
+          : (this.model as PaginatorRenderHyperlinkModel).indexOf(
+              this.selectedPage
+            ) + 1;
     } else {
       this.actualPage = Number(this.selectedPage);
     }
@@ -200,7 +202,11 @@ export class ChPaginatorRender implements ComponentInterface {
   @Prop() readonly translations: PaginatorTranslations = {
     accessibleName: {
       goToInput: "Go to page",
-      itemsPerPageOptions: "Select amount of items to show"
+      itemsPerPageOptions: "Select amount of items to show",
+      firstButton: "Go to first page",
+      nextButton: "Go to next page",
+      lastButton: "Go to last page",
+      previousButton: "Go to previous page"
     },
     text: {
       goToButton: "Go",
@@ -214,7 +220,7 @@ export class ChPaginatorRender implements ComponentInterface {
       unknownPages: "many",
       unknownItems: "many",
       showingItems: `Showing ${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} of ${TOTAL_ITEMS} items`,
-      page: "Page:",
+      goToInputLabel: "Page:",
       showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`
     }
   };
@@ -508,6 +514,7 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderFirstControl = () => (
     <button
+      aria-label={this.translations.accessibleName.firstButton}
       class="first-button"
       part={tokenMap({
         [PAGINATOR_PARTS_DICTIONARY.FIRST]: true,
@@ -523,6 +530,7 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderLastControl = () => (
     <button
+      aria-label={this.translations.accessibleName.lastButton}
       class="last-button"
       part={tokenMap({
         [PAGINATOR_PARTS_DICTIONARY.LAST]: true,
@@ -542,6 +550,7 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderNextControl = () => (
     <button
+      aria-label={this.translations.accessibleName.nextButton}
       class="next-button"
       part={tokenMap({
         [PAGINATOR_PARTS_DICTIONARY.NEXT]: true,
@@ -561,6 +570,7 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderPrevControl = () => (
     <button
+      aria-label={this.translations.accessibleName.previousButton}
       class="prev-button"
       part={tokenMap({
         [PAGINATOR_PARTS_DICTIONARY.PREV]: true,
@@ -575,14 +585,13 @@ export class ChPaginatorRender implements ComponentInterface {
   );
 
   #renderNavigationControls = () => (
-    <ol
+    <nav
       class="pages"
       onClick={this.#handleSelectedPageChange}
       part={PAGINATOR_PARTS_DICTIONARY.PAGES}
-      role="navigation"
     >
-      {this.#getPaginationRange().map(this.#renderPaginatorItem)}
-    </ol>
+      <ol>{this.#getPaginationRange().map(this.#renderPaginatorItem)}</ol>
+    </nav>
   );
 
   #renderNavigationControlsInfo = () => (
@@ -604,12 +613,12 @@ export class ChPaginatorRender implements ComponentInterface {
 
   #renderNavigationGoTo = () => (
     <div part={PAGINATOR_PARTS_DICTIONARY.GO_TO} class="go-to">
-      {this.translations.text.page && (
+      {this.translations.text.goToInputLabel && (
         <label
           htmlFor="goto-input"
           part={PAGINATOR_PARTS_DICTIONARY.GO_TO__LABEL}
         >
-          {this.translations.text.page}
+          {this.translations.text.goToInputLabel}
         </label>
       )}
       <input
@@ -621,7 +630,13 @@ export class ChPaginatorRender implements ComponentInterface {
         value={this.actualPage}
         onKeyDown={this.#handleGoToOnKeyDown}
         onBlur={this.#handleGoToOnBlur}
-        aria-label={this.translations.accessibleName.goToInput}
+        aria-label={
+          this.translations.text.goToInputLabel ||
+          this.translations.text.goToInputLabel ===
+            this.translations.accessibleName.goToInput
+            ? undefined
+            : this.translations.accessibleName.goToInput
+        }
       />
       <span>
         {this.translations.text.of}
@@ -639,11 +654,19 @@ export class ChPaginatorRender implements ComponentInterface {
         return (
           <li>
             <a
+              aria-current={this.actualPage === page ? "page" : undefined}
+              aria-label={
+                this.actualPage === page
+                  ? `current page, page ${page}`
+                  : `go to page ${page}`
+              }
               key={index}
               part={tokenMap({
                 [PAGINATOR_PARTS_DICTIONARY.PAGE]: true,
-                [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
-                  this.actualPage === page
+                [PAGINATOR_PARTS_DICTIONARY.PAGE_SELECTED]:
+                  this.actualPage === page,
+                [PAGINATOR_PARTS_DICTIONARY.PAGE_NOT_SELECTED]:
+                  this.actualPage !== page
               })}
               href={this.model[page - 1]}
             >
@@ -657,12 +680,20 @@ export class ChPaginatorRender implements ComponentInterface {
         return (
           <li>
             <a
+              aria-current={this.actualPage === page ? "page" : undefined}
+              aria-label={
+                this.actualPage === page
+                  ? `current page, page ${page}`
+                  : `go to page ${page}`
+              }
               key={index}
               id={page.toString()}
               part={tokenMap({
                 [PAGINATOR_PARTS_DICTIONARY.PAGE]: true,
-                [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]:
-                  this.actualPage === page
+                [PAGINATOR_PARTS_DICTIONARY.PAGE_SELECTED]:
+                  this.actualPage === page,
+                [PAGINATOR_PARTS_DICTIONARY.PAGE_NOT_SELECTED]:
+                  this.actualPage !== page
               })}
               href={(this.model as PaginatorRenderNumericModel).urlMapping(
                 page
@@ -677,10 +708,19 @@ export class ChPaginatorRender implements ComponentInterface {
       return (
         <li>
           <button
+            aria-current={this.actualPage === page ? "page" : undefined}
+            aria-label={
+              this.actualPage === page
+                ? `current page, page ${page}`
+                : `go to page ${page}`
+            }
             key={index}
             part={tokenMap({
               [PAGINATOR_PARTS_DICTIONARY.PAGE]: true,
-              [PAGINATOR_PARTS_DICTIONARY.PAGE_ACTIVE]: this.actualPage === page
+              [PAGINATOR_PARTS_DICTIONARY.PAGE_SELECTED]:
+                this.actualPage === page,
+              [PAGINATOR_PARTS_DICTIONARY.PAGE_NOT_SELECTED]:
+                this.actualPage !== page
             })}
             value={page}
             type="button"

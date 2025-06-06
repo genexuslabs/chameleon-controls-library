@@ -66,6 +66,8 @@ const render = () => (
           value={state.value}
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
+          showPassword={state.showPassword}
+          showPasswordButton={state.showPasswordButton}
           spellcheck={state.spellcheck}
           startImgSrc={state.startImgSrc}
           startImgType={state.startImgType}
@@ -127,6 +129,8 @@ const render = () => (
           value={state.value}
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
+          showPassword={state.showPassword}
+          showPasswordButton={state.showPasswordButton}
           spellcheck={state.spellcheck}
           startImgSrc={state.startImgSrc}
           startImgType={state.startImgType}
@@ -188,6 +192,8 @@ const render = () => (
             value={state.value}
             showAdditionalContentAfter={state.showAdditionalContentAfter}
             showAdditionalContentBefore={state.showAdditionalContentBefore}
+            showPassword={state.showPassword}
+            showPasswordButton={state.showPasswordButton}
             spellcheck={state.spellcheck}
             startImgSrc={state.startImgSrc}
             startImgType={state.startImgType}
@@ -330,12 +336,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
       },
       {
         id: "startImgSrc",
+        columnSpan: 2,
         caption: "Start Image Src",
         value: "folder",
         type: "string"
       },
       {
         id: "startImgType",
+        columnSpan: 2,
         caption: "Start Image Type",
         type: "enum",
         values: [
@@ -346,6 +354,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
       },
       {
         id: "hostParts",
+        columnSpan: 2,
         caption: "Host Parts",
         value: undefined,
         type: "string"
@@ -372,7 +381,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "enum",
         values: [
           { caption: "On", value: "on" },
-          { caption: "Off", value: "off" }
+          { caption: "Off", value: "off" },
+          { caption: "Current Password", value: "current-password" },
+          { caption: "New Password", value: "new-password" }
         ],
         render: "radio-group",
         value: "off"
@@ -396,11 +407,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "boolean"
       },
       {
-        id: "clearSearchButtonAccessibleName",
-        caption: "Clear Search Button Accessible Name",
+        id: "showPassword",
+        caption: "Show Password",
         columnSpan: 2,
-        value: "Clear search",
-        type: "string"
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "showPasswordButton",
+        caption: "Show Password Button",
+        columnSpan: 2,
+        value: false,
+        type: "boolean"
       },
       {
         id: "showAdditionalContentBefore",
@@ -444,11 +462,6 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
       value: "input",
       type: "string"
     },
-    {
-      name: "clearSearchButtonAccessibleName",
-      defaultValue: "Clear search",
-      type: "string"
-    },
     { name: "debounce", defaultValue: 0, type: "number" },
     { name: "disabled", defaultValue: false, type: "boolean" },
     {
@@ -478,6 +491,12 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
     },
     {
       name: "showAdditionalContentAfter",
+      defaultValue: false,
+      type: "boolean"
+    },
+    { name: "showPassword", defaultValue: false, type: "boolean" },
+    {
+      name: "showPasswordButton",
       defaultValue: false,
       type: "boolean"
     },

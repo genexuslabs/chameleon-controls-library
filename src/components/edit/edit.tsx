@@ -33,7 +33,7 @@ import type {
   ImageRender
 } from "../../common/types";
 import { tokenMap, updateDirectionInImageCustomVar } from "../../common/utils";
-import type { EditInputMode, EditType } from "./types";
+import type { EditInputMode, EditTranslations, EditType } from "./types";
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
   imageSrc: string
@@ -129,7 +129,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * automatically completed by the browser. Same as [autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-autocomplete)
    * attribute for `input` elements.
    */
-  @Prop() readonly autocomplete: "on" | "off" = "off";
+  @Prop() readonly autocomplete:
+    | "on"
+    | "off"
+    | "current-password"
+    | "new-password" = "off";
 
   /**
    * Specifies if the control automatically get focus when the page loads.
@@ -142,14 +146,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * adjust to its content size.
    */
   @Prop() readonly autoGrow: boolean = false;
-
-  /**
-   * This property lets you specify the label for the clear search button.
-   * Important for accessibility.
-   *
-   * Only works if `type = "search"` and `multiline = false`.
-   */
-  @Prop() readonly clearSearchButtonAccessibleName: string = "Clear search";
 
   /**
    * Specifies a debounce for the input event.
@@ -249,7 +245,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * This slot is intended to customize the internal content of the edit by
    * adding additional elements after the edit content.
    */
-  @Prop() readonly showAdditionalContentAfter: boolean;
+  @Prop() readonly showAdditionalContentAfter: boolean = false;
 
   /**
    * If `true`, a slot is rendered in the edit with `"additional-content-before"`
@@ -257,7 +253,19 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * This slot is intended to customize the internal content of the edit by
    * adding additional elements before the edit content.
    */
-  @Prop() readonly showAdditionalContentBefore: boolean;
+  @Prop() readonly showAdditionalContentBefore: boolean = false;
+
+  /**
+   * Specifies if the password is displayed as plain text when using
+   * `type = "password"`.
+   */
+  @Prop({ mutable: true }) showPassword: boolean = false;
+
+  /**
+   * Specifies if the show password button is displayed when using
+   * `type = "password"`.
+   */
+  @Prop() readonly showPasswordButton: boolean = false;
 
   /**
    * Specifies whether the element may be checked for spelling errors
@@ -278,6 +286,17 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Specifies the source of the start image.
    */
   @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
+
+  /**
+   * Specifies the literals required in the control.
+   */
+  @Prop() readonly translations: EditTranslations = {
+    accessibleName: {
+      clearSearchButton: "Clear search",
+      hidePasswordButton: "Hide password",
+      showPasswordButton: "Show password"
+    }
+  };
 
   /**
    * The type of control to render. A subset of the types supported by the `input` element is supported:
@@ -339,6 +358,14 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * This event is debounced by the `debounce` property.
    */
   @Event() input: EventEmitter<string>;
+
+  /**
+   * Fired when the visibility of the password (when using `type="password"`)
+   * is changed by clicking on the show password button.
+   *
+   * The detail contains the new value of the `showPassword` property.
+   */
+  @Event() passwordVisibilityChange: EventEmitter<boolean>;
 
   #getInputRef = () =>
     this.#inputRef ?? this.#textareaRef ?? this.#textareaInsideContainerRef;
@@ -411,6 +438,15 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     this.#setValueAndEmitInputEventWithDebounce("");
 
     requestAnimationFrame(() => this.el.focus());
+  };
+
+  #togglePasswordVisibility = (event: PointerEvent) => {
+    event.stopPropagation();
+
+    const newShowPassword = !this.showPassword;
+    this.showPassword = newShowPassword;
+
+    this.passwordVisibilityChange.emit(newShowPassword);
   };
 
   #hasAdditionalContent = () =>
@@ -539,12 +575,17 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   // TODO: Remove the icon with multiline and add overflow: clip in the Host with multiline
   render() {
+    const { accessibleName } = this.translations;
     const isDateType = DATE_TYPES.includes(this.type);
     const showDatePlaceholder = isDateType && this.placeholder && !this.value;
     const shouldDisplayPicture = this.#hasPictureApplied();
     const canAddListeners = !this.disabled && !this.readonly;
+
     const renderClearButton =
       !this.multiline && this.type === "search" && !!this.value;
+
+    const renderShowPasswordButton =
+      this.showPasswordButton && !this.multiline && this.type === "password";
 
     return (
       <Host
@@ -554,6 +595,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           "ch-edit--editable-date": isDateType && !this.readonly,
           "ch-edit--multiline": this.multiline && this.autoGrow,
           "ch-edit--clear-button": renderClearButton,
+          "ch-edit--show-password-button": renderShowPasswordButton,
 
           [`ch-edit-start-img-type--${this.startImgType} ch-edit-pseudo-img--start`]:
             !this.multiline && !!this.#startImage
@@ -599,7 +641,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 readOnly={this.readonly}
                 spellcheck={this.spellcheck}
                 step={isDateType ? "1" : undefined}
-                type={this.type}
+                type={
+                  this.type === "password" && this.showPassword
+                    ? "text"
+                    : this.type
+                }
                 value={
                   shouldDisplayPicture && !this.isFocusOnControl
                     ? this.pictureValue
@@ -642,7 +688,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
         {renderClearButton && (
           <button
-            aria-label={this.clearSearchButtonAccessibleName}
+            aria-label={accessibleName.clearSearchButton}
             class="clear-button"
             part={tokenMap({
               [EDIT_PARTS_DICTIONARY.CLEAR_BUTTON]: true,
@@ -650,6 +696,28 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
             })}
             type="button"
             onClick={!this.disabled && this.#clearValue}
+          ></button>
+        )}
+
+        {renderShowPasswordButton && (
+          <button
+            aria-label={
+              this.showPassword
+                ? accessibleName.hidePasswordButton
+                : accessibleName.showPasswordButton
+            }
+            class={{
+              "show-password-button": true,
+              "show-password-button--hidden": !this.showPassword
+            }}
+            part={tokenMap({
+              [EDIT_PARTS_DICTIONARY.SHOW_PASSWORD]: true,
+              [EDIT_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [EDIT_PARTS_DICTIONARY.PASSWORD_DISPLAYED]: this.showPassword,
+              [EDIT_PARTS_DICTIONARY.PASSWORD_HIDDEN]: !this.showPassword
+            })}
+            type="button"
+            onClick={!this.disabled && this.#togglePasswordVisibility}
           ></button>
         )}
       </Host>

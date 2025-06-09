@@ -1,5 +1,5 @@
-import { Literal } from "mdast";
-import { CompileContext } from "mdast-util-from-markdown";
+import type { Literal } from "mdast";
+import type { CompileContext } from "mdast-util-from-markdown";
 
 export interface ExtendedCompileContext extends CompileContext {
   current: () => { value: string; [key: string]: any };

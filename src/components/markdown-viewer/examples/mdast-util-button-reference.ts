@@ -1,5 +1,5 @@
 import { Literal } from "mdast";
-import {
+import type {
   CompileContext,
   Extension as FromMarkdownExtension,
   Handle

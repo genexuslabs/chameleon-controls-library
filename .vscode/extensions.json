@@ -3,6 +3,8 @@
     "streetsidesoftware.code-spell-checker", // Code Spell Checker
     "dbaeumer.vscode-eslint", // ESLint
     "eamodio.gitlens", // GitLens
-    "esbenp.prettier-vscode" // Prettier
+    "esbenp.prettier-vscode", // Prettier
+    "bierner.lit-html", // Lit templates
+    "wix.vscode-import-cost" // Bundle size of each import: This extension will display inline in the editor the size of the imported package
   ]
 }

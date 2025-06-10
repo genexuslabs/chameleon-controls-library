@@ -52,7 +52,7 @@ export type MarkdownViewerExtension<ContentMapping extends object> = {
    *
    * @example
    * ```ts
-   * const render = {
+   * const mdastRender = {
    *   buttonReference: (element: ButtonReference) =>
    *     html`<button type="button" @click=${doSomething}>
    *       ${element.value}
@@ -68,7 +68,7 @@ export type MarkdownViewerExtension<ContentMapping extends object> = {
    * };
    * ```
    */
-  render: MarkdownViewerExtensionRender<ContentMapping>;
+  mdastRender: MarkdownViewerExtensionRender<ContentMapping>;
 };
 
 export type MarkdownViewerExtensionRender<ContentMapping extends object> = {

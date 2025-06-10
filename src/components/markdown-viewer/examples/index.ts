@@ -8,5 +8,5 @@ export const markdownViewerExtension: MarkdownViewerExtension<ExtendedContentMap
   {
     tokenizer: buttonReference(),
     tokensToMdast: buttonReferenceFromMarkdown(),
-    render: render
+    mdastRender: render
   };

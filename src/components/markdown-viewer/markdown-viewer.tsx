@@ -146,7 +146,7 @@ export class ChMarkdownViewer {
     else {
       this.#renders = Object.assign(
         markdownViewerRenderDictionary,
-        ...this.extensions.map(({ render }) => render)
+        ...this.extensions.map(({ mdastRender }) => mdastRender)
       );
     }
   };

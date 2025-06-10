@@ -142,7 +142,7 @@ export const inBetween = (x: number, y: number, z: number) => x <= y && y <= z;
 
 let resetDragImage;
 
-/* @__PURE__ */ if (!window.Image) {
+if (!window.Image) {
   resetDragImage = "test";
 }
 

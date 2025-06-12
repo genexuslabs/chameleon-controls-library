@@ -84,6 +84,16 @@ img {
 //   transform: translateY(-100%);
 // }
 
+// TODO: Remove this CSS selector as it is a WA while we have the ch-chat-lit
+// element between the ch-virtual-scroller and ch-smart-grid-cell elements
+.ch-virtual-scroller--content-loaded
+  > ch-chat-lit
+  > ch-smart-grid-cell:not([data-did-load]) {
+  position: absolute;
+  pointer-events: none;
+  visibility: hidden;
+}
+
 .send-container {
   display: grid;
   grid-template: "input-wrapper send-or-audio" 1fr / 1fr max-content;

@@ -65,6 +65,13 @@
   --ch-combo-box__picker-image-size: 100%;
 
   /**
+   * @prop --ch-placeholder-color:
+   * Define the placeholder color when the combo-box does not have a value set.
+   * (currentColor by default)
+   */
+  --ch-combo-box__placeholder-color: currentColor;
+
+  /**
    * @prop --ch-combo-box-item-gap:
    * Specifies the spacing between the images, text and the expandable button
    * on items.
@@ -168,6 +175,11 @@ select {
   &--readonly {
     pointer-events: none;
     text-overflow: ellipsis;
+  }
+
+  // TODO: What should we do for the native select (used in mobile devices)?
+  &::placeholder {
+    color: var(--ch-combo-box__placeholder-color);
   }
 }
 

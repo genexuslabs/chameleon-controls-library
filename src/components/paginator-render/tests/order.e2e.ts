@@ -1,11 +1,11 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { ControlsOrder } from "../types";
+import { PaginatorControlsOrder } from "../types";
 
 // Function to swap elements in an array based on given indices
-const swapElements = <ControlsOrder>(
-  array: ControlsOrder[],
+const swapElements = <PaginatorControlsOrder>(
+  array: PaginatorControlsOrder[],
   indices: number[]
-): ControlsOrder[] => {
+): PaginatorControlsOrder[] => {
   const newArray = [...array];
   const temp = newArray[indices[0]];
 
@@ -18,21 +18,21 @@ const swapElements = <ControlsOrder>(
   return newArray;
 };
 
-// Function to generate variations of the ControlsOrder object by swapping elements
+// Function to generate variations of the PaginatorControlsOrder object by swapping elements
 const generateOrderVariations = (
-  testOrder: ControlsOrder,
+  testOrder: PaginatorControlsOrder,
   swapSize: number
-): ControlsOrder[] => {
+): PaginatorControlsOrder[] => {
   const keys = Object.keys(testOrder);
-  const variations: ControlsOrder[] = [];
+  const variations: PaginatorControlsOrder[] = [];
 
   // Recursive function to generate all combinations of indices to swap
   const generateIndices = (start: number, current: number[], size: number) => {
     if (current.length === size) {
       // Create a new variation with the swapped elements
       const newVariation = swapElements(keys, current);
-      // Convert the variation back to a Controls Order object
-      const variationObject: ControlsOrder = Object.fromEntries(
+      // Convert the variation back to a Paginator Controls Order object
+      const variationObject: PaginatorControlsOrder = Object.fromEntries(
         newVariation.map(key => [key, testOrder[key]])
       );
       variations.push(variationObject);
@@ -64,7 +64,7 @@ describe("[ch-paginator-render][order]", () => {
   // Function to set control visibility based on the expected order
   const setControlVisibility = async (
     paginatorRenderRef: E2EElement,
-    expectedOrder: ControlsOrder
+    expectedOrder: PaginatorControlsOrder
   ) => {
     paginatorRenderRef.setProperty(
       "showItemsPerPage",
@@ -108,7 +108,7 @@ describe("[ch-paginator-render][order]", () => {
   // Function to test the order of paginator controls
   const testPaginatorRenderOrder = async (
     paginatorRenderRef: E2EElement,
-    expectedOrder: ControlsOrder
+    expectedOrder: PaginatorControlsOrder
   ): Promise<void> => {
     // Set control visibility based on expected order
     await setControlVisibility(paginatorRenderRef, expectedOrder);
@@ -150,7 +150,7 @@ describe("[ch-paginator-render][order]", () => {
 
   // Function to run tests with customized order
   const testPaginatorRenderWithCustomizedOrder = (
-    expectedOrder: ControlsOrder
+    expectedOrder: PaginatorControlsOrder
   ) => {
     it(`should validate the controls order with: ${JSON.stringify(
       expectedOrder
@@ -160,7 +160,7 @@ describe("[ch-paginator-render][order]", () => {
   };
 
   describe("Paginator Order Tests", () => {
-    const completeControlsOrder: ControlsOrder = {
+    const completePaginatorControlsOrder: PaginatorControlsOrder = {
       itemsPerPage: 1,
       itemsPerPageInfo: 2,
       firstControl: 3,
@@ -171,15 +171,15 @@ describe("[ch-paginator-render][order]", () => {
       navigationGoTo: 8,
       navigationControlsInfo: 9
     };
-    const completeControlsOrderToTest = generateOrderVariations(
-      completeControlsOrder,
+    const completePaginatorControlsOrderToTest = generateOrderVariations(
+      completePaginatorControlsOrder,
       4
     );
-    completeControlsOrderToTest.forEach(order => {
+    completePaginatorControlsOrderToTest.forEach(order => {
       testPaginatorRenderWithCustomizedOrder(order);
     });
 
-    const reducedControlsOrder: ControlsOrder = {
+    const reducedPaginatorControlsOrder: PaginatorControlsOrder = {
       firstControl: 1,
       prevControl: 2,
       navigationControls: 3,
@@ -187,11 +187,11 @@ describe("[ch-paginator-render][order]", () => {
       lastControl: 5
     };
 
-    const reducedControlsOrderToTest = generateOrderVariations(
-      reducedControlsOrder,
+    const reducedPaginatorControlsOrderToTest = generateOrderVariations(
+      reducedPaginatorControlsOrder,
       3
     );
-    reducedControlsOrderToTest.forEach(order => {
+    reducedPaginatorControlsOrderToTest.forEach(order => {
       testPaginatorRenderWithCustomizedOrder(order);
     });
   });

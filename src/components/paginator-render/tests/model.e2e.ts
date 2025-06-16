@@ -1,40 +1,103 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { paginatorRenderNumericModel } from "../../../showcase/assets/components/paginator-render/models";
+import {
+  paginatorRenderHyperlinkModel,
+  paginatorRenderNumericModel,
+  paginatorRenderNumericModelWithoutTotalPages,
+  paginatorRenderNumericModelWithoutUrlMapping
+} from "../../../showcase/assets/components/paginator-render/models";
+import { PaginatorRenderModel } from "../types";
 
-describe("[ch-paginator-render][model]", () => {
-  let page: E2EPage;
-  let paginatorRenderRef: E2EElement;
+const runModelRenderedTest = (
+  description: string,
+  model: PaginatorRenderModel,
+  expectedNotSelectedCount: number,
+  expectedEllipsisCount: number,
+  selectedPage: number | string = 1 // Default value for selectedPage
+) => {
+  describe("[ch-paginator-render][model]", () => {
+    let page: E2EPage;
+    let paginatorRenderRef: E2EElement;
 
-  beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<ch-paginator-render></ch-paginator-render>`,
-      failOnConsoleError: true
+    beforeEach(async () => {
+      page = await newE2EPage({
+        html: `<ch-paginator-render></ch-paginator-render>`,
+        failOnConsoleError: true
+      });
+      paginatorRenderRef = await page.find("ch-paginator-render");
     });
-    paginatorRenderRef = await page.find("ch-paginator-render");
+
+    it(description, async () => {
+      paginatorRenderRef.setProperty("model", model);
+      paginatorRenderRef.setProperty("selectedPage", selectedPage);
+
+      await page.waitForChanges();
+
+      const navigationPageSelected = await page.findAll(
+        "ch-paginator-render >>> [part='page selected']"
+      );
+      const navigationPagesNotSelected = await page.findAll(
+        "ch-paginator-render >>> [part='page not-selected']"
+      );
+      const navigationPagesEllipsis = await page.findAll(
+        "ch-paginator-render >>> [part='page ellipsis']"
+      );
+
+      expect(navigationPageSelected).toHaveLength(1); // page selected should always be 1
+      expect(navigationPagesNotSelected).toHaveLength(expectedNotSelectedCount);
+      expect(navigationPagesEllipsis).toHaveLength(expectedEllipsisCount);
+    });
   });
+};
 
-  it("should have the correct amount of pages rendered", async () => {
-    const emptyNavigationOrderedListItems = await page.findAll(
-      "ch-paginator-render >>> nav[part*='pages'] >>> ol li"
-    );
+runModelRenderedTest(
+  "should render 4 not selected pages and 1 ellipsis when Numeric Model is passed and selectedPage is 1",
+  paginatorRenderNumericModel,
+  4, // Expected count of not selected pages
+  1 // Expected count of ellipsis items
+);
 
-    // Pages without a model set should be the selected page:
-    // Page rendered: [1]
-    expect(emptyNavigationOrderedListItems).toHaveLength(1);
+runModelRenderedTest(
+  "should render 8 not selected pages and 2 ellipsis when Numeric Model is passed and selected page is 10",
+  paginatorRenderNumericModel,
+  8, // Expected count of not selected pages
+  2, // Expected count of ellipsis items
+  10 // When selectedPage 10, expected items should change
+);
 
-    // change to a model that shows 5 elements plus ellipsis
-    paginatorRenderRef.setProperty("model", paginatorRenderNumericModel);
-    await page.waitForChanges();
+runModelRenderedTest(
+  "should render 4 not selected pages and 1 ellipsis when Hyperlink Model is passed and selectedPage is 1",
+  paginatorRenderHyperlinkModel,
+  4, // Expected count of not selected pages
+  1, // Expected count of ellipsis items
+  "http://localhost:3333/#paginator-render?page=1"
+);
 
-    const navigationOrderedListItems = await page.findAll(
-      "ch-paginator-render >>> nav[part*='pages'] >>> ol li"
-    );
+runModelRenderedTest(
+  "should render 7 not selected pages and 1 ellipsis when Hyperlink Model is passed and selected page is 4",
+  paginatorRenderHyperlinkModel,
+  7, // Expected count of not selected pages
+  1, // Expected count of ellipsis items
+  "http://localhost:3333/#paginator-render?page=4" // When selectedPage 4, expected items should change
+);
 
-    // Pages with the configuration should be 6
-    // Pages rendered: [1,2,3,4,(ellipsis),30]
-    expect(navigationOrderedListItems).toHaveLength(6);
+runModelRenderedTest(
+  "should render 4 not selected pages and 1 ellipsis when Numeric Model without UrlMapping is passed and selectedPage is 1",
+  paginatorRenderNumericModelWithoutUrlMapping,
+  4, // Expected count of not selected pages
+  1 // Expected count of ellipsis items
+);
 
-    // TODO: create a test to validate this functionality on different amount of pages for each model
-  });
-  // TODO: create tests to check each models behavior
-});
+runModelRenderedTest(
+  "should render 8 not selected pages and 2 ellipsis when Numeric Model without UrlMapping is passed and selected page is 10",
+  paginatorRenderNumericModelWithoutUrlMapping,
+  8, // Expected count of not selected pages
+  2, // Expected count of ellipsis items
+  10 // When selectedPage 10, expected items should change
+);
+
+runModelRenderedTest(
+  "should not render not selected pages or ellipsis when Numeric Model without totalPages is passed and selectedPage is 1",
+  paginatorRenderNumericModelWithoutTotalPages,
+  0, // Expected count of not selected pages
+  0 // Expected count of ellipsis items
+);

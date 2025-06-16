@@ -18,6 +18,8 @@ const defaultOrder = {
 
 const defaultTranslations = {
   accessibleName: {
+    currentPage: "current page, page ",
+    goToPage: "go to page ",
     goToInput: "Go to page",
     itemsPerPageOptions: "Select amount of items to show",
     firstButton: "Go to first page",

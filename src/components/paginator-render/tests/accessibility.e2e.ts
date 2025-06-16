@@ -11,6 +11,8 @@ const GO_TO_INPUT_LABEL = "goToInputLabel-test";
 
 const translationsMock: PaginatorTranslations = {
   accessibleName: {
+    currentPage: "current page, page ",
+    goToPage: "go to page ",
     goToInput: GO_TO_INPUT_ARIA_LABEL,
     itemsPerPageOptions: "itemsPerPageOptions-test",
     firstButton: "go-to-first-page-test",
@@ -41,6 +43,129 @@ type PartialTranslations = {
   >;
   text?: Partial<Pick<PaginatorTranslations["text"], "goToInputLabel">>;
 };
+
+const runAccessibilityAriaLabelTests = (
+  description: string,
+  model: HTMLChPaginatorRenderElement["model"],
+  anchorLabelsToTest: string[],
+  buttonLabelsToTest: string[]
+) => {
+  describe(description, () => {
+    let page: E2EPage;
+    let paginatorRenderRef: E2EElement;
+
+    beforeEach(async () => {
+      page = await newE2EPage({
+        html: `<ch-paginator-render></ch-paginator-render>`,
+        failOnConsoleError: true
+      });
+      paginatorRenderRef = await page.find("ch-paginator-render");
+      paginatorRenderRef.setProperty("model", model);
+      paginatorRenderRef.setProperty("showFirstControl", true);
+      paginatorRenderRef.setProperty("showItemsPerPage", true);
+      paginatorRenderRef.setProperty("showItemsPerPageInfo", true);
+      paginatorRenderRef.setProperty("showLastControl", true);
+      paginatorRenderRef.setProperty("showNavigationControls", true);
+      paginatorRenderRef.setProperty("showNavigationControlsInfo", true);
+      paginatorRenderRef.setProperty("showNavigationGoTo", true);
+      paginatorRenderRef.setProperty("showNextControl", true);
+      paginatorRenderRef.setProperty("showPrevControl", true);
+
+      await page.waitForChanges();
+    });
+
+    it("should test all anchors to have aria-label", async () => {
+      const anchors = await page.findAll("ch-paginator-render >>> a");
+
+      anchors.forEach((anchor, index) => {
+        expect(anchor).toHaveAttribute("aria-label");
+        expect(anchor).toEqualAttribute(
+          "aria-label",
+          anchorLabelsToTest[index]
+        );
+      });
+    });
+
+    it("should test all buttons to have aria-label if no text is displayed", async () => {
+      const buttons = await page.findAll("ch-paginator-render >>> button");
+
+      buttons.forEach((button, index) => {
+        !button.textContent && expect(button).toHaveAttribute("aria-label");
+        !button.textContent &&
+          expect(button).toEqualAttribute(
+            "aria-label",
+            buttonLabelsToTest[index]
+          );
+      });
+    });
+  });
+};
+
+runAccessibilityAriaLabelTests(
+  "ch-paginator-render][accessibility] - Paginator Numeric Model",
+  paginatorRenderNumericModel,
+  [
+    "current page, page 1",
+    "go to page 2",
+    "go to page 3",
+    "go to page 4",
+    "go to page 30"
+  ],
+  [
+    "Go to first page",
+    "Go to previous page",
+    "Go to next page",
+    "Go to last page"
+  ]
+);
+
+runAccessibilityAriaLabelTests(
+  "ch-paginator-render][accessibility] - Paginator Numeric Model without urlMapping",
+  paginatorRenderNumericModelWithoutUrlMapping,
+  [
+    "current page, page 1",
+    "go to page 2",
+    "go to page 3",
+    "go to page 4",
+    "go to page 20"
+  ],
+  [
+    "Go to first page",
+    "Go to previous page",
+    "Go to next page",
+    "Go to last page"
+  ]
+);
+
+runAccessibilityAriaLabelTests(
+  "ch-paginator-render][accessibility] - Paginator Numeric Model without totalPages",
+  paginatorRenderNumericModelWithoutUrlMapping,
+  ["current page, page 1"],
+  [
+    "Go to first page",
+    "Go to previous page",
+    "Go to next page",
+    "Go to last page"
+  ]
+);
+
+runAccessibilityAriaLabelTests(
+  "ch-paginator-render][accessibility] - Paginator Hyperlink Model",
+  paginatorRenderHyperlinkModel,
+  [
+    "current page, page 1",
+    "go to page 2",
+    "go to page 3",
+    "go to page 4",
+    "go to page 10"
+  ],
+  [
+    "Go to first page",
+    "Go to previous page",
+    "Go to next page",
+    "Go to last page"
+  ]
+);
 
 const runAccessibilityLabelTests = (
   description: string,
@@ -127,7 +252,7 @@ const runAccessibilityLabelTests = (
       expect(inputRef).not.toHaveAttribute("aria-label");
     });
 
-    it("should render visible label and skip the aria-label when accessibleName.goToInput and text.goToInputLabel differ", async () => {
+    it("should render visible label and the aria-label when accessibleName.goToInput and text.goToInputLabel differ", async () => {
       paginatorRenderRef.setProperty("translations", {
         ...translationsMock,
         ...translationWithBothHavingLabel
@@ -141,7 +266,8 @@ const runAccessibilityLabelTests = (
       );
 
       expect(inputRef).toBeTruthy();
-      expect(inputRef).not.toHaveAttribute("aria-label");
+      expect(inputRef).toHaveAttribute("aria-label");
+      expect(inputRef).toEqualAttribute("aria-label", GO_TO_INPUT_ARIA_LABEL);
       expect(labelRef).toBeTruthy();
       expect(labelRef.textContent).toBe(GO_TO_INPUT_LABEL);
       expect(labelRef).toHaveAttribute("for");
@@ -335,25 +461,11 @@ describe("[ch-paginator-render][accessibility] - Paginator Numeric Model", () =>
     await page.waitForChanges();
   });
 
-  it("should have an ordered list with a nav tag when using the Paginator Numeric Model", async () => {
+  it("should have an ordered list when using the Paginator Numeric Model", async () => {
     const navigationOrderedList = await page.find(
-      "ch-paginator-render >>> nav[part*='pages']"
+      "ch-paginator-render >>> ol[part*='pages']"
     );
     expect(navigationOrderedList).toBeTruthy();
-  });
-
-  it("should test all anchors to have aria-label", async () => {
-    const anchors = await page.findAll("a");
-    anchors.forEach(anchor => {
-      expect(anchor).toHaveAttribute("aria-label");
-    });
-  });
-
-  it("should test all buttons to have aria-label", async () => {
-    const buttons = await page.findAll("button");
-    buttons.forEach(button => {
-      expect(button).toHaveAttribute("aria-label");
-    });
   });
 });
 
@@ -367,32 +479,21 @@ describe("[ch-paginator-render][accessibility] - Paginator Numeric Model without
       failOnConsoleError: true
     });
     paginatorRenderRef = await page.find("ch-paginator-render");
-    paginatorRenderRef.setProperty("model", paginatorRenderNumericModel);
+    paginatorRenderRef.setProperty(
+      "model",
+      paginatorRenderNumericModelWithoutUrlMapping
+    );
     paginatorRenderRef.setProperty("showNavigationGoTo", true);
     paginatorRenderRef.setProperty("translations", translationsMock);
 
     await page.waitForChanges();
   });
 
-  it("should have an ordered list with a nav tag", async () => {
+  it("should have an ordered list", async () => {
     const navigationOrderedList = await page.find(
-      "ch-paginator-render >>> nav[part*='pages']"
+      "ch-paginator-render >>> ol[part*='pages']"
     );
     expect(navigationOrderedList).toBeTruthy();
-  });
-
-  it("should test all anchors to have aria-label", async () => {
-    const anchors = await page.findAll("a");
-    anchors.forEach(anchor => {
-      expect(anchor).toHaveAttribute("aria-label");
-    });
-  });
-
-  it("should test all buttons to have aria-label", async () => {
-    const buttons = await page.findAll("button");
-    buttons.forEach(button => {
-      expect(button).toHaveAttribute("aria-label");
-    });
   });
 });
 
@@ -418,19 +519,5 @@ describe("[ch-paginator-render][accessibility] - Paginator Hyperlink Model", () 
       "ch-paginator-render >>> nav[part*='pages']"
     );
     expect(navigationOrderedList).toBeTruthy();
-  });
-
-  it("should test all anchors to have aria-label", async () => {
-    const navigationListAnchors = await page.findAll("a");
-    navigationListAnchors.forEach(anchor => {
-      expect(anchor).toHaveAttribute("aria-label");
-    });
-  });
-
-  it("should test all buttons to have aria-label", async () => {
-    const buttons = await page.findAll("button");
-    buttons.forEach(button => {
-      expect(button).toHaveAttribute("aria-label");
-    });
   });
 });

@@ -1,5 +1,7 @@
 export type PaginatorTranslations = {
   accessibleName: {
+    currentPage: string;
+    goToPage: string;
     goToInput: string;
     itemsPerPageOptions: string;
     firstButton: string;

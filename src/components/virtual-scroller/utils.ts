@@ -58,5 +58,8 @@ export const emptyItems = (items: SmartGridModel) =>
 
 export const getSmartCells = (scroller: HTMLChVirtualScrollerElement) =>
   [
-    ...scroller.querySelectorAll(":scope>ch-smart-grid-cell")
+    // TODO: This is a WA to make work the ch-chat with the Lit render. We
+    // should provide a way to customize this selector
+    ...scroller.querySelectorAll(":scope>ch-chat-lit>ch-smart-grid-cell")
+    // ...scroller.querySelectorAll(":scope>ch-smart-grid-cell")
   ] as HTMLChSmartGridCellElement[];

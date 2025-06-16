@@ -89,6 +89,7 @@ Starting with Chameleon version `6.4.0` there is a new accessibility utility tha
 
 - `ch-combo-box-render`
 - `ch-edit`
+- `ch-progress`
 - `ch-slider`
 
 The accessibility checker is enabled by default and can be disabled as follows:

@@ -1,7 +1,9 @@
+import type { TemplateResult } from "lit";
 import type {
   ChMimeType,
   ChMimeTypeFormatMap
 } from "../../common/mimeTypes/mime-types";
+import { LiveKitCallbacks } from "../live-kit-room/types";
 import type { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 
 export type ChatMessageRole = "assistant" | "error" | "system" | "user";
@@ -116,6 +118,11 @@ export type ChatMessageUser = {
    * It is not added to the parts of the files and sources.
    */
   parts?: string;
+
+  /**
+   * `true` if the message content was transcribed by using the live mode.
+   */
+  transcribed?: boolean;
 };
 
 export type ChatMessageAssistant = {
@@ -145,6 +152,11 @@ export type ChatMessageAssistant = {
    * to `"complete"`
    */
   status?: "complete" | "waiting" | "streaming";
+
+  /**
+   * `true` if the message content was transcribed by using the live mode.
+   */
+  transcribed?: boolean;
 };
 
 export type ChatMessageError = {
@@ -263,6 +275,11 @@ export type ChatCallbacks = {
   getChatMessageFiles?: () => File[] | Promise<File[]>;
 
   /**
+   * Specifies a set of callback to manage `liveMode` events.
+   */
+  liveMode?: Pick<LiveKitCallbacks, "activeSpeakersChanged">;
+
+  /**
    * Specifies a callback to execute when the user adds a new message to the
    * chat and waits a response.
    */
@@ -296,7 +313,7 @@ export type ChatCallbacks = {
 
 export type ChatMessageRenderByItem = (
   messageModel: ChatMessageByRole<"assistant" | "error" | "user">
-) => any;
+) => TemplateResult | string;
 
 export type ChatMessageRenderBySections = {
   /**
@@ -351,7 +368,7 @@ export type ChatMessageRenderBySections = {
 export type ChatActionsRender = (
   message: ChatMessage,
   chatRef: HTMLChChatElement
-) => any;
+) => TemplateResult | string;
 
 export type ChatCodeBlockRender = (
   chatRef: HTMLChChatElement
@@ -361,13 +378,13 @@ export type ChatContentRender = (
   message: ChatMessage,
   chatRef: HTMLChChatElement,
   codeBlockRender: ChatCodeBlockRender
-) => any;
+) => TemplateResult | string;
 
 export type ChatFileRender = {
   [key in keyof ChMimeTypeFormatMap]?: (
     file: ChatMessageFile,
     chatRef: HTMLChChatElement
-  ) => any;
+  ) => TemplateResult | string;
 };
 
 export type ChatMessageStructureRender = (
@@ -378,9 +395,17 @@ export type ChatMessageStructureRender = (
   > & {
     file: Required<ChatFileRender>;
   }
-) => any;
+) => TemplateResult | string;
 
 export type ChatSourceRender = (
   source: ChatMessageSource,
   chatRef: HTMLChChatElement
-) => any;
+) => TemplateResult | string;
+
+export type ChatLiveModeConfiguration = {
+  url: string;
+  token: string;
+  localParticipant?: {
+    microphoneEnabled?: boolean;
+  };
+};

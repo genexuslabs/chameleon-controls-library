@@ -44,6 +44,24 @@
   --ch-combo-box__picker: url('data:image/svg+xml,<svg width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path d="M4.16669 0.666626L7.66669 4.66663H0.666687L4.16669 0.666626ZM4.16669 11.3333L0.666687 7.33329H7.66669L4.16669 11.3333Z"/></svg>');
 
   /**
+   * @prop --ch-combo-box__picker-collapsed:
+   * Specifies the image of the combo-box's picker when it is collapsed.
+   * @default var(--ch-combo-box__picker)
+   */
+  --ch-combo-box__picker-collapsed: var(
+    --ch-combo-box__picker
+  ); // TODO: Add unit test for this
+
+  /**
+   * @prop --ch-combo-box__picker-expanded:
+   * Specifies the image of the combo-box's picker when it is expanded.
+   * @default var(--ch-combo-box__picker)
+   */
+  --ch-combo-box__picker-expanded: var(
+    --ch-combo-box__picker
+  ); // TODO: Add unit test for this
+
+  /**
    * @prop --ch-combo-box__picker-color:
    * Specifies the color of the combo-box's picker.
    * @default currentColor
@@ -63,6 +81,13 @@
    * @default 100%
    */
   --ch-combo-box__picker-image-size: 100%;
+
+  /**
+   * @prop --ch-combo-box__placeholder-color:
+   * Define the placeholder color when the combo-box does not have a value set.
+   * (currentColor by default)
+   */
+  --ch-combo-box__placeholder-color: currentColor;
 
   /**
    * @prop --ch-combo-box-item-gap:
@@ -105,13 +130,17 @@
     grid-column: 2;
     inline-size: var(--ch-combo-box__picker-size);
     block-size: var(--ch-combo-box__picker-size);
-    -webkit-mask: var(--ch-combo-box__picker) 50% 50% /
+    -webkit-mask: var(--ch-combo-box__picker-collapsed) 50% 50% /
       var(--ch-combo-box__picker-image-size)
       var(--ch-combo-box__picker-image-size) no-repeat;
     margin-inline-start: var(--ch-combo-box-item-gap);
     background-color: var(--ch-combo-box__picker-color);
     pointer-events: none;
   }
+}
+
+:host(.ch-combo-box--expanded)::after {
+  -webkit-mask-image: var(--ch-combo-box__picker-expanded);
 }
 
 :host(.ch-combo-box--normal) {
@@ -168,6 +197,11 @@ select {
   &--readonly {
     pointer-events: none;
     text-overflow: ellipsis;
+  }
+
+  // TODO: What should we do for the native select (used in mobile devices)?
+  &::placeholder {
+    color: var(--ch-combo-box__placeholder-color);
   }
 }
 

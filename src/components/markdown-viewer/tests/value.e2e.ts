@@ -1,4 +1,5 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { LIT_COMMENTS_REGEX } from "../../../testing/constants.e2e";
 
 const LAST_NESTED_CHILD_CLASS = ' class="last-nested-child"';
 
@@ -190,8 +191,10 @@ describe("[ch-markdown-viewer][value]", () => {
       await page.waitForChanges();
       markdownViewerRef = await page.find("ch-markdown-viewer"); // Refresh the reference
 
-      expect(markdownViewerRef.shadowRoot).toEqualHtml(
-        `<ch-theme class="hydrated" hidden=""></ch-theme>${render}`
+      expect(
+        markdownViewerRef.shadowRoot.innerHTML.replace(LIT_COMMENTS_REGEX, "")
+      ).toEqualHtml(
+        `<ch-theme class="hydrated" hidden=""></ch-theme><ch-markdown-viewer-lit>${render}</ch-markdown-viewer-lit>`
       );
     });
   };

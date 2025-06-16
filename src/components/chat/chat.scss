@@ -13,6 +13,10 @@
   grid-template-rows: 1fr max-content max-content;
 }
 
+ch-chat-lit {
+  display: contents;
+}
+
 .assistant-content,
 .user-content {
   // Improve rendering performance by not rendering off-screen messages
@@ -79,6 +83,16 @@ img {
 //   justify-self: center;
 //   transform: translateY(-100%);
 // }
+
+// TODO: Remove this CSS selector as it is a WA while we have the ch-chat-lit
+// element between the ch-virtual-scroller and ch-smart-grid-cell elements
+.ch-virtual-scroller--content-loaded
+  > ch-chat-lit
+  > ch-smart-grid-cell:not([data-did-load]) {
+  position: absolute;
+  pointer-events: none;
+  visibility: hidden;
+}
 
 .send-container {
   display: grid;

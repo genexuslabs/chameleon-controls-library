@@ -3,7 +3,6 @@ import {
   ComponentInterface,
   Element,
   Host,
-  Method,
   Prop,
   Watch,
   h
@@ -42,7 +41,14 @@ export class ChInfiniteScroll implements ComponentInterface {
   @Element() el!: HTMLChInfiniteScrollElement;
 
   /**
-   * TODO.
+   * Specifies how the scroll position will be adjusted when the content size
+   * changes when using `position = "bottom"`.
+   *   - "at-scroll-end": If the scroll is positioned at the end of the content,
+   *   the infinite-scroll will maintain the scroll at the end while the
+   *   content size changes.
+   *
+   *  - "never": The scroll position won't be adjusted when the content size
+   *   changes.
    */
   @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
 
@@ -83,19 +89,25 @@ export class ChInfiniteScroll implements ComponentInterface {
   }
 
   /**
-   * This Handler will be called every time grid threshold is reached. Needed
-   * for infinite scrolling grids.
+   * This callback will be called every time the `threshold` is reached.
+   *
+   * When the threshold is met and this callback is executed, the internal
+   * `loadingState` will be changed to `"loading"` and the user has to keep in
+   * sync the `loadingState` of the component with the real state of the data.
    */
   @Prop() readonly infiniteThresholdReachedCallback!: () => void;
 
   /**
-   * If `true`, the infinite scroll will be hidden and scroll event listeners
-   * will be removed.
+   * If `"more-data-to-fetch"`, the infinite scroll will execute the
+   * `infiniteThresholdReachedCallback` when the `threshold` is met. When the
+   * threshold is met, the internal `loadingState` will be changed to
+   * `"loading"` and the user has to keep in sync the `loadingState` of the
+   * component with the real state of the data.
    *
-   * Set this to `false` to disable the infinite scroll from actively trying to
-   * receive new data while reaching the threshold. This is useful when it is
-   * known that there is no more data that can be added, and the infinite
-   * scroll is no longer needed.
+   * Set this to `"all-records-loaded"` to disable the infinite scroll from
+   * actively trying to receive new data while reaching the threshold. This is
+   * useful when it is known that there is no more data that can be added, and
+   * the infinite scroll is no longer needed.
    */
   @Prop({ mutable: true }) loadingState!: SmartGridDataState;
   @Watch("loadingState")
@@ -128,21 +140,6 @@ export class ChInfiniteScroll implements ComponentInterface {
   @Watch("threshold")
   thresholdChanged() {
     this.#checkIfCanFetchMoreData();
-  }
-
-  /**
-   * Call `complete()` within the `gxInfinite` output event handler when
-   * your async operation has completed. For example, the `loading`
-   * state is while the app is performing an asynchronous operation,
-   * such as receiving more data from an AJAX request to add more items
-   * to a data list. Once the data has been received and UI updated, you
-   * then call this method to signify that the loading has completed.
-   * This method will change the infinite scroll's state from `loading`
-   * to `enabled`.
-   */
-  @Method()
-  async complete() {
-    // this.waitingForData = false;
   }
 
   #canFetch = () => this.loadingState === "more-data-to-fetch";

@@ -301,9 +301,12 @@ export const COMBO_BOX_HOST_PARTS = {
 // - - - - - - - - - - - - - - - - - - - -
 export const EDIT_PARTS_DICTIONARY = {
   DATE_PLACEHOLDER: "date-placeholder",
+  SHOW_PASSWORD: "show-password-button",
   CLEAR_BUTTON: "clear-button",
 
-  DISABLED: "disabled" // CLEAR_BUTTON
+  DISABLED: "disabled", // CLEAR_BUTTON, TOGGLE_PASSWORD_VISIBILITY
+  PASSWORD_DISPLAYED: "password-displayed",
+  PASSWORD_HIDDEN: "password-hidden"
 } as const;
 
 export const EDIT_EXPORT_PARTS = joinParts(EDIT_PARTS_DICTIONARY);

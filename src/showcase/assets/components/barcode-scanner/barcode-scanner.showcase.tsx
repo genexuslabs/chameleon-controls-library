@@ -21,7 +21,9 @@ const handleRead = (event: ChBarcodeScannerCustomEvent<string>) => {
 };
 
 const render = () => (
-  <div class="barcode-scanner-test-main-wrapper">
+  // TODO: The slot is a WA to avoid issues with Shadow DOM. See the render of
+  // the showcase.tsx
+  <div class="barcode-scanner-test-main-wrapper" slot="ch-barcode-scanner">
     <ch-barcode-scanner
       barcodeBoxWidth={state.barcodeBoxWidth}
       barcodeBoxHeight={state.barcodeBoxHeight}

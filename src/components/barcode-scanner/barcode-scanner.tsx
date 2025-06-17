@@ -1,11 +1,11 @@
 import {
   Component,
-  h,
   Element,
-  Prop,
   Event,
   EventEmitter,
+  h,
   Method,
+  Prop,
   Watch
 } from "@stencil/core";
 import {
@@ -142,7 +142,10 @@ export class ChBarcodeScanner {
   };
 
   #restartScanner = () => {
+    clearTimeout(this.#timeout);
+
     if (!this.#html5QrCode) {
+      this.#startScanner();
       return;
     }
 
@@ -155,12 +158,20 @@ export class ChBarcodeScanner {
       return;
     }
 
-    clearTimeout(this.#timeout);
+    // Debounce start. We should probably try to use SyncWithRAF to debounce
+    // with animation frames
     this.#timeout = setTimeout(this.#startScanner, 75);
   };
 
   #startScanner = () => {
-    const aspectRatio = this.el.clientWidth / this.el.clientHeight;
+    const { clientWidth, clientHeight } = this.el;
+
+    // The element is collapsed or hidden. We can't compute the aspect ratio
+    if (clientHeight === 0) {
+      return;
+    }
+    const aspectRatio = clientWidth / clientHeight;
+
     this.#html5QrCode = new Html5Qrcode(this.#scannerId);
 
     this.#html5QrCode.start(

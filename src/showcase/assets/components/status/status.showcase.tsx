@@ -9,12 +9,7 @@ import { renderShowcaseProperties } from "../utils";
 const state: Partial<HTMLChStatusElement> = {};
 
 const render = () => (
-  <ch-status
-    accessibleName={state.accessibleName}
-    loadingRegionRef={state.loadingRegionRef}
-  >
-    <slot>Loading...</slot>
-  </ch-status>
+  <ch-status accessibleName={state.accessibleName}></ch-status>
 );
 
 const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChStatusElement> =

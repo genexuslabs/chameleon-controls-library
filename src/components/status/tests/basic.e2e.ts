@@ -1,7 +1,6 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { testDefaultProperties } from "../../../testing/utils.e2e";
 
-// Prueba las propiedades predeterminadas del componente ch-status
 testDefaultProperties("ch-status", {
   accessibleName: undefined,
   loadingRegionRef: undefined

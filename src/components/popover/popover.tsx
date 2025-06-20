@@ -4,17 +4,13 @@ import {
   Event,
   EventEmitter,
   Host,
-  Watch,
   Prop,
   State,
+  Watch,
   h
 } from "@stencil/core";
-import {
-  ChPopoverAlign,
-  ChPopoverResizeElement,
-  ChPopoverSizeMatch,
-  PopoverActionElement
-} from "./types";
+import { KEY_CODES, SCROLLABLE_CLASS } from "../../common/reserved-names";
+import { SyncWithRAF } from "../../common/sync-with-frames";
 import { adoptCommonThemes } from "../../common/theme";
 import {
   forceCSSMinMax,
@@ -22,9 +18,13 @@ import {
   subscribeToRTLChanges,
   unsubscribeToRTLChanges
 } from "../../common/utils";
-import { SyncWithRAF } from "../../common/sync-with-frames";
+import {
+  ChPopoverAlign,
+  ChPopoverResizeElement,
+  ChPopoverSizeMatch,
+  PopoverActionElement
+} from "./types";
 import { fromPxToNumber, setResponsiveAlignment } from "./utils";
-import { KEY_CODES, SCROLLABLE_CLASS } from "../../common/reserved-names";
 
 const DRAGGING_CLASS = "gx-popover-dragging";
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";
@@ -437,7 +437,7 @@ export class ChPopover {
     | "add-scroll" = "overflow";
 
   /**
-   * Specifies an alternate position to try when the control overflows the
+   * Specifies an alternative position to try when the control overflows the
    * window.
    */
   @Prop() readonly positionTry: "flip-block" | "flip-inline" | "none" = "none";

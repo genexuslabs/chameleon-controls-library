@@ -1,7 +1,13 @@
 export type PaginatorTranslations = {
   accessibleName: {
+    currentPage: string;
+    goToPage: string;
     goToInput: string;
     itemsPerPageOptions: string;
+    firstButton: string;
+    lastButton: string;
+    nextButton: string;
+    previousButton: string;
   };
   text: {
     first: string;
@@ -11,7 +17,7 @@ export type PaginatorTranslations = {
     ellipsis: string;
     last: string;
     next: string;
-    page: string;
+    goToInputLabel: string;
     prev: string;
     showingItems: string;
     showingPage: string;

@@ -226,7 +226,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChPopoverElement> =
           id: "positionTry",
           caption: "Position Try",
           columnSpan: 2,
-          value: "content",
+          value: "none",
           type: "enum",
           values: [
             {

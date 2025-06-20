@@ -43,7 +43,7 @@ import "./internal/markdown-viewer.lit";
   tag: "ch-markdown-viewer"
 })
 export class ChMarkdownViewer {
-  #JSXTree: TemplateResult[];
+  #templateResult: TemplateResult[];
   #renders: MarkdownViewerExtensionRender<object>;
 
   @Element() el: HTMLChMarkdownViewerElement;
@@ -160,7 +160,7 @@ export class ChMarkdownViewer {
       return;
     }
 
-    this.#JSXTree = await markdownToJSX(
+    this.#templateResult = await markdownToJSX(
       this.value,
       {
         allowDangerousHtml: true, // Allow dangerous in this version
@@ -193,7 +193,9 @@ export class ChMarkdownViewer {
           ></ch-theme>
         )}
 
-        <ch-markdown-viewer-lit value={this.#JSXTree}></ch-markdown-viewer-lit>
+        <ch-markdown-viewer-lit
+          value={this.#templateResult}
+        ></ch-markdown-viewer-lit>
       </Host>
     );
   }

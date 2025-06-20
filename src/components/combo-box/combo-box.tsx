@@ -12,30 +12,39 @@ import {
   h
 } from "@stencil/core";
 import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
+import {
   AccessibleNameComponent,
   DisableableComponent
 } from "../../common/interfaces";
-import {
-  ComboBoxSuggestOptions,
-  ComboBoxItemModel,
-  ComboBoxItemGroup,
-  ComboBoxSuggestInfo,
-  ComboBoxModel,
-  ComboBoxSelectedIndex,
-  ComboBoxItemModelExtended,
-  ComboBoxItemImagesModel,
-  ComboBoxImagePathCallback
-} from "./types";
-import { focusComposedPath } from "../common/helpers";
+import { getControlRegisterProperty } from "../../common/registry-properties";
 import {
   COMBO_BOX_HOST_PARTS,
   COMBO_BOX_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
+import { GxImageMultiStateStart } from "../../common/types";
 import { isMobileDevice, tokenMap } from "../../common/utils";
-import { ChPopoverAlign } from "../popover/types";
 import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
+import { focusComposedPath } from "../common/helpers";
+import { ChPopoverAlign } from "../popover/types";
 import { filterSubModel } from "./helpers";
+import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
+import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
+import { customComboBoxItemRender, nativeItemRender } from "./renders";
+import {
+  ComboBoxImagePathCallback,
+  ComboBoxItemGroup,
+  ComboBoxItemImagesModel,
+  ComboBoxItemModel,
+  ComboBoxItemModelExtended,
+  ComboBoxModel,
+  ComboBoxSelectedIndex,
+  ComboBoxSuggestInfo,
+  ComboBoxSuggestOptions
+} from "./types";
 import {
   comboBoxActiveDescendantIsRendered,
   findComboBoxLargestValue,
@@ -43,15 +52,6 @@ import {
   mapValuesToItemInfo,
   popoverWasClicked
 } from "./utils";
-import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
-import { customComboBoxItemRender, nativeItemRender } from "./renders";
-import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
-import { getControlRegisterProperty } from "../../common/registry-properties";
-import { GxImageMultiStateStart } from "../../common/types";
-import {
-  analyzeLabelExistence,
-  getElementInternalsLabel
-} from "../../common/analysis/accessibility";
 
 const SELECTED_ITEM_SELECTOR = `button[part*='${COMBO_BOX_PARTS_DICTIONARY.SELECTED}']`;
 const mobileDevice = isMobileDevice();
@@ -910,7 +910,8 @@ export class ChComboBoxRender
         class={{
           "ch-disabled": this.disabled,
           "ch-combo-box--normal": !filtersAreApplied,
-          "ch-combo-box--suggest": filtersAreApplied
+          "ch-combo-box--suggest": filtersAreApplied,
+          "ch-combo-box--expanded": this.expanded
         }}
         // TODO: Add unit tests for this feature, since it breaks custom parts
         // rendered outside of the ch-combo-box-render render() method

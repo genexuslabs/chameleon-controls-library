@@ -1,30 +1,16 @@
 import {
+  Build,
   Component,
   Element,
   forceUpdate,
-  Host,
   h,
+  Host,
   Listen,
   Prop,
   State,
-  Watch,
-  Build
+  Watch
 } from "@stencil/core";
-import type {
-  ShowcaseStoryClass,
-  ShowcaseCustomStory,
-  ShowcaseRenderProperty,
-  ShowcaseRenderPropertyBoolean,
-  ShowcaseRenderPropertyEnum,
-  ShowcaseRenderPropertyGroup,
-  ShowcaseRenderPropertyNumber,
-  ShowcaseRenderPropertyObject,
-  ShowcaseRenderPropertyString,
-  ShowcaseRenderPropertyTypes,
-  ShowcaseStory,
-  ShowcaseStories,
-  ShowcaseRenderPropertyStyle
-} from "./types";
+import { registryProperty } from "../../../common/registry-properties";
 import type {
   ChComboBoxRenderCustomEvent,
   ChRadioGroupRenderCustomEvent,
@@ -36,32 +22,52 @@ import type {
   RadioGroupModel,
   ThemeModel
 } from "../../../components";
-import {
-  defineControlMarkupWithUIModelReact,
-  defineControlMarkupWithUIModelStencil,
-  defineControlMarkupWithoutUIModelReact,
-  defineControlMarkupWithoutUIModelStencil
-} from "./utils";
-import { registryProperty } from "../../../common/registry-properties";
-import { getActionListPathCallback } from "./action-list/models";
 import { getImagePathCallbackAccordion } from "./accordion/models";
+import { getActionListPathCallback } from "./action-list/models";
 import { getComboBoxImagePathCallback } from "./combo-box/models";
 import { getImagePathCallbackEdit } from "./edit/models";
 import { getImagePathCallbackImage } from "./image/models";
 import { getImagePathCallbackTab } from "./tab/models";
 import { getImagePathCallbackTreeView } from "./tree-view/models";
+import type {
+  ShowcaseCustomStory,
+  ShowcaseRenderProperty,
+  ShowcaseRenderPropertyBoolean,
+  ShowcaseRenderPropertyEnum,
+  ShowcaseRenderPropertyGroup,
+  ShowcaseRenderPropertyNumber,
+  ShowcaseRenderPropertyObject,
+  ShowcaseRenderPropertyString,
+  ShowcaseRenderPropertyStyle,
+  ShowcaseRenderPropertyTypes,
+  ShowcaseStories,
+  ShowcaseStory,
+  ShowcaseStoryClass
+} from "./types";
+import {
+  defineControlMarkupWithoutUIModelReact,
+  defineControlMarkupWithoutUIModelStencil,
+  defineControlMarkupWithUIModelReact,
+  defineControlMarkupWithUIModelStencil
+} from "./utils";
 
+import {
+  disableAccessibilityReports,
+  enableAccessibilityReports
+} from "../../../common/analysis/reports";
 import { getDesignSystem, storeDesignSystem } from "../../models/ds-manager.js";
+import {
+  getLanguageDirection,
+  setLanguageDirectionInBrowser,
+  storeLanguageDirection
+} from "../../models/language-manager.js";
 import {
   getTheme,
   setThemeInBrowser,
   storeTheme
 } from "../../models/theme-manager.js";
-import {
-  getLanguageDirection,
-  storeLanguageDirection,
-  setLanguageDirectionInBrowser
-} from "../../models/language-manager.js";
+import { getDropdownImagePathCallback } from "./action-menu/models";
+import { findComponentMetadataUsingURLHash } from "./pages";
 import {
   ASIDE_WIDGET,
   colorSchemeModel,
@@ -76,12 +82,6 @@ import {
   USAGE_REACT,
   USAGE_STENCIL_JS
 } from "./renders";
-import { findComponentMetadataUsingURLHash } from "./pages";
-import { getDropdownImagePathCallback } from "./action-menu/models";
-import {
-  disableAccessibilityReports,
-  enableAccessibilityReports
-} from "../../../common/analysis/reports";
 
 disableAccessibilityReports();
 
@@ -498,7 +498,11 @@ export class ChShowcase {
           model={MERCURY_THEME}
         ></ch-theme>
 
-        {this.#showcaseStory.render(this.designSystem)}
+        {this.#componentId === "barcode-scanner" ? (
+          <slot name="ch-barcode-scanner" />
+        ) : (
+          this.#showcaseStory.render(this.designSystem)
+        )}
       </div>
     ),
     [USAGE_STENCIL_JS]: () => (
@@ -584,6 +588,8 @@ export class ChShowcase {
     )
   };
 
+  #componentId: string | undefined;
+
   // Refs
   #copyButtonRef: HTMLButtonElement;
   #flexibleLayoutRef: HTMLChFlexibleLayoutRenderElement | undefined;
@@ -608,9 +614,8 @@ export class ChShowcase {
       showcaseStory.disconnectedCallback();
     }
 
-    this.#checkShowcaseStoryMapping(
-      newComponentMetadata?.link!.url.replace("#", "")
-    );
+    this.#componentId = newComponentMetadata?.link!.url.replace("#", "");
+    this.#checkShowcaseStoryMapping(this.#componentId);
   }
 
   /**
@@ -1060,7 +1065,9 @@ export class ChShowcase {
             renders={this.#flexibleLayoutPlaygroundRenders}
             theme={SHOWCASE_STYLES}
             ref={el => (this.#playgroundRef = el)}
-          ></ch-flexible-layout-render>
+          >
+            <slot name="ch-barcode-scanner" slot="ch-barcode-scanner" />
+          </ch-flexible-layout-render>
         </div>
       );
     }
@@ -1104,9 +1111,8 @@ export class ChShowcase {
     this.onHashChange();
 
     if (this.componentMetadata) {
-      this.#checkShowcaseStoryMapping(
-        this.componentMetadata?.link!.url.replace("#", "")
-      );
+      this.#componentId = this.componentMetadata?.link!.url.replace("#", "");
+      this.#checkShowcaseStoryMapping(this.#componentId);
     }
   }
 
@@ -1158,7 +1164,10 @@ export class ChShowcase {
           renders={this.#flexibleLayoutRender}
           theme={SHOWCASE_STYLES}
           ref={el => (this.#flexibleLayoutRef = el)}
-        ></ch-flexible-layout-render>
+        >
+          {this.#componentId === "barcode-scanner" &&
+            this.#showcaseStory.render(this.designSystem)}
+        </ch-flexible-layout-render>
 
         <ch-theme
           attachStyleSheets={this.designSystem === "unanimo"}

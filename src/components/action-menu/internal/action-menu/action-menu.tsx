@@ -8,11 +8,12 @@ import {
   h
 } from "@stencil/core";
 
-import { ChPopoverAlign } from "../../../popover/types";
+import { getControlRegisterProperty } from "../../../../common/registry-properties";
 import {
-  tokenMap,
-  updateDirectionInImageCustomVar
-} from "../../../../common/utils";
+  ACTION_MENU_ITEM_EXPORT_PARTS,
+  ACTION_MENU_ITEM_PARTS_DICTIONARY,
+  DISABLED_CLASS
+} from "../../../../common/reserved-names";
 import type {
   GxImageMultiStateByDirection,
   GxImageMultiStateEnd,
@@ -20,17 +21,16 @@ import type {
   ImageRender
 } from "../../../../common/types";
 import {
-  DISABLED_CLASS,
-  ACTION_MENU_ITEM_EXPORT_PARTS,
-  ACTION_MENU_ITEM_PARTS_DICTIONARY
-} from "../../../../common/reserved-names";
+  tokenMap,
+  updateDirectionInImageCustomVar
+} from "../../../../common/utils";
+import { ChPopoverAlign } from "../../../popover/types";
 import type {
   ActionMenuImagePathCallback,
   ActionMenuItemActionableModel
 } from "../../types";
-import { focusFirstActionMenuItem } from "../utils";
 import { getActionMenuItemMetadata } from "../parse-model";
-import { getControlRegisterProperty } from "../../../../common/registry-properties";
+import { focusFirstActionMenuItem } from "../utils";
 
 const SEPARATE_BY_SPACE_REGEX = /\s+/;
 
@@ -163,6 +163,12 @@ export class ChActionMenu implements ComponentInterface {
   partsChanged(newParts: string) {
     this.#setExportparts(newParts);
   }
+
+  /**
+   * Specifies an alternative position to try when the popover overflows the
+   * window.
+   */
+  @Prop() readonly positionTry!: "flip-block" | "flip-inline" | "none";
 
   /**
    * Specifies the shortcut caption that the control will display.
@@ -308,6 +314,7 @@ export class ChActionMenu implements ComponentInterface {
       firstLayer={this.actionGroupParent}
       inlineAlign={this.inlineAlign}
       popover="manual"
+      positionTry={this.positionTry}
       show
     >
       <slot />

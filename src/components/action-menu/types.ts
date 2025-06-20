@@ -41,6 +41,16 @@ export type ActionMenuItemActionableModel = {
   itemsInlineAlign?: ChPopoverAlign;
   link?: Link;
   parts?: string;
+
+  /**
+   * Specifies an alternative position to try when the popover overflows the
+   * window.
+   *
+   * By default, this property takes to value of the `ch-action-menu-render`,
+   * which by default is `"none"`
+   */
+  positionTry?: "flip-block" | "flip-inline" | "none";
+
   shortcut?: string;
   startImgSrc?: string;
   startImgType?: Exclude<ImageRender, "img">;

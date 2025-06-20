@@ -10,6 +10,7 @@ import {
   Watch
 } from "@stencil/core";
 
+import type { ChPopoverAlign } from "../popover/types";
 import type {
   ActionMenuExpandedChangeEvent,
   ActionMenuHyperlinkClickEvent,
@@ -21,14 +22,13 @@ import type {
   ActionMenuKeyboardActionResult,
   ActionMenuModel
 } from "./types";
-import type { ChPopoverAlign } from "../popover/types";
 
-import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import {
   ACTION_MENU_ITEM_PARTS_DICTIONARY,
   ACTION_MENU_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../common/reserved-names";
+import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
 import { tokenMap } from "../../common/utils";
 import { actionMenuKeyEventsDictionary } from "./internal/keyboard-actions";
@@ -123,6 +123,12 @@ export class ChActionMenuRender {
   }
 
   /**
+   * Specifies an alternative position to try when the popover overflows the
+   * window.
+   */
+  @Prop() readonly positionTry: "flip-block" | "flip-inline" | "none" = "none";
+
+  /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly useGxRender?: boolean = false;
@@ -175,6 +181,7 @@ export class ChActionMenuRender {
         inlineAlign={itemUIModel.itemsBlockAlign ?? "outside-end"}
         model={itemUIModel}
         parts={itemUIModel.parts}
+        positionTry={itemUIModel.positionTry ?? this.positionTry}
         shortcut={itemUIModel.shortcut}
         startImgSrc={
           this.useGxRender
@@ -461,6 +468,7 @@ export class ChActionMenuRender {
             firstLayer
             inlineAlign={this.inlineAlign}
             popover="manual"
+            positionTry={this.positionTry}
             show
             onMouseOver={this.#handleActionMenuItemMouseOver}
             onMouseOut={this.#handleActionMenuItemMouseOut}

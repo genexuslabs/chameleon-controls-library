@@ -1,17 +1,17 @@
 import { h } from "@stencil/core";
+import { kbExplorerModel } from "../tree-view/models";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
   ShowcaseTemplatePropertyInfo
 } from "../types";
+import { renderShowcaseProperties } from "../utils";
 import {
   GXWebModel,
   eagerLargeModel,
   simpleModel1,
   simpleModel2
 } from "./models";
-import { kbExplorerModel } from "../tree-view/models";
-import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChActionMenuRenderElement> = {};
 
@@ -25,6 +25,7 @@ const render = () => (
       expanded={state.expanded}
       inlineAlign={state.inlineAlign}
       model={state.model}
+      positionTry={state.positionTry}
     >
       Expand menu
       <ch-tree-view-render
@@ -116,6 +117,26 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionMenuRenderE
           ]
         },
         {
+          id: "positionTry",
+          caption: "Position Try",
+          value: "none",
+          type: "enum",
+          values: [
+            {
+              value: "flip-block",
+              caption: "flip-block"
+            },
+            {
+              value: "flip-inline",
+              caption: "flip-inline"
+            },
+            {
+              value: "none",
+              caption: "none"
+            }
+          ]
+        },
+        {
           id: "disabled",
           caption: "Disabled",
           value: false,
@@ -140,6 +161,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChActionMenuRende
     { name: "disabled", defaultValue: false, type: "boolean" },
     { name: "expanded", defaultValue: false, type: "boolean" },
     { name: "model", fixed: true, value: "controlUIModel", type: "string" },
+    { name: "positionTry", defaultValue: "none", type: "string" },
     {
       name: "buttonClick",
       fixed: true,

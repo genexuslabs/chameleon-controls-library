@@ -66,7 +66,7 @@ export class ChMarkdownViewer {
    * There a 3 things needed to implement an extension:
    *  - A tokenizer (the heavy part of the extension).
    *  - A mapping between the custom token to the custom mdast nodes (pretty straightforward).
-   *  - A render of the custom mdast nodes in `TemplateResult` (pretty straightforward).
+   *  - A render of the custom mdast nodes in Lit's `TemplateResult` (pretty straightforward).
    *
    * You can see an [example here](./examples/index.ts), which turns syntax like
    * `Some text [[ Value ]]` to:

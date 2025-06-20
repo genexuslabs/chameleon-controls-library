@@ -46,8 +46,8 @@ export type MarkdownViewerExtension<ContentMapping extends object> = {
   tokensToMdast?: Partial<MdastExtension> | Partial<MdastExtension>[];
 
   /**
-   * A mapping from custom the custom mdast to the Lit's `TemplateResult`
-   * function. This object should map the new mdast Nodes (that this extension
+   * A mapping from the custom mdast nodes to the Lit's `TemplateResult`
+   * function. This object should map the new mdast nodes (that this extension
    * gives) to a function that returns `TemplateResult`.
    *
    * @example

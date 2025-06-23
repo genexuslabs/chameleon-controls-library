@@ -39,7 +39,7 @@
     "chameleon-generate-react": "dist/react/copy-react.js"
   },
   "dependencies": {
-    "@genexus/markdown-parser": "~0.2.0",
+    "@genexus/markdown-parser": "~0.3.0",
     "@open-wc/lit-helpers": "0.7.0",
     "html5-qrcode": "^2.3.8",
     "lit": "~3.3.0",

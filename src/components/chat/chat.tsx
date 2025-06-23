@@ -760,7 +760,7 @@ export class ChChat {
           role="row"
           slot="grid-content"
           class="grid-content"
-          part="content"
+          part="messages-container"
           inverseLoading
           // mode="lazy-render"
           items={this.items}

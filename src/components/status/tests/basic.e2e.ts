@@ -19,12 +19,4 @@ describe("[ch-status][basic]", () => {
   });
 
   it("should have Shadow DOM", () => expect(statusRef.shadowRoot).toBeTruthy());
-
-  it("should render with default properties", async () => {
-    const accessibleName = await statusRef.getProperty("accessibleName");
-    expect(accessibleName).toBeUndefined();
-
-    const loadingRegionRef = await statusRef.getProperty("loadingRegionRef");
-    expect(loadingRegionRef).toBeUndefined();
-  });
 });

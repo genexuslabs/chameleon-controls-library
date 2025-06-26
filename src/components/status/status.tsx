@@ -7,6 +7,10 @@ import {
   Watch,
   h
 } from "@stencil/core";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 
 const ARIA_BUSY = "aria-busy";
 const ARIA_DESCRIBEDBY = "aria-describedby";
@@ -21,6 +25,7 @@ let autoId = 0;
  * @status experimental
  */
 @Component({
+  formAssociated: true,
   shadow: true,
   styleUrl: "status.scss",
   tag: "ch-status"
@@ -43,7 +48,20 @@ export class ChStatus {
    * If the control is describing the loading progress of a particular region
    * of a page, set this property with the reference of the loading region.
    * This will set the `aria-describedby` and `aria-busy` attributes on the
-   * loading region to improve accessibility while the control is in progress.
+   * loading region to improve accessibility while the control is in rendered.
+   *
+   * When the control detects that is no longer in rendered (aka it is removed
+   * from the DOM), it will remove the `aria-busy` attribute and update (or
+   * remove if necessary) the`aria-describedby` attribute.
+   *
+   * If an ID is set prior to the component's first render, the ch-status will use
+   * this ID for the `aria-describedby`. Otherwise, the ch-status will compute a
+   * unique ID for this matter.
+   *
+   * **Important**: If you are using Shadow DOM, take into account that the
+   * `loadingRegionRef` must be in the same Shadow Tree as the ch-status.
+   * Otherwise, the `aria-describedby` binding won't work, since the control ID
+   * is not visible for the `loadingRegionRef`.
    */
   @Prop() readonly loadingRegionRef?: HTMLElement | undefined;
 
@@ -52,13 +70,15 @@ export class ChStatus {
     this.#removeAriaBusyAndAriaDescribedByInRegion(oldValue);
   }
 
+  #getControlId = () => this.el.id ?? this.#statusId;
+
   #setAriaBusyAndAriaDescribedByInRegion = () => {
     if (!this.loadingRegionRef) {
       return;
     }
 
     this.loadingRegionRef.setAttribute(ARIA_BUSY, "true");
-    this.loadingRegionRef.setAttribute(ARIA_DESCRIBEDBY, this.#statusId);
+    this.loadingRegionRef.setAttribute(ARIA_DESCRIBEDBY, this.#getControlId());
   };
 
   #removeAriaBusyAndAriaDescribedByInRegion = (
@@ -71,6 +91,26 @@ export class ChStatus {
     regionLoadingRef.removeAttribute(ARIA_BUSY);
     regionLoadingRef.removeAttribute(ARIA_DESCRIBEDBY);
   };
+
+  connectedCallback() {
+    // Set the unique ID if it was not already set in the Host
+    this.el.id ??= this.#statusId;
+
+    this.el.setAttribute("role", "status");
+    this.el.setAttribute("aria-live", "polite");
+
+    const labels = this.internals.labels;
+    const accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
+
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-status",
+      labels,
+      accessibleNameFromExternalLabel,
+      this.accessibleName
+    );
+  }
 
   componentWillRender() {
     // Check if the component should be active based on external conditions
@@ -87,12 +127,7 @@ export class ChStatus {
 
   render() {
     return (
-      <Host
-        role="status"
-        aria-live="polite"
-        aria-label={this.accessibleName}
-        id={this.#statusId}
-      >
+      <Host aria-label={this.accessibleName}>
         <slot></slot>
       </Host>
     );

@@ -1,6 +1,6 @@
 {
   "name": "@genexus/chameleon-controls-library",
-  "version": "6.13.0",
+  "version": "6.15.0",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -39,11 +39,12 @@
     "chameleon-generate-react": "dist/react/copy-react.js"
   },
   "dependencies": {
-    "@genexus/markdown-parser": "~0.1.1",
+    "@genexus/markdown-parser": "~0.3.0",
     "@open-wc/lit-helpers": "0.7.0",
     "html5-qrcode": "^2.3.8",
     "lit": "~3.3.0",
     "livekit-client": "~2.12.0",
+    "mdast-util-from-markdown": "2.0.2",
     "monaco-editor": "^0.48.0",
     "monaco-yaml": "^5.1.1",
     "qr-creator": "^1.0.0",

@@ -1,18 +1,12 @@
-import { markdownToMdAST } from "@genexus/markdown-parser";
 import { html, nothing, type TemplateResult } from "lit";
-import { classMap } from "lit/directives/class-map.js";
-import { AlignType, Code, Html, Root, Table } from "mdast";
-
-import {
-  clearLinkDefinitions,
-  getLinkDefinition,
-  setLinkDefinition
-} from "./link-resolver";
-import { rawHTMLToJSX } from "./raw-html-to-jsx.lit";
-import {
-  ElementsWithChildren,
+import { classMap } from "lit/directives/class-map";
+import { AlignType, Table } from "mdast";
+import { getLinkDefinition, setLinkDefinition } from "./link-resolver";
+import type { rawHTMLToJSX } from "./raw-html-to-jsx.lit";
+import type {
   ElementsWithoutCustomRender,
-  MarkdownViewerToJSXCommonMetadata
+  MarkdownViewerRenderFunctions,
+  MarkdownViewerRenderMetadata
 } from "./types";
 
 /**
@@ -23,21 +17,10 @@ import {
  */
 const HEADING_ID_REGEX = /\{#(.*?)\}/;
 
-export const LAST_NESTED_CHILD_CLASS = "last-nested-child";
-
 // Lazy load the code parser implementation
 let HTMLToJSX: typeof rawHTMLToJSX;
-let lastNestedChild: Root | ElementsWithChildren | Code | Html;
 
-const isLastNestedChildClass = (element: ElementsWithChildren | Code | Html) =>
-  element === lastNestedChild;
-
-const checkAndGetLastNestedChildClass = (
-  element: ElementsWithChildren
-): typeof LAST_NESTED_CHILD_CLASS | typeof nothing =>
-  isLastNestedChildClass(element) ? LAST_NESTED_CHILD_CLASS : nothing;
-
-const renderDefinedValues = <T>(
+export const renderDefinedValues = <T>(
   renderedContent: PromiseSettledResult<T>[]
 ): T[] => {
   const result = [];
@@ -102,9 +85,41 @@ const tableAlignmentDictionary: { [key in AlignType]: string } = {
   right: "ch-markdown-table-column-end"
 };
 
+const tableHeadRender = (
+  headCells: TemplateResult[],
+  alignmentClass: string | undefined,
+  additionalClasses: ReturnType<
+    MarkdownViewerRenderFunctions["getAdditionalClasses"]
+  >
+) => html`<th
+  class=${classMap({
+    [alignmentClass]: !!alignmentClass,
+    [additionalClasses]: typeof additionalClasses === "string"
+  })}
+>
+  ${headCells}
+</th>`;
+
+const tableCellDataRender = (
+  bodyCell: TemplateResult,
+  alignmentClass: string | undefined,
+  additionalClasses: ReturnType<
+    MarkdownViewerRenderFunctions["getAdditionalClasses"]
+  >
+) =>
+  html`<td
+    class=${classMap({
+      [alignmentClass]: !!alignmentClass,
+      [additionalClasses]: typeof additionalClasses === "string"
+    })}
+  >
+    ${bodyCell}
+  </td>`;
+
 const tableRender = async (
   table: Table,
-  metadata: MarkdownViewerToJSXCommonMetadata
+  metadata: MarkdownViewerRenderMetadata,
+  functions: MarkdownViewerRenderFunctions
 ) => {
   const tableHeadRow = table.children[0];
   const tableBodyRows = table.children.slice(1);
@@ -112,7 +127,7 @@ const tableRender = async (
 
   // Head cell promises
   const headCellPromises = tableHeadRow.children.map(tableCell =>
-    mdASTtoJSX(tableCell, metadata)
+    functions.renderChildren(tableCell, metadata, functions)
   );
 
   const bodyCellPromises = [];
@@ -120,7 +135,9 @@ const tableRender = async (
   // Body cell promises
   tableBodyRows.forEach(tableHead => {
     tableHead.children.forEach(tableCell => {
-      bodyCellPromises.push(mdASTtoJSX(tableCell, metadata));
+      bodyCellPromises.push(
+        functions.renderChildren(tableCell, metadata, functions)
+      );
     });
   });
 
@@ -140,16 +157,12 @@ const tableRender = async (
   return html`<table>
     <thead>
       <tr>
-        ${tableHeadRow.children.map(
-          (tableCell, index) =>
-            html`<th
-              class=${classMap({
-                [alignments[index]]: !!alignments[index],
-                [LAST_NESTED_CHILD_CLASS]: tableCell === lastNestedChild
-              })}
-            >
-              ${headCells[index]}
-            </th>`
+        ${tableHeadRow.children.map((tableCell, index) =>
+          tableHeadRender(
+            headCells[index],
+            alignments[index],
+            functions.getAdditionalClasses(tableCell)
+          )
         )}
       </tr>
     </thead>
@@ -158,16 +171,12 @@ const tableRender = async (
       ${tableBodyRows.map(
         (tableHead, rowIndex) =>
           html`<tr>
-            ${tableHead.children.map(
-              (tableCell, cellIndex) =>
-                html`<td
-                  class=${classMap({
-                    [alignments[cellIndex]]: !!alignments[cellIndex],
-                    [LAST_NESTED_CHILD_CLASS]: tableCell === lastNestedChild
-                  })}
-                >
-                  ${bodyCells[columnCount * rowIndex + cellIndex]}
-                </td>`
+            ${tableHead.children.map((tableCell, cellIndex) =>
+              tableCellDataRender(
+                bodyCells[columnCount * rowIndex + cellIndex],
+                alignments[cellIndex],
+                functions.getAdditionalClasses(tableCell)
+              )
             )}
           </tr>`
       )}
@@ -175,44 +184,52 @@ const tableRender = async (
   </table>`;
 };
 
-export const renderDictionary: {
-  [key in keyof ElementsWithoutCustomRender]: (
-    element: ElementsWithoutCustomRender[key],
-    metadata: MarkdownViewerToJSXCommonMetadata
-  ) => Promise<any> | any;
-} = {
-  blockquote: async (element, metadata) => {
-    const content = await mdASTtoJSX(element, metadata);
+export const markdownViewerRenderDictionary = {
+  blockquote: async (element, metadata, functions) => {
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
 
-    return html`<blockquote class=${checkAndGetLastNestedChildClass(element)}>
+    return html`<blockquote class=${functions.getAdditionalClasses(element)}>
       ${content}
     </blockquote>`;
   }, // TODO: Check if code can be inside this tag
 
   break: () => html`<br />`,
 
-  code: (element, metadata) =>
+  code: (element, metadata, functions) =>
     metadata.codeRender({
       lastNestedChildClass: metadata.lastNestedChildClass,
       language: element.lang,
       plainText: element.value,
-      showIndicator: metadata.showIndicator && isLastNestedChildClass(element)
+      showIndicator:
+        metadata.showIndicator && functions.isLastNestedChild(element)
     }),
 
   definition: element => setLinkDefinition(element.identifier, element.url),
 
-  delete: async (element, metadata) => {
-    const content = await mdASTtoJSX(element, metadata);
+  delete: async (element, metadata, functions) => {
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
 
-    return html`<del class=${checkAndGetLastNestedChildClass(element)}
+    return html`<del class=${functions.getAdditionalClasses(element)}
       >${content}</del
     >`;
   }, // TODO: Check if code can be inside this tag
 
-  emphasis: async (element, metadata) => {
-    const content = await mdASTtoJSX(element, metadata);
+  emphasis: async (element, metadata, functions) => {
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
 
-    return html`<em class=${checkAndGetLastNestedChildClass(element)}
+    return html`<em class=${functions.getAdditionalClasses(element)}
       >${content}</em
     >`;
   }, // TODO: Check if code can be inside this tag
@@ -221,7 +238,7 @@ export const renderDictionary: {
 
   footnoteReference: () => "",
 
-  heading: async (element, metadata) => {
+  heading: async (element, metadata, functions) => {
     // Check if the heading has an id
     const lastChild = element.children.at(-1);
     let headingId: string;
@@ -238,8 +255,12 @@ export const renderDictionary: {
     }
 
     // Render the content after the heading id processing
-    const content = await mdASTtoJSX(element, metadata);
-    const classes = checkAndGetLastNestedChildClass(element);
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
+    const classes = functions.getAdditionalClasses(element);
 
     return depthToHeading[element.depth](
       content,
@@ -248,7 +269,7 @@ export const renderDictionary: {
     ); // TODO: Add anchor icon at the start of the heading
   },
 
-  html: async (element, metadata) => {
+  html: async (element, metadata, functions) => {
     if (metadata.rawHTML && !HTMLToJSX) {
       // Load the parser implementation
       HTMLToJSX = (await import("./raw-html-to-jsx.lit")).rawHTMLToJSX;
@@ -259,7 +280,7 @@ export const renderDictionary: {
           element.value,
           metadata.allowDangerousHtml,
           // TODO: Add unit tests for these cases
-          metadata.showIndicator && isLastNestedChildClass(element)
+          metadata.showIndicator && functions.isLastNestedChild(element)
         )
       : element.value;
   },
@@ -276,26 +297,34 @@ export const renderDictionary: {
 
   inlineCode: element => html`<code class="hljs">${element.value}</code>`,
 
-  link: async (element, metadata) => {
+  link: async (element, metadata, functions) => {
     // Sanitize scripts
     if (element.url.includes("javascript:")) {
       return "";
     }
 
-    const content = await mdASTtoJSX(element, metadata);
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
 
     return html`<a
       aria-label=${element.title || nothing}
       title=${element.title || nothing}
-      class=${checkAndGetLastNestedChildClass(element)}
+      class=${functions.getAdditionalClasses(element)}
       href=${element.url}
     >
       ${content}
     </a>`;
   }, // TODO: Sanitize href?
 
-  linkReference: async (element, metadata) => {
-    const content = await mdASTtoJSX(element, metadata);
+  linkReference: async (element, metadata, functions) => {
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
     let url = "";
 
     // TODO: Implement the rest of alternatives for "referenceType"
@@ -313,48 +342,64 @@ export const renderDictionary: {
 
     return html`<a
       aria-label=${element.label || nothing}
-      class=${checkAndGetLastNestedChildClass(element)}
+      class=${functions.getAdditionalClasses(element)}
       href=${url}
     >
       ${content}
     </a>`;
   },
 
-  list: async (element, metadata) => {
-    const content = await mdASTtoJSX(element, metadata);
+  list: async (element, metadata, functions) => {
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
 
     return element.ordered
       ? html`<ol
-          class=${checkAndGetLastNestedChildClass(element)}
+          class=${functions.getAdditionalClasses(element)}
           start=${element.start}
         >
           ${content}
         </ol>` // TODO: Implement spread  // TODO: Check if code can be inside this tag
-      : html`<ul class=${checkAndGetLastNestedChildClass(element)}>
+      : html`<ul class=${functions.getAdditionalClasses(element)}>
           ${content}
         </ul>`; // TODO: Implement spread  // TODO: Check if code can be inside this tag
   },
 
-  listItem: async (element, metadata) => {
-    const content = await mdASTtoJSX(element, metadata);
+  listItem: async (element, metadata, functions) => {
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
 
-    return html`<li class=${checkAndGetLastNestedChildClass(element)}>
+    return html`<li class=${functions.getAdditionalClasses(element)}>
       ${content}
     </li>`;
   }, // TODO: Implement spread  // TODO: Check if code can be inside this tag
 
-  paragraph: async (element, metadata) => {
-    const content = await mdASTtoJSX(element, metadata);
+  paragraph: async (element, metadata, functions) => {
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
 
-    return html`<p class=${checkAndGetLastNestedChildClass(element)}>
+    return html`<p class=${functions.getAdditionalClasses(element)}>
       ${content}
     </p>`;
   }, // TODO: Check if code can be inside this tag
 
-  strong: async (element, metadata) => {
-    const content = await mdASTtoJSX(element, metadata);
+  strong: async (element, metadata, functions) => {
+    const content = await functions.renderChildren(
+      element,
+      metadata,
+      functions
+    );
 
-    return html`<strong class=${checkAndGetLastNestedChildClass(element)}>
+    return html`<strong class=${functions.getAdditionalClasses(element)}>
       ${content}
     </strong>`;
   }, // TODO: Check if code can be inside this tag
@@ -366,65 +411,15 @@ export const renderDictionary: {
   thematicBreak: () => html`<hr />`,
 
   yaml: () => ""
-} as const;
-
-const findLastNestedChild = (
-  elementWithChildren: ElementsWithChildren | Root
-) => {
-  const lastChild = elementWithChildren.children.at(-1);
-
-  // The last element have children. We must check its sub children
-  if ((lastChild as ElementsWithChildren).children?.length > 0) {
-    return findLastNestedChild(lastChild as ElementsWithChildren);
-  }
-
-  if (lastChild.type === "code" || lastChild.type === "html") {
-    return lastChild;
-  }
-
-  return elementWithChildren;
-};
-
-/**
- * Converts markdown abstract syntax tree (mdast) into JSX.
- */
-async function mdASTtoJSX(
-  root: ElementsWithChildren | Root,
-  metadata: MarkdownViewerToJSXCommonMetadata
-): Promise<TemplateResult[]> {
-  const childrenLength = root.children.length;
-  const asyncJSX = new Array(childrenLength);
-
-  // Get the async JSX
-  for (let index = 0; index < childrenLength; index++) {
-    const child = root.children[index];
-
-    asyncJSX.push(renderDictionary[child.type](child, metadata));
-  }
-
-  // Wait for all results to be completed in parallel
-  const renderedContent = await Promise.allSettled(asyncJSX);
-
-  // Return the Template array. TODO: Avoid additional array generation
-  return renderDefinedValues(renderedContent);
-}
-
-export const markdownToJSX = async (
-  markdown: string,
-  metadata: MarkdownViewerToJSXCommonMetadata
-): Promise<TemplateResult[]> => {
-  const mdAST: Root = markdownToMdAST(markdown);
-
-  // First, find the last nested child. Useful to set a marker in the element
-  // that accomplish this condition
-  lastNestedChild = findLastNestedChild(mdAST);
-
-  // Render the markdown as JSX
-  const JSX = await mdASTtoJSX(mdAST, metadata);
-
-  // Clear all definitions used to render the current markdown, so the next
-  // render does not have old information
-  clearLinkDefinitions();
-
-  return JSX;
+} as const satisfies {
+  [key in keyof ElementsWithoutCustomRender]: (
+    element: ElementsWithoutCustomRender[key],
+    metadata: MarkdownViewerRenderMetadata,
+    functions: MarkdownViewerRenderFunctions
+  ) =>
+    | Promise<string | TemplateResult | TemplateResult[] | void>
+    | string
+    | TemplateResult
+    | TemplateResult[]
+    | void;
 };

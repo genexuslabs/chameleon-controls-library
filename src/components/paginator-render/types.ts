@@ -9,7 +9,7 @@ export type PaginatorRenderNumericModel = {
   urlMapping?: (index: number) => string;
 };
 
-export type ControlsOrder = {
+export type PaginatorControlsOrder = {
   itemsPerPage?: number;
   itemsPerPageInfo?: number;
   firstControl?: number;

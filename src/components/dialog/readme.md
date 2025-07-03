@@ -27,9 +27,9 @@ interactive component.
 
 ## Events
 
-| Event          | Description                        | Type               |
-| -------------- | ---------------------------------- | ------------------ |
-| `dialogClosed` | Emitted when the dialog is closed. | `CustomEvent<any>` |
+| Event          | Description                                                                                                                   | Type               |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `dialogClosed` | Emitted when the dialog is closed.  This event can be prevented (`preventDefault()`), interrupting the `ch-dialog`'s closing. | `CustomEvent<any>` |
 
 
 ## Slots

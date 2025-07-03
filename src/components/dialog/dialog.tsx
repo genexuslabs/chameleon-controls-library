@@ -4,19 +4,19 @@ import {
   Event,
   EventEmitter,
   Host,
-  Watch,
   Prop,
   State,
+  Watch,
   h
 } from "@stencil/core";
-import { ChDialogResizeElement } from "./types";
+import { SyncWithRAF } from "../../common/sync-with-frames";
 import {
   forceCSSMinMax,
   isRTL,
   subscribeToRTLChanges,
   unsubscribeToRTLChanges
 } from "../../common/utils";
-import { SyncWithRAF } from "../../common/sync-with-frames";
+import { ChDialogResizeElement } from "./types";
 
 // Custom vars
 const DIALOG_BLOCK_START = "--ch-dialog-block-start";
@@ -290,6 +290,12 @@ export class ChDialog {
       this.#showModal();
     } else {
       this.#dialogRef.close();
+
+      // TODO: Add a unit test to ensure all listeners are removed.
+      // When the closed event is prevented, the host user might close the
+      // dialog by toggling the show property. In this case, we must remove any
+      // listener
+      this.#removeClickListener();
     }
   }
 
@@ -328,6 +334,9 @@ export class ChDialog {
 
   /**
    * Emitted when the dialog is closed.
+   *
+   * This event can be prevented (`preventDefault()`), interrupting the
+   * `ch-dialog`'s closing.
    */
   @Event() dialogClosed: EventEmitter;
 
@@ -370,9 +379,7 @@ export class ChDialog {
     // Disconnect RTL watcher to avoid memory leaks
     unsubscribeToRTLChanges(this.#dialogId);
 
-    document.removeEventListener("click", this.#evaluateClickOnDocument, {
-      capture: true
-    });
+    this.#removeClickListener();
   }
 
   #updatePositionWithRTL = (rtl: boolean) => {
@@ -399,14 +406,26 @@ export class ChDialog {
     this.#dragging = false;
   };
 
-  #handleDialogClose = () => {
-    this.show = false;
+  // TODO: Add a unit test for this feature
+  #handleDialogClose = (event: Event) => {
     // Emit events only when the action is committed by the user
-    this.dialogClosed.emit();
+    const eventInfo = this.dialogClosed.emit();
+
+    if (eventInfo.defaultPrevented) {
+      event.preventDefault();
+      return;
+    }
+
+    // Only close the dialog if the action was not prevented
+    this.show = false;
+
+    this.#removeClickListener();
+  };
+
+  #removeClickListener = () =>
     document.removeEventListener("click", this.#evaluateClickOnDocument, {
       capture: true
     });
-  };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //                           Drag implementation
@@ -506,17 +525,13 @@ export class ChDialog {
     }
   };
 
-  #closeHandler = () => {
-    this.show = false;
-  };
-
-  #evaluateClickOnDocument = (e: MouseEvent) => {
-    const clickWasMadeOutsideTheDialog = !e
+  #evaluateClickOnDocument = (event: MouseEvent) => {
+    const clickWasMadeOutsideTheDialog = !event
       .composedPath()
       .includes(this.#dialogRef);
 
     if (clickWasMadeOutsideTheDialog) {
-      this.#handleDialogClose();
+      this.#handleDialogClose(event);
     }
   };
 
@@ -552,9 +567,7 @@ export class ChDialog {
     this.#removeBorderSizeWatcher();
 
     // Avoid listener on document click
-    document.removeEventListener("click", this.#evaluateClickOnDocument, {
-      capture: true
-    });
+    this.#removeClickListener();
 
     // Add listeners
     document.addEventListener("mousemove", this.#trackElementResizeRAF, {
@@ -747,7 +760,7 @@ export class ChDialog {
           aria-labelledby={this.caption ? "heading" : null}
           class={this.showHeader ? "dialog--header" : null}
           part="dialog"
-          onClose={this.#handleDialogClose}
+          onCancel={this.#handleDialogClose}
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
           ref={el => (this.#dialogRef = el)}
         >
@@ -770,7 +783,7 @@ export class ChDialog {
                 class="close-button"
                 part="close-button"
                 type="button"
-                onClick={this.#closeHandler}
+                onClick={this.#handleDialogClose}
               ></button>
             </div>
           )}

@@ -613,7 +613,9 @@ export class ChPopover {
       this.#resizeObserver.disconnect();
     }
 
+    // TODO: This memory is never released
     this.#positionAdjustRAF ??= new SyncWithRAF();
+
     this.#resizeObserver ??= new ResizeObserver(
       (entries: ResizeObserverEntry[]) => {
         const popoverWasResized = entries.find(
@@ -938,9 +940,7 @@ export class ChPopover {
 
   #handleDragEnd = () => {
     // Cancel RAF to prevent access to undefined references
-    if (this.#dragRAF) {
-      this.#dragRAF.cancel();
-    }
+    this.#dragRAF?.cancel();
 
     // Remove listeners
     document.removeEventListener("mousemove", this.#trackElementDragRAF, {
@@ -1035,9 +1035,7 @@ export class ChPopover {
     this.resizing = false;
 
     // Cancel RAF to prevent access to undefined references
-    if (this.#resizeRAF) {
-      this.#resizeRAF.cancel();
-    }
+    this.#resizeRAF?.cancel();
 
     // Reset document cursor back to normal
     document.body.style.cursor = null;
@@ -1129,6 +1127,8 @@ export class ChPopover {
       this.#borderSizeObserver = null; // Free the memory
     }
 
+    // TODO: Add a unit test to ensure the queued RAF is canceled
+    this.#borderSizeRAF?.cancel();
     this.#borderSizeRAF = null; // Free the memory
   };
 

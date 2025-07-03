@@ -502,7 +502,7 @@ export class ChPopover {
    * Emitted when the popover is closed by an user interaction.
    *
    * This event can be prevented (`preventDefault()`), interrupting the
-   * ch-popover's closing.
+   * `ch-popover`'s closing.
    */
   @Event() popoverClosed: EventEmitter;
 

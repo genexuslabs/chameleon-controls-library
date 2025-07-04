@@ -3,18 +3,28 @@ import {
   Element,
   Event,
   EventEmitter,
+  forceUpdate,
+  h,
   Host,
   Method,
   Prop,
   State,
-  Watch,
-  forceUpdate,
-  h
+  Watch
 } from "@stencil/core";
+import { insertIntoIndex, removeElement } from "../../common/array";
+import { getControlRegisterProperty } from "../../common/registry-properties";
 import {
-  DraggableView,
-  DraggableViewInfo
-} from "../flexible-layout/internal/flexible-layout/types";
+  KEY_CODES,
+  SCROLLABLE_CLASS,
+  TAB_PARTS_DICTIONARY
+} from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
+import type {
+  CssContainProperty,
+  CssOverflowProperty,
+  GxImageMultiState,
+  GxImageMultiStateStart
+} from "../../common/types";
 import {
   inBetween,
   isPseudoElementImg,
@@ -22,6 +32,15 @@ import {
   tokenMap,
   updateDirectionInImageCustomVar
 } from "../../common/utils";
+import {
+  focusComposedPath,
+  MouseEventButton,
+  MouseEventButtons
+} from "../common/helpers";
+import {
+  DraggableView,
+  DraggableViewInfo
+} from "../flexible-layout/internal/flexible-layout/types";
 import {
   TabElementSize,
   TabItemCloseInfo,
@@ -40,25 +59,6 @@ import {
   isStartDirection,
   PANEL_ID
 } from "./utils";
-import { insertIntoIndex, removeElement } from "../../common/array";
-import {
-  focusComposedPath,
-  MouseEventButton,
-  MouseEventButtons
-} from "../common/helpers";
-import type {
-  CssContainProperty,
-  CssOverflowProperty,
-  GxImageMultiState,
-  GxImageMultiStateStart
-} from "../../common/types";
-import { getControlRegisterProperty } from "../../common/registry-properties";
-import {
-  KEY_CODES,
-  SCROLLABLE_CLASS,
-  TAB_PARTS_DICTIONARY
-} from "../../common/reserved-names";
-import { adoptCommonThemes } from "../../common/theme";
 
 const TAB_BUTTON_CLASS = "tab";
 const CLOSE_BUTTON_CLASS = "close-button";
@@ -1190,6 +1190,9 @@ export class ChTabRender implements DraggableView {
 
   #renderTabPages = (blockDirection: boolean, startDirection: boolean) => (
     <div
+      // This key is used key toggling the tabButtonHidden property, so we
+      // avoid destroying this div
+      key="panel-container"
       class={{
         "panel-container": true,
         "panel-container--collapsed": !this.expanded
@@ -1227,6 +1230,7 @@ export class ChTabRender implements DraggableView {
         key={PANEL_ID(item.id)}
         id={PANEL_ID(item.id)}
         role={!this.tabButtonHidden ? "tabpanel" : undefined}
+        // TODO: Should we set the aria-label when tabButtonHidden === true?
         aria-labelledby={!this.tabButtonHidden ? item.id : undefined}
         class={{
           panel: true,

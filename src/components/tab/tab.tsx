@@ -1369,6 +1369,7 @@ export class ChTabRender implements DraggableView {
     return (
       <Host
         class={
+          // TODO: Add a unit test for the tabButtonHidden property
           !this.tabButtonHidden ? `ch-tab--${this.tabListPosition}` : undefined
         }
       >

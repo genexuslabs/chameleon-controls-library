@@ -1,4 +1,5 @@
 import { h } from "@stencil/core";
+import type { LayoutSplitterModel } from "../../../../components/layout-splitter/types";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -11,7 +12,6 @@ import {
   showcaseTemplateClassProperty,
   updateShowcase
 } from "../utils";
-import type { LayoutSplitterModel } from "../../../../components/layout-splitter/types";
 
 const state: Partial<HTMLChDialogElement> = {};
 
@@ -30,6 +30,31 @@ const handleDialogOpen = () => {
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
+  updateShowcase();
+};
+
+let showNestedModalDialog = false;
+let showDoubleNestedModalDialog = false;
+
+const handleNestedModalDialogOpen = () => {
+  showNestedModalDialog = true;
+  updateShowcase();
+};
+
+const handleDoubleNestedModalDialogOpen = () => {
+  showDoubleNestedModalDialog = true;
+  updateShowcase();
+};
+
+const handleNestedModalDialogClose = (event: CustomEvent) => {
+  event.stopPropagation();
+  showNestedModalDialog = false;
+  updateShowcase();
+};
+
+const handleDoubleNestedModalDialogClose = (event: CustomEvent) => {
+  event.stopPropagation();
+  showDoubleNestedModalDialog = false;
   updateShowcase();
 };
 
@@ -67,7 +92,42 @@ const render = () => [
       </div>
 
       <div slot="end">
-        <button class="button-primary">button</button>
+        <button class="button-primary" onClick={handleNestedModalDialogOpen}>
+          Open nested modal dialog
+        </button>
+
+        <ch-dialog
+          class="dialog dialog-primary"
+          caption="Nested modal dialog"
+          show={showNestedModalDialog}
+          showHeader
+          onDialogClosed={handleNestedModalDialogClose}
+        >
+          <div class="spacing-body">
+            This dialog is nested and can be closed with the Esc key, clicking
+            on the close button or clicking outside the dialog.
+            <button
+              class="button-primary"
+              onClick={handleDoubleNestedModalDialogOpen}
+            >
+              Open double nested modal dialog
+            </button>
+            <ch-dialog
+              class="dialog dialog-primary"
+              caption="Double nested modal dialog"
+              show={showDoubleNestedModalDialog}
+              showHeader
+              onDialogClosed={handleDoubleNestedModalDialogClose}
+            >
+              <div class="spacing-body">
+                This dialog is double nested.
+                <br />
+                Close it with the Esc key, clicking on the close button or
+                clicking outside the dialog.
+              </div>
+            </ch-dialog>
+          </div>
+        </ch-dialog>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
           repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste

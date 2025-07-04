@@ -9,6 +9,7 @@ import {
   Watch,
   h
 } from "@stencil/core";
+import { removeElement } from "../../common/array";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import {
   forceCSSMinMax,
@@ -74,6 +75,26 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
 
 let autoId = 0;
+
+const openModalDialogs: HTMLChDialogElement[] = [];
+
+const addOpenModalDialog = (dialog: HTMLChDialogElement) =>
+  openModalDialogs.push(dialog);
+
+const removeOpenModalDialog = (dialog: HTMLChDialogElement) => {
+  // TODO: Add unit tests for these cases
+  // We don't try to remove the last dialog, because the dialog reference could
+  // be a non-modal dialog or we can even close a dialog that is not the last
+  // open dialog.
+  const dialogIndex = openModalDialogs.indexOf(dialog);
+
+  if (dialogIndex !== -1) {
+    removeElement(openModalDialogs, dialogIndex);
+  }
+};
+
+const isLastModalDialogOpened = (dialog: HTMLChDialogElement) =>
+  openModalDialogs.at(-1) === dialog;
 
 /**
  * The `ch-dialog` component represents a modal or non-modal dialog box or other
@@ -287,9 +308,15 @@ export class ChDialog {
 
     // Update the dialog visualization
     if (show) {
-      this.#showModal();
+      this.#showDialog();
     } else {
       this.#dialogRef.close();
+
+      // TODO: Add a unit test for this
+      // We don't remove the dialog from the array in the removeClickListener
+      // method, because if we resize a nested dialog, we must not close other
+      // ch-dialog elements when it's being resized the last opened dialog
+      removeOpenModalDialog(this.el);
 
       // TODO: Add a unit test to ensure all listeners are removed.
       // When the closed event is prevented, the host user might close the
@@ -304,9 +331,9 @@ export class ChDialog {
    * interrupt interaction with the rest of the page being inert, while
    * non-modal dialog boxes allow interaction with the rest of the page.
    *
-   * Note: If `show !== true`, this property does not reflect changes on
+   * Note: If `show === true`, this property does not reflect changes on
    * runtime, since at the time of writing browsers do not support switching
-   * from modal to not-modal, (or vice-versa).
+   * from modal to not-modal (or vice-versa), when the `dialog` is opened.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly modal: boolean = true;
@@ -364,7 +391,7 @@ export class ChDialog {
       // Schedule update for watchers
       this.#checkBorderSizeWatcher = true;
       this.#checkPositionWatcher = true;
-      this.#showModal();
+      this.#showDialog();
     }
 
     // Initialize watchers
@@ -378,6 +405,12 @@ export class ChDialog {
 
     // Disconnect RTL watcher to avoid memory leaks
     unsubscribeToRTLChanges(this.#dialogId);
+
+    // TODO: Add a unit test for this
+    // We don't remove the dialog from the array in the removeClickListener
+    // method, because if we resize a nested dialog, we must not close other
+    // ch-dialog elements when it's being resized the last opened dialog
+    removeOpenModalDialog(this.el);
 
     this.#removeClickListener();
   }
@@ -514,9 +547,14 @@ export class ChDialog {
     this.#lastDragEvent = null;
   };
 
-  #showModal = () => {
+  #showDialog = () => {
     if (this.modal) {
+      // Since the dialog is modal, we need to add it to the array so we can
+      // verify that document clicks only closes the last modal dialog opened
+      addOpenModalDialog(this.el);
+
       this.#dialogRef.showModal();
+
       document.addEventListener("click", this.#evaluateClickOnDocument, {
         capture: true
       });
@@ -525,10 +563,15 @@ export class ChDialog {
     }
   };
 
+  /**
+   * This handler is only used for modal dialogs. It only evaluates the path if
+   * this modal dialog is the last opened one.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #evaluateClickOnDocument = (event: MouseEvent) => {
-    const clickWasMadeOutsideTheDialog = !event
-      .composedPath()
-      .includes(this.#dialogRef);
+    const clickWasMadeOutsideTheDialog =
+      isLastModalDialogOpened(this.el) &&
+      !event.composedPath().includes(this.#dialogRef);
 
     if (clickWasMadeOutsideTheDialog) {
       this.#handleDialogClose(event);

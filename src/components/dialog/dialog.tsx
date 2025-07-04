@@ -96,6 +96,8 @@ const removeOpenModalDialog = (dialog: HTMLChDialogElement) => {
 const isLastModalDialogOpened = (dialog: HTMLChDialogElement) =>
   openModalDialogs.at(-1) === dialog;
 
+// TODO: Specify in the description what happens when multiple modal dialogs are opened.
+
 /**
  * The `ch-dialog` component represents a modal or non-modal dialog box or other
  * interactive component.

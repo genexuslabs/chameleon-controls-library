@@ -1,20 +1,4 @@
 import { h } from "@stencil/core";
-import {
-  ShowcaseRender,
-  ShowcaseRenderProperties,
-  ShowcaseStory,
-  ShowcaseTemplateFrameWork,
-  ShowcaseTemplatePropertyInfo
-} from "../types";
-import {
-  disabledModel1,
-  disabledModel4,
-  disabledModel2,
-  disabledModel3,
-  simpleModel1,
-  simpleModel2,
-  closeButtonModel
-} from "./models";
 import { ChTabRenderCustomEvent } from "../../../../components";
 import {
   TabItemCloseInfo,
@@ -26,11 +10,27 @@ import {
   preferencesModel
 } from "../tree-view/models";
 import {
+  ShowcaseRender,
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplateFrameWork,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import {
   insertSpacesAtTheBeginningExceptForTheFirstLine,
   renderShowcaseProperties,
   showcaseTemplateClassProperty,
   updateShowcase
 } from "../utils";
+import {
+  closeButtonModel,
+  disabledModel1,
+  disabledModel2,
+  disabledModel3,
+  disabledModel4,
+  simpleModel1,
+  simpleModel2
+} from "./models";
 
 const state: Partial<HTMLChTabRenderElement> = {};
 const renderedItems = new Set(["item1"]);
@@ -73,6 +73,7 @@ const render: ShowcaseRender = designSystem => (
         showTabListEnd={state.showTabListEnd}
         showTabListStart={state.showTabListStart}
         sortable={state.sortable}
+        tabButtonHidden={state.tabButtonHidden}
         onItemClose={handleItemClose}
         onSelectedItemChange={selectedItemChangeHandler}
       >
@@ -126,6 +127,7 @@ const render: ShowcaseRender = designSystem => (
         showTabListEnd={state.showTabListEnd}
         showTabListStart={state.showTabListStart}
         sortable={state.sortable}
+        tabButtonHidden={state.tabButtonHidden}
         onItemClose={handleItemClose}
         onSelectedItemChange={selectedItemChangeHandler}
       >

@@ -1,13 +1,13 @@
 import { h } from "@stencil/core";
+import { ChNavigationListRenderCustomEvent } from "../../../../components";
+import { NavigationListHyperlinkClickEvent } from "../../../../components/navigation-list/types";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
   ShowcaseTemplatePropertyInfo
 } from "../types";
-import { unanimoShowcase } from "./models";
-import { ChNavigationListRenderCustomEvent } from "../../../../components";
 import { renderShowcaseProperties } from "../utils";
-import { NavigationListHyperlinkClickEvent } from "../../../../components/navigation-list/types";
+import { unanimoShowcase } from "./models";
 
 const state: Partial<HTMLChNavigationListRenderElement> = {};
 

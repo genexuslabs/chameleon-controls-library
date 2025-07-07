@@ -8,6 +8,12 @@ import {
   h
 } from "@stencil/core";
 
+import { getControlRegisterProperty } from "../../../../common/registry-properties";
+import {
+  DISABLED_CLASS,
+  NAVIGATION_LIST_ITEM_EXPORT_PARTS,
+  NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
+} from "../../../../common/reserved-names";
 import {
   GxImageMultiState,
   GxImageMultiStateStart,
@@ -20,14 +26,8 @@ import {
   updateDirectionInImageCustomVar
 } from "../../../../common/utils";
 import { NavigationListItemModel } from "../../types";
-import { getNavigationListItemLevelPart } from "./utils";
-import {
-  DISABLED_CLASS,
-  NAVIGATION_LIST_ITEM_EXPORT_PARTS,
-  NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
-} from "../../../../common/reserved-names";
 import { NAVIGATION_LIST_INITIAL_LEVEL } from "../../utils";
-import { getControlRegisterProperty } from "../../../../common/registry-properties";
+import { getNavigationListItemLevelPart } from "./utils";
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
   item: NavigationListItemModel
@@ -105,7 +105,9 @@ export class ChNavigationListItem implements ComponentInterface {
   @Prop() readonly level!: number;
 
   /**
-   *
+   * Specifies the hyperlink properties of the item. If this property is
+   * defined, the `ch-navigation-list-item` will render an anchor tag with this
+   * properties. Otherwise, it will render a button tag.
    */
   @Prop() readonly link?: ItemLink | undefined;
 
@@ -292,6 +294,8 @@ export class ChNavigationListItem implements ComponentInterface {
           [levelPart]: true
         })}
         href={!this.disabled ? this.link.url : undefined}
+        // TODO: Add unit tests for this
+        target={!this.disabled ? this.link.target : undefined}
         ref={el => (this.#actionRef = el)}
       >
         {this.#renderCaption(navigationListCollapsed, levelPart)}

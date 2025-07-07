@@ -17,7 +17,7 @@ export const modelMinimal: ActionGroupModel = [
         id: "item-2-2",
         startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
-        link: { url: "https://www.google.com.uy" },
+        link: { url: "https://www.google.com.uy", target: "_blank" },
         caption: "Google"
         // showSeparator: false
       },

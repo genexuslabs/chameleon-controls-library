@@ -177,8 +177,8 @@ export class ChActionMenuRender {
         expandable={expandable}
         expanded={itemUIModel.expanded}
         getImagePathCallback={this.getImagePathCallback}
-        href={itemUIModel.link?.url}
         inlineAlign={itemUIModel.itemsBlockAlign ?? "outside-end"}
+        link={itemUIModel.link}
         model={itemUIModel}
         parts={itemUIModel.parts}
         positionTry={itemUIModel.positionTry ?? this.positionTry}

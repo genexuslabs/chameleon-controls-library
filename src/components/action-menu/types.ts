@@ -1,4 +1,4 @@
-import { GxImageMultiState, ImageRender } from "../../common/types";
+import { GxImageMultiState, ImageRender, ItemLink } from "../../common/types";
 import { ChPopoverAlign } from "../popover/types";
 
 export type ActionMenuModel = ActionMenuItemModel[];
@@ -39,7 +39,7 @@ export type ActionMenuItemActionableModel = {
   items?: ActionMenuModel;
   itemsBlockAlign?: ChPopoverAlign;
   itemsInlineAlign?: ChPopoverAlign;
-  link?: Link;
+  link?: ItemLink;
   parts?: string;
 
   /**
@@ -66,10 +66,6 @@ export type ActionMenuItemSeparatorModel = {
 export type ActionMenuItemSlotModel = {
   id: string;
   type: ActionMenuItemTypeSlot;
-};
-
-type Link = {
-  url: string;
 };
 
 export type ActionMenuExpandedChangeEvent = {

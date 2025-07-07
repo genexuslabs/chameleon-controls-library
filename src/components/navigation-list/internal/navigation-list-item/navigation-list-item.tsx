@@ -295,6 +295,8 @@ export class ChNavigationListItem implements ComponentInterface {
         })}
         href={!this.disabled ? this.link.url : undefined}
         // TODO: Add unit tests for this
+        rel={!this.disabled ? this.link.rel : undefined}
+        // TODO: Add unit tests for this
         target={!this.disabled ? this.link.target : undefined}
         ref={el => (this.#actionRef = el)}
       >

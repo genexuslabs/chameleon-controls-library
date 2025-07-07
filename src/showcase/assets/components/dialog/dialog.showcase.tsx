@@ -76,6 +76,7 @@ const render = () => [
     adjustPositionAfterResize={state.adjustPositionAfterResize}
     allowDrag={state.allowDrag}
     caption={state.caption}
+    closable={state.closable}
     class="dialog dialog-primary"
     closeButtonAccessibleName={state.closeButtonAccessibleName}
     show={state.show}
@@ -201,6 +202,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChDialogElement> =
           type: "string"
         },
         {
+          id: "closable",
+          caption: "Closable",
+          value: true,
+          type: "boolean"
+        },
+        {
           id: "resizable",
           caption: "Resizable",
           value: false,
@@ -248,6 +255,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCheckboxElement
       value: "dialog dialog-primary",
       type: "string"
     },
+    { name: "closable", defaultValue: true, type: "boolean" },
     {
       name: "closeButtonAccessibleName",
       defaultValue: undefined,

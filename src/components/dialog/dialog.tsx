@@ -292,6 +292,16 @@ export class ChDialog {
   @Prop() readonly caption: string;
 
   /**
+   * If `closable === true` the `ch-dialog` can be closed by user interaction,
+   * in which case a close button is rendered in the header
+   * (when `showHeader === true`).
+   *
+   * If `closable === false`, the close button is not rendered and pressing the
+   * `Esc` key or clicking outside of the `ch-dialog` will not close it.
+   */
+  @Prop() readonly closable: boolean = true;
+
+  /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
    * for the element. This label is used for the close button of the header.
@@ -443,10 +453,8 @@ export class ChDialog {
 
   // TODO: Add a unit test for this feature
   #handleDialogClose = (event: Event) => {
-    // Emit events only when the action is committed by the user
-    const eventInfo = this.dialogClosed.emit();
-
-    if (eventInfo.defaultPrevented) {
+    // Prevent the close with Esc key
+    if (!this.closable || this.dialogClosed.emit().defaultPrevented) {
       event.preventDefault();
       return;
     }
@@ -572,6 +580,9 @@ export class ChDialog {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #evaluateClickOnDocument = (event: MouseEvent) => {
     const clickWasMadeOutsideTheDialog =
+      // TODO: We can optimize this by not attaching the event listener in the
+      // document if `closable === false`
+      this.closable &&
       isLastModalDialogOpened(this.el) &&
       !event.composedPath().includes(this.#dialogRef);
 
@@ -823,13 +834,19 @@ export class ChDialog {
                   {this.caption}
                 </h2>
               )}
-              <button
-                aria-label={this.closeButtonAccessibleName || null}
-                class="close-button"
-                part="close-button"
-                type="button"
-                onClick={this.#handleDialogClose}
-              ></button>
+
+              {
+                // TODO: Add a unit test for this
+                this.closable && (
+                  <button
+                    aria-label={this.closeButtonAccessibleName || null}
+                    class="close-button"
+                    part="close-button"
+                    type="button"
+                    onClick={this.#handleDialogClose}
+                  ></button>
+                )
+              }
             </div>
           )}
 

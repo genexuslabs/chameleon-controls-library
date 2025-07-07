@@ -272,6 +272,9 @@ export class ChActionMenu implements ComponentInterface {
             expandable && !this.expanded
         })}
         href={!this.disabled ? this.link.url : undefined}
+        // TODO: Add unit tests for this
+        rel={!this.disabled ? this.link.rel : undefined}
+        // TODO: Add unit tests for this
         target={!this.disabled ? this.link.target : undefined}
         // TODO: Use a different ref due to a StencilJS bug when reassigning
         // the same variable with a different element's ref in runtime

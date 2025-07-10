@@ -48,7 +48,6 @@ const render = () => (
           disabled={state.disabled}
           value={state.value}
           stars={state.stars}
-          step={state.step}
           onInput={handleValueInput("form-rating-1", "rating-1")}
         ></ch-rating>
       </form>
@@ -74,7 +73,6 @@ const render = () => (
           disabled={state.disabled}
           value={state.value}
           stars={state.stars}
-          step={state.step}
           onInput={handleValueInput("form-rating-2", "rating-2")}
         ></ch-rating>
       </form>
@@ -100,7 +98,6 @@ const render = () => (
             disabled={state.disabled}
             value={state.value}
             stars={state.stars}
-            step={state.step}
             onInput={handleValueInput("form-rating-3", "rating-3")}
           ></ch-rating>
         </label>
@@ -134,12 +131,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChRatingElement> =
           type: "number"
         },
         {
-          id: "step",
-          caption: "Step",
-          value: 1,
-          type: "number"
-        },
-        {
           id: "disabled",
           caption: "Disabled",
           value: false,
@@ -161,7 +152,6 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChRatingElement>[
     { name: "disabled", defaultValue: false, type: "boolean" },
     { name: "value", defaultValue: 0, type: "number" },
     { name: "stars", defaultValue: 5, type: "number" },
-    { name: "step", defaultValue: 1, type: "number" },
     {
       name: "input",
       fixed: true,

@@ -6,7 +6,6 @@ testDefaultProperties("ch-rating", {
   disabled: false,
   name: undefined,
   stars: 5,
-  step: 1,
   value: 0
 });
 

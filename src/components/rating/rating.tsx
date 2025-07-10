@@ -83,6 +83,8 @@ export class ChRating {
   };
 
   #syncValue = (event: InputEvent) => {
+    event.stopPropagation();
+
     this.value = Number((event.target as HTMLInputElement).value);
 
     this.#updateFormValue();

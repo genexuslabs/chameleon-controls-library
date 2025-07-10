@@ -37,6 +37,13 @@
   block-size: max-content;
 }
 
+.star-container {
+  position: relative;
+  display: grid;
+  block-size: var(--ch-rating-star__size);
+  inline-size: var(--ch-rating-star__size);
+}
+
 input {
   position: absolute;
   inset: 0;
@@ -60,10 +67,8 @@ input {
     2% 35%,
     39% 35%
   );
-  block-size: var(--ch-rating-star__size);
-  inline-size: var(--ch-rating-star__size);
-  pointer-events: none;
   background-color: var(--ch-rating-star__unselected-background-color);
+  pointer-events: none;
 
   &::before {
     content: "";

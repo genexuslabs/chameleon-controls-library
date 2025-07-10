@@ -1,12 +1,13 @@
 import {
+  AttachInternals,
   Component,
   Element,
-  h,
-  Prop,
-  AttachInternals,
-  Watch,
   Event,
-  EventEmitter
+  EventEmitter,
+  h,
+  Host,
+  Prop,
+  Watch
 } from "@stencil/core";
 import {
   analyzeLabelExistence,
@@ -61,12 +62,6 @@ export class ChRating {
   }
 
   /**
-   * This attribute lets you specify the step of the rating. It accepts
-   * non-integer values like 0.5, 0.2, 0.01 and so on.
-   */
-  @Prop() readonly step: number = 1;
-
-  /**
    * The current value displayed by the component.
    */
   @Prop({ mutable: true }) value: number = 0;
@@ -114,21 +109,41 @@ export class ChRating {
       1 // At most 1
     );
 
+    const selected = starValue === 1;
+
     return (
       <div
         key={index}
-        aria-hidden="true"
-        class="star"
+        class="star-container"
         part={tokenMap({
-          star: true,
-          selected: starValue === 1,
+          "star-container": true,
+          selected: selected,
           unselected: starValue === 0,
           "partial-selected": starValue !== 0 && starValue !== 1
         })}
         style={{
           "--star-selected-value": `${starValue}`
         }}
-      ></div>
+      >
+        <input
+          // TODO: Add support to translate this label
+          aria-label={`${index + 1} stars`}
+          name="star"
+          checked={selected}
+          disabled={this.disabled}
+          value={index + 1}
+          type="radio"
+        />
+        <div
+          class="star"
+          part={tokenMap({
+            star: true,
+            selected: selected,
+            unselected: starValue === 0,
+            "partial-selected": starValue !== 0 && starValue !== 1
+          })}
+        ></div>
+      </div>
     );
   };
 
@@ -148,6 +163,8 @@ export class ChRating {
       this.#accessibleNameFromExternalLabel,
       this.accessibleName
     );
+
+    this.el.setAttribute("role", "radiogroup");
   }
 
   render() {
@@ -155,24 +172,24 @@ export class ChRating {
     const calculatedValue = this.#calculateValue(calculatedMaxValue);
 
     return (
-      <div class="container" part="stars-container">
-        <input
-          aria-label={
-            this.#accessibleNameFromExternalLabel || this.accessibleName || null
-          }
-          type="range"
-          disabled={this.disabled}
-          min="0"
-          max={calculatedMaxValue}
-          step={this.step}
-          value={calculatedValue}
-          onInput={this.#syncValue}
-        />
-
-        {this.#starsArray.map(index =>
-          this.#renderStar(calculatedValue, index)
-        )}
-      </div>
+      <Host
+        aria-label={
+          !this.#accessibleNameFromExternalLabel ||
+          this.#accessibleNameFromExternalLabel !== this.accessibleName
+            ? this.accessibleName
+            : null
+        }
+      >
+        <div
+          class="container"
+          part="stars-container"
+          onInput={this.disabled ? undefined : this.#syncValue}
+        >
+          {this.#starsArray.map(index =>
+            this.#renderStar(calculatedValue, index)
+          )}
+        </div>
+      </Host>
     );
   }
 }

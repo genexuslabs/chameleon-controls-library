@@ -110,6 +110,7 @@ export class ChRating {
     );
 
     const selected = starValue === 1;
+    const startIndex = index + 1;
 
     return (
       <div
@@ -125,15 +126,6 @@ export class ChRating {
           "--star-selected-value": `${starValue}`
         }}
       >
-        <input
-          // TODO: Add support to translate this label
-          aria-label={`${index + 1} stars`}
-          name="star"
-          checked={selected}
-          disabled={this.disabled}
-          value={index + 1}
-          type="radio"
-        />
         <div
           class="star"
           part={tokenMap({
@@ -143,6 +135,16 @@ export class ChRating {
             "partial-selected": starValue !== 0 && starValue !== 1
           })}
         ></div>
+        <input
+          id={`${startIndex}`}
+          // TODO: Add support to translate this label
+          aria-label={`${startIndex} stars`}
+          name="star"
+          checked={selected}
+          disabled={this.disabled}
+          type="radio"
+          value={startIndex}
+        />
       </div>
     );
   };

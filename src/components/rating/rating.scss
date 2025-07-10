@@ -24,10 +24,14 @@
   );
 
   display: inline-grid;
+
+  // This property is necessary to ensure the focus is not delegated to the
+  // first radio when clicking the background of the control, but not an item
+  pointer-events: none;
 }
 
-:host(:disabled) {
-  pointer-events: none;
+:host(:not(:disabled)) > .container {
+  pointer-events: all;
 }
 
 .container {
@@ -47,7 +51,6 @@
 input {
   position: absolute;
   inset: 0;
-  opacity: 0;
   appearance: none;
   margin: 0;
   outline: unset;

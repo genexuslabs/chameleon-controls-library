@@ -8,6 +8,7 @@ testDefaultProperties("ch-markdown-viewer", {
   avoidFlashOfUnstyledContent: false,
   rawHtml: false,
   renderCode: undefined,
+  extensions: undefined,
   showIndicator: false,
   theme: "ch-markdown-viewer",
   value: undefined

@@ -25,6 +25,10 @@
   animation: twinkle 0.75s linear infinite;
 }
 
+ch-markdown-viewer-lit {
+  display: contents;
+}
+
 .ch-markdown-table-column-start {
   text-align: start;
 }
@@ -50,7 +54,6 @@ hr {
 }
 
 table {
-  display: block;
   overflow: auto;
   word-break: normal;
   border-spacing: 0px;

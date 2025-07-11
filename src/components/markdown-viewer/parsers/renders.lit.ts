@@ -91,14 +91,17 @@ const tableHeadRender = (
   additionalClasses: ReturnType<
     MarkdownViewerRenderFunctions["getAdditionalClasses"]
   >
-) => html`<th
-  class=${classMap({
-    [alignmentClass]: !!alignmentClass,
-    [additionalClasses]: typeof additionalClasses === "string"
-  })}
->
-  ${headCells}
-</th>`;
+) => {
+  const classes =
+    alignmentClass || typeof additionalClasses === "string"
+      ? classMap({
+          [alignmentClass]: !!alignmentClass,
+          [additionalClasses]: typeof additionalClasses === "string"
+        })
+      : nothing;
+
+  return html`<th class=${classes}>${headCells}</th>`;
+};
 
 const tableCellDataRender = (
   bodyCell: TemplateResult,
@@ -106,15 +109,17 @@ const tableCellDataRender = (
   additionalClasses: ReturnType<
     MarkdownViewerRenderFunctions["getAdditionalClasses"]
   >
-) =>
-  html`<td
-    class=${classMap({
-      [alignmentClass]: !!alignmentClass,
-      [additionalClasses]: typeof additionalClasses === "string"
-    })}
-  >
-    ${bodyCell}
-  </td>`;
+) => {
+  const classes =
+    alignmentClass || typeof additionalClasses === "string"
+      ? classMap({
+          [alignmentClass]: !!alignmentClass,
+          [additionalClasses]: typeof additionalClasses === "string"
+        })
+      : nothing;
+
+  return html`<td class=${classes}>${bodyCell}</td>`;
+};
 
 const tableRender = async (
   table: Table,
@@ -155,17 +160,13 @@ const tableRender = async (
   );
 
   return html`<table>
-    <thead>
-      <tr>
-        ${tableHeadRow.children.map((tableCell, index) =>
+    <thead><tr>${tableHeadRow.children.map((tableCell, index) =>
           tableHeadRender(
             headCells[index],
             alignments[index],
             functions.getAdditionalClasses(tableCell)
           )
-        )}
-      </tr>
-    </thead>
+        )}</tr></thead>
 
     <tbody>
       ${tableBodyRows.map(
@@ -191,10 +192,9 @@ export const markdownViewerRenderDictionary = {
       metadata,
       functions
     );
+    const classes = functions.getAdditionalClasses(element);
 
-    return html`<blockquote class=${functions.getAdditionalClasses(element)}>
-      ${content}
-    </blockquote>`;
+    return html`<blockquote class=${classes}>${content}</blockquote>`;
   }, // TODO: Check if code can be inside this tag
 
   break: () => html`<br />`,
@@ -314,9 +314,8 @@ export const markdownViewerRenderDictionary = {
       title=${element.title || nothing}
       class=${functions.getAdditionalClasses(element)}
       href=${element.url}
-    >
-      ${content}
-    </a>`;
+      >${content}</a
+    >`;
   }, // TODO: Sanitize href?
 
   linkReference: async (element, metadata, functions) => {
@@ -344,9 +343,8 @@ export const markdownViewerRenderDictionary = {
       aria-label=${element.label || nothing}
       class=${functions.getAdditionalClasses(element)}
       href=${url}
-    >
-      ${content}
-    </a>`;
+      >${content}</a
+    >`;
   },
 
   list: async (element, metadata, functions) => {
@@ -356,16 +354,11 @@ export const markdownViewerRenderDictionary = {
       functions
     );
 
+    const classes = functions.getAdditionalClasses(element);
+
     return element.ordered
-      ? html`<ol
-          class=${functions.getAdditionalClasses(element)}
-          start=${element.start}
-        >
-          ${content}
-        </ol>` // TODO: Implement spread  // TODO: Check if code can be inside this tag
-      : html`<ul class=${functions.getAdditionalClasses(element)}>
-          ${content}
-        </ul>`; // TODO: Implement spread  // TODO: Check if code can be inside this tag
+      ? html`<ol class=${classes} start=${element.start}>${content}</ol>` // TODO: Implement spread  // TODO: Check if code can be inside this tag
+      : html`<ul class=${classes}>${content}</ul>`; // TODO: Implement spread  // TODO: Check if code can be inside this tag
   },
 
   listItem: async (element, metadata, functions) => {
@@ -375,9 +368,9 @@ export const markdownViewerRenderDictionary = {
       functions
     );
 
-    return html`<li class=${functions.getAdditionalClasses(element)}>
-      ${content}
-    </li>`;
+    const classes = functions.getAdditionalClasses(element);
+
+    return html`<li class=${classes}>${content}</li>`;
   }, // TODO: Implement spread  // TODO: Check if code can be inside this tag
 
   paragraph: async (element, metadata, functions) => {
@@ -387,9 +380,9 @@ export const markdownViewerRenderDictionary = {
       functions
     );
 
-    return html`<p class=${functions.getAdditionalClasses(element)}>
-      ${content}
-    </p>`;
+    const classes = functions.getAdditionalClasses(element);
+
+    return html`<p class=${classes}>${content}</p>`;
   }, // TODO: Check if code can be inside this tag
 
   strong: async (element, metadata, functions) => {
@@ -399,9 +392,9 @@ export const markdownViewerRenderDictionary = {
       functions
     );
 
-    return html`<strong class=${functions.getAdditionalClasses(element)}>
-      ${content}
-    </strong>`;
+    return html`<strong class=${functions.getAdditionalClasses(element)}
+      >${content}</strong
+    >`;
   }, // TODO: Check if code can be inside this tag
 
   table: tableRender, // TODO: Check if code can be inside this tag

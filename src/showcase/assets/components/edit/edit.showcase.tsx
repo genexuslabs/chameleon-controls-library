@@ -63,6 +63,7 @@ const render = () => (
           placeholder={state.placeholder}
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
+          preventEnterOnInputEditorMode={state.preventEnterOnInputEditorMode}
           value={state.value}
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -74,6 +75,7 @@ const render = () => (
           type={state.type}
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-1", "edit-1")}
+          onKeyDown={keyDownHandler}
         >
           {state.showAdditionalContentBefore && (
             <button
@@ -126,6 +128,7 @@ const render = () => (
           placeholder={state.placeholder}
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
+          preventEnterOnInputEditorMode={state.preventEnterOnInputEditorMode}
           value={state.value}
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -137,6 +140,7 @@ const render = () => (
           type={state.type}
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-2", "edit-2")}
+          onKeyDown={keyDownHandler}
         >
           {state.showAdditionalContentBefore && (
             <button
@@ -189,6 +193,7 @@ const render = () => (
             placeholder={state.placeholder}
             picture={state.picture}
             pictureCallback={dummyPictureCallback}
+            preventEnterOnInputEditorMode={state.preventEnterOnInputEditorMode}
             value={state.value}
             showAdditionalContentAfter={state.showAdditionalContentAfter}
             showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -200,6 +205,7 @@ const render = () => (
             type={state.type}
             readonly={state.readonly}
             onInput={handleValueInput("form-edit-3", "edit-3")}
+            onKeyDown={keyDownHandler}
           >
             {state.showAdditionalContentBefore && (
               <button
@@ -407,6 +413,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "boolean"
       },
       {
+        id: "preventEnterOnInputEditorMode",
+        columnSpan: 2,
+        caption: "Prevent Enter On Input Editor Mode",
+        value: false,
+        type: "boolean"
+      },
+      {
         id: "showPassword",
         caption: "Show Password",
         columnSpan: 2,
@@ -483,6 +496,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
       type: "function"
     },
     { name: "placeholder", defaultValue: undefined, type: "string" },
+    {
+      name: "preventEnterOnInputEditorMode",
+      defaultValue: false,
+      type: "boolean"
+    },
     { name: "readonly", defaultValue: false, type: "boolean" },
     {
       name: "showAdditionalContentBefore",

@@ -906,6 +906,7 @@ export class ChChat {
               hostParts="send-input"
               multiline
               placeholder={this.translations.placeholder.sendInput}
+              preventEnterInInputEditorMode
               showAdditionalContentAfter={
                 this.showSendInputAdditionalContentAfter
               }

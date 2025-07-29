@@ -33,6 +33,16 @@ describe("[ch-chat][ch-edit]", () => {
     expect(editRef).toEqualAttribute("part", EDIT_EMPTY_PARTS);
   });
 
+  it(`the ch-edit should have preventEnterInInputEditorMode set to prevent triggering the sendMessageCallback when pressing enter key in the Input Editor Mode (IME)`, async () => {
+    expect(await editRef.getProperty("preventEnterInInputEditorMode")).toBe(
+      true
+    );
+  });
+
+  it.todo(
+    "should not fire the sendChatMessages callback when pressing the enter key in the Input Editor Mode (IME)"
+  );
+
   it(`the ch-edit should have the "${EDIT_WITH_VALUE_PARTS}" part after pressing a key`, async () => {
     await textareaRef.press("h");
     await page.waitForChanges();

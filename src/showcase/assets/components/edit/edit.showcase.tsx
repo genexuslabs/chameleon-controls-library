@@ -63,6 +63,7 @@ const render = () => (
           placeholder={state.placeholder}
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
+          preventEnterInInputEditorMode={state.preventEnterInInputEditorMode}
           value={state.value}
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -126,6 +127,7 @@ const render = () => (
           placeholder={state.placeholder}
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
+          preventEnterInInputEditorMode={state.preventEnterInInputEditorMode}
           value={state.value}
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -189,6 +191,7 @@ const render = () => (
             placeholder={state.placeholder}
             picture={state.picture}
             pictureCallback={dummyPictureCallback}
+            preventEnterInInputEditorMode={state.preventEnterInInputEditorMode}
             value={state.value}
             showAdditionalContentAfter={state.showAdditionalContentAfter}
             showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -407,6 +410,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "boolean"
       },
       {
+        id: "preventEnterInInputEditorMode",
+        columnSpan: 2,
+        caption: "Prevent Enter In Input Editor Mode",
+        value: false,
+        type: "boolean"
+      },
+      {
         id: "showPassword",
         caption: "Show Password",
         columnSpan: 2,
@@ -483,6 +493,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
       type: "function"
     },
     { name: "placeholder", defaultValue: undefined, type: "string" },
+    {
+      name: "preventEnterInInputEditorMode",
+      defaultValue: false,
+      type: "boolean"
+    },
     { name: "readonly", defaultValue: false, type: "boolean" },
     {
       name: "showAdditionalContentBefore",

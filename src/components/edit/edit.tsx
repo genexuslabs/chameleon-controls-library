@@ -97,6 +97,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   #textareaRef: HTMLTextAreaElement | undefined;
   #textareaInsideContainerRef: HTMLTextAreaElement | undefined;
 
+  @State() inputModeEditorDisplayed = false;
   @State() isFocusOnControl = false;
 
   @State() pictureValue: string;
@@ -231,6 +232,16 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * attribute for `input` elements.
    */
   @Prop() readonly placeholder: string;
+
+  /**
+   * Specifies whether the ch-edit should prevent the default behavior of the
+   * `Enter` key when in input editor mode.
+   *
+   * In other words, if `true`, pressing `Enter` will not submit the form or
+   * trigger the default action of the `Enter` key in an input field when the
+   * user-edit is in input editor mode.
+   */
+  @Prop() readonly preventEnterInInputEditorMode: boolean = false;
 
   /**
    * This attribute indicates that the user cannot modify the value of the control.
@@ -453,6 +464,30 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     this.showAdditionalContentBefore || this.showAdditionalContentAfter;
 
   // - - - - - - - - - - - - - - - - - - - - - -
+  //           Input Mode Editor (IME)
+  // - - - - - - - - - - - - - - - - - - - - - -
+  #inputModeEditorInProgress = (event: CompositionEvent) => {
+    event.stopPropagation();
+    this.inputModeEditorDisplayed = true;
+  };
+
+  #inputModeEditorEnded = (event: CompositionEvent) => {
+    event.stopPropagation();
+    this.inputModeEditorDisplayed = false;
+  };
+
+  #preventEnterOnKeyDown = (event: KeyboardEvent) => {
+    // Prevent the default action of the Enter key when in input editor mode
+    if (event.key === "Enter") {
+      // Stop any remaining keydown listeners from being called
+      event.stopPropagation();
+
+      // Stop the form submit
+      event.preventDefault();
+    }
+  };
+
+  // - - - - - - - - - - - - - - - - - - - - - -
   //                  Pictures
   // - - - - - - - - - - - - - - - - - - - - - -
   #hasPictureApplied = () => this.picture && !!this.pictureCallback;
@@ -471,7 +506,10 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     this.isFocusOnControl = false;
   };
 
-  #renderTextarea = (canAddListeners: boolean) => (
+  #renderTextarea = (
+    canAddListeners: boolean,
+    keyDownListener: (event: KeyboardEvent) => void
+  ) => (
     <textarea
       autoFocus={this.autoFocus}
       aria-label={
@@ -494,6 +532,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       onChange={canAddListeners && this.#handleChange}
       onInput={canAddListeners && this.#handleValueChanging}
       onAnimationStart={canAddListeners && this.#handleAutoFill}
+      onKeyDown={keyDownListener}
       ref={el =>
         // This is a WA due to a StencilJS bug not refreshing the ref when the
         // element is moved
@@ -504,11 +543,14 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     ></textarea>
   );
 
-  #renderTextareaWithAdditionalContent = (canAddListeners: boolean) => {
+  #renderTextareaWithAdditionalContent = (
+    canAddListeners: boolean,
+    keyDownListener: (event: KeyboardEvent) => void
+  ) => {
     // Floating as a "normal textarea"
     if (!this.#hasAdditionalContent()) {
       return [
-        this.#renderTextarea(canAddListeners),
+        this.#renderTextarea(canAddListeners, keyDownListener),
         this.autoGrow && (
           <div aria-hidden="true" class="hidden-multiline">
             {this.value}
@@ -519,13 +561,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
     // Inline case
     if (!this.autoGrow) {
-      return this.#renderTextarea(canAddListeners);
+      return this.#renderTextarea(canAddListeners, keyDownListener);
     }
 
     // Floating inside a container to implement the Auto Grow
     return (
       <div class="multiline-container">
-        {this.#renderTextarea(canAddListeners)}
+        {this.#renderTextarea(canAddListeners, keyDownListener)}
 
         <div aria-hidden="true" class="hidden-multiline">
           {this.value}
@@ -587,6 +629,27 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     const renderShowPasswordButton =
       this.showPasswordButton && !this.multiline && this.type === "password";
 
+    const compositionStartListener =
+      canAddListeners &&
+      this.preventEnterInInputEditorMode &&
+      !this.inputModeEditorDisplayed &&
+      this.#inputModeEditorInProgress;
+
+    // TODO: What happens when the input/textarea losses focus or it disabled
+    // in runtime when the IME is displayed?
+    // Does the compositionend event fire?
+    const compositionEndListener =
+      canAddListeners &&
+      this.preventEnterInInputEditorMode &&
+      this.inputModeEditorDisplayed &&
+      this.#inputModeEditorEnded;
+
+    const keyDownListener =
+      canAddListeners &&
+      this.preventEnterInInputEditorMode &&
+      this.inputModeEditorDisplayed &&
+      this.#preventEnterOnKeyDown;
+
     return (
       <Host
         class={{
@@ -610,13 +673,19 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
         // Alignment
         data-text-align=""
         data-valign={!this.multiline ? "" : undefined}
+        // Listeners for detecting Input Editor Mode (IME)
+        onCompositionstart={compositionStartListener}
+        onCompositionend={compositionEndListener}
       >
         {this.showAdditionalContentBefore && (
           <slot name="additional-content-before" />
         )}
 
         {this.multiline
-          ? this.#renderTextareaWithAdditionalContent(canAddListeners)
+          ? this.#renderTextareaWithAdditionalContent(
+              canAddListeners,
+              keyDownListener
+            )
           : [
               <input
                 autoFocus={this.autoFocus}
@@ -655,6 +724,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 onAnimationStart={canAddListeners && this.#handleAutoFill}
                 onChange={canAddListeners && this.#handleChange}
                 onInput={canAddListeners && this.#handleValueChanging}
+                onKeyDown={keyDownListener}
                 onFocus={
                   canAddListeners &&
                   shouldDisplayPicture &&

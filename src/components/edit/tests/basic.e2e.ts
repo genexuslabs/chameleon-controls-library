@@ -19,6 +19,7 @@ testDefaultProperties("ch-edit", {
   picture: undefined,
   pictureCallback: undefined,
   placeholder: undefined,
+  preventEnterInInputEditorMode: false,
   readonly: false,
   showAdditionalContentAfter: false,
   showAdditionalContentBefore: false,

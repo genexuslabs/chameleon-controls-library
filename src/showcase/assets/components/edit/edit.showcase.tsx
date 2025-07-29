@@ -75,7 +75,6 @@ const render = () => (
           type={state.type}
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-1", "edit-1")}
-          onKeyDown={keyDownHandler}
         >
           {state.showAdditionalContentBefore && (
             <button
@@ -140,7 +139,6 @@ const render = () => (
           type={state.type}
           readonly={state.readonly}
           onInput={handleValueInput("form-edit-2", "edit-2")}
-          onKeyDown={keyDownHandler}
         >
           {state.showAdditionalContentBefore && (
             <button
@@ -205,7 +203,6 @@ const render = () => (
             type={state.type}
             readonly={state.readonly}
             onInput={handleValueInput("form-edit-3", "edit-3")}
-            onKeyDown={keyDownHandler}
           >
             {state.showAdditionalContentBefore && (
               <button

@@ -477,8 +477,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   };
 
   #preventEnterOnKeyDown = (event: KeyboardEvent) => {
-    if (event.code === "Enter") {
+    // Prevent the default action of the Enter key when in input editor mode
+    if (event.key === "Enter") {
+      // Stop any remaining keydown listeners from being called
       event.stopPropagation();
+
+      // Stop the form submit
+      event.preventDefault();
     }
   };
 
@@ -503,8 +508,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   #renderTextarea = (
     canAddListeners: boolean,
-    compositionStartListener: (event: CompositionEvent) => void,
-    compositionEndListener: (event: CompositionEvent) => void,
     keyDownListener: (event: KeyboardEvent) => void
   ) => (
     <textarea
@@ -529,9 +532,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       onChange={canAddListeners && this.#handleChange}
       onInput={canAddListeners && this.#handleValueChanging}
       onAnimationStart={canAddListeners && this.#handleAutoFill}
-      onCompositionstart={compositionStartListener}
-      onCompositionend={compositionEndListener}
-      onKeyDownCapture={keyDownListener}
+      onKeyDown={keyDownListener}
       ref={el =>
         // This is a WA due to a StencilJS bug not refreshing the ref when the
         // element is moved
@@ -544,19 +545,12 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   #renderTextareaWithAdditionalContent = (
     canAddListeners: boolean,
-    compositionStartListener: (event: CompositionEvent) => void,
-    compositionEndListener: (event: CompositionEvent) => void,
     keyDownListener: (event: KeyboardEvent) => void
   ) => {
     // Floating as a "normal textarea"
     if (!this.#hasAdditionalContent()) {
       return [
-        this.#renderTextarea(
-          canAddListeners,
-          compositionStartListener,
-          compositionEndListener,
-          keyDownListener
-        ),
+        this.#renderTextarea(canAddListeners, keyDownListener),
         this.autoGrow && (
           <div aria-hidden="true" class="hidden-multiline">
             {this.value}
@@ -567,23 +561,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
     // Inline case
     if (!this.autoGrow) {
-      return this.#renderTextarea(
-        canAddListeners,
-        compositionStartListener,
-        compositionEndListener,
-        keyDownListener
-      );
+      return this.#renderTextarea(canAddListeners, keyDownListener);
     }
 
     // Floating inside a container to implement the Auto Grow
     return (
       <div class="multiline-container">
-        {this.#renderTextarea(
-          canAddListeners,
-          compositionStartListener,
-          compositionEndListener,
-          keyDownListener
-        )}
+        {this.#renderTextarea(canAddListeners, keyDownListener)}
 
         <div aria-hidden="true" class="hidden-multiline">
           {this.value}
@@ -686,6 +670,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
         // Alignment
         data-text-align=""
         data-valign={!this.multiline ? "" : undefined}
+        // Listeners for detecting Input Editor Mode (IME)
+        onCompositionstart={compositionStartListener}
+        onCompositionend={compositionEndListener}
       >
         {this.showAdditionalContentBefore && (
           <slot name="additional-content-before" />
@@ -694,8 +681,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
         {this.multiline
           ? this.#renderTextareaWithAdditionalContent(
               canAddListeners,
-              compositionStartListener,
-              compositionEndListener,
               keyDownListener
             )
           : [
@@ -736,9 +721,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 onAnimationStart={canAddListeners && this.#handleAutoFill}
                 onChange={canAddListeners && this.#handleChange}
                 onInput={canAddListeners && this.#handleValueChanging}
-                onCompositionstart={compositionStartListener}
-                onCompositionend={compositionEndListener}
-                onKeyDownCapture={keyDownListener}
+                onKeyDown={keyDownListener}
                 onFocus={
                   canAddListeners &&
                   shouldDisplayPicture &&

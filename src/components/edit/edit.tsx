@@ -234,14 +234,14 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly placeholder: string;
 
   /**
-   * Specifies whether the element should prevent the default behavior of the
+   * Specifies whether the ch-edit should prevent the default behavior of the
    * `Enter` key when in input editor mode.
    *
    * In other words, if `true`, pressing `Enter` will not submit the form or
    * trigger the default action of the `Enter` key in an input field when the
    * user-edit is in input editor mode.
    */
-  @Prop() readonly preventEnterOnInputEditorMode: boolean = false;
+  @Prop() readonly preventEnterInInputEditorMode: boolean = false;
 
   /**
    * This attribute indicates that the user cannot modify the value of the control.
@@ -631,19 +631,22 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
     const compositionStartListener =
       canAddListeners &&
-      this.preventEnterOnInputEditorMode &&
+      this.preventEnterInInputEditorMode &&
       !this.inputModeEditorDisplayed &&
       this.#inputModeEditorInProgress;
 
+    // TODO: What happens when the input/textarea losses focus or it disabled
+    // in runtime when the IME is displayed?
+    // Does the compositionend event fire?
     const compositionEndListener =
       canAddListeners &&
-      this.preventEnterOnInputEditorMode &&
+      this.preventEnterInInputEditorMode &&
       this.inputModeEditorDisplayed &&
       this.#inputModeEditorEnded;
 
     const keyDownListener =
       canAddListeners &&
-      this.preventEnterOnInputEditorMode &&
+      this.preventEnterInInputEditorMode &&
       this.inputModeEditorDisplayed &&
       this.#preventEnterOnKeyDown;
 

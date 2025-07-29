@@ -63,7 +63,7 @@ const render = () => (
           placeholder={state.placeholder}
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
-          preventEnterOnInputEditorMode={state.preventEnterOnInputEditorMode}
+          preventEnterInInputEditorMode={state.preventEnterInInputEditorMode}
           value={state.value}
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -127,7 +127,7 @@ const render = () => (
           placeholder={state.placeholder}
           picture={state.picture}
           pictureCallback={dummyPictureCallback}
-          preventEnterOnInputEditorMode={state.preventEnterOnInputEditorMode}
+          preventEnterInInputEditorMode={state.preventEnterInInputEditorMode}
           value={state.value}
           showAdditionalContentAfter={state.showAdditionalContentAfter}
           showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -191,7 +191,7 @@ const render = () => (
             placeholder={state.placeholder}
             picture={state.picture}
             pictureCallback={dummyPictureCallback}
-            preventEnterOnInputEditorMode={state.preventEnterOnInputEditorMode}
+            preventEnterInInputEditorMode={state.preventEnterInInputEditorMode}
             value={state.value}
             showAdditionalContentAfter={state.showAdditionalContentAfter}
             showAdditionalContentBefore={state.showAdditionalContentBefore}
@@ -410,9 +410,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "boolean"
       },
       {
-        id: "preventEnterOnInputEditorMode",
+        id: "preventEnterInInputEditorMode",
         columnSpan: 2,
-        caption: "Prevent Enter On Input Editor Mode",
+        caption: "Prevent Enter In Input Editor Mode",
         value: false,
         type: "boolean"
       },
@@ -494,7 +494,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChEditElement>[] 
     },
     { name: "placeholder", defaultValue: undefined, type: "string" },
     {
-      name: "preventEnterOnInputEditorMode",
+      name: "preventEnterInInputEditorMode",
       defaultValue: false,
       type: "boolean"
     },

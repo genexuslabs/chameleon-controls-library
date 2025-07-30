@@ -9,7 +9,7 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { getAllRootNodes } from "../../common/get-all-root-nodes";
+import { getAllShadowRootAncestors } from "../../common/get-all-root-nodes";
 import { KEY_CODES, SCROLLABLE_CLASS } from "../../common/reserved-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { adoptCommonThemes } from "../../common/theme";
@@ -652,7 +652,7 @@ export class ChPopover {
     // Get all root nodes to attach the scroll listener, since the scroll event
     // does not bubble and therefore, we can't track all scroll events if we}
     // only attach the scroll listener in the document node
-    this.#rootNodes ??= getAllRootNodes(this.el);
+    this.#rootNodes ??= getAllShadowRootAncestors(this.el);
 
     // Listeners
     this.#rootNodes.forEach(rootNode =>

@@ -735,6 +735,9 @@ export class ChChat {
     this.virtualItems = event.detail.virtualItems as ChatMessage[];
   };
 
+  // - - - - - - - - - - - - - - - - - - - -
+  //                 Renders
+  // - - - - - - - - - - - - - - - - - - - -
   #renderChatOrEmpty = () =>
     this.loadingState === "all-records-loaded" && this.items.length === 0 ? (
       <slot name="empty-chat"></slot>
@@ -784,6 +787,43 @@ export class ChChat {
         </ch-virtual-scroller>
       </ch-smart-grid>
     );
+
+  #renderStopGeneratingAnswerButton = (
+    accessibleName: ChatTranslations["accessibleName"],
+    text: ChatTranslations["text"]
+  ) =>
+    this.generatingResponse &&
+    this.callbacks?.stopGeneratingAnswer && (
+      <button
+        aria-label={
+          accessibleName.stopGeneratingAnswerButton !==
+            text.stopGeneratingAnswerButton &&
+          (accessibleName.stopGeneratingAnswerButton ??
+            text.stopGeneratingAnswerButton)
+        }
+        class="stop-generating-answer-button"
+        part="stop-generating-answer-button"
+        type="button"
+        onClick={this.#handleStopGenerating}
+      >
+        {text.stopGeneratingAnswerButton}
+      </button>
+    );
+
+  #renderSendButton = (
+    accessibleName: ChatTranslations["accessibleName"],
+    sendButtonDisabled: boolean
+  ) => (
+    <button
+      aria-label={accessibleName.sendButton}
+      title={accessibleName.sendButton}
+      class="send-or-audio-button"
+      part="send-button"
+      disabled={sendButtonDisabled}
+      type="button"
+      onClick={sendButtonDisabled ? undefined : this.#sendMessageWithSendButton}
+    ></button>
+  );
 
   #loadMoreItems = () => {
     this.loadingState = "loading";
@@ -881,71 +921,44 @@ export class ChChat {
         {canShowAdditionalContent && <slot name="additional-content" />}
 
         <div class="send-container" part="send-container">
-          {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
-            <button
-              aria-label={
-                accessibleName.stopGeneratingAnswerButton !==
-                  text.stopGeneratingAnswerButton &&
-                (accessibleName.stopGeneratingAnswerButton ??
-                  text.stopGeneratingAnswerButton)
-              }
-              class="stop-generating-answer-button"
-              part="stop-generating-answer-button"
-              type="button"
-              onClick={this.#handleStopGenerating}
-            >
-              {text.stopGeneratingAnswerButton}
-            </button>
-          )}
+          {this.#renderStopGeneratingAnswerButton(accessibleName, text)}
 
-          <div class="send-input-wrapper" part="send-input-wrapper">
-            <ch-edit
-              accessibleName={accessibleName.sendInput}
-              autoGrow
-              disabled={sendInputDisabled}
-              hostParts="send-input"
-              multiline
-              placeholder={this.translations.placeholder.sendInput}
-              preventEnterInInputEditorMode
-              showAdditionalContentAfter={
-                this.showSendInputAdditionalContentAfter
-              }
-              showAdditionalContentBefore={
-                this.showSendInputAdditionalContentBefore
-              }
-              onKeyDown={
-                sendInputDisabled || this.liveMode
-                  ? undefined
-                  : this.#sendMessageKeyboard
-              }
-              ref={el => (this.#editRef = el as HTMLChEditElement)}
-            >
-              {this.showSendInputAdditionalContentBefore && (
-                <slot
-                  slot="additional-content-before"
-                  name="send-input-additional-content-before"
-                />
-              )}
-              {this.showSendInputAdditionalContentAfter && (
-                <slot
-                  slot="additional-content-after"
-                  name="send-input-additional-content-after"
-                />
-              )}
-            </ch-edit>
-          </div>
-
-          <button
-            aria-label={accessibleName.sendButton}
-            title={accessibleName.sendButton}
-            class="send-or-audio-button"
-            part="send-button"
-            disabled={sendButtonDisabled}
-            type="button"
-            onClick={
-              sendButtonDisabled ? undefined : this.#sendMessageWithSendButton
+          <ch-edit
+            accessibleName={accessibleName.sendInput}
+            autoGrow
+            disabled={sendInputDisabled}
+            hostParts="send-input"
+            multiline
+            placeholder={this.translations.placeholder.sendInput}
+            preventEnterInInputEditorMode
+            showAdditionalContentAfter={
+              this.showSendInputAdditionalContentAfter
             }
-          ></button>
+            showAdditionalContentBefore={
+              this.showSendInputAdditionalContentBefore
+            }
+            onKeyDown={
+              sendInputDisabled || this.liveMode
+                ? undefined
+                : this.#sendMessageKeyboard
+            }
+            ref={el => (this.#editRef = el as HTMLChEditElement)}
+          >
+            {this.showSendInputAdditionalContentBefore && (
+              <slot
+                slot="additional-content-before"
+                name="send-input-additional-content-before"
+              />
+            )}
+            {this.showSendInputAdditionalContentAfter && (
+              <slot
+                slot="additional-content-after"
+                name="send-input-additional-content-after"
+              />
+            )}
+          </ch-edit>
+
+          {this.#renderSendButton(accessibleName, sendButtonDisabled)}
         </div>
 
         {this.#renderLiveKitRoom()}

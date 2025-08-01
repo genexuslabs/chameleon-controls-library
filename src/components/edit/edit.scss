@@ -113,6 +113,14 @@
   grid-area: ch-edit-content;
 }
 
+.multiline-container {
+  display: grid;
+  block-size: 100%;
+
+  // To force the scroll in the textarea
+  overflow: hidden;
+}
+
 // - - - - - - - - - - - - - - - - - - - -
 //                 Images
 // - - - - - - - - - - - - - - - - - - - -

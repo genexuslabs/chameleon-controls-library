@@ -409,3 +409,30 @@ export type ChatLiveModeConfiguration = {
     microphoneEnabled?: boolean;
   };
 };
+
+export type ChatActionButtonButtons = {
+  /**
+   * Specifies the position of the send button in the chat.
+   *
+   * If `undefined`, the send button will be placed at the end of the
+   * `send-container-additional-content-after` container.
+   */
+  sendButton?: ChatActionButtonPosition;
+
+  /**
+   * Specifies the position of the stop-generating-answer button in the chat.
+   *
+   * If `undefined`, the stop-generating-answer button will be placed at the
+   * start of the `send-container-additional-content-before` container.
+   */
+  stopGeneratingAnswerButton?: ChatActionButtonPosition;
+};
+
+export type ChatActionButtonPosition = {
+  container:
+    | "send-container-additional-content-before"
+    | "send-container-additional-content-after"
+    | "send-input-additional-content-before"
+    | "send-input-additional-content-after";
+  position: "start" | "end";
+};

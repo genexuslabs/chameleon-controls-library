@@ -24,7 +24,6 @@ const render: ShowcaseRender = designSystem => (
     autoScroll={state.autoScroll}
     callbacks={chatCallbacks}
     class="chat"
-    generatingResponse={false}
     loadingState={state.loadingState}
     markdownTheme={
       designSystem === "unanimo"
@@ -51,6 +50,7 @@ const render: ShowcaseRender = designSystem => (
       state.showSendInputAdditionalContentBefore
     }
     translations={chatTranslations}
+    waitingResponse={false}
   >
     <div slot="additional-content">
       Custom content that is rendered when the chat renders content

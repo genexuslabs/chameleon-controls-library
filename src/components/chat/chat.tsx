@@ -172,11 +172,6 @@ export class ChChat {
    */
   @Prop() readonly disabled: boolean = false;
 
-  /**
-   * `true` if a response for the assistant is being generated.
-   */
-  @Prop() readonly generatingResponse?: boolean = false;
-
   // TODO: Add support for undefined messages.
   /**
    * Specifies the items that the chat will display.
@@ -359,6 +354,14 @@ export class ChChat {
       stopButton: "Stop generating answer"
     }
   };
+
+  /**
+   * `true` if the ch-chat is waiting for a response from the server. If so,
+   * the `sendChatMessages` won't be executed when the user tries to send a new
+   * message. Although, the `send-input` and `send-button` won't be disabled,
+   * so the user can interact with the chat.
+   */
+  @Prop() readonly waitingResponse?: boolean = false;
 
   /**
    * Fired when a new user message is added in the chat via user interaction.
@@ -670,7 +673,7 @@ export class ChChat {
   #sendMessage = async (content?: ChatMessageUser, files?: File[]) => {
     // TODO: Add unit tests for this
     if (
-      this.generatingResponse ||
+      this.waitingResponse ||
       this.disabled ||
       this.liveMode ||
       this.loadingState === "initial" ||
@@ -881,7 +884,7 @@ export class ChChat {
         {canShowAdditionalContent && <slot name="additional-content" />}
 
         <div class="send-container" part="send-container">
-          {this.generatingResponse && this.callbacks?.stop && (
+          {this.waitingResponse && this.callbacks?.stop && (
             <button
               aria-label={
                 accessibleName.stopButton !== text.stopButton &&

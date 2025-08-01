@@ -424,7 +424,7 @@ export type ChatActionButtonButtons = {
    * If `undefined`, the stop- button will be placed at the start of the
    * `send-container-additional-content-before` container.
    */
-  stopButton?: ChatActionButtonPosition;
+  stopResponseButton?: ChatActionButtonPosition;
 };
 
 export type ChatActionButtonPosition = {

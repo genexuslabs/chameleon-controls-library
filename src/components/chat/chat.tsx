@@ -172,11 +172,6 @@ export class ChChat {
    */
   @Prop() readonly disabled: boolean = false;
 
-  /**
-   * `true` if a response for the assistant is being generated.
-   */
-  @Prop() readonly generatingResponse?: boolean = false;
-
   // TODO: Add support for undefined messages.
   /**
    * Specifies the items that the chat will display.
@@ -346,7 +341,7 @@ export class ChChat {
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     },
     placeholder: {
       sendInput: "Ask me a question..."
@@ -356,9 +351,17 @@ export class ChChat {
       copyMessageContent: "Copy",
       processing: `Processing...`,
       sourceFiles: "Source files:",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     }
   };
+
+  /**
+   * `true` if the `ch-chat` is waiting for a response from the server. If so,
+   * the `sendChatMessages` won't be executed when the user tries to send a new
+   * message. Although, the `send-input` and `send-button` won't be disabled,
+   * so the user can interact with the chat.
+   */
+  @Prop() readonly waitingResponse?: boolean = false;
 
   /**
    * Fired when a new user message is added in the chat via user interaction.
@@ -670,7 +673,7 @@ export class ChChat {
   #sendMessage = async (content?: ChatMessageUser, files?: File[]) => {
     // TODO: Add unit tests for this
     if (
-      this.generatingResponse ||
+      this.waitingResponse ||
       this.disabled ||
       this.liveMode ||
       this.loadingState === "initial" ||
@@ -724,9 +727,9 @@ export class ChChat {
 
   #sendMessageWithSendButton = () => this.#sendMessage();
 
-  #handleStopGenerating = (event: MouseEvent) => {
+  #stopResponse = (event: MouseEvent) => {
     event.stopPropagation();
-    this.callbacks!.stopGeneratingAnswer!();
+    this.callbacks!.stopResponse!();
   };
 
   #virtualItemsChanged = (
@@ -881,20 +884,17 @@ export class ChChat {
         {canShowAdditionalContent && <slot name="additional-content" />}
 
         <div class="send-container" part="send-container">
-          {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
+          {this.waitingResponse && this.callbacks?.stopResponse && (
             <button
               aria-label={
-                accessibleName.stopGeneratingAnswerButton !==
-                  text.stopGeneratingAnswerButton &&
-                (accessibleName.stopGeneratingAnswerButton ??
-                  text.stopGeneratingAnswerButton)
+                accessibleName.stopResponseButton !== text.stopResponseButton &&
+                (accessibleName.stopResponseButton ?? text.stopResponseButton)
               }
-              class="stop-generating-answer-button"
-              part="stop-generating-answer-button"
+              part="stop-response-button"
               type="button"
-              onClick={this.#handleStopGenerating}
+              onClick={this.#stopResponse}
             >
-              {text.stopGeneratingAnswerButton}
+              {text.stopResponseButton}
             </button>
           )}
 

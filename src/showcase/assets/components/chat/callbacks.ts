@@ -193,8 +193,7 @@ export const chatTranslations: ChatTranslations = {
     copyMessageContent: "Copy",
     downloadCodeButton: "Download",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
-    sourceFiles: "Source files:",
-    stopResponseButton: "Stop generating answer"
+    sourceFiles: "Source files:"
   }
 };
 

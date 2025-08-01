@@ -5,7 +5,6 @@ testDefaultProperties("ch-chat", {
   autoScroll: "at-scroll-end",
   callbacks: undefined,
   disabled: false,
-  generatingResponse: false,
   items: [],
   liveMode: false,
   liveModeConfiguration: undefined,
@@ -38,7 +37,8 @@ testDefaultProperties("ch-chat", {
       sourceFiles: "Source files:",
       stopButton: "Stop generating answer"
     }
-  }
+  },
+  waitingResponse: false
 });
 
 describe("[ch-chat][basic]", () => {

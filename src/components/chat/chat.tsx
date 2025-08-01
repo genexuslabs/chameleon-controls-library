@@ -346,7 +346,7 @@ export class ChChat {
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopButton: "Stop generating answer"
     },
     placeholder: {
       sendInput: "Ask me a question..."
@@ -356,7 +356,7 @@ export class ChChat {
       copyMessageContent: "Copy",
       processing: `Processing...`,
       sourceFiles: "Source files:",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopButton: "Stop generating answer"
     }
   };
 
@@ -724,9 +724,9 @@ export class ChChat {
 
   #sendMessageWithSendButton = () => this.#sendMessage();
 
-  #handleStopGenerating = (event: MouseEvent) => {
+  #stopResponse = (event: MouseEvent) => {
     event.stopPropagation();
-    this.callbacks!.stopGeneratingAnswer!();
+    this.callbacks!.stop!();
   };
 
   #virtualItemsChanged = (
@@ -881,20 +881,17 @@ export class ChChat {
         {canShowAdditionalContent && <slot name="additional-content" />}
 
         <div class="send-container" part="send-container">
-          {this.generatingResponse && this.callbacks?.stopGeneratingAnswer && (
+          {this.generatingResponse && this.callbacks?.stop && (
             <button
               aria-label={
-                accessibleName.stopGeneratingAnswerButton !==
-                  text.stopGeneratingAnswerButton &&
-                (accessibleName.stopGeneratingAnswerButton ??
-                  text.stopGeneratingAnswerButton)
+                accessibleName.stopButton !== text.stopButton &&
+                (accessibleName.stopButton ?? text.stopButton)
               }
-              class="stop-generating-answer-button"
-              part="stop-generating-answer-button"
+              part="stop-button"
               type="button"
-              onClick={this.#handleStopGenerating}
+              onClick={this.#stopResponse}
             >
-              {text.stopGeneratingAnswerButton}
+              {text.stopButton}
             </button>
           )}
 

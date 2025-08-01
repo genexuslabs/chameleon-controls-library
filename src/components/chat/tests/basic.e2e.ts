@@ -26,7 +26,7 @@ testDefaultProperties("ch-chat", {
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopButton: "Stop generating answer"
     },
     placeholder: {
       sendInput: "Ask me a question..."
@@ -36,7 +36,7 @@ testDefaultProperties("ch-chat", {
       copyMessageContent: "Copy",
       processing: `Processing...`,
       sourceFiles: "Source files:",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopButton: "Stop generating answer"
     }
   }
 });

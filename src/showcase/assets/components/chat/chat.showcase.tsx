@@ -29,7 +29,7 @@ const render: ShowcaseRender = designSystem => (
       }
     }}
     callbacks={chatCallbacks}
-    class="chat"
+    class="chat-lit"
     loadingState={state.loadingState}
     markdownTheme={
       designSystem === "unanimo"

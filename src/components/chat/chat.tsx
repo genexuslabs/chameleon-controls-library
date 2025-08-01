@@ -44,7 +44,7 @@ import { getMessageContent, getMessageFiles } from "./utils";
 // Side effect to define the ch-chat-lit custom element
 import {
   DEFAULT_SEND_BUTTON_POSITION,
-  DEFAULT_STOP_GENERATING_ANSWER_BUTTON_POSITION,
+  DEFAULT_STOP_RESPONSE_BUTTON_POSITION,
   SEND_CONTAINER_AFTER,
   SEND_CONTAINER_BEFORE,
   SEND_INPUT_AFTER,
@@ -160,11 +160,11 @@ export class ChChat {
   @State() initialLoadHasEnded = false;
 
   /**
-   * Specifies the position of the send and stopGeneratingAnswer buttons.
+   * Specifies the position of the send and stop-response buttons.
    */
   @Prop() readonly actionButtonPositions: ChatActionButtonButtons = {
     sendButton: DEFAULT_SEND_BUTTON_POSITION,
-    stopButton: DEFAULT_STOP_GENERATING_ANSWER_BUTTON_POSITION
+    stopResponseButton: DEFAULT_STOP_RESPONSE_BUTTON_POSITION
   };
 
   /**
@@ -189,11 +189,6 @@ export class ChChat {
    * Specifies if all interactions are disabled
    */
   @Prop() readonly disabled: boolean = false;
-
-  /**
-   * `true` if a response for the assistant is being generated.
-   */
-  @Prop() readonly generatingResponse?: boolean = false;
 
   // TODO: Add support for undefined messages.
   /**
@@ -380,7 +375,7 @@ export class ChChat {
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     },
     placeholder: {
       sendInput: "Ask me a question..."
@@ -390,9 +385,17 @@ export class ChChat {
       copyMessageContent: "Copy",
       processing: `Processing...`,
       sourceFiles: "Source files:",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     }
   };
+
+  /**
+   * `true` if the `ch-chat` is waiting for a response from the server. If so,
+   * the `sendChatMessages` won't be executed when the user tries to send a new
+   * message. Although, the `send-input` and `send-button` won't be disabled,
+   * so the user can interact with the chat.
+   */
+  @Prop() readonly waitingResponse?: boolean = false;
 
   /**
    * Fired when a new user message is added in the chat via user interaction.
@@ -704,7 +707,7 @@ export class ChChat {
   #sendMessage = async (content?: ChatMessageUser, files?: File[]) => {
     // TODO: Add unit tests for this
     if (
-      this.generatingResponse ||
+      this.waitingResponse ||
       this.disabled ||
       this.liveMode ||
       this.loadingState === "initial" ||
@@ -758,9 +761,9 @@ export class ChChat {
 
   #sendMessageWithSendButton = () => this.#sendMessage();
 
-  #handleStopGenerating = (event: MouseEvent) => {
+  #stopResponse = (event: MouseEvent) => {
     event.stopPropagation();
-    this.callbacks!.stopGeneratingAnswer!();
+    this.callbacks!.stopResponse!();
   };
 
   #virtualItemsChanged = (
@@ -822,25 +825,22 @@ export class ChChat {
       </ch-smart-grid>
     );
 
-  #renderStopGeneratingAnswerButton = () => {
+  #renderStopResponseButton = () => {
     const { accessibleName, text } = this.translations;
 
     return (
-      this.generatingResponse &&
-      this.callbacks?.stopGeneratingAnswer && (
+      this.waitingResponse &&
+      this.callbacks?.stopResponse && (
         <button
           aria-label={
-            accessibleName.stopGeneratingAnswerButton !==
-              text.stopGeneratingAnswerButton &&
-            (accessibleName.stopGeneratingAnswerButton ??
-              text.stopGeneratingAnswerButton)
+            accessibleName.stopResponseButton !== text.stopResponseButton &&
+            (accessibleName.stopResponseButton ?? text.stopResponseButton)
           }
-          class="stop-generating-answer-button"
-          part="stop-generating-answer-button"
+          part="stop-response-button"
           type="button"
-          onClick={this.#handleStopGenerating}
+          onClick={this.#stopResponse}
         >
-          {text.stopGeneratingAnswerButton}
+          {text.stopResponseButton}
         </button>
       )
     );
@@ -859,7 +859,6 @@ export class ChChat {
       <button
         aria-label={accessibleName.sendButton}
         title={accessibleName.sendButton}
-        class="send-or-audio-button"
         part="send-button"
         disabled={sendButtonDisabled}
         type="button"
@@ -872,16 +871,16 @@ export class ChChat {
 
   #renderSendContainerOrSendInputSlots = (
     sendButtonPosition: ChatActionButtonPosition,
-    stopGeneratingAnswerButtonPosition: ChatActionButtonPosition,
+    stopResponseButtonPosition: ChatActionButtonPosition,
     container: ChatActionButtonPosition["container"],
     showContainer: boolean
   ) => {
     const showSendButton = sendButtonPosition.container === container;
-    const showStopGeneratingAnswerButton =
-      stopGeneratingAnswerButtonPosition.container === container;
+    const showStopResponseButton =
+      stopResponseButtonPosition.container === container;
 
     return (
-      (showContainer || showSendButton || showStopGeneratingAnswerButton) && (
+      (showContainer || showSendButton || showStopResponseButton) && (
         <div
           // Project the send-input slots if necessary
           slot={
@@ -892,18 +891,18 @@ export class ChChat {
           class={`additional-content-container ${container}`}
           part={container}
         >
-          {showStopGeneratingAnswerButton &&
-            stopGeneratingAnswerButtonPosition.position === "start" &&
-            this.#renderStopGeneratingAnswerButton()}
+          {showStopResponseButton &&
+            stopResponseButtonPosition.position === "start" &&
+            this.#renderStopResponseButton()}
           {showSendButton &&
             sendButtonPosition.position === "start" &&
             this.#renderSendButton()}
 
           {showContainer && <slot name={container} />}
 
-          {showStopGeneratingAnswerButton &&
-            stopGeneratingAnswerButtonPosition.position === "end" &&
-            this.#renderStopGeneratingAnswerButton()}
+          {showStopResponseButton &&
+            stopResponseButtonPosition.position === "end" &&
+            this.#renderStopResponseButton()}
           {showSendButton &&
             sendButtonPosition.position === "end" &&
             this.#renderSendButton()}
@@ -997,9 +996,9 @@ export class ChChat {
 
     const sendButtonPosition =
       this.actionButtonPositions.sendButton ?? DEFAULT_SEND_BUTTON_POSITION;
-    const stopGeneratingAnswerButton =
-      this.actionButtonPositions.stopButton ??
-      DEFAULT_STOP_GENERATING_ANSWER_BUTTON_POSITION;
+    const stopResponseButton =
+      this.actionButtonPositions.stopResponseButton ??
+      DEFAULT_STOP_RESPONSE_BUTTON_POSITION;
 
     return (
       <Host
@@ -1020,7 +1019,7 @@ export class ChChat {
         <div class="send-container" part="send-container">
           {this.#renderSendContainerOrSendInputSlots(
             sendButtonPosition,
-            stopGeneratingAnswerButton,
+            stopResponseButton,
             SEND_CONTAINER_BEFORE,
             this.showSendContainerAdditionalContentBefore
           )}
@@ -1037,12 +1036,12 @@ export class ChChat {
             showAdditionalContentAfter={
               this.showSendInputAdditionalContentAfter ||
               sendButtonPosition.container === SEND_INPUT_AFTER ||
-              stopGeneratingAnswerButton.container === SEND_INPUT_AFTER
+              stopResponseButton.container === SEND_INPUT_AFTER
             }
             showAdditionalContentBefore={
               this.showSendInputAdditionalContentBefore ||
               sendButtonPosition.container === SEND_INPUT_BEFORE ||
-              stopGeneratingAnswerButton.container === SEND_INPUT_BEFORE
+              stopResponseButton.container === SEND_INPUT_BEFORE
             }
             onKeyDown={
               sendInputDisabled || this.liveMode
@@ -1053,13 +1052,13 @@ export class ChChat {
           >
             {this.#renderSendContainerOrSendInputSlots(
               sendButtonPosition,
-              stopGeneratingAnswerButton,
+              stopResponseButton,
               SEND_INPUT_BEFORE,
               this.showSendInputAdditionalContentBefore
             )}
             {this.#renderSendContainerOrSendInputSlots(
               sendButtonPosition,
-              stopGeneratingAnswerButton,
+              stopResponseButton,
               SEND_INPUT_AFTER,
               this.showSendInputAdditionalContentAfter
             )}
@@ -1067,7 +1066,7 @@ export class ChChat {
 
           {this.#renderSendContainerOrSendInputSlots(
             sendButtonPosition,
-            stopGeneratingAnswerButton,
+            stopResponseButton,
             SEND_CONTAINER_AFTER,
             this.showSendContainerAdditionalContentAfter
           )}

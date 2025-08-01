@@ -77,13 +77,13 @@ const testPreventEnterInInputEditorMode = (
         await page.waitForChanges();
       };
 
-      it("should not prevent the enter key by default", async () => {
+      it("should not prevent the Enter key by default", async () => {
         await pressEnter();
 
         expect(keyDownEventSpy).toHaveReceivedEventTimes(1);
       });
 
-      it("should not prevent the enter key even if preventEnterInInputEditorMode but the user did not enter in IME", async () => {
+      it("should not prevent the Enter key even if preventEnterInInputEditorMode but the user did not enter in IME (compositionstart event)", async () => {
         editRef.setProperty("preventEnterInInputEditorMode", true);
         await page.waitForChanges();
         await pressEnter();
@@ -91,14 +91,14 @@ const testPreventEnterInInputEditorMode = (
         expect(keyDownEventSpy).toHaveReceivedEventTimes(1);
       });
 
-      it("should not prevent the enter key if the compositionstart event is fired but preventEnterInInputEditorMode is not set", async () => {
+      it("should not prevent the Enter key if the compositionstart event is fired but preventEnterInInputEditorMode is not set", async () => {
         await dispatchCompositionStart();
         await pressEnter();
 
         expect(keyDownEventSpy).toHaveReceivedEventTimes(1);
       });
 
-      it("should prevent the enter key if the compositionstart event is fired when preventEnterInInputEditorMode is set", async () => {
+      it("should prevent the Enter key if it is pressed after the compositionstart event when preventEnterInInputEditorMode is set", async () => {
         editRef.setProperty("preventEnterInInputEditorMode", true);
         await page.waitForChanges();
         await dispatchCompositionStart();
@@ -107,7 +107,7 @@ const testPreventEnterInInputEditorMode = (
         expect(keyDownEventSpy).toHaveReceivedEventTimes(0);
       });
 
-      it("should prevent the enter key if the compositionstart event is fired when preventEnterInInputEditorMode is set (with compositionend)", async () => {
+      it("should prevent the Enter key if it is pressed between the compositionstart and compositionend events when preventEnterInInputEditorMode is set", async () => {
         editRef.setProperty("preventEnterInInputEditorMode", true);
         await page.waitForChanges();
         await dispatchCompositionStart();
@@ -117,7 +117,7 @@ const testPreventEnterInInputEditorMode = (
         expect(keyDownEventSpy).toHaveReceivedEventTimes(0);
       });
 
-      it("should not prevent the enter key if the enter is pressed after compositionend when preventEnterInInputEditorMode is set", async () => {
+      it("should not prevent the Enter key if the Enter is pressed after compositionend when preventEnterInInputEditorMode is set", async () => {
         editRef.setProperty("preventEnterInInputEditorMode", true);
         await page.waitForChanges();
         await dispatchCompositionStart();
@@ -142,7 +142,7 @@ const testPreventEnterInInputEditorMode = (
       });
 
       it.todo(
-        "should not trigger the from submit event when pressing the enter key with preventEnterInInputEditorMode set and the IME is active"
+        "should not trigger the form submit event when pressing the Enter key with preventEnterInInputEditorMode set and the IME is active"
       );
     });
   });

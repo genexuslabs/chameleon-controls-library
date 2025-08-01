@@ -9,7 +9,7 @@ export type ChatTranslations = {
     // retryVideoUpload?: string;
     sendButton: string;
     sendInput: string;
-    stopGeneratingAnswerButton?: string;
+    stopResponseButton?: string;
   };
   placeholder: {
     sendInput: string;
@@ -24,6 +24,6 @@ export type ChatTranslations = {
     // retryImageUpload?: string;
     // retryVideoUpload?: string;
     sourceFiles?: string;
-    stopGeneratingAnswerButton?: string;
+    stopResponseButton?: string;
   };
 };

@@ -5,7 +5,6 @@ testDefaultProperties("ch-chat", {
   autoScroll: "at-scroll-end",
   callbacks: undefined,
   disabled: false,
-  generatingResponse: false,
   items: [],
   liveMode: false,
   liveModeConfiguration: undefined,
@@ -26,7 +25,7 @@ testDefaultProperties("ch-chat", {
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     },
     placeholder: {
       sendInput: "Ask me a question..."
@@ -36,9 +35,10 @@ testDefaultProperties("ch-chat", {
       copyMessageContent: "Copy",
       processing: `Processing...`,
       sourceFiles: "Source files:",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     }
-  }
+  },
+  waitingResponse: false
 });
 
 describe("[ch-chat][basic]", () => {

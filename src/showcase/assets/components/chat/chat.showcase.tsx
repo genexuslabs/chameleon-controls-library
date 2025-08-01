@@ -30,7 +30,6 @@ const render: ShowcaseRender = designSystem => (
     }}
     callbacks={chatCallbacks}
     class="chat"
-    generatingResponse={state.generatingResponse}
     loadingState={state.loadingState}
     markdownTheme={
       designSystem === "unanimo"
@@ -57,6 +56,7 @@ const render: ShowcaseRender = designSystem => (
       state.showSendInputAdditionalContentBefore
     }
     translations={chatTranslations}
+    waitingResponse={state.waitingResponse}
   >
     <div slot="additional-content">
       Custom content that is rendered when the chat renders content
@@ -152,12 +152,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "enum"
       },
       {
-        id: "generatingResponse",
-        caption: "Generating Response",
-        value: false,
-        type: "boolean"
-      },
-      {
         id: "sendButtonDisabled",
         caption: "Send Button Disabled",
         value: false,
@@ -184,6 +178,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
       {
         id: "showSendInputAdditionalContentAfter",
         caption: "Show Send Input Additional Content After",
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "waitingResponse",
+        caption: "Waiting Response",
         value: false,
         type: "boolean"
       }
@@ -231,11 +231,6 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       type: "string"
     },
     {
-      name: "generatingResponse",
-      defaultValue: false,
-      type: "boolean"
-    },
-    {
       name: "items",
       fixed: true,
       value: "controlUIModel",
@@ -278,6 +273,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
     },
     {
       name: "showSendInputAdditionalContent",
+      defaultValue: false,
+      type: "boolean"
+    },
+    {
+      name: "waitingResponse",
       defaultValue: false,
       type: "boolean"
     }

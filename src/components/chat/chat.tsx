@@ -341,7 +341,7 @@ export class ChChat {
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",
-      stopButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     },
     placeholder: {
       sendInput: "Ask me a question..."
@@ -351,12 +351,12 @@ export class ChChat {
       copyMessageContent: "Copy",
       processing: `Processing...`,
       sourceFiles: "Source files:",
-      stopButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     }
   };
 
   /**
-   * `true` if the ch-chat is waiting for a response from the server. If so,
+   * `true` if the `ch-chat` is waiting for a response from the server. If so,
    * the `sendChatMessages` won't be executed when the user tries to send a new
    * message. Although, the `send-input` and `send-button` won't be disabled,
    * so the user can interact with the chat.
@@ -729,7 +729,7 @@ export class ChChat {
 
   #stopResponse = (event: MouseEvent) => {
     event.stopPropagation();
-    this.callbacks!.stop!();
+    this.callbacks!.stopResponse!();
   };
 
   #virtualItemsChanged = (
@@ -884,17 +884,17 @@ export class ChChat {
         {canShowAdditionalContent && <slot name="additional-content" />}
 
         <div class="send-container" part="send-container">
-          {this.waitingResponse && this.callbacks?.stop && (
+          {this.waitingResponse && this.callbacks?.stopResponse && (
             <button
               aria-label={
-                accessibleName.stopButton !== text.stopButton &&
-                (accessibleName.stopButton ?? text.stopButton)
+                accessibleName.stopResponseButton !== text.stopResponseButton &&
+                (accessibleName.stopResponseButton ?? text.stopResponseButton)
               }
-              part="stop-button"
+              part="stop-response-button"
               type="button"
               onClick={this.#stopResponse}
             >
-              {text.stopButton}
+              {text.stopResponseButton}
             </button>
           )}
 

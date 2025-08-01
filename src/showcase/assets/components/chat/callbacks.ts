@@ -154,7 +154,7 @@ export const chatCallbacks: ChatCallbacks = {
   //   return returnFiles ? [] : [];
   // },
   sendChatMessages,
-  stop: () => {
+  stopResponse: () => {
     clearTimeout(timeOut);
 
     // This is a WA to get the chat reference
@@ -180,7 +180,7 @@ export const chatTranslations: ChatTranslations = {
     downloadCodeButton: "Download code",
     sendButton: "Send",
     sendInput: "Message",
-    stopButton: "Stop generating answer"
+    stopResponseButton: "Stop generating answer"
   },
   placeholder: {
     sendInput: "Ask me a question..."
@@ -191,7 +191,7 @@ export const chatTranslations: ChatTranslations = {
     downloadCodeButton: "Download",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
     sourceFiles: "Source files:",
-    stopButton: "Stop generating answer"
+    stopResponseButton: "Stop generating answer"
   }
 };
 

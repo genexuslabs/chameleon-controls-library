@@ -286,9 +286,9 @@ export type ChatCallbacks = {
   sendChatMessages: (chat: ChatMessage[]) => void;
 
   /**
-   * Specifies a callback to execute when clicking the stop button.
+   * Specifies a callback to execute when clicking the stop-response button.
    */
-  stop?: () => Promise<void>;
+  stopResponse?: () => Promise<void>;
 
   /**
    * Specifies a callback to validate if the current chat message of the user

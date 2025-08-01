@@ -22,9 +22,15 @@ const state: Partial<HTMLChChatElement> = {};
 const render: ShowcaseRender = designSystem => (
   <ch-chat
     autoScroll={state.autoScroll}
+    actionButtonPositions={{
+      sendButton: {
+        container: "send-input-additional-content-after",
+        position: "end"
+      }
+    }}
     callbacks={chatCallbacks}
     class="chat"
-    generatingResponse={false}
+    generatingResponse={state.generatingResponse}
     loadingState={state.loadingState}
     markdownTheme={
       designSystem === "unanimo"
@@ -146,6 +152,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         type: "enum"
       },
       {
+        id: "generatingResponse",
+        caption: "Generating Response",
+        value: false,
+        type: "boolean"
+      },
+      {
         id: "sendButtonDisabled",
         caption: "Send Button Disabled",
         value: false,
@@ -214,19 +226,14 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
   [
     { name: "class", fixed: true, value: "chat", type: "string" },
     {
-      name: "newUserMessageAlignment",
-      defaultValue: "end",
-      type: "string"
-    },
-    {
-      name: "newUserMessageScrollBehavior",
-      defaultValue: "instant",
-      type: "string"
-    },
-    {
       name: "autoScroll",
       defaultValue: "at-scroll-end",
       type: "string"
+    },
+    {
+      name: "generatingResponse",
+      defaultValue: false,
+      type: "boolean"
     },
     {
       name: "items",
@@ -235,8 +242,23 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       type: "function"
     },
     {
+      name: "liveMode",
+      defaultValue: false,
+      type: "boolean"
+    },
+    {
       name: "loadingState",
       defaultValue: "initial",
+      type: "string"
+    },
+    {
+      name: "newUserMessageAlignment",
+      defaultValue: "end",
+      type: "string"
+    },
+    {
+      name: "newUserMessageScrollBehavior",
+      defaultValue: "instant",
       type: "string"
     },
     {

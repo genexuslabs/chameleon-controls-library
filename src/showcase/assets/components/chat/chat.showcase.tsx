@@ -22,6 +22,12 @@ const state: Partial<HTMLChChatElement> = {};
 const render: ShowcaseRender = designSystem => (
   <ch-chat
     autoScroll={state.autoScroll}
+    actionButtonPositions={{
+      sendButton: {
+        container: "send-input-additional-content-after",
+        position: "end"
+      }
+    }}
     callbacks={chatCallbacks}
     class="chat"
     loadingState={state.loadingState}
@@ -50,7 +56,7 @@ const render: ShowcaseRender = designSystem => (
       state.showSendInputAdditionalContentBefore
     }
     translations={chatTranslations}
-    waitingResponse={false}
+    waitingResponse={state.waitingResponse}
   >
     <div slot="additional-content">
       Custom content that is rendered when the chat renders content
@@ -174,6 +180,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
         caption: "Show Send Input Additional Content After",
         value: false,
         type: "boolean"
+      },
+      {
+        id: "waitingResponse",
+        caption: "Waiting Response",
+        value: false,
+        type: "boolean"
       }
     ]
   },
@@ -214,16 +226,6 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
   [
     { name: "class", fixed: true, value: "chat", type: "string" },
     {
-      name: "newUserMessageAlignment",
-      defaultValue: "end",
-      type: "string"
-    },
-    {
-      name: "newUserMessageScrollBehavior",
-      defaultValue: "instant",
-      type: "string"
-    },
-    {
       name: "autoScroll",
       defaultValue: "at-scroll-end",
       type: "string"
@@ -235,8 +237,23 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       type: "function"
     },
     {
+      name: "liveMode",
+      defaultValue: false,
+      type: "boolean"
+    },
+    {
       name: "loadingState",
       defaultValue: "initial",
+      type: "string"
+    },
+    {
+      name: "newUserMessageAlignment",
+      defaultValue: "end",
+      type: "string"
+    },
+    {
+      name: "newUserMessageScrollBehavior",
+      defaultValue: "instant",
       type: "string"
     },
     {
@@ -256,6 +273,11 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
     },
     {
       name: "showSendInputAdditionalContent",
+      defaultValue: false,
+      type: "boolean"
+    },
+    {
+      name: "waitingResponse",
       defaultValue: false,
       type: "boolean"
     }

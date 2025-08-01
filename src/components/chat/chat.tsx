@@ -27,6 +27,8 @@ import type { ChChatLit } from "./internal/chat.lit";
 import { mergeSortedArrays } from "./merge-sort-live-kit-messages";
 import type { ChatTranslations } from "./translations";
 import type {
+  ChatActionButtonButtons,
+  ChatActionButtonPosition,
   ChatCallbacks,
   ChatLiveModeConfiguration,
   ChatMessage,
@@ -40,6 +42,13 @@ import type {
 import { getMessageContent, getMessageFiles } from "./utils";
 
 // Side effect to define the ch-chat-lit custom element
+import {
+  DEFAULT_SEND_BUTTON_POSITION,
+  SEND_CONTAINER_AFTER,
+  SEND_CONTAINER_BEFORE,
+  SEND_INPUT_AFTER,
+  SEND_INPUT_BEFORE
+} from "./constants";
 import "./internal/chat.lit";
 
 const ENTER_KEY = "Enter";
@@ -148,6 +157,16 @@ export class ChChat {
    * message is added by the host of the component.
    */
   @State() initialLoadHasEnded = false;
+
+  /**
+   * Specifies the position of the send and stop-response buttons. If the
+   * position of the `stopResponseButton` is not specified, the send button
+   * will be replaced with the stop-response button when
+   * `waitingResponse = true` and the `stopResponse` callback is specified.
+   */
+  @Prop() readonly actionButtonPositions: ChatActionButtonButtons = {
+    sendButton: DEFAULT_SEND_BUTTON_POSITION
+  };
 
   /**
    * Specifies how the scroll position will be adjusted when the chat messages
@@ -310,6 +329,22 @@ export class ChChat {
   @Prop() readonly showAdditionalContent: boolean = false;
 
   /**
+   * If `true`, a slot is rendered in the `send-container` with
+   * `"send-container-additional-content-after"` name. This slot is intended to
+   * customize the internal content of the send-container by adding additional
+   * elements after the send-container content.
+   */
+  @Prop() readonly showSendContainerAdditionalContentAfter: boolean = false;
+
+  /**
+   * If `true`, a slot is rendered in the `send-container` with
+   * `"send-container-additional-content-before"` name. This slot is intended
+   * to customize the internal content of the send-container by adding
+   * additional elements before the send-container content.
+   */
+  @Prop() readonly showSendContainerAdditionalContentBefore: boolean = false;
+
+  /**
    * If `true`, a slot is rendered in the `send-input` with
    * `"send-input-additional-content-after"` name. This slot is intended to customize
    * the internal content of the send-input by adding additional elements
@@ -349,9 +384,8 @@ export class ChChat {
     text: {
       copyCodeButton: "Copy code",
       copyMessageContent: "Copy",
-      processing: `Processing...`,
-      sourceFiles: "Source files:",
-      stopResponseButton: "Stop generating answer"
+      processing: "Processing...",
+      sourceFiles: "Source files:"
     }
   };
 
@@ -738,6 +772,9 @@ export class ChChat {
     this.virtualItems = event.detail.virtualItems as ChatMessage[];
   };
 
+  // - - - - - - - - - - - - - - - - - - - -
+  //                 Renders
+  // - - - - - - - - - - - - - - - - - - - -
   #renderChatOrEmpty = () =>
     this.loadingState === "all-records-loaded" && this.items.length === 0 ? (
       <slot name="empty-chat"></slot>
@@ -787,6 +824,118 @@ export class ChChat {
         </ch-virtual-scroller>
       </ch-smart-grid>
     );
+
+  #renderStopResponseButton = () => {
+    const { accessibleName, text } = this.translations;
+
+    return (
+      this.waitingResponse &&
+      this.callbacks?.stopResponse && (
+        <button
+          // TODO: Add a unit test for this. Also, without the undefined, when
+          // the DOM is reused (by switching between the send and stop-response
+          // button), the aria-label is not be removed and the stop-response
+          // button can end up having the send button aria-label
+          aria-label={
+            accessibleName.stopResponseButton !== text.stopResponseButton
+              ? accessibleName.stopResponseButton ?? text.stopResponseButton
+              : undefined
+          }
+          part="stop-response-button"
+          type="button"
+          onClick={this.#stopResponse}
+        >
+          {text.stopResponseButton}
+        </button>
+      )
+    );
+  };
+
+  #renderSendOrStopResponseButton = () =>
+    this.waitingResponse &&
+    this.callbacks?.stopResponse &&
+    this.actionButtonPositions.stopResponseButton === undefined
+      ? this.#renderStopResponseButton()
+      : this.#renderSendButton();
+
+  #renderSendButton = () => {
+    const { accessibleName } = this.translations;
+
+    const sendButtonDisabled =
+      this.sendButtonDisabled ||
+      this.disabled ||
+      this.loadingState === "initial" ||
+      this.#liveModeIsDisplayed();
+
+    return (
+      <button
+        aria-label={accessibleName.sendButton}
+        title={accessibleName.sendButton}
+        part="send-button"
+        disabled={sendButtonDisabled}
+        type="button"
+        onClick={
+          sendButtonDisabled ? undefined : this.#sendMessageWithSendButton
+        }
+      ></button>
+    );
+  };
+
+  #renderSendContainerOrSendInputSlots = (
+    sendButtonPosition: ChatActionButtonPosition,
+    stopResponseButtonPosition: ChatActionButtonPosition | undefined,
+    container: ChatActionButtonPosition["container"],
+    showContainer: boolean
+  ) => {
+    const showSendButton = sendButtonPosition.container === container;
+    const showStopResponseButton =
+      stopResponseButtonPosition !== undefined &&
+      stopResponseButtonPosition.container === container;
+
+    return (
+      (showContainer || showSendButton || showStopResponseButton) && (
+        <div
+          // Project the send-input slots if necessary
+          slot={
+            container === SEND_INPUT_BEFORE || container === SEND_INPUT_AFTER
+              ? this.#getSendInputSlotRename(container)
+              : undefined
+          }
+          class={`additional-content-container ${container}`}
+          part={container}
+        >
+          {showStopResponseButton &&
+            stopResponseButtonPosition.position === "start" &&
+            this.#renderStopResponseButton()}
+          {showSendButton &&
+            sendButtonPosition.position === "start" &&
+            this.#renderSendOrStopResponseButton()}
+
+          {showContainer && <slot name={container} />}
+
+          {showStopResponseButton &&
+            stopResponseButtonPosition.position === "end" &&
+            this.#renderStopResponseButton()}
+          {showSendButton &&
+            sendButtonPosition.position === "end" &&
+            this.#renderSendOrStopResponseButton()}
+        </div>
+      )
+    );
+  };
+
+  /**
+   * Returns the slot name to be used in the `ch-edit` element.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #getSendInputSlotRename = (
+    slotToRename:
+      | "send-input-additional-content-before"
+      | "send-input-additional-content-after"
+  ) =>
+    slotToRename === "send-input-additional-content-before"
+      ? "additional-content-before"
+      : "additional-content-after";
 
   #loadMoreItems = () => {
     this.loadingState = "loading";
@@ -846,9 +995,6 @@ export class ChChat {
   }
 
   render() {
-    const text = this.translations.text;
-    const accessibleName = this.translations.accessibleName;
-
     const canShowAdditionalContent =
       this.showAdditionalContent &&
       // It's not the initial load
@@ -861,11 +1007,9 @@ export class ChChat {
     const sendInputDisabled =
       this.sendInputDisabled || this.disabled || liveModeIsDisplayed;
 
-    const sendButtonDisabled =
-      this.sendButtonDisabled ||
-      this.disabled ||
-      liveModeIsDisplayed ||
-      this.loadingState === "initial";
+    const sendButtonPosition =
+      this.actionButtonPositions.sendButton ?? DEFAULT_SEND_BUTTON_POSITION;
+    const stopResponseButton = this.actionButtonPositions.stopResponseButton;
 
     return (
       <Host
@@ -884,68 +1028,59 @@ export class ChChat {
         {canShowAdditionalContent && <slot name="additional-content" />}
 
         <div class="send-container" part="send-container">
-          {this.waitingResponse && this.callbacks?.stopResponse && (
-            <button
-              aria-label={
-                accessibleName.stopResponseButton !== text.stopResponseButton &&
-                (accessibleName.stopResponseButton ?? text.stopResponseButton)
-              }
-              part="stop-response-button"
-              type="button"
-              onClick={this.#stopResponse}
-            >
-              {text.stopResponseButton}
-            </button>
+          {this.#renderSendContainerOrSendInputSlots(
+            sendButtonPosition,
+            stopResponseButton,
+            SEND_CONTAINER_BEFORE,
+            this.showSendContainerAdditionalContentBefore
           )}
 
-          <div class="send-input-wrapper" part="send-input-wrapper">
-            <ch-edit
-              accessibleName={accessibleName.sendInput}
-              autoGrow
-              disabled={sendInputDisabled}
-              hostParts="send-input"
-              multiline
-              placeholder={this.translations.placeholder.sendInput}
-              preventEnterInInputEditorMode
-              showAdditionalContentAfter={
-                this.showSendInputAdditionalContentAfter
-              }
-              showAdditionalContentBefore={
-                this.showSendInputAdditionalContentBefore
-              }
-              onKeyDown={
-                sendInputDisabled || this.liveMode
-                  ? undefined
-                  : this.#sendMessageKeyboard
-              }
-              ref={el => (this.#editRef = el as HTMLChEditElement)}
-            >
-              {this.showSendInputAdditionalContentBefore && (
-                <slot
-                  slot="additional-content-before"
-                  name="send-input-additional-content-before"
-                />
-              )}
-              {this.showSendInputAdditionalContentAfter && (
-                <slot
-                  slot="additional-content-after"
-                  name="send-input-additional-content-after"
-                />
-              )}
-            </ch-edit>
-          </div>
-
-          <button
-            aria-label={accessibleName.sendButton}
-            title={accessibleName.sendButton}
-            class="send-or-audio-button"
-            part="send-button"
-            disabled={sendButtonDisabled}
-            type="button"
-            onClick={
-              sendButtonDisabled ? undefined : this.#sendMessageWithSendButton
+          <ch-edit
+            class="send-input"
+            accessibleName={this.translations.accessibleName.sendInput}
+            autoGrow
+            disabled={sendInputDisabled}
+            hostParts="send-input"
+            multiline
+            placeholder={this.translations.placeholder.sendInput}
+            preventEnterInInputEditorMode
+            showAdditionalContentAfter={
+              this.showSendInputAdditionalContentAfter ||
+              sendButtonPosition.container === SEND_INPUT_AFTER ||
+              stopResponseButton?.container === SEND_INPUT_AFTER
             }
-          ></button>
+            showAdditionalContentBefore={
+              this.showSendInputAdditionalContentBefore ||
+              sendButtonPosition.container === SEND_INPUT_BEFORE ||
+              stopResponseButton?.container === SEND_INPUT_BEFORE
+            }
+            onKeyDown={
+              sendInputDisabled || this.liveMode
+                ? undefined
+                : this.#sendMessageKeyboard
+            }
+            ref={el => (this.#editRef = el as HTMLChEditElement)}
+          >
+            {this.#renderSendContainerOrSendInputSlots(
+              sendButtonPosition,
+              stopResponseButton,
+              SEND_INPUT_BEFORE,
+              this.showSendInputAdditionalContentBefore
+            )}
+            {this.#renderSendContainerOrSendInputSlots(
+              sendButtonPosition,
+              stopResponseButton,
+              SEND_INPUT_AFTER,
+              this.showSendInputAdditionalContentAfter
+            )}
+          </ch-edit>
+
+          {this.#renderSendContainerOrSendInputSlots(
+            sendButtonPosition,
+            stopResponseButton,
+            SEND_CONTAINER_AFTER,
+            this.showSendContainerAdditionalContentAfter
+          )}
         </div>
 
         {this.#renderLiveKitRoom()}

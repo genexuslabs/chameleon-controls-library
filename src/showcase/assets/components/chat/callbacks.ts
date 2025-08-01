@@ -70,12 +70,15 @@ To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tild
 \`\`\`
 `;
 
-const sendChatMessages = () => {
-  // This is a WA to get the chat reference
-  const chatRef = document
+const getChatRef = () =>
+  document
     .querySelector("ch-flexible-layout-render")!
     .shadowRoot.querySelector("ch-flexible-layout-render")!
     .shadowRoot.querySelector("ch-chat");
+
+const sendChatMessages = () => {
+  // This is a WA to get the chat reference
+  const chatRef = getChatRef();
 
   setTimeout(() => {
     chatRef.addNewMessage({
@@ -158,7 +161,7 @@ export const chatCallbacks: ChatCallbacks = {
     clearTimeout(timeOut);
 
     // This is a WA to get the chat reference
-    const chatRef = document.querySelector("ch-chat") as HTMLChChatElement;
+    const chatRef = getChatRef();
 
     chatRef.updateLastMessage(
       {
@@ -190,8 +193,7 @@ export const chatTranslations: ChatTranslations = {
     copyMessageContent: "Copy",
     downloadCodeButton: "Download",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
-    sourceFiles: "Source files:",
-    stopResponseButton: "Stop generating answer"
+    sourceFiles: "Source files:"
   }
 };
 

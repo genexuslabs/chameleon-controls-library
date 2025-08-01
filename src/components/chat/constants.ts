@@ -14,8 +14,3 @@ export const DEFAULT_SEND_BUTTON_POSITION = {
   container: SEND_CONTAINER_AFTER,
   position: "end"
 } as const satisfies ChatActionButtonPosition;
-
-export const DEFAULT_STOP_RESPONSE_BUTTON_POSITION = {
-  container: SEND_CONTAINER_BEFORE,
-  position: "start"
-} as const satisfies ChatActionButtonPosition;

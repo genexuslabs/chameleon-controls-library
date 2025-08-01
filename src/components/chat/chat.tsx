@@ -44,7 +44,6 @@ import { getMessageContent, getMessageFiles } from "./utils";
 // Side effect to define the ch-chat-lit custom element
 import {
   DEFAULT_SEND_BUTTON_POSITION,
-  DEFAULT_STOP_RESPONSE_BUTTON_POSITION,
   SEND_CONTAINER_AFTER,
   SEND_CONTAINER_BEFORE,
   SEND_INPUT_AFTER,
@@ -160,11 +159,13 @@ export class ChChat {
   @State() initialLoadHasEnded = false;
 
   /**
-   * Specifies the position of the send and stop-response buttons.
+   * Specifies the position of the send and stop-response buttons. If the
+   * position of the `stopResponseButton` is not specified, the send button
+   * will be replaced with the stop-response button when
+   * `waitingResponse = true` and the `stopResponse` callback is specified.
    */
   @Prop() readonly actionButtonPositions: ChatActionButtonButtons = {
-    sendButton: DEFAULT_SEND_BUTTON_POSITION,
-    stopResponseButton: DEFAULT_STOP_RESPONSE_BUTTON_POSITION
+    sendButton: DEFAULT_SEND_BUTTON_POSITION
   };
 
   /**
@@ -383,9 +384,8 @@ export class ChChat {
     text: {
       copyCodeButton: "Copy code",
       copyMessageContent: "Copy",
-      processing: `Processing...`,
-      sourceFiles: "Source files:",
-      stopResponseButton: "Stop generating answer"
+      processing: "Processing...",
+      sourceFiles: "Source files:"
     }
   };
 
@@ -832,9 +832,14 @@ export class ChChat {
       this.waitingResponse &&
       this.callbacks?.stopResponse && (
         <button
+          // TODO: Add a unit test for this. Also, without the undefined, when
+          // the DOM is reused (by switching between the send and stop-response
+          // button), the aria-label is not be removed and the stop-response
+          // button can end up having the send button aria-label
           aria-label={
-            accessibleName.stopResponseButton !== text.stopResponseButton &&
-            (accessibleName.stopResponseButton ?? text.stopResponseButton)
+            accessibleName.stopResponseButton !== text.stopResponseButton
+              ? accessibleName.stopResponseButton ?? text.stopResponseButton
+              : undefined
           }
           part="stop-response-button"
           type="button"
@@ -845,6 +850,13 @@ export class ChChat {
       )
     );
   };
+
+  #renderSendOrStopResponseButton = () =>
+    this.waitingResponse &&
+    this.callbacks?.stopResponse &&
+    this.actionButtonPositions.stopResponseButton === undefined
+      ? this.#renderStopResponseButton()
+      : this.#renderSendButton();
 
   #renderSendButton = () => {
     const { accessibleName } = this.translations;
@@ -871,12 +883,13 @@ export class ChChat {
 
   #renderSendContainerOrSendInputSlots = (
     sendButtonPosition: ChatActionButtonPosition,
-    stopResponseButtonPosition: ChatActionButtonPosition,
+    stopResponseButtonPosition: ChatActionButtonPosition | undefined,
     container: ChatActionButtonPosition["container"],
     showContainer: boolean
   ) => {
     const showSendButton = sendButtonPosition.container === container;
     const showStopResponseButton =
+      stopResponseButtonPosition !== undefined &&
       stopResponseButtonPosition.container === container;
 
     return (
@@ -896,7 +909,7 @@ export class ChChat {
             this.#renderStopResponseButton()}
           {showSendButton &&
             sendButtonPosition.position === "start" &&
-            this.#renderSendButton()}
+            this.#renderSendOrStopResponseButton()}
 
           {showContainer && <slot name={container} />}
 
@@ -905,7 +918,7 @@ export class ChChat {
             this.#renderStopResponseButton()}
           {showSendButton &&
             sendButtonPosition.position === "end" &&
-            this.#renderSendButton()}
+            this.#renderSendOrStopResponseButton()}
         </div>
       )
     );
@@ -996,9 +1009,7 @@ export class ChChat {
 
     const sendButtonPosition =
       this.actionButtonPositions.sendButton ?? DEFAULT_SEND_BUTTON_POSITION;
-    const stopResponseButton =
-      this.actionButtonPositions.stopResponseButton ??
-      DEFAULT_STOP_RESPONSE_BUTTON_POSITION;
+    const stopResponseButton = this.actionButtonPositions.stopResponseButton;
 
     return (
       <Host
@@ -1036,12 +1047,12 @@ export class ChChat {
             showAdditionalContentAfter={
               this.showSendInputAdditionalContentAfter ||
               sendButtonPosition.container === SEND_INPUT_AFTER ||
-              stopResponseButton.container === SEND_INPUT_AFTER
+              stopResponseButton?.container === SEND_INPUT_AFTER
             }
             showAdditionalContentBefore={
               this.showSendInputAdditionalContentBefore ||
               sendButtonPosition.container === SEND_INPUT_BEFORE ||
-              stopResponseButton.container === SEND_INPUT_BEFORE
+              stopResponseButton?.container === SEND_INPUT_BEFORE
             }
             onKeyDown={
               sendInputDisabled || this.liveMode

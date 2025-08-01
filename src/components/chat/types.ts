@@ -421,8 +421,9 @@ export type ChatActionButtonButtons = {
   /**
    * Specifies the position of the stop button in the chat.
    *
-   * If `undefined`, the stop- button will be placed at the start of the
-   * `send-container-additional-content-before` container.
+   * If `undefined`, the send button will be replaced with the stop-response
+   * button when `waitingResponse = true` and the `stopResponse` callback is
+   * specified.
    */
   stopResponseButton?: ChatActionButtonPosition;
 };

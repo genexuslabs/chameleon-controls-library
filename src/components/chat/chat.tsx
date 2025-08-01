@@ -164,7 +164,7 @@ export class ChChat {
    */
   @Prop() readonly actionButtonPositions: ChatActionButtonButtons = {
     sendButton: DEFAULT_SEND_BUTTON_POSITION,
-    stopGeneratingAnswerButton: DEFAULT_STOP_GENERATING_ANSWER_BUTTON_POSITION
+    stopButton: DEFAULT_STOP_GENERATING_ANSWER_BUTTON_POSITION
   };
 
   /**
@@ -998,7 +998,7 @@ export class ChChat {
     const sendButtonPosition =
       this.actionButtonPositions.sendButton ?? DEFAULT_SEND_BUTTON_POSITION;
     const stopGeneratingAnswerButton =
-      this.actionButtonPositions.stopGeneratingAnswerButton ??
+      this.actionButtonPositions.stopButton ??
       DEFAULT_STOP_GENERATING_ANSWER_BUTTON_POSITION;
 
     return (

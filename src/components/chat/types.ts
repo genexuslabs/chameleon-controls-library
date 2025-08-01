@@ -420,12 +420,12 @@ export type ChatActionButtonButtons = {
   sendButton?: ChatActionButtonPosition;
 
   /**
-   * Specifies the position of the stop-generating-answer button in the chat.
+   * Specifies the position of the stop button in the chat.
    *
-   * If `undefined`, the stop-generating-answer button will be placed at the
-   * start of the `send-container-additional-content-before` container.
+   * If `undefined`, the stop- button will be placed at the start of the
+   * `send-container-additional-content-before` container.
    */
-  stopGeneratingAnswerButton?: ChatActionButtonPosition;
+  stopButton?: ChatActionButtonPosition;
 };
 
 export type ChatActionButtonPosition = {

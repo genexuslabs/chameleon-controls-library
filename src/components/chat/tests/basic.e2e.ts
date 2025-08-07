@@ -2,12 +2,6 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { testDefaultProperties } from "../../../testing/utils.e2e";
 
 testDefaultProperties("ch-chat", {
-  actionButtonPositions: {
-    sendButton: {
-      container: "send-container-additional-content-after",
-      position: "end"
-    }
-  },
   autoScroll: "at-scroll-end",
   callbacks: undefined,
   disabled: false,
@@ -19,12 +13,11 @@ testDefaultProperties("ch-chat", {
   newUserMessageAlignment: "end",
   newUserMessageScrollBehavior: "instant",
   sendButtonDisabled: false,
+  sendContainerLayout: {
+    after: ["send-button"]
+  },
   sendInputDisabled: false,
   showAdditionalContent: false,
-  showSendContainerAdditionalContentAfter: false,
-  showSendContainerAdditionalContentBefore: false,
-  showSendInputAdditionalContentAfter: false,
-  showSendInputAdditionalContentBefore: false,
   theme: undefined,
   translations: {
     accessibleName: {

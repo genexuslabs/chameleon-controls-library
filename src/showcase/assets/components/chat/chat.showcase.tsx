@@ -1,5 +1,8 @@
 import { h } from "@stencil/core";
-import { ChatLiveModeConfiguration } from "../../../../components";
+import {
+  ChatLiveModeConfiguration,
+  ChatSendContainerLayout
+} from "../../../../components";
 import { dataTypeInGeneXus } from "../combo-box/models";
 import {
   ShowcaseRender,
@@ -19,67 +22,72 @@ import {
 
 const state: Partial<HTMLChChatElement> = {};
 
-const render: ShowcaseRender = designSystem => (
-  <ch-chat
-    autoScroll={state.autoScroll}
-    actionButtonPositions={{
-      sendButton: {
-        container: "send-input-additional-content-after",
-        position: "end"
-      }
-    }}
-    callbacks={chatCallbacks}
-    class="chat"
-    loadingState={state.loadingState}
-    markdownTheme={
-      designSystem === "unanimo"
-        ? "unanimo/markdown-viewer"
-        : "mercury/markdown-viewer"
-    }
-    newUserMessageAlignment={state.newUserMessageAlignment}
-    newUserMessageScrollBehavior={state.newUserMessageScrollBehavior}
-    // renderItem={
-    //   designSystem === "unanimo"
-    //     ? undefined
-    //     : mercuryChatMessageRender("mercury/markdown-viewer")
-    // }
-    items={state.items}
-    liveMode={state.liveMode}
-    liveModeConfiguration={state.liveModeConfiguration}
-    sendButtonDisabled={state.sendButtonDisabled}
-    sendInputDisabled={state.sendInputDisabled}
-    showAdditionalContent={state.showAdditionalContent}
-    showSendInputAdditionalContentAfter={
-      state.showSendInputAdditionalContentAfter
-    }
-    showSendInputAdditionalContentBefore={
-      state.showSendInputAdditionalContentBefore
-    }
-    translations={chatTranslations}
-    waitingResponse={state.waitingResponse}
-  >
-    <div slot="additional-content">
-      Custom content that is rendered when the chat renders content
-    </div>
-    {state.showSendInputAdditionalContentBefore && (
-      <button
-        slot="send-input-additional-content-before"
-        class="button-primary"
-      >
-        Action
-      </button>
-    )}
+const unanimoSendContainerLayout: ChatSendContainerLayout = {
+  before: ["stop-response-button"],
+  after: ["send-button"]
+};
 
-    {state.showSendInputAdditionalContentAfter && (
-      <ch-combo-box-render
-        slot="send-input-additional-content-after"
-        accessibleName="Data Types"
-        class="combo-box"
-        model={dataTypeInGeneXus}
-      ></ch-combo-box-render>
-    )}
-  </ch-chat>
-);
+const mercurySendContainerLayout: ChatSendContainerLayout = {
+  sendInputAfter: ["send-button"]
+};
+
+const render: ShowcaseRender = designSystem => {
+  state.sendContainerLayout =
+    designSystem === "unanimo"
+      ? unanimoSendContainerLayout
+      : mercurySendContainerLayout;
+
+  return (
+    <ch-chat
+      autoScroll={state.autoScroll}
+      callbacks={chatCallbacks}
+      class="chat"
+      loadingState={state.loadingState}
+      markdownTheme={
+        designSystem === "unanimo"
+          ? "unanimo/markdown-viewer"
+          : "mercury/markdown-viewer"
+      }
+      newUserMessageAlignment={state.newUserMessageAlignment}
+      newUserMessageScrollBehavior={state.newUserMessageScrollBehavior}
+      // renderItem={
+      //   designSystem === "unanimo"
+      //     ? undefined
+      //     : mercuryChatMessageRender("mercury/markdown-viewer")
+      // }
+      items={state.items}
+      liveMode={state.liveMode}
+      liveModeConfiguration={state.liveModeConfiguration}
+      sendButtonDisabled={state.sendButtonDisabled}
+      sendContainerLayout={state.sendContainerLayout}
+      sendInputDisabled={state.sendInputDisabled}
+      showAdditionalContent={state.showAdditionalContent}
+      translations={chatTranslations}
+      waitingResponse={state.waitingResponse}
+    >
+      <div slot="additional-content">
+        Custom content that is rendered when the chat renders content
+      </div>
+      {state.sendContainerLayout.sendInputBefore && (
+        <button
+          slot="send-input-additional-content-before"
+          class="button-primary"
+        >
+          Action
+        </button>
+      )}
+
+      {state.sendContainerLayout.sendInputAfter && (
+        <ch-combo-box-render
+          slot="send-input-additional-content-after"
+          accessibleName="Data Types"
+          class="combo-box"
+          model={dataTypeInGeneXus}
+        ></ch-combo-box-render>
+      )}
+    </ch-chat>
+  );
+};
 
 const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
   {
@@ -166,18 +174,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
       {
         id: "showAdditionalContent",
         caption: "Show Additional Content",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "showSendInputAdditionalContentBefore",
-        caption: "Show Send Input Additional Content Before",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "showSendInputAdditionalContentAfter",
-        caption: "Show Send Input Additional Content After",
         value: false,
         type: "boolean"
       },
@@ -272,11 +268,6 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] 
       type: "boolean"
     },
     {
-      name: "showSendInputAdditionalContent",
-      defaultValue: false,
-      type: "boolean"
-    },
-    {
       name: "waitingResponse",
       defaultValue: false,
       type: "boolean"
@@ -299,11 +290,11 @@ export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
           ? '\n        <div slot="additional-content">Your content here...</div>\n      '
           : ""
       }${
-        state.showSendInputAdditionalContentBefore
+        state.sendContainerLayout.sendInputBefore
           ? '\n        <div slot="send-input-additional-content-before">Your content here...</div>\n      '
           : ""
       }${
-        state.showSendInputAdditionalContentAfter
+        state.sendContainerLayout.sendInputAfter
           ? '\n        <div slot="send-input-additional-content-after">Your content here...</div>\n      '
           : ""
       }</ChChat>`,
@@ -318,11 +309,11 @@ export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
             ? '\n          <div slot="additional-content">Your content here...</div>\n        '
             : ""
         }${
-        state.showSendInputAdditionalContentBefore
+        state.sendContainerLayout.sendInputBefore
           ? '\n          <div slot="send-input-additional-content-before">Your content here...</div>\n        '
           : ""
       }${
-        state.showSendInputAdditionalContentAfter
+        state.sendContainerLayout.sendInputAfter
           ? '\n          <div slot="send-input-additional-content-after">Your content here...</div>\n        '
           : ""
       }</ch-chat>`

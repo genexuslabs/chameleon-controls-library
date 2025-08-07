@@ -3,10 +3,10 @@ import { LIT_COMMENTS_REGEX } from "../../../testing/constants.e2e";
 import { ChatMessage, ChatMessageByRole } from "../types";
 
 const INITIAL_LOAD_RENDERED_CONTENT =
-  '<slot name="loading-chat"></slot><div class="send-container" part="send-container"><ch-edit class="send-input ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit><div class="additional-content-container send-container-additional-content-after" part="send-container-additional-content-after"><button aria-label="Send" title="Send" part="send-button" disabled="" type="button"></button></div></div>';
+  '<slot name="loading-chat"></slot><div class="send-container" part="send-container"><ch-edit class="send-input ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit><div class="additional-content-container send-container-after" part="send-container-after"><button aria-label="Send" title="Send" part="send-button" disabled="" type="button"></button></div></div>';
 
 const EMPTY_RENDERED_CONTENT =
-  '<slot name="empty-chat"></slot><div class="send-container" part="send-container"><ch-edit class="send-input ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit><div class="additional-content-container send-container-additional-content-after" part="send-container-additional-content-after"><button aria-label="Send" title="Send" part="send-button" type="button"></button></div></div>';
+  '<slot name="empty-chat"></slot><div class="send-container" part="send-container"><ch-edit class="send-input ch-edit--cursor-text ch-edit--multiline hydrated" part="ch-edit--empty-value send-input" data-text-align=""></ch-edit><div class="additional-content-container send-container-after" part="send-container-after"><button aria-label="Send" title="Send" part="send-button" type="button"></button></div></div>';
 
 const chatModel1: ChatMessage[] = [
   {

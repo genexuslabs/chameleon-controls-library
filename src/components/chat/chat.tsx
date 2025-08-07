@@ -57,18 +57,22 @@ const createLiveKitMessagesStore = (): {
 const stopResponseButtonHasAPosition = (
   sendContainerLayout: ChatSendContainerLayout
 ) =>
-  (sendContainerLayout.before ?? []).includes("stop-response-button") ||
+  (sendContainerLayout.sendContainerBefore ?? []).includes(
+    "stop-response-button"
+  ) ||
   (sendContainerLayout.sendInputBefore ?? []).includes(
     "stop-response-button"
   ) ||
   (sendContainerLayout.sendInputAfter ?? []).includes("stop-response-button") ||
-  (sendContainerLayout.after ?? []).includes("stop-response-button");
+  (sendContainerLayout.sendContainerAfter ?? []).includes(
+    "stop-response-button"
+  );
 
 const sendContainerLayoutPositionToPartName = {
-  before: "send-container-additional-content-before",
-  sendInputBefore: "send-input-additional-content-before",
-  sendInputAfter: "send-input-additional-content-after",
-  after: "send-container-additional-content-after"
+  sendContainerBefore: "send-container-before",
+  sendInputBefore: "send-input-before",
+  sendInputAfter: "send-input-after",
+  sendContainerAfter: "send-container-after"
 } as const satisfies Record<keyof ChatSendContainerLayout, string>;
 
 /**
@@ -343,10 +347,10 @@ export class ChChat {
   /**
    * Specifies the position of the elements in the `send-container` part.
    * There are four positions for distributing elements:
-   *   - `before`: Before the contents of the `send-container` part.
+   *   - `sendContainerBefore`: Before the contents of the `send-container` part.
    *   - `sendInputBefore`: Before the contents of the `send-input` part.
    *   - `sendInputAfter`: After the contents of the `send-input` part.
-   *   - `sendInputAfter`: After the contents of the `send-container` part.
+   *   - `sendContainerAfter`: After the contents of the `send-container` part.
    *
    * At each position you can specify reserved elements, such as the
    * `send-button` and `stop-response-button`, but can also be specified
@@ -382,7 +386,7 @@ export class ChChat {
    * ```
    */
   @Prop() readonly sendContainerLayout: ChatSendContainerLayout = {
-    after: ["send-button"]
+    sendContainerAfter: ["send-button"]
   };
   @Watch("sendContainerLayout")
   sendContainerLayoutChanged() {
@@ -1027,10 +1031,10 @@ export class ChChat {
 
   render() {
     const {
-      before: sendContainerBefore,
+      sendContainerBefore,
       sendInputAfter,
       sendInputBefore,
-      after: sendContainerAfter
+      sendContainerAfter
     } = this.sendContainerLayout;
 
     const canShowAdditionalContent =
@@ -1063,7 +1067,7 @@ export class ChChat {
 
         <div class="send-container" part="send-container">
           {this.#renderSendContainerOrSendInputSlots(
-            "before",
+            "sendContainerBefore",
             sendContainerBefore
           )}
 
@@ -1100,7 +1104,7 @@ export class ChChat {
           </ch-edit>
 
           {this.#renderSendContainerOrSendInputSlots(
-            "after",
+            "sendContainerAfter",
             sendContainerAfter
           )}
         </div>

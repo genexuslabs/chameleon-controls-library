@@ -414,10 +414,10 @@ export type ChatLiveModeConfiguration = {
 };
 
 export type ChatSendContainerLayout = {
-  before?: ChatSendContainerLayoutElement[];
+  sendContainerBefore?: ChatSendContainerLayoutElement[];
   sendInputBefore?: ChatSendContainerLayoutElement[];
   sendInputAfter?: ChatSendContainerLayoutElement[];
-  after?: ChatSendContainerLayoutElement[];
+  sendContainerAfter?: ChatSendContainerLayoutElement[];
 };
 
 export type ChatSendContainerLayoutElement =

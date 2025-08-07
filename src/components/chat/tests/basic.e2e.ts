@@ -14,7 +14,7 @@ testDefaultProperties("ch-chat", {
   newUserMessageScrollBehavior: "instant",
   sendButtonDisabled: false,
   sendContainerLayout: {
-    after: ["send-button"]
+    sendContainerAfter: ["send-button"]
   },
   sendInputDisabled: false,
   showAdditionalContent: false,

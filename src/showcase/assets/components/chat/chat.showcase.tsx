@@ -23,8 +23,8 @@ import {
 const state: Partial<HTMLChChatElement> = {};
 
 const unanimoSendContainerLayout: ChatSendContainerLayout = {
-  before: ["stop-response-button"],
-  after: ["send-button"]
+  sendContainerBefore: ["stop-response-button"],
+  sendContainerAfter: ["send-button"]
 };
 
 const mercurySendContainerLayout: ChatSendContainerLayout = {

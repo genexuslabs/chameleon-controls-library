@@ -329,12 +329,16 @@ export type ChatMessageRenderBySections = {
    */
   codeBlock?: ChatCodeBlockRender;
 
+  // contentBefore?: TemplateResult;
+
   /**
    * Render for the content of the message.
    *
    * If `undefined`, a default content render will be used.
    */
   content?: ChatContentRender;
+
+  // contentAfter?: TemplateResult;
 
   /**
    * Renders for each file type of the message
@@ -408,3 +412,16 @@ export type ChatLiveModeConfiguration = {
     microphoneEnabled?: boolean;
   };
 };
+
+export type ChatSendContainerLayout = {
+  sendContainerBefore?: ChatSendContainerLayoutElement[];
+  sendInputBefore?: ChatSendContainerLayoutElement[];
+  sendInputAfter?: ChatSendContainerLayoutElement[];
+  sendContainerAfter?: ChatSendContainerLayoutElement[];
+};
+
+export type ChatSendContainerLayoutElement =
+  | "send-button"
+  | "stop-response-button"
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {});

@@ -13,10 +13,11 @@ testDefaultProperties("ch-chat", {
   newUserMessageAlignment: "end",
   newUserMessageScrollBehavior: "instant",
   sendButtonDisabled: false,
+  sendContainerLayout: {
+    sendContainerAfter: ["send-button"]
+  },
   sendInputDisabled: false,
   showAdditionalContent: false,
-  showSendInputAdditionalContentAfter: false,
-  showSendInputAdditionalContentBefore: false,
   theme: undefined,
   translations: {
     accessibleName: {
@@ -33,9 +34,8 @@ testDefaultProperties("ch-chat", {
     text: {
       copyCodeButton: "Copy code",
       copyMessageContent: "Copy",
-      processing: `Processing...`,
-      sourceFiles: "Source files:",
-      stopResponseButton: "Stop generating answer"
+      processing: "Processing...",
+      sourceFiles: "Source files:"
     }
   },
   waitingResponse: false

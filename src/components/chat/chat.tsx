@@ -318,7 +318,8 @@ export class ChChat {
    *
    *   2. Replacing the render of specific parts of the message by providing an
    *   object with the specific renders of the message sections (`codeBlock`,
-   *   `content`, `files` and/or `messageStructure`).
+   *   `contentBefore`, `content`, `contentAfter`, `files` and/or
+   *   `messageStructure`).
    */
   @Prop() readonly renderItem?:
     | ChatMessageRenderByItem

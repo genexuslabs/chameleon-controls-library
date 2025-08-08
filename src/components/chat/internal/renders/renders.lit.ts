@@ -17,7 +17,9 @@ export const renderContentBySections = (
     {
       actions: rendersBySections.actions ?? defaultActionsRender,
       codeBlock: rendersBySections.codeBlock ?? defaultCodeBlockRender,
+      contentBefore: rendersBySections.contentBefore,
       content: rendersBySections.content ?? defaultContentRender,
+      contentAfter: rendersBySections.contentAfter,
       file: {
         audio: rendersBySections.file?.audio ?? defaultFileRender.audio,
         file: rendersBySections.file?.file ?? defaultFileRender.file,

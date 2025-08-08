@@ -1,4 +1,4 @@
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { when } from "lit/directives/when";
 import { getMimeTypeFileFormat } from "../../../../common/mimeTypes/mime-types-utils";
 import { ArgumentTypes } from "../../../../common/types";
@@ -45,7 +45,13 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
       [message.parts]: !!message.parts
     })}
   >
+    ${renders.contentBefore
+      ? renders.contentBefore(message, chatRef, renders.codeBlock)
+      : nothing}
     ${renders.content(message, chatRef, renders.codeBlock)}
+    ${renders.contentAfter
+      ? renders.contentAfter(message, chatRef, renders.codeBlock)
+      : nothing}
     ${
       // Files
       when(

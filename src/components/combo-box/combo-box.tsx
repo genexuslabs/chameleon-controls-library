@@ -529,7 +529,7 @@ export class ChComboBoxRender
     }
   };
 
-  #getCurrentValueMapping = (): ComboBoxItemModelExtended | undefined =>
+  #getCurrentItemMapping = (): ComboBoxItemModelExtended | undefined =>
     this.#captionToItemInfo.get(this.value) ??
     this.#valueToItemInfo.get(this.value);
 
@@ -590,7 +590,7 @@ export class ChComboBoxRender
     }
 
     // Strict selection
-    const inputValueMatches = this.#getCurrentValueMapping();
+    const inputValueMatches = this.#getCurrentItemMapping();
 
     if (inputValueMatches) {
       // TODO: Do we have to emit the change event?
@@ -792,7 +792,7 @@ export class ChComboBoxRender
     // If the active descendant is not set, try to set it using the value
     // TODO: Do we have to use the caption when using suggest?
     if (!this.activeDescendant || !this.expanded) {
-      this.activeDescendant = this.#getCurrentValueMapping()?.item;
+      this.activeDescendant = this.#getCurrentItemMapping()?.item;
     }
 
     // If the value does not belong to a rendered item, remove the active
@@ -875,9 +875,10 @@ export class ChComboBoxRender
     const disableTextSelection = !this.disabled && !filtersAreApplied;
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
 
+    const selectedItemInfo = this.#getCurrentItemMapping()?.item;
     const currentItemInInput: ComboBoxItemModel | undefined = filtersAreApplied
-      ? this.#getCurrentValueMapping()?.item
-      : this.activeDescendant;
+      ? this.activeDescendant
+      : selectedItemInfo;
 
     const computedImage =
       currentItemInInput?.startImgSrc && this.#shouldRenderActiveItemIcon()
@@ -900,10 +901,10 @@ export class ChComboBoxRender
     // - Clicking the combo-box's label should not open the popover
 
     // TODO: Add unit tests for this feature.
-    const currentValueMapping = this.#getCurrentValueMapping()?.item.value;
+    const currentValueMapping = selectedItemInfo?.value;
     const inputValue = filtersAreApplied
       ? this.value
-      : this.activeDescendant?.caption;
+      : selectedItemInfo?.caption;
 
     return (
       <Host
@@ -917,6 +918,10 @@ export class ChComboBoxRender
         // rendered outside of the ch-combo-box-render render() method
         part={tokenMap({
           [currentValueMapping]: !!currentValueMapping,
+
+          // TODO: Add a unit test for this. Should we display the placeholder
+          // even if a value is set without an option that is mapped to the
+          // value?
           [COMBO_BOX_HOST_PARTS.PLACEHOLDER]: !inputValue,
           [this.hostParts]: !!this.hostParts
         })}

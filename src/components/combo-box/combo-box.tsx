@@ -71,6 +71,7 @@ type KeyDownNoFiltersEvents =
   | typeof KEY_CODES.HOME
   | typeof KEY_CODES.END
   | typeof KEY_CODES.ENTER
+  | typeof KEY_CODES.NUMPAD_ENTER
   | typeof KEY_CODES.SPACE
   | typeof KEY_CODES.TAB;
 
@@ -78,6 +79,7 @@ type KeyDownWithFiltersEvents =
   | typeof KEY_CODES.ARROW_UP
   | typeof KEY_CODES.ARROW_DOWN
   | typeof KEY_CODES.ENTER
+  | typeof KEY_CODES.NUMPAD_ENTER
   | typeof KEY_CODES.TAB;
 
 /**
@@ -231,6 +233,16 @@ export class ChComboBoxRender
       this.expanded = !this.expanded;
     },
 
+    // Same as the Enter handler
+    NumpadEnter: () => {
+      // The focus must return to the Host when closing the popover
+      if (this.expanded) {
+        this.#shouldFocusTheComboBox = true;
+      }
+
+      this.expanded = !this.expanded;
+    },
+
     Space: event => {
       event.preventDefault(); // Stop space key from scrolling
 
@@ -271,6 +283,10 @@ export class ChComboBoxRender
     },
 
     Enter: (event: KeyboardEvent) =>
+      this.#checkAndEmitValueChangeWithFilters(event),
+
+    // Same as the Enter handler
+    NumpadEnter: (event: KeyboardEvent) =>
       this.#checkAndEmitValueChangeWithFilters(event),
 
     Tab: (event: KeyboardEvent) =>

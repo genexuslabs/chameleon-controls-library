@@ -68,17 +68,17 @@ img {
 // - - - - - - - - - - - - - - - -
 .send-input {
   grid-template:
-    "ch-chat-send-input-additional-content-before" max-content
+    "ch-chat-send-input-before" max-content
     "ch-edit-content" 1fr
-    "ch-chat-send-input-additional-content-after" max-content / 1fr;
+    "ch-chat-send-input-after" max-content / 1fr;
 }
 
-.send-input-additional-content-before {
-  grid-area: ch-chat-send-input-additional-content-before;
+.send-input-before {
+  grid-area: ch-chat-send-input-before;
 }
 
-.send-input-additional-content-after {
-  grid-area: ch-chat-send-input-additional-content-after;
+.send-input-after {
+  grid-area: ch-chat-send-input-after;
 }
 
 .send-container,

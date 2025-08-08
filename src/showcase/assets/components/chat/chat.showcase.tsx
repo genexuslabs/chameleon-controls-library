@@ -69,17 +69,14 @@ const render: ShowcaseRender = designSystem => {
         Custom content that is rendered when the chat renders content
       </div>
       {state.sendContainerLayout.sendInputBefore && (
-        <button
-          slot="send-input-additional-content-before"
-          class="button-primary"
-        >
+        <button slot="send-input-before" class="button-primary">
           Action
         </button>
       )}
 
       {state.sendContainerLayout.sendInputAfter && (
         <ch-combo-box-render
-          slot="send-input-additional-content-after"
+          slot="send-input-after"
           accessibleName="Data Types"
           class="combo-box"
           model={dataTypeInGeneXus}
@@ -291,11 +288,11 @@ export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
           : ""
       }${
         state.sendContainerLayout.sendInputBefore
-          ? '\n        <div slot="send-input-additional-content-before">Your content here...</div>\n      '
+          ? '\n        <div slot="send-input-before">Your content here...</div>\n      '
           : ""
       }${
         state.sendContainerLayout.sendInputAfter
-          ? '\n        <div slot="send-input-additional-content-after">Your content here...</div>\n      '
+          ? '\n        <div slot="send-input-after">Your content here...</div>\n      '
           : ""
       }</ChChat>`,
 
@@ -310,11 +307,11 @@ export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
             : ""
         }${
         state.sendContainerLayout.sendInputBefore
-          ? '\n          <div slot="send-input-additional-content-before">Your content here...</div>\n        '
+          ? '\n          <div slot="send-input-before">Your content here...</div>\n        '
           : ""
       }${
         state.sendContainerLayout.sendInputAfter
-          ? '\n          <div slot="send-input-additional-content-after">Your content here...</div>\n        '
+          ? '\n          <div slot="send-input-after">Your content here...</div>\n        '
           : ""
       }</ch-chat>`
     }

@@ -260,6 +260,62 @@ const testBehavior = (suggest: boolean, strict?: boolean) => {
       );
     });
 
+    // TODO: This test should also be executed with keyboard interactions to
+    // change the active descendant and verify that the input's value is not
+    // updated
+    it("should not update combo-box value with the active descendant when closing with click outside", async () => {
+      // Set value 3
+      await comboBoxRef.setProperty("model", simpleModelComboBox1);
+      await page.waitForChanges();
+      await comboBoxRef.setProperty("value", "Value 3");
+      await page.waitForChanges();
+
+      // Open the combo-box
+      await page.click("ch-combo-box-render");
+      await page.waitForChanges();
+
+      const inputRef = await page.find("ch-combo-box-render >>> input");
+      expect(await inputRef.getProperty("value")).toBe(
+        suggest ? "Value 3" : "Label for the value 3"
+      );
+
+      // Hover the first value
+      await page.hover("ch-combo-box-render >>> ch-popover button");
+      await page.waitForChanges();
+
+      await page.click("form");
+      await page.waitForChanges();
+      expect(await comboBoxRef.getProperty("value")).toBe("Value 3");
+    });
+
+    // TODO: This test should also be executed with keyboard interactions to
+    // change the active descendant and verify that the input's value is not
+    // updated
+    it("should not update combo-box value with the active descendant when closing with the Escape key", async () => {
+      // Set value 3
+      await comboBoxRef.setProperty("model", simpleModelComboBox1);
+      await page.waitForChanges();
+      await comboBoxRef.setProperty("value", "Value 3");
+      await page.waitForChanges();
+
+      // Open the combo-box
+      await page.click("ch-combo-box-render");
+      await page.waitForChanges();
+
+      const inputRef = await page.find("ch-combo-box-render >>> input");
+      expect(await inputRef.getProperty("value")).toBe(
+        suggest ? "Value 3" : "Label for the value 3"
+      );
+
+      // Hover the first value
+      await page.hover("ch-combo-box-render >>> ch-popover button");
+      await page.waitForChanges();
+
+      await comboBoxRef.press("Escape");
+      await page.waitForChanges();
+      expect(await comboBoxRef.getProperty("value")).toBe("Value 3");
+    });
+
     it.skip("should destroy the items after the popover is closed (by clicking outside of the combo-box)", async () => {
       await comboBoxRef.setProperty("model", simpleModelComboBox1);
       await page.waitForChanges();

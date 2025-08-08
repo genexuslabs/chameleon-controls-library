@@ -329,7 +329,13 @@ export type ChatMessageRenderBySections = {
    */
   codeBlock?: ChatCodeBlockRender;
 
-  // contentBefore?: TemplateResult;
+  /**
+   * Render for content that is placed before the main content of the message.
+   *
+   * This section doesn't always have to be defined, in fact, it doesn't have a
+   * default render.
+   */
+  contentBefore?: ChatContentRender;
 
   /**
    * Render for the content of the message.
@@ -338,7 +344,13 @@ export type ChatMessageRenderBySections = {
    */
   content?: ChatContentRender;
 
-  // contentAfter?: TemplateResult;
+  /**
+   * Render for content that is placed after the main content of the message.
+   *
+   * This section doesn't always have to be defined, in fact, it doesn't have a
+   * default render.
+   */
+  contentAfter?: ChatContentRender;
 
   /**
    * Renders for each file type of the message

@@ -686,8 +686,6 @@ export class ChComboBoxRender
 
       // TODO: Add a unit test for this
       this.#emitChangeEvent();
-    } else {
-      this.#checkAndEmitValueChangeWithNoFilter();
     }
   };
 

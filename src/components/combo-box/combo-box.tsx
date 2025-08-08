@@ -118,6 +118,8 @@ export class ChComboBoxRender
   #captionToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
   #itemImages: Map<string, ComboBoxItemImagesModel> | undefined;
 
+  #shouldFocusTheComboBox = false;
+
   // Filters info
   #applyFilters = false;
   #queuedInputValueUpdate: NodeJS.Timeout;
@@ -223,7 +225,7 @@ export class ChComboBoxRender
     Enter: () => {
       // The focus must return to the Host when closing the popover
       if (this.expanded) {
-        this.el.focus();
+        this.#shouldFocusTheComboBox = true;
       }
 
       this.expanded = !this.expanded;
@@ -242,7 +244,7 @@ export class ChComboBoxRender
       if (this.expanded) {
         event.preventDefault();
 
-        this.el.focus();
+        this.#shouldFocusTheComboBox = true;
         this.expanded = false;
       }
     }
@@ -562,7 +564,7 @@ export class ChComboBoxRender
 
     // The focus must return to the Host when tabbing with the popover
     // expanded
-    this.el.focus();
+    this.#shouldFocusTheComboBox = true;
     event.preventDefault();
 
     // "Traditional selection". A value was selected pressing the enter key
@@ -666,7 +668,7 @@ export class ChComboBoxRender
     // Return the focus to the control if the popover was closed with the
     // escape key or by clicking again the combo-box
     if (focusComposedPath().includes(this.el)) {
-      this.el.focus();
+      this.#shouldFocusTheComboBox = true;
     }
 
     if (this.suggest) {
@@ -865,6 +867,11 @@ export class ChComboBoxRender
           this.#inputRef.focus();
         });
       }
+    }
+
+    if (this.#shouldFocusTheComboBox) {
+      this.#shouldFocusTheComboBox = false;
+      this.el.focus();
     }
   }
 

@@ -453,8 +453,7 @@ const keysToConfirmClose: ConfirmKeys[] = [
   // TODO: Fix this test
   // "Escape",
 
-  // TODO: Fix this test
-  // "NumpadEnter",
+  "NumpadEnter",
 
   "Tab",
   "LeftMouseClick"

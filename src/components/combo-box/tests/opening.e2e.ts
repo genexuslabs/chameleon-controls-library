@@ -43,18 +43,14 @@ const SUGGEST_KEYS_TO_NOT_OPEN: KeyToPress[] = [
   "Tab"
 ];
 
-const COMBO_BOX_KEYS_TO_OPEN: KeyToPress[] = [
-  "Space",
-  "Enter"
-  // "NumpadEnter"
-];
+const COMBO_BOX_KEYS_TO_OPEN: KeyToPress[] = ["Space", "Enter", "NumpadEnter"];
 const SUGGEST_KEYS_TO_OPEN: KeyToPress[] = [
   // TODO: Fix $0.focus() to fix these tests
   // "ArrowDown",
   // "ArrowUp",
   "Space",
-  "Enter"
-  // "NumpadEnter"
+  "Enter",
+  "NumpadEnter"
 ];
 
 const COMBO_BOX_KEYS_TO_NOT_CLOSE: KeyToPress[] = [
@@ -69,7 +65,7 @@ const COMBO_BOX_KEYS_TO_NOT_CLOSE: KeyToPress[] = [
 const COMBO_BOX_KEYS_TO_CLOSE: KeyToPress[] = [
   "Enter",
   "Escape",
-  // "NumpadEnter",
+  "NumpadEnter",
   "Tab"
 ];
 
@@ -77,8 +73,8 @@ const COMBO_BOX_KEYS_TO_CLOSE_AND_RETURN_FOCUS: KeyToPress[] = [
   // TODO: Fix these tests
   "Enter",
   "Escape",
-  "Tab"
-  // "NumpadEnter"
+  "Tab",
+  "NumpadEnter"
 ];
 
 const STRICT_FILTERS: ComboBoxSuggestOptions = { strict: true };

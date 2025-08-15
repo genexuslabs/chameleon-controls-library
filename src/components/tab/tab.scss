@@ -153,6 +153,12 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   &[aria-selected="true"] > .close-button::after {
     opacity: 1;
   }
+
+  // Necessary to ensure that the textblock is still visible, besides it has
+  // autoGrow = false
+  &-caption {
+    contain: unset;
+  }
 }
 
 .no-captions {

@@ -1,6 +1,12 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { simpleModel1 } from "../../../showcase/assets/components/tab/models";
-import { TabListPosition } from "../types";
+import { TabListPosition, TabModel } from "../types";
+
+const simpleModel1: TabModel = [
+  { id: "item1", name: "Item 1" },
+  { id: "item2", name: "Item 2" },
+  { id: "item3", name: "Item 3" },
+  { id: "item4", name: "Item 4" }
+];
 
 const TAB_LIST_WIDTH = "300px";
 const TAB_LIST_HEIGHT = "350px";

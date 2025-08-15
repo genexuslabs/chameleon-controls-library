@@ -10,7 +10,7 @@ export const simpleModel1: TabModel = [
   { id: "item1", name: "Item 1" },
   { id: "item2", name: "Item 2" },
   { id: "item3", name: "Item 3" },
-  { id: "item4", name: "Item 4" }
+  { id: "item4", name: "Item 4 withhhhh a really largeeee nameeeee" }
 ];
 
 export const simpleModel2: TabModel = [
@@ -21,7 +21,7 @@ export const simpleModel2: TabModel = [
   },
   {
     id: "item2",
-    name: "Item 2",
+    name: "Item 2 withhhhh a really largeeee nameeeee",
     startImgSrc: MODULE_ICON
   },
   { id: "item3", name: "Item 3" },

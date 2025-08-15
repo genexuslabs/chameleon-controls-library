@@ -878,10 +878,14 @@ export class ChTabRender implements DraggableView {
 
   #handleSelectedItemChange = (event: PointerEvent) => {
     event.stopPropagation();
-    const buttonRef = event.composedPath()[0] as HTMLButtonElement;
+    const composedPath = event.composedPath();
+    const buttonRef = composedPath.find(
+      eventTarget =>
+        (eventTarget as HTMLElement).tagName?.toLowerCase() === "button"
+    ) as HTMLButtonElement | undefined;
 
     // Check the click event is performed on a button element
-    if (buttonRef.tagName.toLowerCase() !== "button") {
+    if (!buttonRef || buttonRef.getRootNode() !== this.el.shadowRoot) {
       return;
     }
 
@@ -1141,19 +1145,14 @@ export class ChTabRender implements DraggableView {
             this.draggedElementNewIndex <= index &&
             index < this.draggedElementIndex
         }}
-        part={tokenMap({
-          [item.id]: true,
-          [TAB_PARTS_DICTIONARY.TAB]: true,
-          [this.tabListPosition]: true,
-          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
-          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
-          [TAB_PARTS_DICTIONARY.START]: startDirection,
-          [TAB_PARTS_DICTIONARY.END]: !startDirection,
-          [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
-          [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
-          [TAB_PARTS_DICTIONARY.SELECTED]: selected,
-          [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected,
-          [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
+        part={this.#getTabParts({
+          id: item.id,
+          blockDirection,
+          closeButton,
+          isDisabled,
+          isTabCaption: false,
+          selected,
+          startDirection
         })}
         disabled={isDisabled}
         style={isDecorativeImage ? startImage.styles : undefined}
@@ -1163,7 +1162,24 @@ export class ChTabRender implements DraggableView {
       >
         {this.#imgRender(item)}
 
-        {this.showCaptions && item.name}
+        {this.showCaptions && (
+          <ch-textblock
+            // TODO: Add a unit test that clicks this element an verifies that
+            // the tab selection did change
+            class="tab-caption"
+            part={this.#getTabParts({
+              id: item.id,
+              blockDirection,
+              closeButton,
+              isDisabled,
+              isTabCaption: true,
+              selected,
+              startDirection
+            })}
+            caption={item.name}
+            showTooltipOnOverflow
+          ></ch-textblock>
+        )}
 
         {closeButton && (
           <button
@@ -1187,6 +1203,39 @@ export class ChTabRender implements DraggableView {
       </button>
     );
   };
+
+  #getTabParts = ({
+    id,
+    blockDirection,
+    closeButton,
+    isDisabled,
+    isTabCaption,
+    selected,
+    startDirection
+  }: {
+    id: string;
+    blockDirection: boolean;
+    closeButton: boolean;
+    isDisabled: boolean;
+    isTabCaption: boolean;
+    selected: boolean;
+    startDirection: boolean;
+  }) =>
+    tokenMap({
+      [id]: true,
+      [TAB_PARTS_DICTIONARY.TAB]: !isTabCaption,
+      [TAB_PARTS_DICTIONARY.TAB_CAPTION]: isTabCaption,
+      [this.tabListPosition]: true,
+      [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+      [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+      [TAB_PARTS_DICTIONARY.START]: startDirection,
+      [TAB_PARTS_DICTIONARY.END]: !startDirection,
+      [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
+      [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
+      [TAB_PARTS_DICTIONARY.SELECTED]: selected,
+      [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected,
+      [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
+    });
 
   #renderTabPages = (blockDirection: boolean, startDirection: boolean) => (
     <div

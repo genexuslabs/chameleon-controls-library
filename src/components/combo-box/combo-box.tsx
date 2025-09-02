@@ -182,23 +182,43 @@ export class ChComboBoxRender
   #keyEventsNoFiltersDictionary: {
     [key in KeyDownNoFiltersEvents]: (event: KeyboardEvent) => void;
   } = {
-    ArrowUp: (event: KeyboardEvent) =>
-      this.#selectNextIndex(
-        event,
-        findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
-        -1,
-        this.suggest && !this.#isModelAlreadyFiltered(),
-        this.#displayedValues
-      ),
+    ArrowUp: (event: KeyboardEvent) => {
+      if (this.expanded) {
+        this.#selectNextIndex(
+          event,
+          findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
+          -1,
+          this.suggest && !this.#isModelAlreadyFiltered(),
+          this.#displayedValues
+        );
+      }
+      // Open the combo-box, without selecting any value
+      else {
+        event.preventDefault(); // Stop space key from scrolling
 
-    ArrowDown: (event: KeyboardEvent) =>
-      this.#selectNextIndex(
-        event,
-        findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
-        1,
-        this.suggest && !this.#isModelAlreadyFiltered(),
-        this.#displayedValues
-      ),
+        this.#shouldFocusTheComboBox = true;
+        this.expanded = true;
+      }
+    },
+
+    ArrowDown: (event: KeyboardEvent) => {
+      if (this.expanded) {
+        this.#selectNextIndex(
+          event,
+          findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
+          1,
+          this.suggest && !this.#isModelAlreadyFiltered(),
+          this.#displayedValues
+        );
+      }
+      // Open the combo-box, without selecting any value
+      else {
+        event.preventDefault(); // Stop space key from scrolling
+
+        this.#shouldFocusTheComboBox = true;
+        this.expanded = true;
+      }
+    },
 
     Home: (event: KeyboardEvent) =>
       this.#selectNextIndex(
@@ -266,21 +286,11 @@ export class ChComboBoxRender
   #keyEventsWithFiltersDictionary: {
     [key in KeyDownWithFiltersEvents]: (event: KeyboardEvent) => void;
   } = {
-    ArrowUp: (event: KeyboardEvent) => {
-      if (this.expanded) {
-        this.#keyEventsNoFiltersDictionary.ArrowUp(event);
-      } else {
-        this.expanded = true;
-      }
-    },
+    ArrowUp: (event: KeyboardEvent) =>
+      this.#keyEventsNoFiltersDictionary.ArrowUp(event),
 
-    ArrowDown: (event: KeyboardEvent) => {
-      if (this.expanded) {
-        this.#keyEventsNoFiltersDictionary.ArrowDown(event);
-      } else {
-        this.expanded = true;
-      }
-    },
+    ArrowDown: (event: KeyboardEvent) =>
+      this.#keyEventsNoFiltersDictionary.ArrowDown(event),
 
     Enter: (event: KeyboardEvent) =>
       this.#checkAndEmitValueChangeWithFilters(event),

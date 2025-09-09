@@ -13,7 +13,6 @@
 | `disabled`       | `disabled`        | This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).     | `boolean` | `false`     |
 | `name`           | `name`            | This property specifies the `name` of the control when used in a form.                                                                                            | `string`  | `undefined` |
 | `stars`          | `stars`           | This property determine the number of stars displayed.                                                                                                            | `number`  | `5`         |
-| `step`           | `step`            | This attribute lets you specify the step of the rating. It accepts non-integer values like 0.5, 0.2, 0.01 and so on.                                              | `number`  | `1`         |
 | `value`          | `value`           | The current value displayed by the component.                                                                                                                     | `number`  | `0`         |
 
 

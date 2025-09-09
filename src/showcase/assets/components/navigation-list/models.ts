@@ -10,7 +10,10 @@ export const unanimoShowcase: NavigationListModel = [
       {
         caption: "Button",
         items: [
-          { caption: "Primary button", link: { url: "#primary-button" } },
+          {
+            caption: "Primary button",
+            link: { url: "#primary-button", target: "_blank", rel: "nofollow" }
+          },
           { caption: "Secondary button", link: { url: "#secondary-button" } },
           { caption: "Tertiary button", link: { url: "#tertiary-button" } },
           { caption: "Rounded button", link: { url: "#rounded-button" } }

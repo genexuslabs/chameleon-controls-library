@@ -3,18 +3,28 @@ import {
   Element,
   Event,
   EventEmitter,
+  forceUpdate,
+  h,
   Host,
   Method,
   Prop,
   State,
-  Watch,
-  forceUpdate,
-  h
+  Watch
 } from "@stencil/core";
+import { insertIntoIndex, removeElement } from "../../common/array";
+import { getControlRegisterProperty } from "../../common/registry-properties";
 import {
-  DraggableView,
-  DraggableViewInfo
-} from "../flexible-layout/internal/flexible-layout/types";
+  KEY_CODES,
+  SCROLLABLE_CLASS,
+  TAB_PARTS_DICTIONARY
+} from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
+import type {
+  CssContainProperty,
+  CssOverflowProperty,
+  GxImageMultiState,
+  GxImageMultiStateStart
+} from "../../common/types";
 import {
   inBetween,
   isPseudoElementImg,
@@ -22,6 +32,15 @@ import {
   tokenMap,
   updateDirectionInImageCustomVar
 } from "../../common/utils";
+import {
+  focusComposedPath,
+  MouseEventButton,
+  MouseEventButtons
+} from "../common/helpers";
+import {
+  DraggableView,
+  DraggableViewInfo
+} from "../flexible-layout/internal/flexible-layout/types";
 import {
   TabElementSize,
   TabItemCloseInfo,
@@ -40,25 +59,6 @@ import {
   isStartDirection,
   PANEL_ID
 } from "./utils";
-import { insertIntoIndex, removeElement } from "../../common/array";
-import {
-  focusComposedPath,
-  MouseEventButton,
-  MouseEventButtons
-} from "../common/helpers";
-import type {
-  CssContainProperty,
-  CssOverflowProperty,
-  GxImageMultiState,
-  GxImageMultiStateStart
-} from "../../common/types";
-import { getControlRegisterProperty } from "../../common/registry-properties";
-import {
-  KEY_CODES,
-  SCROLLABLE_CLASS,
-  TAB_PARTS_DICTIONARY
-} from "../../common/reserved-names";
-import { adoptCommonThemes } from "../../common/theme";
 
 const TAB_BUTTON_CLASS = "tab";
 const CLOSE_BUTTON_CLASS = "close-button";
@@ -878,10 +878,14 @@ export class ChTabRender implements DraggableView {
 
   #handleSelectedItemChange = (event: PointerEvent) => {
     event.stopPropagation();
-    const buttonRef = event.composedPath()[0] as HTMLButtonElement;
+    const composedPath = event.composedPath();
+    const buttonRef = composedPath.find(
+      eventTarget =>
+        (eventTarget as HTMLElement).tagName?.toLowerCase() === "button"
+    ) as HTMLButtonElement | undefined;
 
     // Check the click event is performed on a button element
-    if (buttonRef.tagName.toLowerCase() !== "button") {
+    if (!buttonRef || buttonRef.getRootNode() !== this.el.shadowRoot) {
       return;
     }
 
@@ -1141,19 +1145,14 @@ export class ChTabRender implements DraggableView {
             this.draggedElementNewIndex <= index &&
             index < this.draggedElementIndex
         }}
-        part={tokenMap({
-          [item.id]: true,
-          [TAB_PARTS_DICTIONARY.TAB]: true,
-          [this.tabListPosition]: true,
-          [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
-          [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
-          [TAB_PARTS_DICTIONARY.START]: startDirection,
-          [TAB_PARTS_DICTIONARY.END]: !startDirection,
-          [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
-          [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
-          [TAB_PARTS_DICTIONARY.SELECTED]: selected,
-          [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected,
-          [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
+        part={this.#getTabParts({
+          id: item.id,
+          blockDirection,
+          closeButton,
+          isDisabled,
+          isTabCaption: false,
+          selected,
+          startDirection
         })}
         disabled={isDisabled}
         style={isDecorativeImage ? startImage.styles : undefined}
@@ -1163,7 +1162,24 @@ export class ChTabRender implements DraggableView {
       >
         {this.#imgRender(item)}
 
-        {this.showCaptions && item.name}
+        {this.showCaptions && (
+          <ch-textblock
+            // TODO: Add a unit test that clicks this element an verifies that
+            // the tab selection did change
+            class="tab-caption"
+            part={this.#getTabParts({
+              id: item.id,
+              blockDirection,
+              closeButton,
+              isDisabled,
+              isTabCaption: true,
+              selected,
+              startDirection
+            })}
+            caption={item.name}
+            showTooltipOnOverflow
+          ></ch-textblock>
+        )}
 
         {closeButton && (
           <button
@@ -1188,8 +1204,44 @@ export class ChTabRender implements DraggableView {
     );
   };
 
+  #getTabParts = ({
+    id,
+    blockDirection,
+    closeButton,
+    isDisabled,
+    isTabCaption,
+    selected,
+    startDirection
+  }: {
+    id: string;
+    blockDirection: boolean;
+    closeButton: boolean;
+    isDisabled: boolean;
+    isTabCaption: boolean;
+    selected: boolean;
+    startDirection: boolean;
+  }) =>
+    tokenMap({
+      [id]: true,
+      [TAB_PARTS_DICTIONARY.TAB]: !isTabCaption,
+      [TAB_PARTS_DICTIONARY.TAB_CAPTION]: isTabCaption,
+      [this.tabListPosition]: true,
+      [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+      [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+      [TAB_PARTS_DICTIONARY.START]: startDirection,
+      [TAB_PARTS_DICTIONARY.END]: !startDirection,
+      [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
+      [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
+      [TAB_PARTS_DICTIONARY.SELECTED]: selected,
+      [TAB_PARTS_DICTIONARY.NOT_SELECTED]: !selected,
+      [TAB_PARTS_DICTIONARY.DISABLED]: isDisabled
+    });
+
   #renderTabPages = (blockDirection: boolean, startDirection: boolean) => (
     <div
+      // This key is used key toggling the tabButtonHidden property, so we
+      // avoid destroying this div
+      key="panel-container"
       class={{
         "panel-container": true,
         "panel-container--collapsed": !this.expanded
@@ -1227,6 +1279,7 @@ export class ChTabRender implements DraggableView {
         key={PANEL_ID(item.id)}
         id={PANEL_ID(item.id)}
         role={!this.tabButtonHidden ? "tabpanel" : undefined}
+        // TODO: Should we set the aria-label when tabButtonHidden === true?
         aria-labelledby={!this.tabButtonHidden ? item.id : undefined}
         class={{
           panel: true,
@@ -1365,6 +1418,7 @@ export class ChTabRender implements DraggableView {
     return (
       <Host
         class={
+          // TODO: Add a unit test for the tabButtonHidden property
           !this.tabButtonHidden ? `ch-tab--${this.tabListPosition}` : undefined
         }
       >

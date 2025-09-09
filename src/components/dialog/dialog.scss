@@ -158,7 +158,6 @@ $ch-dialog-y--same-layer: calc(
 //             Header
 // - - - - - - - - - - - - - - - -
 .header {
-  grid-area: header;
   display: grid;
   grid-template: "caption close-button" 1fr / 1fr max-content;
   align-items: center;
@@ -176,8 +175,14 @@ $ch-dialog-y--same-layer: calc(
 //           Dialog
 // - - - - - - - - - - - - - - - -
 dialog {
-  display: grid;
-  grid-template: "header" max-content "content" 1fr "footer" max-content / 1fr;
+  display: flex;
+  flex-direction: column;
+
+  // TODO: Add a unit test for this
+  // We can't use this solution, since Safari doesn't render/compute properly
+  // the "auto" and "1fr" values when they are used in a floating layer
+  // for example, position: fixed or position: absolute.
+  // grid-template: "header" max-content "content" 1fr "footer" max-content / 1fr;
 
   // Reset browser default
   margin: unset;
@@ -198,14 +203,15 @@ dialog {
 }
 
 .content {
-  grid-area: content;
   display: grid;
 }
 
 .footer {
-  grid-area: footer;
   display: flex;
   justify-content: flex-end;
+
+  // Necessary to align the footer at the end of the dialog
+  margin-block-start: auto;
 }
 
 // - - - - - - - - - - - - - - - -

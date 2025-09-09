@@ -286,10 +286,9 @@ export type ChatCallbacks = {
   sendChatMessages: (chat: ChatMessage[]) => void;
 
   /**
-   * Specifies a callback to execute when clicking the stop-generate-answer
-   * button.
+   * Specifies a callback to execute when clicking the stop-response button.
    */
-  stopGeneratingAnswer?: () => Promise<void>;
+  stopResponse?: () => Promise<void>;
 
   /**
    * Specifies a callback to validate if the current chat message of the user
@@ -331,11 +330,27 @@ export type ChatMessageRenderBySections = {
   codeBlock?: ChatCodeBlockRender;
 
   /**
+   * Render for content that is placed before the main content of the message.
+   *
+   * This section doesn't always have to be defined, in fact, it doesn't have a
+   * default render.
+   */
+  contentBefore?: ChatContentRender;
+
+  /**
    * Render for the content of the message.
    *
    * If `undefined`, a default content render will be used.
    */
   content?: ChatContentRender;
+
+  /**
+   * Render for content that is placed after the main content of the message.
+   *
+   * This section doesn't always have to be defined, in fact, it doesn't have a
+   * default render.
+   */
+  contentAfter?: ChatContentRender;
 
   /**
    * Renders for each file type of the message
@@ -409,3 +424,16 @@ export type ChatLiveModeConfiguration = {
     microphoneEnabled?: boolean;
   };
 };
+
+export type ChatSendContainerLayout = {
+  sendContainerBefore?: ChatSendContainerLayoutElement[];
+  sendInputBefore?: ChatSendContainerLayoutElement[];
+  sendInputAfter?: ChatSendContainerLayoutElement[];
+  sendContainerAfter?: ChatSendContainerLayoutElement[];
+};
+
+export type ChatSendContainerLayoutElement =
+  | "send-button"
+  | "stop-response-button"
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {});

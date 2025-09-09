@@ -71,6 +71,7 @@ type KeyDownNoFiltersEvents =
   | typeof KEY_CODES.HOME
   | typeof KEY_CODES.END
   | typeof KEY_CODES.ENTER
+  | typeof KEY_CODES.NUMPAD_ENTER
   | typeof KEY_CODES.SPACE
   | typeof KEY_CODES.TAB;
 
@@ -78,6 +79,7 @@ type KeyDownWithFiltersEvents =
   | typeof KEY_CODES.ARROW_UP
   | typeof KEY_CODES.ARROW_DOWN
   | typeof KEY_CODES.ENTER
+  | typeof KEY_CODES.NUMPAD_ENTER
   | typeof KEY_CODES.TAB;
 
 /**
@@ -117,6 +119,8 @@ export class ChComboBoxRender
   #valueToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
   #captionToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
   #itemImages: Map<string, ComboBoxItemImagesModel> | undefined;
+
+  #shouldFocusTheComboBox = false;
 
   // Filters info
   #applyFilters = false;
@@ -178,23 +182,43 @@ export class ChComboBoxRender
   #keyEventsNoFiltersDictionary: {
     [key in KeyDownNoFiltersEvents]: (event: KeyboardEvent) => void;
   } = {
-    ArrowUp: (event: KeyboardEvent) =>
-      this.#selectNextIndex(
-        event,
-        findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
-        -1,
-        this.suggest && !this.#isModelAlreadyFiltered(),
-        this.#displayedValues
-      ),
+    ArrowUp: (event: KeyboardEvent) => {
+      if (this.expanded) {
+        this.#selectNextIndex(
+          event,
+          findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
+          -1,
+          this.suggest && !this.#isModelAlreadyFiltered(),
+          this.#displayedValues
+        );
+      }
+      // Open the combo-box, without selecting any value
+      else {
+        event.preventDefault(); // Stop space key from scrolling
 
-    ArrowDown: (event: KeyboardEvent) =>
-      this.#selectNextIndex(
-        event,
-        findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
-        1,
-        this.suggest && !this.#isModelAlreadyFiltered(),
-        this.#displayedValues
-      ),
+        this.#shouldFocusTheComboBox = true;
+        this.expanded = true;
+      }
+    },
+
+    ArrowDown: (event: KeyboardEvent) => {
+      if (this.expanded) {
+        this.#selectNextIndex(
+          event,
+          findSelectedIndex(this.#valueToItemInfo, this.activeDescendant),
+          1,
+          this.suggest && !this.#isModelAlreadyFiltered(),
+          this.#displayedValues
+        );
+      }
+      // Open the combo-box, without selecting any value
+      else {
+        event.preventDefault(); // Stop space key from scrolling
+
+        this.#shouldFocusTheComboBox = true;
+        this.expanded = true;
+      }
+    },
 
     Home: (event: KeyboardEvent) =>
       this.#selectNextIndex(
@@ -223,7 +247,17 @@ export class ChComboBoxRender
     Enter: () => {
       // The focus must return to the Host when closing the popover
       if (this.expanded) {
-        this.el.focus();
+        this.#shouldFocusTheComboBox = true;
+      }
+
+      this.expanded = !this.expanded;
+    },
+
+    // Same as the Enter handler
+    NumpadEnter: () => {
+      // The focus must return to the Host when closing the popover
+      if (this.expanded) {
+        this.#shouldFocusTheComboBox = true;
       }
 
       this.expanded = !this.expanded;
@@ -242,7 +276,7 @@ export class ChComboBoxRender
       if (this.expanded) {
         event.preventDefault();
 
-        this.el.focus();
+        this.#shouldFocusTheComboBox = true;
         this.expanded = false;
       }
     }
@@ -252,23 +286,17 @@ export class ChComboBoxRender
   #keyEventsWithFiltersDictionary: {
     [key in KeyDownWithFiltersEvents]: (event: KeyboardEvent) => void;
   } = {
-    ArrowUp: (event: KeyboardEvent) => {
-      if (this.expanded) {
-        this.#keyEventsNoFiltersDictionary.ArrowUp(event);
-      } else {
-        this.expanded = true;
-      }
-    },
+    ArrowUp: (event: KeyboardEvent) =>
+      this.#keyEventsNoFiltersDictionary.ArrowUp(event),
 
-    ArrowDown: (event: KeyboardEvent) => {
-      if (this.expanded) {
-        this.#keyEventsNoFiltersDictionary.ArrowDown(event);
-      } else {
-        this.expanded = true;
-      }
-    },
+    ArrowDown: (event: KeyboardEvent) =>
+      this.#keyEventsNoFiltersDictionary.ArrowDown(event),
 
     Enter: (event: KeyboardEvent) =>
+      this.#checkAndEmitValueChangeWithFilters(event),
+
+    // Same as the Enter handler
+    NumpadEnter: (event: KeyboardEvent) =>
       this.#checkAndEmitValueChangeWithFilters(event),
 
     Tab: (event: KeyboardEvent) =>
@@ -529,7 +557,7 @@ export class ChComboBoxRender
     }
   };
 
-  #getCurrentValueMapping = (): ComboBoxItemModelExtended | undefined =>
+  #getCurrentItemMapping = (): ComboBoxItemModelExtended | undefined =>
     this.#captionToItemInfo.get(this.value) ??
     this.#valueToItemInfo.get(this.value);
 
@@ -562,7 +590,7 @@ export class ChComboBoxRender
 
     // The focus must return to the Host when tabbing with the popover
     // expanded
-    this.el.focus();
+    this.#shouldFocusTheComboBox = true;
     event.preventDefault();
 
     // "Traditional selection". A value was selected pressing the enter key
@@ -590,7 +618,7 @@ export class ChComboBoxRender
     }
 
     // Strict selection
-    const inputValueMatches = this.#getCurrentValueMapping();
+    const inputValueMatches = this.#getCurrentItemMapping();
 
     if (inputValueMatches) {
       // TODO: Do we have to emit the change event?
@@ -666,7 +694,7 @@ export class ChComboBoxRender
     // Return the focus to the control if the popover was closed with the
     // escape key or by clicking again the combo-box
     if (focusComposedPath().includes(this.el)) {
-      this.el.focus();
+      this.#shouldFocusTheComboBox = true;
     }
 
     if (this.suggest) {
@@ -686,8 +714,6 @@ export class ChComboBoxRender
 
       // TODO: Add a unit test for this
       this.#emitChangeEvent();
-    } else {
-      this.#checkAndEmitValueChangeWithNoFilter();
     }
   };
 
@@ -792,7 +818,7 @@ export class ChComboBoxRender
     // If the active descendant is not set, try to set it using the value
     // TODO: Do we have to use the caption when using suggest?
     if (!this.activeDescendant || !this.expanded) {
-      this.activeDescendant = this.#getCurrentValueMapping()?.item;
+      this.activeDescendant = this.#getCurrentItemMapping()?.item;
     }
 
     // If the value does not belong to a rendered item, remove the active
@@ -868,6 +894,11 @@ export class ChComboBoxRender
         });
       }
     }
+
+    if (this.#shouldFocusTheComboBox) {
+      this.#shouldFocusTheComboBox = false;
+      this.el.focus();
+    }
   }
 
   render() {
@@ -875,9 +906,10 @@ export class ChComboBoxRender
     const disableTextSelection = !this.disabled && !filtersAreApplied;
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
 
+    const selectedItemInfo = this.#getCurrentItemMapping()?.item;
     const currentItemInInput: ComboBoxItemModel | undefined = filtersAreApplied
-      ? this.#getCurrentValueMapping()?.item
-      : this.activeDescendant;
+      ? this.activeDescendant
+      : selectedItemInfo;
 
     const computedImage =
       currentItemInInput?.startImgSrc && this.#shouldRenderActiveItemIcon()
@@ -900,10 +932,10 @@ export class ChComboBoxRender
     // - Clicking the combo-box's label should not open the popover
 
     // TODO: Add unit tests for this feature.
-    const currentValueMapping = this.#getCurrentValueMapping()?.item.value;
+    const currentValueMapping = selectedItemInfo?.value;
     const inputValue = filtersAreApplied
       ? this.value
-      : this.activeDescendant?.caption;
+      : selectedItemInfo?.caption;
 
     return (
       <Host
@@ -917,6 +949,10 @@ export class ChComboBoxRender
         // rendered outside of the ch-combo-box-render render() method
         part={tokenMap({
           [currentValueMapping]: !!currentValueMapping,
+
+          // TODO: Add a unit test for this. Should we display the placeholder
+          // even if a value is set without an option that is mapped to the
+          // value?
           [COMBO_BOX_HOST_PARTS.PLACEHOLDER]: !inputValue,
           [this.hostParts]: !!this.hostParts
         })}

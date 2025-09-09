@@ -174,14 +174,17 @@ const testKeyboard = (
 
     // TODO: This test should fail with suggest and (Escape Key or MouseClick)
     it('should select the first item (KEY = "ArrowDown") when the value is undefined', async () => {
+      const captionAfterClose = suggest ? "Label for the value 1" : "Value 1";
+
       await closeComboBoxAndCheckValues(
         {
           formValueBeforeClose: undefined,
           navigationKey: "ArrowDown",
-          formValueAfterClose: "Value 1",
-          captionAfterClose: suggest ? "Label for the value 1" : "Value 1",
+          // TODO: This test now should be separated, because the description doesn't match the implementation
+          formValueAfterClose: expanded ? "Value 1" : undefined,
+          captionAfterClose: expanded ? captionAfterClose : undefined,
           confirmKey,
-          eventInputReceivedTimes: 1
+          eventInputReceivedTimes: expanded ? 1 : 0
         }
         // { value: "Value 1", caption: "Label for the value 1" },
       );
@@ -242,17 +245,18 @@ const testKeyboard = (
     }
 
     // TODO: Figure out how this should work
-    it('should select the last item (KEY = "ArrowUp") when the value is undefined', async () => {
-      await closeComboBoxAndCheckValues({
-        formValueBeforeClose: undefined,
-        navigationKey: "ArrowUp",
-        captionAfterClose: suggest ? "Label for the value 12" : "Value 12",
-        formValueAfterClose: "Value 12",
-        confirmKey,
-        eventInputReceivedTimes: 1
+    if (expanded) {
+      it('should select the last item (KEY = "ArrowUp") when the value is undefined', async () => {
+        await closeComboBoxAndCheckValues({
+          formValueBeforeClose: undefined,
+          navigationKey: "ArrowUp",
+          captionAfterClose: suggest ? "Label for the value 12" : "Value 12",
+          formValueAfterClose: "Value 12",
+          confirmKey,
+          eventInputReceivedTimes: 1
+        });
       });
-    });
-    0;
+    }
 
     // When there are filters, the "End" key only moves the cursor of the input
     if (expanded && suggest) {
@@ -338,20 +342,22 @@ const testKeyboard = (
       });
     });
 
-    it('should select the item in the group (KEY = "ArrowDown") when the next item is group (not expandable)', async () => {
-      await comboBoxRef.setProperty("value", "Value 1");
-      await page.waitForChanges();
-      await closeComboBoxAndCheckValues({
-        formValueBeforeClose: "Value 1",
-        navigationKey: "ArrowDown",
+    if (expanded) {
+      it('should select the item in the group (KEY = "ArrowDown") when the next item is group (not expandable)', async () => {
+        await comboBoxRef.setProperty("value", "Value 1");
+        await page.waitForChanges();
+        await closeComboBoxAndCheckValues({
+          formValueBeforeClose: "Value 1",
+          navigationKey: "ArrowDown",
 
-        // TODO: Improve this test since it is filtering the popover
-        formValueAfterClose: suggest ? "Value 10" : "Value 2.1",
-        captionAfterClose: suggest ? "Label for the value 10" : "Value 2.1",
-        confirmKey,
-        eventInputReceivedTimes: 1
+          // TODO: Improve this test since it is filtering the popover
+          formValueAfterClose: suggest ? "Value 10" : "Value 2.1",
+          captionAfterClose: suggest ? "Label for the value 10" : "Value 2.1",
+          confirmKey,
+          eventInputReceivedTimes: 1
+        });
       });
-    });
+    }
 
     // TODO: Improve these test since the suggest property is filtering the popover and thus changing the expected values
     it.skip('should select the item in the group (KEY = "ArrowUp") when the next item is group (not expandable)', async () => {
@@ -453,8 +459,7 @@ const keysToConfirmClose: ConfirmKeys[] = [
   // TODO: Fix this test
   // "Escape",
 
-  // TODO: Fix this test
-  // "NumpadEnter",
+  "NumpadEnter",
 
   "Tab",
   "LeftMouseClick"

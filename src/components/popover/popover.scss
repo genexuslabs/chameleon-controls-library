@@ -128,6 +128,12 @@ $ch-popover-y--same-layer: calc(
 
   display: none;
 
+  // TODO: Add a unit test for this in Safari
+  // This is a fix for Safari, since it doesn't render/compute properly
+  // the "auto" and "1fr" values when they are used in a floating layer
+  // for example, position: fixed or position: absolute
+  grid-auto-rows: max-content;
+
   // Necessary when the popover is not placed in a new top layer. For example,
   // when nesting dropdowns
   position: fixed;

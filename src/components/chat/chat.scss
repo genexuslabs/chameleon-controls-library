@@ -63,26 +63,28 @@ img {
   padding: 0;
 }
 
-// .file-skeleton {
-//   position: relative;
-
-//   &::before,
-//   &::after {
-//     content: "";
-//     display: inline-flex;
-//   }
-// }
-
 // - - - - - - - - - - - - - - - -
 //         Send container
 // - - - - - - - - - - - - - - - -
-// .stop-generating-answer-button {
-//   grid-area: input-wrapper;
-//   position: absolute;
-//   inset-block-start: 0;
-//   justify-self: center;
-//   transform: translateY(-100%);
-// }
+.send-input {
+  grid-template:
+    "ch-chat-send-input-before" max-content
+    "ch-edit-content" 1fr
+    "ch-chat-send-input-after" max-content / 1fr;
+}
+
+.send-input-before {
+  grid-area: ch-chat-send-input-before;
+}
+
+.send-input-after {
+  grid-area: ch-chat-send-input-after;
+}
+
+.send-container,
+.additional-content-container {
+  display: grid;
+}
 
 // TODO: Remove this CSS selector as it is a WA while we have the ch-chat-lit
 // element between the ch-virtual-scroller and ch-smart-grid-cell elements
@@ -92,25 +94,6 @@ img {
   position: absolute;
   pointer-events: none;
   visibility: hidden;
-}
-
-.send-container {
-  display: grid;
-  grid-template: "input-wrapper send-or-audio" 1fr / 1fr max-content;
-  position: relative;
-  align-items: end;
-
-  // &--file-uploading {
-  //   grid-template: "upload-image input-wrapper send-or-audio" 1fr / max-content 1fr max-content;
-  // }
-}
-
-.send-input-wrapper {
-  grid-area: input-wrapper;
-}
-
-.send-or-audio-button {
-  grid-area: send-or-audio;
 }
 
 .spinner-loading {

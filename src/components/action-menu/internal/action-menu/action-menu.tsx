@@ -18,7 +18,8 @@ import type {
   GxImageMultiStateByDirection,
   GxImageMultiStateEnd,
   GxImageMultiStateStart,
-  ImageRender
+  ImageRender,
+  ItemLink
 } from "../../../../common/types";
 import {
   tokenMap,
@@ -130,17 +131,17 @@ export class ChActionMenu implements ComponentInterface {
   }
 
   /**
-   * Specifies the hyperlink of the item. If this property is defined, the
-   * control will render an anchor tag with this `href`. Otherwise, it will
-   * render a button tag.
-   */
-  @Prop() readonly href: string | undefined;
-
-  /**
    * Specifies the inline alignment of the dropdown menu that is placed
    * relative to the expandable button.
    */
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
+
+  /**
+   * Specifies the hyperlink properties of the item. If this property is
+   * defined, the `ch-action-menu` will render an anchor tag with this
+   * properties. Otherwise, it will render a button tag.
+   */
+  @Prop() readonly link: ItemLink | undefined;
 
   /**
    * Specifies the extended model of the control. This property is only needed
@@ -252,7 +253,7 @@ export class ChActionMenu implements ComponentInterface {
 
     const expandable = this.expandable;
 
-    return this.href ? (
+    return this.link ? (
       <a
         role={this.disabled ? "link" : undefined}
         aria-controls={expandable ? WINDOW_ID : null}
@@ -270,7 +271,11 @@ export class ChActionMenu implements ComponentInterface {
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]:
             expandable && !this.expanded
         })}
-        href={!this.disabled ? this.href : undefined}
+        href={!this.disabled ? this.link.url : undefined}
+        // TODO: Add unit tests for this
+        rel={!this.disabled ? this.link.rel : undefined}
+        // TODO: Add unit tests for this
+        target={!this.disabled ? this.link.target : undefined}
         // TODO: Use a different ref due to a StencilJS bug when reassigning
         // the same variable with a different element's ref in runtime
         ref={el => (this.#mainAction = el)}

@@ -5,7 +5,6 @@ testDefaultProperties("ch-chat", {
   autoScroll: "at-scroll-end",
   callbacks: undefined,
   disabled: false,
-  generatingResponse: false,
   items: [],
   liveMode: false,
   liveModeConfiguration: undefined,
@@ -14,10 +13,11 @@ testDefaultProperties("ch-chat", {
   newUserMessageAlignment: "end",
   newUserMessageScrollBehavior: "instant",
   sendButtonDisabled: false,
+  sendContainerLayout: {
+    sendContainerAfter: ["send-button"]
+  },
   sendInputDisabled: false,
   showAdditionalContent: false,
-  showSendInputAdditionalContentAfter: false,
-  showSendInputAdditionalContentBefore: false,
   theme: undefined,
   translations: {
     accessibleName: {
@@ -26,7 +26,7 @@ testDefaultProperties("ch-chat", {
       downloadCodeButton: "Download code",
       sendButton: "Send",
       sendInput: "Message",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      stopResponseButton: "Stop generating answer"
     },
     placeholder: {
       sendInput: "Ask me a question..."
@@ -34,11 +34,11 @@ testDefaultProperties("ch-chat", {
     text: {
       copyCodeButton: "Copy code",
       copyMessageContent: "Copy",
-      processing: `Processing...`,
-      sourceFiles: "Source files:",
-      stopGeneratingAnswerButton: "Stop generating answer"
+      processing: "Processing...",
+      sourceFiles: "Source files:"
     }
-  }
+  },
+  waitingResponse: false
 });
 
 describe("[ch-chat][basic]", () => {

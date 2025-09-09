@@ -58,7 +58,11 @@ export const simpleModel1: ActionMenuModel = [
         id: "item-2-2",
         startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         startImgType: START_IMG_TYPE,
-        link: { url: "https://www.google.com.uy" },
+        link: {
+          url: "https://www.google.com.uy",
+          target: "_blank",
+          rel: "nofollow"
+        },
         caption: "Google"
         // showSeparator: false
       },

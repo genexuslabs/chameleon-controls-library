@@ -9,6 +9,7 @@ import {
   Watch,
   h
 } from "@stencil/core";
+import { getAllShadowRootAncestors } from "../../common/get-all-root-nodes";
 import { KEY_CODES, SCROLLABLE_CLASS } from "../../common/reserved-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { adoptCommonThemes } from "../../common/theme";
@@ -278,6 +279,18 @@ export class ChPopover {
   // Refs
   #resizeLayer: HTMLDivElement;
 
+  /**
+   * Array that contains all root nodes. It is only computed when the scroll
+   * listeners must be attached to track the position of the `ch-popover`.
+   *
+   * We need to store the root nodes references in an array, since when the
+   * element is disconnected from the DOM (`disconnectedCallback` method), the
+   * element is no longer attached to its parent elements and thus we can't
+   * compute the array.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #rootNodes: [Document, ...ShadowRoot[]] | undefined; // Don't allocate memory until needed when dragging
+
   @Element() el: HTMLChPopoverElement;
 
   @State() resizing = false;
@@ -489,7 +502,7 @@ export class ChPopover {
    * Emitted when the popover is closed by an user interaction.
    *
    * This event can be prevented (`preventDefault()`), interrupting the
-   * ch-popover's closing.
+   * `ch-popover`'s closing.
    */
   @Event() popoverClosed: EventEmitter;
 
@@ -600,7 +613,9 @@ export class ChPopover {
       this.#resizeObserver.disconnect();
     }
 
+    // TODO: This memory is never released
     this.#positionAdjustRAF ??= new SyncWithRAF();
+
     this.#resizeObserver ??= new ResizeObserver(
       (entries: ResizeObserverEntry[]) => {
         const popoverWasResized = entries.find(
@@ -633,11 +648,19 @@ export class ChPopover {
       });
     }
 
+    // TODO: Add a unit test for this
+    // Get all root nodes to attach the scroll listener, since the scroll event
+    // does not bubble and therefore, we can't track all scroll events if we}
+    // only attach the scroll listener in the document node
+    this.#rootNodes ??= getAllShadowRootAncestors(this.el);
+
     // Listeners
-    document.addEventListener("scroll", this.#updatePositionRAF, {
-      capture: true,
-      passive: true
-    });
+    this.#rootNodes.forEach(rootNode =>
+      rootNode.addEventListener("scroll", this.#updatePositionRAF, {
+        capture: true,
+        passive: true
+      })
+    );
   };
 
   #updatePositionRAF = () => {
@@ -821,10 +844,16 @@ export class ChPopover {
       this.#resizeObserver = null; // Free the memory
     }
 
-    // Remove listeners
-    document.removeEventListener("scroll", this.#updatePositionRAF, {
-      capture: true
-    });
+    // TODO: Add a unit test for this
+    // Remove listeners in each root node
+    this.#rootNodes?.forEach(rootNode =>
+      rootNode?.removeEventListener("scroll", this.#updatePositionRAF, {
+        capture: true
+      })
+    );
+
+    // Delete references for root nodes to any avoid memory leak
+    this.#rootNodes = undefined;
   };
 
   #handlePopoverToggle = (event: ToggleEvent) => {
@@ -911,9 +940,7 @@ export class ChPopover {
 
   #handleDragEnd = () => {
     // Cancel RAF to prevent access to undefined references
-    if (this.#dragRAF) {
-      this.#dragRAF.cancel();
-    }
+    this.#dragRAF?.cancel();
 
     // Remove listeners
     document.removeEventListener("mousemove", this.#trackElementDragRAF, {
@@ -1008,9 +1035,7 @@ export class ChPopover {
     this.resizing = false;
 
     // Cancel RAF to prevent access to undefined references
-    if (this.#resizeRAF) {
-      this.#resizeRAF.cancel();
-    }
+    this.#resizeRAF?.cancel();
 
     // Reset document cursor back to normal
     document.body.style.cursor = null;
@@ -1102,6 +1127,8 @@ export class ChPopover {
       this.#borderSizeObserver = null; // Free the memory
     }
 
+    // TODO: Add a unit test to ensure the queued RAF is canceled
+    this.#borderSizeRAF?.cancel();
     this.#borderSizeRAF = null; // Free the memory
   };
 

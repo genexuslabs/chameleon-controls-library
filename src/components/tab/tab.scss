@@ -42,6 +42,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   --ch-tab-close-button__background-image-size: 100%;
 
   display: grid;
+  grid-template: "panel-container" 1fr / 1fr;
 }
 
 :host(.ch-tab--block-start) {
@@ -151,6 +152,12 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   &:focus-within > .close-button::after,
   &[aria-selected="true"] > .close-button::after {
     opacity: 1;
+  }
+
+  // Necessary to ensure that the textblock is still visible, besides it has
+  // autoGrow = false
+  &-caption {
+    contain: unset;
   }
 }
 

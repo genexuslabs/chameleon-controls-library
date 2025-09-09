@@ -1,4 +1,5 @@
 import { h } from "@stencil/core";
+import type { LayoutSplitterModel } from "../../../../components/layout-splitter/types";
 import {
   ShowcaseRenderProperties,
   ShowcaseStory,
@@ -11,7 +12,6 @@ import {
   showcaseTemplateClassProperty,
   updateShowcase
 } from "../utils";
-import type { LayoutSplitterModel } from "../../../../components/layout-splitter/types";
 
 const state: Partial<HTMLChDialogElement> = {};
 
@@ -33,6 +33,31 @@ const handleDialogOpen = () => {
   updateShowcase();
 };
 
+let showNestedModalDialog = false;
+let showDoubleNestedModalDialog = false;
+
+const handleNestedModalDialogOpen = () => {
+  showNestedModalDialog = true;
+  updateShowcase();
+};
+
+const handleDoubleNestedModalDialogOpen = () => {
+  showDoubleNestedModalDialog = true;
+  updateShowcase();
+};
+
+const handleNestedModalDialogClose = (event: CustomEvent) => {
+  event.stopPropagation();
+  showNestedModalDialog = false;
+  updateShowcase();
+};
+
+const handleDoubleNestedModalDialogClose = (event: CustomEvent) => {
+  event.stopPropagation();
+  showDoubleNestedModalDialog = false;
+  updateShowcase();
+};
+
 const layoutSplitterModel: LayoutSplitterModel = {
   id: "root",
   direction: "columns",
@@ -51,6 +76,7 @@ const render = () => [
     adjustPositionAfterResize={state.adjustPositionAfterResize}
     allowDrag={state.allowDrag}
     caption={state.caption}
+    closable={state.closable}
     class="dialog dialog-primary"
     closeButtonAccessibleName={state.closeButtonAccessibleName}
     show={state.show}
@@ -67,7 +93,42 @@ const render = () => [
       </div>
 
       <div slot="end">
-        <button class="button-primary">button</button>
+        <button class="button-primary" onClick={handleNestedModalDialogOpen}>
+          Open nested modal dialog
+        </button>
+
+        <ch-dialog
+          class="dialog dialog-primary"
+          caption="Nested modal dialog"
+          show={showNestedModalDialog}
+          showHeader
+          onDialogClosed={handleNestedModalDialogClose}
+        >
+          <div class="spacing-body">
+            This dialog is nested and can be closed with the Esc key, clicking
+            on the close button or clicking outside the dialog.
+            <button
+              class="button-primary"
+              onClick={handleDoubleNestedModalDialogOpen}
+            >
+              Open double nested modal dialog
+            </button>
+            <ch-dialog
+              class="dialog dialog-primary"
+              caption="Double nested modal dialog"
+              show={showDoubleNestedModalDialog}
+              showHeader
+              onDialogClosed={handleDoubleNestedModalDialogClose}
+            >
+              <div class="spacing-body">
+                This dialog is double nested.
+                <br />
+                Close it with the Esc key, clicking on the close button or
+                clicking outside the dialog.
+              </div>
+            </ch-dialog>
+          </div>
+        </ch-dialog>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
           repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste
@@ -141,6 +202,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChDialogElement> =
           type: "string"
         },
         {
+          id: "closable",
+          caption: "Closable",
+          value: true,
+          type: "boolean"
+        },
+        {
           id: "resizable",
           caption: "Resizable",
           value: false,
@@ -188,6 +255,7 @@ const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCheckboxElement
       value: "dialog dialog-primary",
       type: "string"
     },
+    { name: "closable", defaultValue: true, type: "boolean" },
     {
       name: "closeButtonAccessibleName",
       defaultValue: undefined,

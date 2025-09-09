@@ -50,12 +50,12 @@ describe.skip("[ch-chat][send-message-by-user-interaction]", () => {
 
   const canTryToSendMessage = (
     disabled: boolean,
-    generatingResponse: boolean,
+    waitingResponse: boolean,
     liveMode: boolean,
     loadingState: HTMLChChatElement["loadingState"]
   ) =>
     !(
-      generatingResponse ||
+      waitingResponse ||
       disabled ||
       liveMode ||
       loadingState === "initial" ||
@@ -65,21 +65,21 @@ describe.skip("[ch-chat][send-message-by-user-interaction]", () => {
   const runTestFocusWithLoadingState = (
     sendMessageAction: "send-input keyboard enter" | "send-button click",
     disabled: boolean,
-    generatingResponse: boolean,
+    waitingResponse: boolean,
     liveMode: boolean,
     loadingState: HTMLChChatElement["loadingState"],
     sendInputContent: string
   ) => {
     if (
-      !canTryToSendMessage(disabled, generatingResponse, liveMode, loadingState)
+      !canTryToSendMessage(disabled, waitingResponse, liveMode, loadingState)
     ) {
-      it(`[${sendMessageAction}][disabled = ${disabled}][generatingResponse = ${generatingResponse}][liveMode = ${liveMode}][loadingState = "${loadingState}"][send-input content = "${sendInputContent}"] should not send any message and should not execute any callback`, async () => {
+      it(`[${sendMessageAction}][disabled = ${disabled}][waitingResponse = ${waitingResponse}][liveMode = ${liveMode}][loadingState = "${loadingState}"][send-input content = "${sendInputContent}"] should not send any message and should not execute any callback`, async () => {
         // TODO: We should test this without any items
         chatRef.setProperty("items", [
           { id: "Test 1", role: "assistant", content: "assistant content" }
         ]);
         chatRef.setProperty("disabled", disabled);
-        chatRef.setProperty("generatingResponse", generatingResponse);
+        chatRef.setProperty("waitingResponse", waitingResponse);
         chatRef.setProperty("liveMode", liveMode);
         chatRef.setProperty("loadingState", loadingState);
         await setEditContent(sendInputContent);

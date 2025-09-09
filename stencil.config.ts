@@ -1,7 +1,7 @@
 import { Config } from "@stencil/core";
 import { OutputTarget } from "@stencil/core/internal";
-import { sass } from "@stencil/sass";
 import { reactOutputTarget } from "@stencil/react-output-target";
+import { sass } from "@stencil/sass";
 
 import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
 
@@ -46,6 +46,21 @@ export const config: Config = {
     // library and use a bundler such as Vite to lazily load the Stencil
     // library's components.
     enableImportInjection: true
+  },
+
+  // Aquí marcas tus externals
+  rollupPlugins: {
+    before: [
+      {
+        name: "external-deps",
+        options(options) {
+          return {
+            ...options,
+            external: [/^lit\/.*/]
+          };
+        }
+      }
+    ]
   },
   testing: {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],

@@ -1,5 +1,5 @@
 import { html, nothing } from "lit";
-import { when } from "lit/directives/when";
+import { when } from "lit/directives/when.js";
 import { getMimeTypeFileFormat } from "../../../../common/mimeTypes/mime-types-utils";
 import { ArgumentTypes } from "../../../../common/types";
 import { tokenMap } from "../../../../common/utils";

@@ -1,5 +1,5 @@
 import { html } from "lit";
-import { when } from "lit/directives/when";
+import { when } from "lit/directives/when.js";
 import { tokenMap } from "../../../../common/utils";
 import type { ChatMessageSource, ChatSourceRender } from "../../types";
 

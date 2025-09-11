@@ -210,12 +210,6 @@ export class ChActionListRender {
   @State() expanded: boolean = true;
 
   /**
-   * This property lets you specify if the tree is waiting to process the drop
-   * of items.
-   */
-  @State() waitDropProcessing = false;
-
-  /**
    * Set this attribute if you want display a checkbox in all items by default.
    */
   @Prop() readonly checkbox: boolean = false;
@@ -355,7 +349,7 @@ export class ChActionListRender {
   ) => Promise<void>;
 
   /**
-   * This property allows us to implement custom rendering of tree items.
+   * This property allows us to implement custom rendering of action-list items.
    */
   @Prop() readonly renderItem: (
     itemModel: ActionListItemModel,
@@ -384,7 +378,7 @@ export class ChActionListRender {
   }
 
   /**
-   * Callback that is executed when the treeModel is changed to order its items.
+   * Callback that is executed when the action-list model is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: ActionListModel) => void =
     defaultSortItemsCallback;

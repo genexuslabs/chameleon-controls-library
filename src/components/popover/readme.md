@@ -45,17 +45,17 @@ relative to an element, but placed on the top layer using `position: fixed`.
 
 ## CSS Custom Properties
 
-| Name                            | Description                                                                                                          |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `--ch-popover-block-size`       | Specifies the block size of the popover. Useful for scenarios where the popover is resizable. @default max-content   |
-| `--ch-popover-inline-size`      | Specifies the inline size of the popover. Useful for scenarios where the popover is resizable. @default max-content  |
-| `--ch-popover-max-block-size`   | Specifies the maximum block size of the popover. Useful for scenarios where the popover is resizable. @default auto  |
-| `--ch-popover-max-inline-size`  | Specifies the maximum inline size of the popover. Useful for scenarios where the popover is resizable. @default auto |
-| `--ch-popover-min-block-size`   | Specifies the minimum block size of the popover. Useful for scenarios where the popover is resizable. @default auto  |
-| `--ch-popover-min-inline-size`  | Specifies the minimum inline size of the popover. Useful for scenarios where the popover is resizable. @default auto |
-| `--ch-popover-resize-threshold` | Specifies the size of the threshold to resize the popover. @default 4px                                              |
-| `--ch-popover-separation-x`     | Specifies the separation between the action and popover in the x axis. @default 0px                                  |
-| `--ch-popover-separation-y`     | Specifies the separation between the action and popover in the y axis. @default 0px                                  |
+| Name                            | Description                                                                                                                                        |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--ch-popover-block-size`       | Specifies the block size of the popover. Useful for scenarios where the popover is resizable. @default max-content                                 |
+| `--ch-popover-inline-size`      | Specifies the inline size of the popover. Useful for scenarios where the popover is resizable. @default max-content                                |
+| `--ch-popover-max-block-size`   | Specifies the maximum block size of the popover. Useful for scenarios where the popover is resizable. Only px values are supported. @default auto  |
+| `--ch-popover-max-inline-size`  | Specifies the maximum inline size of the popover. Useful for scenarios where the popover is resizable. Only px values are supported. @default auto |
+| `--ch-popover-min-block-size`   | Specifies the minimum block size of the popover. Useful for scenarios where the popover is resizable. @default auto                                |
+| `--ch-popover-min-inline-size`  | Specifies the minimum inline size of the popover. Useful for scenarios where the popover is resizable. @default auto                               |
+| `--ch-popover-resize-threshold` | Specifies the size of the threshold to resize the popover. @default 4px                                                                            |
+| `--ch-popover-separation-x`     | Specifies the separation between the action and popover in the x axis. @default 0px                                                                |
+| `--ch-popover-separation-y`     | Specifies the separation between the action and popover in the y axis. @default 0px                                                                |
 
 
 ## Dependencies

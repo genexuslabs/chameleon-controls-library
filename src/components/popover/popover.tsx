@@ -49,6 +49,9 @@ const POPOVER_INLINE_SIZE = "--ch-popover-inline-size";
 const POPOVER_MIN_BLOCK_SIZE = "--ch-popover-min-block-size";
 const POPOVER_MIN_INLINE_SIZE = "--ch-popover-min-inline-size";
 
+const POPOVER_MAX_BLOCK_SIZE = "--ch-popover-max-block-size";
+const POPOVER_MAX_INLINE_SIZE = "--ch-popover-max-inline-size";
+
 const POPOVER_FORCED_MAX_BLOCK_SIZE = "--ch-popover-forced-max-block-size";
 const POPOVER_FORCED_MAX_INLINE_SIZE = "--ch-popover-forced-max-inline-size";
 
@@ -721,12 +724,44 @@ export class ChPopover {
       popoverScrollSizes
     );
 
+    // TODO: Add e2e tests for this
+    // We need to check if a maximum width/height for the popover was defined
+    // to give more priority to that value, instead of the actual width/height,
+    // even if the width/height comes from "action-element-as-minimum"
+    const maxInlineSizeCustomVarValue = computedStyle.getPropertyValue(
+      POPOVER_MAX_INLINE_SIZE
+    );
+    const maxBlockSizeCustomVarValue = computedStyle.getPropertyValue(
+      POPOVER_MAX_BLOCK_SIZE
+    );
+
+    let actualPopoverWidth = popoverWidth;
+    let actualPopoverHeight = popoverHeight;
+
+    // We only support "px" for the max-block-size and max-inline-size custom
+    // var values
+    // TODO: Add e2e tests for this
+    try {
+      if (maxInlineSizeCustomVarValue.endsWith("px")) {
+        actualPopoverWidth = Number(
+          maxInlineSizeCustomVarValue.replace("px", "").trim()
+        );
+      }
+      if (maxBlockSizeCustomVarValue.endsWith("px")) {
+        actualPopoverHeight = Number(
+          maxBlockSizeCustomVarValue.replace("px", "").trim()
+        );
+      }
+    } catch {
+      //
+    }
+
     const alignment = setResponsiveAlignment(
       documentRect,
       actionRect,
       actionInlineStart,
-      popoverWidth,
-      popoverHeight,
+      actualPopoverWidth,
+      actualPopoverHeight,
       computedStyle,
       this.inlineAlign,
       this.blockAlign,
@@ -737,8 +772,8 @@ export class ChPopover {
     const blockOverflow = alignment[1].alignmentOverflow;
 
     this.#setOverflowBehavior(
-      popoverWidth,
-      popoverHeight,
+      actualPopoverWidth,
+      actualPopoverHeight,
       inlineOverflow,
       blockOverflow
     );

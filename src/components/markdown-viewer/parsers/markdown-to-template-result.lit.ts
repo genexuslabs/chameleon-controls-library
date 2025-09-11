@@ -14,6 +14,12 @@ export const LAST_NESTED_CHILD_CLASS = "last-nested-child";
 const findLastNestedChild = (elementWithChildren: MdAstParent | Root) => {
   const lastChild = elementWithChildren.children.at(-1);
 
+  // When rendering special values like "\n\n" or "\r\n", the root has no
+  // children
+  if (lastChild === undefined) {
+    return elementWithChildren;
+  }
+
   // The last element have children. We must check its sub children
   if ((lastChild as MdAstParent).children?.length > 0) {
     return findLastNestedChild(lastChild as MdAstParent);

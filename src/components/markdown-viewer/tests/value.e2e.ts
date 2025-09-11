@@ -184,9 +184,12 @@ describe("[ch-markdown-viewer][value]", () => {
   const testValueRender = (
     value: string,
     render: string,
-    description: string
+    description: string,
+    valueDescription?: string | undefined
   ) => {
-    it(`should render ${description} when the "value" property is "${value}"`, async () => {
+    it(`should render ${description} when the "value" property is "${
+      valueDescription ?? value
+    }"`, async () => {
       markdownViewerRef.setProperty("value", value);
       await page.waitForChanges();
       markdownViewerRef = await page.find("ch-markdown-viewer"); // Refresh the reference
@@ -215,6 +218,39 @@ describe("[ch-markdown-viewer][value]", () => {
     "the paragraph without the bold because it ends with a dot"
   );
 
+  /**
+   * These test cases validate that the root doesn't throw when trying to
+   * render empty children, using an actual value with special characters.
+   */
+  const testThrowEmptyChildren = (description: string, value: string) =>
+    it(`should not throw when the value ("${description}") is defined but the root has empty children`, async () => {
+      markdownViewerRef.setProperty("value", value);
+      await page.waitForChanges();
+      markdownViewerRef = await page.find("ch-markdown-viewer"); // Refresh the reference
+    });
+
+  testThrowEmptyChildren("\\n\\n", "\n\n");
+  testThrowEmptyChildren("\\r\\n", "\r\n");
+  testThrowEmptyChildren("\\r\\r", "\r\r");
+  testThrowEmptyChildren("%0A%0A", "%0A%0A");
+  testThrowEmptyChildren("- \\n\\n", "- \n\n");
+  testThrowEmptyChildren("> \\n\\n", "> \n\n");
+  testThrowEmptyChildren("- \\r\\n", "- \r\n");
+  testThrowEmptyChildren("> \\r\\n", "> \r\n");
+  testThrowEmptyChildren("- \\r\\r", "- \r\r");
+  testThrowEmptyChildren("> \\r\\r", "> \r\r");
+  testThrowEmptyChildren("- %0A%0A", "- %0A%0A");
+  testThrowEmptyChildren("> %0A%0A", "> %0A%0A");
+
+  testValueRender("\n\n", "", "nothing", "\\n\\n");
+  testValueRender("\r\n", "", "nothing", "\\r\\n");
+  testValueRender(
+    "%0A%0A",
+    `<p${LAST_NESTED_CHILD_CLASS}>%0A%0A</p>`,
+    "%0A%0A"
+  );
+
+  // TODO: Add the previous e2e test for validating the crash in the ch-code
   // TODO: Add unit test for updating the value at runtime
   // TODO: Add unit test for checking that the DOM is reused
   // TODO: Add unit test for checking the ch-code value bindings

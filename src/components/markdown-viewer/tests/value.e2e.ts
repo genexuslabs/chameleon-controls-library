@@ -219,7 +219,7 @@ describe("[ch-markdown-viewer][value]", () => {
   );
 
   /**
-   * These test cases validates that the root doesn't throw when trying to
+   * These test cases validate that the root doesn't throw when trying to
    * render empty children, using an actual value with special characters.
    */
   const testThrowEmptyChildren = (description: string, value: string) =>

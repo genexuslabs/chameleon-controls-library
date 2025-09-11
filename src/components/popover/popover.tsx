@@ -867,6 +867,11 @@ export class ChPopover {
       return Math.max(actionRect.height, popoverRect.height);
     }
 
+    // Size is determined by the content
+    if (this.#resizeWasMade || this.blockSizeMatch === "content") {
+      return popoverRect.height;
+    }
+
     // Size is the same as the `actionElement`
     setProperty(this.el, POPOVER_BLOCK_SIZE, actionRect.height);
     return actionRect.height;

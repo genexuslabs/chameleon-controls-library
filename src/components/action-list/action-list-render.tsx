@@ -1,18 +1,37 @@
 import {
   Component,
   Element,
-  Host,
-  h,
-  Prop,
-  State,
-  Listen,
-  Watch,
-  forceUpdate,
   Event,
   EventEmitter,
-  Method
+  Host,
+  Listen,
+  Method,
   // EventEmitter
+  Prop,
+  State,
+  Watch,
+  forceUpdate,
+  h
 } from "@stencil/core";
+import { removeElement } from "../../common/array";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
+import {
+  ActionListTranslations,
+  ChActionListItemCustomEvent
+} from "../../components";
+import { mouseEventModifierKey } from "../common/helpers";
+import { flattenActionListUIModel } from "./flatten-model";
+import {
+  ActionListCaptionChangeEventDetail,
+  ActionListFixedChangeEventDetail
+} from "./internal/action-list-item/types";
+import { actionListKeyboardNavigation } from "./keyboard-navigation";
+import {
+  selectedItemsChangeShouldBeEmitted,
+  setActionListSelectedItems
+} from "./selections";
+import { actionListDefaultTranslations } from "./translations";
 import {
   ActionListImagePathCallback,
   ActionListItemActionable,
@@ -25,32 +44,13 @@ import {
   ActionListItemType,
   ActionListModel
 } from "./types";
-import {
-  ActionListTranslations,
-  ChActionListItemCustomEvent
-} from "../../components";
-import {
-  ActionListCaptionChangeEventDetail,
-  ActionListFixedChangeEventDetail
-} from "./internal/action-list-item/types";
-import { mouseEventModifierKey } from "../common/helpers";
-import { removeElement } from "../../common/array";
-import { SCROLLABLE_CLASS } from "../../common/reserved-names";
-import { adoptCommonThemes } from "../../common/theme";
-import { actionListKeyboardNavigation } from "./keyboard-navigation";
+import { updateItemProperty } from "./update-item-property";
 import {
   ACTION_LIST_ITEM_TAG,
   getActionListItemOrGroupInfo,
   getActionListOrGroupItemFromEvent,
   getParentArray
 } from "./utils";
-import { updateItemProperty } from "./update-item-property";
-import { actionListDefaultTranslations } from "./translations";
-import {
-  selectedItemsChangeShouldBeEmitted,
-  setActionListSelectedItems
-} from "./selections";
-import { flattenActionListUIModel } from "./flatten-model";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;

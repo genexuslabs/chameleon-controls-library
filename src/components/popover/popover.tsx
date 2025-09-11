@@ -806,7 +806,9 @@ export class ChPopover {
   ) => {
     if (this.inlineSizeMatch === "action-element-as-minimum") {
       setProperty(this.el, POPOVER_MIN_INLINE_SIZE, actionRect.width);
-      return actionRect.width;
+
+      // TODO: Add e2e tests for this
+      return Math.max(actionRect.width, popoverRect.width);
     }
 
     // Size is determined by the content
@@ -825,12 +827,9 @@ export class ChPopover {
   ) => {
     if (this.blockSizeMatch === "action-element-as-minimum") {
       setProperty(this.el, POPOVER_MIN_BLOCK_SIZE, actionRect.height);
-      return actionRect.height;
-    }
 
-    // Size is determined by the content
-    if (this.#resizeWasMade || this.blockSizeMatch === "content") {
-      return popoverRect.height;
+      // TODO: Add e2e tests for this
+      return Math.max(actionRect.height, popoverRect.height);
     }
 
     // Size is the same as the `actionElement`

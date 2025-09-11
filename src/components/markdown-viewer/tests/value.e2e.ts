@@ -250,6 +250,7 @@ describe("[ch-markdown-viewer][value]", () => {
     "%0A%0A"
   );
 
+  // TODO: Add the previous e2e test for validating the crash in the ch-code
   // TODO: Add unit test for updating the value at runtime
   // TODO: Add unit test for checking that the DOM is reused
   // TODO: Add unit test for checking the ch-code value bindings

@@ -1,8 +1,62 @@
 :host {
-  display: inline-grid;
+  position: relative;
   contain: size;
+  display: block;
+
+  /**
+   * @prop --ch-color-field__width:
+   * Specifies the width of the color field
+   * @default 300px
+   */
+  --ch-color-field__width: 300px;
+
+  /**
+   * @prop --ch-color-field__height:
+   * Specifies the height of the color field
+   * @default 200px
+   */
+  --ch-color-field__height: 200px;
+
+  /**
+   * @prop --ch-color-field__border-color:
+   * Specifies the color for the marker
+   * @default currentColor
+   */
+  --ch-color-field__border-color: currentColor;
+
+  /**
+   * @prop --ch-color-field__border-width:
+   * Specifies the width of the border on the marker
+   * @default 2px
+   */
+  --ch-color-field__border-width: 2px;
+
+  /**
+   * @prop --ch-color-field__border-size:
+   * Specifies the size for the marker
+   * @default 12px
+   */
+  --ch-color-field__border-size: 12px;
+
+  width: var(--ch-color-field__width);
+  height: var(--ch-color-field__height);
 }
 
 canvas {
   cursor: crosshair;
+  width: 100%;
+  height: 100%;
+}
+
+.marker {
+  position: absolute;
+  width: var(--ch-color-field__border-size);
+  height: var(--ch-color-field__border-size);
+  border-radius: 50%;
+  border-width: var(--ch-color-field__border-width);
+  border-style: solid;
+  border-color: var(--ch-color-field__border-color);
+  box-sizing: border-box;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
 }

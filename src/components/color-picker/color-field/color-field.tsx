@@ -11,8 +11,10 @@ import {
   COLOR_PICKER_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../../common/reserved-names";
+import { SyncWithRAF } from "../../../common/sync-with-frames";
 import {
   ColorFormat,
+  ColorVariants,
   isValidColor,
   isValidColorFormat,
   parseRgba,
@@ -20,6 +22,8 @@ import {
   rgbToHsl,
   rgbToHsla
 } from "../utils";
+import { CURRENT_X, CURRENT_Y, SELECTED_COLOR } from "./constants";
+import { ColorFieldTranslations } from "./translations";
 
 @Component({
   tag: "ch-color-field",
@@ -28,11 +32,6 @@ import {
   shadow: { delegatesFocus: true }
 })
 export class ChColorField {
-  /**
-   *  Accessible name for assistive technologies
-   */
-  @Prop() readonly accessibleName: string;
-
   /**
    *  Base color for the gradient
    */
@@ -50,8 +49,6 @@ export class ChColorField {
     this.#drawColorField();
   }
 
-  // el AttachInternals()
-
   /**
    *  Color format
    */
@@ -62,26 +59,33 @@ export class ChColorField {
     // Validate the format color
     if (!isValidColorFormat(this.colorFormat)) {
       console.warn(
-        `Invalid color format: ${this.colorFormat}. Defaulting to "RGB".`
+        `Invalid color format: ${this.colorFormat}. Defaulting to "rgb".`
       );
-      this.colorFormat = "RGB";
+      this.colorFormat = "rgb";
     }
   }
 
   /**
-   * Height of the canvas
+   * Step to navigate on the canvas
    */
-  @Prop() readonly height: number;
+  @Prop() readonly step: number = 1;
 
   /**
    * Selected color
    */
-  @Prop({ mutable: true }) selectedColor: string;
+  @Prop({ mutable: true }) selectedColor: ColorVariants;
 
   /**
-   * Width of the canvas
+   * Specifies the literals required in the control.
    */
-  @Prop() readonly width: number;
+  @Prop() readonly translations: ColorFieldTranslations = {
+    accessibleName: {
+      label: "Color field",
+      description: "2D color selector",
+      statusLabel: "Color information",
+      statusMessage: `Current position: X: ${CURRENT_X}, Y: ${CURRENT_Y}. Selected color: ${SELECTED_COLOR}`
+    }
+  };
 
   /**
    * Emit the new color value
@@ -91,8 +95,19 @@ export class ChColorField {
   #currentX: number = 0;
   #currentY: number = 0;
   #canvasRef: HTMLCanvasElement;
+  #markerRef: HTMLDivElement;
   #resizeObserver: ResizeObserver;
-  #statusMessage: string = "";
+  #isDragging: boolean = false;
+  #resizeRAF: SyncWithRAF = new SyncWithRAF();
+  #dragRAF: SyncWithRAF = new SyncWithRAF();
+
+  #updateCanvasSize = (): void => {
+    if (this.#canvasRef) {
+      this.#canvasRef.width = this.#canvasRef.clientWidth;
+      this.#canvasRef.height = this.#canvasRef.clientHeight;
+      this.#drawColorField();
+    }
+  };
 
   #drawColorField = (): void => {
     const ctx = this.#canvasRef.getContext("2d", { willReadFrequently: true });
@@ -103,7 +118,7 @@ export class ChColorField {
     const { width, height } = this.#canvasRef;
 
     // Horizontal gradients from white to the base color
-    const horizontalGradient = ctx.createLinearGradient(0, 0, width, 0);
+    const horizontalGradient = ctx.createLinearGradient(1, 0, width, 0);
     horizontalGradient.addColorStop(0, "rgb(255, 255, 255)");
     horizontalGradient.addColorStop(1, this.baseColor);
     ctx.fillStyle = horizontalGradient;
@@ -120,114 +135,156 @@ export class ChColorField {
   };
 
   #drawMarker = (): void => {
-    const ctx = this.#canvasRef.getContext("2d", { willReadFrequently: true });
-
-    // Marker for the current position on canvas
-    const RADIO_SIZE = 3;
-    const MARKER_COLOR = "rgb(255, 255, 255)";
-    const MARKER_WIDTH = 2;
-
-    ctx.beginPath();
-    ctx.arc(this.#currentX, this.#currentY, RADIO_SIZE, 0, Math.PI * 2);
-    ctx.fillStyle = this.#getColorFromCanvas();
-    ctx.fill();
-    ctx.strokeStyle = MARKER_COLOR;
-    ctx.lineWidth = MARKER_WIDTH;
-    ctx.stroke();
+    if (this.#markerRef) {
+      this.#markerRef.style.left = `${this.#currentX}px`;
+      this.#markerRef.style.top = `${this.#currentY}px`;
+    }
   };
 
-  #formatColor = (color: string): string => {
-    const rgba = parseRgba(color);
-    if (this.colorFormat === "HEX") {
-      return rgbToHex(color);
-    }
-    if (this.colorFormat === "HSL") {
-      return rgbToHsl(color);
-    }
-    if (this.colorFormat === "HSLA") {
-      return rgbToHsla(color);
-    }
-    if (this.colorFormat === "RGB") {
-      return `rgb(${rgba.r}, ${rgba.g}, ${rgba.b})`;
-    }
-    // Default color as RGBA
-    return color;
+  #getFormattedColor = (colorObject: ColorVariants): string => {
+    return colorObject[this.colorFormat];
+  };
+
+  #updateCoordinates = (event: MouseEvent): void => {
+    const rect = this.#canvasRef.getBoundingClientRect();
+    const canvasWidth = this.#canvasRef.width;
+    const canvasHeight = this.#canvasRef.height;
+
+    // Clamp coordinates to valid pixel range (0 to width-1, 0 to height-1)
+    this.#currentX = Math.max(
+      0,
+      Math.min(canvasWidth - 1, event.clientX - rect.left)
+    );
+    this.#currentY = Math.max(
+      0,
+      Math.min(canvasHeight - 1, event.clientY - rect.top)
+    );
+
+    this.selectedColor = this.#getColorFromCanvas();
+    this.#drawMarker();
   };
 
   #handleCanvasClick = (event: MouseEvent) => {
-    const rect = this.#canvasRef.getBoundingClientRect();
-    this.#currentX = event.clientX - rect.left; // X position on the canvas
-    this.#currentY = event.clientY - rect.top; // Y position on the canvas
+    this.#updateCoordinates(event);
+    this.input.emit(this.#getFormattedColor(this.selectedColor));
+  };
 
-    this.selectedColor = this.#getColorFromCanvas();
-    console.log("picked: ", this.selectedColor);
+  #handleMouseDown = (event: MouseEvent) => {
+    this.#isDragging = true;
+    this.#updateCoordinates(event);
+  };
 
-    const formattedColor = this.#formatColor(this.selectedColor);
-    this.input.emit(formattedColor);
+  #handleMouseMove = (event: MouseEvent) => {
+    if (this.#isDragging) {
+      this.#dragRAF.perform(
+        () => {
+          this.#updateCoordinates(event);
+        },
+        () => {
+          // Store coordinates immediately for responsiveness with proper clamping
+          const rect = this.#canvasRef.getBoundingClientRect();
+          const canvasWidth = this.#canvasRef.width;
+          const canvasHeight = this.#canvasRef.height;
 
-    console.log("formatted color to: ", formattedColor);
+          this.#currentX = Math.max(
+            0,
+            Math.min(canvasWidth - 1, event.clientX - rect.left)
+          );
+          this.#currentY = Math.max(
+            0,
+            Math.min(canvasHeight - 1, event.clientY - rect.top)
+          );
+        }
+      );
+    }
+  };
+
+  #handleMouseUp = () => {
+    if (this.#isDragging) {
+      this.#isDragging = false;
+      this.input.emit(this.#getFormattedColor(this.selectedColor));
+    }
   };
 
   #handleKeyDown = (event: KeyboardEvent) => {
-    console.log(
-      "current position\n X: ",
-      this.#currentX,
-      "Y: ",
-      this.#currentY
-    );
-    console.log(event.key);
+    const canvasHeight = this.#canvasRef?.height || 0;
+    const canvasWidth = this.#canvasRef?.width || 0;
+
     switch (event.key) {
       case KEY_CODES.ARROW_UP:
-        this.#currentY -= 5;
+        this.#currentY -= this.step;
         if (this.#currentY < 0) {
           this.#currentY = 0;
         }
-        this.#drawColorField();
+        this.#drawMarker();
         event.preventDefault();
         break;
       case KEY_CODES.ARROW_DOWN:
-        this.#currentY += 5;
-        if (this.#currentY > this.height) {
-          this.#currentY = this.height;
+        this.#currentY += this.step;
+        if (this.#currentY >= canvasHeight) {
+          this.#currentY = canvasHeight - 1;
         }
-        this.#drawColorField();
+        this.#drawMarker();
         event.preventDefault();
         break;
       case KEY_CODES.ARROW_LEFT:
-        this.#currentX -= 5;
+        this.#currentX -= this.step;
         if (this.#currentX < 0) {
           this.#currentX = 0;
         }
-        this.#drawColorField();
+        this.#drawMarker();
         event.preventDefault();
         break;
       case KEY_CODES.ARROW_RIGHT:
-        this.#currentX += 5;
-        if (this.#currentX > this.width) {
-          this.#currentX = this.width;
+        this.#currentX += this.step;
+        if (this.#currentX >= canvasWidth) {
+          this.#currentX = canvasWidth - 1;
         }
-        this.#drawColorField();
+        this.#drawMarker();
         event.preventDefault();
         break;
       default:
         break;
     }
+    this.selectedColor = this.#getColorFromCanvas();
   };
 
-  #getColorFromCanvas = (): string => {
+  #getColorFromCanvas = (): ColorVariants => {
     const ctx = this.#canvasRef.getContext("2d", { willReadFrequently: true });
     if (!ctx) {
-      return this.baseColor;
+      // Return a fallback ColorVariants object using the base color
+      const fallbackRgba = parseRgba(this.baseColor) || {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 1
+      };
+      const fallbackData = [
+        fallbackRgba.r,
+        fallbackRgba.g,
+        fallbackRgba.b,
+        fallbackRgba.a
+      ];
+
+      return {
+        rgb: `rgb(${fallbackRgba.r}, ${fallbackRgba.g}, ${fallbackRgba.b})`,
+        rgba: `rgba(${fallbackRgba.r}, ${fallbackRgba.g}, ${fallbackRgba.b}, ${fallbackRgba.a})`,
+        hex: rgbToHex(fallbackData),
+        hsl: rgbToHsl(fallbackData),
+        hsla: rgbToHsla(fallbackData)
+      };
     }
 
     const imageData = ctx.getImageData(this.#currentX, this.#currentY, 1, 1);
     const [r, g, b, a] = imageData.data;
 
-    this.#statusMessage = `Current position: X: ${this.#currentX}, Y: ${
-      this.#currentY
-    }. Selected color: ${this.selectedColor}.`;
-
-    return `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+    return {
+      rgb: `rgb(${r}, ${g}, ${b})`,
+      rgba: `rgba(${r},${g}, ${b}, ${a})`,
+      hex: rgbToHex(imageData.data),
+      hsl: rgbToHsl(imageData.data),
+      hsla: rgbToHsla(imageData.data)
+    };
   };
 
   connectedCallback() {
@@ -241,11 +298,13 @@ export class ChColorField {
   }
 
   componentDidLoad() {
-    this.#drawColorField();
+    this.#updateCanvasSize();
 
-    // Initialize ResizeObserver
+    // Initialize ResizeObserver with RAF optimization
     this.#resizeObserver = new ResizeObserver(() => {
-      this.#drawColorField();
+      this.#resizeRAF.perform(() => {
+        this.#updateCanvasSize();
+      });
     });
 
     // Observe the canvas for size changes
@@ -257,27 +316,49 @@ export class ChColorField {
     if (this.#resizeObserver) {
       this.#resizeObserver.disconnect();
     }
+
+    // Cancel pending RAF operations
+    this.#resizeRAF.cancel();
+    this.#dragRAF.cancel();
   }
 
   render() {
+    const { accessibleName } = this.translations;
     return (
-      <Host aria-describedby role="application">
+      <Host>
         <canvas
-          aria-label={this.accessibleName}
-          height={this.height}
+          aria-label={accessibleName.label}
+          aria-roledescription={accessibleName.description}
+          aria-describedby="color-information"
           onClick={this.#handleCanvasClick}
           onKeyDown={this.#handleKeyDown}
+          onMouseDown={this.#handleMouseDown}
+          onMouseMove={this.#handleMouseMove}
+          onMouseUp={this.#handleMouseUp}
           part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_FIELD}
           ref={el => (this.#canvasRef = el as HTMLCanvasElement)}
           role="application"
           tabindex="0"
-          width={this.width}
         ></canvas>
-        {/* marker */}
-        <div></div>
-        <ch-status accessibleName="Informative message for color selection">
+        <div
+          class="marker"
+          part={COLOR_PICKER_PARTS_DICTIONARY.MARKER}
+          ref={el => {
+            this.#markerRef = el as HTMLDivElement;
+          }}
+        ></div>
+        <ch-status
+          id="color-information"
+          accessibleName={accessibleName.statusLabel}
+        >
           <div id="colorFeedback" hidden>
-            {this.#statusMessage}
+            {accessibleName.statusMessage
+              .replace(CURRENT_X, this.#currentX.toString())
+              .replace(CURRENT_Y, this.#currentY.toString())
+              .replace(
+                SELECTED_COLOR,
+                this.#getFormattedColor(this.selectedColor)
+              )}
           </div>
         </ch-status>
       </Host>

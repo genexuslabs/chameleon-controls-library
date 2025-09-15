@@ -274,7 +274,8 @@ export const ACTION_MENU_EXPORT_PARTS = joinParts(ACTION_MENU_PARTS_DICTIONARY);
 //             Color Picker Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const COLOR_PICKER_PARTS_DICTIONARY = {
-  COLOR_FIELD: "color-field"
+  COLOR_FIELD: "color-field",
+  MARKER: "marker"
 } as const;
 
 // - - - - - - - - - - - - - - - - - - - -

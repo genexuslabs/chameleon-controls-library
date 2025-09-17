@@ -60,3 +60,7 @@ canvas {
   pointer-events: none;
   transform: translate(-50%, -50%);
 }
+
+.marker:focus-visible {
+  outline: currentColor auto 1px;
+}

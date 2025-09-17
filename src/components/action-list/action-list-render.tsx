@@ -1,18 +1,37 @@
 import {
   Component,
   Element,
-  Host,
-  h,
-  Prop,
-  State,
-  Listen,
-  Watch,
-  forceUpdate,
   Event,
   EventEmitter,
-  Method
+  Host,
+  Listen,
+  Method,
   // EventEmitter
+  Prop,
+  State,
+  Watch,
+  forceUpdate,
+  h
 } from "@stencil/core";
+import { removeElement } from "../../common/array";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
+import {
+  ActionListTranslations,
+  ChActionListItemCustomEvent
+} from "../../components";
+import { mouseEventModifierKey } from "../common/helpers";
+import { flattenActionListUIModel } from "./flatten-model";
+import {
+  ActionListCaptionChangeEventDetail,
+  ActionListFixedChangeEventDetail
+} from "./internal/action-list-item/types";
+import { actionListKeyboardNavigation } from "./keyboard-navigation";
+import {
+  selectedItemsChangeShouldBeEmitted,
+  setActionListSelectedItems
+} from "./selections";
+import { actionListDefaultTranslations } from "./translations";
 import {
   ActionListImagePathCallback,
   ActionListItemActionable,
@@ -25,32 +44,13 @@ import {
   ActionListItemType,
   ActionListModel
 } from "./types";
-import {
-  ActionListTranslations,
-  ChActionListItemCustomEvent
-} from "../../components";
-import {
-  ActionListCaptionChangeEventDetail,
-  ActionListFixedChangeEventDetail
-} from "./internal/action-list-item/types";
-import { mouseEventModifierKey } from "../common/helpers";
-import { removeElement } from "../../common/array";
-import { SCROLLABLE_CLASS } from "../../common/reserved-names";
-import { adoptCommonThemes } from "../../common/theme";
-import { actionListKeyboardNavigation } from "./keyboard-navigation";
+import { updateItemProperty } from "./update-item-property";
 import {
   ACTION_LIST_ITEM_TAG,
   getActionListItemOrGroupInfo,
   getActionListOrGroupItemFromEvent,
   getParentArray
 } from "./utils";
-import { updateItemProperty } from "./update-item-property";
-import { actionListDefaultTranslations } from "./translations";
-import {
-  selectedItemsChangeShouldBeEmitted,
-  setActionListSelectedItems
-} from "./selections";
-import { flattenActionListUIModel } from "./flatten-model";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -210,12 +210,6 @@ export class ChActionListRender {
   @State() expanded: boolean = true;
 
   /**
-   * This property lets you specify if the tree is waiting to process the drop
-   * of items.
-   */
-  @State() waitDropProcessing = false;
-
-  /**
    * Set this attribute if you want display a checkbox in all items by default.
    */
   @Prop() readonly checkbox: boolean = false;
@@ -355,7 +349,7 @@ export class ChActionListRender {
   ) => Promise<void>;
 
   /**
-   * This property allows us to implement custom rendering of tree items.
+   * This property allows us to implement custom rendering of action-list items.
    */
   @Prop() readonly renderItem: (
     itemModel: ActionListItemModel,
@@ -384,7 +378,7 @@ export class ChActionListRender {
   }
 
   /**
-   * Callback that is executed when the treeModel is changed to order its items.
+   * Callback that is executed when the action-list model is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: ActionListModel) => void =
     defaultSortItemsCallback;

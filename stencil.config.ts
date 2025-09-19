@@ -5,6 +5,8 @@ import { sass } from "@stencil/sass";
 
 import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
 
+const isTesting = process.env.npm_lifecycle_script?.startsWith("stencil test");
+
 const outputTargets: OutputTarget[] = [
   {
     type: "dist",
@@ -48,19 +50,22 @@ export const config: Config = {
     enableImportInjection: true
   },
 
-  // Aquí marcas tus externals
+  // Don't apply external dependencies when running test, because Stencil won't
+  // be able resolve the imports
   rollupPlugins: {
-    before: [
-      {
-        name: "external-deps",
-        options(options) {
-          return {
-            ...options,
-            external: [/^lit\/.*/]
-          };
-        }
-      }
-    ]
+    before: isTesting
+      ? []
+      : [
+          {
+            name: "external-deps",
+            options(options) {
+              return {
+                ...options,
+                external: [/^lit\/.*/]
+              };
+            }
+          }
+        ]
   },
   testing: {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],

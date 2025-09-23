@@ -1,5 +1,5 @@
 import { html, nothing, type TemplateResult } from "lit";
-import { classMap } from "lit/directives/class-map";
+import { classMap } from "lit/directives/class-map.js";
 import { AlignType, Table } from "mdast";
 import { getLinkDefinition, setLinkDefinition } from "./link-resolver";
 import type { rawHTMLToJSX } from "./raw-html-to-jsx.lit";

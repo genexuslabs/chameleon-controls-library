@@ -167,6 +167,7 @@ export type ChameleonStories = {
   chat: ShowcaseStory<HTMLChChatElement>;
   code: ShowcaseStory<HTMLChCodeElement>;
   "combo-box": ShowcaseStory<HTMLChComboBoxRenderElement>;
+  counter: ShowcaseStory<HTMLChCounterElement>;
   dialog: ShowcaseStory<HTMLChDialogElement>;
   edit: ShowcaseStory<HTMLChEditElement>;
   image: ShowcaseStory<HTMLChImageElement>;

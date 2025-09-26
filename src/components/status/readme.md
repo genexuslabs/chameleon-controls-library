@@ -19,19 +19,6 @@ such as buttons, overlays, and other elements.
 | `loadingRegionRef` | --                | If the control is describing the loading progress of a particular region of a page, set this property with the reference of the loading region. This will set the `aria-describedby` and `aria-busy` attributes on the loading region to improve accessibility while the control is in rendered.  When the control detects that is no longer in rendered (aka it is removed from the DOM), it will remove the `aria-busy` attribute and update (or remove if necessary) the`aria-describedby` attribute.  If an ID is set prior to the component's first render, the ch-status will use this ID for the `aria-describedby`. Otherwise, the ch-status will compute a unique ID for this matter.  **Important**: If you are using Shadow DOM, take into account that the `loadingRegionRef` must be in the same Shadow Tree as the ch-status. Otherwise, the `aria-describedby` binding won't work, since the control ID is not visible for the `loadingRegionRef`. | `HTMLElement` | `undefined` |
 
 
-## Dependencies
-
-### Used by
-
- - [ch-color-field](../color-picker/color-field)
-
-### Graph
-```mermaid
-graph TD;
-  ch-color-field --> ch-status
-  style ch-status fill:#f9f,stroke:#333,stroke-width:4px
-```
-
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

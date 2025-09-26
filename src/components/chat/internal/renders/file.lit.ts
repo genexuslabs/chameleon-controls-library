@@ -1,6 +1,6 @@
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined";
-import { when } from "lit/directives/when";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { when } from "lit/directives/when.js";
 
 import type { ChMimeTypeFormatMap } from "../../../../common/mimeTypes/mime-types";
 import { tokenMap } from "../../../../common/utils";

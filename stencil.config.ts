@@ -1,9 +1,11 @@
 import { Config } from "@stencil/core";
 import { OutputTarget } from "@stencil/core/internal";
-import { sass } from "@stencil/sass";
 import { reactOutputTarget } from "@stencil/react-output-target";
+import { sass } from "@stencil/sass";
 
 import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
+
+const isTesting = process.env.npm_lifecycle_script?.startsWith("stencil test");
 
 const outputTargets: OutputTarget[] = [
   {
@@ -46,6 +48,24 @@ export const config: Config = {
     // library and use a bundler such as Vite to lazily load the Stencil
     // library's components.
     enableImportInjection: true
+  },
+
+  // Don't apply external dependencies when running test, because Stencil won't
+  // be able resolve the imports
+  rollupPlugins: {
+    before: isTesting
+      ? []
+      : [
+          {
+            name: "external-deps",
+            options(options) {
+              return {
+                ...options,
+                external: [/^lit\/.*/]
+              };
+            }
+          }
+        ]
   },
   testing: {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],

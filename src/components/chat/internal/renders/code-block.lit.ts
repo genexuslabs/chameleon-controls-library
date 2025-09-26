@@ -1,5 +1,5 @@
 import { html } from "lit";
-import { when } from "lit/directives/when";
+import { when } from "lit/directives/when.js";
 import type { MarkdownViewerCodeRenderOptions } from "../../../markdown-viewer/parsers/types";
 import type { ChatCallbacks, ChatCodeBlockRender } from "../../types";
 import { copy } from "../../utils";

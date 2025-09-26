@@ -20,8 +20,8 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChColorFieldElement
           type: "number"
         },
         {
-          id: "selectedColor",
-          caption: "Selected Color: (css, rgb, hex, hsl, hsv)",
+          id: "value",
+          caption: "Selected Color: (rgb, hex, hsl)",
           value: "#3070ca",
           type: "string"
         }
@@ -32,14 +32,11 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChColorFieldElement
 const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChColorFieldElement>[] =
   [
     { name: "step", defaultValue: 1, type: "number" },
-    { name: "selectedColor", defaultValue: "#3070ca", type: "string" }
+    { name: "value", defaultValue: "#3070ca", type: "string" }
   ];
 
 const render = () => (
-  <ch-color-field
-    selectedColor={state.selectedColor}
-    step={state.step}
-  ></ch-color-field>
+  <ch-color-field value={state.value} step={state.step}></ch-color-field>
 );
 
 export const colorFieldShowcaseStory: ShowcaseStory<HTMLChColorFieldElement> = {

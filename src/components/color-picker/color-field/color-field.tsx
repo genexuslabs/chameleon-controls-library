@@ -1,5 +1,7 @@
 import {
+  AttachInternals,
   Component,
+  Element,
   Event,
   EventEmitter,
   Host,
@@ -9,61 +11,93 @@ import {
   h
 } from "@stencil/core";
 import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../../common/analysis/accessibility";
+import {
   COLOR_PICKER_PARTS_DICTIONARY,
   KEY_CODES
 } from "../../../common/reserved-names";
 import { SyncWithRAF } from "../../../common/sync-with-frames";
-import { ColorVariants, parseColor } from "../utils";
-import {
-  CURRENT_X,
-  CURRENT_Y,
-  HEX,
-  HEX_VALUE,
-  HSL,
-  HSL_VALUE,
-  HSV,
-  HSV_VALUE,
-  POSITION,
-  RGB,
-  RGB_VALUE
-} from "./constants";
+import { ColorFormat, ColorVariants } from "../../../common/types";
+import { getColorFormat } from "../utils/color-format";
+import { fromStringToColorVariants } from "../utils/color-variants";
 import { ColorFieldTranslations } from "./translations";
 
+type KeyEvents =
+  | typeof KEY_CODES.ARROW_UP
+  | typeof KEY_CODES.ARROW_RIGHT
+  | typeof KEY_CODES.ARROW_DOWN
+  | typeof KEY_CODES.ARROW_LEFT;
+
 @Component({
-  tag: "ch-color-field",
-  styleUrl: "color-field.scss",
   formAssociated: true,
-  shadow: { delegatesFocus: true }
+  shadow: { delegatesFocus: true },
+  styleUrl: "color-field.scss",
+  tag: "ch-color-field"
 })
 export class ChColorField {
-  /**
-   * Step to navigate on the canvas.
-   */
-  @Prop() readonly step: number = 1;
+  #canvasRef: HTMLCanvasElement;
+  #colorPickedVariants: ColorVariants;
+  #colorFormat: ColorFormat = "hex";
+  #currentX: number = 0;
+  #currentY: number = 0;
+  #dragRAF: SyncWithRAF;
+  #isDragging: boolean = false;
+  #markerRef: HTMLDivElement;
+  #resizeObserver: ResizeObserver;
+  #resizeRAF: SyncWithRAF = new SyncWithRAF();
+  #isUserAction: boolean = false;
 
-  /**
-   * Selected color.
-   */
-  @Prop({ mutable: true }) selectedColor: string;
-
-  @Watch("selectedColor")
-  selectedColorChanged() {
-    if (this.selectedColor) {
-      try {
-        this.colorVariants = parseColor(this.selectedColor);
-        this.#updateMarkerPosition();
-        this.#drawColorField();
-        this.#updateStatusMessage();
-      } catch (error) {
-        console.warn(`Invalid selected color: ${this.selectedColor}`, error);
-        // Set default color variants
-        this.colorVariants = parseColor("#000000");
-        this.#updateMarkerPosition();
-        this.#drawColorField();
-        this.#updateStatusMessage();
+  #keyEvents: {
+    [key in KeyEvents]: (event: KeyboardEvent) => void;
+  } = {
+    [KEY_CODES.ARROW_UP]: ev => {
+      this.#currentY -= this.step;
+      if (this.#currentY < 0) {
+        this.#currentY = 0;
       }
+      this.#drawMarker();
+      this.#emitColorChange();
+      ev.preventDefault();
+    },
+
+    [KEY_CODES.ARROW_DOWN]: ev => {
+      this.#currentY += this.step;
+      const canvasHeight = this.#canvasRef?.height || 0;
+      if (this.#currentY >= canvasHeight) {
+        this.#currentY = canvasHeight;
+      }
+      this.#drawMarker();
+      this.#emitColorChange();
+      ev.preventDefault();
+    },
+
+    [KEY_CODES.ARROW_LEFT]: ev => {
+      this.#currentX -= this.step;
+      if (this.#currentX < 0) {
+        this.#currentX = 0;
+      }
+      this.#drawMarker();
+      this.#emitColorChange();
+      ev.preventDefault();
+    },
+
+    [KEY_CODES.ARROW_RIGHT]: ev => {
+      this.#currentX += this.step;
+      const canvasWidth = this.#canvasRef?.width || 0;
+      if (this.#currentX >= canvasWidth) {
+        this.#currentX = canvasWidth;
+      }
+      this.#drawMarker();
+      this.#emitColorChange();
+      ev.preventDefault();
     }
-  }
+  };
+
+  @AttachInternals() internals: ElementInternals;
+
+  @Element() el: HTMLChColorFieldElement;
 
   /**
    * Internal state to store the color variants.
@@ -71,9 +105,19 @@ export class ChColorField {
   @State() private colorVariants: ColorVariants;
 
   /**
-   * Internal state to store the current status message.
+   * Step to navigate on the canvas.
    */
-  @State() private statusMessage: string = "";
+  @Prop() readonly step: number = 1;
+
+  /**
+   * Specifies if the color field is disabled.
+   */
+  @Prop() readonly disabled: boolean = false;
+
+  /**
+   * Specifies if the color field is readonly.
+   */
+  @Prop() readonly readonly: boolean = false;
 
   /**
    * Specifies the literals required in the control.
@@ -81,95 +125,45 @@ export class ChColorField {
   @Prop() readonly translations: ColorFieldTranslations = {
     accessibleName: {
       description: "2D color selector",
-      label: "Color field",
-      statusLabel: "Color information",
-      statusMessage: `${POSITION}: X: ${CURRENT_X}, Y: ${CURRENT_Y}. ${RGB}: ${RGB_VALUE}. ${HSL}: ${HSL_VALUE}. ${HSV}: ${HSV_VALUE}. ${HEX}: ${HEX_VALUE}`
-    },
-    colorFormats: {
-      position: "Position",
-      hex: "HEX",
-      hsl: "HSL",
-      hsv: "HSV",
-      rgb: "RGB"
+      label: "Color field"
     }
   };
 
   /**
-   * Emit the new color value.
+   * Selected color value.
+   */
+  @Prop({ mutable: true }) value: string = "#000";
+
+  @Watch("value")
+  valueChanged(newValue: string, oldValue: string) {
+    if (this.#isUserAction) {
+      this.internals.setFormValue(this.value);
+      this.#isUserAction = false;
+      return;
+    }
+
+    this.#handleExternalValueChange(newValue, oldValue);
+  }
+
+  /**
+   * The `input` event is emitted when a change to the element's value is
+   * committed by the user.
+   *
+   * It contains the new value (in all variants) of the color-field.
    */
   @Event() input: EventEmitter<ColorVariants>;
 
-  #canvasRef: HTMLCanvasElement;
-  #colorPickedVariants: ColorVariants;
-  #currentX: number = 0;
-  #currentY: number = 0;
-  #dragRAF: SyncWithRAF = new SyncWithRAF();
-  #isDragging: boolean = false;
-  #markerRef: HTMLDivElement;
-  #resizeObserver: ResizeObserver;
-  #resizeRAF: SyncWithRAF = new SyncWithRAF();
+  #applyValidColor = (value: string, colorVariants: ColorVariants): void => {
+    this.colorVariants = colorVariants;
 
-  #getStatusMessage = (): string => {
-    const currentColor = this.#colorPickedVariants || this.colorVariants;
-    const { colorFormats } = this.translations;
-
-    if (!currentColor) {
-      return "";
+    const format = getColorFormat(value);
+    if (format) {
+      this.#colorFormat = format;
     }
 
-    return this.translations.accessibleName.statusMessage
-      .replace(POSITION, colorFormats.position)
-      .replace(CURRENT_X, Math.round(this.#currentX).toString())
-      .replace(CURRENT_Y, Math.round(this.#currentY).toString())
-      .replace(RGB, colorFormats.rgb)
-      .replace(RGB_VALUE, currentColor.rgb || "")
-      .replace(HSL, colorFormats.hsl)
-      .replace(HSL_VALUE, currentColor.hsl || "")
-      .replace(HSV, colorFormats.hsv)
-      .replace(
-        HSV_VALUE,
-        currentColor.hsv
-          ? `${currentColor.hsv.h}°, ${currentColor.hsv.s}%, ${currentColor.hsv.v}%`
-          : ""
-      )
-      .replace(HEX, colorFormats.hex)
-      .replace(HEX_VALUE, currentColor.hex || "");
-  };
-
-  // Debounce function for status updates.
-  // Prevents excessive screen reader announcements during continuous interactions
-  // like dragging or rapid keyboard navigation. This improves accessibility by
-  // reducing "noise" for users with assistive technologies.
-  #debounce(fn: () => void, delay: number) {
-    let timeoutId: number;
-    return () => {
-      window.clearTimeout(timeoutId);
-      timeoutId = window.setTimeout(fn, delay);
-    };
-  }
-
-  // Debounced status update for continuous interactions.
-  // Uses a 300ms delay to batch status updates during drag operations
-  // and keyboard navigation, preventing screen readers from being
-  // overwhelmed with rapid announcements.
-  #debouncedUpdateStatus = this.#debounce(() => {
-    this.statusMessage = this.#getStatusMessage();
-  }, 300);
-
-  #updateStatusMessage = (immediate = false): void => {
-    if (immediate) {
-      this.statusMessage = this.#getStatusMessage();
-    } else {
-      this.#debouncedUpdateStatus();
-    }
-  };
-
-  #updateCanvasSize = (): void => {
-    if (this.#canvasRef) {
-      this.#canvasRef.width = this.#canvasRef.clientWidth;
-      this.#canvasRef.height = this.#canvasRef.clientHeight;
-      this.#drawColorField();
-    }
+    this.#updateMarkerPosition();
+    this.#drawColorField();
+    this.internals.setFormValue(value);
   };
 
   #drawColorField = (): void => {
@@ -216,6 +210,156 @@ export class ChColorField {
     }
   };
 
+  #emitColorChange = (): void => {
+    this.#colorPickedVariants = this.#getColorFromCanvas();
+    const newValue = this.#getColorInOriginalFormat(this.#colorPickedVariants);
+
+    this.#isUserAction = true;
+    this.value = newValue;
+
+    this.internals.setFormValue(newValue);
+    this.input.emit(this.#colorPickedVariants);
+  };
+
+  #getColorInOriginalFormat = (colorVariants: ColorVariants): string => {
+    switch (this.#colorFormat) {
+      case "rgb":
+        return colorVariants.rgb;
+      case "rgba":
+        return colorVariants.rgba;
+      case "hsl":
+        return colorVariants.hsl;
+      case "hsla":
+        return colorVariants.hsla;
+      case "hex":
+      default:
+        return colorVariants.hex;
+    }
+  };
+
+  #getColorFromCanvas = (): ColorVariants => {
+    const ctx = this.#canvasRef.getContext("2d", { willReadFrequently: true });
+    if (!ctx) {
+      // Return fallback color variants
+      return fromStringToColorVariants("#000000");
+    }
+
+    // Ensure coordinates are within valid pixel range for getImageData
+    const x = Math.min(this.#currentX, this.#canvasRef.width - 1);
+    const y = Math.min(this.#currentY, this.#canvasRef.height - 1);
+
+    const imageData = ctx.getImageData(x, y, 1, 1);
+    const [r, g, b, a] = imageData.data;
+
+    return fromStringToColorVariants(`rgba(${r}, ${g}, ${b}, ${a / 255})`);
+  };
+
+  #handleCanvasClick = (event: MouseEvent) => {
+    if (!this.#isDragging) {
+      this.#updateCoordinates(event);
+      this.#emitColorChange();
+    }
+  };
+
+  #handleExternalValueChange = (newValue: string, oldValue: string): void => {
+    if (!newValue) {
+      this.#revertToOldValue(oldValue);
+      return;
+    }
+
+    const colorVariants = fromStringToColorVariants(newValue);
+
+    if (!colorVariants) {
+      this.#revertToOldValue(oldValue);
+      return;
+    }
+
+    this.#applyValidColor(newValue, colorVariants);
+  };
+
+  #handleMouseDown = (event: MouseEvent) => {
+    event.preventDefault();
+    this.#dragRAF ??= new SyncWithRAF();
+
+    this.#updateCoordinates(event);
+
+    // Add listeners to document for better drag experience
+    document.addEventListener("mousemove", this.#handleMouseMove, {
+      capture: true
+    });
+    document.addEventListener("mouseup", this.#handleMouseUp, {
+      capture: true,
+      passive: true
+    });
+  };
+
+  #handleMouseMove = (event: MouseEvent) => {
+    this.#isDragging ||= true;
+    if (this.#dragRAF) {
+      this.#dragRAF.perform(
+        () => {
+          this.#updateCoordinates(event);
+        },
+        () => {
+          // Store coordinates immediately for responsiveness with proper clamping
+          const rect = this.#canvasRef.getBoundingClientRect();
+          const canvasHeight = this.#canvasRef.height;
+          const canvasWidth = this.#canvasRef.width;
+
+          this.#currentX = Math.max(
+            0,
+            Math.min(canvasWidth, event.clientX - rect.left)
+          );
+          this.#currentY = Math.max(
+            0,
+            Math.min(canvasHeight, event.clientY - rect.top)
+          );
+        }
+      );
+    }
+  };
+
+  #handleMouseUp = () => {
+    if (this.#isDragging) {
+      this.#isDragging = false;
+      this.#emitColorChange();
+    }
+    // Remove listeners
+    document.removeEventListener("mousemove", this.#handleMouseMove, {
+      capture: true
+    });
+    document.removeEventListener("mouseup", this.#handleMouseUp, {
+      capture: true
+    });
+
+    // Free up memory by setting dragRAF to undefined
+    this.#dragRAF?.cancel();
+    this.#dragRAF = undefined;
+  };
+
+  #handleKeyDown = (event: KeyboardEvent) => {
+    const keyEventHandler = this.#keyEvents[event.code];
+    if (!keyEventHandler) {
+      return;
+    }
+    keyEventHandler(event);
+  };
+
+  #updateCanvasSize = (): void => {
+    if (this.#canvasRef) {
+      this.#canvasRef.width = this.#canvasRef.clientWidth;
+      this.#canvasRef.height = this.#canvasRef.clientHeight;
+      this.#drawColorField();
+    }
+  };
+
+  #revertToOldValue = (oldValue: string): void => {
+    const fallbackValue = oldValue || "#000";
+
+    this.#isUserAction = true;
+    this.value = fallbackValue;
+  };
+
   #updateMarkerPosition = (): void => {
     if (!this.colorVariants || !this.#canvasRef) {
       return;
@@ -247,135 +391,45 @@ export class ChColorField {
 
     this.#colorPickedVariants = this.#getColorFromCanvas();
     this.#drawMarker();
-    // Use debounced update for drag operations
-    this.#updateStatusMessage();
-  };
-
-  #handleCanvasClick = (event: MouseEvent) => {
-    this.#updateCoordinates(event);
-    // Immediate update for single clicks
-    this.#updateStatusMessage(true);
-    this.input.emit(this.#colorPickedVariants);
-  };
-
-  #handleMouseDown = (event: MouseEvent) => {
-    this.#isDragging = true;
-    this.#updateCoordinates(event);
-  };
-
-  #handleMouseMove = (event: MouseEvent) => {
-    if (this.#isDragging) {
-      this.#dragRAF.perform(
-        () => {
-          this.#updateCoordinates(event);
-        },
-        () => {
-          // Store coordinates immediately for responsiveness with proper clamping
-          const rect = this.#canvasRef.getBoundingClientRect();
-          const canvasHeight = this.#canvasRef.height;
-          const canvasWidth = this.#canvasRef.width;
-
-          this.#currentX = Math.max(
-            0,
-            Math.min(canvasWidth, event.clientX - rect.left)
-          );
-          this.#currentY = Math.max(
-            0,
-            Math.min(canvasHeight, event.clientY - rect.top)
-          );
-        }
-      );
-    }
-  };
-
-  #handleMouseUp = () => {
-    if (this.#isDragging) {
-      this.#isDragging = false;
-      this.input.emit(this.#colorPickedVariants);
-    }
-  };
-
-  #handleKeyDown = (event: KeyboardEvent) => {
-    const canvasHeight = this.#canvasRef?.height || 0;
-    const canvasWidth = this.#canvasRef?.width || 0;
-
-    switch (event.key) {
-      case KEY_CODES.ARROW_UP:
-        this.#currentY -= this.step;
-        if (this.#currentY < 0) {
-          this.#currentY = 0;
-        }
-        this.#drawMarker();
-        event.preventDefault();
-        break;
-      case KEY_CODES.ARROW_DOWN:
-        this.#currentY += this.step;
-        if (this.#currentY >= canvasHeight) {
-          this.#currentY = canvasHeight;
-        }
-        this.#drawMarker();
-        event.preventDefault();
-        break;
-      case KEY_CODES.ARROW_LEFT:
-        this.#currentX -= this.step;
-        if (this.#currentX < 0) {
-          this.#currentX = 0;
-        }
-        this.#drawMarker();
-        event.preventDefault();
-        break;
-      case KEY_CODES.ARROW_RIGHT:
-        this.#currentX += this.step;
-        if (this.#currentX >= canvasWidth) {
-          this.#currentX = canvasWidth;
-        }
-        this.#drawMarker();
-        event.preventDefault();
-        break;
-      default:
-        break;
-    }
-    this.#colorPickedVariants = this.#getColorFromCanvas();
-    this.#updateStatusMessage();
-    this.input.emit(this.#colorPickedVariants);
-  };
-
-  #getColorFromCanvas = (): ColorVariants => {
-    const ctx = this.#canvasRef.getContext("2d", { willReadFrequently: true });
-    if (!ctx) {
-      // Return fallback color variants
-      return parseColor("#000000");
-    }
-
-    // Ensure coordinates are within valid pixel range for getImageData
-    const x = Math.min(this.#currentX, this.#canvasRef.width - 1);
-    const y = Math.min(this.#currentY, this.#canvasRef.height - 1);
-
-    const imageData = ctx.getImageData(x, y, 1, 1);
-    const [r, g, b, a] = imageData.data;
-
-    return parseColor(`rgba(${r}, ${g}, ${b}, ${a / 255})`);
   };
 
   componentWillLoad() {
-    // Initialize with default color if no selectedColor is provided
-    this.selectedColor ||= "#000000";
-
     // Initialize colorVariants before component loads to avoid state change on load
-    if (this.selectedColor) {
+    if (this.value) {
       try {
-        this.colorVariants = parseColor(this.selectedColor);
+        this.colorVariants = fromStringToColorVariants(this.value);
+        const format = getColorFormat(this.value);
+
+        if (format) {
+          this.#colorFormat = format;
+        }
       } catch (error) {
-        console.warn(`Invalid selected color: ${this.selectedColor}`, error);
-        this.colorVariants = parseColor("#000000");
+        console.warn(`Invalid value color: ${this.value}`, error);
+        this.colorVariants = fromStringToColorVariants("#000000");
+        this.#colorFormat = "hex";
       }
     }
+  }
+
+  connectedCallback() {
+    // Accessibility
+    this.internals.setFormValue(this.value);
+    const labels = this.internals.labels;
+    const accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
+
+    // Report any accessibility issue
+    analyzeLabelExistence(
+      this.el,
+      "ch-color-field",
+      labels,
+      accessibleNameFromExternalLabel,
+      this.translations.accessibleName.label
+    );
   }
 
   componentDidLoad() {
     this.#updateCanvasSize();
     this.#updateMarkerPosition();
-    this.#updateStatusMessage();
 
     // Initialize ResizeObserver with RAF optimization
     this.#resizeObserver = new ResizeObserver(() => {
@@ -397,40 +451,43 @@ export class ChColorField {
 
     // Cancel pending RAF operations
     this.#resizeRAF.cancel();
-    this.#dragRAF.cancel();
+    this.#dragRAF?.cancel();
+
+    // Clean up event listeners
+    document.removeEventListener("mousemove", this.#handleMouseMove, {
+      capture: true
+    });
+    document.removeEventListener("mouseup", this.#handleMouseUp, {
+      capture: true
+    });
   }
 
   render() {
     const { accessibleName } = this.translations;
+    const isInteractive = !this.disabled && !this.readonly;
+
     return (
-      <Host>
+      <Host
+        aria-label={accessibleName.label}
+        aria-roledescription={accessibleName.description}
+      >
         <canvas
-          aria-label={accessibleName.label}
-          aria-roledescription={accessibleName.description}
-          aria-describedby="color-information"
-          onClick={this.#handleCanvasClick}
-          onMouseDown={this.#handleMouseDown}
-          onMouseMove={this.#handleMouseMove}
-          onMouseUp={this.#handleMouseUp}
-          part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_FIELD}
+          aria-disabled={this.disabled ? "true" : null}
+          aria-readonly={this.readonly ? "true" : null}
+          onClick={isInteractive ? this.#handleCanvasClick : null}
+          onMouseDown={isInteractive ? this.#handleMouseDown : null}
+          onKeyDown={isInteractive ? this.#handleKeyDown : null}
           ref={el => (this.#canvasRef = el as HTMLCanvasElement)}
           role="application"
+          tabindex={isInteractive ? "0" : "-1"}
         ></canvas>
         <div
           class="marker"
-          onKeyDown={this.#handleKeyDown}
           part={COLOR_PICKER_PARTS_DICTIONARY.MARKER}
-          tabindex="0"
           ref={el => {
             this.#markerRef = el as HTMLDivElement;
           }}
         ></div>
-        <ch-status
-          accessibleName={accessibleName.statusLabel}
-          id="color-information"
-        >
-          <div hidden>{this.statusMessage}</div>
-        </ch-status>
       </Host>
     );
   }

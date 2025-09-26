@@ -1,7 +1,11 @@
 import { h } from "@stencil/core";
 
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { showcaseTemplateClassProperty } from "../utils";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChCounterElement> = {};
 
@@ -17,7 +21,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCounterElement> =
             {
               id: "--ch-counter-status__warning-color",
               caption: "--ch-counter-status__warning-color",
-              value: "yelow",
+              value: "#ffff00",
               render: "input",
               type: "string"
             }
@@ -30,7 +34,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCounterElement> =
             {
               id: "--ch-counter-status__error-color",
               caption: "--ch-counter-status__error-color",
-              value: "red",
+              value: "#ff0000",
               render: "input",
               type: "string"
             }
@@ -64,22 +68,34 @@ const render = () => (
   </div>
 );
 
+const showcaseCounterPropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCounterElement>[] =
+  [
+    {
+      name: "class",
+      fixed: true,
+      value: "navigation-list navigation-list-secondary",
+      type: "string"
+    }
+  ];
+
 export const counterShowcaseStory: ShowcaseStory<HTMLChCounterElement> = {
   properties: showcaseRenderProperties,
   markupWithoutUIModel: {
-    react: () => `<label ${showcaseTemplateClassProperty(
+    react: () => `<ch-counter ${renderShowcaseProperties(
+      state,
       "react",
-      "label"
-    )} htmlFor="first-name">
-        First name
-      </label>`,
+      showcaseCounterPropertiesInfo
+    )}>
+      <ch-edit className="input" maxLength="20"></ch-edit>
+    </ch-counter>`,
 
-    stencil: () => `<label ${showcaseTemplateClassProperty(
+    stencil: () => `<ch-counter ${renderShowcaseProperties(
+      state,
       "react",
-      "label"
-    )} htmlFor="first-name">
-        First name
-      </label>`
+      showcaseCounterPropertiesInfo
+    )}>
+      <ch-edit class="input" maxLength="20"></ch-edit>
+    </ch-counter>`
   },
   render: render,
   state: state

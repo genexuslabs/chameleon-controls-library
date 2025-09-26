@@ -2,7 +2,7 @@ import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
 
 @Component({
   tag: "ch-counter",
-  styleUrl: "ch-counter.css",
+  styleUrl: "ch-counter.scss",
   shadow: true
 })
 export class ChCounter {
@@ -47,13 +47,14 @@ export class ChCounter {
         <slot></slot>
 
         {this.maxLength > 0 && (
-          <div class="character-counter">
+          <div part="counter-container">
             <span
               class={{
                 "counter-text": true,
                 "counter-warning": isNearLimit && !isAtLimit,
                 "counter-error": isAtLimit
               }}
+              part="counter-text"
             >{`${this.currentLength} / ${this.maxLength}`}</span>
           </div>
         )}

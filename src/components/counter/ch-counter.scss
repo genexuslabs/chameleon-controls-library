@@ -1,0 +1,22 @@
+:host {
+  /**
+   * @prop --ch-counter-status__warning-color:
+   * Specifies the color when is near to limit
+   * @default currentColor
+   */
+  --ch-counter-status__warning-color: currentColor;
+
+  /**
+   * @prop --ch-counter-status__error-color:
+   * Specifies the color when limit was reached
+   * @default currentColor
+   */
+  --ch-counter-status__error-color: currentColor;
+}
+
+.counter-warning {
+  color: var(--ch-counter-status__warning-color);
+}
+.counter-error {
+  color: var(--ch-counter-status__warning-color);
+}

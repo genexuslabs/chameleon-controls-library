@@ -74,17 +74,7 @@ describe("[ch-counter][functionality]", () => {
   });
 
   it("should update counter when typing in ch-edit", async () => {
-    inputRef.press("H");
-    inputRef.press("e");
-    inputRef.press("l");
-    inputRef.press("l");
-    inputRef.press("o");
-    inputRef.press(" ");
-    inputRef.press("W");
-    inputRef.press("o");
-    inputRef.press("r");
-    inputRef.press("l");
-    inputRef.press("d");
+    await inputRef.type("Hello world");
     await page.waitForChanges();
 
     const counterText = await page.find("ch-counter >>> [part='counter-text']");

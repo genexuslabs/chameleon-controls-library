@@ -47,7 +47,6 @@ describe("[ch-counter][functionality]", () => {
   let page: E2EPage;
   let counterRef: E2EElement;
   let inputRef: E2EElement;
-  let editRef: E2EElement;
 
   beforeEach(async () => {
     page = await newE2EPage({
@@ -61,7 +60,6 @@ describe("[ch-counter][functionality]", () => {
 
     counterRef = await page.find("ch-counter");
     inputRef = await page.find("ch-edit >>> input");
-    editRef = await page.find("ch-edit");
   });
 
   it("should display counter when ch-edit has maxLength", async () => {

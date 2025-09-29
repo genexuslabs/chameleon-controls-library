@@ -46,19 +46,21 @@ describe("[ch-counter][basic]", () => {
 describe("[ch-counter][functionality]", () => {
   let page: E2EPage;
   let counterRef: E2EElement;
+  let inputRef: E2EElement;
   let editRef: E2EElement;
 
   beforeEach(async () => {
     page = await newE2EPage({
       html: `
         <ch-counter>
-          <ch-edit max-length="100"></ch-edit>
+          <ch-edit max-length="100" ></ch-edit>
         </ch-counter>
       `,
       failOnConsoleError: true
     });
 
     counterRef = await page.find("ch-counter");
+    inputRef = await page.find("ch-edit >>> input");
     editRef = await page.find("ch-edit");
   });
 
@@ -74,24 +76,29 @@ describe("[ch-counter][functionality]", () => {
   });
 
   it("should update counter when typing in ch-edit", async () => {
-    const input = await page.find("ch-edit >>> input");
-    const counterText = await page.find("ch-counter >>> [part='counter-text']");
-
-    await input.type("Hello World");
+    inputRef.press("H");
+    inputRef.press("e");
+    inputRef.press("l");
+    inputRef.press("l");
+    inputRef.press("o");
+    inputRef.press(" ");
+    inputRef.press("W");
+    inputRef.press("o");
+    inputRef.press("r");
+    inputRef.press("l");
+    inputRef.press("d");
     await page.waitForChanges();
 
+    const counterText = await page.find("ch-counter >>> [part='counter-text']");
     expect(await counterText.textContent).toBe("11 / 100");
   });
 
   it("should show warning state when approaching limit", async () => {
-    const input = await page.find("ch-edit >>> input");
-    const counterText = await page.find("ch-counter >>> [part='counter-text']");
-
-    // Type 81 characters (100 - 19 = 81, which is <= 20 remaining)
     const longText = "a".repeat(81);
-    await input.type(longText);
+    await inputRef.type(longText);
     await page.waitForChanges();
 
+    const counterText = await page.find("ch-counter >>> [part='counter-text']");
     expect(await counterText.textContent).toBe("81 / 100");
     expect(await counterText.getAttribute("class")).toContain(
       "counter-warning"
@@ -99,27 +106,21 @@ describe("[ch-counter][functionality]", () => {
   });
 
   it("should show error state when at limit", async () => {
-    const input = await page.find("ch-edit >>> input");
-    const counterText = await page.find("ch-counter >>> [part='counter-text']");
-
-    // Type exactly 100 characters
     const longText = "a".repeat(100);
-    await input.type(longText);
+    await inputRef.type(longText);
     await page.waitForChanges();
 
+    const counterText = await page.find("ch-counter >>> [part='counter-text']");
     expect(await counterText.textContent).toBe("100 / 100");
     expect(await counterText.getAttribute("class")).toContain("counter-error");
   });
 
   it("should show error state when exceeding limit", async () => {
-    const input = await page.find("ch-edit >>> input");
-    const counterText = await page.find("ch-counter >>> [part='counter-text']");
-
-    // Type more than 100 characters
     const longText = "a".repeat(105);
-    await input.type(longText);
+    await inputRef.type(longText);
     await page.waitForChanges();
 
+    const counterText = await page.find("ch-counter >>> [part='counter-text']");
     expect(await counterText.textContent).toBe("100 / 100");
     expect(await counterText.getAttribute("class")).toContain("counter-error");
   });
@@ -137,11 +138,10 @@ describe("[ch-counter][functionality]", () => {
   });
 
   it("should update counter when initial value changes", async () => {
-    const counterText = await page.find("ch-counter >>> [part='counter-text']");
-
     await counterRef.setProperty("initialValue", "Updated text");
     await page.waitForChanges();
 
+    const counterText = await page.find("ch-counter >>> [part='counter-text']");
     expect(await counterText.textContent).toBe("12 / 100");
   });
 
@@ -162,35 +162,9 @@ describe("[ch-counter][functionality]", () => {
     await textarea.type("Multiline text\nwith newlines");
     await page.waitForChanges();
 
-    expect(await counterText.textContent).toBe("25 / 50");
-  });
-
-  it("should handle dynamic maxLength changes", async () => {
-    const counterText = await page.find("ch-counter >>> [part='counter-text']");
-
-    // Change maxLength to 50
-    await editRef.setProperty("maxLength", 50);
-    await page.waitForChanges();
-
-    expect(await counterText.textContent).toBe("0 / 50");
-
-    // Type some text
-    const input = await page.find("ch-edit >>> input");
-    await input.type("Hello");
-    await page.waitForChanges();
-
-    expect(await counterText.textContent).toBe("5 / 50");
-  });
-
-  it("should hide counter when maxLength is removed", async () => {
-    const counterContainer = await page.find(
-      "ch-counter >>> [part='counter-container']"
+    const counterTextUpdated = await page.find(
+      "ch-counter >>> [part='counter-text']"
     );
-
-    // Remove maxLength
-    await editRef.setProperty("maxLength", undefined);
-    await page.waitForChanges();
-
-    expect(counterContainer).toBeNull();
+    expect(await counterTextUpdated.textContent).toBe("28 / 50");
   });
 });

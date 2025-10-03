@@ -112,7 +112,7 @@ describe("[ch-color-field][mouse]", () => {
       await canvasElement.click();
       await page.waitForChanges();
 
-      const tabindex = await canvasElement.getAttribute("tabindex");
+      const tabindex = await colorFieldElement.getAttribute("tabindex");
       expect(tabindex).toBe("0");
     });
   });

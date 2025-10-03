@@ -1,22 +1,13 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { ColorFieldTranslations } from "../translations";
 
 const CUSTOM_LABEL = "Custom color selector";
 const CUSTOM_DESCRIPTION = "Custom 2D color picker";
 
-const defaultTranslations: ColorFieldTranslations = {
-  accessibleName: {
-    description: "2D color selector",
-    label: "Color field"
-  }
-};
+const defaultAccessibleName = "Color field";
+const defaultAccessibleRoleDescription = "2D color field";
 
-const customTranslations: ColorFieldTranslations = {
-  accessibleName: {
-    description: CUSTOM_DESCRIPTION,
-    label: CUSTOM_LABEL
-  }
-};
+const customAccessibleName = CUSTOM_LABEL;
+const customAccessibleRoleDescription = CUSTOM_DESCRIPTION;
 
 describe("[ch-color-field][accessibility]", () => {
   describe("ARIA attributes", () => {
@@ -38,16 +29,18 @@ describe("[ch-color-field][accessibility]", () => {
         "aria-roledescription"
       );
 
-      expect(ariaLabel).toBe(defaultTranslations.accessibleName.label);
-      expect(ariaRoleDescription).toBe(
-        defaultTranslations.accessibleName.description
-      );
+      expect(ariaLabel).toBe(defaultAccessibleName);
+      expect(ariaRoleDescription).toBe(defaultAccessibleRoleDescription);
     });
 
     it("should apply custom translations for aria attributes", async () => {
       await colorFieldElementRef.setProperty(
-        "translations",
-        customTranslations
+        "accessibleName",
+        customAccessibleName
+      );
+      await colorFieldElementRef.setProperty(
+        "accessibleRoleDescription",
+        customAccessibleRoleDescription
       );
       await page.waitForChanges();
       colorFieldElementRef = await page.find("ch-color-field");
@@ -61,18 +54,23 @@ describe("[ch-color-field][accessibility]", () => {
       expect(ariaRoleDescription).toBe(CUSTOM_DESCRIPTION);
     });
 
-    it("should have role='application' on canvas", async () => {
-      const canvas = await page.find("ch-color-field >>> canvas");
-      const role = await canvas.getAttribute("role");
+    it("should have role='application' on host", async () => {
+      const role = await colorFieldElementRef.getAttribute("role");
 
       expect(role).toBe("application");
+    });
+
+    it("should have aria-hidden='true' on canvas", async () => {
+      const canvas = await page.find("ch-color-field >>> canvas");
+      const ariaHidden = await canvas.getAttribute("aria-hidden");
+
+      expect(ariaHidden).toBe("true");
     });
   });
 
   describe("Interactive states", () => {
     let page: E2EPage;
     let colorFieldElementRef: E2EElement;
-    let canvasElement: E2EElement;
 
     beforeEach(async () => {
       page = await newE2EPage({
@@ -80,46 +78,53 @@ describe("[ch-color-field][accessibility]", () => {
         failOnConsoleError: true
       });
       colorFieldElementRef = await page.find("ch-color-field");
-      canvasElement = await page.find("ch-color-field >>> canvas");
       await page.waitForChanges();
     });
 
     it("should have tabindex='0' when interactive", async () => {
-      const tabindex = await canvasElement.getAttribute("tabindex");
+      const tabindex = await colorFieldElementRef.getAttribute("tabindex");
       expect(tabindex).toBe("0");
     });
 
-    it("should have tabindex='-1' when disabled", async () => {
+    it("should not have tabindex when disabled", async () => {
       await colorFieldElementRef.setProperty("disabled", true);
       await page.waitForChanges();
-      canvasElement = await page.find("ch-color-field >>> canvas");
+      colorFieldElementRef = await page.find("ch-color-field");
 
-      const tabindex = await canvasElement.getAttribute("tabindex");
-      const ariaDisabled = await canvasElement.getAttribute("aria-disabled");
+      const tabindex = await colorFieldElementRef.getAttribute("tabindex");
+      const ariaDisabled = await colorFieldElementRef.getAttribute(
+        "aria-disabled"
+      );
 
-      expect(tabindex).toBe("-1");
+      expect(tabindex).toBeNull();
       expect(ariaDisabled).toBe("true");
     });
 
-    it("should have tabindex='-1' when readonly", async () => {
+    it("should have tabindex='0' when readonly", async () => {
       await colorFieldElementRef.setProperty("readonly", true);
       await page.waitForChanges();
-      canvasElement = await page.find("ch-color-field >>> canvas");
+      colorFieldElementRef = await page.find("ch-color-field");
 
-      const tabindex = await canvasElement.getAttribute("tabindex");
-      const ariaReadonly = await canvasElement.getAttribute("aria-readonly");
+      const tabindex = await colorFieldElementRef.getAttribute("tabindex");
+      const ariaReadonly = await colorFieldElementRef.getAttribute(
+        "aria-readonly"
+      );
 
-      expect(tabindex).toBe("-1");
+      expect(tabindex).toBe("0");
       expect(ariaReadonly).toBe("true");
     });
 
     it("should not have aria-disabled when enabled", async () => {
-      const ariaDisabled = await canvasElement.getAttribute("aria-disabled");
+      const ariaDisabled = await colorFieldElementRef.getAttribute(
+        "aria-disabled"
+      );
       expect(ariaDisabled).toBeNull();
     });
 
     it("should not have aria-readonly when not readonly", async () => {
-      const ariaReadonly = await canvasElement.getAttribute("aria-readonly");
+      const ariaReadonly = await colorFieldElementRef.getAttribute(
+        "aria-readonly"
+      );
       expect(ariaReadonly).toBeNull();
     });
   });
@@ -127,7 +132,6 @@ describe("[ch-color-field][accessibility]", () => {
   describe("Keyboard navigation", () => {
     let page: E2EPage;
     let colorFieldElementRef: E2EElement;
-    let canvasElement: E2EElement;
 
     beforeEach(async () => {
       page = await newE2EPage({
@@ -135,31 +139,30 @@ describe("[ch-color-field][accessibility]", () => {
         failOnConsoleError: true
       });
       colorFieldElementRef = await page.find("ch-color-field");
-      canvasElement = await page.find("ch-color-field >>> canvas");
       await page.waitForChanges();
     });
 
     it("should be focusable with keyboard", async () => {
-      await canvasElement.focus();
+      await colorFieldElementRef.focus();
       await page.waitForChanges();
 
-      const tabindex = await canvasElement.getAttribute("tabindex");
+      const tabindex = await colorFieldElementRef.getAttribute("tabindex");
       expect(tabindex).toBe("0");
     });
 
     it("should not be focusable when disabled", async () => {
       await colorFieldElementRef.setProperty("disabled", true);
       await page.waitForChanges();
-      canvasElement = await page.find("ch-color-field >>> canvas");
+      colorFieldElementRef = await page.find("ch-color-field >>> canvas");
 
-      const tabindex = await canvasElement.getAttribute("tabindex");
-      expect(tabindex).toBe("-1");
+      const tabindex = await colorFieldElementRef.getAttribute("tabindex");
+      expect(tabindex).toBeNull();
     });
 
     it("should respond to keyboard events", async () => {
       const inputEvent = await colorFieldElementRef.spyOnEvent("input");
 
-      await canvasElement.focus();
+      await colorFieldElementRef.focus();
       await page.waitForChanges();
 
       await page.keyboard.press("ArrowRight");
@@ -258,7 +261,7 @@ describe("[ch-color-field][accessibility]", () => {
       const initialAriaLabel = await colorFieldElementRef.getAttribute(
         "aria-label"
       );
-      const initialRole = await canvasElement.getAttribute("role");
+      const initialRole = await colorFieldElementRef.getAttribute("role");
 
       await canvasElement.click();
       await page.waitForChanges();
@@ -266,7 +269,7 @@ describe("[ch-color-field][accessibility]", () => {
       const finalAriaLabel = await colorFieldElementRef.getAttribute(
         "aria-label"
       );
-      const finalRole = await canvasElement.getAttribute("role");
+      const finalRole = await colorFieldElementRef.getAttribute("role");
 
       expect(finalAriaLabel).toBe(initialAriaLabel);
       expect(finalRole).toBe(initialRole);

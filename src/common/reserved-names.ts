@@ -275,7 +275,11 @@ export const ACTION_MENU_EXPORT_PARTS = joinParts(ACTION_MENU_PARTS_DICTIONARY);
 // - - - - - - - - - - - - - - - - - - - -
 export const COLOR_PICKER_PARTS_DICTIONARY = {
   COLOR_FIELD: "color-field",
-  MARKER: "marker"
+  MARKER: "marker",
+
+  // - - - - - - - - States - - - - - - - -
+  DISABLED: "disabled", // MARKER
+  READONLY: "readonly" // MARKER
 } as const;
 
 // - - - - - - - - - - - - - - - - - - - -

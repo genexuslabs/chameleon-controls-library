@@ -3,7 +3,6 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 describe("[ch-color-field][keyboard]", () => {
   let page: E2EPage;
   let colorFieldElement: E2EElement;
-  let canvasElement: E2EElement;
   let markerElement: E2EElement;
 
   beforeEach(async () => {
@@ -12,7 +11,6 @@ describe("[ch-color-field][keyboard]", () => {
       failOnConsoleError: true
     });
     colorFieldElement = await page.find("ch-color-field");
-    canvasElement = await page.find("ch-color-field >>> canvas");
     markerElement = await page.find("ch-color-field >>> .marker");
     await page.waitForChanges();
   });
@@ -23,7 +21,7 @@ describe("[ch-color-field][keyboard]", () => {
       const initialStyles = await markerElement.getComputedStyle();
       const initialLeft = initialStyles.left;
 
-      await canvasElement.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("ArrowRight");
       await page.waitForChanges();
 
@@ -37,7 +35,7 @@ describe("[ch-color-field][keyboard]", () => {
     it("should move marker left with ArrowLeft key", async () => {
       const inputEvent = await colorFieldElement.spyOnEvent("input");
 
-      await canvasElement.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("ArrowRight");
       await page.keyboard.press("ArrowRight");
       await page.waitForChanges();
@@ -62,7 +60,7 @@ describe("[ch-color-field][keyboard]", () => {
       const initialStyles = await markerElement.getComputedStyle();
       const initialTop = initialStyles.top;
 
-      await canvasElement.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("ArrowDown");
       await page.waitForChanges();
 
@@ -76,7 +74,7 @@ describe("[ch-color-field][keyboard]", () => {
     it("should move marker up with ArrowUp key", async () => {
       const inputEvent = await colorFieldElement.spyOnEvent("input");
 
-      await canvasElement.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("ArrowDown");
       await page.keyboard.press("ArrowDown");
       await page.waitForChanges();
@@ -105,7 +103,7 @@ describe("[ch-color-field][keyboard]", () => {
       const initialStyles = await markerElement.getComputedStyle();
       const initialLeft = initialStyles.left;
 
-      await canvasElement.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("ArrowRight");
       await page.waitForChanges();
 
@@ -121,7 +119,7 @@ describe("[ch-color-field][keyboard]", () => {
       const initialStyles = await markerElement.getComputedStyle();
       const initialLeft = initialStyles.left;
 
-      await canvasElement.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("ArrowRight");
       await page.waitForChanges();
 
@@ -136,7 +134,7 @@ describe("[ch-color-field][keyboard]", () => {
 
   describe("boundary constraints", () => {
     let smallPage: E2EPage;
-    let smallCanvas: E2EElement;
+    let smallColorField: E2EElement;
     let smallMarker: E2EElement;
 
     beforeEach(async () => {
@@ -148,13 +146,13 @@ describe("[ch-color-field][keyboard]", () => {
         `,
         failOnConsoleError: true
       });
-      smallCanvas = await smallPage.find("ch-color-field >>> canvas");
+      smallColorField = await smallPage.find("ch-color-field");
       smallMarker = await smallPage.find("ch-color-field >>> .marker");
       await smallPage.waitForChanges();
     });
 
     it("should not move beyond left boundary", async () => {
-      await smallCanvas.focus();
+      await smallColorField.focus();
 
       // Move to far left
       for (let i = 0; i < 10; i++) {
@@ -177,7 +175,7 @@ describe("[ch-color-field][keyboard]", () => {
     });
 
     it("should not move beyond top boundary", async () => {
-      await smallCanvas.focus();
+      await smallColorField.focus();
 
       // Move to top
       for (let i = 0; i < 10; i++) {
@@ -200,7 +198,7 @@ describe("[ch-color-field][keyboard]", () => {
     });
 
     it("should not move beyond right boundary", async () => {
-      await smallCanvas.focus();
+      await smallColorField.focus();
 
       // Move to far right
       for (let i = 0; i < 10; i++) {
@@ -222,7 +220,7 @@ describe("[ch-color-field][keyboard]", () => {
     });
 
     it("should not move beyond bottom boundary", async () => {
-      await smallCanvas.focus();
+      await smallColorField.focus();
 
       // Move to bottom
       for (let i = 0; i < 10; i++) {
@@ -251,7 +249,7 @@ describe("[ch-color-field][keyboard]", () => {
       const initialLeft = initialStyles.left;
       const initialTop = initialStyles.top;
 
-      await canvasElement.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("Enter");
       await page.keyboard.press("Space");
       await page.keyboard.press("a");

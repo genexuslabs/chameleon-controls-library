@@ -1,3 +1,7 @@
+@import "../../../common/_base";
+
+@include box-sizing();
+
 :host {
   position: relative;
   contain: size;
@@ -16,7 +20,6 @@ canvas {
   block-size: var(--ch-color-field__marker-size);
   border-radius: 50%;
   border: 1px solid currentColor;
-  box-sizing: border-box;
   pointer-events: none;
   // We don't need to support RTL in the marker positioning, because we don't
   // intend to change the gradient direction of the color-field (the canvas) when

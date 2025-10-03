@@ -26,9 +26,8 @@ describe("[ch-color-field][disabled]", () => {
 
     it("should not respond to keyboard navigation", async () => {
       const inputEvent = await colorFieldElement.spyOnEvent("input");
-      const canvas = await page.find("ch-color-field >>> canvas");
 
-      await canvas.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("ArrowRight");
       await page.waitForChanges();
 
@@ -36,17 +35,17 @@ describe("[ch-color-field][disabled]", () => {
     });
 
     it("should have aria-disabled attribute", async () => {
-      const canvas = await page.find("ch-color-field >>> canvas");
-      const ariaDisabled = await canvas.getAttribute("aria-disabled");
+      const ariaDisabled = await colorFieldElement.getAttribute(
+        "aria-disabled"
+      );
 
       expect(ariaDisabled).toBe("true");
     });
 
-    it("should have tabindex -1", async () => {
-      const canvas = await page.find("ch-color-field >>> canvas");
-      const tabindex = await canvas.getAttribute("tabindex");
+    it("should have not tabindex", async () => {
+      const tabindex = await colorFieldElement.getAttribute("tabindex");
 
-      expect(tabindex).toBe("-1");
+      expect(tabindex).toBeNull();
     });
   });
 
@@ -72,9 +71,8 @@ describe("[ch-color-field][disabled]", () => {
 
     it("should not respond to keyboard navigation", async () => {
       const inputEvent = await colorFieldElement.spyOnEvent("input");
-      const canvas = await page.find("ch-color-field >>> canvas");
 
-      await canvas.focus();
+      await colorFieldElement.focus();
       await page.keyboard.press("ArrowDown");
       await page.waitForChanges();
 
@@ -82,17 +80,17 @@ describe("[ch-color-field][disabled]", () => {
     });
 
     it("should have aria-readonly attribute", async () => {
-      const canvas = await page.find("ch-color-field >>> canvas");
-      const ariaReadonly = await canvas.getAttribute("aria-readonly");
+      const ariaReadonly = await colorFieldElement.getAttribute(
+        "aria-readonly"
+      );
 
       expect(ariaReadonly).toBe("true");
     });
 
-    it("should have tabindex -1", async () => {
-      const canvas = await page.find("ch-color-field >>> canvas");
-      const tabindex = await canvas.getAttribute("tabindex");
+    it("should have tabindex", async () => {
+      const tabindex = await colorFieldElement.getAttribute("tabindex");
 
-      expect(tabindex).toBe("-1");
+      expect(tabindex).toBe("0");
     });
   });
 

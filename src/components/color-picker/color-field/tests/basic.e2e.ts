@@ -4,18 +4,12 @@ import {
   testDefaultProperties
 } from "../../../../testing/utils.e2e";
 
-const defaultTranslations = {
-  accessibleName: {
-    description: "2D color selector",
-    label: "Color field"
-  }
-} satisfies HTMLChColorFieldElement["translations"];
-
 testDefaultProperties("ch-color-field", {
   disabled: false,
   readonly: false,
   step: 1,
-  translations: defaultTranslations,
+  accessibleName: "Color field",
+  accessibleRoleDescription: "2D color field",
   value: "#000"
 });
 

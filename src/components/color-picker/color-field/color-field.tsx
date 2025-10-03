@@ -20,9 +20,9 @@ import {
 } from "../../../common/reserved-names";
 import { SyncWithRAF } from "../../../common/sync-with-frames";
 import { ColorFormat, ColorVariants } from "../../../common/types";
+import { tokenMap } from "../../../common/utils";
 import { getColorFormat } from "../utils/color-format";
 import { fromStringToColorVariants } from "../utils/color-variants";
-import { ColorFieldTranslations } from "./translations";
 
 type KeyEvents =
   | typeof KEY_CODES.ARROW_UP
@@ -30,30 +30,38 @@ type KeyEvents =
   | typeof KEY_CODES.ARROW_DOWN
   | typeof KEY_CODES.ARROW_LEFT;
 
+const DEFAULT_COLOR_FORMAT = "hex" satisfies ColorFormat;
+const FALLBACK_COLOR = "#000000" satisfies ColorVariants["hex"];
+
 @Component({
   formAssociated: true,
-  shadow: { delegatesFocus: true },
+  shadow: true,
   styleUrl: "color-field.scss",
   tag: "ch-color-field"
 })
 export class ChColorField {
-  #canvasRef: HTMLCanvasElement;
   #colorPickedVariants: ColorVariants;
-  #colorFormat: ColorFormat = "hex";
+  #colorFormat: ColorFormat = DEFAULT_COLOR_FORMAT;
   #currentX: number = 0;
   #currentY: number = 0;
-  #dragRAF: SyncWithRAF;
   #isDragging: boolean = false;
-  #markerRef: HTMLDivElement;
-  #resizeObserver: ResizeObserver;
-  #resizeRAF: SyncWithRAF = new SyncWithRAF();
   #isUserAction: boolean = false;
+
+  // Observers
+  #dragRAF: SyncWithRAF | undefined;
+  #resizeObserver: ResizeObserver | undefined;
+  #resizeRAF: SyncWithRAF = new SyncWithRAF();
+
+  // DOM refs
+  #canvasRef: HTMLCanvasElement;
+  #markerRef: HTMLDivElement;
 
   #keyEvents: {
     [key in KeyEvents]: (event: KeyboardEvent) => void;
   } = {
     [KEY_CODES.ARROW_UP]: ev => {
       this.#currentY -= this.step;
+      // The marker is crossing the top edge, don't let it go over the edge
       if (this.#currentY < 0) {
         this.#currentY = 0;
       }
@@ -65,6 +73,7 @@ export class ChColorField {
     [KEY_CODES.ARROW_DOWN]: ev => {
       this.#currentY += this.step;
       const canvasHeight = this.#canvasRef?.height || 0;
+      // The marker is crossing the bottom edge, don't let it go over the edge
       if (this.#currentY >= canvasHeight) {
         this.#currentY = canvasHeight;
       }
@@ -75,6 +84,7 @@ export class ChColorField {
 
     [KEY_CODES.ARROW_LEFT]: ev => {
       this.#currentX -= this.step;
+      // The marker is crossing the left edge, don't let it go over the edge
       if (this.#currentX < 0) {
         this.#currentX = 0;
       }
@@ -86,6 +96,7 @@ export class ChColorField {
     [KEY_CODES.ARROW_RIGHT]: ev => {
       this.#currentX += this.step;
       const canvasWidth = this.#canvasRef?.width || 0;
+      // The marker is crossing the right edge, don't let it go over the edge
       if (this.#currentX >= canvasWidth) {
         this.#currentX = canvasWidth;
       }
@@ -105,39 +116,62 @@ export class ChColorField {
   @State() private colorVariants: ColorVariants;
 
   /**
-   * Step to navigate on the canvas.
+   * Step size in pixels for keyboard navigation on the canvas.
+   * Determines how many pixels the marker moves when using arrow keys.
+   * Default = 1.
    */
   @Prop() readonly step: number = 1;
 
   /**
-   * Specifies if the color field is disabled.
+   * This attribute lets you specify if the element is disabled.
+   * If disabled, it will not fire any user interaction related event
+   * (for example, click event).
    */
   @Prop() readonly disabled: boolean = false;
 
   /**
-   * Specifies if the color field is readonly.
+   * This attribute indicates that the user cannot modify the value of the control.
+   * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
+   * attribute for `input` elements.
    */
   @Prop() readonly readonly: boolean = false;
 
   /**
-   * Specifies the literals required in the control.
+   * Specifies a short string, typically 1 to 3 words, that authors associate
+   * with an element to provide users of assistive technologies with a label
+   * for the element.
    */
-  @Prop() readonly translations: ColorFieldTranslations = {
-    accessibleName: {
-      description: "2D color selector",
-      label: "Color field"
-    }
-  };
+  @Prop() readonly accessibleName: string = "Color field";
 
   /**
-   * Selected color value.
+   * Specifies a readable description for the component’s role, primarily
+   * used by assistive technologies to give users more context about the
+   * component's purpose or behavior.
    */
-  @Prop({ mutable: true }) value: string = "#000";
+  @Prop() readonly accessibleRoleDescription: string = "2D color field";
+
+  /**
+   * The current value of the `ch-color-field` component, representing a color
+   * in one of the following formats:
+   *   - HEX
+   *   - HSL
+   *   - RGB
+   * This value determines the selected color and can be updated by the user.
+   *
+   * @example // HEX format
+   * value = "#FF00AA"
+   * @example // HSL format
+   * value = "hsl(120, 100%, 25%)"
+   * @example // RGB format
+   * value = "rgb(255, 125, 50)"
+   */
+  @Prop({ mutable: true }) value: string = FALLBACK_COLOR;
 
   @Watch("value")
   valueChanged(newValue: string, oldValue: string) {
+    this.internals.setFormValue(this.value);
+
     if (this.#isUserAction) {
-      this.internals.setFormValue(this.value);
       this.#isUserAction = false;
       return;
     }
@@ -163,7 +197,6 @@ export class ChColorField {
 
     this.#updateMarkerPosition();
     this.#drawColorField();
-    this.internals.setFormValue(value);
   };
 
   #drawColorField = (): void => {
@@ -221,27 +254,15 @@ export class ChColorField {
     this.input.emit(this.#colorPickedVariants);
   };
 
-  #getColorInOriginalFormat = (colorVariants: ColorVariants): string => {
-    switch (this.#colorFormat) {
-      case "rgb":
-        return colorVariants.rgb;
-      case "rgba":
-        return colorVariants.rgba;
-      case "hsl":
-        return colorVariants.hsl;
-      case "hsla":
-        return colorVariants.hsla;
-      case "hex":
-      default:
-        return colorVariants.hex;
-    }
-  };
+  #getColorInOriginalFormat = (
+    colorVariants: Omit<ColorVariants, "hsv">
+  ): string => colorVariants[this.#colorFormat ?? DEFAULT_COLOR_FORMAT];
 
   #getColorFromCanvas = (): ColorVariants => {
     const ctx = this.#canvasRef.getContext("2d", { willReadFrequently: true });
     if (!ctx) {
       // Return fallback color variants
-      return fromStringToColorVariants("#000000");
+      return fromStringToColorVariants(FALLBACK_COLOR);
     }
 
     // Ensure coordinates are within valid pixel range for getImageData
@@ -295,28 +316,26 @@ export class ChColorField {
 
   #handleMouseMove = (event: MouseEvent) => {
     this.#isDragging ||= true;
-    if (this.#dragRAF) {
-      this.#dragRAF.perform(
-        () => {
-          this.#updateCoordinates(event);
-        },
-        () => {
-          // Store coordinates immediately for responsiveness with proper clamping
-          const rect = this.#canvasRef.getBoundingClientRect();
-          const canvasHeight = this.#canvasRef.height;
-          const canvasWidth = this.#canvasRef.width;
+    this.#dragRAF.perform(
+      () => {
+        this.#updateCoordinates(event);
+      },
+      () => {
+        // Store coordinates immediately for responsiveness with proper clamping
+        const rect = this.#canvasRef.getBoundingClientRect();
+        const canvasHeight = this.#canvasRef.height;
+        const canvasWidth = this.#canvasRef.width;
 
-          this.#currentX = Math.max(
-            0,
-            Math.min(canvasWidth, event.clientX - rect.left)
-          );
-          this.#currentY = Math.max(
-            0,
-            Math.min(canvasHeight, event.clientY - rect.top)
-          );
-        }
-      );
-    }
+        this.#currentX = Math.max(
+          0,
+          Math.min(canvasWidth, event.clientX - rect.left)
+        );
+        this.#currentY = Math.max(
+          0,
+          Math.min(canvasHeight, event.clientY - rect.top)
+        );
+      }
+    );
   };
 
   #handleMouseUp = () => {
@@ -354,7 +373,7 @@ export class ChColorField {
   };
 
   #revertToOldValue = (oldValue: string): void => {
-    const fallbackValue = oldValue || "#000";
+    const fallbackValue = oldValue || FALLBACK_COLOR;
 
     this.#isUserAction = true;
     this.value = fallbackValue;
@@ -405,8 +424,8 @@ export class ChColorField {
         }
       } catch (error) {
         console.warn(`Invalid value color: ${this.value}`, error);
-        this.colorVariants = fromStringToColorVariants("#000000");
-        this.#colorFormat = "hex";
+        this.colorVariants = fromStringToColorVariants(FALLBACK_COLOR);
+        this.#colorFormat = DEFAULT_COLOR_FORMAT;
       }
     }
   }
@@ -423,7 +442,7 @@ export class ChColorField {
       "ch-color-field",
       labels,
       accessibleNameFromExternalLabel,
-      this.translations.accessibleName.label
+      this.accessibleName
     );
   }
 
@@ -444,14 +463,19 @@ export class ChColorField {
   }
 
   disconnectedCallback() {
-    // Disconnect the observer when the component is unloaded
+    // Disconnect the observer when the component is unloaded and clean up the reference
     if (this.#resizeObserver) {
       this.#resizeObserver.disconnect();
+      this.#resizeObserver = undefined;
     }
 
     // Cancel pending RAF operations
     this.#resizeRAF.cancel();
     this.#dragRAF?.cancel();
+
+    // Clean up RAF references
+    this.#resizeRAF = undefined;
+    this.#dragRAF = undefined;
 
     // Clean up event listeners
     document.removeEventListener("mousemove", this.#handleMouseMove, {
@@ -463,27 +487,31 @@ export class ChColorField {
   }
 
   render() {
-    const { accessibleName } = this.translations;
     const isInteractive = !this.disabled && !this.readonly;
 
     return (
       <Host
-        aria-label={accessibleName.label}
-        aria-roledescription={accessibleName.description}
+        role="application"
+        aria-disabled={this.disabled ? "true" : null}
+        aria-label={this.accessibleName}
+        aria-readonly={this.readonly ? "true" : null}
+        aria-roledescription={this.accessibleRoleDescription}
+        onKeyDown={isInteractive ? this.#handleKeyDown : null}
+        tabindex={!this.disabled ? "0" : null}
       >
         <canvas
-          aria-disabled={this.disabled ? "true" : null}
-          aria-readonly={this.readonly ? "true" : null}
+          aria-hidden="true"
           onClick={isInteractive ? this.#handleCanvasClick : null}
           onMouseDown={isInteractive ? this.#handleMouseDown : null}
-          onKeyDown={isInteractive ? this.#handleKeyDown : null}
           ref={el => (this.#canvasRef = el as HTMLCanvasElement)}
-          role="application"
-          tabindex={isInteractive ? "0" : "-1"}
         ></canvas>
         <div
           class="marker"
-          part={COLOR_PICKER_PARTS_DICTIONARY.MARKER}
+          part={tokenMap({
+            [COLOR_PICKER_PARTS_DICTIONARY.MARKER]: true,
+            [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+            [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+          })}
           ref={el => {
             this.#markerRef = el as HTMLDivElement;
           }}

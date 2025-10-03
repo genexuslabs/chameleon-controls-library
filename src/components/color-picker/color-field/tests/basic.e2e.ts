@@ -10,7 +10,7 @@ testDefaultProperties("ch-color-field", {
   step: 1,
   accessibleName: "Color field",
   accessibleRoleDescription: "2D color field",
-  value: "#000"
+  value: "#000000"
 });
 
 testDefaultCssProperties("ch-color-field", {

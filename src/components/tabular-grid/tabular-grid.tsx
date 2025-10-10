@@ -209,6 +209,9 @@ export class ChTabularGrid {
    * Similar to the border options in spreadsheet applications, this property
    * controls whether lines appear around and/or between rows and columns.
    *
+   * **Note:** At the moment, this property does not affect the rendering of
+   * the grid. It only reflects the property value as an HTML attribute.
+   *
    * - "all": Lines around and between all rows and columns.
    * - "all-inside": Lines only between rows and columns.
    * - "column": Lines around and between columns.

@@ -8,7 +8,7 @@ import { checkboxShowcaseStory } from "./checkbox/checkbox.showcase";
 import { codeDiffEditorShowcaseStory } from "./code-diff-editor/code-diff-editor.showcase";
 import { codeEditorShowcaseStory } from "./code-editor/code-editor.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
-import { colorFieldShowcaseStory } from "./color-picker/color-field.showcase";
+import { colorFieldShowcaseStory } from "./color-field/color-field.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
 import { dialogShowcaseStory } from "./dialog/dialog.showcase";
 import { editShowcaseStory } from "./edit/edit.showcase";

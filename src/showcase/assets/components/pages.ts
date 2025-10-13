@@ -76,6 +76,11 @@ export const showcasePages: NavigationListModel = [
             metadata: DEVELOPER_PREVIEW
           },
           {
+            link: { url: "#color-field" },
+            caption: "Color-field",
+            metadata: EXPERIMENTAL
+          },
+          {
             link: { url: "#combo-box" },
             caption: "Combo Box",
             metadata: EXPERIMENTAL
@@ -256,11 +261,6 @@ export const showcasePages: NavigationListModel = [
           // { link: { url: "#alert" }, caption: "Alert", metadata: EXPERIMENTAL },
 
           { link: { url: "#chat" }, caption: "Chat", metadata: EXPERIMENTAL },
-          {
-            link: { url: "#color-field" },
-            caption: "Color-field",
-            metadata: EXPERIMENTAL
-          },
           {
             link: { url: "#progress" },
             caption: "Progress",

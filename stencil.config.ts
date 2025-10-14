@@ -61,7 +61,7 @@ export const config: Config = {
             options(options) {
               return {
                 ...options,
-                external: [/^lit\/.*/]
+                external: [/^lit/, /^@lit/, /^@open-wc/]
               };
             }
           }

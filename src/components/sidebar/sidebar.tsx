@@ -3,22 +3,22 @@ import {
   Element,
   Event,
   EventEmitter,
-  Prop,
-  Host,
   h,
-  Watch,
-  State
+  Host,
+  Prop,
+  State,
+  Watch
 } from "@stencil/core";
-import {
-  addObservable,
-  notifySubscribers,
-  removeObservable
-} from "./expanded-change-obervables";
 import {
   isRTL,
   subscribeToRTLChanges,
   unsubscribeToRTLChanges
 } from "../../common/utils";
+import {
+  addObservable,
+  notifySubscribers,
+  removeObservable
+} from "./expanded-change-obervables";
 
 let autoId = 0;
 
@@ -74,6 +74,15 @@ export class ChSidebar {
   }
 
   /**
+   * Specifies the position of the expand button relative to the content of the
+   * sidebar.
+   *  - `"before"`: The expand button is positioned before the content of the sidebar.
+   *  - `"after"`: The expand button is positioned after the content of the sidebar.
+   */
+  // TODO: Revisit this kind of properties to check if we use before/after or start/end
+  @Prop() readonly expandButtonPosition: "before" | "after" = "after";
+
+  /**
    * `true` to display a expandable button at the bottom of the control.
    */
   @Prop() readonly showExpandButton: boolean = false;
@@ -95,6 +104,33 @@ export class ChSidebar {
 
   #updatePositionWithRTL = (rtl: boolean) => {
     this.rtl = rtl;
+  };
+
+  #renderExpandButton = () => {
+    const accessibleName = this.expanded
+      ? this.expandButtonCollapseAccessibleName
+      : this.expandButtonExpandAccessibleName;
+
+    const caption = this.expanded
+      ? this.expandButtonCollapseCaption
+      : this.expandButtonExpandCaption;
+
+    return (
+      <button
+        aria-label={accessibleName !== caption ? accessibleName : undefined}
+        class={{
+          "expand-button": true,
+          "expand-button--expanded-ltr": this.expanded && !this.rtl,
+          "expand-button--collapsed": !this.expanded,
+          "expand-button--collapsed-rtl": !this.expanded && this.rtl
+        }}
+        part={`expand-button ${this.expanded ? "expanded" : "collapsed"}`}
+        type="button"
+        onClick={this.#handleExpandedChange}
+      >
+        {caption}
+      </button>
+    );
   };
 
   connectedCallback() {
@@ -124,36 +160,19 @@ export class ChSidebar {
   }
 
   render() {
-    const accessibleName = this.expanded
-      ? this.expandButtonCollapseAccessibleName
-      : this.expandButtonExpandAccessibleName;
-
-    const caption = this.expanded
-      ? this.expandButtonCollapseCaption
-      : this.expandButtonExpandCaption;
-
     return (
       <Host
         class={this.expanded ? "ch-sidebar--expanded" : "ch-sidebar--collapsed"}
       >
+        {this.showExpandButton &&
+          this.expandButtonPosition === "before" &&
+          this.#renderExpandButton()}
+
         <slot />
 
-        {this.showExpandButton && (
-          <button
-            aria-label={accessibleName !== caption ? accessibleName : undefined}
-            class={{
-              "expand-button": true,
-              "expand-button--expanded-ltr": this.expanded && !this.rtl,
-              "expand-button--collapsed": !this.expanded,
-              "expand-button--collapsed-rtl": !this.expanded && this.rtl
-            }}
-            part={`expand-button ${this.expanded ? "expanded" : "collapsed"}`}
-            type="button"
-            onClick={this.#handleExpandedChange}
-          >
-            {caption}
-          </button>
-        )}
+        {this.showExpandButton &&
+          this.expandButtonPosition === "after" &&
+          this.#renderExpandButton()}
       </Host>
     );
   }

@@ -38,6 +38,10 @@
   inline-size: var(--ch-sidebar-inline-size--collapsed);
 }
 
+:host([expand-button-position="before"]) {
+  grid-template-rows: max-content 1fr;
+}
+
 .expand-button {
   --ch-sidebar-expand-button-rtl: 1;
 

@@ -744,13 +744,15 @@ export class ChPopover {
     // TODO: Add e2e tests for this
     try {
       if (maxInlineSizeCustomVarValue.endsWith("px")) {
-        actualPopoverWidth = Number(
-          maxInlineSizeCustomVarValue.replace("px", "").trim()
+        actualPopoverWidth = Math.min(
+          actualPopoverWidth,
+          Number(maxInlineSizeCustomVarValue.replace("px", "").trim())
         );
       }
       if (maxBlockSizeCustomVarValue.endsWith("px")) {
-        actualPopoverHeight = Number(
-          maxBlockSizeCustomVarValue.replace("px", "").trim()
+        actualPopoverHeight = Math.min(
+          actualPopoverHeight,
+          Number(maxBlockSizeCustomVarValue.replace("px", "").trim())
         );
       }
     } catch {

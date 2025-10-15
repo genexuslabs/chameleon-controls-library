@@ -135,7 +135,7 @@ const getAlignmentValue = (
 };
 
 export const setResponsiveAlignment = (
-  documentRect: DOMRect,
+  documentRect: { width: number; height: number },
   actionRect: DOMRect,
   actionInlineStart: number,
   popoverWidth: number,

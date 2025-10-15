@@ -24,7 +24,8 @@ import {
   ChPopoverAlign,
   ChPopoverResizeElement,
   ChPopoverSizeMatch,
-  PopoverActionElement
+  PopoverActionElement,
+  PopoverClosedInfo
 } from "./types";
 import { fromPxToNumber, setResponsiveAlignment } from "./utils";
 
@@ -507,8 +508,26 @@ export class ChPopover {
    *
    * This event can be prevented (`preventDefault()`), interrupting the
    * `ch-popover`'s closing.
+   *
+   * The `reason` property of the event provides more information about
+   * the cause of the closing:
+   *  - `"click-outside"`: The popover is being closed because the user clicked
+   *    outside the popover when using `closeOnClickOutside === true` and
+   *    `mode === "manual"`.
+   *
+   *  - `"escape-key"`: The popover is being closed because the user pressed the
+   *    "Escape" key when using `closeOnClickOutside === true` and
+   *    `mode === "manual"`.
+   *
+   *  - `"popover-no-longer-visible"`: The popover is being closed because it
+   *    is no longer visible.
+   *
+   *  - `"toggle"`: The popover is being closed by the native toggle behavior
+   *    of popover. It can be produced by the user clicking the `actionElement`,
+   *    pressing the "Enter" or "Space" keys on the `actionElement`, pressing
+   *    the "Escape" key or other. Used when `mode === "auto"`.
    */
-  @Event() popoverClosed: EventEmitter;
+  @Event() popoverClosed: EventEmitter<PopoverClosedInfo>;
 
   #showPopover = () => {
     this.el.showPopover();
@@ -521,8 +540,11 @@ export class ChPopover {
   };
 
   // TODO: Add unit tests for this feature
-  #closePopoverIfNotDefaultPrevented = (event?: Event) => {
-    const eventInfo = this.popoverClosed.emit();
+  #closePopoverIfNotDefaultPrevented = (
+    reason: PopoverClosedInfo,
+    event?: Event
+  ) => {
+    const eventInfo = this.popoverClosed.emit(reason);
 
     if (eventInfo.defaultPrevented) {
       event?.preventDefault();
@@ -542,13 +564,16 @@ export class ChPopover {
       // determine if the popover should be closed
       !composedPath.includes(this.actionElement)
     ) {
-      this.#closePopoverIfNotDefaultPrevented(event);
+      this.#closePopoverIfNotDefaultPrevented(
+        { reason: "click-outside" },
+        event
+      );
     }
   };
 
   #handlePopoverCloseOnEscapeKey = (event: KeyboardEvent) => {
     if (event.code === KEY_CODES.ESCAPE) {
-      this.#closePopoverIfNotDefaultPrevented(event);
+      this.#closePopoverIfNotDefaultPrevented({ reason: "escape-key" }, event);
     }
   };
 
@@ -825,7 +850,9 @@ export class ChPopover {
       // kinds of situations
       // Close the popover if it won't be visible.
       if (newMaxInlineSize <= PRECISION_TO_AVOID_FLOATING_POINT_ERRORS) {
-        return this.#closePopoverIfNotDefaultPrevented();
+        return this.#closePopoverIfNotDefaultPrevented({
+          reason: "popover-no-longer-visible"
+        });
       }
 
       setProperty(this.el, POPOVER_FORCED_MAX_INLINE_SIZE, newMaxInlineSize);
@@ -848,7 +875,9 @@ export class ChPopover {
       // kinds of situations
       // Close the popover if it won't be visible.
       if (newMaxBlockSize <= PRECISION_TO_AVOID_FLOATING_POINT_ERRORS) {
-        return this.#closePopoverIfNotDefaultPrevented();
+        return this.#closePopoverIfNotDefaultPrevented({
+          reason: "popover-no-longer-visible"
+        });
       }
 
       setProperty(this.el, POPOVER_FORCED_MAX_BLOCK_SIZE, newMaxBlockSize);
@@ -932,7 +961,7 @@ export class ChPopover {
     if (willBeOpen) {
       eventInfo = this.popoverOpened.emit();
     } else {
-      eventInfo = this.popoverClosed.emit();
+      eventInfo = this.popoverClosed.emit({ reason: "toggle" });
     }
 
     // TODO: Add unit tests for this feature
@@ -1314,6 +1343,7 @@ export class ChPopover {
             ? this.#handleMouseDown
             : null
         }
+        // TODO: Add beforetoggle listener to properly support preventing the natural toggle
         // TODO: Should we add this event with popover="manual"???
         // TODO: Check if the actionElement is an instance of Button to add this handler
         onToggle={this.#handlePopoverToggle}

@@ -521,11 +521,11 @@ export class ChPopover {
   };
 
   // TODO: Add unit tests for this feature
-  #closePopoverIfNotDefaultPrevented = (event: Event) => {
+  #closePopoverIfNotDefaultPrevented = (event?: Event) => {
     const eventInfo = this.popoverClosed.emit();
 
     if (eventInfo.defaultPrevented) {
-      event.preventDefault();
+      event?.preventDefault();
       return;
     }
 
@@ -819,6 +819,15 @@ export class ChPopover {
     // Inline size
     if (inlineOverflow < 0) {
       const newMaxInlineSize = popoverWidth + inlineOverflow;
+
+      // TODO: Add e2e tests for this
+      // TODO: We must implement a property to configure the behavior of these
+      // kinds of situations
+      // Close the popover if it won't be visible.
+      if (newMaxInlineSize <= PRECISION_TO_AVOID_FLOATING_POINT_ERRORS) {
+        return this.#closePopoverIfNotDefaultPrevented();
+      }
+
       setProperty(this.el, POPOVER_FORCED_MAX_INLINE_SIZE, newMaxInlineSize);
     }
     // Check if the forced inline size is no longer needed
@@ -833,6 +842,15 @@ export class ChPopover {
     // Block size
     if (blockOverflow < 0) {
       const newMaxBlockSize = popoverHeight + blockOverflow;
+
+      // TODO: Add e2e tests for this
+      // TODO: We must implement a property to configure the behavior of these
+      // kinds of situations
+      // Close the popover if it won't be visible.
+      if (newMaxBlockSize <= PRECISION_TO_AVOID_FLOATING_POINT_ERRORS) {
+        return this.#closePopoverIfNotDefaultPrevented();
+      }
+
       setProperty(this.el, POPOVER_FORCED_MAX_BLOCK_SIZE, newMaxBlockSize);
     }
     // Check if the forced block size is no longer needed

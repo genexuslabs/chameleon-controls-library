@@ -961,6 +961,17 @@ export class ChPopover {
     if (willBeOpen) {
       eventInfo = this.popoverOpened.emit();
     } else {
+      // If the popover is already closed, don't emit the event again
+      // This can happen when:
+      //  - The "Escape" key is pressed in mode === "manual"
+      //  - The user clicks outside the popover in mode === "manual"
+      //  - The show property is changed to false externally
+      //  - The user scrolls the window and the popover is no longer visible
+      // TODO: Add e2e tests for this
+      if (!this.show) {
+        return;
+      }
+
       eventInfo = this.popoverClosed.emit({ reason: "toggle" });
     }
 

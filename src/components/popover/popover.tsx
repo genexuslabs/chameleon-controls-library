@@ -665,6 +665,13 @@ export class ChPopover {
         passive: true
       })
     );
+
+    // We must observe the actual viewport size, because observing the
+    // document.body does not work when the browser's window is resized
+    // and the body has scrollbars.
+    // Also, passive mode is not supported in the "resize" event, because this
+    // event can not be prevented
+    window.addEventListener("resize", this.#updatePositionRAF);
   };
 
   #updatePositionRAF = () => {
@@ -893,6 +900,7 @@ export class ChPopover {
         capture: true
       })
     );
+    window.removeEventListener("resize", this.#updatePositionRAF);
 
     // Delete references for root nodes to any avoid memory leak
     this.#rootNodes = undefined;

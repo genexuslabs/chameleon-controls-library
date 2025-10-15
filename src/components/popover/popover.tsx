@@ -19,6 +19,7 @@ import {
   subscribeToRTLChanges,
   unsubscribeToRTLChanges
 } from "../../common/utils";
+import { getDocumentSizes } from "./get-document-sizes";
 import {
   ChPopoverAlign,
   ChPopoverResizeElement,
@@ -672,7 +673,7 @@ export class ChPopover {
 
   #updatePosition = () => {
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
-    const documentRect = document.documentElement.getBoundingClientRect();
+    const documentRect = getDocumentSizes();
     const actionRect = this.actionElement.getBoundingClientRect();
     const popoverScrollSizes = {
       width: this.el.scrollWidth,
@@ -701,7 +702,7 @@ export class ChPopover {
   };
 
   #getActionInlineStartPosition = (
-    documentRect: DOMRect,
+    documentRect: { width: number; height: number },
     actionRect: DOMRect
   ) =>
     this.#isRTLDirection
@@ -709,7 +710,7 @@ export class ChPopover {
       : actionRect.left;
 
   #setResponsiveAlignment = (
-    documentRect: DOMRect,
+    documentRect: { width: number; height: number },
     actionRect: DOMRect,
     actionInlineStart: number,
     popoverScrollSizes: { width: number; height: number },
@@ -1215,7 +1216,7 @@ export class ChPopover {
     }
 
     if (this.#adjustAlignment) {
-      const documentRect = document.documentElement.getBoundingClientRect();
+      const documentRect = getDocumentSizes();
       const actionRect = this.actionElement.getBoundingClientRect();
       const popoverScrollSizes = {
         width: this.el.scrollWidth,

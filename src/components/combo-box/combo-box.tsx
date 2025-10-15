@@ -29,7 +29,7 @@ import { GxImageMultiStateStart } from "../../common/types";
 import { isMobileDevice, tokenMap } from "../../common/utils";
 import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
 import { focusComposedPath } from "../common/helpers";
-import { ChPopoverAlign } from "../popover/types";
+import { ChPopoverAlign, PopoverClosedInfo } from "../popover/types";
 import { filterSubModel } from "./helpers";
 import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
 import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
@@ -679,7 +679,7 @@ export class ChComboBoxRender
     }
   };
 
-  #handlePopoverClose = (event: ChPopoverCustomEvent<any>) => {
+  #handlePopoverClose = (event: ChPopoverCustomEvent<PopoverClosedInfo>) => {
     event.stopPropagation();
 
     // The focus must return to the Host when the popover is closed using the

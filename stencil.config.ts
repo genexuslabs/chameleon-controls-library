@@ -10,37 +10,42 @@ const isShowcaseBuild =
   process.env.npm_lifecycle_event?.startsWith("build.showcase") ||
   process.env.npm_lifecycle_event?.startsWith("start");
 
-const outputTargets: OutputTarget[] = [
-  {
-    type: "dist",
-    esmLoaderPath: "../loader",
-    copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
-  },
-  // dist-custom-elements output target is required for the React output target.
-  // It generates the dist/components folder
-  { type: "dist-custom-elements" },
-  {
-    type: "www",
-    serviceWorker: null,
-    copy: [
-      { src: "common/monaco/output/assets", dest: "assets" },
-      { src: "showcase" }
-    ]
-  },
-  reactOutputTarget({
-    componentCorePackage: "@genexus/chameleon-controls-library",
-    proxiesFile: "dist/react/chameleon-components/index.ts",
+const showcaseOutput: OutputTarget = {
+  type: "www",
+  serviceWorker: null,
+  copy: [
+    { src: "common/monaco/output/assets", dest: "assets" },
+    { src: "showcase" }
+  ]
+};
 
-    // All Web Components will automatically be registered with the Custom
-    // Elements Registry. This can only be used when lazy loading Web
-    // Components and will not work when includeImportCustomElements is true.
-    includeDefineCustomElements: true,
-    loaderDir: "loader",
+// Only build the showcase in dev mode or when executing the build.showcase
+// script, so we don't delete the dist folder when executing the dev server
+const outputTargets: OutputTarget[] = isShowcaseBuild
+  ? [showcaseOutput]
+  : [
+      {
+        type: "dist",
+        esmLoaderPath: "../loader",
+        copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
+      },
+      // dist-custom-elements output target is required for the React output target.
+      // It generates the dist/components folder
+      { type: "dist-custom-elements" },
+      reactOutputTarget({
+        componentCorePackage: "@genexus/chameleon-controls-library",
+        proxiesFile: "dist/react/chameleon-components/index.ts",
 
-    excludeComponents: reactOutputExcludedComponents,
-    customElementsDir: "dist/components"
-  })
-];
+        // All Web Components will automatically be registered with the Custom
+        // Elements Registry. This can only be used when lazy loading Web
+        // Components and will not work when includeImportCustomElements is true.
+        includeDefineCustomElements: true,
+        loaderDir: "loader",
+
+        excludeComponents: reactOutputExcludedComponents,
+        customElementsDir: "dist/components"
+      })
+    ];
 
 export const config: Config = {
   namespace: "chameleon",

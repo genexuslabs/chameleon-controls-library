@@ -32,6 +32,7 @@ const outputTargets: OutputTarget[] = isShowcaseBuild
       // dist-custom-elements output target is required for the React output target.
       // It generates the dist/components folder
       { type: "dist-custom-elements" },
+      showcaseOutput,
       reactOutputTarget({
         componentCorePackage: "@genexus/chameleon-controls-library",
         proxiesFile: "dist/react/chameleon-components/index.ts",

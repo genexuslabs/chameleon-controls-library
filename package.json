@@ -17,8 +17,9 @@
     "loader/"
   ],
   "scripts": {
-    "build": "npm run build.monaco && npm run build.light && npm run build.extras",
+    "build": "npm run build.monaco && npm run build.light && npm run build.extras && npm run build.showcase",
     "build.light": "stencil build --docs --react",
+    "build.showcase": "stencil build",
     "build.extras": "tsc --project tsconfig-collection.json && node copy-files.mjs",
     "build.monaco": "vite build",
     "generate": "stencil generate",

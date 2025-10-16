@@ -6,6 +6,9 @@ import { sass } from "@stencil/sass";
 import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
 
 const isTesting = process.env.npm_lifecycle_script?.startsWith("stencil test");
+const isShowcaseBuild =
+  process.env.npm_lifecycle_event?.startsWith("build.showcase") ||
+  process.env.npm_lifecycle_event?.startsWith("start");
 
 const outputTargets: OutputTarget[] = [
   {
@@ -53,19 +56,21 @@ export const config: Config = {
   // Don't apply external dependencies when running test, because Stencil won't
   // be able resolve the imports
   rollupPlugins: {
-    before: isTesting
-      ? []
-      : [
-          {
-            name: "external-deps",
-            options(options) {
-              return {
-                ...options,
-                external: [/^lit/, /^@lit/, /^@open-wc/]
-              };
+    before:
+      // Don't mark lit and open-wc dependencies as external when testing or building the showcase
+      isTesting || isShowcaseBuild
+        ? []
+        : [
+            {
+              name: "external-deps",
+              options(options) {
+                return {
+                  ...options,
+                  external: [/^lit/, /^@lit/, /^@open-wc/]
+                };
+              }
             }
-          }
-        ]
+          ]
   },
   testing: {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],

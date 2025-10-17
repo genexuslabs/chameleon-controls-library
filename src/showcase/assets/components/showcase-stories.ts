@@ -9,6 +9,7 @@ import { codeDiffEditorShowcaseStory } from "./code-diff-editor/code-diff-editor
 import { codeEditorShowcaseStory } from "./code-editor/code-editor.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
+import { counterShowcaseStory } from "./counter/counter.showcase";
 import { dialogShowcaseStory } from "./dialog/dialog.showcase";
 import { editShowcaseStory } from "./edit/edit.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
@@ -48,6 +49,7 @@ export const showcaseStories = {
   chat: chatShowcaseStory,
   code: codeShowcaseStory,
   "combo-box": comboBoxShowcaseStory,
+  counter: counterShowcaseStory,
   dialog: dialogShowcaseStory,
   edit: editShowcaseStory,
   image: imageShowcaseStory,

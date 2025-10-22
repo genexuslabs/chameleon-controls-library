@@ -6,38 +6,47 @@ import { sass } from "@stencil/sass";
 import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
 
 const isTesting = process.env.npm_lifecycle_script?.startsWith("stencil test");
+const isShowcaseBuild =
+  process.env.npm_lifecycle_event?.startsWith("build.showcase") ||
+  process.env.npm_lifecycle_event?.startsWith("start");
 
-const outputTargets: OutputTarget[] = [
-  {
-    type: "dist",
-    esmLoaderPath: "../loader",
-    copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
-  },
-  // dist-custom-elements output target is required for the React output target.
-  // It generates the dist/components folder
-  { type: "dist-custom-elements" },
-  {
-    type: "www",
-    serviceWorker: null,
-    copy: [
-      { src: "common/monaco/output/assets", dest: "assets" },
-      { src: "showcase" }
-    ]
-  },
-  reactOutputTarget({
-    componentCorePackage: "@genexus/chameleon-controls-library",
-    proxiesFile: "dist/react/chameleon-components/index.ts",
+const showcaseOutput: OutputTarget = {
+  type: "www",
+  serviceWorker: null,
+  copy: [
+    { src: "common/monaco/output/assets", dest: "assets" },
+    { src: "showcase" }
+  ]
+};
 
-    // All Web Components will automatically be registered with the Custom
-    // Elements Registry. This can only be used when lazy loading Web
-    // Components and will not work when includeImportCustomElements is true.
-    includeDefineCustomElements: true,
-    loaderDir: "loader",
+// Only build the showcase in dev mode or when executing the build.showcase
+// script, so we don't delete the dist folder when executing the dev server
+const outputTargets: OutputTarget[] = isShowcaseBuild
+  ? [showcaseOutput]
+  : [
+      {
+        type: "dist",
+        esmLoaderPath: "../loader",
+        copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
+      },
+      // dist-custom-elements output target is required for the React output target.
+      // It generates the dist/components folder
+      { type: "dist-custom-elements" },
+      showcaseOutput,
+      reactOutputTarget({
+        componentCorePackage: "@genexus/chameleon-controls-library",
+        proxiesFile: "dist/react/chameleon-components/index.ts",
 
-    excludeComponents: reactOutputExcludedComponents,
-    customElementsDir: "dist/components"
-  })
-];
+        // All Web Components will automatically be registered with the Custom
+        // Elements Registry. This can only be used when lazy loading Web
+        // Components and will not work when includeImportCustomElements is true.
+        includeDefineCustomElements: true,
+        loaderDir: "loader",
+
+        excludeComponents: reactOutputExcludedComponents,
+        customElementsDir: "dist/components"
+      })
+    ];
 
 export const config: Config = {
   namespace: "chameleon",
@@ -53,19 +62,21 @@ export const config: Config = {
   // Don't apply external dependencies when running test, because Stencil won't
   // be able resolve the imports
   rollupPlugins: {
-    before: isTesting
-      ? []
-      : [
-          {
-            name: "external-deps",
-            options(options) {
-              return {
-                ...options,
-                external: [/^lit\/.*/]
-              };
+    before:
+      // Don't mark lit and open-wc dependencies as external when testing or building the showcase
+      isTesting || isShowcaseBuild
+        ? []
+        : [
+            {
+              name: "external-deps",
+              options(options) {
+                return {
+                  ...options,
+                  external: [/^lit/, /^@lit/, /^@open-wc/]
+                };
+              }
             }
-          }
-        ]
+          ]
   },
   testing: {
     browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],

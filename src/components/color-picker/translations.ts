@@ -55,18 +55,18 @@ export type ColorPickerTranslations = {
     /** Label for HSV color format option */
     hsvColorFormat: string;
     /** Label for red color channel input (RGB format) */
-    redChannelInput: string;
+    redChannelInputLabel: string;
     /** Label for green color channel input (RGB format) */
-    greenChannelInput: string;
+    greenChannelInputLabel: string;
     /** Label for blue color channel input (RGB format) */
-    blueChannelInput: string;
+    blueChannelInputLabel: string;
     /** Label for hue channel input (HSL/HSV formats) */
-    hueChannelInput: string;
+    hueChannelInputLabel: string;
     /** Label for saturation channel input (HSL/HSV formats) */
-    saturationChannelInput: string;
+    saturationChannelInputLabel: string;
     /** Label for lightness channel input (HSL format) */
-    lightnessChannelInput: string;
+    lightnessChannelInputLabel: string;
     /** Label for value/brightness channel input (HSV format) */
-    valueChannelInput: string;
+    valueChannelInputLabel: string;
   };
 };

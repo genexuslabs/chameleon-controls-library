@@ -19,6 +19,7 @@ import {
   COMBO_BOX_EXPORT_PARTS
 } from "../../common/reserved-names";
 import { ColorFormat, ColorVariants } from "../../common/types";
+import { tokenMap } from "../../common/utils";
 import { ChColorFieldCustomEvent } from "../../components";
 import {
   DEFAULT_COLOR_FORMAT,
@@ -192,13 +193,13 @@ export class ChColorPicker {
       rgbColorFormat: "RGB",
       hslColorFormat: "HSL",
       hsvColorFormat: "HSV",
-      redChannelInput: "R",
-      greenChannelInput: "G",
-      blueChannelInput: "B",
-      hueChannelInput: "H",
-      saturationChannelInput: "S",
-      lightnessChannelInput: "L",
-      valueChannelInput: "V"
+      redChannelInputLabel: "R",
+      greenChannelInputLabel: "G",
+      blueChannelInputLabel: "B",
+      hueChannelInputLabel: "H",
+      saturationChannelInputLabel: "S",
+      lightnessChannelInputLabel: "L",
+      valueChannelInputLabel: "V"
     }
   };
 
@@ -768,7 +769,11 @@ export class ChColorPicker {
                   SELECTED_COLOR,
                   color
                 )}
-                part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_BUTTON}
+                part={tokenMap({
+                  [COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_BUTTON]: true,
+                  [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+                  [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+                })}
                 type="button"
               ></button>
             </li>
@@ -821,7 +826,7 @@ export class ChColorPicker {
   };
 
   // Renders the hex input group
-  #renderHexInputs = (): Element => {
+  #renderHexInput = (): Element => {
     if (this.selectedColorFormat !== "hex") {
       return null;
     }
@@ -852,7 +857,11 @@ export class ChColorPicker {
           onInput={this.#handleHexInputChange}
           pattern="^#[0-9A-Fa-f]{6}$"
           maxLength={7}
-          part={COLOR_PICKER_PARTS_DICTIONARY.HEX_INPUT}
+          part={tokenMap({
+            [COLOR_PICKER_PARTS_DICTIONARY.HEX_INPUT]: true,
+            [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+            [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+          })}
         />
       </div>
     );
@@ -879,12 +888,12 @@ export class ChColorPicker {
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.RGB_R_GROUP}
         >
-          {text.redChannelInput && (
+          {text.redChannelInputLabel && (
             <label
               htmlFor="rgb-red"
               part={COLOR_PICKER_PARTS_DICTIONARY.RGB_R_LABEL}
             >
-              {text.redChannelInput}
+              {text.redChannelInputLabel}
             </label>
           )}
           <input
@@ -900,19 +909,23 @@ export class ChColorPicker {
             min={0}
             max={255}
             value={rgbMatch[1]}
-            part={COLOR_PICKER_PARTS_DICTIONARY.RGB_R_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.RGB_R_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
         </div>
         <div
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.RGB_G_GROUP}
         >
-          {text.greenChannelInput && (
+          {text.greenChannelInputLabel && (
             <label
               htmlFor="rgb-green"
               part={COLOR_PICKER_PARTS_DICTIONARY.RGB_G_LABEL}
             >
-              {text.greenChannelInput}
+              {text.greenChannelInputLabel}
             </label>
           )}
           <input
@@ -928,19 +941,23 @@ export class ChColorPicker {
             min={0}
             max={255}
             value={rgbMatch[2]}
-            part={COLOR_PICKER_PARTS_DICTIONARY.RGB_G_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.RGB_G_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
         </div>
         <div
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.RGB_B_GROUP}
         >
-          {text.blueChannelInput && (
+          {text.blueChannelInputLabel && (
             <label
               htmlFor="rgb-blue"
               part={COLOR_PICKER_PARTS_DICTIONARY.RGB_B_LABEL}
             >
-              {text.blueChannelInput}
+              {text.blueChannelInputLabel}
             </label>
           )}
           <input
@@ -956,7 +973,11 @@ export class ChColorPicker {
             min={0}
             max={255}
             value={rgbMatch[3]}
-            part={COLOR_PICKER_PARTS_DICTIONARY.RGB_B_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.RGB_B_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
         </div>
       </div>
@@ -984,12 +1005,12 @@ export class ChColorPicker {
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.HSL_H_GROUP}
         >
-          {text.hueChannelInput && (
+          {text.hueChannelInputLabel && (
             <label
               htmlFor="hsl-h"
               part={COLOR_PICKER_PARTS_DICTIONARY.HSL_H_LABEL}
             >
-              {text.hueChannelInput}
+              {text.hueChannelInputLabel}
             </label>
           )}
           <input
@@ -1005,19 +1026,23 @@ export class ChColorPicker {
             min={0}
             max={360}
             value={Math.round(parseFloat(hslMatch[1]))}
-            part={COLOR_PICKER_PARTS_DICTIONARY.HSL_H_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.HSL_H_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
         </div>
         <div
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.HSL_S_GROUP}
         >
-          {text.saturationChannelInput && (
+          {text.saturationChannelInputLabel && (
             <label
               htmlFor="hsl-s"
               part={COLOR_PICKER_PARTS_DICTIONARY.HSL_S_LABEL}
             >
-              {text.saturationChannelInput}
+              {text.saturationChannelInputLabel}
             </label>
           )}
           <input
@@ -1033,7 +1058,11 @@ export class ChColorPicker {
             min={0}
             max={100}
             value={Math.round(parseFloat(hslMatch[2]))}
-            part={COLOR_PICKER_PARTS_DICTIONARY.HSL_S_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.HSL_S_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
           <span part={COLOR_PICKER_PARTS_DICTIONARY.HSL_S_SUFFIX}>%</span>
         </div>
@@ -1041,12 +1070,12 @@ export class ChColorPicker {
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.HSL_L_GROUP}
         >
-          {text.lightnessChannelInput && (
+          {text.lightnessChannelInputLabel && (
             <label
               htmlFor="hsl-l"
               part={COLOR_PICKER_PARTS_DICTIONARY.HSL_L_LABEL}
             >
-              {text.lightnessChannelInput}
+              {text.lightnessChannelInputLabel}
             </label>
           )}
           <input
@@ -1062,7 +1091,11 @@ export class ChColorPicker {
             min={0}
             max={100}
             value={Math.round(parseFloat(hslMatch[3]))}
-            part={COLOR_PICKER_PARTS_DICTIONARY.HSL_L_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.HSL_L_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
           <span part={COLOR_PICKER_PARTS_DICTIONARY.HSL_L_SUFFIX}>%</span>
         </div>
@@ -1090,12 +1123,12 @@ export class ChColorPicker {
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.HSV_H_GROUP}
         >
-          {text.hueChannelInput && (
+          {text.hueChannelInputLabel && (
             <label
               htmlFor="hsv-h"
               part={COLOR_PICKER_PARTS_DICTIONARY.HSV_H_LABEL}
             >
-              {text.hueChannelInput}
+              {text.hueChannelInputLabel}
             </label>
           )}
           <input
@@ -1111,19 +1144,23 @@ export class ChColorPicker {
             min={0}
             max={360}
             value={Math.round(hsvH)}
-            part={COLOR_PICKER_PARTS_DICTIONARY.HSV_H_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.HSV_H_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
         </div>
         <div
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.HSV_S_GROUP}
         >
-          {text.saturationChannelInput && (
+          {text.saturationChannelInputLabel && (
             <label
               htmlFor="hsv-s"
               part={COLOR_PICKER_PARTS_DICTIONARY.HSV_S_LABEL}
             >
-              {text.saturationChannelInput}
+              {text.saturationChannelInputLabel}
             </label>
           )}
           <input
@@ -1139,7 +1176,11 @@ export class ChColorPicker {
             min={0}
             max={100}
             value={Math.round(hsvS)}
-            part={COLOR_PICKER_PARTS_DICTIONARY.HSV_S_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.HSV_S_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
           <span part={COLOR_PICKER_PARTS_DICTIONARY.HSV_S_SUFFIX}>%</span>
         </div>
@@ -1147,12 +1188,12 @@ export class ChColorPicker {
           class="input-group"
           part={COLOR_PICKER_PARTS_DICTIONARY.HSV_V_GROUP}
         >
-          {text.valueChannelInput && (
+          {text.valueChannelInputLabel && (
             <label
               htmlFor="hsv-v"
               part={COLOR_PICKER_PARTS_DICTIONARY.HSV_V_LABEL}
             >
-              {text.valueChannelInput}
+              {text.valueChannelInputLabel}
             </label>
           )}
           <input
@@ -1168,7 +1209,11 @@ export class ChColorPicker {
             min={0}
             max={100}
             value={Math.round(hsvV)}
-            part={COLOR_PICKER_PARTS_DICTIONARY.HSV_V_INPUT}
+            part={tokenMap({
+              [COLOR_PICKER_PARTS_DICTIONARY.HSV_V_INPUT]: true,
+              [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+            })}
           />
           <span part={COLOR_PICKER_PARTS_DICTIONARY.HSV_V_SUFFIX}>%</span>
         </div>
@@ -1207,7 +1252,11 @@ export class ChColorPicker {
           min={0}
           max={100}
           value={Math.round(alphaValue)}
-          part={COLOR_PICKER_PARTS_DICTIONARY.ALPHA_INPUT}
+          part={tokenMap({
+            [COLOR_PICKER_PARTS_DICTIONARY.ALPHA_INPUT]: true,
+            [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+            [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+          })}
         />
         <span part={COLOR_PICKER_PARTS_DICTIONARY.ALPHA_SUFFIX}>%</span>
       </div>
@@ -1226,7 +1275,7 @@ export class ChColorPicker {
           class="color-inputs"
           part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_INPUTS}
         >
-          {this.#renderHexInputs()}
+          {this.#renderHexInput()}
           {this.#renderRgbInputs()}
           {this.#renderHslInputs()}
           {this.#renderHsvInputs()}

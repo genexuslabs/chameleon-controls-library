@@ -23,6 +23,7 @@ import { ColorFormat, ColorVariants } from "../../../common/types";
 import { tokenMap } from "../../../common/utils";
 import { getColorFormat } from "../utils/color-format";
 import { fromStringToColorVariants } from "../utils/color-variants";
+import { fromHsvStringToHsvColor } from "../utils/parsers/hsv";
 
 type KeyEvents =
   | typeof KEY_CODES.ARROW_UP
@@ -207,8 +208,11 @@ export class ChColorField {
 
     const { width, height } = this.#canvasRef;
 
-    // Get the hue from the current color (HSV model)
-    const hsvValues = this.colorVariants.hsv;
+    // Parse HSV string to get individual values
+    const hsvValues = fromHsvStringToHsvColor(this.colorVariants.hsv);
+    if (!hsvValues) {
+      return;
+    }
 
     // Clear the canvas
     ctx.clearRect(0, 0, width, height);
@@ -254,9 +258,8 @@ export class ChColorField {
     this.input.emit(this.#colorPickedVariants);
   };
 
-  #getColorInOriginalFormat = (
-    colorVariants: Omit<ColorVariants, "hsv">
-  ): string => colorVariants[this.#colorFormat ?? DEFAULT_COLOR_FORMAT];
+  #getColorInOriginalFormat = (colorVariants: ColorVariants): string =>
+    colorVariants[this.#colorFormat ?? DEFAULT_COLOR_FORMAT];
 
   #getColorFromCanvas = (): ColorVariants => {
     const ctx = this.#canvasRef.getContext("2d", { willReadFrequently: true });
@@ -273,13 +276,6 @@ export class ChColorField {
     const [r, g, b, a] = imageData.data;
 
     return fromStringToColorVariants(`rgba(${r}, ${g}, ${b}, ${a / 255})`);
-  };
-
-  #handleCanvasClick = (event: MouseEvent) => {
-    if (!this.#isDragging) {
-      this.#updateCoordinates(event);
-      this.#emitColorChange();
-    }
   };
 
   #handleExternalValueChange = (newValue: string, oldValue: string): void => {
@@ -339,10 +335,10 @@ export class ChColorField {
   };
 
   #handleMouseUp = () => {
-    if (this.#isDragging) {
-      this.#isDragging = false;
-      this.#emitColorChange();
-    }
+    this.#isDragging &&= false;
+
+    this.#emitColorChange();
+
     // Remove listeners
     document.removeEventListener("mousemove", this.#handleMouseMove, {
       capture: true
@@ -384,8 +380,12 @@ export class ChColorField {
       return;
     }
 
-    // Use HSV for marker positioning
-    const hsvValues = this.colorVariants.hsv;
+    // Parse HSV string to get individual values
+    const hsvValues = fromHsvStringToHsvColor(this.colorVariants.hsv);
+    if (!hsvValues) {
+      return;
+    }
+
     // X represents saturation (0-100%)
     this.#currentX = (hsvValues.s / 100) * this.#canvasRef.width;
     // Y represents value (0% value = bottom, 100% value = top)
@@ -501,7 +501,6 @@ export class ChColorField {
       >
         <canvas
           aria-hidden="true"
-          onClick={isInteractive ? this.#handleCanvasClick : null}
           onMouseDown={isInteractive ? this.#handleMouseDown : null}
           ref={el => (this.#canvasRef = el as HTMLCanvasElement)}
         ></canvas>

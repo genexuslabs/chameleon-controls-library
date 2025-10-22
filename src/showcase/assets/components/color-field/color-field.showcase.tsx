@@ -16,7 +16,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChColorFieldElement
         {
           id: "step",
           caption: "Step",
-          value: 1, // Default value
+          value: 1,
           type: "number"
         },
         {
@@ -24,6 +24,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChColorFieldElement
           caption: "Selected Color: (rgb, hex, hsl)",
           value: "#3070ca",
           type: "string"
+        },
+        {
+          id: "disabled",
+          caption: "Disabled",
+          value: false,
+          type: "boolean"
+        },
+        {
+          id: "readonly",
+          caption: "Readonly",
+          value: false,
+          type: "boolean"
         }
       ]
     }
@@ -32,11 +44,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChColorFieldElement
 const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChColorFieldElement>[] =
   [
     { name: "step", defaultValue: 1, type: "number" },
-    { name: "value", defaultValue: "#3070ca", type: "string" }
+    { name: "value", defaultValue: "#3070ca", type: "string" },
+    { name: "Disabled", defaultValue: false, type: "boolean" },
+    { name: "Readonly", defaultValue: false, type: "boolean" }
   ];
 
 const render = () => (
-  <ch-color-field value={state.value} step={state.step}></ch-color-field>
+  <ch-color-field
+    value={state.value}
+    step={state.step}
+    disabled={state.disabled}
+    readonly={state.readonly}
+  ></ch-color-field>
 );
 
 export const colorFieldShowcaseStory: ShowcaseStory<HTMLChColorFieldElement> = {

@@ -1,0 +1,71 @@
+@import "../../common/base";
+@import "../common/reset.scss";
+
+@include input-reset();
+@include button-reset(); // Should be placed before the box-sizing reset
+@include box-sizing();
+
+:host {
+  display: grid;
+
+  /**
+   * @prop --ch-color-picker-palette-columns:
+   * Specifies the number of columns in the color palette grid.
+   * @default 10
+   */
+  --ch-color-picker-palette-columns: 10;
+
+  /**
+   * @prop --ch-color-picker-palette-gap:
+   * Specifies the spacing between color swatches in the palette.
+   * @default 4px
+   */
+  --ch-color-picker-palette-gap: 4px;
+
+  /**
+  * @prop --ch-color-picker-preview-inline-size:
+  * Specifies the width of the current color preview box.
+  * @default 20px
+  */
+  --ch-color-picker-preview-inline-size: 20px;
+
+  /**
+  * @prop --ch-color-picker-preview-block-size:
+  * Specifies the height of the current color preview box.
+  * @default 20px
+  */
+  --ch-color-picker-preview-block-size: 20px;
+}
+
+li,
+ol {
+  @include reset-list;
+}
+
+.color-field-container {
+  display: contents;
+}
+
+.color-preview-container {
+  display: flex;
+}
+
+.color-preview {
+  inline-size: var(--ch-color-picker-preview-inline-size);
+  block-size: var(--ch-color-picker-preview-block-size);
+}
+
+.format-selector-header {
+  display: flex;
+}
+
+.color-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ch-color-picker-palette-columns), 1fr);
+  gap: var(--ch-color-picker-palette-gap);
+}
+
+.color-palette-button {
+  inline-size: 100%;
+  block-size: 100%;
+}

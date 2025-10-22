@@ -5,6 +5,7 @@ import { fromRgbToHsl } from "./converters/rgb-to-hsl";
 import { fromRgbToHsv } from "./converters/rgb-to-hsv";
 import { fromHexStringToRgbaColor } from "./parsers/hex";
 import { fromHslStringToRgbaColor } from "./parsers/hsl";
+import { fromHsvStringToRgbColor } from "./parsers/hsv";
 import { fromRgbaStringToRgbaColor } from "./parsers/rgba";
 
 /**
@@ -21,7 +22,7 @@ export const fromStringToColorVariants = (
     return null;
   }
 
-  let rgbaColor: { r: number; g: number; b: number; a: number } | null = null;
+  let rgbaColor: { r: number; g: number; b: number; a?: number } | null = null;
 
   switch (format) {
     case "hex":
@@ -30,6 +31,9 @@ export const fromStringToColorVariants = (
     case "hsl":
     case "hsla":
       rgbaColor = fromHslStringToRgbaColor(color);
+      break;
+    case "hsv":
+      rgbaColor = fromHsvStringToRgbColor(color);
       break;
     case "rgb":
     case "rgba":
@@ -42,7 +46,6 @@ export const fromStringToColorVariants = (
   }
 
   const { r, g, b, a } = rgbaColor;
-  const hsv = fromRgbToHsv([r, g, b]);
 
   return {
     rgb: `rgb(${r}, ${g}, ${b})`,
@@ -50,6 +53,6 @@ export const fromStringToColorVariants = (
     hex: fromRgbToHex([r, g, b, a]),
     hsl: fromRgbToHsl([r, g, b]),
     hsla: fromRgbToHsl([r, g, b, a]),
-    hsv
+    hsv: fromRgbToHsv([r, g, b])
   };
 };

@@ -19,10 +19,23 @@
 
 ## Events
 
-| Event   | Description                                                                                                                                                  | Type                                                                                                                             |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| `input` | The `input` event is emitted when a change to the element's value is committed by the user.  It contains the new value (in all variants) of the color-field. | `CustomEvent<{ rgb: string; rgba: string; hsl: string; hsla: string; hex: string; hsv: { h: number; s: number; v: number; }; }>` |
+| Event   | Description                                                                                                                                                  | Type                                                                                               |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| `input` | The `input` event is emitted when a change to the element's value is committed by the user.  It contains the new value (in all variants) of the color-field. | `CustomEvent<{ rgb: string; rgba: string; hsl: string; hsla: string; hex: string; hsv: string; }>` |
 
+
+## Dependencies
+
+### Used by
+
+ - [ch-color-picker](..)
+
+### Graph
+```mermaid
+graph TD;
+  ch-color-picker --> ch-color-field
+  style ch-color-field fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

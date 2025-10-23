@@ -1,4 +1,5 @@
 import { GxImageMultiState, ImageRender } from "../../common/types";
+import { ActionMenuModel } from "../action-menu/types";
 // import { ChActionListRender } from "./action-list-render";
 
 export type ActionListModel = ActionListItemModel[];
@@ -52,6 +53,17 @@ export type ActionListItemActionable = {
   checked?: boolean;
   disabled?: boolean;
   editable?: boolean;
+
+  /**
+   * Specifies if the item is expandable.
+   */
+  expandable?: boolean;
+  expanded?: boolean;
+
+  /**
+   * Specifies the items of the item.
+   */
+  items?: ActionListItemActionable[];
   fixed?: boolean;
 
   metadata?: string;
@@ -94,7 +106,8 @@ export type ActionListItemAdditionalItem =
   | ActionListItemAdditionalBase
   | ActionListItemAdditionalAction
   | ActionListItemAdditionalCustom
-  | ActionListItemAdditionalSlot;
+  | ActionListItemAdditionalSlot
+  | ActionListItemAdditionalMenu;
 
 export type ActionListItemAdditionalBase = {
   id?: string;
@@ -115,6 +128,10 @@ export type ActionListItemAdditionalSlot = {
 export type ActionListItemAdditionalCustom = {
   jsx: () => any;
   part?: string;
+};
+
+export type ActionListItemAdditionalMenu = {
+  menu: ActionMenuModel;
 };
 
 export type ActionListItemAdditionalAction = ActionListItemAdditionalBase & {

@@ -1,10 +1,10 @@
+import { h } from "@stencil/core";
 import { GxImageMultiState } from "../../../../common/types";
 import {
   ActionListItemAdditionalBase,
   ActionListItemAdditionalInformation,
   ActionListModel
 } from "../../../../components/action-list/types";
-import { h } from "@stencil/core";
 
 const FOLDER_ICON = "var(folder)";
 const MODULE_ICON = "var(module)";
@@ -547,6 +547,41 @@ const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
   }
 };
 
+const CustomActionsAdditionalInfo: ActionListItemAdditionalInformation = {
+  "stretch-end": {
+    end: [
+      {
+        menu: [
+          {
+            id: "item 1",
+            caption: "Rename",
+            startImgSrc: `${ASSETS_PREFIX}save.svg`,
+            type: "actionable"
+          },
+          {
+            id: "item 2",
+            caption: "Delete",
+            startImgSrc: `${ASSETS_PREFIX}file.svg`,
+            type: "actionable"
+          },
+          {
+            id: "item 3",
+            caption: "Pinned",
+            startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
+            type: "actionable"
+          },
+          {
+            id: "item 4",
+            caption: "Delete",
+            startImgSrc: `${ASSETS_PREFIX}save-all.svg`,
+            type: "actionable"
+          }
+        ]
+      }
+    ]
+  }
+};
+
 export const GxEAIRecentChats: ActionListModel = [
   {
     id: "2023 employee contracts",
@@ -930,6 +965,60 @@ export const keyboardNavigation: ActionListModel = [
         id: "item 14.1",
         type: "actionable",
         caption: "item 14.1"
+      }
+    ]
+  }
+];
+
+export const CustomActions: ActionListModel = [
+  {
+    id: "Today",
+    type: "group",
+    caption: "Today",
+    items: [
+      {
+        id: "2023 employee contracts",
+        type: "actionable",
+        caption: "2023 employee contracts",
+        additionalInformation: CustomActionsAdditionalInfo
+      },
+      {
+        id: "Investors reports",
+        type: "actionable",
+        caption: "Investors reports",
+        additionalInformation: CustomActionsAdditionalInfo
+      },
+      {
+        id: "2022 employee contracts",
+        type: "actionable",
+        caption: "2022 employee contracts",
+        additionalInformation: CustomActionsAdditionalInfo
+      }
+    ]
+  },
+  {
+    id: "Yesterday",
+    type: "group",
+    caption: "Yesterday",
+    items: [
+      {
+        id: "Pluto Exploration Contract",
+        type: "actionable",
+        caption: "Pluto Exploration Contract",
+        additionalInformation: CustomActionsAdditionalInfo
+      },
+      {
+        id: "Saturn Exploration Contract",
+        type: "actionable",
+        fixed: true,
+        caption: "Saturn Exploration Contract",
+        additionalInformation: CustomActionsAdditionalInfo
+      },
+      {
+        id: "Mars Exploration Contract",
+        type: "actionable",
+        caption: "Mars Exploration Contract",
+        additionalInformation: CustomActionsAdditionalInfo
       }
     ]
   }

@@ -3,11 +3,34 @@ import {
   Element,
   Event,
   EventEmitter,
+  h,
   Host,
   Prop,
-  Watch,
-  h
+  Watch
 } from "@stencil/core";
+import {
+  DEFAULT_GET_IMAGE_PATH_CALLBACK,
+  getControlRegisterProperty
+} from "../../../../common/registry-properties";
+import { renderImg } from "../../../../common/renders";
+import {
+  ACTION_LIST_GROUP_EXPORT_PARTS,
+  ACTION_LIST_ITEM_EXPORT_PARTS,
+  ACTION_LIST_ITEM_PARTS_DICTIONARY,
+  ACTION_LIST_PARTS_DICTIONARY,
+  imageTypeDictionary,
+  KEY_CODES,
+  startPseudoImageTypeDictionary
+} from "../../../../common/reserved-names";
+import {
+  GxImageMultiState,
+  GxImageMultiStateStart
+} from "../../../../common/types";
+import {
+  tokenMap,
+  updateDirectionInImageCustomVar
+} from "../../../../common/utils";
+import { ActionListTranslations } from "../../translations";
 import {
   ActionListImagePathCallback,
   ActionListItemAdditionalAction,
@@ -17,37 +40,19 @@ import {
   ActionListItemAdditionalInformationSection,
   ActionListItemAdditionalItem,
   ActionListItemAdditionalItemActionType,
+  ActionListItemAdditionalMenu,
   ActionListItemAdditionalModel
 } from "../../types";
-import { renderImg } from "../../../../common/renders";
-import {
-  ACTION_LIST_ITEM_EXPORT_PARTS,
-  ACTION_LIST_ITEM_PARTS_DICTIONARY,
-  ACTION_LIST_PARTS_DICTIONARY,
-  imageTypeDictionary,
-  KEY_CODES,
-  startPseudoImageTypeDictionary
-} from "../../../../common/reserved-names";
+import { computeActionTypeBlocks } from "./compute-editing-sections";
+import { computeExportParts } from "./compute-exportparts";
 import {
   ActionListCaptionChangeEventDetail,
   ActionListFixedChangeEventDetail,
   ActionListItemActionTypeBlockInfo
 } from "./types";
-import {
-  tokenMap,
-  updateDirectionInImageCustomVar
-} from "../../../../common/utils";
-import { computeExportParts } from "./compute-exportparts";
-import { computeActionTypeBlocks } from "./compute-editing-sections";
-import { ActionListTranslations } from "../../translations";
-import {
-  GxImageMultiState,
-  GxImageMultiStateStart
-} from "../../../../common/types";
-import {
-  DEFAULT_GET_IMAGE_PATH_CALLBACK,
-  getControlRegisterProperty
-} from "../../../../common/registry-properties";
+
+import { Method } from "@stencil/core";
+import { ACTION_LIST_GROUP_PARTS_DICTIONARY } from "../../../../common/reserved-names";
 
 const ACTION_TYPE_PARTS = {
   fix: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_FIX,
@@ -56,12 +61,16 @@ const ACTION_TYPE_PARTS = {
   custom: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_CUSTOM
 } as const;
 
+const EXPANDABLE_ID = "expandable";
+
 @Component({
   tag: "ch-action-list-item",
   styleUrl: "action-list-item.scss",
   shadow: { delegatesFocus: true }
 })
 export class ChActionListItem {
+  #buttonRef: HTMLButtonElement;
+
   #additionalItemListenerDictionary = {
     fix: () =>
       this.fixedChange.emit({ itemId: this.el.id, value: !this.fixed }),
@@ -173,9 +182,27 @@ export class ChActionListItem {
   @Prop({ mutable: true }) editing = false;
 
   /**
+   * If the item has a sub-tree, this attribute determines if the subtree is
+   * displayed.
+   */
+  @Prop() readonly expandable?: boolean;
+
+  /**
+   * If the item has a sub-tree, this attribute determines if the subtree is
+   * displayed.
+   */
+  @Prop() readonly expanded?: boolean;
+
+  /**
    *
    */
   @Prop() readonly fixed?: boolean = false;
+
+  /**
+   * Determine if the items are lazy loaded when opening the first time the
+   * control.
+   */
+  @Prop({ mutable: true }) lazyLoad = false;
 
   /**
    * This property specifies a callback that is executed when the path for an
@@ -261,6 +288,16 @@ export class ChActionListItem {
   fixedChange: EventEmitter<ActionListFixedChangeEventDetail>;
 
   /**
+   * Set the focus in the control if `expandable === true`.
+   */
+  @Method()
+  async setFocus() {
+    if (this.expandable && this.#buttonRef) {
+      this.#buttonRef.focus();
+    }
+  }
+
+  /**
    * Fired when the remove button was clicked in the control.
    */
   @Event({ composed: true }) remove: EventEmitter<string>;
@@ -312,15 +349,29 @@ export class ChActionListItem {
   };
 
   #renderAdditionalItems = (additionalItems: ActionListItemAdditionalItem[]) =>
-    additionalItems.map(item =>
-      (item as ActionListItemAdditionalCustom).jsx
-        ? (item as ActionListItemAdditionalCustom).jsx()
-        : this.#renderAdditionalItem(
-            item as
-              | ActionListItemAdditionalBase
-              | ActionListItemAdditionalAction
-          )
-    );
+    additionalItems.map(item => {
+      if ((item as ActionListItemAdditionalCustom).jsx) {
+        return (item as ActionListItemAdditionalCustom).jsx();
+      }
+
+      if ((item as ActionListItemAdditionalMenu)?.menu) {
+        return (
+          <ch-action-menu-render
+            role="listitem"
+            id={"1"}
+            blockAlign="outside-end"
+            inlineAlign="inside-start"
+            model={(item as ActionListItemAdditionalMenu)?.menu}
+          >
+            Menu
+          </ch-action-menu-render>
+        );
+      }
+
+      return this.#renderAdditionalItem(
+        item as ActionListItemAdditionalBase | ActionListItemAdditionalAction
+      );
+    });
 
   #renderAdditionalItem = (
     item: ActionListItemAdditionalBase | ActionListItemAdditionalAction
@@ -526,6 +577,28 @@ export class ChActionListItem {
     );
   };
 
+  #renderExpandableButton = (hasContent, expanded) => (
+    <button
+      aria-controls={hasContent ? EXPANDABLE_ID : null}
+      aria-expanded={hasContent ? expanded.toString() : null}
+      class={{
+        "expandable-button": true,
+        "expandable-button--collapsed": !expanded
+      }}
+      disabled={this.disabled}
+      part={tokenMap({
+        [ACTION_LIST_GROUP_PARTS_DICTIONARY.ACTION]: true,
+        [ACTION_LIST_GROUP_PARTS_DICTIONARY.SELECTED]: this.selected,
+        [ACTION_LIST_GROUP_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
+        [ACTION_LIST_GROUP_PARTS_DICTIONARY.DISABLED]: this.disabled
+      })}
+      type="button"
+      ref={el => (this.#buttonRef = el)}
+    >
+      Expand
+    </button>
+  );
+
   #renderAdditionalInfo = (
     additionalModel: ActionListItemAdditionalModel,
     zoneName: ActionListItemAdditionalInformationSection,
@@ -706,9 +779,13 @@ export class ChActionListItem {
       : null;
   };
 
+  #getExpandedValue = (): boolean =>
+    this.expandable ? this.expanded ?? false : true;
+
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
     this.el.setAttribute("part", ACTION_LIST_PARTS_DICTIONARY.ITEM);
+    this.el.setAttribute("exportparts", ACTION_LIST_GROUP_EXPORT_PARTS);
     this.#setExportParts();
     this.#setActionTypeBlocks();
   }
@@ -723,12 +800,19 @@ export class ChActionListItem {
     const blockEnd = hasAdditionalInfo && additionalInfo["block-end"];
     const stretchEnd = hasAdditionalInfo && additionalInfo["stretch-end"];
 
+    const hasChildren = this.el.children.length > 0;
+    const hasContent = !this.lazyLoad;
+    const expanded = hasContent && this.#getExpandedValue();
+
     const hasParts = !!this.parts;
 
     return (
       <Host aria-selected={this.selectable && this.selected ? "true" : null}>
         <button
-          class="action"
+          class={{
+            action: true,
+            "action-with-children": hasChildren
+          }}
           disabled={this.disabled}
           part={tokenMap({
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
@@ -747,6 +831,9 @@ export class ChActionListItem {
           type="button"
           ref={el => (this.#headerRef = el)}
         >
+          {hasChildren &&
+            this.expandable &&
+            this.#renderExpandableButton(hasContent, expanded)}
           {this.#renderAdditionalInfo(stretchStart, "stretch-start", true)}
           {this.#renderAdditionalInfo(blockStart, "block-start")}
 
@@ -808,6 +895,28 @@ export class ChActionListItem {
           {this.#renderAdditionalInfo(blockEnd, "block-end")}
           {this.#renderAdditionalInfo(stretchEnd, "stretch-end")}
         </button>
+
+        {hasChildren && (
+          <ul
+            aria-busy={(!!this.downloading).toString()}
+            aria-live={this.downloading ? "polite" : null}
+            class={{
+              expandable: true,
+              "expandable--collapsed": !expanded,
+              "expandable--lazy-loaded": !this.downloading
+            }}
+            part={tokenMap({
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.EXPANDABLE]: true,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.EXPANDED]: expanded,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.COLLAPSED]: !expanded,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.LAZY_LOADED]:
+                !this.downloading
+            })}
+            id={EXPANDABLE_ID}
+          >
+            <slot />
+          </ul>
+        )}
       </Host>
     );
   }

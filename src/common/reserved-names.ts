@@ -271,6 +271,18 @@ export const ACTION_MENU_ITEM_EXPORT_PARTS = joinParts(
 export const ACTION_MENU_EXPORT_PARTS = joinParts(ACTION_MENU_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
+//             Color Picker Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const COLOR_PICKER_PARTS_DICTIONARY = {
+  COLOR_FIELD: "color-field",
+  MARKER: "marker",
+
+  // - - - - - - - - States - - - - - - - -
+  DISABLED: "disabled", // MARKER
+  READONLY: "readonly" // MARKER
+} as const;
+
+// - - - - - - - - - - - - - - - - - - - -
 //             Combo Box Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const COMBO_BOX_PARTS_DICTIONARY = {

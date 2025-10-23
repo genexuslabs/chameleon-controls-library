@@ -745,10 +745,22 @@ export const keyboardNavigation: ActionListModel = [
   { type: "separator" },
   {
     id: "item 2",
-    type: "group",
+    type: "actionable",
     caption: "item 2",
     expandable: true,
     expanded: false,
+    additionalInformation: {
+      "stretch-end": {
+        end: [
+          {
+            id: "success",
+            caption: "Success",
+            imgSrc:
+              "https://unpkg.com/@genexus/mercury@0.11.0/dist/assets/icons/system/light/success.svg#enabled"
+          }
+        ]
+      }
+    },
     items: [
       {
         id: "item 2.1",
@@ -973,7 +985,7 @@ export const keyboardNavigation: ActionListModel = [
 export const CustomActions: ActionListModel = [
   {
     id: "Today",
-    type: "group",
+    type: "actionable",
     caption: "Today",
     items: [
       {
@@ -998,8 +1010,20 @@ export const CustomActions: ActionListModel = [
   },
   {
     id: "Yesterday",
-    type: "group",
+    type: "actionable",
     caption: "Yesterday",
+    fixed: true,
+    additionalInformation: {
+      ...CustomActionsAdditionalInfo,
+      "stretch-start": {
+        start: [
+          {
+            imgSrc:
+              "https://unpkg.com/@genexus/mercury@0.11.0/dist/assets/icons/system/light/success.svg#enabled"
+          }
+        ]
+      }
+    },
     items: [
       {
         id: "Pluto Exploration Contract",

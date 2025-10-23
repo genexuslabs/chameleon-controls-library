@@ -586,12 +586,6 @@ export class ChActionListItem {
         "expandable-button--collapsed": !expanded
       }}
       disabled={this.disabled}
-      part={tokenMap({
-        [ACTION_LIST_GROUP_PARTS_DICTIONARY.ACTION]: true,
-        [ACTION_LIST_GROUP_PARTS_DICTIONARY.SELECTED]: this.selected,
-        [ACTION_LIST_GROUP_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
-        [ACTION_LIST_GROUP_PARTS_DICTIONARY.DISABLED]: this.disabled
-      })}
       type="button"
       ref={el => (this.#buttonRef = el)}
     >
@@ -814,20 +808,31 @@ export class ChActionListItem {
             "action-with-children": hasChildren
           }}
           disabled={this.disabled}
-          part={tokenMap({
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED]: this.nested,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED_EXPANDABLE]:
-              this.nestedExpandable,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTABLE]: this.selectable,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTABLE]:
-              !this.selectable,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
-              this.selectable && this.selected,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-              this.selectable && !this.selected,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
-          })}
+          part={
+            hasChildren
+              ? tokenMap({
+                  [ACTION_LIST_GROUP_PARTS_DICTIONARY.ACTION]: true,
+                  [ACTION_LIST_GROUP_PARTS_DICTIONARY.SELECTED]: this.selected,
+                  [ACTION_LIST_GROUP_PARTS_DICTIONARY.NOT_SELECTED]:
+                    !this.selected,
+                  [ACTION_LIST_GROUP_PARTS_DICTIONARY.DISABLED]: this.disabled
+                })
+              : tokenMap({
+                  [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
+                  [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED]: this.nested,
+                  [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED_EXPANDABLE]:
+                    this.nestedExpandable,
+                  [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTABLE]:
+                    this.selectable,
+                  [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTABLE]:
+                    !this.selectable,
+                  [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
+                    this.selectable && this.selected,
+                  [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+                    this.selectable && !this.selected,
+                  [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
+                })
+          }
           type="button"
           ref={el => (this.#headerRef = el)}
         >

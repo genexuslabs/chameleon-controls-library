@@ -63,7 +63,7 @@ For this, we recommend consulting our repository [chameleon-integrations](https:
   import "@genexus/chameleon-controls-library";
   ```
 
-- Then you can use the web components anywhere in your template, JSX, html etc
+- Then you can use the web components anywhere in your template, JSX, html etc.
 
 ### Node Modules
 

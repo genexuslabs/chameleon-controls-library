@@ -35,7 +35,7 @@ export const fromHslStringToHslColor = (
 };
 
 /**
- * Parses an HSL/HSLA color string and converts it to RGB
+ * Parses an HSL/HSLA color string and converts it to RGB values
  * @param hsl - HSL or HSLA color string (e.g., "hsl(120, 50%, 50%)" or "hsla(120, 50%, 50%, 0.8)")
  * @returns Object with r, g, b, and a values, or null if parsing fails
  */

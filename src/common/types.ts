@@ -179,7 +179,7 @@ export type ColorVariants = {
   hsl: string;
   hsla: string;
   hex: string;
-  hsv: { h: number; s: number; v: number };
+  hsv: string;
 };
 
 export type ItemLink = {

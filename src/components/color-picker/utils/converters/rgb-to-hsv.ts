@@ -1,11 +1,11 @@
 /**
  * Converts RGB values to HSV color space
  * @param color - Array containing [r, g, b] values (0-255)
- * @returns Array with [h, s, v] values (h: 0-360, s: 0-100, v: 0-100), or null if invalid input
+ * @returns HSV color string represented as "hsv(0-360, 0-100%, 0-100%)", or null if invalid input
  */
 export const fromRgbToHsv = (
   color: [number, number, number]
-): { h: number; s: number; v: number } | null => {
+): string | null => {
   // Validate input
   if (!Array.isArray(color) || color.length !== 3) {
     console.warn("RGB to HSV conversion failed: Invalid array length");
@@ -60,9 +60,11 @@ export const fromRgbToHsv = (
     h /= 6;
   }
 
-  return {
-    h: Math.round(h * 360),
-    s: Math.round(s * 100),
-    v: Math.round(v * 100)
-  };
+  // Round values
+  const hueValue = Math.round(h * 360);
+  const saturationValue = Math.round(s * 100);
+  const brightnessValue = Math.round(v * 100);
+
+  // Return HSV as string following the HSL pattern
+  return `hsv(${hueValue}, ${saturationValue}%, ${brightnessValue}%)`;
 };

@@ -52,6 +52,19 @@ The slider control is a input where the user selects a value from within a given
 | `--ch-slider-track__unselected-background-color` | Specifies the background-color of the unselected portion of the track. @default color-mix(in srgb, currentColor 15%, transparent) |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-color-picker](../color-picker)
+
+### Graph
+```mermaid
+graph TD;
+  ch-color-picker --> ch-slider
+  style ch-slider fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

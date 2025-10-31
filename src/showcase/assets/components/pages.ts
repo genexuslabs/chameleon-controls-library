@@ -81,6 +81,11 @@ export const showcasePages: NavigationListModel = [
             metadata: EXPERIMENTAL
           },
           {
+            link: { url: "#color-picker" },
+            caption: "Color-picker",
+            metadata: EXPERIMENTAL
+          },
+          {
             link: { url: "#combo-box" },
             caption: "Combo Box",
             metadata: EXPERIMENTAL

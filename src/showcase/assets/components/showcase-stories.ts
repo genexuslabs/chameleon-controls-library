@@ -14,6 +14,7 @@ import { dialogShowcaseStory } from "./dialog/dialog.showcase";
 import { editShowcaseStory } from "./edit/edit.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { imageShowcaseStory } from "./image/image.showcase";
+import { latexViewerShowcaseStory } from "./latex-viewer/latex-viewer.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
 import { liveKitRoomShowcaseStory } from "./live-kit-room/live-kit-room.showcase";
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
@@ -78,6 +79,7 @@ export const showcaseCustomStories = {
   "code-editor": codeEditorShowcaseStory,
   "code-diff-editor": codeDiffEditorShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,
+  "latex-viewer": latexViewerShowcaseStory,
   "markdown-viewer": markdownShowcaseStory,
   paginator: paginatorShowcaseStory,
   shortcuts: shortcutsShowcaseStory,

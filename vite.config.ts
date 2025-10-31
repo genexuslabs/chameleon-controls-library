@@ -1,49 +1,35 @@
-import chokidar from "chokidar";
-import { resolve } from "path";
 import { defineConfig } from "vite";
-import { viteStaticCopy } from "vite-plugin-static-copy";
-
-const stencilEsmPath = resolve(__dirname, "dist/esm");
+import terser from "@rollup/plugin-terser";
 
 export default defineConfig({
-  build: {
-    // Only for debug
-    outDir: "dist-vite",
-    emptyOutDir: true
-  },
   plugins: [
-    viteStaticCopy({
-      targets: [{ src: "./src/showcase/", dest: "" }]
-    }),
-    {
-      name: "reload-page-when-stencil-build-changes",
-      configureServer(server) {
-        // Allow Vite to read files outside the root
-        server.config.server.fs = {
-          ...server.config.server.fs,
-          allow: [stencilEsmPath, ...server.config.server.fs.allow]
-        };
+    // Minify JS
+    terser({
+      ecma: 2022,
+      module: true,
+      warnings: true,
+      compress: true,
+      format: {
+        comments: false // TODO: Check if we can do this due to license
+      }
+    })
+  ],
 
-        // Watch Stencil dist
-        chokidar
-          .watch(stencilEsmPath, { ignoreInitial: true })
-          .on("all", async () => {
-            // Invalidate all modules imported from dist/esm
-            const modules = [
-              ...server.moduleGraph.fileToModulesMap.keys()
-            ].filter(f => f.startsWith(stencilEsmPath));
+  // Bundles
+  build: {
+    assetsDir: "./assets",
 
-            modules.forEach(id => {
-              const mods = server.moduleGraph.getModulesByFile(id);
-              if (mods) {
-                mods.forEach(m => server.moduleGraph.invalidateModule(m));
-              }
-            });
+    lib: {
+      entry: {
+        monaco: "src/common/monaco/monaco.ts"
+      },
+      formats: ["es"]
+    },
 
-            // Reload the browser
-            server.ws.send({ type: "full-reload" });
-          });
+    rollupOptions: {
+      output: {
+        dir: "src/common/monaco/output"
       }
     }
-  ]
+  }
 });

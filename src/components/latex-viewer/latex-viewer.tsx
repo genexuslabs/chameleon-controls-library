@@ -74,6 +74,8 @@ export class ChLatexViewer {
     this.renderedBlocks = htmlBlocks;
   }
 
+  // TODO: Avoid adding multiple theme elements if the property changes or if
+  // latex-viewer is rendered multiple times.
   #loadFonts = () => {
     if (this.fontsBaseUrl) {
       const themeRef = document.createElement("ch-theme");

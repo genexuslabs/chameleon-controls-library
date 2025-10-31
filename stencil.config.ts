@@ -3,6 +3,7 @@ import { OutputTarget } from "@stencil/core/internal";
 import { reactOutputTarget } from "@stencil/react-output-target";
 import { sass } from "@stencil/sass";
 
+import { copyKaTeXWoff2Files } from "./copy-katex-fonts.ts";
 import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
 
 const isTesting = process.env.npm_lifecycle_script?.startsWith("stencil test");
@@ -14,10 +15,18 @@ const showcaseOutput: OutputTarget = {
   type: "www",
   serviceWorker: null,
   copy: [
+    {
+      src: "../node_modules/@genexus/chameleon-controls-library/dist/assets/fonts",
+      dest: "assets/fonts"
+    },
     { src: "common/monaco/output/assets", dest: "assets" },
     { src: "showcase" }
   ]
 };
+
+copyKaTeXWoff2Files(
+  "node_modules/@genexus/chameleon-controls-library/dist/assets/fonts"
+);
 
 // Only build the showcase in dev mode or when executing the build.showcase
 // script, so we don't delete the dist folder when executing the dev server
@@ -27,7 +36,14 @@ const outputTargets: OutputTarget[] = isShowcaseBuild
       {
         type: "dist",
         esmLoaderPath: "../loader",
-        copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
+        copy: [
+          {
+            src: "node_modules/@genexus/chameleon-controls-library/dist/assets/fonts",
+            dest: "assets/fonts"
+          },
+
+          { src: "common/monaco/output/assets", dest: "assets" }
+        ]
       },
       // dist-custom-elements output target is required for the React output target.
       // It generates the dist/components folder
@@ -93,6 +109,7 @@ export const config: Config = {
       "src/components/tree-view/tests/utils.e2e.ts"
     ]
   },
+  sourceMap: false,
   bundles: [
     {
       components: ["ch-accordion-render"] // Make sure the ch-accordion-render control is not bundled with other components

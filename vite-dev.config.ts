@@ -13,7 +13,13 @@ export default defineConfig({
   },
   plugins: [
     viteStaticCopy({
-      targets: [{ src: "./src/showcase/", dest: "" }]
+      targets: [
+        { src: "./src/showcase/", dest: "" },
+        {
+          src: "node_modules/@genexus/chameleon-controls-library/dist/assets/fonts/*",
+          dest: "assets/fonts"
+        }
+      ]
     }),
     {
       name: "reload-page-when-stencil-build-changes",

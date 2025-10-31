@@ -110,6 +110,11 @@ export const showcasePages: NavigationListModel = [
             link: { url: "#switch" },
             caption: "Switch",
             metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#counter" },
+            caption: "Counter",
+            metadata: EXPERIMENTAL
           }
         ]
       },

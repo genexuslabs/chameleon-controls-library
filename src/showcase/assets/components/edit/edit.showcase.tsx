@@ -181,7 +181,7 @@ const render = () => (
             autocapitalize={state.autocapitalize}
             autocomplete={state.autocomplete}
             autoGrow={state.autoGrow}
-            class="input"
+            class="input input-error"
             debounce={state.debounce}
             disabled={state.disabled}
             maxLength={state.maxLength}

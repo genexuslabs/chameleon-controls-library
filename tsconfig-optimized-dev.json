@@ -22,6 +22,8 @@
 
     "src/components/**/tests/*",
     "src/testing/",
+    "src/**/*.spec.ts",
+    "src/**/*.e2e.ts",
 
     "src/deprecated-components/accordion/",
     "src/deprecated-components/form-checkbox/",
@@ -38,11 +40,11 @@
     "src/deprecated-components/suggest/",
     "src/deprecated-components/test/",
     "src/deprecated-components/tree/",
-    "src/deprecated-components/tree-item/"
+    "src/deprecated-components/tree-item/",
     // "src/deprecated-components/window/"
 
-    // "src/components/code-editor/",
-    // "src/components/code-diff-editor/",
-    // "src/components/gx-grid/"
+    "src/components/code-editor/",
+    "src/components/code-diff-editor/",
+    "src/components/gx-grid/"
   ]
 }

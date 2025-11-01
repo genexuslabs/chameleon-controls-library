@@ -93,7 +93,7 @@ const renderMapping: {
       getImagePathCallback={actionListRenderState.getImagePathCallback}
       metadata={itemModel.metadata}
       nested={nested ?? false}
-      nestedExpandable={nestedExpandable ?? false}
+      nestedExpandable={nestedExpandable}
       selectable={actionListRenderState.selection !== "none"}
       selected={itemModel.selected}
       translations={actionListRenderState.translations}

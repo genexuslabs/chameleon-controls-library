@@ -793,6 +793,7 @@ export class ChActionListItem {
     this.el.setAttribute("exportparts", ACTION_LIST_GROUP_EXPORT_PARTS);
     this.#setExportParts();
     this.#setActionTypeBlocks();
+    this.expandedChanged(this.expandable);
   }
 
   render() {

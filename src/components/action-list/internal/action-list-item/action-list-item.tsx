@@ -192,6 +192,12 @@ export class ChActionListItem {
    * displayed.
    */
   @Prop() readonly expanded?: boolean;
+  @Watch("expanded")
+  expandedChanged(isExpanded: boolean) {
+    this.#getDirectActionListItems().map(item => {
+      item.nestedExpandable = isExpanded;
+    });
+  }
 
   /**
    *
@@ -347,6 +353,11 @@ export class ChActionListItem {
     const commitEdition = event.code === KEY_CODES.ENTER;
     this.#removeEditMode(true, commitEdition)();
   };
+
+  #getDirectActionListItems = (): HTMLChActionListItemElement[] =>
+    Array.from(
+      this.el.querySelectorAll(":scope > ch-action-list-item")
+    ) as HTMLChActionListItemElement[];
 
   #renderAdditionalItems = (additionalItems: ActionListItemAdditionalItem[]) =>
     additionalItems.map(item => {
@@ -794,10 +805,9 @@ export class ChActionListItem {
     const blockEnd = hasAdditionalInfo && additionalInfo["block-end"];
     const stretchEnd = hasAdditionalInfo && additionalInfo["stretch-end"];
 
-    const hasChildren = this.el.children.length > 0;
+    const hasChildren = this.el.hasChildNodes();
     const hasContent = !this.lazyLoad;
     const expanded = hasContent && this.#getExpandedValue();
-
     const hasParts = !!this.parts;
 
     return (

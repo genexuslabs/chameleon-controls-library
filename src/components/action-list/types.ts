@@ -9,7 +9,6 @@ export type ActionListModel = ActionListItemModel[];
 // - - - - - - - - - - - - - - - - - - - -
 export type ActionListItemType =
   | ActionListItemTypeActionable
-  | ActionListItemTypeGroup
   | ActionListItemTypeSeparator;
 
 export type ActionListItemTypeActionable = "actionable";
@@ -44,7 +43,7 @@ export interface ActionListItemModelMap {
 // - - - - - - - - - - - - - - - - - - - -
 //          List Item Actionable
 // - - - - - - - - - - - - - - - - - - - -
-export type ActionListItemActionable = {
+export type ActionListItemBase = {
   id: string;
 
   additionalInformation?: ActionListItemAdditionalInformation;
@@ -76,8 +75,9 @@ export type ActionListItemActionable = {
   part?: string;
 
   selected?: boolean;
+};
 
-  // TODO: Add support to avoid setting this property
+export type ActionListItemActionable = ActionListItemBase & {
   type: ActionListItemTypeActionable;
 };
 
@@ -159,22 +159,8 @@ export type ActionListItemAdditionalItemActionType =
 // - - - - - - - - - - - - - - - - - - - -
 //            List Item Heading
 // - - - - - - - - - - - - - - - - - - - -
-export type ActionListItemGroup = {
-  id: string;
-  caption: string;
-  disabled?: boolean;
-  expandable?: boolean;
-  expanded?: boolean;
-
+export type ActionListItemGroup = ActionListItemBase & {
   items: ActionListItemActionable[];
-
-  /**
-   * Establish the order at which the item will be placed in its parent.
-   * Multiple items can have the same `order` value.
-   */
-  order?: number;
-  part?: string;
-  selected?: boolean; // TODO: This property does not make much sense if expandable: false
   type: ActionListItemTypeGroup;
 };
 

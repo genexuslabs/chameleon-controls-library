@@ -63,66 +63,52 @@ const renderMapping: {
     itemModel: ActionListItemModelMap[key],
     actionRenderState: ChActionListRender,
     disabled?: boolean,
-    nested?: boolean // TODO: Verify if this is necessary
+    nested?: boolean, // TODO: Verify if this is necessary
+    nestedExpandable?: boolean
   ) => any;
 } = {
-  actionable: (itemModel, actionListRenderState, disabled: boolean) =>
-    itemModel.items?.length > 0 ? (
-      <ch-action-list-item
-        key={itemModel.id}
-        id={itemModel.id}
-        additionalInfo={itemModel.additionalInformation}
-        caption={itemModel.caption}
-        checkbox={itemModel.checkbox ?? actionListRenderState.checkbox}
-        checked={itemModel.checked ?? actionListRenderState.checked}
-        disabled={
-          disabled === true
-            ? true
-            : itemModel.disabled ?? actionListRenderState.disabled
-        }
-        editable={itemModel.editable ?? actionListRenderState.editableItems}
-        expandable={itemModel.expandable}
-        expanded={itemModel.expanded}
-        fixed={itemModel.fixed}
-        getImagePathCallback={actionListRenderState.getImagePathCallback}
-        metadata={itemModel.metadata}
-        nested={itemModel.items?.length > 0}
-        nestedExpandable={itemModel.items?.length > 0 && itemModel.expandable}
-        selectable={actionListRenderState.selection !== "none"}
-        selected={itemModel.selected}
-        translations={actionListRenderState.translations}
-      >
-        {itemModel.items?.map(item =>
-          actionListRenderState.renderItem(item, actionListRenderState)
-        )}
-      </ch-action-list-item>
-    ) : (
-      <ch-action-list-item
-        key={itemModel.id}
-        id={itemModel.id}
-        additionalInfo={itemModel.additionalInformation}
-        caption={itemModel.caption}
-        checkbox={itemModel.checkbox ?? actionListRenderState.checkbox}
-        checked={itemModel.checked ?? actionListRenderState.checked}
-        disabled={
-          disabled === true
-            ? true
-            : itemModel.disabled ?? actionListRenderState.disabled
-        }
-        editable={itemModel.editable ?? actionListRenderState.editableItems}
-        expandable={itemModel.expandable}
-        expanded={itemModel.expanded}
-        fixed={itemModel.fixed}
-        getImagePathCallback={actionListRenderState.getImagePathCallback}
-        metadata={itemModel.metadata}
-        nested={itemModel.items?.length > 0}
-        nestedExpandable={itemModel.items?.length > 0 && itemModel.expandable}
-        selectable={actionListRenderState.selection !== "none"}
-        selected={itemModel.selected}
-        translations={actionListRenderState.translations}
-      ></ch-action-list-item>
-    ),
-  group: () => <span />,
+  actionable: (
+    itemModel,
+    actionListRenderState,
+    disabled: boolean,
+    nested: boolean,
+    nestedExpandable: boolean = false
+  ) => (
+    <ch-action-list-item
+      key={itemModel.id}
+      id={itemModel.id}
+      additionalInfo={itemModel.additionalInformation}
+      caption={itemModel.caption}
+      checkbox={itemModel.checkbox ?? actionListRenderState.checkbox}
+      checked={itemModel.checked ?? actionListRenderState.checked}
+      disabled={
+        disabled === true
+          ? true
+          : itemModel.disabled ?? actionListRenderState.disabled
+      }
+      editable={itemModel.editable ?? actionListRenderState.editableItems}
+      expandable={itemModel.expandable}
+      expanded={itemModel.expanded}
+      fixed={itemModel.fixed}
+      getImagePathCallback={actionListRenderState.getImagePathCallback}
+      metadata={itemModel.metadata}
+      nested={nested ?? false}
+      nestedExpandable={nestedExpandable ?? false}
+      selectable={actionListRenderState.selection !== "none"}
+      selected={itemModel.selected}
+      translations={actionListRenderState.translations}
+    >
+      {itemModel.items?.map(item =>
+        actionListRenderState.renderItem(
+          item,
+          actionListRenderState,
+          disabled,
+          true,
+          itemModel.expandable
+        )
+      )}
+    </ch-action-list-item>
+  ),
   separator: () => (
     <div
       role="separator"
@@ -716,7 +702,7 @@ export class ChActionListRender {
     const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
     this.#checkIfMustExpandCollapseGroup(itemInfo);
 
-    if (itemInfo.type === "group" && !itemInfo.expandable) {
+    if (!itemInfo.expandable) {
       return;
     }
     this.itemClick.emit(this.#flattenedModel.get(itemInfo.id));
@@ -726,11 +712,7 @@ export class ChActionListRender {
     itemInfo: ActionListItemActionable | ActionListItemGroup
   ) => {
     // Toggle the expanded/collapsed in the group on click
-    if (
-      itemInfo.type === "group" &&
-      itemInfo.expandable &&
-      !itemInfo.disabled
-    ) {
+    if (itemInfo.expandable && !itemInfo.disabled) {
       itemInfo.expanded = !itemInfo.expanded;
       forceUpdate(this);
     }

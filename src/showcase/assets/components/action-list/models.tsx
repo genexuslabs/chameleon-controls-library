@@ -985,8 +985,10 @@ export const keyboardNavigation: ActionListModel = [
 export const CustomActions: ActionListModel = [
   {
     id: "Today",
-    type: "actionable",
     caption: "Today",
+    expandable: false,
+    expanded: true,
+    type: "group",
     items: [
       {
         id: "2023 employee contracts",
@@ -1010,8 +1012,10 @@ export const CustomActions: ActionListModel = [
   },
   {
     id: "Yesterday",
-    type: "actionable",
     caption: "Yesterday",
+    expandable: false,
+    expanded: true,
+    type: "group",
     fixed: true,
     additionalInformation: {
       ...CustomActionsAdditionalInfo,

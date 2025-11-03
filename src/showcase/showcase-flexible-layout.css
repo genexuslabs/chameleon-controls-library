@@ -263,7 +263,7 @@ legend {
   }
 
   ch-markdown-viewer,
-  ch-latex-viewer {
+  ch-math-viewer {
     contain: size;
     overflow: auto;
   }

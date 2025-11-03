@@ -59,13 +59,13 @@ const render: ShowcaseRender = () => (
       onInput={handleValueChange}
       ref={el => (textareaRef = el)}
     ></textarea>
-    <ch-latex-viewer
+    <ch-math-viewer
       fontsBaseUrl="/assets/fonts/"
       value={initialMarkdown}
-    ></ch-latex-viewer>
+    ></ch-math-viewer>
   </div>
 );
 
-export const latexViewerShowcaseStory: ShowcaseCustomStory = {
+export const mathViewerShowcaseStory: ShowcaseCustomStory = {
   render: render
 };

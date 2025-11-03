@@ -14,10 +14,10 @@ import { dialogShowcaseStory } from "./dialog/dialog.showcase";
 import { editShowcaseStory } from "./edit/edit.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { imageShowcaseStory } from "./image/image.showcase";
-import { latexViewerShowcaseStory } from "./latex-viewer/latex-viewer.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
 import { liveKitRoomShowcaseStory } from "./live-kit-room/live-kit-room.showcase";
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
+import { mathViewerShowcaseStory } from "./math-viewer/math-viewer.showcase";
 import { navigationListShowcaseStory } from "./navigation-list/navigation-list.showcase";
 import { paginatorRenderShowcaseStory } from "./paginator-render/paginator-render.showcase";
 import { paginatorShowcaseStory } from "./paginator/paginator.showcase";
@@ -79,7 +79,7 @@ export const showcaseCustomStories = {
   "code-editor": codeEditorShowcaseStory,
   "code-diff-editor": codeDiffEditorShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,
-  "latex-viewer": latexViewerShowcaseStory,
+  "math-viewer": mathViewerShowcaseStory,
   "markdown-viewer": markdownShowcaseStory,
   paginator: paginatorShowcaseStory,
   shortcuts: shortcutsShowcaseStory,

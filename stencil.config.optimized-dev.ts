@@ -65,7 +65,7 @@ export const config: Config = {
             external: [
               /^lit/,
               /^@lit/,
-              ...Object.keys(dependencies),
+              ...Object.keys(dependencies).slice(1),
               ...Object.keys(peerDependencies)
             ]
           };

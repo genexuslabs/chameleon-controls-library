@@ -227,7 +227,7 @@ export const showcasePages: NavigationListModel = [
       },
 
       {
-        caption: "Code/Markdown/LaTeX",
+        caption: "Code/Markdown/Math",
         startImgSrc:
           "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/csv.svg')",
         startImgType: "mask",
@@ -244,8 +244,8 @@ export const showcasePages: NavigationListModel = [
             metadata: EXPERIMENTAL
           },
           {
-            link: { url: "#latex-viewer" },
-            caption: "LaTeX Viewer",
+            link: { url: "#math-viewer" },
+            caption: "Math Viewer",
             metadata: EXPERIMENTAL
           },
           {

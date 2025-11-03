@@ -6,12 +6,22 @@ import { MINIFIED_FONTS } from "./minified-fonts";
  * A component for rendering LaTeX math expressions using KaTeX.
  */
 @Component({
-  tag: "ch-latex-viewer",
-  styleUrl: "latex-viewer.scss",
+  tag: "ch-math-viewer",
+  styleUrl: "math-viewer.scss",
   shadow: true
 })
-export class ChLatexViewer {
-  @Element() el!: HTMLChLatexViewerElement;
+export class ChMathViewer {
+  /**
+   * Internal rendered HTML fragments from KaTeX.
+   */
+  @State() renderedBlocks: string[] = [];
+
+  @Element() el!: HTMLChMathViewerElement;
+
+  /**
+   * Whether to display math in block mode (true) or inline mode (false).
+   */
+  @Prop({ reflect: true }) readonly displayMode: boolean = true;
 
   /**
    * Base URL for custom font files. For example, "/assets/fonts/".
@@ -23,19 +33,9 @@ export class ChLatexViewer {
   }
 
   /**
-   * Whether to display math in block mode (true) or inline mode (false).
-   */
-  @Prop() readonly displayMode: boolean = true;
-
-  /**
-   * Specifies the LaTeX string to render.
+   * Specifies the LaTeX math string to render.
    */
   @Prop() readonly value?: string;
-
-  /**
-   * Internal rendered HTML fragments from KaTeX.
-   */
-  @State() renderedBlocks: string[] = [];
 
   @Watch("value")
   @Watch("displayMode")
@@ -55,16 +55,23 @@ export class ChLatexViewer {
         const isMathBlock =
           block.startsWith("\\[") ||
           block.startsWith("\\(") ||
+          block.startsWith("$$") ||
           block.startsWith("\\begin") ||
           block.includes("&=") ||
           block.includes("^") ||
           this.displayMode;
 
-        const cleanBlock = block.replace(/^\\\[|\\\]$/g, "");
+        // Remove unnecessary delimiters for KaTeX processing
+        const cleanBlock = block
+          .replace(/^\\\[|\\\]$/g, "")
+          .replace(/^\\\(|\\\)$/g, "")
+          .replace(/^\$\$|\$\$$/g, "")
+          .replace(/^\$|\$$/g, "");
 
         return katex.renderToString(cleanBlock, {
           throwOnError: false,
-          displayMode: isMathBlock
+          displayMode: isMathBlock,
+          output: "htmlAndMathml" // For accessibility reasons
         });
       } catch (err) {
         return `<span style="color:red;">${(err as Error).message}</span>`;
@@ -75,7 +82,7 @@ export class ChLatexViewer {
   }
 
   // TODO: Avoid adding multiple theme elements if the property changes or if
-  // latex-viewer is rendered multiple times.
+  // math-viewer is rendered multiple times.
   #loadFonts = () => {
     if (this.fontsBaseUrl) {
       const themeRef = document.createElement("ch-theme");
@@ -83,7 +90,7 @@ export class ChLatexViewer {
       themeRef.model = [
         {
           themeBaseUrl: this.fontsBaseUrl,
-          name: "ch-latex-viewer-fonts",
+          name: "ch-math-viewer-fonts",
           styleSheet: MINIFIED_FONTS
         }
       ];

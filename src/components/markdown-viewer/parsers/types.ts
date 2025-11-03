@@ -7,13 +7,12 @@ import type {
   RootContentMap
 } from "mdast";
 import type { Extension as MdastExtension } from "mdast-util-from-markdown";
-import { InlineMath } from "mdast-util-math/lib";
 import type { Extension as MicromarkExtension } from "micromark-util-types";
 
-export type ElementsWithoutCustomRender =
-  | Omit<RootContentMap, "tableCell" | "tableRow" | "math"> & {
-      inlineMath: InlineMath;
-    };
+export type ElementsWithoutCustomRender = Omit<
+  RootContentMap,
+  "tableCell" | "tableRow" | "inlineMath" | "blockMath"
+>;
 
 export type MarkdownViewerRenderMetadata = {
   allowDangerousHtml: boolean;

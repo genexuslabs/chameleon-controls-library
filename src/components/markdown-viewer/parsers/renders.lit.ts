@@ -285,8 +285,6 @@ export const markdownViewerRenderDictionary = {
       : element.value;
   },
 
-  inlineMath: (element) => html`<ch-latex-viewer .value=${element.value}></ch-latex-viewer>`,
-
   image: element =>
     html`<img
       src=${element.url}

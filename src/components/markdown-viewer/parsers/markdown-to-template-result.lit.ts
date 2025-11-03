@@ -35,7 +35,7 @@ const findLastNestedChild = (elementWithChildren: MdAstParent | Root) => {
 export const markdownToJSX = async (
   markdown: string,
   metadata: MarkdownViewerRenderMetadata,
-  extensions: MarkdownViewerExtension<object>[] | undefined,
+  extensions: MarkdownViewerExtension<object>[],
   renderChildren: (
     parent: MdAstParent,
     metadata: MarkdownViewerRenderMetadata,

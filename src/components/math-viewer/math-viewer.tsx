@@ -1,9 +1,16 @@
-import { Component, Element, h, Host, Prop, State, Watch } from "@stencil/core";
+import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
 import katex from "katex";
-import { MINIFIED_FONTS } from "./minified-fonts";
 
 /**
  * A component for rendering LaTeX math expressions using KaTeX.
+ *
+ * To use this component, you must include the necessary custom fonts in your
+ * project. These custom fonts are located in the
+ * `node_modules/@genexus/chameleon-controls-library/dist/assets/fonts` folder.
+ *
+ * To declare the font-faces of these custom fonts in your project, you must
+ * use the `math-viewer-font-faces` mixin located in the
+ * `node_modules/@genexus/chameleon-controls-library/dist/assets/scss/math-viewer-font-face.scss` folder
  */
 @Component({
   tag: "ch-math-viewer",
@@ -14,23 +21,7 @@ export class ChMathViewer {
   /**
    * Internal rendered HTML fragments from KaTeX.
    */
-  @State() renderedBlocks: string[] = [];
-
-  @Element() el!: HTMLChMathViewerElement;
-
-  /**
-   * Whether to display math in block mode (true) or inline mode (false).
-   */
-  @Prop({ reflect: true }) readonly displayMode: boolean = true;
-
-  /**
-   * Base URL for custom font files. For example, "/assets/fonts/".
-   */
-  @Prop() readonly fontsBaseUrl?: string;
-  @Watch("fontsBaseUrl")
-  fontsBaseUrlChanged() {
-    this.#loadFonts();
-  }
+  @State() renderedBlocks: { html: string; error: string | null }[] = [];
 
   /**
    * Specifies the LaTeX math string to render.
@@ -38,7 +29,6 @@ export class ChMathViewer {
   @Prop() readonly value?: string;
 
   @Watch("value")
-  @Watch("displayMode")
   updateRenderedBlocks() {
     if (!this.value) {
       this.renderedBlocks = [];
@@ -51,55 +41,36 @@ export class ChMathViewer {
       .filter(b => b);
 
     const htmlBlocks = blocks.map(block => {
+      const isMathBlock =
+        block.startsWith("\\[") ||
+        block.startsWith("\\(") ||
+        block.startsWith("$$") ||
+        block.startsWith("\\begin") ||
+        block.includes("&=") ||
+        block.includes("^");
+
+      // Remove unnecessary delimiters for KaTeX processing
+      const cleanBlock = block
+        .replace(/^\\\[|\\\]$/g, "")
+        .replace(/^\\\(|\\\)$/g, "")
+        .replace(/^\$\$|\$\$$/g, "")
+        .replace(/^\$|\$$/g, "");
+
       try {
-        const isMathBlock =
-          block.startsWith("\\[") ||
-          block.startsWith("\\(") ||
-          block.startsWith("$$") ||
-          block.startsWith("\\begin") ||
-          block.includes("&=") ||
-          block.includes("^") ||
-          this.displayMode;
-
-        // Remove unnecessary delimiters for KaTeX processing
-        const cleanBlock = block
-          .replace(/^\\\[|\\\]$/g, "")
-          .replace(/^\\\(|\\\)$/g, "")
-          .replace(/^\$\$|\$\$$/g, "")
-          .replace(/^\$|\$$/g, "");
-
-        return katex.renderToString(cleanBlock, {
-          throwOnError: false,
-          displayMode: isMathBlock,
-          output: "htmlAndMathml" // For accessibility reasons
-        });
+        return {
+          html: katex.renderToString(cleanBlock, {
+            throwOnError: true,
+            displayMode: isMathBlock,
+            output: "htmlAndMathml" // For accessibility reasons
+          }),
+          error: null
+        };
       } catch (err) {
-        return `<span style="color:red;">${(err as Error).message}</span>`;
+        return { html: cleanBlock, error: (err as Error).message };
       }
     });
 
     this.renderedBlocks = htmlBlocks;
-  }
-
-  // TODO: Avoid adding multiple theme elements if the property changes or if
-  // math-viewer is rendered multiple times.
-  #loadFonts = () => {
-    if (this.fontsBaseUrl) {
-      const themeRef = document.createElement("ch-theme");
-      themeRef.avoidFlashOfUnstyledContent = false;
-      themeRef.model = [
-        {
-          themeBaseUrl: this.fontsBaseUrl,
-          name: "ch-math-viewer-fonts",
-          styleSheet: MINIFIED_FONTS
-        }
-      ];
-      document.body.appendChild(themeRef);
-    }
-  };
-
-  connectedCallback() {
-    this.#loadFonts();
   }
 
   componentWillLoad() {
@@ -109,9 +80,20 @@ export class ChMathViewer {
   render() {
     return (
       <Host>
-        {this.renderedBlocks.map(html => (
-          <div innerHTML={html}></div>
-        ))}
+        {this.renderedBlocks.map(({ html, error }) =>
+          error === null ? (
+            <div innerHTML={html}></div>
+          ) : (
+            <span
+              aria-description={error}
+              title={error}
+              class="katex"
+              part="error"
+            >
+              {html}
+            </span>
+          )
+        )}
       </Host>
     );
   }

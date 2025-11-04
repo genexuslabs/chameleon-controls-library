@@ -1,5 +1,5 @@
 import { Config } from "@stencil/core";
-import { OutputTarget } from "@stencil/core/internal";
+import { CopyTask, OutputTarget } from "@stencil/core/internal";
 import { reactOutputTarget } from "@stencil/react-output-target";
 import { sass } from "@stencil/sass";
 
@@ -11,17 +11,25 @@ const isShowcaseBuild =
   process.env.npm_lifecycle_event?.startsWith("build.showcase") ||
   process.env.npm_lifecycle_event?.startsWith("start");
 
+const copyTaskForDistribution = (isShowcase: boolean): CopyTask[] => [
+  // Monaco
+  { src: "common/monaco/output/assets", dest: "assets" },
+
+  // KaTeX custom fonts (necessary for the ch-math-viewer)
+  {
+    src: "../node_modules/@genexus/chameleon-controls-library/dist/assets/fonts",
+    dest: isShowcase ? "assets/fonts" : "../assets/fonts"
+  },
+  {
+    src: "./components/math-viewer/scss-for-distribution",
+    dest: isShowcase ? "assets/scss" : "../assets/scss"
+  }
+];
+
 const showcaseOutput: OutputTarget = {
   type: "www",
   serviceWorker: null,
-  copy: [
-    {
-      src: "../node_modules/@genexus/chameleon-controls-library/dist/assets/fonts",
-      dest: "assets/fonts"
-    },
-    { src: "common/monaco/output/assets", dest: "assets" },
-    { src: "showcase" }
-  ]
+  copy: [{ src: "showcase" }, ...copyTaskForDistribution(true)]
 };
 
 copyKaTeXWoff2Files(
@@ -36,14 +44,7 @@ const outputTargets: OutputTarget[] = isShowcaseBuild
       {
         type: "dist",
         esmLoaderPath: "../loader",
-        copy: [
-          {
-            src: "node_modules/@genexus/chameleon-controls-library/dist/assets/fonts",
-            dest: "assets/fonts"
-          },
-
-          { src: "common/monaco/output/assets", dest: "assets" }
-        ]
+        copy: copyTaskForDistribution(false)
       },
       // dist-custom-elements output target is required for the React output target.
       // It generates the dist/components folder

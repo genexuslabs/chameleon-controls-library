@@ -59,10 +59,7 @@ const render: ShowcaseRender = () => (
       onInput={handleValueChange}
       ref={el => (textareaRef = el)}
     ></textarea>
-    <ch-math-viewer
-      fontsBaseUrl="/assets/fonts/"
-      value={initialMarkdown}
-    ></ch-math-viewer>
+    <ch-math-viewer value={initialMarkdown}></ch-math-viewer>
   </div>
 );
 

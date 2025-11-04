@@ -5,56 +5,7 @@ const PROCESSING_PLACEHOLDER = "{{ASSISTANT_NAME}}";
 
 let timeOut: NodeJS.Timeout;
 
-const ASSISTANT_RESPONSE_MARKDOWN = `
-### Code block {#code-block}
-To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tildes (\`~~~\`) on the lines before and after the code block.
-
-\`\`\`
-{
-  "firstName": "John",
-  "lastName": "Smith",
-  "age": 25
-}
-\`\`\`
-
-Another way to create code blocks is to indent every line of the block by at least four spaces or one tab.
-
-    <html>
-      <head>
-      </head>
-    </html>
-
-
-#### Syntax Highlighting {#syntax-highlighting}
-This feature allows you to add color highlighting for whatever language your code was written in.
-To add syntax highlighting, specify a language next to the backticks before the fenced code block.
-
-\`\`\`json
-{
-  "firstName": "John",
-  "lastName": "Smith",
-  "age": 25
-}
-\`\`\`
-
-\`\`\`javascript
-import React from 'react'
-import ReactDOM from 'react-dom'
-import Markdown from 'react-markdown'
-import rehypeHighlight from 'rehype-highlight'
-
-const markdown = \`
-# Your markdown here
-\`
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>{markdown}</Markdown>,
-  document.querySelector('#content')
-)
-\`\`\`
-
-### Horizontal Rules {#horizontal-rules}
-To create a horizontal rule, use three or more asterisks (\`***\`), dashes (\`---\`), or underscores (\`___\`) on a line by themselves.
+const ASSISTANT_RESPONSE_MARKDOWN = `\\begin{gather*}\n    \\iint_V mu(u,v) ,du,dv\n\\\\\n    \\iiint_V \\mu(u,v,w) \\,du\\,dv\\,dw\n\\end{gather*}\n\n\\[\n    \\oint_V f(s) \\,ds\n\\]\n\nIntegral \\(\\int_{a}^{b} x^2 \\,dx\\) inside text\n\nHello \\[ \\prod_{i=a}^{b} f(i) \\] world\n\nHello \\( \\prod_{i=a}^{b} f(i) \\) world\n\nHello $$ \\prod_{i=a}^{b} f(i) $$ world\n\nHello $ \\prod_{i=a}^{b} f(i) $ world\n\n\\textbf{Diffie-Hellman Key Exchange}\n\n\\text{The Diffie-Hellman key exchange is a method used to securely exchange cryptographic keys over a public channel.}\n\n\\textbf{Step-by-step Explanation}\n\n\\text{1. Publicly agree on a prime number } p \\text{ and a primitive root } g.\n\n\\text{2. Alice chooses a private key } a \\text{ and sends } A = g^a \\mod p \\text{ to Bob.}\n\n\\text{3. Bob chooses a private key } b \\text{ and sends } B = g^b \\mod p \\text{ to Alice.}\n\n\\text{4. Both compute the shared secret:}\n\n\\text{Shared secret} = B^a \\mod p = A^b \\mod p\n\n\\textbf{Mathematical Example}\n\n\\begin{aligned}\np &= 23 \\\\\ng &= 5 \\\\\na &= 6 \\quad (\\text{Alice's private key}) \\\\\nb &= 15 \\quad (\\text{Bob's private key}) \\\\\nA &= 5^6 \\mod 23 = 8 \\\\\nB &= 5^{15} \\mod 23 = 2 \\\\\ns &= B^a \\mod p = 2^6 \\mod 23 = 18 \\\\\n  &= A^b \\mod p = 8^{15} \\mod 23 = 18\n\\end{aligned}\n\n\\text{Thus, both share the secret key } s = 18.\n
 `;
 
 const ASSISTANT_RESPONSE_SHORT_MARKDOWN = `

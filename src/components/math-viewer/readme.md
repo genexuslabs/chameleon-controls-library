@@ -2,29 +2,33 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Overview
 
-A control to display multiple images, depending on the state (focus, hover,
-active or disabled) of a parent element.
+A component for rendering LaTeX math expressions using KaTeX.
+
+To use this component, you must include the necessary custom fonts in your
+project. This custom fonts are located in the
+`node_modules/@genexus/chameleon-controls-library/dist/assets/fonts` folder.
+
+To declare the font-faces of these custom fonts in your project, you must
+use the `math-viewer-font-faces` mixin located in the
+`node_modules/@genexus/chameleon-controls-library/dist/assets/scss/math-viewer-font-face.scss` folder
 
 ## Properties
 
-| Property               | Attribute  | Description                                                                                                                                                                                      | Type                                      | Default        |
-| ---------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- | -------------- |
-| `containerRef`         | --         | Specifies a reference for the container, in order to update the state of the icon. The reference must be an ancestor of the control. If not specified, the direct parent reference will be used. | `HTMLElement`                             | `undefined`    |
-| `disabled`             | `disabled` | Specifies if the icon is disabled.                                                                                                                                                               | `boolean`                                 | `false`        |
-| `getImagePathCallback` | --         | This property specifies a callback that is executed when the path the image needs to be resolved.                                                                                                | `(imageSrc: string) => GxImageMultiState` | `undefined`    |
-| `src`                  | `src`      | Specifies the src for the image.                                                                                                                                                                 | `string`                                  | `undefined`    |
-| `type`                 | `type`     | Specifies how the image will be rendered.                                                                                                                                                        | `"background" \| "mask"`                  | `"background"` |
+| Property | Attribute | Description                                | Type     | Default     |
+| -------- | --------- | ------------------------------------------ | -------- | ----------- |
+| `value`  | `value`   | Specifies the LaTeX math string to render. | `string` | `undefined` |
 
-## CSS Custom Properties
 
-| Name                         | Description                                                      |
-| ---------------------------- | ---------------------------------------------------------------- |
-| `--ch-image-background-size` | Specifies the size of the image. @default 100%                   |
-| `--ch-image-size`            | Specifies the box size that contains the image. @default 0.875em |
+## Shadow Parts
 
----
+| Part      | Description |
+| --------- | ----------- |
+| `"error"` |             |
 
-_Built with [StencilJS](https://stenciljs.com/)_
 
+----------------------------------------------
+
+*Built with [StencilJS](https://stenciljs.com/)*

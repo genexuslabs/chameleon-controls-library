@@ -1,13 +1,7 @@
 import type { Literal } from "mdast";
-import type { CompileContext } from "mdast-util-from-markdown";
-
-export interface ExtendedCompileContext extends CompileContext {
-  current: () => { value: string; [key: string]: any };
-}
 
 export interface ButtonReference extends Literal {
   type: "buttonReference";
-  value: string;
 }
 
 export type ExtendedContent = ButtonReference;
@@ -18,6 +12,6 @@ export type ExtendedContentMapping = {
 
 declare module "mdast" {
   interface StaticPhrasingContentMap {
-    ButtonReference: ButtonReference;
+    buttonReference: ButtonReference;
   }
 }

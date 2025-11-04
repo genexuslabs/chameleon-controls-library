@@ -165,18 +165,28 @@ export class ChMarkdownViewer {
       return;
     }
 
-    this.#templateResult = await markdownToJSX(
-      this.value,
-      {
-        allowDangerousHtml: true, // Allow dangerous in this version
-        codeRender: this.renderCode ?? defaultCodeRender,
-        lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
-        rawHTML: this.rawHtml,
-        showIndicator: this.showIndicator
-      },
-      this.#getExtensions(),
-      this.#renderChildren
-    );
+    // Don't crash the entire markdown viewer if something goes wrong
+    try {
+      this.#templateResult = await markdownToJSX(
+        this.value,
+        {
+          allowDangerousHtml: true, // Allow dangerous in this version
+          codeRender: this.renderCode ?? defaultCodeRender,
+          lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
+          rawHTML: this.rawHtml,
+          showIndicator: this.showIndicator
+        },
+        this.#getExtensions(),
+        this.#renderChildren
+      );
+    } catch (error) {
+      console.error(
+        "An error occurred while rendering the following value in the ch-markdown-viewer (this error won't update the current rendered value, it is only a console.error):\n",
+        this.value,
+        "\n\n",
+        error
+      );
+    }
   }
 
   render() {

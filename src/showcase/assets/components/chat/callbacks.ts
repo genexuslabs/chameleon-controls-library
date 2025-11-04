@@ -5,8 +5,8 @@ const PROCESSING_PLACEHOLDER = "{{ASSISTANT_NAME}}";
 
 let timeOut: NodeJS.Timeout;
 
-const ASSISTANT_RESPONSE_MARKDOWN = `\\begin{gather*}\n    \\iint_V mu(u,v) ,du,dv\n\\\\\n    \\iiint_V \\mu(u,v,w) \\,du\\,dv\\,dw\n\\end{gather*}\n\n\\[\n    \\oint_V f(s) \\,ds\n\\]\n\nIntegral \\(\\int_{a}^{b} x^2 \\,dx\\) inside text\n\nHello \\[ \\prod_{i=a}^{b} f(i) \\] world\n\nHello \\( \\prod_{i=a}^{b} f(i) \\) world\n\nHello $$ \\prod_{i=a}^{b} f(i) $$ world\n\nHello $ \\prod_{i=a}^{b} f(i) $ world\n\n\\textbf{Diffie-Hellman Key Exchange}\n\n\\text{The Diffie-Hellman key exchange is a method used to securely exchange cryptographic keys over a public channel.}\n\n\\textbf{Step-by-step Explanation}\n\n\\text{1. Publicly agree on a prime number } p \\text{ and a primitive root } g.\n\n\\text{2. Alice chooses a private key } a \\text{ and sends } A = g^a \\mod p \\text{ to Bob.}\n\n\\text{3. Bob chooses a private key } b \\text{ and sends } B = g^b \\mod p \\text{ to Alice.}\n\n\\text{4. Both compute the shared secret:}\n\n\\text{Shared secret} = B^a \\mod p = A^b \\mod p\n\n\\textbf{Mathematical Example}\n\n\\begin{aligned}\np &= 23 \\\\\ng &= 5 \\\\\na &= 6 \\quad (\\text{Alice's private key}) \\\\\nb &= 15 \\quad (\\text{Bob's private key}) \\\\\nA &= 5^6 \\mod 23 = 8 \\\\\nB &= 5^{15} \\mod 23 = 2 \\\\\ns &= B^a \\mod p = 2^6 \\mod 23 = 18 \\\\\n  &= A^b \\mod p = 8^{15} \\mod 23 = 18\n\\end{aligned}\n\n\\text{Thus, both share the secret key } s = 18.\n
-`;
+const ASSISTANT_RESPONSE_MARKDOWN =
+  "¡Claro! 😊  \nVeamos un ejemplo sencillo paso a paso.\n\n---\n\n### Ejemplo:\nQueremos derivar la siguiente ecuación:\n\n\\[y = 3x^2 + 2x + 5\\]\n\n---\n\n### Paso 1: Identificar los términos\nLa ecuación tiene tres términos:\n- \\(3x^2\\)\n- \\(2x\\)\n- \\(5\\)\n\n---\n\n### Paso 2: Aplicar las reglas de derivación básicas\n- La derivada de \\(x^n\\) es \\(n \\cdot x^{n-1}\\)\n- La derivada de una constante es \\(0\\)\n\n---\n\n### Paso 3: Derivar cada término\n\n\\[\\frac{d}{dx}(3x^2) = 6x\\]\n\n\\[\\frac{d}{dx}(2x) = 2\\]\n\n\\[\\frac{d}{dx}(5) = 0\\]\n\n---\n\n### Paso 4: Sumar los resultados\n\n\\[\\frac{dy}{dx} = 6x + 2\\]\n\n---\n\n✅ **Resultado final:**\n\n\\[\\boxed{y' = 6x + 2}\\]\n\n---\n\nSi quieres, puedo mostrarte un ejemplo más complejo (por ejemplo, con funciones trigonométricas o exponenciales). ¿Quieres que te muestre uno así?";
 
 const ASSISTANT_RESPONSE_SHORT_MARKDOWN = `
 ### Code block {#code-block}
@@ -69,10 +69,10 @@ function dummyStreaming(
       chatRef.updateLastMessage(
         {
           role: "assistant",
-          content: stringToDisplay.substring(counter - 20, counter),
+          content: stringToDisplay.substring(counter - 10, counter),
 
           // {
-          //   message: stringToDisplay.substring(counter - 20, counter),
+          //   message: stringToDisplay.substring(counter - 10, counter),
           //   files: streamingCompleted
           //     ? [
           //         {
@@ -92,7 +92,7 @@ function dummyStreaming(
       );
 
       if (!streamingCompleted) {
-        dummyStreaming(chatRef, counter + 20, stringToDisplay, "concat");
+        dummyStreaming(chatRef, counter + 10, stringToDisplay, "concat");
       }
     },
     counter % 200 === 0 ? 50 : 40

@@ -8,15 +8,15 @@ export const markdownReadmeModel = `\\begin{gather*}
     \\oint_V f(s) \\,ds
 \\]
 
-Integral \\(\\int_{a}^{b} x^2 \\,dx\\) inside text
+\\(\\int_{a}^{b} x^2 \\,dx\\)
 
-Hello \\[ \\prod_{i=a}^{b} f(i) \\] world
+\\[ \\prod_{i=a}^{b} f(i) \\]
 
-Hello \\( \\prod_{i=a}^{b} f(i) \\) world
+\\( \\prod_{i=a}^{b} f(i) \\)
 
-Hello $$ \\prod_{i=a}^{b} f(i) $$ world
+$$ \\prod_{i=a}^{b} f(i) $$
 
-Hello $ \\prod_{i=a}^{b} f(i) $ world
+$ \\prod_{i=a}^{b} f(i) $
 
 \\textbf{Diffie-Hellman Key Exchange}
 

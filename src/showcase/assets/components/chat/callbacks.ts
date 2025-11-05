@@ -5,8 +5,57 @@ const PROCESSING_PLACEHOLDER = "{{ASSISTANT_NAME}}";
 
 let timeOut: NodeJS.Timeout;
 
-const ASSISTANT_RESPONSE_MARKDOWN =
-  "¡Claro! 😊  \nVeamos un ejemplo sencillo paso a paso.\n\n---\n\n### Ejemplo:\nQueremos derivar la siguiente ecuación:\n\n\\[y = 3x^2 + 2x + 5\\]\n\n---\n\n### Paso 1: Identificar los términos\nLa ecuación tiene tres términos:\n- \\(3x^2\\)\n- \\(2x\\)\n- \\(5\\)\n\n---\n\n### Paso 2: Aplicar las reglas de derivación básicas\n- La derivada de \\(x^n\\) es \\(n \\cdot x^{n-1}\\)\n- La derivada de una constante es \\(0\\)\n\n---\n\n### Paso 3: Derivar cada término\n\n\\[\\frac{d}{dx}(3x^2) = 6x\\]\n\n\\[\\frac{d}{dx}(2x) = 2\\]\n\n\\[\\frac{d}{dx}(5) = 0\\]\n\n---\n\n### Paso 4: Sumar los resultados\n\n\\[\\frac{dy}{dx} = 6x + 2\\]\n\n---\n\n✅ **Resultado final:**\n\n\\[\\boxed{y' = 6x + 2}\\]\n\n---\n\nSi quieres, puedo mostrarte un ejemplo más complejo (por ejemplo, con funciones trigonométricas o exponenciales). ¿Quieres que te muestre uno así?";
+const ASSISTANT_RESPONSE_MARKDOWN = `
+### Code block {#code-block}
+To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tildes (\`~~~\`) on the lines before and after the code block.
+
+\`\`\`
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": 25
+}
+\`\`\`
+
+Another way to create code blocks is to indent every line of the block by at least four spaces or one tab.
+
+    <html>
+      <head>
+      </head>
+    </html>
+
+
+#### Syntax Highlighting {#syntax-highlighting}
+This feature allows you to add color highlighting for whatever language your code was written in.
+To add syntax highlighting, specify a language next to the backticks before the fenced code block.
+
+\`\`\`json
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": 25
+}
+\`\`\`
+
+\`\`\`javascript
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Markdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
+
+const markdown = \`
+# Your markdown here
+\`
+
+ReactDOM.render(
+  <Markdown rehypePlugins={[rehypeHighlight]}>{markdown}</Markdown>,
+  document.querySelector('#content')
+)
+\`\`\`
+
+### Horizontal Rules {#horizontal-rules}
+To create a horizontal rule, use three or more asterisks (\`***\`), dashes (\`---\`), or underscores (\`___\`) on a line by themselves.
+`;
 
 const ASSISTANT_RESPONSE_SHORT_MARKDOWN = `
 ### Code block {#code-block}
@@ -95,7 +144,7 @@ function dummyStreaming(
         dummyStreaming(chatRef, counter + 10, stringToDisplay, "concat");
       }
     },
-    counter % 200 === 0 ? 50 : 40
+    counter % 200 === 0 ? 60 : 50
   );
 }
 
@@ -140,7 +189,7 @@ export const chatTranslations: ChatTranslations = {
     sendInput: "Ask me a question..."
   },
   text: {
-    copyCodeButton: "Copy code",
+    copyCodeButton: undefined,
     copyMessageContent: "Copy",
     downloadCodeButton: "Download",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
@@ -287,5 +336,10 @@ export const codeFixerRecord: ChatMessage[] = [
         }
       ]
     }
+  },
+  {
+    id: "10",
+    role: "assistant",
+    content: ASSISTANT_RESPONSE_SHORT_MARKDOWN
   }
 ];

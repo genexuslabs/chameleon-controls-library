@@ -8,7 +8,7 @@
 A component for rendering LaTeX math expressions using KaTeX.
 
 To use this component, you must include the necessary custom fonts in your
-project. This custom fonts are located in the
+project. These custom fonts are located in the
 `node_modules/@genexus/chameleon-controls-library/dist/assets/fonts` folder.
 
 To declare the font-faces of these custom fonts in your project, you must
@@ -17,9 +17,10 @@ use the `math-viewer-font-faces` mixin located in the
 
 ## Properties
 
-| Property | Attribute | Description                                | Type     | Default     |
-| -------- | --------- | ------------------------------------------ | -------- | ----------- |
-| `value`  | `value`   | Specifies the LaTeX math string to render. | `string` | `undefined` |
+| Property      | Attribute      | Description                                                   | Type                  | Default     |
+| ------------- | -------------- | ------------------------------------------------------------- | --------------------- | ----------- |
+| `displayMode` | `display-mode` | Specifies whether to render the math in block or inline mode. | `"block" \| "inline"` | `"block"`   |
+| `value`       | `value`        | Specifies the LaTeX math string to render.                    | `string`              | `undefined` |
 
 
 ## Shadow Parts

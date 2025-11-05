@@ -51,6 +51,7 @@ graph TD;
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
+  ch-tab-render --> ch-textblock
   style ch-showcase fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

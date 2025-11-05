@@ -1,24 +1,11 @@
 // mdast-util-from-markdown-math.ts
-import type { Literal } from "mdast";
 import type {
   CompileContext,
   Extension as FromMarkdownExtension,
   Handle
 } from "mdast-util-from-markdown";
 import { Token } from "micromark-util-types";
-
-/**
- * Local node interfaces matching your types.
- */
-export interface BlockMath extends Literal {
-  type: "blockMath";
-  value: string;
-}
-
-export interface InlineMath extends Literal {
-  type: "inlineMath";
-  value: string;
-}
+import { BlockMath, InlineMath } from "./types";
 
 /**
  * Handlers for converting micromark tokens into MDAST nodes.

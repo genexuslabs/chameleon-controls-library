@@ -13,6 +13,10 @@ import {
   ThematicBreak,
   Yaml
 } from "mdast";
+import type {
+  BlockMath,
+  InlineMath
+} from "../../../components/markdown-viewer/parsers/math/types";
 
 export type ElementsWithChildren = Exclude<
   RootContent,
@@ -27,11 +31,13 @@ export type ElementsWithChildren = Exclude<
   | Text
   | ThematicBreak
   | Yaml
+  | InlineMath
+  | BlockMath
 >;
 
 export type ElementsWithoutCustomRender = Omit<
   RootContentMap,
-  "tableCell" | "tableRow"
+  "tableCell" | "tableRow" | "blockMath" | "inlineMath"
 >;
 
 /**

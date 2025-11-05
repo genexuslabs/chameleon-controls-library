@@ -186,6 +186,7 @@ graph TD;
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
+  ch-tab-render --> ch-textblock
   ch-showcase --> ch-flexible-layout-render
   ch-test-flexible-layout --> ch-flexible-layout-render
   style ch-flexible-layout-render fill:#f9f,stroke:#333,stroke-width:4px

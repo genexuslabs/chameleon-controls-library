@@ -80,7 +80,8 @@
     "vite-plugin-static-copy": "~3.1.4"
   },
   "peerDependencies": {
-    "lit": "^3.3.1"
+    "lit": "^3.3.1",
+    "katex": "~0.16.25"
   },
   "husky": {
     "hooks": {

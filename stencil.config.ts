@@ -1,8 +1,9 @@
 import { Config } from "@stencil/core";
-import { OutputTarget } from "@stencil/core/internal";
+import { CopyTask, OutputTarget } from "@stencil/core/internal";
 import { reactOutputTarget } from "@stencil/react-output-target";
 import { sass } from "@stencil/sass";
 
+import { copyKaTeXWoff2Files } from "./copy-katex-fonts.ts";
 import { reactOutputExcludedComponents } from "./src/framework-integrations.ts";
 
 const isTesting = process.env.npm_lifecycle_script?.startsWith("stencil test");
@@ -10,14 +11,30 @@ const isShowcaseBuild =
   process.env.npm_lifecycle_event?.startsWith("build.showcase") ||
   process.env.npm_lifecycle_event?.startsWith("start");
 
+const copyTaskForDistribution = (isShowcase: boolean): CopyTask[] => [
+  // Monaco
+  { src: "common/monaco/output/assets", dest: "assets" },
+
+  // KaTeX custom fonts (necessary for the ch-math-viewer)
+  {
+    src: "../node_modules/@genexus/chameleon-controls-library/dist/assets/fonts",
+    dest: isShowcase ? "assets/fonts" : "../assets/fonts"
+  },
+  {
+    src: "./components/math-viewer/scss-for-distribution",
+    dest: isShowcase ? "assets/scss" : "../assets/scss"
+  }
+];
+
 const showcaseOutput: OutputTarget = {
   type: "www",
   serviceWorker: null,
-  copy: [
-    { src: "common/monaco/output/assets", dest: "assets" },
-    { src: "showcase" }
-  ]
+  copy: [{ src: "showcase" }, ...copyTaskForDistribution(true)]
 };
+
+copyKaTeXWoff2Files(
+  "node_modules/@genexus/chameleon-controls-library/dist/assets/fonts"
+);
 
 // Only build the showcase in dev mode or when executing the build.showcase
 // script, so we don't delete the dist folder when executing the dev server
@@ -27,7 +44,7 @@ const outputTargets: OutputTarget[] = isShowcaseBuild
       {
         type: "dist",
         esmLoaderPath: "../loader",
-        copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
+        copy: copyTaskForDistribution(false)
       },
       // dist-custom-elements output target is required for the React output target.
       // It generates the dist/components folder
@@ -93,6 +110,7 @@ export const config: Config = {
       "src/components/tree-view/tests/utils.e2e.ts"
     ]
   },
+  sourceMap: false,
   bundles: [
     {
       components: ["ch-accordion-render"] // Make sure the ch-accordion-render control is not bundled with other components

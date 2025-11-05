@@ -34,6 +34,7 @@ export const config: Config = {
 
   watchIgnoredRegex: [
     /vite\.config\.ts$/,
+    /vite-dev\.config\.ts$/,
     /index\.html$/,
     /package\.json$/,
     /start-dev-server\.js$/,

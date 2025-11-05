@@ -197,6 +197,7 @@ export type ChameleonStories = {
 export type ChameleonCustomStories = {
   "code-editor": ShowcaseCustomStory;
   "code-diff-editor": ShowcaseCustomStory;
+  "math-viewer": ShowcaseCustomStory;
   "markdown-viewer": ShowcaseCustomStory;
   "flexible-layout": ShowcaseCustomStory;
   paginator: ShowcaseCustomStory;

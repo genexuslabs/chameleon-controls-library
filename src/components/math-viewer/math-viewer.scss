@@ -1,5 +1,9 @@
 @import "./katex.scss";
 
 :host {
+  display: block;
+}
+
+:host([display-mode="inline"]) {
   display: inline-block;
 }

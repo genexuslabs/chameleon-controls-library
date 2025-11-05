@@ -24,6 +24,11 @@ export class ChMathViewer {
   @State() renderedBlocks: { html: string; error: string | null }[] = [];
 
   /**
+   * Specifies whether to render the math in block or inline mode.
+   */
+  @Prop({ reflect: true }) readonly displayMode?: "block" | "inline" = "block";
+
+  /**
    * Specifies the LaTeX math string to render.
    */
   @Prop() readonly value?: string;
@@ -60,7 +65,7 @@ export class ChMathViewer {
         return {
           html: katex.renderToString(cleanBlock, {
             throwOnError: true,
-            displayMode: isMathBlock,
+            displayMode: isMathBlock || this.displayMode === "block",
             output: "htmlAndMathml" // For accessibility reasons
           }),
           error: null

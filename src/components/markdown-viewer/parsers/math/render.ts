@@ -5,7 +5,7 @@ import { ExtendedContentMapping } from "./types";
 export const render = {
   blockMath: element =>
     html`<ch-math-viewer
-      class="math-viewer-block"
+      display-mode="block"
       .value=${
         // The final replace is a WA because the parser doesn't remove the final backslash
         element.value.replace(/\\$/, "")
@@ -14,6 +14,7 @@ export const render = {
 
   inlineMath: element =>
     html`<ch-math-viewer
+      display-mode="inline"
       .value=${
         // The final replace is a WA because the parser doesn't remove the final backslash
         element.value.replace(/\\$/, "")

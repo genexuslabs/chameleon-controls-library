@@ -1,4 +1,6 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { SELECTED_COLOR } from "../constants";
+import { ColorPickerTranslations } from "../translations";
 
 const defaultTranslations = {
   accessibleName: {
@@ -16,14 +18,14 @@ const defaultTranslations = {
     colorFieldDescription: "2d color field",
     hueSliderControl: "Hue Slider",
     alphaSliderControl: "Alpha Slider",
-    colorPaletteButton: "Selected color ${SELECTED_COLOR}",
-    currentColorPreview: "Current color: ${SELECTED_COLOR}"
+    colorPaletteButton: `Selected color ${SELECTED_COLOR}`,
+    currentColorPreview: `Current color: ${SELECTED_COLOR}`
   },
   text: {
     colorFieldLabel: "",
     colorPaletteSection: "Color Palette",
     colorFormatSelector: "Color Format",
-    currentColorPreviewLabel: "Color Preview",
+    currentColorPreviewText: "Color Preview",
     hueChannelLabel: "",
     alphaChannelLabel: "",
     hexadecimalFormat: "HEX",
@@ -38,7 +40,7 @@ const defaultTranslations = {
     lightnessChannelInputLabel: "L",
     valueChannelInputLabel: "V"
   }
-};
+} as ColorPickerTranslations;
 
 const customTranslations = {
   accessibleName: {
@@ -56,14 +58,14 @@ const customTranslations = {
     colorFieldDescription: "2d color field",
     hueSliderControl: "Custom hue slider",
     alphaSliderControl: "Custom alpha slider",
-    colorPaletteButton: "Custom palette color ${SELECTED_COLOR}",
-    currentColorPreview: "Custom color preview: ${SELECTED_COLOR}"
+    colorPaletteButton: `Custom palette color ${SELECTED_COLOR}`,
+    currentColorPreview: `Custom color preview: ${SELECTED_COLOR}`
   },
   text: {
     colorFieldLabel: "",
     colorPaletteSection: "Color Palette",
     colorFormatSelector: "Color Format",
-    currentColorPreviewLabel: "Color Preview",
+    currentColorPreviewText: "Color Preview",
     hueChannelLabel: "",
     alphaChannelLabel: "",
     hexadecimalFormat: "HEX",
@@ -78,7 +80,7 @@ const customTranslations = {
     lightnessChannelInputLabel: "L",
     valueChannelInputLabel: "V"
   }
-};
+} as ColorPickerTranslations;
 
 describe("[ch-color-picker][accessibility]", () => {
   describe("ARIA attributes", () => {

@@ -22,30 +22,32 @@ export const fromStringToColorVariants = (
     return null;
   }
 
-  let rgbaColor: { r: number; g: number; b: number; a?: number } | null = null;
+  const colorParsers = {
+    hex: fromHexStringToRgbaColor,
+    hsl: fromHslStringToRgbaColor,
+    hsla: fromHslStringToRgbaColor,
+    hsv: fromHsvStringToRgbColor,
+    rgb: fromRgbaStringToRgbaColor,
+    rgba: fromRgbaStringToRgbaColor
+  } as unknown as {
+    r: number;
+    g: number;
+    b: number;
+    a?: number;
+  } | null;
 
-  switch (format) {
-    case "hex":
-      rgbaColor = fromHexStringToRgbaColor(color);
-      break;
-    case "hsl":
-    case "hsla":
-      rgbaColor = fromHslStringToRgbaColor(color);
-      break;
-    case "hsv":
-      rgbaColor = fromHsvStringToRgbColor(color);
-      break;
-    case "rgb":
-    case "rgba":
-      rgbaColor = fromRgbaStringToRgbaColor(color);
-      break;
+  const parser = colorParsers[format];
+  if (!parser) {
+    return null;
   }
+
+  const rgbaColor = parser(color);
 
   if (!rgbaColor) {
     return null;
   }
 
-  const { r, g, b, a } = rgbaColor;
+  const { r, g, b, a = 1 } = rgbaColor;
 
   return {
     rgb: `rgb(${r}, ${g}, ${b})`,

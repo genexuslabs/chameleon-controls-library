@@ -50,12 +50,6 @@ export class ChColorPicker {
   @Element() el: HTMLChColorPickerElement;
 
   /**
-   * Specifies a short string that authors associate with an element
-   * to provide users of assistive technologies with a label for the element.
-   */
-  @Prop() readonly accessibleName?: string | undefined;
-
-  /**
    * Stores all color format variants (rgb, hex, hsl, hsv) of the current color
    */
   @State() private colorVariants: ColorVariants;
@@ -72,6 +66,12 @@ export class ChColorPicker {
     name: string;
     render: () => Element;
   }> = [];
+
+  /**
+   * Specifies a short string that authors associate with an element
+   * to provide users of assistive technologies with a label for the element.
+   */
+  @Prop() readonly accessibleName?: string | undefined;
 
   /**
    * Specifies the step size in pixels for the alpha slider.
@@ -186,7 +186,7 @@ export class ChColorPicker {
       colorFieldLabel: "",
       colorPaletteSection: "Color Palette",
       colorFormatSelector: "Color Format",
-      currentColorPreviewLabel: "Color Preview",
+      currentColorPreviewText: "Color Preview",
       hueChannelLabel: "Hue",
       alphaChannelLabel: "Alpha",
       hexadecimalFormat: "HEX",
@@ -404,7 +404,7 @@ export class ChColorPicker {
   // Handles color palette button clicks
   #handleColorPaletteButtonClick = (event: Event): void => {
     const button = event.target as HTMLButtonElement;
-    const color = button.dataset.color;
+    const color = button.value;
 
     if (color) {
       this.#handleColorPaletteClick(color);
@@ -606,8 +606,6 @@ export class ChColorPicker {
         <ch-color-field
           id="color-field"
           class="color-picker-field"
-          aria-disabled={this.disabled ? "true" : null}
-          aria-readonly={this.readonly ? "true" : null}
           disabled={this.disabled}
           readonly={this.readonly}
           part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_FIELD}
@@ -615,7 +613,11 @@ export class ChColorPicker {
           step={this.colorFieldStep}
           accessibleName={accessibleName.colorFieldControl}
           accessibleRoleDescription={accessibleName.colorFieldDescription}
-          onInput={this.#handleColorFieldChange}
+          onInput={
+            !this.disabled && !this.readonly
+              ? this.#handleColorFieldChange
+              : undefined
+          }
         ></ch-color-field>
       </div>
     );
@@ -630,29 +632,30 @@ export class ChColorPicker {
 
     return (
       <div class="slider-group">
-        {text.hueChannelLabel && (
+        {text.hueChannelInputLabel && (
           <label
             htmlFor="hue-slider"
             part={COLOR_PICKER_PARTS_DICTIONARY.HUE_SLIDER_LABEL}
           >
-            {text.hueChannelLabel}
+            {text.hueChannelInputLabel}
           </label>
         )}
         <ch-slider
           id="hue-slider"
           accessibleName={
-            !text.hueChannelLabel ? accessibleName.hueSliderControl : undefined
+            !text.hueChannelInputLabel
+              ? accessibleName.hueSliderControl
+              : undefined
           }
-          aria-disabled={this.disabled ? "true" : null}
           disabled={this.disabled}
-          class="slider hue-slider"
+          class="hue-slider"
           showValue={true}
           step={this.hueSliderStep}
           value={hueValue}
           part={COLOR_PICKER_PARTS_DICTIONARY.HUE_SLIDER}
           minValue={0}
           maxValue={360}
-          onChange={this.#handleHueChange}
+          onChange={!this.disabled ? this.#handleHueChange : undefined}
         ></ch-slider>
       </div>
     );
@@ -681,16 +684,15 @@ export class ChColorPicker {
               ? accessibleName.alphaSliderControl
               : undefined
           }
-          aria-disabled={this.disabled ? "true" : null}
           disabled={this.disabled}
-          class="slider alpha-slider"
+          class="alpha-slider"
           showValue={true}
           step={this.alphaSliderStep}
           value={alphaValue}
           part={COLOR_PICKER_PARTS_DICTIONARY.ALPHA_SLIDER}
           minValue={0}
           maxValue={100}
-          onChange={this.#handleAlphaChange}
+          onChange={!this.disabled ? this.#handleAlphaChange : undefined}
         ></ch-slider>
       </div>
     );
@@ -707,13 +709,10 @@ export class ChColorPicker {
         class="color-preview-container"
         part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PREVIEW_CONTAINER}
       >
-        {text.currentColorPreviewLabel && (
-          <label
-            htmlFor="color-preview"
-            part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PREVIEW_LABEL}
-          >
-            {text.currentColorPreviewLabel}
-          </label>
+        {text.currentColorPreviewText && (
+          <span part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PREVIEW_TEXT}>
+            {text.currentColorPreviewText}
+          </span>
         )}
         <div
           id="color-preview"
@@ -753,17 +752,13 @@ export class ChColorPicker {
           role="group"
           aria-labelledby="color-palette-label"
         >
-          {this.colorPalette.map((color, index) => (
-            <li
-              key={index}
-              part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_ITEM}
-            >
+          {this.colorPalette.map(color => (
+            <li part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_ITEM}>
               <button
                 class="color-palette-button"
-                aria-disabled={this.disabled ? "true" : null}
                 disabled={this.disabled}
                 style={{ backgroundColor: color }}
-                data-color={color}
+                value={color}
                 onClick={this.#handleColorPaletteButtonClick}
                 aria-label={accessibleName.colorPaletteButton.replace(
                   SELECTED_COLOR,
@@ -807,19 +802,16 @@ export class ChColorPicker {
           </label>
         )}
         <ch-combo-box-render
-          class="combo-box"
           id="color-format-combo"
           name="color-format-combo"
           model={formatOptions}
           accessibleName={accessibleName.colorFormatOptions}
-          aria-disabled={this.disabled ? "true" : null}
-          aria-readonly={this.readonly ? "true" : null}
           disabled={this.disabled}
           readonly={this.readonly}
           exportparts={COMBO_BOX_EXPORT_PARTS}
           hostParts={COLOR_PICKER_PARTS_DICTIONARY.COLOR_FORMAT__COMBO_BOX}
           value={this.selectedColorFormat}
-          onChange={this.#handleFormatChange}
+          onChange={!this.disabled ? this.#handleFormatChange : undefined}
         />
       </div>
     );
@@ -827,6 +819,10 @@ export class ChColorPicker {
 
   // Renders the hex input group
   #renderHexInput = (): Element => {
+    // Note: We are using an <input> instead of <ch-edit> for the hexadecimal input field
+    // because the validation pattern was preventing changes to the input when deleting or modifying it.
+    // TODO: Review and determine if changes should be made to <ch-edit>
+    // to better handle validation and allow for a smoother user experience. (AGE052-32)
     if (this.selectedColorFormat !== "hex") {
       return null;
     }
@@ -848,13 +844,19 @@ export class ChColorPicker {
         <input
           id="hex-input"
           type="text"
-          aria-label={accessibleName.hexadecimalInput}
-          aria-disabled={this.disabled ? "true" : null}
-          aria-readonly={this.readonly ? "true" : null}
+          aria-label={
+            !text.hexadecimalFormat
+              ? accessibleName.hexadecimalInput
+              : undefined
+          }
           disabled={this.disabled}
           readonly={this.readonly}
           value={this.colorVariants.hex}
-          onInput={this.#handleHexInputChange}
+          onInput={
+            !this.disabled && !this.readonly
+              ? this.#handleHexInputChange
+              : undefined
+          }
           pattern="^#[0-9A-Fa-f]{6}$"
           maxLength={7}
           part={tokenMap({
@@ -869,6 +871,11 @@ export class ChColorPicker {
 
   // Renders the RGB input group
   #renderRgbInputs = (): Element => {
+    // Note: We are using <input> instead of <ch-edit> for this case
+    // because the current implementation does not enforce the max and min
+    // constraints as expected, which could lead to potential user input errors.
+    // TODO: Review and determine how to enhance <ch-edit> to properly handle
+    // max and min validation, ensuring a smoother user experience. (AGE052-33)
     if (this.selectedColorFormat !== "rgb") {
       return null;
     }
@@ -900,12 +907,20 @@ export class ChColorPicker {
             id="rgb-red"
             data-channel="r"
             type="number"
-            aria-label={accessibleName.redChannelInput}
+            aria-label={
+              !text.redChannelInputLabel
+                ? accessibleName.redChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleRgbInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleRgbInputChange
+                : undefined
+            }
             min={0}
             max={255}
             value={rgbMatch[1]}
@@ -932,12 +947,20 @@ export class ChColorPicker {
             id="rgb-green"
             data-channel="g"
             type="number"
-            aria-label={accessibleName.greenChannelInput}
+            aria-label={
+              !text.greenChannelInputLabel
+                ? accessibleName.greenChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleRgbInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleRgbInputChange
+                : undefined
+            }
             min={0}
             max={255}
             value={rgbMatch[2]}
@@ -964,12 +987,20 @@ export class ChColorPicker {
             id="rgb-blue"
             data-channel="b"
             type="number"
-            aria-label={accessibleName.blueChannelInput}
+            aria-label={
+              !text.blueChannelInputLabel
+                ? accessibleName.blueChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleRgbInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleRgbInputChange
+                : undefined
+            }
             min={0}
             max={255}
             value={rgbMatch[3]}
@@ -986,6 +1017,11 @@ export class ChColorPicker {
 
   // Renders the HSL input group
   #renderHslInputs = (): Element => {
+    // Note: We are using <input> instead of <ch-edit> for this case
+    // because the current implementation does not enforce the max and min
+    // constraints as expected, which could lead to potential user input errors.
+    // TODO: Review and determine how to enhance <ch-edit> to properly handle
+    // max and min validation, ensuring a smoother user experience. (AGE052-33)
     if (this.selectedColorFormat !== "hsl") {
       return null;
     }
@@ -1017,12 +1053,20 @@ export class ChColorPicker {
             id="hsl-h"
             data-channel="h"
             type="number"
-            aria-label={accessibleName.hueChannelInput}
+            aria-label={
+              !text.hueChannelInputLabel
+                ? accessibleName.hueChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleHslInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleHslInputChange
+                : undefined
+            }
             min={0}
             max={360}
             value={Math.round(parseFloat(hslMatch[1]))}
@@ -1049,12 +1093,20 @@ export class ChColorPicker {
             id="hsl-s"
             data-channel="s"
             type="number"
-            aria-label={accessibleName.saturationChannelInput}
+            aria-label={
+              !text.saturationChannelInputLabel
+                ? accessibleName.saturationChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleHslInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleHslInputChange
+                : undefined
+            }
             min={0}
             max={100}
             value={Math.round(parseFloat(hslMatch[2]))}
@@ -1082,12 +1134,20 @@ export class ChColorPicker {
             id="hsl-l"
             data-channel="l"
             type="number"
-            aria-label={accessibleName.lightnessChannelInput}
+            aria-label={
+              !text.lightnessChannelInputLabel
+                ? accessibleName.lightnessChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleHslInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleHslInputChange
+                : undefined
+            }
             min={0}
             max={100}
             value={Math.round(parseFloat(hslMatch[3]))}
@@ -1105,6 +1165,11 @@ export class ChColorPicker {
 
   // Renders the HSV input group
   #renderHsvInputs = (): Element => {
+    // Note: We are using <input> instead of <ch-edit> for this case
+    // because the current implementation does not enforce the max and min
+    // constraints as expected, which could lead to potential user input errors.
+    // TODO: Review and determine how to enhance <ch-edit> to properly handle
+    // max and min validation, ensuring a smoother user experience. (AGE052-33)
     if (this.selectedColorFormat !== "hsv") {
       return null;
     }
@@ -1135,12 +1200,20 @@ export class ChColorPicker {
             id="hsv-h"
             data-channel="h"
             type="number"
-            aria-label={accessibleName.hueChannelInput}
+            aria-label={
+              !text.hueChannelInputLabel
+                ? accessibleName.hueChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleHsvInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleHsvInputChange
+                : undefined
+            }
             min={0}
             max={360}
             value={Math.round(hsvH)}
@@ -1167,12 +1240,20 @@ export class ChColorPicker {
             id="hsv-s"
             data-channel="s"
             type="number"
-            aria-label={accessibleName.saturationChannelInput}
+            aria-label={
+              !text.saturationChannelInputLabel
+                ? accessibleName.saturationChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleHsvInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleHsvInputChange
+                : undefined
+            }
             min={0}
             max={100}
             value={Math.round(hsvS)}
@@ -1200,12 +1281,20 @@ export class ChColorPicker {
             id="hsv-v"
             data-channel="v"
             type="number"
-            aria-label={accessibleName.valueChannelInput}
+            aria-label={
+              !text.valueChannelInputLabel
+                ? accessibleName.valueChannelInput
+                : undefined
+            }
             aria-disabled={this.disabled ? "true" : null}
             aria-readonly={this.readonly ? "true" : null}
             disabled={this.disabled}
             readonly={this.readonly}
-            onInput={this.#handleHsvInputChange}
+            onInput={
+              !this.disabled && !this.readonly
+                ? this.#handleHsvInputChange
+                : undefined
+            }
             min={0}
             max={100}
             value={Math.round(hsvV)}
@@ -1223,6 +1312,11 @@ export class ChColorPicker {
 
   // Renders the alpha input group
   #renderAlphaInput = (): Element => {
+    // Note: We are using an <input> instead of <ch-edit> for this case
+    // because the current implementation does not enforce the max and min
+    // constraints as expected, which could lead to potential user input errors.
+    // TODO: Review and determine how to enhance <ch-edit> to properly handle
+    // max and min validation, ensuring a smoother user experience. (AGE052-33)
     const alphaMatch = this.colorVariants.rgba.match(RGBA_REGEX);
     const alphaValue = alphaMatch ? parseFloat(alphaMatch[1]) * 100 : 100;
     const { accessibleName, text } = this.translations;
@@ -1243,12 +1337,20 @@ export class ChColorPicker {
         <input
           id="alpha-input"
           type="number"
-          aria-label={accessibleName.alphaChannelInput}
+          aria-label={
+            !text.alphaChannelLabel
+              ? accessibleName.alphaChannelInput
+              : undefined
+          }
           aria-disabled={this.disabled ? "true" : null}
           aria-readonly={this.readonly ? "true" : null}
           disabled={this.disabled}
           readonly={this.readonly}
-          onInput={this.#handleAlphaInputChange}
+          onInput={
+            !this.disabled && !this.readonly
+              ? this.#handleAlphaInputChange
+              : undefined
+          }
           min={0}
           max={100}
           value={Math.round(alphaValue)}

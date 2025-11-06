@@ -37,7 +37,7 @@ const defaultTranslations = {
     colorFieldLabel: "",
     colorPaletteSection: "Color Palette",
     colorFormatSelector: "Color Format",
-    currentColorPreviewLabel: "Color Preview",
+    currentColorPreviewText: "Color Preview",
     hueChannelLabel: "Hue",
     alphaChannelLabel: "Alpha",
     hexadecimalFormat: "HEX",

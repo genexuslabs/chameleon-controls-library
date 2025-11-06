@@ -45,7 +45,7 @@ export type ColorPickerTranslations = {
     /** Label for the color format selection dropdown */
     colorFormatSelector: string;
     /** Label for the current color preview display */
-    currentColorPreviewLabel: string;
+    currentColorPreviewText: string;
     /** Label for hexadecimal color format option */
     hexadecimalFormat: string;
     /** Label for RGB color format option */

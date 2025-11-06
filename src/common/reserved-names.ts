@@ -286,7 +286,7 @@ export const COLOR_PICKER_PARTS_DICTIONARY = {
   COLOR_FORMAT__COMBO_BOX: "color-format__combo-box",
   COLOR_INPUTS: "color-inputs",
   COLOR_PREVIEW_CONTAINER: "color-preview-container",
-  COLOR_PREVIEW_LABEL: "color-preview__label",
+  COLOR_PREVIEW_TEXT: "color-preview__text",
   COLOR_PREVIEW: "color-preview",
   FORMAT_SELECTOR_HEADER: "format-selector__header",
   FORMAT_SELECTOR_LABEL: "format-selector__label",

@@ -16,13 +16,6 @@
   --ch-color-picker-palette-columns: 10;
 
   /**
-   * @prop --ch-color-picker-palette-gap:
-   * Specifies the spacing between color swatches in the palette.
-   * @default 4px
-   */
-  --ch-color-picker-palette-gap: 4px;
-
-  /**
   * @prop --ch-color-picker-preview-inline-size:
   * Specifies the width of the current color preview box.
   * @default 20px
@@ -40,6 +33,7 @@
 li,
 ol {
   @include reset-list;
+  display: contents;
 }
 
 .color-field-container {
@@ -62,7 +56,6 @@ ol {
 .color-palette-grid {
   display: grid;
   grid-template-columns: repeat(var(--ch-color-picker-palette-columns), 1fr);
-  gap: var(--ch-color-picker-palette-gap);
 }
 
 .color-palette-button {

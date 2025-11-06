@@ -118,10 +118,10 @@ function dummyStreaming(
       chatRef.updateLastMessage(
         {
           role: "assistant",
-          content: stringToDisplay.substring(counter - 20, counter),
+          content: stringToDisplay.substring(counter - 10, counter),
 
           // {
-          //   message: stringToDisplay.substring(counter - 20, counter),
+          //   message: stringToDisplay.substring(counter - 10, counter),
           //   files: streamingCompleted
           //     ? [
           //         {
@@ -141,10 +141,10 @@ function dummyStreaming(
       );
 
       if (!streamingCompleted) {
-        dummyStreaming(chatRef, counter + 20, stringToDisplay, "concat");
+        dummyStreaming(chatRef, counter + 10, stringToDisplay, "concat");
       }
     },
-    counter % 200 === 0 ? 50 : 40
+    counter % 200 === 0 ? 60 : 50
   );
 }
 
@@ -189,7 +189,7 @@ export const chatTranslations: ChatTranslations = {
     sendInput: "Ask me a question..."
   },
   text: {
-    copyCodeButton: "Copy code",
+    copyCodeButton: undefined,
     copyMessageContent: "Copy",
     downloadCodeButton: "Download",
     processing: `Processing with ${PROCESSING_PLACEHOLDER}`,
@@ -336,5 +336,10 @@ export const codeFixerRecord: ChatMessage[] = [
         }
       ]
     }
+  },
+  {
+    id: "10",
+    role: "assistant",
+    content: ASSISTANT_RESPONSE_SHORT_MARKDOWN
   }
 ];

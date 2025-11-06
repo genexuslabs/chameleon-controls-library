@@ -103,9 +103,14 @@ Type: `Promise<void>`
 
  - [ch-flexible-layout](../flexible-layout/internal/flexible-layout)
 
+### Depends on
+
+- [ch-textblock](../textblock)
+
 ### Graph
 ```mermaid
 graph TD;
+  ch-tab-render --> ch-textblock
   ch-flexible-layout --> ch-tab-render
   style ch-tab-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -232,7 +232,7 @@ export const showcasePages: NavigationListModel = [
       },
 
       {
-        caption: "Code/Markdown",
+        caption: "Code/Markdown/Math",
         startImgSrc:
           "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/csv.svg')",
         startImgType: "mask",
@@ -246,6 +246,11 @@ export const showcasePages: NavigationListModel = [
           {
             link: { url: "#code-diff-editor" },
             caption: "Code Diff Editor",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#math-viewer" },
+            caption: "Math Viewer",
             metadata: EXPERIMENTAL
           },
           {

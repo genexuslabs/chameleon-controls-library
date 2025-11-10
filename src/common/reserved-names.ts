@@ -321,7 +321,6 @@ export const COLOR_PICKER_PARTS_DICTIONARY = {
   HUE_SLIDER: "hue__slider",
   MARKER: "marker",
   COLOR_PALETTE_BUTTON: "color-palette__button",
-  COLOR_PALETTE_ITEM: "color-palette-item",
   COLOR_PALETTES_GRID: "color-palette-grid",
   COLOR_PALETTES_LABEL: "color-palette__label",
   RGB_INPUTS_GROUP: "rgb-inputs__group",

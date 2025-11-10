@@ -752,7 +752,7 @@ export class ChColorPicker {
         >
           <ul>
             {this.colorPalette.map(color => (
-              <li part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_ITEM}>
+              <li>
                 <button
                   class="color-palette-button"
                   disabled={this.disabled}

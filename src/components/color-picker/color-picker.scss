@@ -9,32 +9,18 @@
   display: grid;
 
   /**
-  * @prop --ch-color-picker-preview-inline-size:
-  * Specifies the width of the current color preview box.
-  * @default 20px
-  */
-  --ch-color-picker-palette-button-inline-size: 100%;
-
-  /**
-  * @prop --ch-color-picker-palette-button-inline-size:
-  * Specifies the height of the current color color-palette box.
-  * @default 20px
-  */
-  --ch-color-picker-palette-button-block-size: 100%;
-
-  /**
   * @prop --ch-color-picker-palette-button-inline-size:
   * Specifies the min width of the current color color-palette box.
-  * @default 20px
+  * @default 2em
   */
-  --ch-color-picker-palette-button-min-inline-size: 20px;
+  --ch-color-picker-palette-button-min-inline-size: 2em;
 
   /**
   * @prop --ch-color-picker-palette-button-block-size:
   * Specifies the min height of the current color color-palette box.
-  * @default 20px
+  * @default 1.5em
   */
-  --ch-color-picker-palette-button-min-block-size: 20px;
+  --ch-color-picker-palette-button-min-block-size: 1.5em;
 
   /**
    * @prop --ch-color-picker-palette-columns:
@@ -87,8 +73,6 @@ ul {
 }
 
 .color-palette-button {
-  inline-size: var(--ch-color-picker-palette-button-inline-size);
-  block-size: var(--ch-color-picker-palette-button-block-size);
   min-inline-size: var(--ch-color-picker-palette-button-min-inline-size);
   min-block-size: var(--ch-color-picker-palette-button-min-block-size);
 }

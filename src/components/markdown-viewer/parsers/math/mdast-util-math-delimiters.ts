@@ -72,7 +72,11 @@ export function mathDelimitersFromMarkdown(): FromMarkdownExtension {
   }
 
   function exitInlineMath(this: CompileContext, token: any) {
-    const data = this.resume();
+    let data = this.resume();
+    // Remove trailing backslash if present (from \) delimiter)
+    if (data.endsWith("\\")) {
+      data = data.slice(0, -1);
+    }
     const node = this.stack[this.stack.length - 1] as InlineMath;
     this.exit(token);
     node.value = data;

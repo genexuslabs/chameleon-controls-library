@@ -88,15 +88,7 @@ export function mathDelimitersTokenizer(): Extension {
     }
 
     function between(code: Code): State | undefined {
-      if (code === null) {
-        return nok(code);
-      }
-
-      if (code === BACKSLASH) {
-        return closingStart;
-      }
-
-      if (markdownLineEnding(code)) {
+      if (code === null || markdownLineEnding(code)) {
         return nok(code);
       }
 
@@ -105,22 +97,27 @@ export function mathDelimitersTokenizer(): Extension {
     }
 
     function data(code: Code): State | undefined {
-      if (code === null || code === BACKSLASH || markdownLineEnding(code)) {
+      if (code === null || markdownLineEnding(code)) {
         effects.exit("inlineMathData");
-        return between(code);
+        return nok(code);
+      }
+
+      if (code === BACKSLASH) {
+        effects.consume(code);
+        return afterBackslash;
       }
 
       effects.consume(code);
       return data;
     }
 
-    function closingStart(code: Code): State | undefined {
-      effects.consume(code); // consume backslash
-      return closingParen;
-    }
-
-    function closingParen(code: Code): State | undefined {
+    function afterBackslash(code: Code): State | undefined {
       if (code === RIGHT_PAREN) {
+        // This is the closing delimiter \)
+        // The backslash was already consumed in inlineMathData, we need to remove it
+        // We can't unconsume, so we need a different approach
+        // Let's exit inlineMathData, then enter inlineMathSequence
+        effects.exit("inlineMathData");
         effects.enter("inlineMathSequence");
         effects.consume(code);
         effects.exit("inlineMathSequence");
@@ -128,9 +125,15 @@ export function mathDelimitersTokenizer(): Extension {
         return ok;
       }
 
-      // Not closing, backslash was part of content
-      effects.enter("inlineMathData");
-      return data(code);
+      // Not closing delimiter, backslash is part of content
+      if (code === null || markdownLineEnding(code)) {
+        effects.exit("inlineMathData");
+        return nok(code);
+      }
+
+      // Continue consuming as data
+      effects.consume(code);
+      return data;
     }
   }
 

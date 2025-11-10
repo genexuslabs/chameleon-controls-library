@@ -632,20 +632,18 @@ export class ChColorPicker {
 
     return (
       <div class="slider-group">
-        {text.hueChannelInputLabel && (
+        {text.hueChannelLabel && (
           <label
             htmlFor="hue-slider"
             part={COLOR_PICKER_PARTS_DICTIONARY.HUE_SLIDER_LABEL}
           >
-            {text.hueChannelInputLabel}
+            {text.hueChannelLabel}
           </label>
         )}
         <ch-slider
           id="hue-slider"
           accessibleName={
-            !text.hueChannelInputLabel
-              ? accessibleName.hueSliderControl
-              : undefined
+            !text.hueChannelLabel ? accessibleName.hueSliderControl : undefined
           }
           disabled={this.disabled}
           class="hue-slider"
@@ -746,34 +744,36 @@ export class ChColorPicker {
             {text.colorPaletteSection}
           </label>
         )}
-        <ol
+        <div
           class="color-palette-grid"
           part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTES_GRID}
           role="group"
           aria-labelledby="color-palette-label"
         >
-          {this.colorPalette.map(color => (
-            <li part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_ITEM}>
-              <button
-                class="color-palette-button"
-                disabled={this.disabled}
-                style={{ backgroundColor: color }}
-                value={color}
-                onClick={this.#handleColorPaletteButtonClick}
-                aria-label={accessibleName.colorPaletteButton.replace(
-                  SELECTED_COLOR,
-                  color
-                )}
-                part={tokenMap({
-                  [COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_BUTTON]: true,
-                  [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
-                  [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
-                })}
-                type="button"
-              ></button>
-            </li>
-          ))}
-        </ol>
+          <ul>
+            {this.colorPalette.map(color => (
+              <li part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_ITEM}>
+                <button
+                  class="color-palette-button"
+                  disabled={this.disabled}
+                  style={{ backgroundColor: color }}
+                  value={color}
+                  onClick={this.#handleColorPaletteButtonClick}
+                  aria-label={accessibleName.colorPaletteButton.replace(
+                    SELECTED_COLOR,
+                    color
+                  )}
+                  part={tokenMap({
+                    [COLOR_PICKER_PARTS_DICTIONARY.COLOR_PALETTE_BUTTON]: true,
+                    [COLOR_PICKER_PARTS_DICTIONARY.DISABLED]: this.disabled,
+                    [COLOR_PICKER_PARTS_DICTIONARY.READONLY]: this.readonly
+                  })}
+                  type="button"
+                ></button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   };
@@ -849,6 +849,8 @@ export class ChColorPicker {
               ? accessibleName.hexadecimalInput
               : undefined
           }
+          aria-disabled={this.disabled ? "true" : null}
+          aria-readonly={this.readonly ? "true" : null}
           disabled={this.disabled}
           readonly={this.readonly}
           value={this.colorVariants.hex}

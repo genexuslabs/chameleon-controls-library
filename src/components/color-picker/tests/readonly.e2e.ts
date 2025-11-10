@@ -49,8 +49,56 @@ describe("[ch-color-picker][readonly]", () => {
 
       expect(formatSelector).toBeTruthy();
 
-      const ariaReadonly = await formatSelector.getAttribute("aria-readonly");
+      const readonly = await formatSelector.getProperty("readonly");
+      expect(readonly).toBe(true);
+    });
+
+    it("should have readonly attribute on hex input", async () => {
+      const hexInput = await page.find("ch-color-picker >>> #hex-input");
+
+      expect(hexInput).not.toBeNull();
+
+      const readonly = await hexInput.getAttribute("readonly");
+      expect(readonly).not.toBeNull();
+    });
+
+    it("should have aria-readonly attribute on hex input", async () => {
+      const hexInput = await page.find("ch-color-picker >>> #hex-input");
+
+      expect(hexInput).not.toBeNull();
+
+      const ariaReadonly = await hexInput.getAttribute("aria-readonly");
       expect(ariaReadonly).toBe("true");
+    });
+
+    it("should have readonly attribute on alpha input", async () => {
+      const alphaInput = await page.find("ch-color-picker >>> #alpha-input");
+
+      expect(alphaInput).not.toBeNull();
+
+      const readonly = await alphaInput.getAttribute("readonly");
+      expect(readonly).not.toBeNull();
+    });
+
+    it("should have aria-readonly attribute on alpha input", async () => {
+      const alphaInput = await page.find("ch-color-picker >>> #alpha-input");
+
+      expect(alphaInput).not.toBeNull();
+
+      const ariaReadonly = await alphaInput.getAttribute("aria-readonly");
+      expect(ariaReadonly).toBe("true");
+    });
+
+    it("should have readonly property on selectedColorFormats", async () => {
+      const formats = ["hex", "rgb", "hsl", "hsv"];
+
+      for (const format of formats) {
+        await colorPickerElement.setProperty("selectedColorFormat", format);
+        await page.waitForChanges();
+
+        const readonly = await colorPickerElement.getProperty("readonly");
+        expect(readonly).toBe(true);
+      }
     });
   });
 
@@ -84,12 +132,12 @@ describe("[ch-color-picker][readonly]", () => {
       const colorFieldAriaReadonly = await colorField.getAttribute(
         "aria-readonly"
       );
-      const formatSelectorAriaReadonly = await formatSelector.getAttribute(
-        "aria-readonly"
+      const formatSelectorReadonly = await formatSelector.getProperty(
+        "readonly"
       );
 
       expect(colorFieldAriaReadonly).toBeNull();
-      expect(formatSelectorAriaReadonly).toBeNull();
+      expect(formatSelectorReadonly).toBeFalsy();
     });
 
     it("should set aria-readonly when readonly is true", async () => {
@@ -106,12 +154,26 @@ describe("[ch-color-picker][readonly]", () => {
       const colorFieldAriaReadonly = await colorField.getAttribute(
         "aria-readonly"
       );
-      const formatSelectorAriaReadonly = await formatSelector.getAttribute(
-        "aria-readonly"
+      const formatSelectorReadonly = await formatSelector.getProperty(
+        "readonly"
       );
 
       expect(colorFieldAriaReadonly).toBe("true");
-      expect(formatSelectorAriaReadonly).toBe("true");
+      expect(formatSelectorReadonly).toBe(true);
+    });
+
+    it("should maintain readonly behavior when format changes", async () => {
+      await colorPickerElement.setProperty("readonly", true);
+      await page.waitForChanges();
+
+      const readonly = await colorPickerElement.getProperty("readonly");
+      expect(readonly).toBe(true);
+
+      const hexInput = await page.find("ch-color-picker >>> #hex-input");
+      expect(hexInput).not.toBeNull();
+
+      const hexReadonly = await hexInput.getAttribute("readonly");
+      expect(hexReadonly).not.toBeNull();
     });
   });
 
@@ -125,6 +187,8 @@ describe("[ch-color-picker][readonly]", () => {
         failOnConsoleError: true
       });
       colorPickerElement = await page.find("ch-color-picker");
+      colorPickerElement.setProperty("showColorFormatSelector", true);
+
       await page.waitForChanges();
     });
 
@@ -132,6 +196,34 @@ describe("[ch-color-picker][readonly]", () => {
       const inputEvent = await colorPickerElement.spyOnEvent("input");
 
       await colorPickerElement.setProperty("value", "#00ff00");
+      await page.waitForChanges();
+
+      expect(inputEvent).not.toHaveReceivedEvent();
+    });
+
+    it("should not emit input event when hex input is modified", async () => {
+      const inputEvent = await colorPickerElement.spyOnEvent("input");
+      const hexInput = await page.find("ch-color-picker >>> #hex-input");
+
+      expect(hexInput).not.toBeNull();
+
+      await hexInput.focus();
+      await hexInput.press("Backspace");
+      await hexInput.type("a");
+      await page.waitForChanges();
+
+      expect(inputEvent).not.toHaveReceivedEvent();
+    });
+
+    it("should not emit input event when alpha input is modified", async () => {
+      const inputEvent = await colorPickerElement.spyOnEvent("input");
+      const alphaInput = await page.find("ch-color-picker >>> #alpha-input");
+
+      expect(alphaInput).not.toBeNull();
+
+      await alphaInput.focus();
+      await alphaInput.press("Backspace");
+      await alphaInput.type("50");
       await page.waitForChanges();
 
       expect(inputEvent).not.toHaveReceivedEvent();

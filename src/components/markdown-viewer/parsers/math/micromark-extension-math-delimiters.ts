@@ -32,6 +32,7 @@ declare module "micromark-util-types" {
     mathFlow: "mathFlow";
     mathFlowFence: "mathFlowFence";
     mathFlowFenceSequence: "mathFlowFenceSequence";
+    mathFlowFenceMeta: "mathFlowFenceMeta";
     mathFlowValue: "mathFlowValue";
 
     linePrefix: "linePrefix";
@@ -471,6 +472,33 @@ export function mathDelimitersTokenizer(): Extension {
       }
 
       effects.exit("mathFlowFenceSequence");
+      return factorySpace(effects, metaBefore, types.whitespace)(code);
+    }
+
+    function metaBefore(code: Code): State | undefined {
+      if (code === null || markdownLineEnding(code)) {
+        return metaAfter(code);
+      }
+
+      effects.enter("mathFlowFenceMeta");
+      return meta(code);
+    }
+
+    function meta(code: Code): State | undefined {
+      if (code === null || markdownLineEnding(code)) {
+        effects.exit("mathFlowFenceMeta");
+        return metaAfter(code);
+      }
+
+      if (code === DOLLAR) {
+        return nok(code);
+      }
+
+      effects.consume(code);
+      return meta;
+    }
+
+    function metaAfter(code: Code): State | undefined {
       effects.exit("mathFlowFence");
 
       if (self.interrupt) {

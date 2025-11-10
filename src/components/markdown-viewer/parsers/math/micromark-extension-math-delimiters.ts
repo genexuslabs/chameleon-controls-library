@@ -157,6 +157,8 @@ export function mathDelimitersTokenizer(): Extension {
     ok: State,
     nok: State
   ): State {
+    // TODO: Fix this issue by using arrow functions
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     const tail = self.events[self.events.length - 1];
     const initialSize =
@@ -307,6 +309,8 @@ export function mathDelimitersTokenizer(): Extension {
     ok: State,
     nok: State
   ): State {
+    // TODO: Fix this issue by using arrow functions
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
     return start;
@@ -440,6 +444,8 @@ export function mathDelimitersTokenizer(): Extension {
     ok: State,
     nok: State
   ): State {
+    // TODO: Fix this issue by using arrow functions
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     const tail = self.events[self.events.length - 1];
     const initialSize =

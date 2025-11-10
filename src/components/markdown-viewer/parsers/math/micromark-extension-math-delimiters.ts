@@ -45,6 +45,7 @@ const LEFT_PAREN = 40; // (
 const RIGHT_PAREN = 41; // )
 const LEFT_BRACKET = 91; // [
 const RIGHT_BRACKET = 93; // ]
+const DOLLAR = 36; // $
 
 /**
  * micromark extension recognizing:
@@ -325,11 +326,273 @@ export function mathDelimitersTokenizer(): Extension {
     }
   }
 
+  // Inline math with $ (from micromark-extension-math)
+  const mathText: Construct = {
+    tokenize: tokenizeMathText,
+    previous: mathTextPrevious,
+    name: "mathText"
+  };
+
+  function tokenizeMathText(
+    this: TokenizeContext,
+    effects: Effects,
+    ok: State,
+    nok: State
+  ): State {
+    let sizeOpen = 0;
+    let size: number;
+
+    return start;
+
+    function start(code: Code): State | undefined {
+      if (code !== DOLLAR) {
+        return nok(code);
+      }
+      effects.enter("inlineMath");
+      effects.enter("inlineMathSequence");
+      return sequenceOpen(code);
+    }
+
+    function sequenceOpen(code: Code): State | undefined {
+      if (code === DOLLAR) {
+        effects.consume(code);
+        sizeOpen++;
+        return sequenceOpen;
+      }
+
+      if (sizeOpen < 1) {
+        return nok(code);
+      }
+
+      effects.exit("inlineMathSequence");
+      return between(code);
+    }
+
+    function between(code: Code): State | undefined {
+      if (code === null) {
+        return nok(code);
+      }
+
+      if (code === DOLLAR) {
+        size = 0;
+        effects.enter("inlineMathSequence");
+        return sequenceClose(code);
+      }
+
+      if (markdownLineEnding(code)) {
+        effects.enter(types.lineEnding);
+        effects.consume(code);
+        effects.exit(types.lineEnding);
+        return between;
+      }
+
+      effects.enter("inlineMathData");
+      return data(code);
+    }
+
+    function data(code: Code): State | undefined {
+      if (code === null || code === DOLLAR || markdownLineEnding(code)) {
+        effects.exit("inlineMathData");
+        return between(code);
+      }
+
+      effects.consume(code);
+      return data;
+    }
+
+    function sequenceClose(code: Code): State | undefined {
+      if (code === DOLLAR) {
+        effects.consume(code);
+        size++;
+        return sequenceClose;
+      }
+
+      if (size === sizeOpen) {
+        effects.exit("inlineMathSequence");
+        effects.exit("inlineMath");
+        return ok(code);
+      }
+
+      effects.exit("inlineMathSequence");
+      effects.enter("inlineMathData");
+      return data(code);
+    }
+  }
+
+  function mathTextPrevious(this: TokenizeContext, code: Code): boolean {
+    return (
+      code !== DOLLAR ||
+      this.events[this.events.length - 1][1].type === "characterEscape"
+    );
+  }
+
+  // Block math with $$ (from micromark-extension-math)
+  const mathFlow: Construct = {
+    tokenize: tokenizeMathFlow,
+    concrete: true,
+    name: "mathFlow"
+  };
+
+  function tokenizeMathFlow(
+    this: TokenizeContext,
+    effects: Effects,
+    ok: State,
+    nok: State
+  ): State {
+    const self = this;
+    const tail = self.events[self.events.length - 1];
+    const initialSize =
+      tail && tail[1].type === types.linePrefix
+        ? tail[2].sliceSerialize(tail[1], true).length
+        : 0;
+    let sizeOpen = 0;
+
+    return start;
+
+    function start(code: Code): State | undefined {
+      if (code !== DOLLAR) {
+        return nok(code);
+      }
+      effects.enter("mathFlow");
+      effects.enter("mathFlowFence");
+      effects.enter("mathFlowFenceSequence");
+      return sequenceOpen(code);
+    }
+
+    function sequenceOpen(code: Code): State | undefined {
+      if (code === DOLLAR) {
+        effects.consume(code);
+        sizeOpen++;
+        return sequenceOpen;
+      }
+
+      if (sizeOpen < 2) {
+        return nok(code);
+      }
+
+      effects.exit("mathFlowFenceSequence");
+      effects.exit("mathFlowFence");
+
+      if (self.interrupt) {
+        return ok(code);
+      }
+
+      return effects.attempt(
+        nonLazyContinuation,
+        beforeNonLazyContinuation,
+        after
+      )(code);
+    }
+
+    function beforeNonLazyContinuation(code: Code): State | undefined {
+      return effects.attempt(
+        { tokenize: tokenizeClosingFenceDollar, partial: true },
+        after,
+        contentStart
+      )(code);
+    }
+
+    function contentStart(code: Code): State | undefined {
+      return (
+        initialSize
+          ? factorySpace(
+              effects,
+              beforeContentChunk,
+              types.linePrefix,
+              initialSize + 1
+            )
+          : beforeContentChunk
+      )(code);
+    }
+
+    function beforeContentChunk(code: Code): State | undefined {
+      if (code === null) {
+        return after(code);
+      }
+
+      if (markdownLineEnding(code)) {
+        return effects.attempt(
+          nonLazyContinuation,
+          beforeNonLazyContinuation,
+          after
+        )(code);
+      }
+
+      effects.enter("mathFlowValue");
+      return contentChunk(code);
+    }
+
+    function contentChunk(code: Code): State | undefined {
+      if (code === null || markdownLineEnding(code)) {
+        effects.exit("mathFlowValue");
+        return beforeContentChunk(code);
+      }
+
+      effects.consume(code);
+      return contentChunk;
+    }
+
+    function after(code: Code): State | undefined {
+      effects.exit("mathFlow");
+      return ok(code);
+    }
+
+    function tokenizeClosingFenceDollar(
+      effects: Effects,
+      ok: State,
+      nok: State
+    ): State {
+      let size = 0;
+
+      return factorySpace(
+        effects,
+        beforeSequenceClose,
+        types.linePrefix,
+        self.parser.constructs.disable.null &&
+          self.parser.constructs.disable.null.includes("codeIndented")
+          ? undefined
+          : constants.tabSize
+      );
+
+      function beforeSequenceClose(code: Code): State | undefined {
+        effects.enter("mathFlowFence");
+        effects.enter("mathFlowFenceSequence");
+        return sequenceClose(code);
+      }
+
+      function sequenceClose(code: Code): State | undefined {
+        if (code === DOLLAR) {
+          size++;
+          effects.consume(code);
+          return sequenceClose;
+        }
+
+        if (size < sizeOpen) {
+          return nok(code);
+        }
+
+        effects.exit("mathFlowFenceSequence");
+        return factorySpace(effects, afterSequenceClose, types.whitespace);
+      }
+
+      function afterSequenceClose(code: Code): State | undefined {
+        if (code === null || markdownLineEnding(code)) {
+          effects.exit("mathFlowFence");
+          return ok(code);
+        }
+
+        return nok(code);
+      }
+    }
+  }
+
   return {
     text: {
+      [DOLLAR]: mathText,
       [BACKSLASH]: inlineBackslashParen
     },
     flow: {
+      [DOLLAR]: mathFlow,
       [BACKSLASH]: blockBackslashBracket
     }
   };

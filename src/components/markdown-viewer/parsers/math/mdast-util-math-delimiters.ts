@@ -1,57 +1,85 @@
-// mdast-util-from-markdown-math.ts
 import type {
   CompileContext,
-  Extension as FromMarkdownExtension,
-  Handle
+  Extension as FromMarkdownExtension
 } from "mdast-util-from-markdown";
-import { Token } from "micromark-util-types";
 import { BlockMath, InlineMath } from "./types";
 
 /**
- * Handlers for converting micromark tokens into MDAST nodes.
- */
-const handlers: Record<string, Handle> = {
-  inlineMath(this: CompileContext, token: Token) {
-    this.enter({ type: "inlineMath", value: "" }, token);
-  },
-  inlineMathExit(this: CompileContext, token: Token) {
-    this.exit(token);
-  },
-  inlineMathValue(this: CompileContext, token: Token) {
-    const node = this.stack[this.stack.length - 1] as InlineMath | undefined;
-    if (node && node.type === "inlineMath") {
-      node.value += this.sliceSerialize(token);
-    }
-  },
-  blockMath(this: CompileContext, token: Token) {
-    this.enter({ type: "blockMath", value: "" }, token);
-  },
-  blockMathExit(this: CompileContext, token: Token) {
-    this.exit(token);
-  },
-  blockMathValue(this: CompileContext, token: Token) {
-    const node = this.stack[this.stack.length - 1] as BlockMath | undefined;
-    if (node && node.type === "blockMath") {
-      node.value += this.sliceSerialize(token);
-    }
-  }
-};
-
-/**
- * mdast-util-from-markdown extension to build math nodes.
+ * mdast-util-from-markdown extension to build math nodes from micromark tokens.
+ *
+ * This extension handles the conversion of tokenized math delimiters into
+ * proper MDAST nodes that can be used in the markdown AST.
  */
 export function mathDelimitersFromMarkdown(): FromMarkdownExtension {
   return {
-    canContainEols: ["blockMath", "inlineMath"],
     enter: {
-      inlineMath: handlers.inlineMath,
-      blockMath: handlers.blockMath
+      mathFlow: enterMathFlow,
+      inlineMath: enterInlineMath
     },
     exit: {
-      inlineMath: handlers.inlineMathExit,
-      inlineMathValue: handlers.inlineMathValue,
-      blockMath: handlers.blockMathExit,
-      blockMathValue: handlers.blockMathValue
+      mathFlow: exitMathFlow,
+      mathFlowFence: exitMathFlowFence,
+      mathFlowValue: exitMathData,
+      inlineMath: exitInlineMath,
+      inlineMathData: exitMathData
     }
   };
+
+  function enterMathFlow(this: CompileContext, token: any) {
+    this.enter(
+      {
+        type: "blockMath",
+        value: "",
+        data: {
+          hName: "div",
+          hProperties: { className: ["math", "math-display"] }
+        }
+      },
+      token
+    );
+  }
+
+  function exitMathFlowFence(this: CompileContext) {
+    // Exit if this is the closing fence
+    if ((this.data as any).mathFlowInside) {
+      return;
+    }
+    this.buffer();
+    (this.data as any).mathFlowInside = true;
+  }
+
+  function exitMathFlow(this: CompileContext, token: any) {
+    const data = this.resume().replace(/^(\r?\n|\r)|(\r?\n|\r)$/g, "");
+    const node = this.stack[this.stack.length - 1] as BlockMath;
+    this.exit(token);
+    node.value = data;
+    (this.data as any).mathFlowInside = undefined;
+  }
+
+  function enterInlineMath(this: CompileContext, token: any) {
+    this.enter(
+      {
+        type: "inlineMath",
+        value: "",
+        data: {
+          hName: "span",
+          hProperties: { className: ["math", "math-inline"] }
+        }
+      },
+      token
+    );
+    this.buffer();
+  }
+
+  function exitInlineMath(this: CompileContext, token: any) {
+    const data = this.resume();
+    const node = this.stack[this.stack.length - 1] as InlineMath;
+    this.exit(token);
+    node.value = data;
+  }
+
+  function exitMathData(this: CompileContext, token: any) {
+    this.config.enter.data.call(this, token);
+    this.config.exit.data.call(this, token);
+  }
 }

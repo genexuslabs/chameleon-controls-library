@@ -1,5 +1,24 @@
-// micromark-extension-math.ts
-import { Code, Effects, Extension, State } from "micromark-util-types";
+import { factorySpace } from "micromark-factory-space";
+import { markdownLineEnding } from "micromark-util-character";
+import {
+  Code,
+  Construct,
+  Effects,
+  Extension,
+  State,
+  TokenizeContext
+} from "micromark-util-types";
+
+// Import constants and types from micromark-util-symbol
+const constants = {
+  tabSize: 4
+} as const;
+
+const types = {
+  linePrefix: "linePrefix" as const,
+  lineEnding: "lineEnding" as const,
+  whitespace: "whitespace" as const
+};
 
 /**
  * Token type augmentation for TypeScript.
@@ -7,16 +26,20 @@ import { Code, Effects, Extension, State } from "micromark-util-types";
 declare module "micromark-util-types" {
   interface TokenTypeMap {
     inlineMath: "inlineMath";
-    inlineMathMarker: "inlineMathMarker";
-    inlineMathValue: "inlineMathValue";
+    inlineMathSequence: "inlineMathSequence";
+    inlineMathData: "inlineMathData";
 
-    blockMath: "blockMath";
-    blockMathMarker: "blockMathMarker";
-    blockMathValue: "blockMathValue";
+    mathFlow: "mathFlow";
+    mathFlowFence: "mathFlowFence";
+    mathFlowFenceSequence: "mathFlowFenceSequence";
+    mathFlowValue: "mathFlowValue";
+
+    linePrefix: "linePrefix";
+    lineEnding: "lineEnding";
+    whitespace: "whitespace";
   }
 }
 
-const DOLLAR = 36; // $
 const BACKSLASH = 92; // \
 const LEFT_PAREN = 40; // (
 const RIGHT_PAREN = 41; // )
@@ -25,187 +48,286 @@ const RIGHT_BRACKET = 93; // ]
 
 /**
  * micromark extension recognizing:
- *   $...$       inline math
- *   $$...$$     block math
- *   \( ... \)   inline math
- *   \[ ... \]   block math
+ *   $...$       inline math (from micromark-extension-math)
+ *   $$...$$     block math (from micromark-extension-math)
+ *   \( ... \)   inline math (LaTeX)
+ *   \[ ... \]   block math (LaTeX)
  */
 export function mathDelimitersTokenizer(): Extension {
-  function tokenizeMath(effects: Effects, ok: State, nok: State): State {
+  // Inline math with \(...\)
+  const inlineBackslashParen: Construct = {
+    tokenize: tokenizeInlineBackslashParen,
+    name: "inlineBackslashParen"
+  };
+
+  function tokenizeInlineBackslashParen(
+    this: TokenizeContext,
+    effects: Effects,
+    ok: State,
+    nok: State
+  ): State {
     return start;
 
     function start(code: Code): State | undefined {
-      if (code === DOLLAR) {
-        effects.consume(code);
-        return afterFirstDollar;
+      if (code !== BACKSLASH) {
+        return nok(code);
       }
-
-      if (code === BACKSLASH) {
-        effects.consume(code);
-        return afterBackslash;
-      }
-
-      return nok(code);
+      effects.consume(code);
+      return openParen;
     }
 
-    /** Handles `$` start, deciding inline (`$`) or block (`$$`). */
-    function afterFirstDollar(code: Code): State | undefined {
-      if (code === DOLLAR) {
-        // `$$` → block math
-        effects.enter("blockMath");
-        effects.enter("blockMathMarker");
-        effects.consume(code);
-        effects.exit("blockMathMarker");
-        return blockValueStart;
+    function openParen(code: Code): State | undefined {
+      if (code !== LEFT_PAREN) {
+        return nok(code);
       }
-
-      // `$` → inline math
       effects.enter("inlineMath");
-      effects.enter("inlineMathMarker");
-      effects.exit("inlineMathMarker");
-      return inlineValueStart(code);
+      effects.enter("inlineMathSequence");
+      effects.consume(code);
+      effects.exit("inlineMathSequence");
+      return between;
     }
 
-    /** Handles `\` start, expecting `(` or `[` */
-    function afterBackslash(code: Code): State | undefined {
-      if (code === LEFT_PAREN) {
-        effects.enter("inlineMath");
-        effects.enter("inlineMathMarker");
-        effects.consume(code);
-        effects.exit("inlineMathMarker");
-        return inlineValueStart;
-      }
-
-      if (code === LEFT_BRACKET) {
-        effects.enter("blockMath");
-        effects.enter("blockMathMarker");
-        effects.consume(code);
-        effects.exit("blockMathMarker");
-        return blockValueStart;
-      }
-
-      return nok(code);
-    }
-
-    /** After `$` or `\(`, begin inline value. */
-    function inlineValueStart(code: Code): State | undefined {
+    function between(code: Code): State | undefined {
       if (code === null) {
         return nok(code);
-      }
-      effects.enter("inlineMathValue");
-      return inlineValue(code);
-    }
-
-    /** After `$$` or `\[`, begin block value. */
-    function blockValueStart(code: Code): State | undefined {
-      if (code === null) {
-        return nok(code);
-      }
-      effects.enter("blockMathValue");
-      return blockValue(code);
-    }
-
-    /** Inline math content until `$` or `\)` closes. */
-    function inlineValue(code: Code): State | undefined {
-      if (code === null) {
-        return nok(code);
-      }
-
-      if (code === DOLLAR) {
-        effects.exit("inlineMathValue");
-        effects.enter("inlineMathMarker");
-        return closeInlineDollar;
       }
 
       if (code === BACKSLASH) {
-        effects.exit("inlineMathValue");
-        return maybeInlineBackslash;
+        return closingStart;
       }
 
-      effects.consume(code);
-      return inlineValue;
-    }
-
-    /** Block math content until `$$` or `\]` closes. */
-    function blockValue(code: Code): State | undefined {
-      if (code === null) {
+      if (markdownLineEnding(code)) {
         return nok(code);
       }
 
-      if (code === DOLLAR) {
-        effects.exit("blockMathValue");
-        effects.enter("blockMathMarker");
-        return closeBlockDollar;
-      }
-
-      if (code === BACKSLASH) {
-        effects.exit("blockMathValue");
-        return maybeBlockBackslash;
-      }
-
-      effects.consume(code);
-      return blockValue;
+      effects.enter("inlineMathData");
+      return data(code);
     }
 
-    /** Close inline marker `$` */
-    function closeInlineDollar(code: Code): State | undefined {
-      if (code !== DOLLAR) {
-        return nok(code);
+    function data(code: Code): State | undefined {
+      if (code === null || code === BACKSLASH || markdownLineEnding(code)) {
+        effects.exit("inlineMathData");
+        return between(code);
       }
+
       effects.consume(code);
-      effects.exit("inlineMathMarker");
-      effects.exit("inlineMath");
-      return ok;
+      return data;
     }
 
-    /** Close block marker `$$` */
-    function closeBlockDollar(code: Code): State | undefined {
-      if (code !== DOLLAR) {
-        return nok(code);
-      }
-      effects.consume(code);
-      effects.consume(code);
-      effects.exit("blockMathMarker");
-      effects.exit("blockMath");
-      return ok;
+    function closingStart(code: Code): State | undefined {
+      effects.consume(code); // consume backslash
+      return closingParen;
     }
 
-    /** Possibly closing `\)` for inline math */
-    function maybeInlineBackslash(code: Code): State | undefined {
+    function closingParen(code: Code): State | undefined {
       if (code === RIGHT_PAREN) {
-        effects.enter("inlineMathMarker");
-        effects.consume(BACKSLASH);
-        effects.exit("inlineMathMarker");
+        effects.enter("inlineMathSequence");
+        effects.consume(code);
+        effects.exit("inlineMathSequence");
         effects.exit("inlineMath");
         return ok;
       }
-      // Not closing, continue value
-      effects.enter("inlineMathValue");
-      effects.consume(BACKSLASH);
-      return inlineValue(code);
+
+      // Not closing, backslash was part of content
+      effects.enter("inlineMathData");
+      return data(code);
+    }
+  }
+
+  // Block math with \[...\] - following mathFlow pattern
+  const blockBackslashBracket: Construct = {
+    tokenize: tokenizeBlockBackslashBracket,
+    concrete: true,
+    name: "blockBackslashBracket"
+  };
+
+  const nonLazyContinuation: Construct = {
+    tokenize: tokenizeNonLazyContinuation,
+    partial: true
+  };
+
+  function tokenizeBlockBackslashBracket(
+    this: TokenizeContext,
+    effects: Effects,
+    ok: State,
+    nok: State
+  ): State {
+    const self = this;
+    const tail = self.events[self.events.length - 1];
+    const initialSize =
+      tail && tail[1].type === types.linePrefix
+        ? tail[2].sliceSerialize(tail[1], true).length
+        : 0;
+
+    return start;
+
+    function start(code: Code): State | undefined {
+      if (code !== BACKSLASH) {
+        return nok(code);
+      }
+      effects.enter("mathFlow");
+      effects.enter("mathFlowFence");
+      effects.enter("mathFlowFenceSequence");
+      effects.consume(code);
+      return openBracket;
     }
 
-    /** Possibly closing `\]` for block math */
-    function maybeBlockBackslash(code: Code): State | undefined {
-      if (code === RIGHT_BRACKET) {
-        effects.enter("blockMathMarker");
-        effects.consume(BACKSLASH);
-        effects.consume(code);
-        effects.exit("blockMathMarker");
-        effects.exit("blockMath");
-        return ok;
+    function openBracket(code: Code): State | undefined {
+      if (code !== LEFT_BRACKET) {
+        effects.exit("mathFlowFenceSequence");
+        effects.exit("mathFlowFence");
+        effects.exit("mathFlow");
+        return nok(code);
       }
-      // Not closing, continue block value
-      effects.enter("blockMathValue");
-      effects.consume(BACKSLASH);
-      return blockValue(code);
+      effects.consume(code);
+      effects.exit("mathFlowFenceSequence");
+      effects.exit("mathFlowFence");
+      return afterOpeningFence;
+    }
+
+    function afterOpeningFence(code: Code): State | undefined {
+      if (self.interrupt) {
+        return ok(code);
+      }
+
+      return effects.attempt(
+        nonLazyContinuation,
+        beforeNonLazyContinuation,
+        after
+      )(code);
+    }
+
+    function beforeNonLazyContinuation(code: Code): State | undefined {
+      return effects.attempt(
+        { tokenize: tokenizeClosingFence, partial: true },
+        after,
+        contentStart
+      )(code);
+    }
+
+    function contentStart(code: Code): State | undefined {
+      return (
+        initialSize
+          ? factorySpace(
+              effects,
+              beforeContentChunk,
+              types.linePrefix,
+              initialSize + 1
+            )
+          : beforeContentChunk
+      )(code);
+    }
+
+    function beforeContentChunk(code: Code): State | undefined {
+      if (code === null) {
+        return after(code);
+      }
+
+      if (markdownLineEnding(code)) {
+        return effects.attempt(
+          nonLazyContinuation,
+          beforeNonLazyContinuation,
+          after
+        )(code);
+      }
+
+      effects.enter("mathFlowValue");
+      return contentChunk(code);
+    }
+
+    function contentChunk(code: Code): State | undefined {
+      if (code === null || markdownLineEnding(code)) {
+        effects.exit("mathFlowValue");
+        return beforeContentChunk(code);
+      }
+
+      effects.consume(code);
+      return contentChunk;
+    }
+
+    function after(code: Code): State | undefined {
+      effects.exit("mathFlow");
+      return ok(code);
+    }
+
+    function tokenizeClosingFence(
+      effects: Effects,
+      ok: State,
+      nok: State
+    ): State {
+      return factorySpace(
+        effects,
+        beforeSequenceClose,
+        types.linePrefix,
+        self.parser.constructs.disable.null &&
+          self.parser.constructs.disable.null.includes("codeIndented")
+          ? undefined
+          : constants.tabSize
+      );
+
+      function beforeSequenceClose(code: Code): State | undefined {
+        if (code !== BACKSLASH) {
+          return nok(code);
+        }
+        effects.enter("mathFlowFence");
+        effects.enter("mathFlowFenceSequence");
+        effects.consume(code);
+        return sequenceClose;
+      }
+
+      function sequenceClose(code: Code): State | undefined {
+        if (code === RIGHT_BRACKET) {
+          effects.consume(code);
+          effects.exit("mathFlowFenceSequence");
+          return factorySpace(effects, afterSequenceClose, types.whitespace);
+        }
+
+        return nok(code);
+      }
+
+      function afterSequenceClose(code: Code): State | undefined {
+        if (code === null || markdownLineEnding(code)) {
+          effects.exit("mathFlowFence");
+          return ok(code);
+        }
+
+        return nok(code);
+      }
+    }
+  }
+
+  function tokenizeNonLazyContinuation(
+    this: TokenizeContext,
+    effects: Effects,
+    ok: State,
+    nok: State
+  ): State {
+    const self = this;
+
+    return start;
+
+    function start(code: Code): State | undefined {
+      if (code === null) {
+        return ok(code);
+      }
+
+      effects.enter(types.lineEnding);
+      effects.consume(code);
+      effects.exit(types.lineEnding);
+      return lineStart;
+    }
+
+    function lineStart(code: Code): State | undefined {
+      return self.parser.lazy[self.now().line] ? nok(code) : ok(code);
     }
   }
 
   return {
     text: {
-      [DOLLAR]: { tokenize: tokenizeMath },
-      [BACKSLASH]: { tokenize: tokenizeMath }
+      [BACKSLASH]: inlineBackslashParen
+    },
+    flow: {
+      [BACKSLASH]: blockBackslashBracket
     }
   };
 }

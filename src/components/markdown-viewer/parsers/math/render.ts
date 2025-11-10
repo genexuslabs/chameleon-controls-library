@@ -8,7 +8,7 @@ export const render = {
       display-mode="block"
       .value=${
         // The final replace is a WA because the parser doesn't remove the final backslash
-        element.value.replace(/\\$/, "")
+        element.value
       }
     ></ch-math-viewer>`,
 
@@ -17,7 +17,7 @@ export const render = {
       display-mode="inline"
       .value=${
         // The final replace is a WA because the parser doesn't remove the final backslash
-        element.value.replace(/\\$/, "")
+        element.value
       }
     ></ch-math-viewer>`
 } as const satisfies MarkdownViewerExtensionRender<ExtendedContentMapping>;

@@ -10,6 +10,8 @@ const hslaRegex =
   /^\s*hsla\s*\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*%\s*,\s*(\d+(?:\.\d+)?)\s*%\s*,\s*(\d+(?:\.\d+)?)\s*\)\s*$/i;
 const hslRegex =
   /^\s*hsl\s*\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*%\s*,\s*(\d+(?:\.\d+)?)\s*%\s*\)\s*$/i;
+const hsvRegex =
+  /^\s*hsv\s*\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*%\s*,\s*(\d+(?:\.\d+)?)\s*%\s*\)\s*$/i;
 
 /**
  * Analyzes a color string to determine its format
@@ -31,6 +33,10 @@ export const getColorFormat = (color: string): ColorFormat | null => {
 
   if (hslRegex.test(color)) {
     return "hsl";
+  }
+
+  if (hsvRegex.test(color)) {
+    return "hsv";
   }
 
   if (rgbaRegex.test(color)) {

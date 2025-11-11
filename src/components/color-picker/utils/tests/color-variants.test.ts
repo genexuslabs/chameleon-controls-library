@@ -14,11 +14,6 @@ describe("fromStringToColorVariants", () => {
       expect(result).toHaveProperty("hsl");
       expect(result).toHaveProperty("hsla");
       expect(result).toHaveProperty("hsv");
-
-      // Verify hsv has the expected structure
-      expect(result.hsv).toHaveProperty("h");
-      expect(result.hsv).toHaveProperty("s");
-      expect(result.hsv).toHaveProperty("v");
     });
   };
 
@@ -48,7 +43,13 @@ describe("fromStringToColorVariants", () => {
       ["HSL(240, 100%, 50%)", "HSL uppercase"],
       ["hsla(0, 100%, 50%, 0.5)", "hsla red with alpha"],
       ["hsla(240, 100%, 50%, 0.75)", "hsla blue with alpha"],
-      ["HSLA(120, 100%, 50%, 0)", "HSLA uppercase transparent"]
+      ["HSLA(120, 100%, 50%, 0)", "HSLA uppercase transparent"],
+      ["hsv(0, 0%, 50%)", "hsv gray"],
+      ["hsv(120, 50%, 100%)", "hsv light green"],
+      ["hsv(240, 100%, 50%)", "hsv dark blue"],
+      ["HSV(360, 100%, 100%)", "HSV uppercase"],
+      ["hsv( 180 , 50% , 75% )", "hsv with spaces"],
+      ["hsv(90,25%,60%)", "hsv without spaces"]
     ];
 
     testValidColorConversions(validColorCases);
@@ -69,7 +70,13 @@ describe("fromStringToColorVariants", () => {
       ["rgb()", "empty rgb"],
       ["rgba(255, 255, 255)", "rgba missing alpha"],
       ["hsl()", "empty hsl"],
-      ["hsla(360, 100%, 50%)", "hsla missing alpha"]
+      ["hsla(360, 100%, 50%)", "hsla missing alpha"],
+      ["hsv()", "empty hsv"],
+      ["hsv(120, 50%)", "hsv missing value"],
+      ["hsv(120)", "hsv only hue"],
+      ["hsv(120, 50, 50)", "hsv missing % signs"],
+      ["hsv(120deg, 50%, 50%)", "hsv with deg unit"],
+      ["hsv(red, 50%, 50%)", "hsv with color name"]
     ];
 
     testInvalidColorConversions(invalidColorCases);

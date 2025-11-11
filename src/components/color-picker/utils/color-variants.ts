@@ -5,6 +5,7 @@ import { fromRgbToHsl } from "./converters/rgb-to-hsl";
 import { fromRgbToHsv } from "./converters/rgb-to-hsv";
 import { fromHexStringToRgbaColor } from "./parsers/hex";
 import { fromHslStringToRgbaColor } from "./parsers/hsl";
+import { fromHsvStringToRgbColor } from "./parsers/hsv";
 import { fromRgbaStringToRgbaColor } from "./parsers/rgba";
 
 /**
@@ -21,28 +22,32 @@ export const fromStringToColorVariants = (
     return null;
   }
 
-  let rgbaColor: { r: number; g: number; b: number; a: number } | null = null;
+  const colorParsers = {
+    hex: fromHexStringToRgbaColor,
+    hsl: fromHslStringToRgbaColor,
+    hsla: fromHslStringToRgbaColor,
+    hsv: fromHsvStringToRgbColor,
+    rgb: fromRgbaStringToRgbaColor,
+    rgba: fromRgbaStringToRgbaColor
+  } as unknown as {
+    r: number;
+    g: number;
+    b: number;
+    a?: number;
+  } | null;
 
-  switch (format) {
-    case "hex":
-      rgbaColor = fromHexStringToRgbaColor(color);
-      break;
-    case "hsl":
-    case "hsla":
-      rgbaColor = fromHslStringToRgbaColor(color);
-      break;
-    case "rgb":
-    case "rgba":
-      rgbaColor = fromRgbaStringToRgbaColor(color);
-      break;
+  const parser = colorParsers[format];
+  if (!parser) {
+    return null;
   }
+
+  const rgbaColor = parser(color);
 
   if (!rgbaColor) {
     return null;
   }
 
-  const { r, g, b, a } = rgbaColor;
-  const hsv = fromRgbToHsv([r, g, b]);
+  const { r, g, b, a = 1 } = rgbaColor;
 
   return {
     rgb: `rgb(${r}, ${g}, ${b})`,
@@ -50,6 +55,6 @@ export const fromStringToColorVariants = (
     hex: fromRgbToHex([r, g, b, a]),
     hsl: fromRgbToHsl([r, g, b]),
     hsla: fromRgbToHsl([r, g, b, a]),
-    hsv
+    hsv: fromRgbToHsv([r, g, b])
   };
 };

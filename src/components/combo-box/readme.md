@@ -67,6 +67,7 @@
 
 ### Used by
 
+ - [ch-color-picker](../color-picker)
  - [ch-paginator-render](../paginator-render)
  - [ch-showcase](../../showcase/assets/components)
 
@@ -78,6 +79,7 @@
 ```mermaid
 graph TD;
   ch-combo-box-render --> ch-popover
+  ch-color-picker --> ch-combo-box-render
   ch-paginator-render --> ch-combo-box-render
   ch-showcase --> ch-combo-box-render
   style ch-combo-box-render fill:#f9f,stroke:#333,stroke-width:4px

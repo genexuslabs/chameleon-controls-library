@@ -11,6 +11,7 @@ import { codeShowcaseStory } from "./code/code.showcase";
 import { colorFieldShowcaseStory } from "./color-field/color-field.showcase";
 import { colorPickerShowcaseStory } from "./color-picker/color-picker.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
+import { counterShowcaseStory } from "./counter/counter.showcase";
 import { dialogShowcaseStory } from "./dialog/dialog.showcase";
 import { editShowcaseStory } from "./edit/edit.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
@@ -53,6 +54,7 @@ export const showcaseStories = {
   "color-field": colorFieldShowcaseStory,
   "color-picker": colorPickerShowcaseStory,
   "combo-box": comboBoxShowcaseStory,
+  counter: counterShowcaseStory,
   dialog: dialogShowcaseStory,
   edit: editShowcaseStory,
   image: imageShowcaseStory,

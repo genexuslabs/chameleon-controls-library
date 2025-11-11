@@ -17,6 +17,14 @@
     "stretch-start block-end stretch-end" max-content / max-content 1fr max-content;
 }
 
+.action-with-children {
+  display: grid;
+  grid-template:
+    "expandable-start stretch-start block-start stretch-end expandable-end" max-content
+    "expandable-start stretch-start inline-caption stretch-end expandable-end" max-content
+    "expandable-start stretch-start block-end stretch-end expandable-end" max-content / min-content max-content 1fr max-content min-content;
+}
+
 // TODO: Fix "inline-caption: start" items support
 .align-container {
   display: grid;
@@ -180,4 +188,64 @@
   .action:disabled &.start-img--disabled {
     --ch-start-start: var(--ch-start-img--disabled);
   }
+}
+
+// - - - - - - - - - - - - - - - -
+//       Expandable button
+// - - - - - - - - - - - - - - - -
+.expandable-button {
+  grid-area: expandable-start;
+  overflow: hidden;
+  text-indent: -9999px;
+  white-space: nowrap;
+
+  &::before {
+    content: "";
+    inline-size: var(--ch-action-list-group__expandable-button-size);
+    block-size: var(--ch-action-list-group__expandable-button-size);
+    background-color: currentColor;
+    -webkit-mask: no-repeat center /
+      var(--ch-action-list-group__expandable-button-image-size) $expandable-icon;
+  }
+
+  &--collapsed::before {
+    transform: rotate(-90deg); // TODO: Add RTL support
+  }
+}
+
+.expandable-button--start {
+  grid-area: expandable-start;
+}
+
+.expandable-button--end {
+  grid-area: expandable-end;
+
+  &::before {
+    transform: rotate(90deg);
+  }
+
+  &--collapsed::before {
+    transform: rotate(-90deg); // TODO: Add RTL support
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//       Expandable content
+// - - - - - - - - - - - - - - - -
+.expandable {
+  display: grid;
+  grid-auto-rows: min-content;
+  position: relative;
+  padding: 0;
+  margin: 0;
+
+  &--lazy-loaded {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 100px;
+  }
+}
+
+.expandable--collapsed {
+  display: none;
+  overflow: hidden;
 }

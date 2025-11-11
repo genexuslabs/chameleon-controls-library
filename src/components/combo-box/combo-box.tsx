@@ -29,7 +29,7 @@ import { GxImageMultiStateStart } from "../../common/types";
 import { isMobileDevice, tokenMap } from "../../common/utils";
 import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
 import { focusComposedPath } from "../common/helpers";
-import { ChPopoverAlign } from "../popover/types";
+import { ChPopoverAlign, PopoverClosedInfo } from "../popover/types";
 import { filterSubModel } from "./helpers";
 import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
 import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
@@ -679,7 +679,7 @@ export class ChComboBoxRender
     }
   };
 
-  #handlePopoverClose = (event: ChPopoverCustomEvent<any>) => {
+  #handlePopoverClose = (event: ChPopoverCustomEvent<PopoverClosedInfo>) => {
     event.stopPropagation();
 
     // The focus must return to the Host when the popover is closed using the
@@ -692,8 +692,13 @@ export class ChComboBoxRender
     // in the ch-popover
 
     // Return the focus to the control if the popover was closed with the
-    // escape key or by clicking again the combo-box
-    if (focusComposedPath().includes(this.el)) {
+    // escape key or by clicking again the combo-box. Don't return the focus if
+    // the popover was closed because it is no longer visible, because it will
+    // provoke a layout shift
+    if (
+      event.detail.reason !== "popover-no-longer-visible" &&
+      focusComposedPath().includes(this.el)
+    ) {
       this.#shouldFocusTheComboBox = true;
     }
 

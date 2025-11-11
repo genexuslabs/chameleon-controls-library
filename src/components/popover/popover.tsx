@@ -19,11 +19,13 @@ import {
   subscribeToRTLChanges,
   unsubscribeToRTLChanges
 } from "../../common/utils";
+import { getDocumentSizes } from "./get-document-sizes";
 import {
   ChPopoverAlign,
   ChPopoverResizeElement,
   ChPopoverSizeMatch,
-  PopoverActionElement
+  PopoverActionElement,
+  PopoverClosedInfo
 } from "./types";
 import { fromPxToNumber, setResponsiveAlignment } from "./utils";
 
@@ -506,8 +508,26 @@ export class ChPopover {
    *
    * This event can be prevented (`preventDefault()`), interrupting the
    * `ch-popover`'s closing.
+   *
+   * The `reason` property of the event provides more information about
+   * the cause of the closing:
+   *  - `"click-outside"`: The popover is being closed because the user clicked
+   *    outside the popover when using `closeOnClickOutside === true` and
+   *    `mode === "manual"`.
+   *
+   *  - `"escape-key"`: The popover is being closed because the user pressed the
+   *    "Escape" key when using `closeOnClickOutside === true` and
+   *    `mode === "manual"`.
+   *
+   *  - `"popover-no-longer-visible"`: The popover is being closed because it
+   *    is no longer visible.
+   *
+   *  - `"toggle"`: The popover is being closed by the native toggle behavior
+   *    of popover. It can be produced by the user clicking the `actionElement`,
+   *    pressing the "Enter" or "Space" keys on the `actionElement`, pressing
+   *    the "Escape" key or other. Used when `mode === "auto"`.
    */
-  @Event() popoverClosed: EventEmitter;
+  @Event() popoverClosed: EventEmitter<PopoverClosedInfo>;
 
   #showPopover = () => {
     this.el.showPopover();
@@ -520,11 +540,14 @@ export class ChPopover {
   };
 
   // TODO: Add unit tests for this feature
-  #closePopoverIfNotDefaultPrevented = (event: Event) => {
-    const eventInfo = this.popoverClosed.emit();
+  #closePopoverIfNotDefaultPrevented = (
+    reason: PopoverClosedInfo,
+    event?: Event
+  ) => {
+    const eventInfo = this.popoverClosed.emit(reason);
 
     if (eventInfo.defaultPrevented) {
-      event.preventDefault();
+      event?.preventDefault();
       return;
     }
 
@@ -541,13 +564,16 @@ export class ChPopover {
       // determine if the popover should be closed
       !composedPath.includes(this.actionElement)
     ) {
-      this.#closePopoverIfNotDefaultPrevented(event);
+      this.#closePopoverIfNotDefaultPrevented(
+        { reason: "click-outside" },
+        event
+      );
     }
   };
 
   #handlePopoverCloseOnEscapeKey = (event: KeyboardEvent) => {
     if (event.code === KEY_CODES.ESCAPE) {
-      this.#closePopoverIfNotDefaultPrevented(event);
+      this.#closePopoverIfNotDefaultPrevented({ reason: "escape-key" }, event);
     }
   };
 
@@ -664,6 +690,13 @@ export class ChPopover {
         passive: true
       })
     );
+
+    // We must observe the actual viewport size, because observing the
+    // document.body does not work when the browser's window is resized
+    // and the body has scrollbars.
+    // Also, passive mode is not supported in the "resize" event, because this
+    // event can not be prevented
+    window.addEventListener("resize", this.#updatePositionRAF);
   };
 
   #updatePositionRAF = () => {
@@ -672,7 +705,7 @@ export class ChPopover {
 
   #updatePosition = () => {
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
-    const documentRect = document.documentElement.getBoundingClientRect();
+    const documentRect = getDocumentSizes();
     const actionRect = this.actionElement.getBoundingClientRect();
     const popoverScrollSizes = {
       width: this.el.scrollWidth,
@@ -701,7 +734,7 @@ export class ChPopover {
   };
 
   #getActionInlineStartPosition = (
-    documentRect: DOMRect,
+    documentRect: { width: number; height: number },
     actionRect: DOMRect
   ) =>
     this.#isRTLDirection
@@ -709,7 +742,7 @@ export class ChPopover {
       : actionRect.left;
 
   #setResponsiveAlignment = (
-    documentRect: DOMRect,
+    documentRect: { width: number; height: number },
     actionRect: DOMRect,
     actionInlineStart: number,
     popoverScrollSizes: { width: number; height: number },
@@ -743,13 +776,15 @@ export class ChPopover {
     // TODO: Add e2e tests for this
     try {
       if (maxInlineSizeCustomVarValue.endsWith("px")) {
-        actualPopoverWidth = Number(
-          maxInlineSizeCustomVarValue.replace("px", "").trim()
+        actualPopoverWidth = Math.min(
+          actualPopoverWidth,
+          Number(maxInlineSizeCustomVarValue.replace("px", "").trim())
         );
       }
       if (maxBlockSizeCustomVarValue.endsWith("px")) {
-        actualPopoverHeight = Number(
-          maxBlockSizeCustomVarValue.replace("px", "").trim()
+        actualPopoverHeight = Math.min(
+          actualPopoverHeight,
+          Number(maxBlockSizeCustomVarValue.replace("px", "").trim())
         );
       }
     } catch {
@@ -809,6 +844,17 @@ export class ChPopover {
     // Inline size
     if (inlineOverflow < 0) {
       const newMaxInlineSize = popoverWidth + inlineOverflow;
+
+      // TODO: Add e2e tests for this
+      // TODO: We must implement a property to configure the behavior of these
+      // kinds of situations
+      // Close the popover if it won't be visible.
+      if (newMaxInlineSize <= PRECISION_TO_AVOID_FLOATING_POINT_ERRORS) {
+        return this.#closePopoverIfNotDefaultPrevented({
+          reason: "popover-no-longer-visible"
+        });
+      }
+
       setProperty(this.el, POPOVER_FORCED_MAX_INLINE_SIZE, newMaxInlineSize);
     }
     // Check if the forced inline size is no longer needed
@@ -823,6 +869,17 @@ export class ChPopover {
     // Block size
     if (blockOverflow < 0) {
       const newMaxBlockSize = popoverHeight + blockOverflow;
+
+      // TODO: Add e2e tests for this
+      // TODO: We must implement a property to configure the behavior of these
+      // kinds of situations
+      // Close the popover if it won't be visible.
+      if (newMaxBlockSize <= PRECISION_TO_AVOID_FLOATING_POINT_ERRORS) {
+        return this.#closePopoverIfNotDefaultPrevented({
+          reason: "popover-no-longer-visible"
+        });
+      }
+
       setProperty(this.el, POPOVER_FORCED_MAX_BLOCK_SIZE, newMaxBlockSize);
     }
     // Check if the forced block size is no longer needed
@@ -890,6 +947,7 @@ export class ChPopover {
         capture: true
       })
     );
+    window.removeEventListener("resize", this.#updatePositionRAF);
 
     // Delete references for root nodes to any avoid memory leak
     this.#rootNodes = undefined;
@@ -903,7 +961,18 @@ export class ChPopover {
     if (willBeOpen) {
       eventInfo = this.popoverOpened.emit();
     } else {
-      eventInfo = this.popoverClosed.emit();
+      // If the popover is already closed, don't emit the event again
+      // This can happen when:
+      //  - The "Escape" key is pressed in mode === "manual"
+      //  - The user clicks outside the popover in mode === "manual"
+      //  - The show property is changed to false externally
+      //  - The user scrolls the window and the popover is no longer visible
+      // TODO: Add e2e tests for this
+      if (!this.show) {
+        return;
+      }
+
+      eventInfo = this.popoverClosed.emit({ reason: "toggle" });
     }
 
     // TODO: Add unit tests for this feature
@@ -1215,7 +1284,7 @@ export class ChPopover {
     }
 
     if (this.#adjustAlignment) {
-      const documentRect = document.documentElement.getBoundingClientRect();
+      const documentRect = getDocumentSizes();
       const actionRect = this.actionElement.getBoundingClientRect();
       const popoverScrollSizes = {
         width: this.el.scrollWidth,
@@ -1285,6 +1354,7 @@ export class ChPopover {
             ? this.#handleMouseDown
             : null
         }
+        // TODO: Add beforetoggle listener to properly support preventing the natural toggle
         // TODO: Should we add this event with popover="manual"???
         // TODO: Check if the actionElement is an instance of Button to add this handler
         onToggle={this.#handlePopoverToggle}

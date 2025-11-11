@@ -21,6 +21,7 @@ import {
 
 // Side effect to define the ch-markdown-viewer-lit
 import "./internal/markdown-viewer.lit";
+import { markdownViewerExtension } from "./parsers/math";
 
 /**
  * A control to render markdown syntax. It supports GitHub Flavored Markdown
@@ -138,17 +139,21 @@ export class ChMarkdownViewer {
     return renderDefinedValues(renderedContent);
   };
 
+  // TODO: In Chameleon 7 this method won't be necessary, since the
+  // markdown-parser will be built-in and we will have direct access to it for
+  // adding more extensions.
+  #getExtensions = () =>
+    this.extensions
+      ? [markdownViewerExtension, ...this.extensions]
+      : [markdownViewerExtension];
+
   #mergeCustomRendersInASingleObject = () => {
-    if (!this.extensions || this.extensions.length === 0) {
-      this.#renders = markdownViewerRenderDictionary;
-    }
     // Merge the render of the extensions into a single render object
-    else {
-      this.#renders = Object.assign(
-        markdownViewerRenderDictionary,
-        ...this.extensions.map(({ mdastRender }) => mdastRender)
-      );
-    }
+
+    this.#renders = Object.assign(
+      markdownViewerRenderDictionary,
+      ...this.#getExtensions().map(({ mdastRender }) => mdastRender)
+    );
   };
 
   connectedCallback() {
@@ -160,18 +165,28 @@ export class ChMarkdownViewer {
       return;
     }
 
-    this.#templateResult = await markdownToJSX(
-      this.value,
-      {
-        allowDangerousHtml: true, // Allow dangerous in this version
-        codeRender: this.renderCode ?? defaultCodeRender,
-        lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
-        rawHTML: this.rawHtml,
-        showIndicator: this.showIndicator
-      },
-      this.extensions,
-      this.#renderChildren
-    );
+    // Don't crash the entire markdown viewer if something goes wrong
+    try {
+      this.#templateResult = await markdownToJSX(
+        this.value,
+        {
+          allowDangerousHtml: true, // Allow dangerous in this version
+          codeRender: this.renderCode ?? defaultCodeRender,
+          lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
+          rawHTML: this.rawHtml,
+          showIndicator: this.showIndicator
+        },
+        this.#getExtensions(),
+        this.#renderChildren
+      );
+    } catch (error) {
+      console.error(
+        "An error occurred while rendering the following value in the ch-markdown-viewer (this error won't update the current rendered value, it is only a console.error):\n",
+        this.value,
+        "\n\n",
+        error
+      );
+    }
   }
 
   render() {

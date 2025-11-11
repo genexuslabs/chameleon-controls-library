@@ -62,6 +62,7 @@ typings/
 dist/
 www/
 loader/
+dist-vite/
 
 *~
 *.sw[mnpcod]

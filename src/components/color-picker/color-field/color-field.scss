@@ -1,0 +1,28 @@
+@import "../../../common/_base";
+
+@include box-sizing();
+
+:host {
+  position: relative;
+  contain: size;
+  display: block;
+}
+
+canvas {
+  cursor: crosshair;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.marker {
+  position: absolute;
+  inline-size: var(--ch-color-field__marker-size);
+  block-size: var(--ch-color-field__marker-size);
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  pointer-events: none;
+  // We don't need to support RTL in the marker positioning, because we don't
+  // intend to change the gradient direction of the color-field (the canvas) when
+  // using different language directions.
+  transform: translate(-50%, -50%);
+}

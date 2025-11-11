@@ -8,6 +8,8 @@ import { checkboxShowcaseStory } from "./checkbox/checkbox.showcase";
 import { codeDiffEditorShowcaseStory } from "./code-diff-editor/code-diff-editor.showcase";
 import { codeEditorShowcaseStory } from "./code-editor/code-editor.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
+import { colorFieldShowcaseStory } from "./color-field/color-field.showcase";
+import { colorPickerShowcaseStory } from "./color-picker/color-picker.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
 import { counterShowcaseStory } from "./counter/counter.showcase";
 import { dialogShowcaseStory } from "./dialog/dialog.showcase";
@@ -17,6 +19,7 @@ import { imageShowcaseStory } from "./image/image.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
 import { liveKitRoomShowcaseStory } from "./live-kit-room/live-kit-room.showcase";
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
+import { mathViewerShowcaseStory } from "./math-viewer/math-viewer.showcase";
 import { navigationListShowcaseStory } from "./navigation-list/navigation-list.showcase";
 import { paginatorRenderShowcaseStory } from "./paginator-render/paginator-render.showcase";
 import { paginatorShowcaseStory } from "./paginator/paginator.showcase";
@@ -48,6 +51,8 @@ export const showcaseStories = {
   checkbox: checkboxShowcaseStory,
   chat: chatShowcaseStory,
   code: codeShowcaseStory,
+  "color-field": colorFieldShowcaseStory,
+  "color-picker": colorPickerShowcaseStory,
   "combo-box": comboBoxShowcaseStory,
   counter: counterShowcaseStory,
   dialog: dialogShowcaseStory,
@@ -78,6 +83,7 @@ export const showcaseCustomStories = {
   "code-editor": codeEditorShowcaseStory,
   "code-diff-editor": codeDiffEditorShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,
+  "math-viewer": mathViewerShowcaseStory,
   "markdown-viewer": markdownShowcaseStory,
   paginator: paginatorShowcaseStory,
   shortcuts: shortcutsShowcaseStory,

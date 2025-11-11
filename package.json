@@ -1,6 +1,6 @@
 {
   "name": "@genexus/chameleon-controls-library",
-  "version": "6.23.0",
+  "version": "6.27.0",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -17,17 +17,18 @@
     "loader/"
   ],
   "scripts": {
-    "build": "npm run build.monaco && npm run build.light && npm run build.extras",
+    "build": "npm run build.monaco && npm run build.light && npm run build.extras && npm run build.showcase",
     "build.light": "stencil build --docs --react",
+    "build.showcase": "stencil build",
     "build.extras": "tsc --project tsconfig-collection.json && node copy-files.mjs",
     "build.monaco": "vite build",
-    "generate": "stencil generate",
     "prettier": "prettier src/**/*.{tsx,ts,jsx,js,css,json,md} --write",
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
-    "start": "npm run build.monaco && npm run start.light",
-    "start.light": "stencil build --dev --watch --serve",
-    "start.optimized": "stencil build --watch --serve --dev --config stencil.config.optimized-dev.ts",
-    "start.o": "npm run start.optimized",
+    "start": "npm run build.monaco && node start-dev-server.js",
+    "start.dev-server": "node start-dev-server.js",
+    "start.vite": "vite --open --config vite-dev.config.ts",
+    "preview": "npm run build.light && vite preview --config vite-dev.config.ts --open",
+    "watch:dev": "stencil build --watch --config stencil.config.optimized-dev.ts",
     "test": "stencil test --spec --e2e --maxWorkers=1",
     "test.spec": "stencil test --spec --coverage --no-cache",
     "test.watch": "npm run test -- --watchAll --config stencil.config.optimized-test-watch.ts",
@@ -75,10 +76,12 @@
     "prettier": "~2.8.8",
     "puppeteer": "~22.6.5",
     "typescript": "~5.4.5",
-    "vite": "^5.2.10"
+    "vite": "~7.1.12",
+    "vite-plugin-static-copy": "~3.1.4"
   },
   "peerDependencies": {
-    "lit": "^3.3.0"
+    "lit": "^3.3.1",
+    "katex": "~0.16.25"
   },
   "husky": {
     "hooks": {

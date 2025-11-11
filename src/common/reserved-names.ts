@@ -271,6 +271,75 @@ export const ACTION_MENU_ITEM_EXPORT_PARTS = joinParts(
 export const ACTION_MENU_EXPORT_PARTS = joinParts(ACTION_MENU_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
+//             Color Picker Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const COLOR_PICKER_PARTS_DICTIONARY = {
+  ALPHA_SLIDER_LABEL: "alpha__slider-label",
+  ALPHA_SLIDER: "alpha__slider",
+  ALPHA_INPUT_GROUP: "alpha__input-group",
+  ALPHA_INPUT_LABEL: "alpha__input-label",
+  ALPHA_INPUT: "alpha__input",
+  ALPHA_SUFFIX: "alpha-suffix",
+  COLOR_FIELD: "color-field",
+  COLOR_FIELD_LABEL: "color-field__label",
+  COLOR_FORMAT_SELECTOR: "color-format-selector",
+  COLOR_FORMAT__COMBO_BOX: "color-format__combo-box",
+  COLOR_INPUTS: "color-inputs",
+  COLOR_PREVIEW_CONTAINER: "color-preview-container",
+  COLOR_PREVIEW_TEXT: "color-preview__text",
+  COLOR_PREVIEW: "color-preview",
+  FORMAT_SELECTOR_HEADER: "format-selector__header",
+  FORMAT_SELECTOR_LABEL: "format-selector__label",
+  HEX_INPUT_GROUP: "hex__input-group",
+  HEX_INPUT_LABEL: "hex__input-label",
+  HEX_INPUT: "hex__input",
+  HSL_INPUTS_GROUP: "hsl-inputs__group",
+  HSL_H_GROUP: "hsl-h__group",
+  HSL_S_GROUP: "hsl-s__group",
+  HSL_L_GROUP: "hsl-l__group",
+  HSL_H_LABEL: "hsl-h__label",
+  HSL_S_LABEL: "hsl-s__label",
+  HSL_L_LABEL: "hsl-l__label",
+  HSL_H_INPUT: "hsl-h__input",
+  HSL_S_INPUT: "hsl-s__input",
+  HSL_L_INPUT: "hsl-l__input",
+  HSL_S_SUFFIX: "hsl-s-suffix",
+  HSL_L_SUFFIX: "hsl-l-suffix",
+  HSV_INPUTS_GROUP: "hsv-inputs__group",
+  HSV_H_GROUP: "hsv-h__group",
+  HSV_S_GROUP: "hsv-s__group",
+  HSV_V_GROUP: "hsv-v__group",
+  HSV_H_LABEL: "hsv-h__label",
+  HSV_S_LABEL: "hsv-s__label",
+  HSV_V_LABEL: "hsv-v__label",
+  HSV_H_INPUT: "hsv-h__input",
+  HSV_S_INPUT: "hsv-s__input",
+  HSV_V_INPUT: "hsv-v__input",
+  HSV_S_SUFFIX: "hsv-s-suffix",
+  HSV_V_SUFFIX: "hsv-v-suffix",
+  HUE_SLIDER_LABEL: "hue-slider__label",
+  HUE_SLIDER: "hue__slider",
+  MARKER: "marker",
+  COLOR_PALETTE_BUTTON: "color-palette__button",
+  COLOR_PALETTES_GRID: "color-palette-grid",
+  COLOR_PALETTES_LABEL: "color-palette__label",
+  RGB_INPUTS_GROUP: "rgb-inputs__group",
+  RGB_R_GROUP: "rgb-r__group",
+  RGB_G_GROUP: "rgb-g__group",
+  RGB_B_GROUP: "rgb-b__group",
+  RGB_R_LABEL: "rgb-r__label",
+  RGB_G_LABEL: "rgb-g__label",
+  RGB_B_LABEL: "rgb-b__label",
+  RGB_R_INPUT: "rgb-r__input",
+  RGB_G_INPUT: "rgb-g__input",
+  RGB_B_INPUT: "rgb-b__input",
+
+  // - - - - - - - - States - - - - - - - -
+  DISABLED: "disabled", // MARKER
+  READONLY: "readonly" // MARKER
+} as const;
+
+// - - - - - - - - - - - - - - - - - - - -
 //             Combo Box Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const COMBO_BOX_PARTS_DICTIONARY = {

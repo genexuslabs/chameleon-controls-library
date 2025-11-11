@@ -76,6 +76,16 @@ export const showcasePages: NavigationListModel = [
             metadata: DEVELOPER_PREVIEW
           },
           {
+            link: { url: "#color-field" },
+            caption: "Color-field",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#color-picker" },
+            caption: "Color-picker",
+            metadata: EXPERIMENTAL
+          },
+          {
             link: { url: "#combo-box" },
             caption: "Combo Box",
             metadata: EXPERIMENTAL
@@ -227,7 +237,7 @@ export const showcasePages: NavigationListModel = [
       },
 
       {
-        caption: "Code/Markdown",
+        caption: "Code/Markdown/Math",
         startImgSrc:
           "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/csv.svg')",
         startImgType: "mask",
@@ -241,6 +251,11 @@ export const showcasePages: NavigationListModel = [
           {
             link: { url: "#code-diff-editor" },
             caption: "Code Diff Editor",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#math-viewer" },
+            caption: "Math Viewer",
             metadata: EXPERIMENTAL
           },
           {

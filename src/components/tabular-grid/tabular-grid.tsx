@@ -1,16 +1,7 @@
+import "./cell/tabular-grid-cell";
 import "./row/tabular-grid-row";
 import "./rowset/tabular-grid-rowset";
-import "./cell/tabular-grid-cell";
 
-import {
-  CSSProperties,
-  TabularGridSelectionChangedEvent,
-  TabularGridRowClickedEvent,
-  TabularGridMarkingChangedEvent,
-  TabularGridCellSelectionChangedEvent,
-  TabularGridRowPressedEvent,
-  TabularGridRowContextMenuEvent
-} from "./tabular-grid-types";
 import {
   Component,
   Element,
@@ -18,24 +9,22 @@ import {
   EventEmitter,
   Host,
   Listen,
+  Method,
   Prop,
   State,
   Watch,
-  h,
-  Method
+  h
 } from "@stencil/core";
-
-import { TabularGridManager } from "./tabular-grid-manager";
-import HTMLChTabularGridCellElement, {
-  TabularGridCellSelectorClickedEvent,
-  TabularGridRowDragEvent
-} from "./cell/tabular-grid-cell";
-import HTMLChTabularGridRowElement from "./row/tabular-grid-row";
 import {
-  TabularGridColumnDragEvent,
-  TabularGridColumnResizeEvent,
-  TabularGridColumnSelectorClickedEvent
-} from "./column/tabular-grid-column-types";
+  CSSProperties,
+  TabularGridCellSelectionChangedEvent,
+  TabularGridMarkingChangedEvent,
+  TabularGridRowClickedEvent,
+  TabularGridRowContextMenuEvent,
+  TabularGridRowPressedEvent,
+  TabularGridSelectionChangedEvent
+} from "./tabular-grid-types";
+
 import {
   MouseEventButton,
   MouseEventButtons,
@@ -43,6 +32,17 @@ import {
   mouseEventHasButtonPressed,
   mouseEventModifierKey
 } from "../common/helpers";
+import HTMLChTabularGridCellElement, {
+  TabularGridCellSelectorClickedEvent,
+  TabularGridRowDragEvent
+} from "./cell/tabular-grid-cell";
+import {
+  TabularGridColumnDragEvent,
+  TabularGridColumnResizeEvent,
+  TabularGridColumnSelectorClickedEvent
+} from "./column/tabular-grid-column-types";
+import HTMLChTabularGridRowElement from "./row/tabular-grid-row";
+import { TabularGridManager } from "./tabular-grid-manager";
 import { ManagerSelectionState } from "./tabular-grid-manager-selection";
 
 /**
@@ -203,6 +203,33 @@ export class ChTabularGrid {
    * A CSS class name applied to a row when it is marked.
    */
   @Prop() readonly rowMarkedClass: string;
+
+  /**
+   * Defines which lines (or borders) are displayed within the tabular grid.
+   * Similar to the border options in spreadsheet applications, this property
+   * controls whether lines appear around and/or between rows and columns.
+   *
+   * **Note:** At the moment, this property does not affect the rendering of
+   * the grid. It only reflects the property value as an HTML attribute.
+   *
+   * - "all": Lines around and between all rows and columns.
+   * - "all-inside": Lines only between rows and columns.
+   * - "column": Lines around and between columns.
+   * - "column-inside": Lines only between columns.
+   * - "none": No lines at all.
+   * - "row": Lines around and between rows.
+   * - "row-inside": Lines only between rows.
+   *
+   * Default: "all".
+   */
+  @Prop({ reflect: true }) readonly showLines:
+    | "all"
+    | "all-inside"
+    | "column"
+    | "column-inside"
+    | "none"
+    | "row"
+    | "row-inside" = "all";
 
   /**
    * A boolean indicating whether the user can drag column headers to reorder columns.

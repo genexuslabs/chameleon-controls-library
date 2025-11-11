@@ -1,4 +1,8 @@
-:host {
+@import "../../../components/math-viewer/scss-for-distribution/math-viewer-font-faces.scss";
+
+@include math-viewer-font-faces();
+
+ch-showcase {
   display: contents;
 }
 

@@ -23,3 +23,11 @@ export type ChPopoverSizeMatch =
   | "action-element-as-minimum";
 
 export type ChPopoverPositionTry = "flip-block" | "flip-inline" | "none";
+
+export type PopoverClosedInfo = {
+  reason:
+    | "click-outside"
+    | "escape-key"
+    | "popover-no-longer-visible"
+    | "toggle";
+};

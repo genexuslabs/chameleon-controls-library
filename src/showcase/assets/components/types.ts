@@ -166,6 +166,8 @@ export type ChameleonStories = {
   checkbox: ShowcaseStory<HTMLChCheckboxElement>;
   chat: ShowcaseStory<HTMLChChatElement>;
   code: ShowcaseStory<HTMLChCodeElement>;
+  "color-field": ShowcaseStory<HTMLChColorFieldElement>;
+  "color-picker": ShowcaseStory<HTMLChColorPickerElement>;
   "combo-box": ShowcaseStory<HTMLChComboBoxRenderElement>;
   counter: ShowcaseStory<HTMLChCounterElement>;
   dialog: ShowcaseStory<HTMLChDialogElement>;
@@ -197,6 +199,7 @@ export type ChameleonStories = {
 export type ChameleonCustomStories = {
   "code-editor": ShowcaseCustomStory;
   "code-diff-editor": ShowcaseCustomStory;
+  "math-viewer": ShowcaseCustomStory;
   "markdown-viewer": ShowcaseCustomStory;
   "flexible-layout": ShowcaseCustomStory;
   paginator: ShowcaseCustomStory;

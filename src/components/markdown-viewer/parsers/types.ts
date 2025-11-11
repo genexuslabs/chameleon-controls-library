@@ -11,7 +11,7 @@ import type { Extension as MicromarkExtension } from "micromark-util-types";
 
 export type ElementsWithoutCustomRender = Omit<
   RootContentMap,
-  "tableCell" | "tableRow"
+  "tableCell" | "tableRow" | "inlineMath" | "blockMath"
 >;
 
 export type MarkdownViewerRenderMetadata = {

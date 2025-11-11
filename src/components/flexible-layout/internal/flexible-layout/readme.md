@@ -118,6 +118,7 @@ Type: `Promise<FlexibleLayoutViewRemoveResult>`
 graph TD;
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
+  ch-tab-render --> ch-textblock
   ch-flexible-layout-render --> ch-flexible-layout
   style ch-flexible-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```

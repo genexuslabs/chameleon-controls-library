@@ -71,8 +71,8 @@ const renderMapping: {
     itemModel,
     actionListRenderState,
     disabled: boolean,
-    nested = false,
-    nestedExpandable = false
+    nested: boolean,
+    nestedExpandable: boolean = false
   ) => (
     <ch-action-list-item
       key={itemModel.id}
@@ -87,6 +87,8 @@ const renderMapping: {
           : itemModel.disabled ?? actionListRenderState.disabled
       }
       editable={itemModel.editable ?? actionListRenderState.editableItems}
+      expandable={itemModel.expandable}
+      expanded={itemModel.expanded}
       fixed={itemModel.fixed}
       getImagePathCallback={actionListRenderState.getImagePathCallback}
       metadata={itemModel.metadata}
@@ -95,17 +97,6 @@ const renderMapping: {
       selectable={actionListRenderState.selection !== "none"}
       selected={itemModel.selected}
       translations={actionListRenderState.translations}
-    ></ch-action-list-item>
-  ),
-  group: (itemModel, actionListRenderState) => (
-    <ch-action-list-group
-      key={itemModel.id}
-      id={itemModel.id}
-      caption={itemModel.caption}
-      disabled={itemModel.disabled ?? actionListRenderState.disabled}
-      expandable={itemModel.expandable}
-      expanded={itemModel.expanded}
-      selected={itemModel.selected}
     >
       {itemModel.items?.map(item =>
         actionListRenderState.renderItem(
@@ -116,7 +107,7 @@ const renderMapping: {
           itemModel.expandable
         )
       )}
-    </ch-action-list-group>
+    </ch-action-list-item>
   ),
   separator: () => (
     <div
@@ -132,21 +123,19 @@ const defaultRenderItem = (
   itemModel: ActionListItemModel,
   actionListRenderState: ChActionListRender,
   disabled?: boolean,
-  nested?: boolean,
-  nestedExpandable?: boolean
-) =>
-  itemModel.type === "actionable"
-    ? renderMapping.actionable(
-        itemModel as any, // THIS IS A WA
-        actionListRenderState,
-        disabled,
-        nested,
-        nestedExpandable
-      )
-    : renderMapping[itemModel.type](
-        itemModel as any, // THIS IS A WA
-        actionListRenderState
-      );
+  nested?: boolean
+) => {
+  if (itemModel.type === "separator") {
+    return renderMapping.separator(itemModel as any, actionListRenderState);
+  }
+
+  return renderMapping.actionable(
+    itemModel as any, // THIS IS A WA
+    actionListRenderState,
+    disabled,
+    nested
+  );
+};
 
 const FIRST_ITEM_GREATER_THAN_SECOND = -1;
 const SECOND_ITEM_GREATER_THAN_FIRST = 0;
@@ -713,7 +702,7 @@ export class ChActionListRender {
     const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
     this.#checkIfMustExpandCollapseGroup(itemInfo);
 
-    if (itemInfo.type === "group" && !itemInfo.expandable) {
+    if (!itemInfo.expandable) {
       return;
     }
     this.itemClick.emit(this.#flattenedModel.get(itemInfo.id));
@@ -723,11 +712,7 @@ export class ChActionListRender {
     itemInfo: ActionListItemActionable | ActionListItemGroup
   ) => {
     // Toggle the expanded/collapsed in the group on click
-    if (
-      itemInfo.type === "group" &&
-      itemInfo.expandable &&
-      !itemInfo.disabled
-    ) {
+    if (itemInfo.expandable && !itemInfo.disabled) {
       itemInfo.expanded = !itemInfo.expanded;
       forceUpdate(this);
     }

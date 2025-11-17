@@ -1,12 +1,14 @@
 # ch-layout-splitter
 
+<!-- Auto Generated Below -->
+
+
+## Overview
+
 This component allows us to design a layout composed by columns and rows.
 
 - Columns and rows can have relative (`fr`) or absolute (`px`) size.
 - The line that separates two columns or two rows will always have a drag-bar to resize the layout.
-
-<!-- Auto Generated Below -->
-
 
 ## Properties
 

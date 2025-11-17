@@ -9,31 +9,31 @@ import {
   forceUpdate,
   h
 } from "@stencil/core";
+import { removeElement } from "../../common/array";
+import { CssContainProperty, CssOverflowProperty } from "../../common/types";
+import { ChFlexibleLayoutCustomEvent } from "../../components";
+import { ThemeModel } from "../theme/theme-types";
 import {
-  FlexibleLayoutModel,
-  FlexibleLayoutItemModel,
+  DroppableArea,
+  FlexibleLayoutGroupModel,
   FlexibleLayoutItemExtended,
-  FlexibleLayoutLeafModel,
-  FlexibleLayoutRenders,
+  FlexibleLayoutItemModel,
+  FlexibleLayoutLeafConfigurationTabbed,
   FlexibleLayoutLeafInfo,
+  FlexibleLayoutLeafModel,
+  FlexibleLayoutLeafType,
+  FlexibleLayoutModel,
+  FlexibleLayoutRenderedWidgets,
+  FlexibleLayoutRenders,
+  FlexibleLayoutViewRemoveResult,
+  FlexibleLayoutWidget,
+  FlexibleLayoutWidgetCloseInfo,
+  FlexibleLayoutWidgetExtended,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
-  WidgetReorderInfo,
-  FlexibleLayoutViewRemoveResult,
-  FlexibleLayoutGroupModel,
-  DroppableArea,
-  FlexibleLayoutWidget,
-  FlexibleLayoutLeafType,
-  FlexibleLayoutWidgetExtended,
-  FlexibleLayoutWidgetCloseInfo,
-  FlexibleLayoutLeafConfigurationTabbed,
-  FlexibleLayoutRenderedWidgets
+  WidgetReorderInfo
 } from "./internal/flexible-layout/types";
-import { ChFlexibleLayoutCustomEvent } from "../../components";
-import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
-import { CssContainProperty, CssOverflowProperty } from "../../common/types";
-import { ThemeModel } from "../theme/theme-types";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
@@ -63,6 +63,9 @@ const GENERATE_GUID = () => {
   });
 };
 
+/**
+ * The `ch-flexible-layout-render` control is a shell composed of lightweight modular widgets that provide a solid foundation for draggable dock layouts.
+ */
 @Component({
   shadow: true,
   styleUrl: "flexible-layout-render.scss",

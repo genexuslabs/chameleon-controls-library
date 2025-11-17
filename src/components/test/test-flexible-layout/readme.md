@@ -45,6 +45,7 @@ graph TD;
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
+  ch-tab-render --> ch-textblock
   ch-action-group-render --> ch-action-menu-render
   ch-action-menu-render --> ch-action-menu
   ch-action-menu-render --> ch-popover

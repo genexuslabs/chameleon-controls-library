@@ -6,6 +6,42 @@ import { CodeEditorOptions } from "./code-editor-types.js";
 
 let autoId = 0;
 
+/**
+ * A Web Component based on the Monaco editor. We use Vite to prebundle the Monaco's chunks to avoid issues with StencilJS' rollup configuration.
+ *
+ * This control provides code editing and code diffing. It also presents properties to customize its behavior, such as `theme`, `language`, etc.
+ *
+ * To use this control it's important to have a copy task that includes the Web Workers used by the Monaco editor. Those Web Workers are placed in the `@genexus/chameleon-controls-library/dist/chameleon/assets` folder. For example, in a StencilJS project add the following configuration:
+ *
+ * ```ts
+ * // stencil.config.ts
+ * import { Config } from "@stencil/core";
+ *
+ * export const config: Config = {
+ *   namespace: "your-name-space",
+ *   outputTargets: [
+ *     {
+ *       type: "dist",
+ *       copy: [
+ *         {
+ *           src: "../node_modules/@genexus/chameleon-controls-library/dist/chameleon/assets",
+ *           dest: "assets"
+ *         }
+ *       ]
+ *     },
+ *     {
+ *       type: "www",
+ *       serviceWorker: null,
+ *       copy: [
+ *         {
+ *           src: "../node_modules/@genexus/chameleon-controls-library/dist/chameleon/assets",
+ *           dest: "assets"
+ *         }
+ *       ]
+ *     }
+ *   ]
+ * };
+ */
 @Component({
   shadow: false,
   styleUrl: "code-editor.scss",

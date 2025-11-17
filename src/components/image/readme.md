@@ -5,7 +5,7 @@
 
 ## Overview
 
-A control to display multiple images, depending on the state (focus, hover,
+A component to display multiple images, depending on the state (focus, hover,
 active or disabled) of a parent element.
 
 ## Properties

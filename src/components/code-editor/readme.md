@@ -1,5 +1,10 @@
 # ch-code-editor
 
+<!-- Auto Generated Below -->
+
+
+## Overview
+
 A Web Component based on the Monaco editor. We use Vite to prebundle the Monaco's chunks to avoid issues with StencilJS' rollup configuration.
 
 This control provides code editing and code diffing. It also presents properties to customize its behavior, such as `theme`, `language`, etc.
@@ -34,10 +39,6 @@ export const config: Config = {
     }
   ]
 };
-```
-
-<!-- Auto Generated Below -->
-
 
 ## Properties
 

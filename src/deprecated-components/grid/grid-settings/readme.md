@@ -13,7 +13,7 @@ The `ch-grid-settings` component represents a settings window for a grid compone
 
 | Property            | Attribute | Description                                                          | Type                | Default     |
 | ------------------- | --------- | -------------------------------------------------------------------- | ------------------- | ----------- |
-| `grid` _(required)_ | --        | The `HTMLChGridElement` that the settings window is associated with. | `HTMLChGridElement` | `undefined` |
+| `grid` _(required)_ | `grid`    | The `HTMLChGridElement` that the settings window is associated with. | `HTMLChGridElement` | `undefined` |
 | `show`              | `show`    | Indicates whether the settings window is currently shown or not.     | `boolean`           | `false`     |
 
 

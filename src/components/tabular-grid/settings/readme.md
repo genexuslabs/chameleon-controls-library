@@ -11,7 +11,7 @@ The `ch-tabular-grid-settings` component represents a settings window for a grid
 
 | Property            | Attribute | Description                                                                 | Type                       | Default     |
 | ------------------- | --------- | --------------------------------------------------------------------------- | -------------------------- | ----------- |
-| `grid` _(required)_ | --        | The `HTMLChTabularGridElement` that the settings window is associated with. | `HTMLChTabularGridElement` | `undefined` |
+| `grid` _(required)_ | `grid`    | The `HTMLChTabularGridElement` that the settings window is associated with. | `HTMLChTabularGridElement` | `undefined` |
 | `show`              | `show`    | Indicates whether the settings window is currently shown or not.            | `boolean`                  | `false`     |
 
 

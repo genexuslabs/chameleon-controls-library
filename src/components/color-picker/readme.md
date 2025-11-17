@@ -33,11 +33,13 @@
 
 ## CSS Custom Properties
 
-| Name                                    | Description                                                            |
-| --------------------------------------- | ---------------------------------------------------------------------- |
-| `--ch-color-picker-palette-columns`     | Specifies the number of columns in the color palette grid. @default 10 |
-| `--ch-color-picker-preview-block-size`  | Specifies the height of the current color preview box. @default 20px   |
-| `--ch-color-picker-preview-inline-size` | Specifies the width of the current color preview box. @default 20px    |
+| Name                                           | Description                                                                     |
+| ---------------------------------------------- | ------------------------------------------------------------------------------- |
+| `--ch-color-picker-palette-button-block-size`  | Specifies the min height of the current color color-palette box. @default 1.5em |
+| `--ch-color-picker-palette-button-inline-size` | Specifies the min width of the current color color-palette box. @default 2em    |
+| `--ch-color-picker-palette-columns`            | Specifies the number of columns in the color palette grid. @default 10          |
+| `--ch-color-picker-preview-block-size`         | Specifies the height of the current color preview box. @default 20px            |
+| `--ch-color-picker-preview-inline-size`        | Specifies the width of the current color preview box. @default 20px             |
 
 
 ## Dependencies

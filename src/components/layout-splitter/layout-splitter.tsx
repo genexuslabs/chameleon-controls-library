@@ -10,17 +10,29 @@ import {
   h
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
+import { LAYOUT_SPLITTER_PARTS_DICTIONARY } from "../../common/reserved-names";
+import { SyncWithRAF } from "../../common/sync-with-frames";
+import {
+  ROOT_VIEW,
+  addCursorInDocument,
+  isRTL,
+  removePointerEventsInDocumentBody,
+  resetCursorInDocument,
+  resetPointerEventsInDocumentBody
+} from "../../common/utils";
+import { addSiblingLeaf } from "./add-sibling-item";
+import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
 import {
   DragBarMouseDownEventInfo,
   GroupExtended,
   ItemExtended,
   LayoutSplitterDirection,
-  LayoutSplitterModel,
   LayoutSplitterGroupModel,
-  LayoutSplitterItemModel,
-  LayoutSplitterLeafModel,
   LayoutSplitterItemAddResult,
+  LayoutSplitterItemModel,
   LayoutSplitterItemRemoveResult,
+  LayoutSplitterLeafModel,
+  LayoutSplitterModel,
   LayoutSplitterSticky
 } from "./types";
 import {
@@ -30,18 +42,6 @@ import {
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
-import {
-  ROOT_VIEW,
-  addCursorInDocument,
-  isRTL,
-  removePointerEventsInDocumentBody,
-  resetCursorInDocument,
-  resetPointerEventsInDocumentBody
-} from "../../common/utils";
-import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
-import { addSiblingLeaf } from "./add-sibling-item";
-import { SyncWithRAF } from "../../common/sync-with-frames";
-import { LAYOUT_SPLITTER_PARTS_DICTIONARY } from "../../common/reserved-names";
 
 type Group = LayoutSplitterGroupModel;
 type Item = LayoutSplitterItemModel;
@@ -83,6 +83,10 @@ const ARROW_DOWN = "ArrowDown";
 const ARROW_LEFT = "ArrowLeft";
 
 /**
+ * This component allows us to design a layout composed by columns and rows.
+ *
+ * - Columns and rows can have relative (`fr`) or absolute (`px`) size.
+ * - The line that separates two columns or two rows will always have a drag-bar to resize the layout.
  * @part bar - The bar that divides two columns or two rows
  */
 @Component({

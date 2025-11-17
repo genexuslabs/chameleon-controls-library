@@ -15,7 +15,7 @@ The `ch-grid-column-settings` component represents a settings window for a colum
 
 | Property              | Attribute | Description                                                                | Type                      | Default     |
 | --------------------- | --------- | -------------------------------------------------------------------------- | ------------------------- | ----------- |
-| `column` _(required)_ | --        | The `HTMLChGridColumnElement` that the settings window is associated with. | `HTMLChGridColumnElement` | `undefined` |
+| `column` _(required)_ | `column`  | The `HTMLChGridColumnElement` that the settings window is associated with. | `HTMLChGridColumnElement` | `undefined` |
 | `show`                | `show`    | Indicates whether the settings window is currently shown or not.           | `boolean`                 | `false`     |
 
 

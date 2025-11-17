@@ -1,11 +1,11 @@
-import { Component, Host, h, Prop, Element, Watch } from "@stencil/core";
+import { Component, Element, h, Host, Prop, Watch } from "@stencil/core";
+import { getControlRegisterProperty } from "../../common/registry-properties";
 import {
   GxImageMultiState,
   GxImageMultiStateStart,
   ImageRender
 } from "../../common/types";
 import { updateDirectionInImageCustomVar } from "../../common/utils";
-import { getControlRegisterProperty } from "../../common/registry-properties";
 
 const DATA_IMAGE = "data-ch-image";
 
@@ -14,7 +14,7 @@ let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
 ) => GxImageMultiState | undefined;
 
 /**
- * A control to display multiple images, depending on the state (focus, hover,
+ * A component to display multiple images, depending on the state (focus, hover,
  * active or disabled) of a parent element.
  */
 @Component({

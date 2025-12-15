@@ -55,6 +55,9 @@ $option-checked-color: currentColor;
    */
   --ch-checkbox__background-image-size: 100%;
 
+  display: inline-grid;
+  align-items: center;
+
   // Avoid zooming on double tap
   touch-action: manipulation;
 
@@ -66,12 +69,9 @@ $option-checked-color: currentColor;
   pointer-events: none;
 }
 
-:host,
 .label {
-  display: inline-grid;
   grid-auto-columns: max-content;
   grid-auto-flow: column;
-  align-items: center;
 }
 
 :host(.ch-checkbox--actionable) :is(.input, .label) {

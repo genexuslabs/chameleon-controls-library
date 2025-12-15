@@ -259,7 +259,7 @@ export type ChatCallbacks = {
    * action. For example, displaying a dialog to customize the file name that
    * contains the code block to download.
    *
-   * If specified, in the default code block render a "download code" button will
+   * If specified, in the default code block renders a "download code" button will
    * be displayed in the `code-block__header-actions`.
    */
   downloadCodeBlock?: (plainText: string, language: string) => void;

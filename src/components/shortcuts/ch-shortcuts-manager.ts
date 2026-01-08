@@ -22,9 +22,9 @@ export function loadShortcuts(
       SHORTCUTS.set(normalizedKeyShortcut, [
         ...(SHORTCUTS.get(normalizedKeyShortcut) ?? []),
         {
-        name,
-        root,
-        shortcut
+          name,
+          root,
+          shortcut
         }
       ]);
     });
@@ -64,8 +64,8 @@ export function getShortcuts(name: string): {
     .flatMap((shortcutMaps) =>
       shortcutMaps.filter(
         (shortcutMap) =>
-        shortcutMap.name === name &&
-        !shortcutMap.shortcut.conditions?.focusInclude
+          shortcutMap.name === name &&
+          !shortcutMap.shortcut.conditions?.focusInclude
       )
     )
     .map((shortcutMap) => ({
@@ -251,11 +251,12 @@ function querySelectorAllPlus(
   selector: string,
   root: Document | ShadowRoot
 ): HTMLElement[] {
+  const plusSelectors = [":host", "::part"];
   return (
     selector
       ?.split(",")
       .map(selectorItem => {
-        if (selector.includes("::part")) {
+        if (plusSelectors.some((plusSelector) => selector.includes(plusSelector))) {
           return querySelectorPlus(selectorItem, root);
         }
         return Array.from(root.querySelectorAll(selector)) as HTMLElement[];
@@ -305,6 +306,18 @@ function querySelectorPlus(
 
     return null;
   };
+
+  if (selector?.startsWith(":host") && root instanceof ShadowRoot) {
+    const selectorItems = selector.match(/:host(?:\(([^)]+)\))?/);
+    const host = root.host as HTMLElement;
+    const hostSelector = selectorItems[1];
+
+    if (!hostSelector) {
+      return host;
+    }
+
+    return host.matches(hostSelector) ? host : null;
+  }
 
   if (selector?.includes("::part")) {
     const selectorItems = selector.match("(.*)::part\\(([^)]+)\\)");

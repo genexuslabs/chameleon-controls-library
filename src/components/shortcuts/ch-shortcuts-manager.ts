@@ -202,13 +202,23 @@ function normalize(
 }
 
 function conditions(shortcutMap: ShortcutMap, focus: HTMLElement[]): boolean {
-  if (shortcutMap.shortcut.conditions?.focusInclude) {
+  const conditions = shortcutMap.shortcut.conditions;
+
+  if (
+    conditions?.focusHost && 
+    shortcutMap.root instanceof ShadowRoot && 
+    !focus.includes(shortcutMap.root.host as HTMLElement)
+  ) {
+    return false;
+  }
+
+  if (conditions?.focusInclude) {
     return querySelectorAllPlus(
       shortcutMap.shortcut.conditions.focusInclude,
       shortcutMap.root
     ).some((el: HTMLElement) => focus.includes(el));
   }
-  if (shortcutMap.shortcut.conditions?.focusExclude) {
+  if (conditions?.focusExclude) {
     return !querySelectorAllPlus(
       shortcutMap.shortcut.conditions.focusExclude,
       shortcutMap.root
@@ -318,6 +328,7 @@ export interface Shortcut {
   selector?: string;
   preventDefault?: boolean;
   conditions?: {
+    focusHost?: boolean;
     focusInclude?: string;
     focusExclude?: string;
     allowRepeat?: boolean;

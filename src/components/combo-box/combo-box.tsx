@@ -158,6 +158,7 @@ export class ChComboBoxRender
         false,
         this.#displayedValues
       );
+
       return selectedIndex;
     },
     getNextIndex: currentSelectedIndex => {
@@ -178,16 +179,6 @@ export class ChComboBoxRender
               false,
               this.#displayedValues
             );
-
-      console.log(
-        "getNextIndex................................",
-        "currentSelectedIndex------",
-        currentSelectedIndex &&
-          getComboBoxItemFromIndex(currentSelectedIndex, this.model),
-        "nextSelectedIndex------",
-        nextSelectedIndex &&
-          getComboBoxItemFromIndex(nextSelectedIndex, this.model)
-      );
 
       return nextSelectedIndex;
     },
@@ -728,41 +719,40 @@ export class ChComboBoxRender
       if (keyboardHandler) {
         keyboardHandler(event);
       }
-    } else {
-      const keyboardHandler = this.#keyEventsNoFiltersDictionary[code];
+      return;
+    }
+    // Normal case (without suggest)
+    const keyboardHandler = this.#keyEventsNoFiltersDictionary[code];
 
-      // TODO: We should consider what happens with key === "Backspace" || key === "Clear"
+    // TODO: We should consider what happens with key === "Backspace" || key === "Clear" when
+    // applying type-ahead search
+    if (!keyboardHandler) {
+      const performTypeAhead =
+        this.expanded &&
+        key.length === 1 &&
+        key !== " " &&
+        !altKey &&
+        !ctrlKey &&
+        !metaKey;
 
-      if (!keyboardHandler) {
-        const performTypeAhead =
-          this.expanded &&
-          key.length === 1 &&
-          key !== " " &&
-          !altKey &&
-          !ctrlKey &&
-          !metaKey;
+      // TODO: Add e2e tests for the type-ahead feature
+      if (performTypeAhead) {
+        const result = this.#typeAhead.search(
+          key,
+          findSelectedIndex(this.#valueToItemInfo, this.activeDescendant)
+        );
 
-        if (performTypeAhead) {
-          const result = this.#typeAhead.search(
-            key,
-            findSelectedIndex(this.#valueToItemInfo, this.activeDescendant)
-          );
-
-          if (result !== null) {
-            this.activeDescendant = getComboBoxItemFromIndex(
-              result,
-              this.model
-            );
-          }
+        if (result !== null) {
+          this.activeDescendant = getComboBoxItemFromIndex(result, this.model);
         }
-
-        return;
       }
-      keyboardHandler(event);
 
-      if (!this.expanded) {
-        this.#checkAndEmitValueChangeWithNoFilter();
-      }
+      return;
+    }
+    keyboardHandler(event);
+
+    if (!this.expanded) {
+      this.#checkAndEmitValueChangeWithNoFilter();
     }
   };
 

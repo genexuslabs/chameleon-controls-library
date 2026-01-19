@@ -966,13 +966,14 @@ export class ChComboBoxRender
         SELECTED_ITEM_SELECTOR
       ) as HTMLElement | undefined;
 
-      // Focus the selected element to force the scroll into view
+      // Don't use focus, use scrollIntoView to avoid focus stealing and race
+      // conditions
       if (selectedElement) {
-        // Wait until the JS has been executed to avoid race conditions when
-        // rendering elements in the top layer and trying to focus them
-        requestAnimationFrame(() => {
-          selectedElement.focus();
-          this.#inputRef.focus();
+        selectedElement.scrollIntoView({
+          block: "nearest",
+          // @ts-expect-error This property is widely supported but not in the
+          // lib.dom.ts
+          container: "nearest"
         });
       }
     }

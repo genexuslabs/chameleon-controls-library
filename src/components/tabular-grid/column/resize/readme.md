@@ -11,7 +11,7 @@ The `ch-tabular-grid-column-resize` component responsible for resizing a column 
 
 | Property              | Attribute | Description                               | Type                             | Default     |
 | --------------------- | --------- | ----------------------------------------- | -------------------------------- | ----------- |
-| `column` _(required)_ | --        | The column element that is being resized. | `HTMLChTabularGridColumnElement` | `undefined` |
+| `column` _(required)_ | `column`  | The column element that is being resized. | `HTMLChTabularGridColumnElement` | `undefined` |
 
 
 ## Events

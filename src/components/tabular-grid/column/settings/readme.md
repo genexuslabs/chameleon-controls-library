@@ -13,7 +13,7 @@ The `ch-tabular-grid-column-settings` component represents a settings window for
 
 | Property              | Attribute | Description                                                                       | Type                             | Default     |
 | --------------------- | --------- | --------------------------------------------------------------------------------- | -------------------------------- | ----------- |
-| `column` _(required)_ | --        | The `HTMLChTabularGridColumnElement` that the settings window is associated with. | `HTMLChTabularGridColumnElement` | `undefined` |
+| `column` _(required)_ | `column`  | The `HTMLChTabularGridColumnElement` that the settings window is associated with. | `HTMLChTabularGridColumnElement` | `undefined` |
 | `show`                | `show`    | Indicates whether the settings window is currently shown or not.                  | `boolean`                        | `false`     |
 
 

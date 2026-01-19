@@ -13,7 +13,7 @@ whether the monitored class is visible or not.
 
 | Property              | Attribute | Description                                 | Type                             | Default     |
 | --------------------- | --------- | ------------------------------------------- | -------------------------------- | ----------- |
-| `column` _(required)_ | --        | The column element that is being monitored. | `HTMLChTabularGridColumnElement` | `undefined` |
+| `column` _(required)_ | `column`  | The column element that is being monitored. | `HTMLChTabularGridColumnElement` | `undefined` |
 
 
 ----------------------------------------------

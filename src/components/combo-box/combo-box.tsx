@@ -1,3 +1,4 @@
+import { TypeAhead } from "@genexus/kasstor-webkit";
 import {
   AttachInternals,
   Component,
@@ -11,6 +12,7 @@ import {
   forceUpdate,
   h
 } from "@stencil/core";
+
 import {
   analyzeLabelExistence,
   getElementInternalsLabel
@@ -30,9 +32,14 @@ import { isMobileDevice, tokenMap } from "../../common/utils";
 import { ChPopoverCustomEvent, GxImageMultiState } from "../../components";
 import { focusComposedPath } from "../common/helpers";
 import { ChPopoverAlign, PopoverClosedInfo } from "../popover/types";
+import { getCaptionFromItem } from "./get-caption-from-item";
 import { filterSubModel } from "./helpers";
 import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
-import { findNextSelectedIndex, findSelectedIndex } from "./navigation";
+import {
+  COMBO_BOX_NO_ACTIVE_ITEM,
+  findNextSelectedIndex,
+  findSelectedIndex
+} from "./navigation";
 import { customComboBoxItemRender, nativeItemRender } from "./renders";
 import {
   ComboBoxImagePathCallback,
@@ -82,6 +89,16 @@ type KeyDownWithFiltersEvents =
   | typeof KEY_CODES.NUMPAD_ENTER
   | typeof KEY_CODES.TAB;
 
+const getComboBoxItemFromIndex = (
+  selectedIndex: Exclude<ComboBoxSelectedIndex, null>,
+  model: ComboBoxModel
+) =>
+  typeof selectedIndex === "number"
+    ? model[selectedIndex]
+    : (model[selectedIndex[0]] as ComboBoxItemGroup).items[selectedIndex[1]];
+
+const NEGATIVE_INDEX = -1;
+
 /**
  * @status experimental
  *
@@ -122,6 +139,51 @@ export class ChComboBoxRender
 
   #shouldFocusTheComboBox = false;
 
+  // TODO: This should only be defined when suggest = false, so we free up some
+  // memory
+  #typeAhead = new TypeAhead<ComboBoxSelectedIndex>({
+    getCaptionFromIndex: index =>
+      getCaptionFromItem(
+        getComboBoxItemFromIndex(
+          // Assume that the index is defined
+          index,
+          this.model
+        )
+      ),
+    getFirstIndex: () => {
+      const selectedIndex = findNextSelectedIndex(
+        this.model,
+        NEGATIVE_INDEX,
+        1,
+        false,
+        this.#displayedValues
+      );
+      return selectedIndex;
+    },
+    getNextIndex: currentSelectedIndex => {
+      // TODO: Avoid the code duplication
+      const nextSelectedIndex =
+        currentSelectedIndex === COMBO_BOX_NO_ACTIVE_ITEM
+          ? findNextSelectedIndex(
+              this.model,
+              NEGATIVE_INDEX,
+              1,
+              false,
+              this.#displayedValues
+            )
+          : findNextSelectedIndex(
+              this.model,
+              currentSelectedIndex,
+              1,
+              false,
+              this.#displayedValues
+            );
+
+      return nextSelectedIndex;
+    },
+    isSameIndex: (a, b) => JSON.stringify(a) === JSON.stringify(b)
+  });
+
   // Filters info
   #applyFilters = false;
   #queuedInputValueUpdate: NodeJS.Timeout;
@@ -143,13 +205,10 @@ export class ChComboBoxRender
     event.preventDefault(); // Stop ArrowDown key from scrolling
 
     const nextSelectedIndex =
-      currentSelectedIndex.type === "not-exists"
+      currentSelectedIndex === COMBO_BOX_NO_ACTIVE_ITEM
         ? findNextSelectedIndex(
             this.model,
-            {
-              type: "first-level",
-              firstLevelIndex: increment === 1 ? -1 : this.model.length
-            },
+            increment === 1 ? NEGATIVE_INDEX : this.model.length,
             increment,
             hasFilters,
             displayedValues
@@ -162,16 +221,15 @@ export class ChComboBoxRender
             displayedValues
           );
 
-    if (nextSelectedIndex.type === "not-exists") {
+    if (nextSelectedIndex === COMBO_BOX_NO_ACTIVE_ITEM) {
       return;
     }
 
     // The new selected value is either in the first level or in the group
-    const newSelectedValue =
-      nextSelectedIndex.type === "first-level"
-        ? this.model[nextSelectedIndex.firstLevelIndex]
-        : (this.model[nextSelectedIndex.firstLevelIndex] as ComboBoxItemGroup)
-            .items[nextSelectedIndex.secondLevelIndex];
+    const newSelectedValue = getComboBoxItemFromIndex(
+      nextSelectedIndex,
+      this.model
+    );
 
     if (this.activeDescendant !== newSelectedValue) {
       this.activeDescendant = newSelectedValue;
@@ -223,10 +281,7 @@ export class ChComboBoxRender
     Home: (event: KeyboardEvent) =>
       this.#selectNextIndex(
         event,
-        {
-          type: "first-level",
-          firstLevelIndex: -1
-        }, // The algorithm will sum 1 to the start index
+        NEGATIVE_INDEX, // The algorithm will sum 1 to the start index
         1,
         this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
@@ -235,10 +290,7 @@ export class ChComboBoxRender
     End: (event: KeyboardEvent) =>
       this.#selectNextIndex(
         event,
-        {
-          type: "first-level",
-          firstLevelIndex: this.model.length
-        }, // The algorithm will sum -1 to the start index
+        this.model.length, // The algorithm will sum -1 to the start index
         -1,
         this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
@@ -657,24 +709,49 @@ export class ChComboBoxRender
   };
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
-    if (!this.suggest) {
-      const keyboardHandler = this.#keyEventsNoFiltersDictionary[event.code];
+    const { altKey, code, ctrlKey, metaKey, key } = event;
+
+    // Keyboard implementation for filters
+    if (this.suggest) {
+      const keyboardHandler = this.#keyEventsWithFiltersDictionary[code];
+
+      if (keyboardHandler) {
+        keyboardHandler(event);
+      }
+    } else {
+      const keyboardHandler = this.#keyEventsNoFiltersDictionary[code];
+
+      // TODO: We should consider what happens with key === "Backspace" || key === "Clear"
 
       if (!keyboardHandler) {
+        const performTypeAhead =
+          this.expanded &&
+          key.length === 1 &&
+          key !== " " &&
+          !altKey &&
+          !ctrlKey &&
+          !metaKey;
+
+        if (performTypeAhead) {
+          const result = this.#typeAhead.search(
+            key,
+            findSelectedIndex(this.#valueToItemInfo, this.activeDescendant)
+          );
+
+          if (result !== null) {
+            this.activeDescendant = getComboBoxItemFromIndex(
+              result,
+              this.model
+            );
+          }
+        }
+
         return;
       }
       keyboardHandler(event);
 
       if (!this.expanded) {
         this.#checkAndEmitValueChangeWithNoFilter();
-      }
-    }
-    // Keyboard implementation for filters
-    else {
-      const keyboardHandler = this.#keyEventsWithFiltersDictionary[event.code];
-
-      if (keyboardHandler) {
-        keyboardHandler(event);
       }
     }
   };

@@ -1,12 +1,13 @@
 import { h } from "@stencil/core";
+import { COMBO_BOX_PARTS_DICTIONARY } from "../../common/reserved-names";
+import { tokenMap } from "../../common/utils";
+import { getCaptionFromItem } from "./get-caption-from-item";
 import {
   ComboBoxItemGroup,
   ComboBoxItemImagesModel,
   ComboBoxItemModel,
   ComboBoxModel
 } from "./types";
-import { tokenMap } from "../../common/utils";
-import { COMBO_BOX_PARTS_DICTIONARY } from "../../common/reserved-names";
 
 const INDEX_SEPARATOR = "__";
 
@@ -142,7 +143,7 @@ export const customComboBoxItemRender =
               }}
               part={`${COMBO_BOX_PARTS_DICTIONARY.GROUP_HEADER_CAPTION} ${item.value}`}
             >
-              {item.caption ?? item.value}
+              {getCaptionFromItem(item)}
             </span>
           </button>
         ) : (
@@ -163,7 +164,7 @@ export const customComboBoxItemRender =
             })}
             style={getComboBoxItemImageStyle(images)}
           >
-            {item.caption ?? item.value}
+            {getCaptionFromItem(item)}
           </span>
         )}
 

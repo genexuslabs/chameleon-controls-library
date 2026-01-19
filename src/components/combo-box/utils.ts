@@ -44,14 +44,8 @@ export const mapValuesToItemInfo = (
     return;
   }
 
-  model.forEach((item: ComboBoxItemGroup, firstLevelIndex: number) => {
-    const firstLevelItemInfo: ComboBoxItemModelExtended = {
-      item: item,
-      index: {
-        type: "first-level",
-        firstLevelIndex: firstLevelIndex
-      }
-    };
+  model.forEach((item: ComboBoxItemGroup, index: number) => {
+    const firstLevelItemInfo: ComboBoxItemModelExtended = { item, index };
 
     // First level item
     valueToItemInfo.set(item.value, firstLevelItemInfo);
@@ -63,11 +57,7 @@ export const mapValuesToItemInfo = (
     item.items?.forEach((subItem, secondLevelIndex) => {
       const secondLevelItemInfo: ComboBoxItemModelExtended = {
         item: subItem,
-        index: {
-          type: "nested",
-          firstLevelIndex: firstLevelIndex,
-          secondLevelIndex: secondLevelIndex
-        }
+        index: [index, secondLevelIndex]
       };
 
       valueToItemInfo.set(subItem.value, secondLevelItemInfo);

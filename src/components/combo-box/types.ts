@@ -19,19 +19,7 @@ export type ComboBoxItemImagesModel = {
   end?: GxImageMultiStateEnd;
 };
 
-export type ComboBoxSelectedIndex =
-  | {
-      type: "not-exists";
-    }
-  | {
-      type: "nested";
-      firstLevelIndex: number;
-      secondLevelIndex: number;
-    }
-  | {
-      type: "first-level";
-      firstLevelIndex: number;
-    };
+export type ComboBoxSelectedIndex = null | number | [number, number];
 
 export type ComboBoxItemLeaf = {
   caption?: string;

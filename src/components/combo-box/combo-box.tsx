@@ -179,6 +179,16 @@ export class ChComboBoxRender
               this.#displayedValues
             );
 
+      console.log(
+        "getNextIndex................................",
+        "currentSelectedIndex------",
+        currentSelectedIndex &&
+          getComboBoxItemFromIndex(currentSelectedIndex, this.model),
+        "nextSelectedIndex------",
+        nextSelectedIndex &&
+          getComboBoxItemFromIndex(nextSelectedIndex, this.model)
+      );
+
       return nextSelectedIndex;
     },
     isSameIndex: (a, b) => JSON.stringify(a) === JSON.stringify(b)

@@ -89,7 +89,7 @@ export const config: Config = {
               options(options) {
                 return {
                   ...options,
-                  external: [/^lit/, /^@lit/, /^@open-wc/]
+                  external: [/^lit/, /^@lit/, /^@open-wc/, /^@genexus\/kasstor/]
                 };
               }
             }

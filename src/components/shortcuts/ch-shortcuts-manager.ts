@@ -1,6 +1,6 @@
 import { focusComposedPath } from "../common/helpers";
 
-const SHORTCUTS = new Map<string, ShortcutMap>();
+const SHORTCUTS = new Map<string, ShortcutMap[]>();
 let LATEST_SHORTCUT: ShortcutMap;
 
 export function loadShortcuts(
@@ -19,11 +19,14 @@ export function loadShortcuts(
         keyShortcut.key
       );
 
-      SHORTCUTS.set(normalizedKeyShortcut, {
-        name,
-        root,
-        shortcut
-      });
+      SHORTCUTS.set(normalizedKeyShortcut, [
+        ...(SHORTCUTS.get(normalizedKeyShortcut) ?? []),
+        {
+          name,
+          root,
+          shortcut
+        }
+      ]);
     });
   });
 
@@ -31,15 +34,24 @@ export function loadShortcuts(
 }
 
 export function unloadShortcuts(name: string) {
-  const removeKeyShortcuts: string[] = [];
+  const keysToDelete: string[] = [];
 
-  SHORTCUTS.forEach((shortcutMap, key) => {
-    if (shortcutMap.name === name) {
-      removeKeyShortcuts.push(key);
+  SHORTCUTS.forEach((shortcutMaps, key) => {
+    const filtered = shortcutMaps.filter(
+      (shortcutMap) => shortcutMap.name !== name
+    );
+
+    if (filtered.length === 0) {
+      keysToDelete.push(key);
+    } else if (filtered.length !== shortcutMaps.length) {
+      SHORTCUTS.set(key, filtered);
     }
   });
 
-  removeKeyShortcuts.forEach(key => SHORTCUTS.delete(key));
+  keysToDelete.forEach((key) => {
+    SHORTCUTS.delete(key);
+  });
+
   removeListener();
 }
 
@@ -49,13 +61,14 @@ export function getShortcuts(name: string): {
   legendPosition: string;
 }[] {
   return Array.from(SHORTCUTS.values())
-    .filter(shortcutMap => {
-      return (
-        shortcutMap.name === name &&
-        !shortcutMap.shortcut.conditions?.focusInclude
-      );
-    })
-    .map(shortcutMap => ({
+    .flatMap((shortcutMaps) =>
+      shortcutMaps.filter(
+        (shortcutMap) =>
+          shortcutMap.name === name &&
+          !shortcutMap.shortcut.conditions?.focusInclude
+      )
+    )
+    .map((shortcutMap) => ({
       element: querySelectorPlus(
         shortcutMap.shortcut.selector,
         shortcutMap.root
@@ -87,30 +100,34 @@ function keydownHandler(eventInfo: KeyboardEvent) {
 }
 
 function triggerShortcut(eventInfo: KeyboardEvent): ShortcutMap {
-  const shortcut = normalize(
+  const keyShortcut = normalize(
     eventInfo.ctrlKey,
     eventInfo.altKey,
     eventInfo.shiftKey,
     eventInfo.metaKey,
     eventInfo.key
   );
-  const shortcutMap = SHORTCUTS.get(shortcut);
+  const shortcuts = SHORTCUTS.get(keyShortcut) ?? [];
   const focus = focusComposedPath();
 
-  if (shortcutMap && conditions(shortcutMap, focus)) {
+  for (const shortcut of shortcuts) {
+    if (!conditions(shortcut, focus)) {
+      continue;
+    }
+
     const element = querySelectorPlus(
-      shortcutMap.shortcut.selector,
-      shortcutMap.root
+      shortcut.shortcut.selector,
+      shortcut.root
     ) as HTMLElement;
     const keyShortcutPressedEvent = createEvent(
-      shortcut,
-      shortcutMap.shortcut.id,
+      keyShortcut,
+      shortcut.shortcut.id,
       element,
       focus
     );
 
-    if (shortcutMap.root.dispatchEvent(keyShortcutPressedEvent)) {
-      switch (shortcutMap.shortcut.action) {
+    if (shortcut.root.dispatchEvent(keyShortcutPressedEvent)) {
+      switch (shortcut.shortcut.action) {
         case "click":
           element?.dispatchEvent(new Event("click"));
           break;
@@ -118,15 +135,17 @@ function triggerShortcut(eventInfo: KeyboardEvent): ShortcutMap {
           element?.focus();
       }
 
-      if (shortcutMap.shortcut.preventDefault !== false) {
+      if (shortcut.shortcut.preventDefault !== false) {
         eventInfo.preventDefault();
       }
     } else {
       eventInfo.preventDefault();
     }
+
+    return shortcut;
   }
 
-  return shortcutMap;
+  return null;
 }
 
 function parseKeyShortcuts(value = ""): KeyShortcut[] {
@@ -183,13 +202,23 @@ function normalize(
 }
 
 function conditions(shortcutMap: ShortcutMap, focus: HTMLElement[]): boolean {
-  if (shortcutMap.shortcut.conditions?.focusInclude) {
+  const conditions = shortcutMap.shortcut.conditions;
+
+  if (
+    conditions?.focusHost && 
+    shortcutMap.root instanceof ShadowRoot && 
+    !focus.includes(shortcutMap.root.host as HTMLElement)
+  ) {
+    return false;
+  }
+
+  if (conditions?.focusInclude) {
     return querySelectorAllPlus(
       shortcutMap.shortcut.conditions.focusInclude,
       shortcutMap.root
     ).some((el: HTMLElement) => focus.includes(el));
   }
-  if (shortcutMap.shortcut.conditions?.focusExclude) {
+  if (conditions?.focusExclude) {
     return !querySelectorAllPlus(
       shortcutMap.shortcut.conditions.focusExclude,
       shortcutMap.root
@@ -222,11 +251,12 @@ function querySelectorAllPlus(
   selector: string,
   root: Document | ShadowRoot
 ): HTMLElement[] {
+  const plusSelectors = [":host", "::part"];
   return (
     selector
       ?.split(",")
       .map(selectorItem => {
-        if (selector.includes("::part")) {
+        if (plusSelectors.some((plusSelector) => selector.includes(plusSelector))) {
           return querySelectorPlus(selectorItem, root);
         }
         return Array.from(root.querySelectorAll(selector)) as HTMLElement[];
@@ -277,6 +307,18 @@ function querySelectorPlus(
     return null;
   };
 
+  if (selector?.startsWith(":host") && root instanceof ShadowRoot) {
+    const selectorItems = selector.match(/:host(?:\(([^)]+)\))?/);
+    const host = root.host as HTMLElement;
+    const hostSelector = selectorItems[1];
+
+    if (!hostSelector) {
+      return host;
+    }
+
+    return host.matches(hostSelector) ? host : null;
+  }
+
   if (selector?.includes("::part")) {
     const selectorItems = selector.match("(.*)::part\\(([^)]+)\\)");
     const entity = selectorItems[1];
@@ -299,6 +341,7 @@ export interface Shortcut {
   selector?: string;
   preventDefault?: boolean;
   conditions?: {
+    focusHost?: boolean;
     focusInclude?: string;
     focusExclude?: string;
     allowRepeat?: boolean;

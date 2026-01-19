@@ -60,7 +60,6 @@
     "@types/jest": "~29.5.1",
     "@types/mdast": "^4.0.3",
     "@types/node": "^22.15.3",
-    "@types/prettier": "~2.4.0",
     "@types/puppeteer": "~5.4.0",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
@@ -80,6 +79,7 @@
     "vite-plugin-static-copy": "~3.1.4"
   },
   "peerDependencies": {
+    "@genexus/kasstor-webkit": "~0.2.0",
     "lit": "^3.3.1",
     "katex": "~0.16.25"
   },

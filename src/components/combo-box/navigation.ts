@@ -6,9 +6,7 @@ import {
   ComboBoxSelectedIndex
 } from "./types";
 
-const SELECTED_VALUE_DOES_NOT_EXISTS: ComboBoxSelectedIndex = {
-  type: "not-exists"
-} as const;
+export const COMBO_BOX_NO_ACTIVE_ITEM: null = null;
 
 const isValidIndex = (array: any, index: number) =>
   0 <= index && index < array.length;
@@ -18,12 +16,12 @@ export const findSelectedIndex = (
   activeDescendant: ComboBoxItemModel | undefined
 ): ComboBoxSelectedIndex => {
   if (!activeDescendant) {
-    return SELECTED_VALUE_DOES_NOT_EXISTS;
+    return COMBO_BOX_NO_ACTIVE_ITEM;
   }
 
   return (
     valueToItemInfo.get(activeDescendant.value)?.index ??
-    SELECTED_VALUE_DOES_NOT_EXISTS
+    COMBO_BOX_NO_ACTIVE_ITEM
   );
 };
 
@@ -34,13 +32,15 @@ export const findNextSelectedIndex = (
   hasFilters: boolean,
   displayedValues: Set<ComboBoxItemModel>
 ): ComboBoxSelectedIndex => {
-  if (currentIndex.type === "not-exists") {
-    return SELECTED_VALUE_DOES_NOT_EXISTS;
+  if (currentIndex === COMBO_BOX_NO_ACTIVE_ITEM) {
+    return COMBO_BOX_NO_ACTIVE_ITEM;
   }
-  const firstLevelIndex = currentIndex.firstLevelIndex;
 
-  if (currentIndex.type === "nested") {
-    let secondLevelIndex = currentIndex.secondLevelIndex + increment; // Start from the first valid index
+  const firstLevelIndex =
+    typeof currentIndex === "number" ? currentIndex : currentIndex[0];
+
+  if (typeof currentIndex !== "number") {
+    let secondLevelIndex = currentIndex[1] + increment; // Start from the first valid index
     const firstLevelItemItems = (model[firstLevelIndex] as ComboBoxItemGroup)
       .items;
 
@@ -57,11 +57,7 @@ export const findNextSelectedIndex = (
     // If the index is not after the end of the array, the new selected value
     // was found
     if (isValidIndex(firstLevelItemItems, secondLevelIndex)) {
-      return {
-        type: "nested",
-        firstLevelIndex: firstLevelIndex,
-        secondLevelIndex: secondLevelIndex
-      };
+      return [firstLevelIndex, secondLevelIndex];
     }
   }
 
@@ -82,7 +78,7 @@ export const findNextSelectedIndex = (
   // With this flag, we also say that we are at the end of the combo-box
   // and there isn't any new "next value" to select
   if (!isValidIndex(model, nextFirstLevelIndex)) {
-    return SELECTED_VALUE_DOES_NOT_EXISTS;
+    return COMBO_BOX_NO_ACTIVE_ITEM;
   }
 
   const nestedLevel = (model[nextFirstLevelIndex] as ComboBoxItemGroup).items;
@@ -90,19 +86,15 @@ export const findNextSelectedIndex = (
   if (nestedLevel != null) {
     return findNextSelectedIndex(
       model,
-      {
-        type: "nested",
-        firstLevelIndex: nextFirstLevelIndex,
-        secondLevelIndex: increment === 1 ? -1 : nestedLevel.length // The algorithm will sum 1 (or -1) to the start index
-      },
+      [
+        nextFirstLevelIndex,
+        increment === 1 ? -1 : nestedLevel.length // The algorithm will sum 1 (or -1) to the start index
+      ],
       increment,
       hasFilters,
       displayedValues
     );
   }
 
-  return {
-    type: "first-level",
-    firstLevelIndex: nextFirstLevelIndex
-  };
+  return nextFirstLevelIndex;
 };

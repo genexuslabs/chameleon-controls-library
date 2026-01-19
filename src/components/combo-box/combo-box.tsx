@@ -369,6 +369,21 @@ export class ChComboBoxRender
    * the `value` property in the interface.
    */
   @State() activeDescendant: ComboBoxItemModel | undefined;
+  @Watch("activeDescendant")
+  activeDescendantChanged() {
+    // TODO: Add a e2e test for this
+    if (this.activeDescendant !== undefined) {
+      const selectedIndex = findSelectedIndex(
+        this.#valueToItemInfo,
+        this.activeDescendant
+      );
+
+      // Ensure the group parent is expanded if the activeDescendant is in a subgroup
+      if (selectedIndex !== null && typeof selectedIndex !== "number") {
+        (this.model[selectedIndex[0]] as ComboBoxItemGroup).expanded = true;
+      }
+    }
+  }
 
   @State() expanded = false;
   @Watch("expanded")

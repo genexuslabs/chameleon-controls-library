@@ -1,4 +1,5 @@
 import { GxImageMultiState, ImageRender } from "../../common/types";
+import { ActionMenuModel } from "../action-menu/types";
 // import { ChActionListRender } from "./action-list-render";
 
 export type ActionListModel = ActionListItemModel[];
@@ -8,7 +9,6 @@ export type ActionListModel = ActionListItemModel[];
 // - - - - - - - - - - - - - - - - - - - -
 export type ActionListItemType =
   | ActionListItemTypeActionable
-  | ActionListItemTypeGroup
   | ActionListItemTypeSeparator;
 
 export type ActionListItemTypeActionable = "actionable";
@@ -43,7 +43,7 @@ export interface ActionListItemModelMap {
 // - - - - - - - - - - - - - - - - - - - -
 //          List Item Actionable
 // - - - - - - - - - - - - - - - - - - - -
-export type ActionListItemActionable = {
+export type ActionListItem = {
   id: string;
 
   additionalInformation?: ActionListItemAdditionalInformation;
@@ -65,7 +65,13 @@ export type ActionListItemActionable = {
 
   selected?: boolean;
 
-  // TODO: Add support to avoid setting this property
+  expandable?: boolean;
+  expanded?: boolean;
+
+  items?: ActionListItemActionable[];
+};
+
+export type ActionListItemActionable = ActionListItem & {
   type: ActionListItemTypeActionable;
 };
 
@@ -94,7 +100,8 @@ export type ActionListItemAdditionalItem =
   | ActionListItemAdditionalBase
   | ActionListItemAdditionalAction
   | ActionListItemAdditionalCustom
-  | ActionListItemAdditionalSlot;
+  | ActionListItemAdditionalSlot
+  | ActionListItemAdditionalMenu;
 
 export type ActionListItemAdditionalBase = {
   id?: string;
@@ -115,6 +122,10 @@ export type ActionListItemAdditionalSlot = {
 export type ActionListItemAdditionalCustom = {
   jsx: () => any;
   part?: string;
+};
+
+export type ActionListItemAdditionalMenu = {
+  menu: ActionMenuModel;
 };
 
 export type ActionListItemAdditionalAction = ActionListItemAdditionalBase & {
@@ -142,22 +153,7 @@ export type ActionListItemAdditionalItemActionType =
 // - - - - - - - - - - - - - - - - - - - -
 //            List Item Heading
 // - - - - - - - - - - - - - - - - - - - -
-export type ActionListItemGroup = {
-  id: string;
-  caption: string;
-  disabled?: boolean;
-  expandable?: boolean;
-  expanded?: boolean;
-
-  items: ActionListItemActionable[];
-
-  /**
-   * Establish the order at which the item will be placed in its parent.
-   * Multiple items can have the same `order` value.
-   */
-  order?: number;
-  part?: string;
-  selected?: boolean; // TODO: This property does not make much sense if expandable: false
+export type ActionListItemGroup = ActionListItem & {
   type: ActionListItemTypeGroup;
 };
 

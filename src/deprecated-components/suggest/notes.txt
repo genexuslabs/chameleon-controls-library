@@ -1,6 +1,0 @@
-ch-suggest (usa slot)
- tiene input text donde escribir
- en su shadow el input, y el ch-window (controla la apertura relativa)
- 
-ch-suggest-list (opcional)
-ch-suggest-list-item (opcional)

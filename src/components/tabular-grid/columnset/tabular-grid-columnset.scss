@@ -1,9 +1,0 @@
-@layer ch-tabular-grid {
-  ch-tabular-grid-columnset {
-    display: contents;
-  }
-}
-
-@import "../row/tabular-grid-row.scss";
-@import "../rowset/tabular-grid-rowset.scss";
-@import "../cell/tabular-grid-cell.scss";

@@ -1,0 +1,26 @@
+---
+import { readFile } from "fs/promises";
+import "../styles/global.scss";
+
+import type { MercuryOptions } from "@genexus/mercury-build";
+
+interface Props extends MercuryOptions {}
+
+const { assetsPaths } = Astro.props;
+const bundle = "base/base.css";
+
+const bundleContent = await readFile(
+  process.env.NODE_ENV === "production"
+    ? `dist/assets/css/${bundle}`
+    : `node_modules/.genexus/mercury/assets/css/${bundle}`,
+  "utf-8"
+);
+---
+
+<html>
+  <head>
+    <link rel="stylesheet" href="/assets/css/base/icons.css" />
+
+    <style set:html={bundleContent}></style>
+  </head>
+</html>

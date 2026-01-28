@@ -1,0 +1,136 @@
+@use "../../../../utilities/scss/base" as *;
+@use "../../../../utilities/scss/icons" as *;
+
+@include button-reset();
+@include box-sizing();
+
+:host {
+  display: grid;
+  position: relative;
+}
+
+:host([expandable]) {
+  grid-template-rows: max-content 0fr;
+  transition: grid-template-rows
+    var(--ch-navigation-list-item-expand-collapse-duration)
+    var(--ch-navigation-list-item-expand-collapse-timing-function);
+}
+
+:host([expanded]) {
+  grid-template-rows: max-content 1fr;
+}
+
+:host(:not([expanded])) > .expandable {
+  visibility: hidden;
+}
+
+.indicator {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  background-color: currentColor;
+  pointer-events: none;
+}
+
+.ch-disabled {
+  pointer-events: none;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.expandable {
+  display: grid;
+  overflow: hidden;
+
+  // Delays the visibility application based on the value of var(--ch-navigation-list-item-expand-collapse-duration)
+  transition: visibility var(--ch-navigation-list-item-expand-collapse-duration)
+    allow-discrete;
+}
+
+// - - - - - - - - - - - - - - - -
+//        Expandable button
+// - - - - - - - - - - - - - - - -
+.expandable-button {
+  &::before {
+    content: "";
+    display: grid;
+    place-items: center;
+    inline-size: var(--ch-navigation-list-item__expandable-button-size);
+    block-size: var(--ch-navigation-list-item__expandable-button-size);
+    pointer-events: none;
+    background-color: currentColor;
+    -webkit-mask: no-repeat center /
+      var(--ch-navigation-list-item__expandable-button-image-size)
+      $expandable-icon;
+
+    transition: transform
+      var(--ch-navigation-list-item-expand-collapse-duration)
+      var(--ch-navigation-list-item-expand-collapse-timing-function);
+  }
+
+  &--end::before {
+    order: 1;
+  }
+
+  // - - - - - - - End - - - - - - -
+  &--end.collapsed::before {
+    transform: rotate(-180deg);
+  }
+
+  &--start.collapsed::before {
+    transform: rotate(-90deg);
+
+    // TODO: Add a unit test for RTL
+    :host(:dir(rtl)) & {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.action {
+  display: flex;
+  align-items: center;
+  gap: var(--ch-navigation-list-item-gap);
+
+  // Defined in the navigation-list-render.scss file
+  padding-inline-start: var(--ch-navigation-list-item-indentation);
+
+  &--navigation-list-collapsed {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+ch-image {
+  --ch-image-size: var(--ch-navigation-list-item__image-size);
+  --ch-image-background-size: var(
+    --ch-navigation-list-item__background-image-size
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Tooltip
+// - - - - - - - - - - - - - - - - - - - -
+ch-tooltip {
+  // Necessary to avoid CLS issues when the tooltip is lazy loaded, because we
+  // assume that the ch-tooltip doesn't have a box, but when the JS has not
+  // loaded yet, it does.
+  display: contents;
+
+  --ch-tooltip-separation: var(--ch-navigation-list-item__tooltip-separation);
+  --ch-tooltip-separation-x: var(
+    --ch-navigation-list-item__tooltip-separation-x
+  );
+  --ch-tooltip-separation-y: var(
+    --ch-navigation-list-item__tooltip-separation-y
+  );
+}
+

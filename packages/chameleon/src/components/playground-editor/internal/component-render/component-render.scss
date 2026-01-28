@@ -1,0 +1,9 @@
+@use "../../../../utilities/scss/base" as *;
+
+@include box-sizing();
+@include button-reset();
+
+:host {
+  display: grid;
+}
+

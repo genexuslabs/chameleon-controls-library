@@ -1,0 +1,48 @@
+:host {
+  /**
+   * @prop --ch-image-size:
+   * Specifies the box size that contains the image.
+   * @default 0.875em
+   */
+  --ch-image-size: 0.875em;
+
+  /**
+    * @prop --ch-image-background-size:
+    * Specifies the size of the image.
+    * @default 100%
+    */
+  --ch-image-background-size: 100%;
+
+  display: inline-grid;
+
+  // TODO: Add a unit test for this case, because in flex layouts it can have
+  // reduced size without this property
+  min-inline-size: var(--ch-image-size);
+
+  inline-size: var(--ch-image-size);
+  block-size: var(--ch-image-size);
+  pointer-events: none;
+
+  // Optimize performance by not rendering the ch-image when it is outside of
+  // the viewport
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-image-size);
+
+  --ch-image-src: var(--ch-start-img--base);
+}
+
+:host(:disabled) {
+  --ch-image-src: var(--ch-start-img--disabled, var(--ch-start-img--base));
+}
+
+:host([type="background"]) {
+  background: no-repeat center / var(--ch-image-background-size)
+    var(--ch-image-src);
+}
+
+:host([type="mask"]) {
+  -webkit-mask: no-repeat center / var(--ch-image-background-size)
+    var(--ch-image-src);
+  background-color: currentColor;
+}
+

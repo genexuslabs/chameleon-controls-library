@@ -1,0 +1,132 @@
+@use "../../utilities/scss/base" as *;
+
+$option-checked-border-color: currentColor;
+$option-checked-color: currentColor;
+
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-checkbox__container-size:
+   * Specifies the size for the container of the `input` and `option` elements.
+   * @default min(1em, 20px)
+   */
+  --ch-checkbox__container-size: min(1em, 20px);
+
+  /**
+   * @prop --ch-checkbox__checked-image:
+   * Specifies the image of the checkbox when is checked.
+   * @default url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")
+   */
+  --ch-checkbox__option-checked-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>");
+
+  /**
+   * @prop --ch-checkbox__option-indeterminate-image:
+   * Specifies the image of the checkbox when is indeterminate.
+   * @default url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><rect width='8' height='8'/></svg>")
+   */
+  --ch-checkbox__option-indeterminate-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><rect width='8' height='8'/></svg>");
+
+  /**
+   * @prop --ch-checkbox__option-image-size:
+   * Specifies the image size of the `option` element.
+   * @default 50%
+   */
+  --ch-checkbox__option-image-size: 50%;
+
+  /**
+   * @prop --ch-checkbox__image-size:
+   * Specifies the box size that contains the start image of the control.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-checkbox__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-checkbox__background-image-size:
+   * Specifies the size of the start image of the control.
+   * @default 100%
+   */
+  --ch-checkbox__background-image-size: 100%;
+
+  // Avoid zooming on double tap
+  touch-action: manipulation;
+
+  // Remove text selection on double click
+  user-select: none;
+
+  // Necessary to implement to focus delegation to the input when clicking on
+  // external labels
+  pointer-events: none;
+}
+
+:host,
+.label {
+  display: inline-grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  align-items: center;
+}
+
+// TODO: Add support for multiline caption
+.label {
+  max-inline-size: max-content;
+  gap: inherit; // TODO: Add a unit test for this
+}
+
+.actionable {
+  cursor: pointer;
+
+  // Necessary to implement focus delegation to the input when clicking on
+  // external labels
+  pointer-events: all;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  inline-size: var(--ch-checkbox__container-size);
+  block-size: var(--ch-checkbox__container-size);
+
+  &::after {
+    content: "";
+    display: grid;
+    position: absolute;
+    inset: 0;
+    background-color: $option-checked-color;
+  }
+
+  &--false::after {
+    opacity: 0;
+  }
+
+  &--true::after {
+    -webkit-mask: no-repeat center / var(--ch-checkbox__option-image-size)
+      var(--ch-checkbox__option-checked-image);
+  }
+
+  &--mixed::after {
+    -webkit-mask: no-repeat center / var(--ch-checkbox__option-image-size)
+      var(--ch-checkbox__option-indeterminate-image);
+  }
+}
+
+.input {
+  // Reset browser defaults
+  appearance: none;
+  outline: unset;
+  margin: 0;
+  position: absolute;
+
+  border: 1px solid $option-checked-border-color;
+  inset: 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+ch-image {
+  --ch-image-size: var(--ch-checkbox__image-size);
+  --ch-image-background-size: var(--ch-checkbox__background-image-size);
+}

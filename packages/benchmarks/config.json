@@ -1,0 +1,29 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Polymer/tachometer/master/config.schema.json",
+  "root": "../..",
+  "sampleSize": 50,
+  "timeout": 0,
+  "autoSampleConditions": ["0%", "1%"],
+  "benchmarks": [
+    {
+      "name": "[Chameleon 7] Normal",
+      "url": "http://localhost:8077/index-chameleon-7.html",
+      "browser": {
+        "name": "chrome",
+        "headless": true,
+        "addArguments": ["enable-precise-memory-info"]
+      },
+      "measurement": "global"
+    },
+    {
+      "name": "[Chameleon 7] Signals",
+      "url": "http://localhost:8078/index-chameleon-7.html",
+      "browser": {
+        "name": "chrome",
+        "headless": true,
+        "addArguments": ["enable-precise-memory-info"]
+      },
+      "measurement": "global"
+    }
+  ]
+}

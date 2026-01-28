@@ -1,0 +1,33 @@
+@use "../../../utilities/scss/base" as *;
+
+@include box-sizing();
+@include button-reset();
+
+:host {
+  display: grid;
+}
+
+.properties,
+.properties-list,
+.property-detail {
+  display: grid;
+  grid-auto-rows: max-content;
+}
+
+h2,
+h3 {
+  font-size: unset;
+  font-weight: unset;
+  margin: unset;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  margin: 0;
+}
+
+dd {
+  margin: 0;
+}
+

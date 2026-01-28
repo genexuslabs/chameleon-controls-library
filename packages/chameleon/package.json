@@ -1,0 +1,221 @@
+{
+  "name": "@genexus/chameleon-controls-library-lit",
+  "version": "0.0.1",
+  "description": "A library of white-label, highly-customizable and reusable web components",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "es2015": "dist/index.js",
+  "es2017": "dist/index.js",
+  "jsnext:main": "dist/index.js",
+  "types": "./dist/browser/development/index.d.ts",
+  "type": "module",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/chameleon/chameleon.esm.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "start": "vite --config vite.config-serve.ts",
+    "build": "concurrently 'bun build:dev:browser' 'bun build:dev:node' 'bun build:prod:browser' 'bun build:prod:node' 'bun build:minified' 'bun build.types'",
+    "build:dev": "concurrently 'bun build:dev:browser' 'bun build:dev:node'",
+    "build:dev:browser": "vite build --mode browser-development",
+    "build:dev:node": "vite build --mode node-development",
+    "build:prod:browser": "vite build --mode browser-production",
+    "build:prod:node": "vite build --mode node-production",
+    "build:minified": "vite build --mode minified",
+    "build:preview": "bun run clear.dist && concurrently 'bun build:dev:browser' 'bun build:dev:node' 'bun build:prod:browser' 'bun build:prod:node'",
+    "build.types": "tsgo --project tsconfig-types.json",
+    "watch": "bun clear.dist && concurrently 'bun build:dev:browser --watch' 'bun build:dev:node --watch' 'bun build:prod:browser --watch' 'bun build:prod:node --watch' 'bun build.types --watch'",
+    "clear.dist": "bun run ./scripts/remove-dist.ts",
+    "test": "bunx playwright install && vitest",
+    "test.watch": "bunx playwright install && vitest watch"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@genexus/kasstor-core": "link:@genexus/kasstor-core",
+    "@genexus/kasstor-webkit": "link:@genexus/kasstor-webkit"
+  },
+  "peerDependencies": {
+    "@genexus/kasstor-core": "^0.1.0",
+    "@genexus/kasstor-signals": "^0.1.0",
+    "@genexus/kasstor-webkit": "^0.1.0",
+    "@open-wc/lit-helpers": "~0.7.0",
+    "lit": "^3.3.1",
+    "micromark": "^4.0.2",
+    "qr-creator": "^1.0.0",
+    "shiki": "^3.4.2",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@genexus/vite-plugin-kasstor": "link:@genexus/vite-plugin-kasstor"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "exports": {
+    ".": {
+      "node": {
+        "development": "./dist/node/development/index.js",
+        "default": "./dist/node/production/index.js"
+      },
+      "types": "./dist/browser/development/index.d.ts",
+      "development": "./dist/browser/development/index.js",
+      "default": "./dist/browser/production/index.js"
+    },
+    "./components/checkbox.js": {
+      "node": {
+        "development": "./dist/node/development/components/checkbox/checkbox.lit.js",
+        "default": "./dist/node/production/components/checkbox/checkbox.lit.js"
+      },
+      "types": "./dist/browser/development/components/checkbox/checkbox.lit.d.ts",
+      "development": "./dist/browser/development/components/checkbox/checkbox.lit.js",
+      "default": "./dist/browser/production/components/checkbox/checkbox.lit.js"
+    },
+    "./components/code.js": {
+      "node": {
+        "development": "./dist/node/development/components/code/code.lit.js",
+        "default": "./dist/node/production/components/code/code.lit.js"
+      },
+      "types": "./dist/browser/development/components/code/code.lit.d.ts",
+      "development": "./dist/browser/development/components/code/code.lit.js",
+      "default": "./dist/browser/production/components/code/code.lit.js"
+    },
+    "./components/navigation-list-render.js": {
+      "node": {
+        "development": "./dist/node/development/components/navigation-list/navigation-list-render.lit.js",
+        "default": "./dist/node/production/components/navigation-list/navigation-list-render.lit.js"
+      },
+      "types": "./dist/browser/development/components/navigation-list/navigation-list-render.lit.d.ts",
+      "development": "./dist/browser/development/components/navigation-list/navigation-list-render.lit.js",
+      "default": "./dist/browser/production/components/navigation-list/navigation-list-render.lit.js"
+    },
+    "./components/performance-scan.js": {
+      "node": {
+        "development": "./dist/node/development/components/performance-scan/performance-scan.lit.js",
+        "default": "./dist/node/production/components/performance-scan/performance-scan.lit.js"
+      },
+      "types": "./dist/browser/development/components/performance-scan/performance-scan.lit.d.ts",
+      "development": "./dist/browser/development/components/performance-scan/performance-scan.lit.js",
+      "default": "./dist/browser/production/components/performance-scan/performance-scan.lit.js"
+    },
+    "./components/playground-editor.js": {
+      "node": {
+        "development": "./dist/node/development/components/playground-editor/playground-editor.lit.js",
+        "default": "./dist/node/production/components/playground-editor/playground-editor.lit.js"
+      },
+      "types": "./dist/browser/development/components/playground-editor/playground-editor.lit.d.ts",
+      "development": "./dist/browser/development/components/playground-editor/playground-editor.lit.js",
+      "default": "./dist/browser/production/components/playground-editor/playground-editor.lit.js"
+    },
+    "./components/progress.js": {
+      "node": {
+        "development": "./dist/node/development/components/progress/progress.lit.js",
+        "default": "./dist/node/production/components/progress/progress.lit.js"
+      },
+      "types": "./dist/browser/development/components/progress/progress.lit.d.ts",
+      "development": "./dist/browser/development/components/progress/progress.lit.js",
+      "default": "./dist/browser/production/components/progress/progress.lit.js"
+    },
+    "./components/qr.js": {
+      "node": {
+        "development": "./dist/node/development/components/qr/qr.lit.js",
+        "default": "./dist/node/production/components/qr/qr.lit.js"
+      },
+      "types": "./dist/browser/development/components/qr/qr.lit.d.ts",
+      "development": "./dist/browser/development/components/qr/qr.lit.js",
+      "default": "./dist/browser/production/components/qr/qr.lit.js"
+    },
+    "./components/radio-group-render.js": {
+      "node": {
+        "development": "./dist/node/development/components/radio-group/radio-group-render.lit.js",
+        "default": "./dist/node/production/components/radio-group/radio-group-render.lit.js"
+      },
+      "types": "./dist/browser/development/components/radio-group/radio-group-render.lit.d.ts",
+      "development": "./dist/browser/development/components/radio-group/radio-group-render.lit.js",
+      "default": "./dist/browser/production/components/radio-group/radio-group-render.lit.js"
+    },
+    "./components/router.js": {
+      "node": {
+        "development": "./dist/node/development/components/router/router.lit.js",
+        "default": "./dist/node/production/components/router/router.lit.js"
+      },
+      "types": "./dist/browser/development/components/router/router.lit.d.ts",
+      "development": "./dist/browser/development/components/router/router.lit.js",
+      "default": "./dist/browser/production/components/router/router.lit.js"
+    },
+    "./components/segmented-control-render.js": {
+      "node": {
+        "development": "./dist/node/development/components/segmented-control/segmented-control-render.lit.js",
+        "default": "./dist/node/production/components/segmented-control/segmented-control-render.lit.js"
+      },
+      "types": "./dist/browser/development/components/segmented-control/segmented-control-render.lit.d.ts",
+      "development": "./dist/browser/development/components/segmented-control/segmented-control-render.lit.js",
+      "default": "./dist/browser/production/components/segmented-control/segmented-control-render.lit.js"
+    },
+    "./components/showcase-api.js": {
+      "node": {
+        "development": "./dist/node/development/components/showcase/showcase-api/showcase-api.lit.js",
+        "default": "./dist/node/production/components/showcase/showcase-api/showcase-api.lit.js"
+      },
+      "types": "./dist/browser/development/components/showcase/showcase-api/showcase-api.lit.d.ts",
+      "development": "./dist/browser/development/components/showcase/showcase-api/showcase-api.lit.js",
+      "default": "./dist/browser/production/components/showcase/showcase-api/showcase-api.lit.js"
+    },
+    "./components/sidebar.js": {
+      "node": {
+        "development": "./dist/node/development/components/sidebar/sidebar.lit.js",
+        "default": "./dist/node/production/components/sidebar/sidebar.lit.js"
+      },
+      "types": "./dist/browser/development/components/sidebar/sidebar.lit.d.ts",
+      "development": "./dist/browser/development/components/sidebar/sidebar.lit.js",
+      "default": "./dist/browser/production/components/sidebar/sidebar.lit.js"
+    },
+    "./components/slider.js": {
+      "node": {
+        "development": "./dist/node/development/components/slider/slider.lit.js",
+        "default": "./dist/node/production/components/slider/slider.lit.js"
+      },
+      "types": "./dist/browser/development/components/slider/slider.lit.d.ts",
+      "development": "./dist/browser/development/components/slider/slider.lit.js",
+      "default": "./dist/browser/production/components/slider/slider.lit.js"
+    },
+    "./components/switch.js": {
+      "node": {
+        "development": "./dist/node/development/components/switch/switch.lit.js",
+        "default": "./dist/node/production/components/switch/switch.lit.js"
+      },
+      "types": "./dist/browser/development/components/switch/switch.lit.d.ts",
+      "development": "./dist/browser/development/components/switch/switch.lit.js",
+      "default": "./dist/browser/production/components/switch/switch.lit.js"
+    },
+    "./components/tabular-grid-render.js": {
+      "node": {
+        "development": "./dist/node/development/components/tabular-grid/tabular-grid-render.lit.js",
+        "default": "./dist/node/production/components/tabular-grid/tabular-grid-render.lit.js"
+      },
+      "types": "./dist/browser/development/components/tabular-grid/tabular-grid-render.lit.d.ts",
+      "development": "./dist/browser/development/components/tabular-grid/tabular-grid-render.lit.js",
+      "default": "./dist/browser/production/components/tabular-grid/tabular-grid-render.lit.js"
+    },
+    "./components/textblock.js": {
+      "node": {
+        "development": "./dist/node/development/components/textblock/textblock.lit.js",
+        "default": "./dist/node/production/components/textblock/textblock.lit.js"
+      },
+      "types": "./dist/browser/development/components/textblock/textblock.lit.d.ts",
+      "development": "./dist/browser/development/components/textblock/textblock.lit.js",
+      "default": "./dist/browser/production/components/textblock/textblock.lit.js"
+    },
+    "./models/playground-editor.js": {
+      "node": {
+        "development": "./dist/node/development/components/playground-editor/models.js",
+        "default": "./dist/node/production/components/playground-editor/models.js"
+      },
+      "types": "./dist/browser/development/components/playground-editor/models.d.ts",
+      "development": "./dist/browser/development/components/playground-editor/models.js",
+      "default": "./dist/browser/production/components/playground-editor/models.js"
+    }
+  }
+}
+

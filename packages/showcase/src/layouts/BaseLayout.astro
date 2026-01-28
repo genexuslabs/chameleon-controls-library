@@ -1,0 +1,122 @@
+---
+import "../styles/global.scss";
+
+import { ChPerformanceScan } from "@genexus/chameleon-controls-library-lit/components/performance-scan.js";
+import { ChNavigationListRender } from "@genexus/chameleon-controls-library-lit/components/navigation-list-render.js";
+import { ChSidebar } from "@genexus/chameleon-controls-library-lit/components/sidebar.js";
+import { ChSwitch } from "@genexus/chameleon-controls-library-lit/components/switch.js";
+import { ClientRouter } from "astro:transitions";
+import { DEFAULT_LOCALE } from "../constants/constants";
+import "./BaseLayout.scss";
+import { sidebarItems } from "./sidebar-items";
+import Mercury from "../mercury/mercury.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const selectedLink = {
+  link: { url: Astro.url.pathname }
+};
+const currentLocale = Astro.currentLocale ?? DEFAULT_LOCALE;
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang={currentLocale} dir="ltr" class="dark hydrated" transition:persist>
+  <head>
+    <meta charset="UTF-8" transition:persist />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+      transition:persist
+    />
+    <title>{title}</title>
+    <meta slot="head" name="description" content={description} />
+    <!-- <link rel="icon" type="" href="./assets/favicon.ico" /> -->
+    <!-- <link rel="icon" type="image/png" href={favicon.src} transition:persist /> -->
+
+    <!-- <style>
+      :root:not(.hydrated) {
+        visibility: hidden;
+      }
+    </style> -->
+
+    <ClientRouter />
+  </head>
+  <body>
+    <script>
+      // Side effect to monkey patch the LitElement in order to don't miss any
+      // initial render
+      import "@genexus/chameleon-controls-library-lit/components/performance-scan.js";
+    </script>
+
+    <!-- <ChPerformanceScan transition:persist client:load /> -->
+
+    <header class="showcase-header elevation-1" transition:persist>
+      <p class="heading-4">Chameleon</p>
+
+      <input class="input" placeholder="Search" type="text" />
+
+      <div class="showcase-header-settings">
+        <ChSwitch
+          client:load
+          class="switch-small"
+          checkedCaption="Dark"
+          unCheckedCaption="Dark"
+        />
+
+        <ChSwitch
+          client:load
+          class="switch-small"
+          checkedCaption="RTL"
+          unCheckedCaption="RTL"
+        />
+      </div>
+    </header>
+
+    <aside class="showcase-sidebar" transition:persist>
+      <ChSidebar client:load class="sidebar" showExpandButton>
+        <ChNavigationListRender
+          transition:animate="none"
+          client:load
+          class="navigation-list"
+          expandSelectedLink
+          model={structuredClone(sidebarItems)}
+          selectedLink={selectedLink}
+          showCaptionOnCollapse="tooltip"
+          selectedLinkIndicator
+        />
+      </ChSidebar>
+    </aside>
+    <main class="showcase-main">
+      <slot />
+    </main>
+
+    <script>
+      import { swapFunctions } from "astro:transitions/client";
+
+      // We customize the swap implementation with the Astro recommendation.
+      // This customization improves the SPA UX.
+      function customSwapToFixFocusRestoreInShadowDOMs(newDocument: Document) {
+        swapFunctions.deselectScripts(newDocument);
+        swapFunctions.swapRootAttributes(newDocument);
+        swapFunctions.swapHeadElements(newDocument);
+      }
+
+      const showcaseRef = document.querySelector("ch-showcase")!;
+
+      document.addEventListener("astro:before-swap", event => {
+        event.swap = () =>
+          customSwapToFixFocusRestoreInShadowDOMs(event.newDocument);
+
+        showcaseRef.pathname = event.to.pathname;
+      });
+    </script>
+  </body>
+</html>
+
+<Mercury assetsPaths={{
+  fontsPath: "hello"
+}}></Mercury>

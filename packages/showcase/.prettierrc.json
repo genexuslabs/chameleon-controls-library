@@ -1,0 +1,15 @@
+{
+  "plugins": ["prettier-plugin-astro"],
+  "overrides": [{ "files": "*.astro", "options": { "parser": "astro" } }],
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "jsxSingleQuote": false,
+  "quoteProps": "as-needed",
+  "printWidth": 80,
+  "semi": true,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "useTabs": false
+}

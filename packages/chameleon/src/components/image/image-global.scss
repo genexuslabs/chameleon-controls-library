@@ -1,0 +1,19 @@
+// TODO: Add unit tests for this style applying for containerRef inside the
+// ShadowRoot and containerRef as the Host (ch-checkbox ref case)
+:host([data-ch-image]),
+[data-ch-image] {
+  &:hover ch-image:not(:disabled) {
+    --ch-image-src: var(--ch-start-img--hover, var(--ch-start-img--base));
+  }
+
+  &:active ch-image:not(:disabled) {
+    --ch-image-src: var(--ch-start-img--active, var(--ch-start-img--base));
+  }
+
+  &:focus ch-image:not(:disabled) {
+    --ch-image-src: var(
+      --ch-start-img--focus,
+      var(--ch-start-img--active, var(--ch-start-img--base))
+    );
+  }
+}

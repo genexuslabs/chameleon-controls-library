@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist/browser/development"
+  },
+  "exclude": [
+    "node_modules",
+    "vite.config.ts",
+    "tests",
+    "src/testings/**.ts",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.e2e.ts"
+  ]
+}
+

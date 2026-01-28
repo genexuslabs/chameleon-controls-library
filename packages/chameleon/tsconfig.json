@@ -1,0 +1,81 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "es2022",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    // Bundler mode
+    "moduleResolution": "bundler",
+    // "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "outDir": "dist/",
+    "sourceMap": true,
+    // "inlineSources": true,
+
+    // Linting
+    "allowUnreachableCode": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+    "noUncheckedSideEffectImports": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "verbatimModuleSyntax": true,
+
+    "types": ["@vitest/browser/providers/playwright"],
+    "plugins": [
+      {
+        "name": "@jackolope/ts-lit-plugin",
+        "strict": true,
+        "rules": {
+          // Custom elements rules
+          "no-unknown-tag-name": "warning", // The existence of tag names are checked
+          "no-unclosed-tag": "error",
+          "no-missing-element-type-definition": "error",
+
+          // lit-html rules
+          "no-unknown-attribute": "warning",
+          "no-unknown-property": "error",
+          "no-unknown-event": "warning",
+          "no-unknown-slot": "warning",
+
+          // Validating binding rules
+          "no-invalid-boolean-binding": "error",
+          "no-expressionless-property-binding": "error",
+          "no-noncallable-event-binding": "error",
+          "no-boolean-in-attribute-binding": "error",
+          "no-complex-attribute-binding": "error",
+
+          // When an attribute is bound with undefined/null instead of nothing,
+          // Lit renders an empty attribute instead of removing it from the DOM
+          "no-nullable-attribute-binding": "error",
+
+          "no-incompatible-type-binding": "error",
+          "no-invalid-directive-binding": "error",
+          "no-unintended-mixed-binding": "error",
+
+          // LitElement rules
+          "no-incompatible-property-type": "error",
+          "no-invalid-attribute-name": "error",
+          "no-property-visibility-mismatch": "error"
+        }
+      }
+    ]
+  },
+  "include": ["src/**/*.ts", "showcase/**/*.ts"],
+  // "exclude": ["node_modules", "vite.config.ts", "**/**.e2e.ts"]
+  // "exclude": ["node_modules", "vite.config.ts"]
+
+  // TODO: Exclude test files expect when running tests
+  "exclude": ["node_modules", "vite.config-serve.ts.ts"]
+}
+

@@ -1,0 +1,32 @@
+{
+  "name": "@genexus/chameleon-controls-library-lit-showcase",
+  "version": "0.0.1",
+  "description": "The showcase for @genexus/chameleon-controls-library-lit",
+  "type": "module",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "dev": "astro dev --open --mode dev",
+    "start": "astro dev --open",
+    "build": "astro build",
+    "preview": "bun run build && astro preview --open",
+    "astro": "astro"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@genexus/mercury": "1.0.0-beta.2",
+    "@genexus/mercury-build": "1.0.0-beta.2",
+    "@genexus/vite-plugin-mercury": "1.0.0-beta.2",
+    "@genexus/chameleon-controls-library-lit": "*",
+    "@semantic-ui/astro-lit": "~5.1.0",
+    "@webcomponents/template-shadowroot": "~0.2.1",
+    "astro": "~5.15.8",
+    "lit": "~3.3.1",
+    "@genexus/kasstor-core": "link:@genexus/kasstor-core",
+    "@genexus/kasstor-webkit": "link:@genexus/kasstor-webkit"
+  },
+  "devDependencies": {
+    "prettier-plugin-astro": "0.14.1"
+  }
+}

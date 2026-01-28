@@ -1,0 +1,133 @@
+@use "../../utilities/scss/base" as *;
+
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-slider-thumb-background-color:
+   * Specifies the background-color of the thumb. 
+   * @default currentColor
+   */
+  --ch-slider-thumb-background-color: currentColor;
+
+  /**
+    * @prop --ch-slider-thumb-size:
+    * Specifies the size of the thumb. 
+    * @default clamp(8px, 1.5em, 24px)
+    */
+  --ch-slider-thumb-size: clamp(8px, 1.5em, 24px);
+
+  /**
+   * @prop --ch-slider-track-block-size:
+   * Specifies the block size of the track. 
+   * @default clamp(3px, 0.25em, 16px)
+   */
+  --ch-slider-track-block-size: clamp(3px, 0.25em, 16px);
+
+  /**
+   * @prop --ch-slider-track__selected-background-color:
+   * Specifies the background-color of the selected portion of the track. 
+   * @default color-mix(in srgb, currentColor 15%, transparent)
+   */
+  --ch-slider-track__selected-background-color: color-mix(
+    in srgb,
+    currentColor 15%,
+    transparent
+  );
+
+  /**
+   * @prop --ch-slider-track__unselected-background-color:
+   * Specifies the background-color of the unselected portion of the track. 
+   * @default color-mix(in srgb, currentColor 15%, transparent)
+   */
+  --ch-slider-track__unselected-background-color: color-mix(
+    in srgb,
+    currentColor 15%,
+    transparent
+  );
+
+  display: inline-grid;
+}
+
+:host(:disabled) {
+  pointer-events: none;
+}
+
+.position-absolute-wrapper {
+  display: grid;
+  position: relative;
+  block-size: fit-content;
+}
+
+.slider {
+  display: grid;
+  block-size: var(--ch-slider-track-block-size);
+  cursor: pointer;
+
+  // Reset browser defaults
+  appearance: none;
+  padding: 0px;
+  margin: 0px;
+  border: unset;
+  opacity: 0;
+
+  // - - - - - - - - - - - - - - - -
+  //           Thumb reset
+  // - - - - - - - - - - - - - - - -
+  &::-webkit-slider-thumb {
+    appearance: none;
+    inline-size: var(--ch-slider-thumb-size);
+    block-size: var(--ch-slider-thumb-size);
+    opacity: 0;
+  }
+
+  &::-moz-range-thumb {
+    appearance: none;
+    inline-size: var(--ch-slider-thumb-size);
+    block-size: var(--ch-slider-thumb-size);
+    opacity: 0;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//              Track
+// - - - - - - - - - - - - - - - -
+.track {
+  display: flex;
+  position: absolute;
+  inline-size: 100%;
+  block-size: var(--ch-slider-track-block-size);
+  overflow: hidden;
+  pointer-events: none; // Remove pointer-events to allow the hidden input to be interactive
+}
+
+.track__selected {
+  background-color: var(--ch-slider-track__selected-background-color);
+  inline-size: var(--slider-selected-value);
+  block-size: 100%;
+}
+
+.track__unselected {
+  background-color: var(--ch-slider-track__unselected-background-color);
+  inline-size: var(--slider-unselected-value);
+  block-size: 100%;
+}
+
+// - - - - - - - - - - - - - - - -
+//              Thumb
+// - - - - - - - - - - - - - - - -
+.thumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(
+    var(--slider-thumb-position) - var(--ch-slider-thumb-size) *
+      var(--slider-value)
+  );
+  transform: translateY(-50%);
+
+  inline-size: var(--ch-slider-thumb-size);
+  block-size: var(--ch-slider-thumb-size);
+  background-color: var(--ch-slider-thumb-background-color);
+  border-radius: 50%;
+  pointer-events: none; // Remove pointer-events to allow the hidden input to be interactive
+}

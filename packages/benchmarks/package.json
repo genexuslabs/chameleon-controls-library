@@ -1,0 +1,23 @@
+{
+  "name": "@genexus/chameleon-controls-library-benchmarks",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Benchmarks for @genexus/chameleon-controls-library",
+  "scripts": {
+    "build": "bun build:ch-6 && bun build:ch-7",
+    "build:ch-6": "vite build --mode=chameleon-6",
+    "build:ch-7": "vite build --mode=chameleon-7",
+    "preview:ch-6": "vite preview --port 8076 --outDir ./dist-chameleon-6",
+    "preview:ch-7-no-signals": "vite preview --port 8077 --outDir ./dist-chameleon-7-no-signals",
+    "preview:ch-7": "vite preview --port 8078 --outDir ./dist-chameleon-7",
+    "bench": "tach --config=config.json --json-file ./resultados_benchmark.json"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@genexus/chameleon-controls-library-lit": "*"
+  },
+  "devDependencies": {
+    "tachometer": "~0.7.2"
+  }
+}

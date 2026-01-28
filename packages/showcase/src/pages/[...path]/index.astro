@@ -1,0 +1,181 @@
+---
+import { ChPlaygroundEditor } from "@genexus/chameleon-controls-library-lit/components/playground-editor.js";
+import { ChShowcaseApi } from "@genexus/chameleon-controls-library-lit/components/showcase-api.js";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { ChShowcase } from "../../layouts/showcase.lit";
+import { getAllRoutes, sidebarItems } from "../../layouts/sidebar-items";
+
+export function getStaticPaths() {
+  return getAllRoutes(sidebarItems);
+}
+
+interface Props {
+  component: string;
+  section: "overview" | "playground" | "api";
+  title: string;
+}
+
+const { title, component, section } = Astro.props;
+const { path } = Astro.params;
+---
+
+<BaseLayout title={title} description={title}>
+  <section aria-labelledby="component" class="component-section">
+    <header class="component-section-header">
+      <h1 transition:persist id="component" class="heading-3">{path}</h1>
+
+      <p transition:persist>
+        A control to highlight code blocks. - It supports code highlight by
+        parsing the incoming code string to
+        [hast](https://github.com/syntax-tree/hast) using
+        [Shiki](https://shiki.matsu.io). After that, it implements a reactivity
+        layer by implementing its own render for the hast. - It also supports
+        all programming languages from [Shiki.js](https://shiki.matsu.io). -
+        When the code highlighting is needed at runtime, the control will load
+        on demand the code parser and the programming language needed to parse
+        the code.
+      </p>
+
+      <nav class="component-section-navigation">
+        <ul class="component-section-navigation-list">
+          <li class="component-section-navigation-list-item">
+            <a
+              class="component-section-navigation-hyperlink"
+              href="./overview"
+              aria-current={section === "overview" ? "page" : undefined}
+              >Overview</a
+            >
+          </li>
+          <li class="component-section-navigation-list-item">
+            <a
+              class="component-section-navigation-hyperlink"
+              href="./playground"
+              aria-current={section === "playground" ? "page" : undefined}
+              >Playground</a
+            >
+          </li>
+          <li class="component-section-navigation-list-item">
+            <a
+              class="component-section-navigation-hyperlink"
+              href="./api"
+              aria-current={section === "api" ? "page" : undefined}>API</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="component-section-main">
+      {
+        section === "playground" && (
+          <ChPlaygroundEditor client:only componentName={component} />
+        )
+      }
+
+      <ChShowcase client:load pathname={path} />
+
+      <!-- <div class="field field-inline">
+      <label for="radio-group" class="label" transition:persist
+        >Focus radio</label
+      >
+      <ChRadioGroupRender
+        id="radio-group"
+        class="radio-group"
+        client:load
+        model={[
+          { value: "a", caption: "item a" },
+          { value: "B", caption: "item b" }
+        ]}
+      />
+    </div> -->
+
+      <!-- <div class="field field-inline">
+      <label for="slider" class="label">Focus Slider</label>
+      <ChSlider
+        client:load
+        id="slider"
+        class="slider"
+        name="slider"
+        value={2}
+        maxValue={20}
+      />
+    </div> -->
+
+      <!-- <div class="field field-inline">
+      <label for="switch" class="label">Focus switch</label>
+      <ChSwitch
+        id="switch"
+        client:load
+        checkedCaption="Option"
+        class="switch-small"
+      />
+    </div> -->
+
+      <!-- <ch-qr value="Chameleon"></ch-qr> -->
+
+      <!-- <ChTextBlock caption="Hellooooo" /> -->
+
+      <!-- <ChCheckbox client:load class="checkbox" caption="Option" /> -->
+      <!-- <ChProgress client:load /> -->
+
+      <!-- <ChSegmentedControlRender
+      client:load
+      class="segmented-control-filled"
+      model={[
+        { id: "a", caption: "Segmented control item a" },
+        { id: "B", caption: "Segmented control item b" }
+      ]}
+      selectedId="a"
+    />
+
+    <ChCode value={CODE_EXAMPLE} language="tsx" /> -->
+
+      {
+        section === "api" && (
+          <ChShowcaseApi
+            properties={{
+              name: {
+                description: "Hello world",
+                default: undefined,
+                htmlAttribute: "name-pepe",
+                required: true,
+                type: "string"
+              },
+              asdasd: {
+                description: "Hello world",
+                default: undefined,
+                htmlAttribute: "name-pepe",
+                required: true,
+                type: "string"
+              },
+              accessibleName: {
+                description: "Hello world",
+                default: undefined,
+                htmlAttribute: "name-pepe",
+                required: true,
+                type: "string"
+              },
+              accessibleName2: {
+                description: "Hello world",
+                default: undefined,
+                htmlAttribute: "name-pepe",
+                required: true,
+                type: "string"
+              }
+            }}
+          />
+        )
+      }
+    </div>
+
+    <!-- <ch-code></ch-code> -->
+  </section>
+</BaseLayout>
+
+<!-- <script is:inline>
+  import { playgroundEditorModels } from "@genexus/chameleon-controls-library-lit/models/playground-editor.js";
+
+  document.querySelector("ch-playground-editor").componentModel =
+    playgroundEditorModels["ch-slider"];
+</script> -->

@@ -1,0 +1,54 @@
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  display: grid;
+  position: fixed;
+
+  top: var(--ch-performance-scan-item-top);
+  left: var(--ch-performance-scan-item-left);
+  block-size: var(--ch-performance-scan-item-block-size);
+  inline-size: var(--ch-performance-scan-item-inline-size);
+
+  border: 2px solid #834ed8c0;
+  background-color: #834ed820;
+  pointer-events: none;
+  z-index: 1000;
+  box-sizing: border-box;
+
+  animation: lit-flash 0.5s ease-out forwards;
+  opacity: 0.75;
+}
+
+span {
+  inline-size: max-content;
+  block-size: 13px;
+  padding-inline: 6px;
+  padding-block: 1px;
+  margin-inline-start: -2px;
+  background-color: #834ed8c0;
+}
+
+.outside {
+  margin-block-start: -15px;
+}
+
+@keyframes lit-flash {
+  15% {
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+
+  50% {
+    opacity: 0.75;
+  }
+
+  75% {
+    opacity: 0.25;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

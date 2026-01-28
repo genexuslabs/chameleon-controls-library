@@ -1,0 +1,100 @@
+$expandable-icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><path d="M16.5 5L8.7 12.7L1 5" stroke="%23000" stroke-width="1.2" stroke-linecap="round"/></svg>');
+$arrow-right-icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" style="transform:rotate(-90deg)" viewBox="0 0 18 18" fill="none"><path d="M16.5 5L8.7 12.7L1 5" stroke="%23000" stroke-width="1.2" stroke-linecap="round"/></svg>');
+
+$unpin-outlined: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9.8 7.36V5.6H9V4H17V5.6H16.2V12L17.8 13.6V15.2H17.64L14.6 12.16V5.6H11.4V8.96L9.8 7.36ZM19.4 18.96L18.36 20L13.64 15.28V20H12.36V15.2H8.2V13.6L9.8 12V11.44L5 6.64L6.04 5.6L19.4 18.96ZM10.44 13.6H11.88L11.16 12.88L10.44 13.6Z"/></svg>');
+$pin-outlined: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 12V5.6H15.8V4H7.8V5.6H8.6V12L7 13.6V15.2H11.16V20H12.44V15.2H16.6V13.6L15 12ZM9.24 13.6L10.2 12.64V5.6H13.4V12.64L14.36 13.6H9.24Z"/></svg>');
+
+$remove: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7.18998 8.81H16.79V18C16.7927 18.3969 16.6369 18.7785 16.3571 19.0601C16.0774 19.3417 15.6969 19.5 15.3 19.5H8.68001C8.2831 19.5 7.90259 19.3417 7.62287 19.0601C7.34315 18.7785 7.18735 18.3969 7.18998 18V8.81ZM15.31 5.89V5.73C15.3045 5.08221 14.7778 4.56 14.13 4.56H9.85001C9.2022 4.56 8.6755 5.08221 8.67001 5.73V5.89H5.51001V7.39H18.51V5.89H15.31Z"/></svg>');
+$edit: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5.58 14.38L9.58 18.38L4.77 19.23L5.58 14.38ZM13.31 6.66L17.3 10.65L10.64 17.32L6.64 13.32L13.31 6.66ZM15.95 4.64302C16.3442 4.64302 16.7222 4.80031 17 5.08L18.84 6.94C19.3861 7.51811 19.3861 8.42189 18.84 9L18.39 9.6L14.39 5.6L14.9 5.08C15.1778 4.80031 15.5558 4.64302 15.95 4.64302Z"/></svg>');
+
+$close-icon: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"/></svg>');
+
+$confirm-icon: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 17.42L5 12.42L6.41 11L10 14.59L17.59 7L19 8.42L10 17.42Z"/></svg>');
+
+$password-hidden: url('data:image/svg+xml,<svg width="24" height="24" style="transform:scale(1.06) translateX(0.5px)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.7306 4.25083C20.065 4.58569 20.065 5.12817 19.7306 5.46303L5.64167 19.6777C5.4817 19.8397 5.26322 19.9304 5.03558 19.9293C4.68891 19.929 4.37651 19.7201 4.24389 19.3998C4.11127 19.0795 4.1845 18.7108 4.42948 18.4656L18.5184 4.25083C18.8533 3.91639 19.3957 3.91639 19.7306 4.25083ZM17.747 9.104L18.1589 9.38794C19.2025 10.1307 20.1595 10.9891 21.0114 11.9471C21.0114 11.9471 16.9746 16.7044 11.9886 16.7044C11.4534 16.686 10.9212 16.6171 10.399 16.4986L11.3253 15.5609C11.5437 15.6047 11.7658 15.6276 11.9886 15.6295C12.9711 15.6386 13.9166 15.2547 14.6146 14.5631C15.3126 13.8716 15.7052 12.9297 15.7052 11.9471C15.7056 11.7016 15.6826 11.4565 15.6366 11.2152L17.747 9.104ZM11.9886 7.1441C12.6002 7.14913 13.2096 7.21812 13.8068 7.34994L12.8005 8.35629C12.534 8.29641 12.2617 8.26573 11.9886 8.2648C9.96827 8.28363 8.34044 9.92676 8.34053 11.9471C8.34586 12.232 8.38035 12.5156 8.44345 12.7934L6.43074 14.8175V14.829C5.16463 14.011 4.01122 13.0306 3 11.9128C3 11.9128 7.03684 7.1441 11.9886 7.1441ZM14.5159 12.336C14.3441 13.402 13.5111 14.2396 12.446 14.4173L14.5159 12.336ZM11.7598 9.44269L9.47267 11.7299C9.57903 10.5135 10.5434 9.54906 11.7598 9.44269Z"/></svg>');
+$password-visible: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 7C17.7497 7 22 11.988 22 11.988V12.024C22 12.024 17.7376 17 12.5 17C7.26236 17 3 11.988 3 11.988C3 11.988 7.25032 7 12.5 7ZM9.73369 9.28969C8.62237 10.3998 8.29261 12.0676 8.89837 13.5144C9.50412 14.9612 10.9259 15.9017 12.5 15.8969C14.6432 15.8903 16.3771 14.1583 16.3771 12.024C16.3771 10.4564 15.4282 9.0435 13.9735 8.44475C12.5187 7.84601 10.845 8.17956 9.73369 9.28969ZM12.5 9.3741C13.9669 9.38067 15.1544 10.5632 15.161 12.024C15.161 13.4875 13.9696 14.6739 12.5 14.6739C11.0304 14.6739 9.83904 13.4875 9.83904 12.024C9.83904 10.5605 11.0304 9.3741 12.5 9.3741Z"/></svg>');
+
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+/// @param {String} $start-image-path-custom-var [""] -
+/// @param {String} $end-image-path-custom-var [""] -
+/// @param {String} $image-size-custom-var [""] -
+/// @param {String} $background-image-size-custom-var [""] -
+@mixin images-with-pseudo-elements(
+  $start-image-path-custom-var: "",
+  $end-image-path-custom-var: "",
+  $image-size-custom-var: "",
+  $background-image-size-custom-var: ""
+) {
+  .pseudo-img--start::before,
+  .pseudo-img--end::after,
+  .img {
+    display: inline-block;
+    inline-size: #{$image-size-custom-var};
+    block-size: #{$image-size-custom-var};
+    content-visibility: auto;
+    contain-intrinsic-size: auto #{$image-size-custom-var};
+  }
+
+  .pseudo-img--start::before,
+  .img--start {
+    --ch-img: #{$start-image-path-custom-var};
+  }
+
+  .pseudo-img--end::after,
+  .img--end {
+    --ch-img: #{$end-image-path-custom-var};
+  }
+
+  // Background
+  .start-img-type--background::before,
+  .end-img-type--background::after {
+    content: "";
+    background: no-repeat center / #{$background-image-size-custom-var}
+      var(--ch-img);
+  }
+
+  // Mask
+  .start-img-type--mask::before,
+  .end-img-type--mask::after {
+    content: "";
+    -webkit-mask: no-repeat center / #{$background-image-size-custom-var}
+      var(--ch-img);
+    background-color: currentColor;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+/// @param {String} $image-path-custom-var [""] -
+/// @param {String} $image-size-custom-var [""] -
+/// @param {String} $background-image-size-custom-var [""] -
+@mixin images-without-pseudo-elements(
+  $image-path-custom-var: "",
+  $end-image-path-custom-var: "",
+  $image-size-custom-var: "",
+  $background-image-size-custom-var: ""
+) {
+  .img {
+    display: inline-block;
+    inline-size: #{$image-size-custom-var};
+    block-size: #{$image-size-custom-var};
+    content-visibility: auto;
+    contain-intrinsic-size: auto #{$image-size-custom-var};
+  }
+
+  // Background
+  .img-type--background {
+    background: no-repeat center / #{$background-image-size-custom-var}
+      #{$image-path-custom-var};
+  }
+
+  // Mask
+  .img-type--mask {
+    -webkit-mask: no-repeat center / #{$background-image-size-custom-var}
+      #{$image-path-custom-var};
+    background-color: currentColor;
+  }
+}

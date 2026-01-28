@@ -1,0 +1,10 @@
+:host {
+  --ch-tabular-grid-column__row-span: span 1;
+  --ch-tabular-grid-column__column-start: initial;
+  --ch-tabular-grid-column__column-span: span 1;
+
+  display: grid;
+  grid-row-end: var(--ch-tabular-grid-column__row-span);
+  grid-column-start: var(--ch-tabular-grid-column__column-start);
+  grid-column-end: var(--ch-tabular-grid-column__column-span);
+}

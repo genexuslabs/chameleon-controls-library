@@ -1,0 +1,17 @@
+:host {
+  display: grid;
+  grid-template-rows: 300px max-content 1fr;
+  gap: 16px;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+.property-editor {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+}
+

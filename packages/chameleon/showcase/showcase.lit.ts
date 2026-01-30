@@ -7,6 +7,7 @@ import { property } from "lit/decorators/property.js";
 import "../src/components/router/router.lit";
 import type { RouterModel } from "../src/components/router/types";
 
+import "../src/components/beautiful-mermaid/beautiful-mermaid.lit.js";
 import "../src/components/router/router.lit";
 import "../src/components/switch/switch.lit";
 

@@ -9,18 +9,30 @@
       name="description"
       content="A set of utilities to build and test Lit applications and libraries"
     />
+
+    <style>
+      body {
+        grid-template-rows: 300px 1fr;
+        padding: 8px;
+      }
+    </style>
   </head>
 
   <body>
-    <ch-showcase pathname=""></ch-showcase>
-    <ch-switch
-      checked-caption="true"
-      un-checked-caption="false"
-      checked-value="true"
-      un-checked-value="false"
-      value="true"
-    ></ch-switch>
+    <textarea class="input"></textarea>
+    <ch-beautiful-mermaid></ch-beautiful-mermaid>
     <script type="module" src="./showcase/showcase.lit.ts"></script>
+
+    <script>
+      const textareaRef = document.querySelector("textarea");
+      const beautifulMermaidRef = document.querySelector(
+        "ch-beautiful-mermaid"
+      );
+
+      textareaRef.addEventListener("input", () => {
+        beautifulMermaidRef.value = textareaRef.value;
+      });
+    </script>
   </body>
 </html>
 

@@ -425,6 +425,12 @@ export class ChChat {
   };
 
   /**
+   * Specifies the number of elements to be rendered above and below the
+   * virtual scroll.
+   */
+  @Prop() readonly virtualScrollerBufferSize: number = 5;
+
+  /**
    * `true` if the `ch-chat` is waiting for a response from the server. If so,
    * the `sendChatMessages` won't be executed when the user tries to send a new
    * message. Although, the `send-input` and `send-button` won't be disabled,
@@ -836,6 +842,7 @@ export class ChChat {
           slot="grid-content"
           class="grid-content"
           part="messages-container"
+          bufferAmount={this.virtualScrollerBufferSize}
           inverseLoading
           // mode="lazy-render"
           items={this.items}

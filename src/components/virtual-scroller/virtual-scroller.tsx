@@ -126,6 +126,14 @@ export class ChVirtualScroller implements ComponentInterface {
 
   /**
    * Specifies how the control will behave.
+   *   - "virtual-scroll": Only the items at the start of the viewport that are
+   *   not visible will be removed from the DOM. The items at the end of the
+   *   viewport that are not visible will remain rendered to avoid flickering
+   *   issues.
+   *
+   *   - "lazy-render": It behaves similarly to "virtual-scroll" on the initial
+   *   load, but when the user scrolls and new items are rendered, those items
+   *   that are outside of the viewport won't be removed from the DOM.
    */
   @Prop() readonly mode: "virtual-scroll" | "lazy-render" = "virtual-scroll";
 

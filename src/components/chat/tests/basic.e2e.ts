@@ -38,6 +38,7 @@ testDefaultProperties("ch-chat", {
       sourceFiles: "Source files:"
     }
   },
+  virtualScrollerBufferSize: 5,
   waitingResponse: false
 });
 

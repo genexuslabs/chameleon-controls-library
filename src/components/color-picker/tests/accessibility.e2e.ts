@@ -224,7 +224,7 @@ const runAccessibilityLabelTests = (
 
 runAccessibilityLabelTests(
   "[ch-color-picker][accessibility] - Color Field Control",
-  "[part*='color-field']",
+  "[part='color-field']",
   "color-field",
   "colorFieldControl",
   "colorFieldLabel",

@@ -276,12 +276,14 @@ export const ACTION_MENU_EXPORT_PARTS = joinParts(ACTION_MENU_PARTS_DICTIONARY);
 export const COLOR_PICKER_PARTS_DICTIONARY = {
   ALPHA_SLIDER_LABEL: "alpha__slider-label",
   ALPHA_SLIDER: "alpha__slider",
+  ALPHA_SLIDER_GROUP: "alpha",
   ALPHA_INPUT_GROUP: "alpha__input-group",
   ALPHA_INPUT_LABEL: "alpha__input-label",
   ALPHA_INPUT: "alpha__input",
   ALPHA_SUFFIX: "alpha-suffix",
   COLOR_FIELD: "color-field",
   COLOR_FIELD_LABEL: "color-field__label",
+  COLOR_FIELD_CONTAINER: "color-field__container",
   COLOR_FORMAT_SELECTOR: "color-format-selector",
   COLOR_FORMAT__COMBO_BOX: "color-format__combo-box",
   COLOR_INPUTS: "color-inputs",
@@ -319,6 +321,7 @@ export const COLOR_PICKER_PARTS_DICTIONARY = {
   HSV_V_SUFFIX: "hsv-v-suffix",
   HUE_SLIDER_LABEL: "hue-slider__label",
   HUE_SLIDER: "hue__slider",
+  HUE_SLIDER_GROUP: "hue",
   MARKER: "marker",
   COLOR_PALETTE_BUTTON: "color-palette__button",
   COLOR_PALETTES_GRID: "color-palette-grid",
@@ -333,6 +336,7 @@ export const COLOR_PICKER_PARTS_DICTIONARY = {
   RGB_R_INPUT: "rgb-r__input",
   RGB_G_INPUT: "rgb-g__input",
   RGB_B_INPUT: "rgb-b__input",
+  SLIDER_GROUP: "slider-group",
 
   // - - - - - - - - States - - - - - - - -
   DISABLED: "disabled", // MARKER

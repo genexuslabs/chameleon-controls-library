@@ -33,7 +33,7 @@ describe("[ch-color-picker][readonly]", () => {
 
     it("should pass readonly state to color field", async () => {
       const colorField = await colorPickerElement.find(
-        ">>> [part*='color-field']"
+        ">>> [part='color-field']"
       );
 
       expect(colorField).toBeTruthy();
@@ -123,7 +123,7 @@ describe("[ch-color-picker][readonly]", () => {
       await page.waitForChanges();
 
       const colorField = await colorPickerElement.find(
-        ">>> [part*='color-field']"
+        ">>> [part='color-field']"
       );
       const formatSelector = await colorPickerElement.find(
         ">>> [part*='color-format__combo-box']"
@@ -145,7 +145,7 @@ describe("[ch-color-picker][readonly]", () => {
       await page.waitForChanges();
 
       const colorField = await colorPickerElement.find(
-        ">>> [part*='color-field']"
+        ">>> [part='color-field']"
       );
       const formatSelector = await colorPickerElement.find(
         ">>> [part*='color-format__combo-box']"

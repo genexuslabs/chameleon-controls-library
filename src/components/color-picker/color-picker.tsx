@@ -594,7 +594,10 @@ export class ChColorPicker {
     const { accessibleName, text } = this.translations;
 
     return (
-      <div class="color-field-container">
+      <div
+        class="color-field-container"
+        part={COLOR_PICKER_PARTS_DICTIONARY.COLOR_FIELD_CONTAINER}
+      >
         {text.colorFieldLabel && (
           <label
             htmlFor="color-field"
@@ -631,7 +634,13 @@ export class ChColorPicker {
     const { accessibleName, text } = this.translations;
 
     return (
-      <div class="slider-group">
+      <div
+        class="slider-group"
+        part={tokenMap({
+          [COLOR_PICKER_PARTS_DICTIONARY.HUE_SLIDER_GROUP]: true,
+          [COLOR_PICKER_PARTS_DICTIONARY.SLIDER_GROUP]: true
+        })}
+      >
         {text.hueChannelLabel && (
           <label
             htmlFor="hue-slider"
@@ -651,6 +660,7 @@ export class ChColorPicker {
           step={this.hueSliderStep}
           value={hueValue}
           part={COLOR_PICKER_PARTS_DICTIONARY.HUE_SLIDER}
+          exportparts="track:slider-track,thumb:slider-thumb"
           minValue={0}
           maxValue={360}
           onChange={!this.disabled ? this.#handleHueChange : undefined}
@@ -666,7 +676,13 @@ export class ChColorPicker {
     const { accessibleName, text } = this.translations;
 
     return (
-      <div class="slider-group">
+      <div
+        class="slider-group"
+        part={tokenMap({
+          [COLOR_PICKER_PARTS_DICTIONARY.ALPHA_SLIDER_GROUP]: true,
+          [COLOR_PICKER_PARTS_DICTIONARY.SLIDER_GROUP]: true
+        })}
+      >
         {text.alphaChannelLabel && (
           <label
             htmlFor="alpha-slider"

@@ -33,7 +33,7 @@ describe("[ch-color-picker][disabled]", () => {
 
     it("should pass disabled state to color field", async () => {
       const colorField = await colorPickerElement.find(
-        ">>> [part*='color-field']"
+        ">>> [part='color-field']"
       );
 
       expect(colorField).toBeTruthy();
@@ -150,7 +150,7 @@ describe("[ch-color-picker][disabled]", () => {
       await page.waitForChanges();
 
       const colorField = await colorPickerElement.find(
-        ">>> [part*='color-field']"
+        ">>> [part='color-field']"
       );
       const hueSlider = await colorPickerElement.find(
         ">>> [part*='hue__slider']"
@@ -183,7 +183,7 @@ describe("[ch-color-picker][disabled]", () => {
       await page.waitForChanges();
 
       const colorField = await colorPickerElement.find(
-        ">>> [part*='color-field']"
+        ">>> [part='color-field']"
       );
       const hueSlider = await colorPickerElement.find(
         ">>> [part*='hue__slider']"

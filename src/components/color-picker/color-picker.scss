@@ -76,3 +76,24 @@ ul {
   min-inline-size: var(--ch-color-picker-palette-button-min-inline-size);
   min-block-size: var(--ch-color-picker-palette-button-min-block-size);
 }
+
+#hue-slider::part(track) {
+  background: linear-gradient(
+    90deg,
+    red,
+    #ff0 17%,
+    #0f0 33%,
+    #0ff 50%,
+    #00f 66%,
+    #f0f 83%,
+    red
+  );
+}
+
+#alpha-slider::part(track) {
+  background: linear-gradient(
+    90deg,
+    rgb(255, 255, 255, 0.5),
+    var(--ch-color-picker-value)
+  );
+}

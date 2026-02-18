@@ -218,14 +218,23 @@ export class ChActionMenu implements ComponentInterface {
   };
 
   #itemContent = () => [
-    <span class="content" part={ACTION_MENU_ITEM_PARTS_DICTIONARY.CONTENT}>
+    <span
+      class="content"
+      part={tokenMap({
+        [ACTION_MENU_ITEM_PARTS_DICTIONARY.CONTENT]: true,
+        [this.parts]: !!this.parts
+      })}
+    >
       {this.caption}
     </span>,
 
     !!this.shortcut && (
       <span
         aria-hidden="true"
-        part={ACTION_MENU_ITEM_PARTS_DICTIONARY.SHORTCUT}
+        part={tokenMap({
+          [ACTION_MENU_ITEM_PARTS_DICTIONARY.SHORTCUT]: true,
+          [this.parts]: !!this.parts
+        })}
       >
         {this.shortcut}
       </span>
@@ -252,6 +261,7 @@ export class ChActionMenu implements ComponentInterface {
     };
 
     const expandable = this.expandable;
+    const hasParts = !!this.parts;
 
     return this.link ? (
       <a
@@ -269,7 +279,8 @@ export class ChActionMenu implements ComponentInterface {
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]:
             expandable && this.expanded,
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]:
-            expandable && !this.expanded
+            expandable && !this.expanded,
+          [this.parts]: hasParts
         })}
         href={!this.disabled ? this.link.url : undefined}
         // TODO: Add unit tests for this
@@ -296,7 +307,8 @@ export class ChActionMenu implements ComponentInterface {
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]:
             expandable && this.expanded,
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]:
-            expandable && !this.expanded
+            expandable && !this.expanded,
+          [this.parts]: hasParts
         })}
         style={this.#endImage?.styles ?? undefined}
         disabled={this.disabled}
@@ -312,7 +324,10 @@ export class ChActionMenu implements ComponentInterface {
     <ch-popover
       role="list"
       id={WINDOW_ID}
-      part={ACTION_MENU_ITEM_PARTS_DICTIONARY.WINDOW}
+      part={tokenMap({
+        [ACTION_MENU_ITEM_PARTS_DICTIONARY.WINDOW]: true,
+        [this.parts]: !!this.parts
+      })}
       actionById
       actionElement={this.#mainAction as HTMLButtonElement}
       blockAlign={this.blockAlign}

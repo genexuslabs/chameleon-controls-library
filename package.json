@@ -32,6 +32,8 @@
     "test": "stencil test --spec --e2e --maxWorkers=1",
     "test.spec": "stencil test --spec --coverage --no-cache",
     "test.watch": "npm run test -- --watchAll --config stencil.config.optimized-test-watch.ts",
+    "test.flexible-layout": "stencil test --spec --e2e --maxWorkers=1 src/components/flexible-layout/tests",
+    "test.flexible-layout.watch": "stencil test --spec --e2e --maxWorkers=1 --watchAll --config stencil.config.optimized-test-watch.ts src/components/flexible-layout/tests",
     "validate": "npm run lint && npm run test && npm run build",
     "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug && npm run build.extras"
   },

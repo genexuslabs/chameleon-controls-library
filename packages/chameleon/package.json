@@ -33,9 +33,9 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@genexus/kasstor-core": "^0.1.0",
-    "@genexus/kasstor-signals": "^0.1.0",
-    "@genexus/kasstor-webkit": "^0.2.0",
+    "@genexus/kasstor-core": "^0.2.0",
+    "@genexus/kasstor-signals": "^0.2.0",
+    "@genexus/kasstor-webkit": "^0.2.1",
     "@open-wc/lit-helpers": "~0.7.0",
     "beautiful-mermaid": "~0.1.3",
     "lit": "^3.3.1",
@@ -45,7 +45,7 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@genexus/vite-plugin-kasstor": "~0.1.1",
+    "@genexus/vite-plugin-kasstor": "~0.2.0",
     "@genexus/vite-plugin-mercury": "~1.2.0"
   },
   "lint-staged": {

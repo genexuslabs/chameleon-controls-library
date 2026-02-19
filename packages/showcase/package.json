@@ -15,16 +15,16 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@genexus/mercury": "1.0.0-beta.2",
-    "@genexus/mercury-build": "1.0.0-beta.2",
-    "@genexus/vite-plugin-mercury": "1.0.0-beta.2",
+    "@genexus/mercury": "~1.2.0",
+    "@genexus/mercury-build": "~1.2.0",
+    "@genexus/vite-plugin-mercury": "~1.2.0",
     "@genexus/chameleon-controls-library-lit": "*",
     "@semantic-ui/astro-lit": "~5.1.0",
     "@webcomponents/template-shadowroot": "~0.2.1",
     "astro": "~5.15.8",
     "lit": "~3.3.1",
-    "@genexus/kasstor-core": "link:@genexus/kasstor-core",
-    "@genexus/kasstor-webkit": "link:@genexus/kasstor-webkit"
+    "@genexus/kasstor-core": "~0.2.0",
+    "@genexus/kasstor-webkit": "~0.2.1"
   },
   "devDependencies": {
     "prettier-plugin-astro": "0.14.1"

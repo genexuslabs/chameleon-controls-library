@@ -1,7 +1,8 @@
 import { kasstor } from "@genexus/vite-plugin-kasstor";
-// import { mercury } from "@genexus/vite-plugin-mercury";
+import { mercury } from "@genexus/vite-plugin-mercury";
 import {
   defaultMinifyOptions,
+  DefaultOptions,
   minifyHTMLLiterals as minifyLiterals
 } from "minify-html-literals";
 import pkgMinifyHTML from "rollup-plugin-minify-html-literals";
@@ -14,25 +15,8 @@ const minifyHTML: typeof pkgMinifyHTML = pkgMinifyHTML.default;
 export default defineConfig({
   build: {
     cssMinify: "lightningcss",
-    minify: "oxc",
     // sourcemap: true,
-    emptyOutDir: true,
-
-    rolldownOptions: {
-      experimental: {
-        nativeMagicString: true
-      },
-
-      optimization: {
-        inlineConst: { mode: "all", pass: 2 }
-      },
-
-      output: {
-        format: "esm",
-        minifyInternalExports: true,
-        legalComments: "inline"
-      }
-    }
+    emptyOutDir: true
   },
 
   oxc: {
@@ -40,14 +24,21 @@ export default defineConfig({
   },
 
   plugins: [
-    // mercury(),
+    mercury({
+      cssPreload: {
+        "components/edit": true
+      }
+    }),
 
     kasstor({
       hmr: { component: true }
     }),
 
     minifyHTML({
-      minifyHTMLLiterals: (source, options) =>
+      minifyHTMLLiterals: (
+        source: string,
+        options: DefaultOptions | undefined
+      ) =>
         minifyLiterals(source, {
           ...options,
           minifyOptions: {

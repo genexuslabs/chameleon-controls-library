@@ -1,5 +1,6 @@
 import { fixAndUpdateLayoutModel } from "../utils";
 import { ItemExtended, LayoutSplitterModel } from "../types";
+import { describe, expect, it } from "vitest";
 
 describe("[ch-layout-splitter] [fixAndUpdateLayoutModel]", () => {
   const itemsInfo: Map<string, ItemExtended> = new Map();

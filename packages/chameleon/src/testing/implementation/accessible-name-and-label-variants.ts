@@ -6,6 +6,7 @@ import type { ChameleonControls } from "../../typings/chameleon-components";
 import "../../components/checkbox/checkbox.lit";
 import "../../components/progress/progress.lit";
 import "../../components/slider/slider.lit";
+import "../../components/breadcrumb/internal/breadcrumb-item/breadcrumb-item.lit";
 
 const COMPONENT_ID = "component";
 const ACCESSIBLE_NAME = "accessible-name";
@@ -30,7 +31,7 @@ export type ComponentsWithAccessibleNameAndValueProperty = Exclude<
       : never;
   }[keyof ChameleonControls],
   // TODO: Should the ch-qr work in forms???
-  "ch-qr"
+  "ch-qr" | "ch-breadcrumb-render"
 >;
 
 const templateByComponentMapping = {
@@ -67,12 +68,18 @@ const templateByComponentMapping = {
       .accessibleName=${accessibleName ?? nothing}
       .disabled=${disabled}
       .readonly=${readonly}
-    ></ch-slider>`
+    ></ch-slider>`,
+
+    "ch-breadcrumb-render": accessibleName =>
+    html`<ch-breadcrumb-render
+      id=${COMPONENT_ID}
+      .accessibleName=${accessibleName ?? nothing}
+    ></ch-breadcrumb-render>`
 } satisfies {
   [key in ComponentsWithAccessibleNameAndValueProperty]: (
     accessibleName: string | undefined,
-    disabled: boolean,
-    readonly: boolean
+    disabled?: boolean,
+    readonly?: boolean
   ) => TemplateResult;
 };
 
@@ -115,8 +122,34 @@ export const testAccessibleNameWithElementInternals = <
 
     afterEach(cleanup);
 
-    DISABLED_AND_READONLY_ARRAY.forEach(([disabled, readonly]) =>
+    if (internalInputSelector === undefined) {
       ACCESSIBLE_NAME_ARRAY.forEach(accessibleName => {
+        const prefix = `[accessibleName = ${accessibleName ? `"${accessibleName}"` : undefined}]`;
+        const renderTemplate = async (
+          accessibleName: string | undefined,
+          label: "id-for" | "parent" | "none",
+          labelCaption?: string
+        ) => {
+          render(
+            labelRenderMapping[label](
+              labelCaption,
+              templateByComponentMapping[tag](accessibleName)
+            )
+          );
+          tagRef = document.querySelector(tag)!;
+          await tagRef.updateComplete;
+        };
+
+        if (accessibleName === undefined) {
+          it(`${prefix}[label = "none"] should not have an aria-label`, async () => {
+            await renderTemplate(accessibleName, "none");
+            expect(getHostOrInternalInputAriaLabelAttr(tagRef)).toBeNull();
+          });
+        }
+      });
+    } else {
+      DISABLED_AND_READONLY_ARRAY.forEach(([disabled, readonly]) =>
+        ACCESSIBLE_NAME_ARRAY.forEach(accessibleName => {
         const prefix = descriptionPrefix(disabled, readonly, accessibleName);
 
         const renderTemplate = async (
@@ -186,7 +219,11 @@ export const testAccessibleNameWithElementInternals = <
             });
 
             it(`${prefix}[label = "${labelType}"][labelCaption = "${ACCESSIBLE_NAME}"] should set aria-label = "${ACCESSIBLE_NAME}"`, async () => {
-              await renderTemplate(accessibleName, labelType, ACCESSIBLE_NAME);
+              await renderTemplate(
+                  accessibleName,
+                  labelType,
+                  ACCESSIBLE_NAME
+                );
               expect(getHostOrInternalInputAriaLabelAttr(tagRef)).toBe(
                 ACCESSIBLE_NAME
               );
@@ -195,5 +232,6 @@ export const testAccessibleNameWithElementInternals = <
         }
       })
     );
+  }
   });
 };

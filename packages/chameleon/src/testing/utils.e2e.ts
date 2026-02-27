@@ -8,7 +8,7 @@ import type {
   ChameleonControlsTagName
 } from "../typings/chameleon-components";
 import { defineCustomElements } from "../utilities/bootstrap/define-custom-elements";
-import { KasstorElement } from "../utilities/decorators/Component";
+import {KasstorElement} from "@genexus/kasstor-core/decorators/component.js";
 
 export const delayTest = (value: number) =>
   new Promise(resolve => setTimeout(resolve, value));

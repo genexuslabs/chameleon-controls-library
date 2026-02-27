@@ -29,7 +29,8 @@
     "watch": "bun clear.dist && concurrently 'bun build:dev:browser --watch' 'bun build:dev:node --watch' 'bun build:prod:browser --watch' 'bun build:prod:node --watch' 'bun build.types --watch'",
     "clear.dist": "bun run ./scripts/remove-dist.ts",
     "test": "bunx playwright install && vitest",
-    "test.watch": "bunx playwright install && vitest watch"
+    "test.watch": "bunx playwright install && vitest watch",
+    "test.watch.ui": "bun test.watch --ui"
   },
   "license": "MIT",
   "peerDependencies": {

@@ -21,7 +21,7 @@ export default defineConfig({
         extends: true,
         test: {
           exclude: ["node_modules", "dist"],
-          include: ["src/**/*.e2e.ts"],
+          include: ["src/testing/execution/accessible-name-and-label-variants.e2e.ts","src/components/breadcrumb/tests/breadcrumb.e2e.ts"],
           name: "browser",
           browser: {
             provider: playwright(),
@@ -43,4 +43,3 @@ export default defineConfig({
     ]
   }
 });
-

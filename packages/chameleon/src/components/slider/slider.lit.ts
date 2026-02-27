@@ -16,6 +16,8 @@ import { SyncWithRAF } from "../../utilities/sync-with-frames";
 
 import styles from "./slider.scss?inline";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+
 const DEFAULT_PERCENTAGE_VALUE_WHEN_MIN_EQUALS_MAX = 0;
 const NumberPropType = { type: Number };
 

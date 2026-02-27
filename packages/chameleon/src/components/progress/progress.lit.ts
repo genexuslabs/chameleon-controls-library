@@ -18,6 +18,8 @@ import {
 
 import styles from "./progress.scss?inline";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+
 const NUMBER_TYPE_PROP = { type: Number };
 
 const ARIA_DESCRIBED_BY = "aria-describedby";

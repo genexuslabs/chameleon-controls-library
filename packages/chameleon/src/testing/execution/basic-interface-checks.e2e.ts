@@ -244,6 +244,37 @@ export const testConfiguration = {
       format: "text",
       showTooltipOnOverflow: false
     }
+  },
+
+  "ch-breadcrumb-item": {
+    interface: {
+      caption: undefined,
+      disabled: undefined,
+      accessibleName: undefined,
+      link: undefined,
+      model: undefined,
+      selected: false,
+      selectedLinkIndicator: false,
+      startImgSrc: undefined,
+      startImgType: undefined,
+      getImagePathCallback: undefined
+    },
+    options: {
+      deferInitialRender: true
+    }
+  },
+
+  "ch-breadcrumb-render": {
+    interface: {
+      getImagePathCallback: undefined,
+      selectedLink: {
+        link: { url: undefined }
+      },
+      selectedLinkIndicator: false,
+      model: undefined,
+      separator: "/",
+      accessibleName: undefined
+    }
   }
 
   // TODO: Fix the ch-theme test

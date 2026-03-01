@@ -23,6 +23,7 @@
     "build.extras": "tsc --project tsconfig-collection.json && node copy-files.mjs",
     "build.monaco": "vite build",
     "inject-remarks": "node inject-remarks.mjs",
+    "export-docs": "node export-component-docs.mjs",
     "prettier": "prettier src/**/*.{tsx,ts,jsx,js,css,json,md} --write",
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "npm run build.monaco && node start-dev-server.js",

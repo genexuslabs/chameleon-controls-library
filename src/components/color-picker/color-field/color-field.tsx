@@ -35,9 +35,7 @@ const DEFAULT_COLOR_FORMAT = "hex" satisfies ColorFormat;
 const FALLBACK_COLOR = "#000000" satisfies ColorVariants["hex"];
 
 /**
- * The `ch-color-field` component provides an interactive 2D canvas for selecting colors
- * by saturation and value (brightness) within a specific hue. It displays a color gradient
- * allowing users to pick colors through click and drag interactions or keyboard navigation.
+ * The `ch-color-field` component provides an interactive 2D canvas for selecting colors by saturation and value (brightness) within a specific hue. It displays a color gradient allowing users to pick colors through click and drag interactions or keyboard navigation.
  *
  * @remarks
  *

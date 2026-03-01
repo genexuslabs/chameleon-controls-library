@@ -86,7 +86,52 @@ const getSendInputSlotRename = (
     : "additional-content-after";
 
 /**
- * TODO: Add description
+ * The `ch-chat` component delivers a full-featured conversational interface
+ * with virtual scrolling for efficient rendering of large message histories.
+ *
+ * @remarks
+ * ## Features
+ *  - Text messaging with file uploads and markdown rendering.
+ *  - Real-time voice conversations via LiveKit integration.
+ *  - Virtual scrolling for large message histories with configurable buffer size.
+ *  - Auto-scrolling behavior configurable as `"at-scroll-end"` or `"never"`.
+ *  - Fully customizable send-container layout with four slot positions.
+ *  - Programmatic message management: add, update, and send messages via public methods.
+ *  - Custom rendering of chat items through flexible render callbacks.
+ *  - Stop-response button for cancelling assistant response generation.
+ *
+ * ## Use when
+ *  - Building AI-powered chat or assistant interfaces.
+ *  - Implementing conversational UIs with file attachment and voice support.
+ *  - Building AI-powered conversational interfaces where the interaction model is back-and-forth dialogue.
+ *  - The system needs to ask clarifying questions or produce streaming responses.
+ *
+ * ## Do not use when
+ *  - Displaying a simple message list without interactivity — use `ch-smart-grid` instead.
+ *  - A standard form would be faster and more precise for collecting structured data (e.g., address forms).
+ *  - Displaying a simple non-interactive message list — prefer `ch-smart-grid` directly.
+ *
+ * ## Accessibility
+ *  - Integrates with `ch-virtual-scroller` to maintain DOM structure suitable for assistive technology during virtual scrolling.
+ *  - The send button and stop-response button carry accessible labels via the `translations` property.
+ *  - New messages should be announced to screen readers via `aria-live="polite"` on the messages container.
+ *  - All action buttons (send, stop-response) must have descriptive labels via the `translations` property.
+ *  - Color and alignment alone must not be the only way to distinguish user messages from AI messages.
+ *
+ * @status experimental
+ *
+ * @part messages-container - The scrollable container that holds the chat messages.
+ * @part send-container - The bottom area containing the input and action buttons.
+ * @part send-container-before - Region before the send input within the send container. Rendered when `sendContainerLayout.sendContainerBefore` is defined.
+ * @part send-container-after - Region after the send input within the send container. Rendered when `sendContainerLayout.sendContainerAfter` is defined.
+ * @part send-input-before - Region before the text input inside the edit control. Rendered when `sendContainerLayout.sendInputBefore` is defined.
+ * @part send-input-after - Region after the text input inside the edit control. Rendered when `sendContainerLayout.sendInputAfter` is defined.
+ * @part send-button - The button that sends the current message.
+ * @part stop-response-button - The button that stops the assistant's response generation. Rendered when `waitingResponse` is `true` and a `stopResponse` callback is provided.
+ *
+ * @slot empty-chat - Displayed when all records are loaded but there are no messages.
+ * @slot loading-chat - Displayed while the chat is in the initial loading state.
+ * @slot additional-content - Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state.
  */
 @Component({
   tag: "ch-chat",

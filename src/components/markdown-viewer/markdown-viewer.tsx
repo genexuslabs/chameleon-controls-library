@@ -24,19 +24,28 @@ import "./internal/markdown-viewer.lit";
 import { markdownViewerExtension } from "./parsers/math";
 
 /**
- * A control to render markdown syntax. It supports GitHub Flavored Markdown
- * (GFM) and code highlighting.
- *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+ * The `ch-markdown-viewer` component renders Markdown content as rich HTML with
+ * GFM support, code highlighting, math rendering, and streaming indicators.
  *
- * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+ * @remarks
+ * ## Features
+ *  - Parses Markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown), with a reactive render layer that only updates changed DOM portions.
+ *  - GitHub Flavored Markdown (GFM) via [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+ *  - Code highlighting by parsing code blocks to [hast](https://github.com/syntax-tree/hast) using [lowlight](https://github.com/wooorm/lowlight), supporting all [highlight.js](https://github.com/highlightjs/highlight.js) languages.
+ *  - On-demand loading of code parsers and language grammars at runtime.
+ *  - Math rendering, raw HTML pass-through, and streaming indicator for real-time content.
+ *  - Custom extensions for adding new syntax and rendering behavior.
  *
- * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+ * ## Use when
+ *  - Displaying user-authored or AI-generated Markdown in a polished, interactive way.
+ *  - Rendering user-generated Markdown content or AI-generated responses that include headings, lists, code blocks, and tables.
  *
- * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+ * ## Do not use when
+ *  - You only need to display plain text with overflow handling — prefer `ch-textblock` instead.
+ *  - Only plain text needs to be displayed — prefer `ch-textblock` for better performance.
+ *  - Full math rendering is needed and Markdown is not involved — prefer `ch-math-viewer` directly.
  *
- * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
- *
- * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+ * @status experimental
  */
 @Component({
   shadow: true,

@@ -268,6 +268,42 @@ const defaultSortItemsCallback = (subModel: TreeViewModel): void => {
 type ImmediateFilter = "immediate" | "debounced" | undefined;
 
 /**
+ * The `ch-tree-view-render` component displays hierarchical data as an
+ * interactive tree with full-featured node management.
+ *
+ * @remarks
+ * ## Features
+ *  - Expand and collapse nodes with configurable expandable button styles.
+ *  - Single or multi-selection of nodes.
+ *  - Tri-state checkboxes with toggle support.
+ *  - Inline caption editing.
+ *  - Drag-and-drop reordering of nodes.
+ *  - Lazy loading of child items.
+ *  - Keyboard navigation.
+ *  - Filtering by caption, metadata, or custom list.
+ *  - Start and end images per node.
+ *  - Relationship lines connecting siblings and parents.
+ *  - Context menu support.
+ *
+ * ## Use when
+ *  - Building a full-featured tree widget (file explorers, organizational charts, permission editors, or any master list with nested structure).
+ *  - Navigating or selecting nodes within deeply hierarchical data (e.g., file system, code symbols, category trees).
+ *  - Users need to expand, collapse, and select items at multiple nesting levels.
+ *
+ * ## Do not use when
+ *  - Building simpler navigation hierarchies without checkboxes, drag-and-drop, or editing -- prefer `ch-navigation-list-render` instead.
+ *  - Used as a PRIMARY navigation menu — prefer `ch-navigation-list-render`, which carries proper navigation semantics for assistive technology.
+ *  - Content sections have collapsible summaries (FAQs) — prefer `ch-accordion-render`.
+ *  - The data is flat or only one level deep — prefer `ch-action-list-render`.
+ *  - Nesting depth regularly exceeds 10 levels — UX becomes untenable.
+ *
+ * ## Accessibility
+ *  - Implements a tree-view keyboard pattern: Arrow keys to navigate, Enter/Space to select, Left/Right to collapse/expand.
+ *  - Checkbox items support tri-state (`checked`, `unchecked`, `indeterminate`) with matching ARIA states.
+ *  - Items can be individually disabled, preventing keyboard and pointer interaction.
+ *
+ * @status developer-preview
+ *
  * @part drag-preview - The element that contains the preview information for the current drag.
  *
  * @part item - The host element of the each item.

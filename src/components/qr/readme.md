@@ -5,6 +5,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-qr` component generates a QR code from any text, URL, or data
+string and renders it as a canvas element in the Shadow DOM.
+
 ## Properties
 
 | Property               | Attribute                | Description                                                                                                                                                                                                                                                          | Type                                        | Default     |

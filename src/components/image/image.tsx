@@ -14,8 +14,28 @@ let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
 ) => GxImageMultiState | undefined;
 
 /**
- * A component to display multiple images, depending on the state (focus, hover,
- * active or disabled) of a parent element.
+ * The `ch-image` component renders a multi-state image that automatically
+ * reflects the interactive state of its parent container.
+ *
+ * @remarks
+ * ## Features
+ *  - Visual appearance changes in response to parent state (hover, focus, active, disabled).
+ *  - Image source resolved via a configurable callback (`getImagePathCallback`) or a globally registered resolver.
+ *  - Supports background-image and mask-image rendering modes.
+ *  - Renders as a purely decorative element (`aria-hidden="true"`).
+ *
+ * ## Use when
+ *  - Displaying icons inside buttons, menu items, or any interactive element where the image must reflect the element's current state.
+ *  - An icon or image needs to visually respond to the interactive state of its parent (hover, focus, active, disabled).
+ *
+ * ## Do not use when
+ *  - You need a standalone, non-interactive image display.
+ *  - A static, non-state-reactive image is needed — use a native `<img>` element directly.
+ *
+ * ## Accessibility
+ *  - The host is marked `aria-hidden="true"` — this is a decorative element hidden from assistive technology.
+ *
+ * @status experimental
  */
 @Component({
   tag: "ch-image",

@@ -3,6 +3,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-action-group-render` component displays a horizontal group of
+actionable items that adapts to the available space by collapsing overflowing
+items into a "more actions" dropdown menu.
+
 ## Properties
 
 | Property                    | Attribute                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Type                                                                                          | Default                 |
@@ -18,6 +24,23 @@
 | `moreActionsCaption`        | `more-actions-caption`         | This attribute lets you specify the caption for the more actions button.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `string`                                                                                      | `undefined`             |
 | `moreActionsInlineAlign`    | `more-actions-inline-align`    | Specifies the inline alignment of the more actions dropdown that is placed relative to the "more actions" button.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"`              | `"inside-start"`        |
 | `useGxRender`               | `use-gx-render`                | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `boolean`                                                                                     | `false`                 |
+
+
+## Slots
+
+| Slot       | Description                                                                                                                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"{name}"` | Named slots matching each item of `type: "slot"` in the model. These slots allow projecting custom content for individual action items and are forwarded into the overflow menu when the item collapses. |
+
+
+## Shadow Parts
+
+| Part                    | Description                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `"actions"`             | The container element that holds the visible action items.                                |
+| `"more-actions"`        | The container that wraps the overflow "more actions" button and its dropdown.             |
+| `"more-actions-button"` | The button that opens the overflow dropdown when items do not fit in the available space. |
+| `"more-actions-window"` | The popover window containing the overflowed action items.                                |
 
 
 ## Dependencies

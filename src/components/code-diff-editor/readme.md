@@ -5,6 +5,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-code-diff-editor` component provides a side-by-side or inline diff
+view for comparing two versions of source code, powered by the
+[Monaco Editor](https://microsoft.github.io/monaco-editor/).
+
 ## Properties
 
 | Property                | Attribute         | Description                                                                                                                                                       | Type                    | Default                                                                                                                                                        |

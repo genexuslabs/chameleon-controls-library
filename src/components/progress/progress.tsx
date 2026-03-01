@@ -26,13 +26,38 @@ const SEPARATE_BY_COMMA_REGEX = /\s*,\s*/;
 let autoId = 0;
 
 /**
- * The ch-progress is an element that displays the progress status for tasks
- * that take a long time.
+ * The `ch-progress` component displays the progress status for long-running
+ * tasks, supporting both determinate and indeterminate modes.
  *
- * It implements all accessibility behaviors for determinate and indeterminate
- * progress. It also supports referencing a region to describe its progress.
+ * @remarks
+ * ## Features
+ *  - Determinate mode with explicit `min`, `max`, and `value`.
+ *  - Indeterminate mode for activities whose duration is unknown.
+ *  - Full WAI-ARIA `progressbar` pattern (`role`, `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, `aria-valuetext`).
+ *  - Validates accessible name via `accessibleName` or external `<label>`.
+ *  - Automatic `aria-busy` and `aria-describedby` management on a referenced loading region.
+ *  - Fully customizable rendering through `renderType` (default `"custom"` projects the slot with built-in accessibility).
+ *
+ * ## Use when
+ *  - You need progress bars, loading spinners, or any indicator that represents ongoing work with measurable progress.
+ *  - An operation takes more than ~5 seconds and progress can be measured or approximated.
+ *  - Showing upload, download, file transfer, or installation progress.
+ *
+ * ## Do not use when
+ *  - You need a simple loading indicator without numeric progress (e.g., a spinner on a button) -- prefer `ch-status` instead.
+ *  - The operation completes in under 5 seconds — prefer a spinner (`ch-status`) instead.
+ *  - A determinate bar is used when actual progress cannot be calculated — it misleads users.
+ *  - Step-by-step wizard progress is needed — use a stepper/progress-indicator pattern instead.
+ *
+ * ## Accessibility
+ *  - Implements the WAI-ARIA `progressbar` role with `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, and `aria-valuetext`.
+ *  - In indeterminate mode, value attributes are omitted per the ARIA specification.
+ *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+ *  - Can automatically set `aria-busy` and `aria-describedby` on a referenced loading region element.
  *
  * @status experimental
+ *
+ * @slot - Default slot. Projected when `renderType === "custom"`. Use it to provide a fully custom visual representation of the progress.
  */
 @Component({
   formAssociated: true,

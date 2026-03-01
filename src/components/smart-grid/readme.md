@@ -5,6 +5,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-smart-grid` component is an accessible grid layout for data-driven
+applications that require infinite scrolling, virtual rendering, and dynamic
+content loading.
+
 ## Properties
 
 | Property                  | Attribute         | Description                                                                                                                                                                                                                                                                                                                                                                                               | Type                                                                     | Default           |
@@ -64,6 +70,15 @@ when visualizing the last lines positioned at the top of the editor.
 Type: `Promise<void>`
 
 
+
+
+## Slots
+
+| Slot                                 | Description                                                                                          |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `"grid-content"`                     | The primary content slot for grid cells. Rendered when the grid has records and loading is complete. |
+| `"grid-content-empty"`               | Fallback content displayed when the grid has finished loading but contains no records.               |
+| `"grid-initial-loading-placeholder"` | Placeholder content displayed during the initial loading state before any data has been fetched.     |
 
 
 ## Dependencies

@@ -5,6 +5,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-switch` component is a toggle control that lets users switch between
+two mutually exclusive states, typically representing an on/off or enabled/disabled choice.
+
 ## Properties
 
 | Property                    | Attribute            | Description                                                                                                                                                                            | Type      | Default     |

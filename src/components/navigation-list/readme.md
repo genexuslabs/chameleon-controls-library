@@ -5,6 +5,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-navigation-list-render` component renders a hierarchical navigation
+menu composed of expandable items that can act as hyperlinks or buttons.
+
 ## Properties
 
 | Property                   | Attribute                    | Description                                                                                                                                                                                                                            | Type                                                                                                                | Default                              |
@@ -30,8 +35,30 @@
 
 | Event            | Description                                                      | Type                                                                                                                                                                                                                   |
 | ---------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `buttonClick`    | Fired when an button is clicked. This event can be prevented.    | `CustomEvent<{ id?: string; caption: string; disabled?: boolean; expanded?: boolean; metadata?: string; startImgSrc?: string; startImgType?: "background" \| "mask"; link?: ItemLink; items?: NavigationListModel; }>` |
+| `buttonClick`    | Fired when an button is clicked. This event can be prevented.    | `CustomEvent<{ id?: string; caption: string; disabled?: boolean; expanded?: boolean; metadata?: string; startImgSrc?: string; startImgType?: "mask" \| "background"; link?: ItemLink; items?: NavigationListModel; }>` |
 | `hyperlinkClick` | Fired when an hyperlink is clicked. This event can be prevented. | `CustomEvent<{ event: PointerEvent; item: NavigationListItemModel; }>`                                                                                                                                                 |
+
+
+## Shadow Parts
+
+| Part                          | Description                                                                                                                         |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `"collapsed"`                 | Present in the `item__action` and `item__group` parts when the item is collapsed.                                                   |
+| `"disabled"`                  | Present in the `item__action`, `item__caption`, `item__group`, and `indicator` parts when the item is disabled.                     |
+| `"even-level"`                | Present in the `item__action` and `item__group` parts when the item is at an even nesting level.                                    |
+| `"expand-button"`             | Present in the `item__action` part when the item has an expandable button.                                                          |
+| `"expanded"`                  | Present in the `item__action` and `item__group` parts when the item is expanded.                                                    |
+| `"indicator"`                 | The visual selection indicator shown for the active item. Rendered when `selectedLinkIndicator` is `true` and the item is selected. |
+| `"item__action"`              | The clickable row element for each navigation item. Receives position, state, and level parts.                                      |
+| `"item__button"`              | A `<button>`-type navigation item row.                                                                                              |
+| `"item__caption"`             | The text caption inside the navigation item.                                                                                        |
+| `"item__group"`               | The container for an item's nested children.                                                                                        |
+| `"item__link"`                | An `<a>`-type navigation item row.                                                                                                  |
+| `"navigation-list-collapsed"` | Present in the `item__action` and `item__caption` parts when the parent `ch-sidebar` is collapsed.                                  |
+| `"not-selected"`              | Present in the `item__caption`, `item__group`, and `item__link` parts when the item is not selected.                                |
+| `"odd-level"`                 | Present in the `item__action` and `item__group` parts when the item is at an odd nesting level.                                     |
+| `"selected"`                  | Present in the `item__caption`, `item__group`, and `item__link` parts when the item is selected.                                    |
+| `"tooltip"`                   | Present in the `item__caption` part to style the tooltip that appears when the sidebar is collapsed.                                |
 
 
 ## CSS Custom Properties

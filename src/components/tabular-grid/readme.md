@@ -5,7 +5,8 @@
 
 ## Overview
 
-The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+The `ch-tabular-grid` component is a full-featured, accessible data grid
+and tree grid for displaying, selecting, and interacting with tabular data.
 
 ## Properties
 
@@ -307,14 +308,37 @@ Type: `Promise<void>`
 
 
 
+## Slots
+
+| Slot               | Description                                                                                                 |
+| ------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `"column-display"` | Custom column display UI rendered in the aside area.                                                        |
+| `"default"`        | The default slot for grid columns (`ch-tabular-grid-column`), rows, and rowsets that compose the grid body. |
+| `"footer"`         | Content projected into the grid footer section below the data area.                                         |
+| `"header"`         | Content projected into the grid header section above the data area.                                         |
+| `"row-actions"`    | Custom row action controls rendered in the aside area, typically shown on hover or context menu.            |
+| `"settings"`       | Custom content for the settings panel. When not provided, a default column visibility editor is rendered.   |
+
+
 ## Shadow Parts
 
-| Part                 | Description |
-| -------------------- | ----------- |
-| `"footer"`           |             |
-| `"header"`           |             |
-| `"main"`             |             |
-| `"settings-columns"` |             |
+| Part                                 | Description                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| `"footer"`                           | The footer section rendered below the grid body.                          |
+| `"header"`                           | The header section rendered above the grid body.                          |
+| `"main"`                             | The main scrollable section containing the grid columns, rows, and cells. |
+| `"settings-caption"`                 | The caption/title text in the settings panel header.                      |
+| `"settings-close"`                   | The close button in the settings panel.                                   |
+| `"settings-columns"`                 | The column visibility list inside the settings panel.                     |
+| `"settings-columns-item"`            | An individual column entry in the settings column list.                   |
+| `"settings-columns-label"`           | The label for a column entry in the settings panel.                       |
+| `"settings-columns-visible"`         | The visibility toggle for a column in the settings panel.                 |
+| `"settings-columns-visible-checked"` | The visibility toggle when the column is visible.                         |
+| `"settings-footer"`                  | The footer area of the settings panel.                                    |
+| `"settings-header"`                  | The header area of the settings panel.                                    |
+| `"settings-main"`                    | The main content area of the settings panel.                              |
+| `"settings-mask"`                    | The backdrop overlay displayed behind the settings panel.                 |
+| `"settings-window"`                  | The settings panel window container.                                      |
 
 
 ## Dependencies

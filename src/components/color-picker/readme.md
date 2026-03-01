@@ -3,6 +3,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-color-picker` component is a full-featured color selection control
+that lets users pick colors using a color field, hue slider, and optional alpha slider.
+
 ## Properties
 
 | Property                  | Attribute                    | Description                                                                                                                                                                                                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Default                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -29,6 +34,71 @@
 | Event   | Description                                                                                                                                  | Type                                                                                               |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `input` | The `input` event is emitted whenever the color value changes. The event detail contains the color in all available formats for convenience. | `CustomEvent<{ rgb: string; rgba: string; hsl: string; hsla: string; hex: string; hsv: string; }>` |
+
+
+## Shadow Parts
+
+| Part                        | Description                                                                       |
+| --------------------------- | --------------------------------------------------------------------------------- |
+| `"alpha-suffix"`            | The suffix text (e.g., "%") displayed after the alpha input.                      |
+| `"alpha__input"`            | The numeric input for directly entering the alpha value.                          |
+| `"alpha__input-group"`      | The container wrapping the alpha input and its label.                             |
+| `"alpha__input-label"`      | The label for the alpha numeric input.                                            |
+| `"alpha__slider"`           | The slider control for selecting the alpha (opacity) value.                       |
+| `"alpha__slider-label"`     | The accessible label for the alpha slider.                                        |
+| `"color-field"`             | The two-dimensional gradient area where users pick saturation and brightness.     |
+| `"color-field__label"`      | The accessible label for the color field.                                         |
+| `"color-format-selector"`   | The container for the color format selector controls.                             |
+| `"color-format__combo-box"` | The combo box used to switch between color formats (HEX, RGB, HSL, HSV).          |
+| `"color-inputs"`            | The container that holds all color channel inputs for the selected format.        |
+| `"color-palette-grid"`      | The grid container for the preset color palette swatches.                         |
+| `"color-palette__button"`   | A clickable button representing a single preset color in the palette.             |
+| `"color-palette__label"`    | The label for the color palette section.                                          |
+| `"color-preview"`           | The swatch element displaying the currently selected color.                       |
+| `"color-preview-container"` | The container that wraps the color preview swatch and text.                       |
+| `"color-preview__text"`     | The text representation of the current color shown alongside the preview.         |
+| `"format-selector__header"` | The header area of the format selector section.                                   |
+| `"format-selector__label"`  | The label for the format selector dropdown.                                       |
+| `"hex__input"`              | The text input for entering a HEX color value.                                    |
+| `"hex__input-group"`        | The container wrapping the HEX input and its label.                               |
+| `"hex__input-label"`        | The label for the HEX color input.                                                |
+| `"hsl-h__group"`            | The container for the HSL hue input and label.                                    |
+| `"hsl-h__input"`            | The numeric input for the HSL hue value (0-360).                                  |
+| `"hsl-h__label"`            | The label for the HSL hue input.                                                  |
+| `"hsl-inputs__group"`       | The container wrapping all HSL channel inputs.                                    |
+| `"hsl-l-suffix"`            | The suffix text displayed after the HSL lightness input.                          |
+| `"hsl-l__group"`            | The container for the HSL lightness input and label.                              |
+| `"hsl-l__input"`            | The numeric input for the HSL lightness value (0-100).                            |
+| `"hsl-l__label"`            | The label for the HSL lightness input.                                            |
+| `"hsl-s-suffix"`            | The suffix text displayed after the HSL saturation input.                         |
+| `"hsl-s__group"`            | The container for the HSL saturation input and label.                             |
+| `"hsl-s__input"`            | The numeric input for the HSL saturation value (0-100).                           |
+| `"hsl-s__label"`            | The label for the HSL saturation input.                                           |
+| `"hsv-h__group"`            | The container for the HSV hue input and label.                                    |
+| `"hsv-h__input"`            | The numeric input for the HSV hue value (0-360).                                  |
+| `"hsv-h__label"`            | The label for the HSV hue input.                                                  |
+| `"hsv-inputs__group"`       | The container wrapping all HSV channel inputs.                                    |
+| `"hsv-s-suffix"`            | The suffix text displayed after the HSV saturation input.                         |
+| `"hsv-s__group"`            | The container for the HSV saturation input and label.                             |
+| `"hsv-s__input"`            | The numeric input for the HSV saturation value (0-100).                           |
+| `"hsv-s__label"`            | The label for the HSV saturation input.                                           |
+| `"hsv-v-suffix"`            | The suffix text displayed after the HSV value input.                              |
+| `"hsv-v__group"`            | The container for the HSV value input and label.                                  |
+| `"hsv-v__input"`            | The numeric input for the HSV value/brightness (0-100).                           |
+| `"hsv-v__label"`            | The label for the HSV value input.                                                |
+| `"hue-slider__label"`       | The accessible label for the hue slider.                                          |
+| `"hue__slider"`             | The slider control for selecting the hue value (0-360).                           |
+| `"marker"`                  | The draggable marker inside the color field that indicates the selected position. |
+| `"rgb-b__group"`            | The container for the blue channel input and label.                               |
+| `"rgb-b__input"`            | The numeric input for the blue channel value (0-255).                             |
+| `"rgb-b__label"`            | The label for the blue channel input.                                             |
+| `"rgb-g__group"`            | The container for the green channel input and label.                              |
+| `"rgb-g__input"`            | The numeric input for the green channel value (0-255).                            |
+| `"rgb-g__label"`            | The label for the green channel input.                                            |
+| `"rgb-inputs__group"`       | The container wrapping all RGB channel inputs.                                    |
+| `"rgb-r__group"`            | The container for the red channel input and label.                                |
+| `"rgb-r__input"`            | The numeric input for the red channel value (0-255).                              |
+| `"rgb-r__label"`            | The label for the red channel input.                                              |
 
 
 ## CSS Custom Properties

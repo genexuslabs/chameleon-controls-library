@@ -227,6 +227,71 @@ const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
   imageSrc: string
 ) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
 
+/**
+ * The `ch-tab-render` component renders a tabbed interface where each tab
+ * button switches the visible content panel.
+ *
+ * @remarks
+ * ## Features
+ *  - Tab list positioning along any edge of the container (`block-start`, `block-end`, `inline-start`, or `inline-end`).
+ *  - Optional images, icons, captions, and close buttons per tab.
+ *  - Keyboard navigation following WAI-ARIA tab patterns.
+ *  - Drag-to-reorder tabs within the tab list when `sortable` is enabled.
+ *  - Drag tabs outside the component for relocation in a flexible layout context when `dragOutside` is enabled.
+ *  - CSS containment and overflow configuration per tab panel.
+ *
+ * ## Use when
+ *  - Building a multi-panel UI where content should be switchable through labeled tabs (settings dialogs, property inspectors, IDE-style editor groups).
+ *  - Organizing related but independent content sections within the same context (e.g., "Overview", "Files", "Commits").
+ *  - Users need to view one section at a time without leaving the page.
+ *
+ * ## Do not use when
+ *  - Showing or hiding a single content section -- prefer an accordion instead.
+ *  - Users must compare content across sections — switching back and forth is too costly.
+ *  - The sections represent different pages or routes — prefer `ch-navigation-list-render`.
+ *  - Content follows a sequential linear process — prefer a stepper/wizard pattern.
+ *  - More than 6 tabs are needed — consider a sidebar or `ch-navigation-list-render`.
+ *  - Confusing with `ch-segmented-control-render`: tabs switch to DIFFERENT content sections; segmented controls switch the VIEW FORMAT of the same data.
+ *
+ * ## Accessibility
+ *  - Implements the WAI-ARIA Tabs pattern with `role="tablist"`, `role="tab"`, and `role="tabpanel"`.
+ *  - Supports keyboard navigation: Arrow keys to move between tabs, Home/End to jump to first/last.
+ *  - Each tab button reflects `aria-selected` and `aria-controls` linking to its panel.
+ *  - Close buttons carry an accessible label.
+ *
+ * @status experimental
+ *
+ * @part tab - The primary `<button>` element for each tab item. Also receives the `{item.id}`, position, state, and direction parts.
+ * @part tab-caption - The `<ch-textblock>` text label inside each tab button. Present when `showCaptions` is `true`.
+ * @part img - The `<img>` element rendered when a tab item uses `startImgSrc` with `startImgType = "img"`.
+ * @part close-button - The button that closes a tab. Rendered when `closeButton` is `true` and the item is closable.
+ * @part tab-list - The `<div>` that wraps all tab buttons and acts as the `role="tablist"` container.
+ * @part tab-list-start - The `<div>` adjacent to the start of the tab list. Used to project toolbar content via `slot={tabListPosition}`.
+ * @part tab-list-end - The `<div>` adjacent to the end of the tab list. Used to project toolbar content via `slot={tabListPosition}`.
+ * @part tab-panel - The panel `<div>` for each tab's content area. Receives `{item.id}`, position, and state parts.
+ * @part tab-panel-container - The outer container `<div>` that wraps all tab panels.
+ *
+ * @part {item.id} - Present on the `tab`, `tab-caption`, `close-button`, and `tab-panel` parts for each tab item, enabling per-tab styling.
+ *
+ * @part selected - Present in the `tab`, `tab-caption`, `close-button`, and `tab-panel` parts when the item is selected.
+ * @part not-selected - Present in the `tab`, `tab-caption`, `close-button`, and `tab-panel` parts when the item is not selected.
+ * @part disabled - Present in the `tab`, `tab-caption`, `close-button`, and `tab-panel` parts when the item is disabled.
+ * @part closable - Present in the `tab` and `tab-caption` parts when the item has a close button.
+ * @part not-closable - Present in the `tab` and `tab-caption` parts when the item does not have a close button.
+ * @part dragging - Present in the `tab`, `close-button`, and `tab-list` parts while a tab is being dragged.
+ * @part dragging-over-tab-list - Present in the `tab` and `close-button` parts while dragging within the tab list bounds.
+ * @part dragging-out-of-tab-list - Present in the `tab` and `close-button` parts while dragging outside the tab list bounds.
+ * @part expanded - Present in the `tab-panel-container` part when the panel container is visible.
+ * @part collapsed - Present in the `tab-panel-container` part when the panel container is hidden.
+ *
+ * @part block - Present when the tab list is oriented vertically (block direction).
+ * @part inline - Present when the tab list is oriented horizontally (inline direction).
+ * @part start - Present when the tab list is positioned at the start edge.
+ * @part end - Present when the tab list is positioned at the end edge.
+ *
+ * @slot {tabListPosition} - Named slot rendered adjacent to the tab list for custom toolbar content (e.g., an overflow menu or add-tab button).
+ * @slot {item.id} - Named slot for each tab panel's content, projected when the tab has been rendered at least once.
+ */
 @Component({
   shadow: true,
   styleUrl: "tab.scss",

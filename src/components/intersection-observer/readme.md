@@ -5,6 +5,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-intersection-observer` component is a declarative wrapper around the
+native `IntersectionObserver` API that emits events when slotted content
+crosses visibility thresholds.
+
 ## Properties
 
 | Property       | Attribute       | Description                                                                       | Type     | Default     |
@@ -22,6 +28,13 @@
 | Event                | Description                                                                          | Type                                     |
 | -------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------- |
 | `intersectionUpdate` | Emitted whenever the control reaches a threshold specified by the threshold property | `CustomEvent<IntersectionObserverEntry>` |
+
+
+## Slots
+
+| Slot        | Description                                          |
+| ----------- | ---------------------------------------------------- |
+| `"content"` | The element to be observed for intersection changes. |
 
 
 ----------------------------------------------

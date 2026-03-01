@@ -5,6 +5,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-shortcuts` component loads keyboard shortcut definitions from a JSON
+file and displays discoverable tooltip hints next to target elements when the
+user presses a trigger key.
+
 ## Properties
 
 | Property           | Attribute  | Description                          | Type      | Default     |
@@ -16,10 +22,11 @@
 
 ## Shadow Parts
 
-| Part      | Description |
-| --------- | ----------- |
-| `"plus"`  |             |
-| `"slash"` |             |
+| Part      | Description                                                                    |
+| --------- | ------------------------------------------------------------------------------ |
+| `"key"`   | Each individual `<kbd>` element representing a single key in the shortcut.     |
+| `"plus"`  | The "+" separator rendered between keys in a combination (e.g., Ctrl **+** S). |
+| `"slash"` | The "/" separator rendered between alternative keys in a shortcut definition.  |
 
 
 ## Dependencies

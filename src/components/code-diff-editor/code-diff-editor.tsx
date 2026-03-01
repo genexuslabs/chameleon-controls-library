@@ -6,6 +6,32 @@ import { CodeDiffEditorOptions } from "./code-diff-editor-types.js";
 
 let autoId = 0;
 
+/**
+ * The `ch-code-diff-editor` component provides a side-by-side or inline diff
+ * view for comparing two versions of source code, powered by the
+ * [Monaco Editor](https://microsoft.github.io/monaco-editor/).
+ *
+ * @remarks
+ * ## Features
+ *  - Side-by-side and inline diff rendering with syntax highlighting.
+ *  - Scroll synchronization and inline change decorations.
+ *  - Configurable themes, read-only mode, and YAML schema validation.
+ *
+ * ## Use when
+ *  - Visualizing textual differences between an original and a modified document.
+ *  - Showing a before/after comparison of two code versions (e.g., pull request diffs, AI-generated code changes).
+ *
+ * ## Do not use when
+ *  - You need single-document editing — prefer `ch-code-editor` instead.
+ *  - You need read-only highlighted code — prefer `ch-code` instead.
+ *  - Only one version needs to be displayed — prefer `ch-code-editor` or `ch-code`.
+ *
+ * **Important:** Like `ch-code-editor`, this control requires the Monaco Web
+ * Workers to be copied into your project's assets. See the `ch-code-editor`
+ * documentation for the required copy-task configuration.
+ *
+ * @status experimental
+ */
 @Component({
   shadow: false,
   styleUrl: "code-diff-editor.scss",

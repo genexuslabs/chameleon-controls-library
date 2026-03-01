@@ -5,6 +5,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-rating` component displays a star-based rating control that allows
+users to select a value from zero up to a configurable maximum number of stars.
+
 ## Properties
 
 | Property         | Attribute         | Description                                                                                                                                                       | Type      | Default     |
@@ -25,9 +30,14 @@
 
 ## Shadow Parts
 
-| Part                | Description |
-| ------------------- | ----------- |
-| `"stars-container"` |             |
+| Part                 | Description                                                                                                     |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `"partial-selected"` | Present in the `star-container` and `star` parts when the star is partially selected (fractional value).        |
+| `"selected"`         | Present in the `star-container` and `star` parts when the star is fully selected.                               |
+| `"star"`             | The visual star element rendered inside each star container. Combined with state parts to indicate selection.   |
+| `"star-container"`   | The wrapper for an individual star, including its radio input. Combined with state parts to indicate selection. |
+| `"stars-container"`  | The container that wraps all individual star elements.                                                          |
+| `"unselected"`       | Present in the `star-container` and `star` parts when the star is not selected at all.                          |
 
 
 ## CSS Custom Properties

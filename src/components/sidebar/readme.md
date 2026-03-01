@@ -5,6 +5,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-sidebar` component provides a collapsible side panel typically used
+for primary or secondary navigation, tool palettes, or contextual information.
+
 ## Properties
 
 | Property                             | Attribute                                | Description                                                                                                                                                                                                                                           | Type                  | Default     |
@@ -23,6 +28,22 @@
 | Event            | Description                                                                   | Type                   |
 | ---------------- | ----------------------------------------------------------------------------- | ---------------------- |
 | `expandedChange` | Emitted when the element is clicked or the space key is pressed and released. | `CustomEvent<boolean>` |
+
+
+## Slots
+
+| Slot | Description                           |
+| ---- | ------------------------------------- |
+|      | Default slot for the sidebar content. |
+
+
+## Shadow Parts
+
+| Part              | Description                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------- |
+| `"collapsed"`     | Present on the expand button when the sidebar is collapsed.                                       |
+| `"expand-button"` | The button that toggles the expanded/collapsed state. Rendered when `showExpandButton` is `true`. |
+| `"expanded"`      | Present on the expand button when the sidebar is expanded.                                        |
 
 
 ## CSS Custom Properties

@@ -5,15 +5,8 @@
 
 ## Overview
 
-A component for rendering LaTeX math expressions using KaTeX.
-
-To use this component, you must include the necessary custom fonts in your
-project. These custom fonts are located in the
-`node_modules/@genexus/chameleon-controls-library/dist/assets/fonts` folder.
-
-To declare the font-faces of these custom fonts in your project, you must
-use the `math-viewer-font-faces` mixin located in the
-`node_modules/@genexus/chameleon-controls-library/dist/assets/scss/math-viewer-font-face.scss` folder
+The `ch-math-viewer` component renders LaTeX math expressions as accessible,
+high-quality typeset mathematics using [KaTeX](https://katex.org/).
 
 ## Properties
 
@@ -25,9 +18,9 @@ use the `math-viewer-font-faces` mixin located in the
 
 ## Shadow Parts
 
-| Part      | Description |
-| --------- | ----------- |
-| `"error"` |             |
+| Part      | Description                                                                                                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"error"` | A `<span>` rendered in place of a math block when KaTeX fails to parse the expression. Contains the raw source text and exposes the error message via `aria-description` and `title`. |
 
 
 ----------------------------------------------

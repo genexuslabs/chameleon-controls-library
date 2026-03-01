@@ -5,6 +5,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-paginator-render` component provides a fully customizable pagination
+control for navigating through paged data sets.
+
 ## Properties
 
 | Property                     | Attribute                       | Description                                                                                    | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Default                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -36,6 +41,32 @@
 | -------------------- | ------------------------------------------------------ | --------------------- |
 | `itemsPerPageChange` | Event fired when the amount of items per page changes. | `CustomEvent<number>` |
 | `pageChange`         | Event fired when there is a new page selection.        | `CustomEvent<number>` |
+
+
+## Shadow Parts
+
+| Part                          | Description                                                                        |
+| ----------------------------- | ---------------------------------------------------------------------------------- |
+| `"disabled"`                  | Applied to navigation buttons when they are disabled (e.g. "first" on page 1).     |
+| `"ellipsis"`                  | Applied to ellipsis elements within the page navigation.                           |
+| `"first__button"`             | The "first page" navigation button.                                                |
+| `"go-to"`                     | Container for the "go to page" control.                                            |
+| `"go-to__input"`              | The numeric input for jumping to a specific page.                                  |
+| `"go-to__label"`              | Label for the "go to page" input.                                                  |
+| `"items-per-page"`            | Container for the items-per-page selector control.                                 |
+| `"items-per-page-info"`       | Container for the items-per-page informational text.                               |
+| `"items-per-page-info__text"` | The text span showing the current item range (e.g. "Showing 1 - 10 of 100 items"). |
+| `"items-per-page__combo-box"` | The combo-box used to select items per page.                                       |
+| `"items-per-page__label"`     | Label text for the items-per-page selector.                                        |
+| `"last__button"`              | The "last page" navigation button.                                                 |
+| `"navigation-info"`           | Container for the page navigation informational text.                              |
+| `"navigation-info__text"`     | The text span showing the current page info (e.g. "Showing 3 of 10 pages").        |
+| `"next__button"`              | The "next page" navigation button.                                                 |
+| `"not-selected"`              | Applied to page elements that are not selected.                                    |
+| `"page"`                      | An individual page button, anchor, or ellipsis element.                            |
+| `"pages"`                     | Container wrapping the page number navigation controls.                            |
+| `"prev__button"`              | The "previous page" navigation button.                                             |
+| `"selected"`                  | Applied to the currently selected page element.                                    |
 
 
 ## Dependencies

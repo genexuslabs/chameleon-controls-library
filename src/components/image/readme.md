@@ -5,8 +5,8 @@
 
 ## Overview
 
-A component to display multiple images, depending on the state (focus, hover,
-active or disabled) of a parent element.
+The `ch-image` component renders a multi-state image that automatically
+reflects the interactive state of its parent container.
 
 ## Properties
 

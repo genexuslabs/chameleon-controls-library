@@ -7,11 +7,8 @@
 
 ## Overview
 
-The ch-progress is an element that displays the progress status for tasks
-that take a long time.
-
-It implements all accessibility behaviors for determinate and indeterminate
-progress. It also supports referencing a region to describe its progress.
+The `ch-progress` component displays the progress status for long-running
+tasks, supporting both determinate and indeterminate modes.
 
 ## Properties
 
@@ -25,6 +22,13 @@ progress. It also supports referencing a region to describe its progress.
 | `min`                 | `min`                   | Specifies the minimum value of progress.  This property is not used if indeterminate === true.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `number`      | `0`         |
 | `renderType`          | `render-type`           | This property specifies how the progress will be render.  - `"custom"`: Useful for making custom renders of the progress. The    control doesn't render anything and only projects the content of the    default slot. Besides that, all specified properties are still used to    implement the control's accessibility.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `string`      | `"custom"`  |
 | `value`               | `value`                 | Specifies the current value of the component. In other words, how much of the task that has been completed.  This property is not used if indeterminate === true.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `number`      | `0`         |
+
+
+## Slots
+
+| Slot | Description                                                                                                                     |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------- |
+|      | Default slot. Projected when `renderType === "custom"`. Use it to provide a fully custom visual representation of the progress. |
 
 
 ----------------------------------------------

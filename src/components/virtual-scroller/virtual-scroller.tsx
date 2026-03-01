@@ -32,6 +32,45 @@ const VIRTUAL_SCROLL_START_DISPLAY_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PRE
 const VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}end-size`;
 const VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}end-display`;
 
+/**
+ * The `ch-virtual-scroller` component provides efficient virtual scrolling
+ * for large lists of items within a `ch-smart-grid`, keeping only visible
+ * items plus a configurable buffer in the DOM.
+ *
+ * @remarks
+ * ## Features
+ *  - `"virtual-scroll"` mode: removes items outside the viewport from the DOM, using virtual spacers to maintain scroll height. Lowest memory footprint.
+ *  - `"lazy-render"` mode: lazily renders items as they scroll into view, but keeps them in the DOM once rendered. Avoids re-rendering costs.
+ *  - Configurable buffer amount for items rendered above and below the viewport.
+ *  - Inverse loading support (newest items at bottom, scroll starts at end) for chat-style interfaces.
+ *  - Automatic re-rendering on scroll and resize events.
+ *
+ * ## Use when
+ *  - Rendering hundreds or thousands of items inside a `ch-smart-grid`.
+ *  - Building chat interfaces that need efficient inverse-loaded virtual scrolling.
+ *  - Rendering lists of hundreds or thousands of items efficiently within `ch-smart-grid`.
+ *
+ * ## Do not use when
+ *  - The list is small enough to render all items at once without performance concerns.
+ *  - The list has fewer than ~100 items — the overhead of virtual scrolling is not justified.
+ *  - Used outside of `ch-smart-grid` — this component is designed to work in tandem with `ch-smart-grid`.
+ *
+ * ```
+ *   <ch-smart-grid>
+ *     #shadow-root (open)
+ *     |  <slot name="grid-content"></slot>
+ *     <ch-virtual-scroller slot="grid-content">
+ *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
+ *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
+ *       ...
+ *     </ch-virtual-scroller>
+ *   </ch-smart-grid>
+ * ```
+ *
+ * @status experimental
+ *
+ * @slot default - The slot for `ch-smart-grid-cell` elements representing the items to be virtually scrolled.
+ */
 @Component({
   shadow: true,
   styleUrl: "virtual-scroller.scss",

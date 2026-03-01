@@ -7,9 +7,8 @@
 
 ## Overview
 
-The radio group control is used to render a short list of mutually exclusive options.
-
-It contains radio items to allow users to select one option from the list of options.
+The `ch-radio-group-render` component renders a group of mutually exclusive
+radio options, allowing users to select exactly one value from a short list.
 
 ## Properties
 
@@ -34,9 +33,9 @@ It contains radio items to allow users to select one option from the list of opt
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `"checked"`          | Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is checked (`checked` === `true`).     |
 | `"disabled"`         | Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is disabled (`disabled` === `true`).   |
+| `"radio-item"`       | The radio item element.                                                                                                                            |
 | `"radio__container"` | The container that serves as a wrapper for the `input` and the `option` parts.                                                                     |
 | `"radio__input"`     | The invisible input element that implements the interactions for the component. This part must be kept "invisible".                                |
-| `"radio__item"`      | The radio item element.                                                                                                                            |
 | `"radio__label"`     | The label that is rendered when the `caption` property is not empty.                                                                               |
 | `"radio__option"`    | The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.                         |
 | `"unchecked"`        | Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is not checked (`checked` !== `true`). |

@@ -31,6 +31,62 @@ import {
 } from "./types";
 import { ComboBoxModel } from "../combo-box/types";
 
+/**
+ * The `ch-paginator-render` component provides a fully customizable pagination
+ * control for navigating through paged data sets.
+ *
+ * @remarks
+ * ## Features
+ *  - Numeric and hyperlink-based pagination models.
+ *  - Configurable items-per-page selection via combo-box.
+ *  - First, previous, next, and last navigation buttons.
+ *  - "Go to page" numeric input for direct page access.
+ *  - Informational displays for current page range and item counts.
+ *  - Fully configurable layout and ordering of sub-controls via the `order` property.
+ *  - Full translation support for all visible text via the `translations` property.
+ *
+ * ## Use when
+ *  - Displaying large data sets that need to be split across multiple pages.
+ *  - Building SEO-friendly paginated navigation with hyperlink models.
+ *  - Displaying large datasets where loading all records at once would harm performance or UX (generally >25 items).
+ *  - Data tables, search results, or content lists where users browse sequentially.
+ *
+ * ## Do not use when
+ *  - The data set is small enough to display on a single page.
+ *  - Infinite scrolling is preferred — use `ch-smart-grid` with `ch-infinite-scroll` instead.
+ *  - The full dataset is small enough to display at once — pagination adds unnecessary interaction cost.
+ *  - A social-feed-style infinite scroll is more appropriate for the browsing context.
+ *  - A linear multi-step form flow is needed — use a stepper instead.
+ *
+ * ## Accessibility
+ *  - Navigation buttons carry `aria-label` attributes for clear screen-reader announcements.
+ *  - The current page element is marked with `aria-current="page"`.
+ *  - All translatable labels are configurable via the `translations` property for internationalization.
+ *  - The "go to page" input supports keyboard confirmation with the Enter key.
+ *
+ * @status experimental
+ *
+ * @part items-per-page - Container for the items-per-page selector control.
+ * @part items-per-page__label - Label text for the items-per-page selector.
+ * @part items-per-page__combo-box - The combo-box used to select items per page.
+ * @part items-per-page-info - Container for the items-per-page informational text.
+ * @part items-per-page-info__text - The text span showing the current item range (e.g. "Showing 1 - 10 of 100 items").
+ * @part pages - Container wrapping the page number navigation controls.
+ * @part page - An individual page button, anchor, or ellipsis element.
+ * @part selected - Applied to the currently selected page element.
+ * @part not-selected - Applied to page elements that are not selected.
+ * @part ellipsis - Applied to ellipsis elements within the page navigation.
+ * @part first__button - The "first page" navigation button.
+ * @part prev__button - The "previous page" navigation button.
+ * @part next__button - The "next page" navigation button.
+ * @part last__button - The "last page" navigation button.
+ * @part disabled - Applied to navigation buttons when they are disabled (e.g. "first" on page 1).
+ * @part navigation-info - Container for the page navigation informational text.
+ * @part navigation-info__text - The text span showing the current page info (e.g. "Showing 3 of 10 pages").
+ * @part go-to - Container for the "go to page" control.
+ * @part go-to__label - Label for the "go to page" input.
+ * @part go-to__input - The numeric input for jumping to a specific page.
+ */
 @Component({
   tag: "ch-paginator-render",
   styleUrl: "paginator-render.scss",

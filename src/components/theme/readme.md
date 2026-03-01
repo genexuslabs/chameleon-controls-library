@@ -7,10 +7,9 @@
 
 ## Overview
 
-It allows you to load a style sheet in a similar way to the
-native LINK or STYLE tags, but assigning it a name so that
-it can be reused in different contexts,
-either in the Document or in a Shadow-Root.
+The `ch-theme` component loads and manages named stylesheets that can be
+shared and reused across the Document or any Shadow Root via the
+`adoptedStyleSheets` API.
 
 ## Properties
 

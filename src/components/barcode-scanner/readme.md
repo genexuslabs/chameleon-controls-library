@@ -5,8 +5,8 @@
 
 ## Overview
 
-This component allows you to scan a wide variety of types of barcode and QR
-codes.
+The `ch-barcode-scanner` component provides real-time barcode and QR code
+scanning through the device camera, with support for file-based scanning.
 
 ## Properties
 

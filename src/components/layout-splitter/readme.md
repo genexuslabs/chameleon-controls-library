@@ -5,10 +5,8 @@
 
 ## Overview
 
-This component allows us to design a layout composed by columns and rows.
-
-- Columns and rows can have relative (`fr`) or absolute (`px`) size.
-- The line that separates two columns or two rows will always have a drag-bar to resize the layout.
+The `ch-layout-splitter` component renders a nestable grid of columns and
+rows with draggable bars that let users resize adjacent areas in real time.
 
 ## Properties
 
@@ -70,11 +68,19 @@ Type: `Promise<LayoutSplitterItemRemoveResult>`
 
 
 
+## Slots
+
+| Slot          | Description                                                                 |
+| ------------- | --------------------------------------------------------------------------- |
+| `"{item.id}"` | Named slot projected inside each leaf item. One slot per leaf in the model. |
+
+
 ## Shadow Parts
 
-| Part    | Description                                  |
-| ------- | -------------------------------------------- |
-| `"bar"` | The bar that divides two columns or two rows |
+| Part          | Description                                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `"bar"`       | The drag bar separator that divides two columns or two rows. May include an additional custom part when the item specifies `dragBar.part`. |
+| `"{item.id}"` | Exposed on every group container, enabling per-item styling from outside the shadow DOM.                                                   |
 
 
 ## Dependencies

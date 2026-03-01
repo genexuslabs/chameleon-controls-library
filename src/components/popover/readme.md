@@ -5,8 +5,8 @@
 
 ## Overview
 
-The `ch-popover` component represents a popover container that is positioned
-relative to an element, but placed on the top layer using `position: fixed`.
+The `ch-popover` component renders a positioned overlay container anchored to
+a reference element using the native Popover API and `position: fixed`.
 
 ## Properties
 
@@ -36,11 +36,19 @@ relative to an element, but placed on the top layer using `position: fixed`.
 | `popoverOpened` | Emitted when the popover is opened by an user interaction.  This event can be prevented (`preventDefault()`), interrupting the ch-popover's opening.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `CustomEvent<any>`                                                                                     |
 
 
+## Slots
+
+| Slot       | Description                                                                     |
+| ---------- | ------------------------------------------------------------------------------- |
+|            | Default slot. The main content of the popover.                                  |
+| `"header"` | Content projected into the header area. Rendered when `allowDrag === "header"`. |
+
+
 ## Shadow Parts
 
-| Part       | Description |
-| ---------- | ----------- |
-| `"header"` |             |
+| Part       | Description                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| `"header"` | A draggable header area rendered when `allowDrag === "header"`. Projects the "header" slot. |
 
 
 ## CSS Custom Properties

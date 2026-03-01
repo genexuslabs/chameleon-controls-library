@@ -49,6 +49,37 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
 };
 
 /**
+ * The `ch-checkbox` component is a form-associated checkbox control that allows
+ * users to toggle between checked, unchecked, and optionally indeterminate states.
+ *
+ * @remarks
+ * ## Features
+ *  - Tri-state support: checked, unchecked, and indeterminate.
+ *  - Optional label and start images with multi-state support.
+ *  - Read-only mode to prevent user modifications.
+ *  - Form-associated via `ElementInternals` for native form participation.
+ *  - Accessible name resolution from external labels.
+ *
+ * ## Use when
+ *  - A binary or tri-state selection is needed in forms, settings panels, or tree views.
+ *  - Multiple independent options can be selected from a list.
+ *  - Filtering content where multiple criteria can apply simultaneously.
+ *  - Batch operations in data tables (e.g., select-all rows).
+ *  - Acknowledging terms or conditions before submitting a form.
+ *
+ * ## Do not use when
+ *  - The semantics are closer to an on/off toggle — prefer `ch-switch` instead.
+ *  - Only one option can be selected from a group — prefer `ch-radio-group-render` instead.
+ *  - The change must take immediate effect without a confirmation step — prefer `ch-switch` instead.
+ *  - The list of options exceeds 7 items — prefer `ch-combo-box-render` with multiple selection instead.
+ *  - A single checkbox is used in isolation as a binary toggle for a live system setting — prefer `ch-switch`.
+ *
+ * ## Accessibility
+ *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+ *  - The decorative option overlay is hidden from assistive technology with `aria-hidden`.
+ *
  * @status developer-preview
  *
  * @part container - The container that serves as a wrapper for the `input` and the `option` parts.

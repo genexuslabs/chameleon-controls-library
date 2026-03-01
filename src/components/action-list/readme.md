@@ -7,6 +7,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-action-list-render` component renders an interactive list of
+actionable items driven by a declarative model.
+
 ## Properties
 
 | Property                    | Attribute        | Description                                                                                                                                                                            | Type                                                                                                                                                   | Default                         |
@@ -23,7 +28,7 @@
 | `renderItem`                | --               | This property allows us to implement custom rendering of action-list items.                                                                                                            | `(itemModel: ActionListItemModel, actionListRenderState: ChActionListRender, disabled?: boolean, nested?: boolean, nestedExpandable?: boolean) => any` | `defaultRenderItem`             |
 | `selection`                 | `selection`      | Specifies the type of selection implemented by the control.                                                                                                                            | `"multiple" \| "none" \| "single"`                                                                                                                     | `"none"`                        |
 | `sortItemsCallback`         | --               | Callback that is executed when the action-list model is changed to order its items.                                                                                                    | `(subModel: ActionListModel) => void`                                                                                                                  | `defaultSortItemsCallback`      |
-| `translations`              | `translations`   | Specifies the literals required for the control.                                                                                                                                       | `ActionListTranslations`                                                                                                                               | `actionListDefaultTranslations` |
+| `translations`              | --               | Specifies the literals required for the control.                                                                                                                                       | `{ confirmDelete: string; cancelDelete: string; confirmModify: string; cancelModify: string; }`                                                        | `actionListDefaultTranslations` |
 
 
 ## Events
@@ -109,6 +114,13 @@ of the items in the list.
 Type: `Promise<void>`
 
 
+
+
+## Shadow Parts
+
+| Part          | Description                                                                                         |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| `"separator"` | A horizontal divider rendered between items when the model contains an item of `type: "separator"`. |
 
 
 ## CSS Custom Properties

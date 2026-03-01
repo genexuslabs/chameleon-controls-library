@@ -5,15 +5,8 @@
 
 ## Overview
 
-A wrapper for the input and textarea elements. It additionally provides:
- - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
- - An action button.
- - Useful style resets.
- - Support for picture formatting.
- - Support to auto grow the control when used with multiline (useful to
-   model chat inputs).
- - An image which can have multiple states.
- - Support for debouncing the input event.
+The `ch-edit` component is a rich wrapper around the native `input` and
+`textarea` elements, serving as the primary text input building block.
 
 ## Properties
 
@@ -61,17 +54,22 @@ A wrapper for the input and textarea elements. It additionally provides:
 
 ## Slots
 
-| Slot                          | Description                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------------- |
-| `"additional-content-after"`  | The slot used for the additional content when `showAdditionalContentAfter === true`.  |
-| `"additional-content-before"` | The slot used for the additional content when `showAdditionalContentBefore === true`. |
+| Slot                          | Description                                                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `"additional-content-after"`  | Rendered when `showAdditionalContentAfter === true`. Use it to place custom elements after the input content.   |
+| `"additional-content-before"` | Rendered when `showAdditionalContentBefore === true`. Use it to place custom elements before the input content. |
 
 
 ## Shadow Parts
 
-| Part                 | Description                                                                                                                                          |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"date-placeholder"` | A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" \| "date" \| "time"`. |
+| Part                     | Description                                                                                                                                          |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"clear-button"`         | The button rendered for clearing the value when `type` is `"search"` and the control has a value.                                                    |
+| `"date-placeholder"`     | A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" \| "date" \| "time"`. |
+| `"disabled"`             | Present in the `clear-button` and `show-password` parts when the control is disabled.                                                                |
+| `"password-displayed"`   | Present in the `show-password` part when the password is currently visible.                                                                          |
+| `"password-hidden"`      | Present in the `show-password` part when the password is currently hidden.                                                                           |
+| `"show-password-button"` | The button rendered for toggling password visibility when `showPasswordButton` is `true` and `type` is `"password"`.                                 |
 
 
 ## CSS Custom Properties

@@ -5,6 +5,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-textblock` component displays text or HTML content with multi-line
+ellipsis truncation, automatic grow behavior, and overflow detection.
+
 ## Properties
 
 | Property                       | Attribute                          | Description                                                                                                                                                                                                                                                                                                                     | Type                                                  | Default     |
@@ -26,9 +31,9 @@
 
 ## Slots
 
-| Slot | Description                    |
-| ---- | ------------------------------ |
-|      | The slot for the HTML content. |
+| Slot | Description                                                                   |
+| ---- | ----------------------------------------------------------------------------- |
+|      | The default slot for HTML content. Rendered when `format` is set to `"HTML"`. |
 
 
 ## Dependencies

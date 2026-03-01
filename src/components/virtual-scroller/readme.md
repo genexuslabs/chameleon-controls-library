@@ -5,6 +5,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-virtual-scroller` component provides efficient virtual scrolling
+for large lists of items within a `ch-smart-grid`, keeping only visible
+items plus a configurable buffer in the DOM.
+
 ## Properties
 
 | Property                     | Attribute                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Type                                | Default            |
@@ -46,6 +52,13 @@ the virtual scroll would behave unexpectedly when new items are added.
 Type: `Promise<void>`
 
 
+
+
+## Slots
+
+| Slot        | Description                                                                                 |
+| ----------- | ------------------------------------------------------------------------------------------- |
+| `"default"` | The slot for `ch-smart-grid-cell` elements representing the items to be virtually scrolled. |
 
 
 ## Dependencies

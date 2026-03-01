@@ -5,6 +5,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-checkbox` component is a form-associated checkbox control that allows
+users to toggle between checked, unchecked, and optionally indeterminate states.
+
 ## Properties
 
 | Property                    | Attribute          | Description                                                                                                                                                                                                      | Type                                      | Default        |

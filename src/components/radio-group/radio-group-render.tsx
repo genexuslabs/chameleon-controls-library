@@ -8,8 +8,8 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { RadioGroupItemModel, RadioGroupModel } from "./types";
 import { RADIO_ITEM_PARTS_DICTIONARY } from "../../common/reserved-names";
+import { RadioGroupItemModel, RadioGroupModel } from "./types";
 
 const PARTS = (checked: boolean, disabled: boolean) => {
   const checkedValue = checked
@@ -22,19 +22,50 @@ const PARTS = (checked: boolean, disabled: boolean) => {
 };
 
 /**
- * The radio group control is used to render a short list of mutually exclusive options.
+ * The `ch-radio-group-render` component renders a group of mutually exclusive
+ * radio options, allowing users to select exactly one value from a short list.
  *
- * It contains radio items to allow users to select one option from the list of options.
+ * @remarks
+ * ## Features
+ *  - Mutually exclusive selection from a set of options.
+ *  - Horizontal or vertical layout via the `direction` property.
+ *  - Individual item disabling.
+ *  - Accessible labels for each option.
+ *  - Form-associated via `ElementInternals`.
  *
- * @part radio__item - The radio item element.
+ * ## Use when
+ *  - A small, static set of options where all choices should be visible at once.
+ *  - Exactly one option must be selected from the group.
+ *  - The user must choose exactly one option from 2–7 mutually exclusive choices.
+ *  - All options should be visible simultaneously so users can compare before deciding.
+ *  - The choice is part of a form that requires a submit step.
+ *
+ * ## Do not use when
+ *  - The option list is long or searchable — prefer `ch-combo-box-render` instead.
+ *  - Multiple options can be selected — prefer `ch-checkbox` instead.
+ *  - More than 7–8 options are available — prefer `ch-combo-box-render`.
+ *  - The setting takes immediate effect — prefer `ch-switch`.
+ *  - A single radio button is used in isolation — radio inputs must always work as a group and cannot be unchecked once selected.
+ *
+ * ## Accessibility
+ *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ *  - The host element has `role="radiogroup"`.
+ *  - Each option uses a native `<input type="radio">` with a linked `<label>`.
+ *  - When no caption is provided, the radio input receives an `aria-label`.
+ *  - The decorative option overlay is hidden from assistive technology with `aria-hidden`.
+ *
+ * @status experimental
+ *
+ * @part radio-item - The radio item element.
  * @part radio__container - The container that serves as a wrapper for the `input` and the `option` parts.
  * @part radio__input - The invisible input element that implements the interactions for the component. This part must be kept "invisible".
  * @part radio__option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.
  * @part radio__label - The label that is rendered when the `caption` property is not empty.
  *
- * @part checked - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is checked (`checked` === `true`).
- * @part disabled - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is disabled (`disabled` === `true`).
- * @part unchecked - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is not checked (`checked` !== `true`).
+ * @part checked - Present in the `radio-item`, `radio__option`, `radio__label` and `radio__container` parts when the control is checked (`checked` === `true`).
+ * @part disabled - Present in the `radio-item`, `radio__option`, `radio__label` and `radio__container` parts when the control is disabled (`disabled` === `true`).
+ * @part unchecked - Present in the `radio-item`, `radio__option`, `radio__label` and `radio__container` parts when the control is not checked (`checked` !== `true`).
  */
 @Component({
   formAssociated: true,

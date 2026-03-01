@@ -3,6 +3,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-combo-box-render` component is a feature-rich combo box that combines
+an input field with a popover-based dropdown list for selecting values.
+
 ## Properties
 
 | Property               | Attribute              | Description                                                                                                                                                                                                                                                                        | Type                                                                                                                                                                                                                                         | Default          |
@@ -34,10 +39,10 @@
 
 ## Shadow Parts
 
-| Part       | Description |
-| ---------- | ----------- |
-| `"..."`    | ...         |
-| `"window"` |             |
+| Part            | Description                                                                         |
+| --------------- | ----------------------------------------------------------------------------------- |
+| `"placeholder"` | Present on the host when no item is selected and the placeholder text is displayed. |
+| `"window"`      | The popover element that contains the dropdown list of items.                       |
 
 
 ## CSS Custom Properties

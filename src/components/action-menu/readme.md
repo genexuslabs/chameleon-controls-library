@@ -3,6 +3,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-action-menu-render` component renders a dropdown menu triggered by an
+expandable button, supporting deeply nested sub-menus and full keyboard
+accessibility.
+
 ## Properties
 
 | Property               | Attribute                | Description                                                                                                                                              | Type                                                                                          | Default         |
@@ -24,10 +30,36 @@
 
 | Event                | Description                                                                                                                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `buttonClick`        | Fired when a button is clicked. This event can be prevented.                                                                     | `CustomEvent<{ id?: string; caption: string; disabled?: boolean; endImgSrc?: string; endImgType?: "background" \| "mask"; expanded?: boolean; items?: ActionMenuModel; itemsBlockAlign?: ChPopoverAlign; itemsInlineAlign?: ChPopoverAlign; link?: ItemLink; parts?: string; positionTry?: "none" \| "flip-block" \| "flip-inline"; shortcut?: string; startImgSrc?: string; startImgType?: "background" \| "mask"; type?: "actionable"; }>` |
+| `buttonClick`        | Fired when a button is clicked. This event can be prevented.                                                                     | `CustomEvent<{ id?: string; caption: string; disabled?: boolean; endImgSrc?: string; endImgType?: "mask" \| "background"; expanded?: boolean; items?: ActionMenuModel; itemsBlockAlign?: ChPopoverAlign; itemsInlineAlign?: ChPopoverAlign; link?: ItemLink; parts?: string; positionTry?: "none" \| "flip-block" \| "flip-inline"; shortcut?: string; startImgSrc?: string; startImgType?: "mask" \| "background"; type?: "actionable"; }>` |
 | `expandedChange`     | Fired when the visibility of the main dropdown is changed.                                                                       | `CustomEvent<boolean>`                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `expandedItemChange` | Fired when the visibility of a dropdown item is changed.                                                                         | `CustomEvent<{ item: ActionMenuItemActionableModel; expanded: boolean; }>`                                                                                                                                                                                                                                                                                                                                                                   |
 | `hyperlinkClick`     | Fired when an hyperlink is clicked. This event can be prevented, but the dropdown will be closed in any case (prevented or not). | `CustomEvent<{ event: PointerEvent; item: ActionMenuItemActionableModel; }>`                                                                                                                                                                                                                                                                                                                                                                 |
+
+
+## Slots
+
+| Slot       | Description                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+|            | Default slot projected inside the expandable button. Use it to provide the button label or icon.                                    |
+| `"{name}"` | Named slots matching each item of `type: "slot"` in the model. Use them to inject custom content at specific positions in the menu. |
+
+
+## Shadow Parts
+
+| Part                  | Description                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `"action"`            | The clickable row element for each menu item.                                                                          |
+| `"button"`            | A `<button>`-type action row. Receives `expandable`, `expanded`, `collapsed`, and `disabled` state parts.              |
+| `"collapsed"`         | Present in the `button` part when the item's sub-menu is closed.                                                       |
+| `"content"`           | The content area inside each action row (caption + optional icon).                                                     |
+| `"disabled"`          | Present in the `button` part when the item is disabled.                                                                |
+| `"expandable"`        | Present in the `button` part when the item has sub-items.                                                              |
+| `"expandable-button"` | The top-level button that toggles the dropdown. Also receives the `expanded`, `collapsed`, and `disabled` state parts. |
+| `"expanded"`          | Present in the `button` part when the item's sub-menu is open.                                                         |
+| `"link"`              | An `<a>`-type action row.                                                                                              |
+| `"separator"`         | A horizontal divider rendered for items of `type: "separator"`.                                                        |
+| `"shortcut"`          | The keyboard shortcut label rendered at the end of an action row.                                                      |
+| `"window"`            | The popover container that holds the dropdown menu items.                                                              |
 
 
 ## CSS Custom Properties

@@ -3,6 +3,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-live-kit-room` component integrates with the LiveKit real-time
+communication platform to establish audio room connections and manage
+remote participants.
+
 ## Properties
 
 | Property            | Attribute            | Description                                      | Type                                                                                                                                                                                                                                                                                          | Default     |

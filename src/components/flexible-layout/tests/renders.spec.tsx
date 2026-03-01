@@ -51,7 +51,7 @@ describe("[ch-flexible-layout-render][renders]", () => {
     );
   });
 
-  it("should render both slots and traditional items with renders", async () => {
+  it("should render slots and traditional items with renders", async () => {
     chFlexibleLayoutRender.model = SLOT_AND_RENDER_MODEL;
     await page.waitForChanges();
 

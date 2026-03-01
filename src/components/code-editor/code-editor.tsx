@@ -27,9 +27,11 @@ let autoId = 0;
  *  - Read-only code display is sufficient — prefer `ch-code` (lightweight, no Monaco dependency).
  *  - Comparing two code versions — prefer `ch-code-diff-editor`.
  *
- * **Important:** This control requires a copy task that includes the Monaco Web
- * Workers from `@genexus/chameleon-controls-library/dist/chameleon/assets`.
- * For example, in a StencilJS project:
+ * ## Configuration Required
+ *
+ * This control requires a copy task that includes the Monaco Web Workers from
+ * `@genexus/chameleon-controls-library/dist/chameleon/assets`. For example, in a
+ * StencilJS project:
  *
  * ```ts
  * // stencil.config.ts

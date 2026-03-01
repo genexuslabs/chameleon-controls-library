@@ -9,6 +9,7 @@ The `ch-code-editor` component provides a fully-featured code editing
 experience powered by the [Monaco Editor](https://microsoft.github.io/monaco-editor/).
 
 
+
 ## Features
  - IntelliSense, syntax highlighting, and configurable themes via Monaco Editor.
  - Support for any text-based language (source code, JSON, YAML, etc.).
@@ -25,8 +26,43 @@ experience powered by the [Monaco Editor](https://microsoft.github.io/monaco-edi
  - Read-only code display is sufficient — prefer `ch-code` (lightweight, no Monaco dependency).
  - Comparing two code versions — prefer `ch-code-diff-editor`.
 
-**Important:** This control requires a copy task that includes the Monaco Web
-Workers from `
+## Configuration Required
+
+This control requires a copy task that includes the Monaco Web Workers from
+`@genexus/chameleon-controls-library/dist/chameleon/assets`. For example, in a
+StencilJS project:
+
+```ts
+// stencil.config.ts
+import { Config } from "@stencil/core";
+
+export const config: Config = {
+  namespace: "your-name-space",
+  outputTargets: [
+    {
+      type: "dist",
+      copy: [
+        {
+          src: "../node_modules/@genexus/chameleon-controls-library/dist/chameleon/assets",
+          dest: "assets"
+        }
+      ]
+    },
+    {
+      type: "www",
+      serviceWorker: null,
+      copy: [
+        {
+          src: "../node_modules/@genexus/chameleon-controls-library/dist/chameleon/assets",
+          dest: "assets"
+        }
+      ]
+    }
+  ]
+};
+```
+
+
 ## Properties
 
 | Property                | Attribute         | Description                                                                                                                                 | Type                | Default                                                                                                         |

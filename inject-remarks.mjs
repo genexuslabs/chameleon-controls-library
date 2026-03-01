@@ -20,13 +20,27 @@ function extractRemarksFromJSDoc(fileContent) {
 
   const jsdocContent = match[1];
 
-  // Find the @remarks section
-  const remarksRegex = /@remarks\s*\n([\s\S]*?)(?=@\w+|$)/;
-  const remarksMatch = jsdocContent.match(remarksRegex);
+  // Find the @remarks section - look for lines starting with * @remarks
+  const remarksStartIdx = jsdocContent.indexOf("@remarks");
+  if (remarksStartIdx === -1) return null;
 
-  if (!remarksMatch) return null;
+  // Find the end of @remarks section - next line starting with * @ (except for @remarks itself)
+  // We need to handle @ symbols in URLs and code blocks gracefully
+  let remarksEndIdx = jsdocContent.length;
 
-  let remarksContent = remarksMatch[1];
+  // Look for the next @tag (like @status, @part, @slot, @deprecated, etc.)
+  // These appear at the start of a line with * @ pattern
+  const afterRemarks = jsdocContent.substring(remarksStartIdx);
+  const nextTagMatch = afterRemarks.match(/\n\s*\*\s*@(?!remarks\s)/);
+
+  if (nextTagMatch) {
+    remarksEndIdx = remarksStartIdx + nextTagMatch.index;
+  }
+
+  let remarksContent = jsdocContent.substring(remarksStartIdx, remarksEndIdx);
+
+  // Remove the @remarks marker itself
+  remarksContent = remarksContent.replace(/^@remarks\s*\n/, "");
 
   // Clean up the markdown comment formatting (* at the start of each line)
   remarksContent = remarksContent

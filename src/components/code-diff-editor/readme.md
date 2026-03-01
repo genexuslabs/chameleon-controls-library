@@ -12,6 +12,7 @@ view for comparing two versions of source code, powered by the
 [Monaco Editor](https://microsoft.github.io/monaco-editor/).
 
 
+
 ## Features
  - Side-by-side and inline diff rendering with syntax highlighting.
  - Scroll synchronization and inline change decorations.
@@ -26,9 +27,25 @@ view for comparing two versions of source code, powered by the
  - You need read-only highlighted code — prefer `ch-code` instead.
  - Only one version needs to be displayed — prefer `ch-code-editor` or `ch-code`.
 
-**Important:** Like `ch-code-editor`, this control requires the Monaco Web
-Workers to be copied into your project's assets. See the `ch-code-editor`
-documentation for the required copy-task configuration.
+## Configuration Required
+
+Like `ch-code-editor`, this control requires the Monaco Web Workers to be copied
+into your project's assets. For a StencilJS project, add the following copy task
+to your `stencil.config.ts`:
+
+```ts
+{
+  type: "dist",
+  copy: [
+    {
+      src: "../node_modules/@genexus/chameleon-controls-library/dist/chameleon/assets",
+      dest: "assets"
+    }
+  ]
+}
+```
+
+
 ## Properties
 
 | Property                | Attribute         | Description                                                                                                                                                       | Type                    | Default                                                                                                                                                        |

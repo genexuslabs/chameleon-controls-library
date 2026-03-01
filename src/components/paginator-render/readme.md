@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-paginator-render` component provides a fully customizable pagination
-control for navigating through paged data sets.
+The `ch-paginator-render` component provides a fully customizable pagination control for navigating through paged data sets.
 
 ## Features
  - Numeric and hyperlink-based pagination models.
@@ -35,6 +34,7 @@ control for navigating through paged data sets.
  - The current page element is marked with `aria-current="page"`.
  - All translatable labels are configurable via the `translations` property for internationalization.
  - The "go to page" input supports keyboard confirmation with the Enter key.
+
 ## Properties
 
 | Property                     | Attribute                       | Description                                                                                    | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Default                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |

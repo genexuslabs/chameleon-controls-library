@@ -1,9 +1,9 @@
 import {
   Component,
-  h,
-  EventEmitter,
-  Event,
   Element,
+  Event,
+  EventEmitter,
+  h,
   Prop
 } from "@stencil/core";
 
@@ -12,9 +12,7 @@ const REGEX_TO_TEST_DIP = /^\d+(dip)?$/;
 const REGEX_TO_TEST_PERCENTAGE = /^\d+(%)?$/;
 
 /**
- * The `ch-intersection-observer` component is a declarative wrapper around the
- * native `IntersectionObserver` API that emits events when slotted content
- * crosses visibility thresholds.
+ * The `ch-intersection-observer` component is a declarative wrapper around the native `IntersectionObserver` API that emits events when slotted content crosses visibility thresholds.
  *
  * @remarks
  * ## Features

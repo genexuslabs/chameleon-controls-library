@@ -16,8 +16,7 @@ import {
 import { tokenMap } from "../../common/utils";
 
 /**
- * The `ch-rating` component displays a star-based rating control that allows
- * users to select a value from zero up to a configurable maximum number of stars.
+ * The `ch-rating` component displays a star-based rating control that allows users to select a value from zero up to a configurable maximum number of stars.
  *
  * @remarks
  * ## Features

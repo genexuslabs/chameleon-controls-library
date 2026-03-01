@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-image` component renders a multi-state image that automatically
-reflects the interactive state of its parent container.
+The `ch-image` component renders a multi-state image that automatically reflects the interactive state of its parent container.
 
 ## Features
  - Visual appearance changes in response to parent state (hover, focus, active, disabled).
@@ -24,6 +23,7 @@ reflects the interactive state of its parent container.
 
 ## Accessibility
  - The host is marked `aria-hidden="true"` — this is a decorative element hidden from assistive technology.
+
 ## Properties
 
 | Property               | Attribute  | Description                                                                                                                                                                                      | Type                                      | Default        |

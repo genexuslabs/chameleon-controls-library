@@ -268,8 +268,7 @@ const defaultSortItemsCallback = (subModel: TreeViewModel): void => {
 type ImmediateFilter = "immediate" | "debounced" | undefined;
 
 /**
- * The `ch-tree-view-render` component displays hierarchical data as an
- * interactive tree with full-featured node management.
+ * The `ch-tree-view-render` component displays hierarchical data as an interactive tree with full-featured node management.
  *
  * @remarks
  * ## Features

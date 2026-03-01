@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-dialog` component represents a modal or non-modal dialog box built
-on top of the native `<dialog>` element.
+The `ch-dialog` component represents a modal or non-modal dialog box built on top of the native `<dialog>` element.
 
 ## Features
  - Modal and non-modal modes with native `<dialog>` semantics.
@@ -37,6 +36,7 @@ on top of the native `<dialog>` element.
  - The close button carries an `aria-label` (`closeButtonAccessibleName`).
  - When `closable` is `true`, the Escape key dismisses the dialog.
  - Multiple simultaneous modal dialogs are stacked so only the topmost reacts to outside clicks and Escape.
+
 ## Properties
 
 | Property                    | Attribute                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                  | Type                        | Default     |

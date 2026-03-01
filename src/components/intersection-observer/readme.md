@@ -5,9 +5,7 @@
 
 ## Overview
 
-The `ch-intersection-observer` component is a declarative wrapper around the
-native `IntersectionObserver` API that emits events when slotted content
-crosses visibility thresholds.
+The `ch-intersection-observer` component is a declarative wrapper around the native `IntersectionObserver` API that emits events when slotted content crosses visibility thresholds.
 
 ## Features
  - Observes element visibility relative to a specified root element or the browser viewport.
@@ -24,6 +22,7 @@ crosses visibility thresholds.
 ## Do not use when
  - You need to observe element resizing — use a `ResizeObserver` instead.
  - Continuous scroll position tracking is needed — use a scroll event listener instead.
+
 ## Properties
 
 | Property       | Attribute       | Description                                                                       | Type     | Default     |

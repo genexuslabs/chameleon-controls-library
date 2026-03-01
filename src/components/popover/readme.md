@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-popover` component renders a positioned overlay container anchored to
-a reference element using the native Popover API and `position: fixed`.
+The `ch-popover` component renders a positioned overlay container anchored to a reference element using the native Popover API and `position: fixed`.
 
 ## Features
  - Configurable block and inline alignment (inside/outside/center) relative to the action element.
@@ -34,6 +33,7 @@ a reference element using the native Popover API and `position: fixed`.
 ## Accessibility
  - Does not impose a semantic role — consuming components are responsible for adding appropriate ARIA attributes (e.g. `role="dialog"`, `role="listbox"`).
  - Keyboard: Escape closes the popover and returns focus to the action element.
+
 ## Properties
 
 | Property              | Attribute                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                             | Default      |

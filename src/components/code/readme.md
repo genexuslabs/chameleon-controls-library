@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-code` component renders read-only, syntax-highlighted code blocks
-powered by lowlight and highlight.js.
+The `ch-code` component renders read-only, syntax-highlighted code blocks powered by lowlight and highlight.js.
 
 ## Features
  - Syntax highlighting by parsing code to [hast](https://github.com/syntax-tree/hast) using [lowlight](https://github.com/wooorm/lowlight), with a custom reactive render layer.
@@ -22,6 +21,7 @@ powered by lowlight and highlight.js.
  - Users need to edit code — prefer `ch-code-editor` instead.
  - The user needs to edit the code — prefer `ch-code-editor`.
  - Comparing two versions of code — prefer `ch-code-diff-editor`.
+
 ## Properties
 
 | Property               | Attribute                 | Description                                                                                                                              | Type      | Default               |

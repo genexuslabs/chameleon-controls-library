@@ -46,8 +46,7 @@ import { TabularGridManager } from "./tabular-grid-manager";
 import { ManagerSelectionState } from "./tabular-grid-manager-selection";
 
 /**
- * The `ch-tabular-grid` component is a full-featured, accessible data grid
- * and tree grid for displaying, selecting, and interacting with tabular data.
+ * The `ch-tabular-grid` component is a full-featured, accessible data grid and tree grid for displaying, selecting, and interacting with tabular data.
  *
  * @remarks
  * ## Features

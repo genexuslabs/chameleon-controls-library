@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-checkbox` component is a form-associated checkbox control that allows
-users to toggle between checked, unchecked, and optionally indeterminate states.
+The `ch-checkbox` component is a form-associated checkbox control that allows users to toggle between checked, unchecked, and optionally indeterminate states.
 
 ## Features
  - Tri-state support: checked, unchecked, and indeterminate.
@@ -34,6 +33,7 @@ users to toggle between checked, unchecked, and optionally indeterminate states.
  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
  - The decorative option overlay is hidden from assistive technology with `aria-hidden`.
+
 ## Properties
 
 | Property                    | Attribute          | Description                                                                                                                                                                                                      | Type                                      | Default        |

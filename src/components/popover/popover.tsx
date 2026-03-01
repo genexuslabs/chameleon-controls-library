@@ -122,8 +122,7 @@ const removePopoverTargetElement = (actionElement: PopoverActionElement) => {
 let autoId = 0;
 
 /**
- * The `ch-popover` component renders a positioned overlay container anchored to
- * a reference element using the native Popover API and `position: fixed`.
+ * The `ch-popover` component renders a positioned overlay container anchored to a reference element using the native Popover API and `position: fixed`.
  *
  * @remarks
  * ## Features

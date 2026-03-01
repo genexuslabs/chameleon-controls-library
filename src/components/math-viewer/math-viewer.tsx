@@ -2,8 +2,7 @@ import { Component, h, Host, Prop, State, Watch } from "@stencil/core";
 import katex from "katex";
 
 /**
- * The `ch-math-viewer` component renders LaTeX math expressions as accessible,
- * high-quality typeset mathematics using [KaTeX](https://katex.org/).
+ * The `ch-math-viewer` component renders LaTeX math expressions as accessible, high-quality typeset mathematics using [KaTeX](https://katex.org/).
  *
  * @remarks
  * ## Features

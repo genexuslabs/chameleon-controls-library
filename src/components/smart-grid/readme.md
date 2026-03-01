@@ -5,9 +5,7 @@
 
 ## Overview
 
-The `ch-smart-grid` component is an accessible grid layout for data-driven
-applications that require infinite scrolling, virtual rendering, and dynamic
-content loading.
+The `ch-smart-grid` component is an accessible grid layout for data-driven applications that require infinite scrolling, virtual rendering, and dynamic content loading.
 
 ## Features
  - Infinite scrolling via `ch-infinite-scroll` integration with configurable thresholds.
@@ -26,6 +24,7 @@ content loading.
  - Displaying static tabular data with columns and headers — use `ch-tabular-grid` instead.
  - Standard tabular data with columns and rows is needed — prefer `ch-tabular-grid`.
  - A fixed, non-scrollable list is sufficient — prefer `ch-action-list-render`.
+
 ## Properties
 
 | Property                  | Attribute         | Description                                                                                                                                                                                                                                                                                                                                                                                               | Type                                                                     | Default           |

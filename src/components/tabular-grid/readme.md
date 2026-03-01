@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-tabular-grid` component is a full-featured, accessible data grid
-and tree grid for displaying, selecting, and interacting with tabular data.
+The `ch-tabular-grid` component is a full-featured, accessible data grid and tree grid for displaying, selecting, and interacting with tabular data.
 
 ## Features
  - Single and multiple row selection, cell-level selection, and row marking (checkboxes).
@@ -34,6 +33,7 @@ and tree grid for displaying, selecting, and interacting with tabular data.
  - Full keyboard navigation: Arrow keys to move between cells, Home/End for row boundaries, Page Up/Down for vertical scrolling, Enter/Space for activation.
  - Supports row and cell selection semantics with configurable selection modes.
  - Hierarchical tree-grid rows support expand/collapse via keyboard.
+
 ## Properties
 
 | Property                 | Attribute                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Type                                                                                      | Default     |

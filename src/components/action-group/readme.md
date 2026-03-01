@@ -25,6 +25,7 @@ The `ch-action-group-render` component displays a horizontal group of actionable
 ## Accessibility
  - The host element has `role="list"`, and the overflow menu item has `role="listitem"`.
  - The "more actions" button carries a configurable `aria-label` (`moreActionsAccessibleName`).
+
 ## Properties
 
 | Property                    | Attribute                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Type                                                                                          | Default                 |

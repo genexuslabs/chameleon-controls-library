@@ -5,9 +5,7 @@
 
 ## Overview
 
-The `ch-live-kit-room` component integrates with the LiveKit real-time
-communication platform to establish audio room connections and manage
-remote participants.
+The `ch-live-kit-room` component integrates with the LiveKit real-time communication platform to establish audio room connections and manage remote participants.
 
 ## Features
  - Room lifecycle management: connect, disconnect, and track remote participants.
@@ -21,6 +19,7 @@ remote participants.
 
 ## Do not use when
  - You need a full video conferencing UI — use a dedicated LiveKit UI framework instead.
+
 ## Properties
 
 | Property            | Attribute            | Description                                      | Type                                                                                                                                                                                                                                                                                          | Default     |

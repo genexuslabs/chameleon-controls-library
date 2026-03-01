@@ -18,20 +18,20 @@ import {
   NavigationListModel
 } from "./types";
 
-import { adoptCommonThemes } from "../../common/theme";
 import {
   getControlRegisterProperty,
   registryControlProperty
 } from "../../common/registry-properties";
-import { NAVIGATION_LIST_INITIAL_LEVEL } from "./utils";
-import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
+import { formatImagePath } from "../../common/utils";
 import {
   removeSubscription,
   subscribe,
   syncStateWithObservableAncestors
 } from "../sidebar/expanded-change-obervables";
-import { formatImagePath } from "../../common/utils";
+import { fromGxImageToURL } from "../tree-view/genexus-implementation";
+import { NAVIGATION_LIST_INITIAL_LEVEL } from "./utils";
 
 // - - - - - - - - - - - - - - - - - - - -
 //                Registry
@@ -117,8 +117,7 @@ let autoId = 0;
 const NAVIGATION_LIST_ITEM = "ch-navigation-list-item";
 
 /**
- * The `ch-navigation-list-render` component renders a hierarchical navigation
- * menu composed of expandable items that can act as hyperlinks or buttons.
+ * The `ch-navigation-list-render` component renders a hierarchical navigation menu composed of expandable items that can act as hyperlinks or buttons.
  *
  * @remarks
  * ## Features

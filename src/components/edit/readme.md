@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-edit` component is a rich wrapper around the native `input` and
-`textarea` elements, serving as the primary text input building block.
+The `ch-edit` component is a rich wrapper around the native `input` and `textarea` elements, serving as the primary text input building block.
 
 ## Features
  - Wide range of input types: text, password, email, number, search, date, datetime-local, time, tel, url, and file.
@@ -39,6 +38,7 @@ The `ch-edit` component is a rich wrapper around the native `input` and
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
  - Action buttons (clear search, show/hide password) carry their own `aria-label`.
  - The auto-grow helper and date placeholder are hidden from assistive technology with `aria-hidden`.
+
 ## Properties
 
 | Property                        | Attribute                            | Description                                                                                                                                                                                                                                                                                                           | Type                                                                                                                                       | Default                                                                                                                                                           |

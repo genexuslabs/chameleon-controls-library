@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-sidebar` component provides a collapsible side panel typically used
-for primary or secondary navigation, tool palettes, or contextual information.
+The `ch-sidebar` component provides a collapsible side panel typically used for primary or secondary navigation, tool palettes, or contextual information.
 
 ## Features
  - Expand or collapse programmatically or through an optional button with configurable position, caption, and accessible label.
@@ -25,6 +24,7 @@ for primary or secondary navigation, tool palettes, or contextual information.
 
 ## Accessibility
  - The expand/collapse button carries an `aria-label` that changes based on the current state (`expandButtonExpandAccessibleName` / `expandButtonCollapseAccessibleName`).
+
 ## Properties
 
 | Property                             | Attribute                                | Description                                                                                                                                                                                                                                           | Type                  | Default     |

@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-segmented-control-render` component presents a horizontal set of
-mutually exclusive options as a row of connected segments.
+The `ch-segmented-control-render` component presents a horizontal set of mutually exclusive options as a row of connected segments.
 
 ## Features
  - Connected segment buttons for mutually exclusive selection.
@@ -30,6 +29,7 @@ mutually exclusive options as a row of connected segments.
 ## Accessibility
  - The host element has `role="list"`, and each segment item acts as a list item.
  - Selection changes are communicated via events to assistive technology.
+
 ## Properties
 
 | Property       | Attribute        | Description                                                                                                                                      | Type                          | Default                          |

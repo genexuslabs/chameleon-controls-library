@@ -18,8 +18,7 @@ const DISPLAYED_LINES_CUSTOM_VAR = "--ch-textblock-displayed-lines";
 const LINE_HEIGHT_CUSTOM_VAR = "--ch-textblock-line-height";
 
 /**
- * The `ch-textblock` component displays text or HTML content with multi-line
- * ellipsis truncation, automatic grow behavior, and overflow detection.
+ * The `ch-textblock` component displays text or HTML content with multi-line ellipsis truncation, automatic grow behavior, and overflow detection.
  *
  * @remarks
  * ## Features

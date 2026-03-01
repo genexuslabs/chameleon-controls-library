@@ -2,14 +2,14 @@ import {
   Component,
   ComponentInterface,
   Element,
-  Host,
   h,
+  Host,
   Prop,
   State,
   Watch
 } from "@stencil/core";
-import { ChPopoverAlign } from "../popover/types";
 import { focusComposedPath } from "../common/helpers";
+import { ChPopoverAlign } from "../popover/types";
 
 const LISTENER_CONFIG = {
   passive: true
@@ -22,9 +22,7 @@ const TOOLTIP = "tooltip";
 let autoId = 0;
 
 /**
- * The `ch-tooltip` component displays supplementary information in a small
- * overlay that appears on hover or focus of a trigger element, following the
- * WAI-ARIA tooltip pattern.
+ * The `ch-tooltip` component displays supplementary information in a small overlay that appears on hover or focus of a trigger element, following the WAI-ARIA tooltip pattern.
  *
  * @remarks
  * ## Features

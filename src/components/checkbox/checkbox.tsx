@@ -14,11 +14,16 @@ import {
   DISABLED_CLASS
 } from "../../common/reserved-names";
 
+import { getElementInternalsLabel } from "../../common/analysis/accessibility";
 import {
   AccessibleNameComponent,
   DisableableComponent,
   FormComponent
 } from "../../common/interfaces";
+import {
+  DEFAULT_GET_IMAGE_PATH_CALLBACK,
+  getControlRegisterProperty
+} from "../../common/registry-properties";
 import type {
   ChameleonControlsTagName,
   GxImageMultiState,
@@ -26,11 +31,6 @@ import type {
   ImageRender
 } from "../../common/types";
 import { updateDirectionInImageCustomVar } from "../../common/utils";
-import {
-  DEFAULT_GET_IMAGE_PATH_CALLBACK,
-  getControlRegisterProperty
-} from "../../common/registry-properties";
-import { getElementInternalsLabel } from "../../common/analysis/accessibility";
 
 const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   if (indeterminate) {
@@ -49,8 +49,7 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
 };
 
 /**
- * The `ch-checkbox` component is a form-associated checkbox control that allows
- * users to toggle between checked, unchecked, and optionally indeterminate states.
+ * The `ch-checkbox` component is a form-associated checkbox control that allows users to toggle between checked, unchecked, and optionally indeterminate states.
  *
  * @remarks
  * ## Features

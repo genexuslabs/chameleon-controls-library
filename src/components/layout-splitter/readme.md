@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-layout-splitter` component renders a nestable grid of columns and
-rows with draggable bars that let users resize adjacent areas in real time.
+The `ch-layout-splitter` component renders a nestable grid of columns and rows with draggable bars that let users resize adjacent areas in real time.
 
 ## Features
  - Relative (`fr`) and absolute (`px`) sizing for columns and rows.
@@ -28,6 +27,7 @@ rows with draggable bars that let users resize adjacent areas in real time.
  - Each drag bar has `role="separator"` with `aria-orientation` (`vertical` or `horizontal`).
  - Bars expose `aria-controls` referencing the adjacent panels, `aria-valuetext` with the current size, `aria-label`, and `aria-disabled`.
  - Bars are focusable (`tabindex="0"`) and support keyboard resizing with Arrow keys.
+
 ## Properties
 
 | Property                | Attribute                 | Description                                                                                                                  | Type                                                                                    | Default                                                         |

@@ -7,13 +7,12 @@ import {
   Prop,
   h
 } from "@stencil/core";
-import { SegmentedControlItemModel, SegmentedControlModel } from "./types";
-import { ChSegmentedControlItemCustomEvent } from "../../components";
 import { SEGMENTED_CONTROL_EXPORT_PARTS } from "../../common/reserved-names";
+import { ChSegmentedControlItemCustomEvent } from "../../components";
+import { SegmentedControlItemModel, SegmentedControlModel } from "./types";
 
 /**
- * The `ch-segmented-control-render` component presents a horizontal set of
- * mutually exclusive options as a row of connected segments.
+ * The `ch-segmented-control-render` component presents a horizontal set of mutually exclusive options as a row of connected segments.
  *
  * @remarks
  * ## Features

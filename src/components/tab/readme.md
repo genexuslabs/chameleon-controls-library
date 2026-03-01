@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-tab-render` component renders a tabbed interface where each tab
-button switches the visible content panel.
+The `ch-tab-render` component renders a tabbed interface where each tab button switches the visible content panel.
 
 ## Features
  - Tab list positioning along any edge of the container (`block-start`, `block-end`, `inline-start`, or `inline-end`).
@@ -34,6 +33,7 @@ button switches the visible content panel.
  - Supports keyboard navigation: Arrow keys to move between tabs, Home/End to jump to first/last.
  - Each tab button reflects `aria-selected` and `aria-controls` linking to its panel.
  - Close buttons carry an accessible label.
+
 ## Properties
 
 | Property                    | Attribute                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                     | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default                     |

@@ -9,8 +9,7 @@
 
 ## Overview
 
-The `ch-chat` component delivers a full-featured conversational interface
-with virtual scrolling for efficient rendering of large message histories.
+The `ch-chat` component delivers a full-featured conversational interface with virtual scrolling for efficient rendering of large message histories.
 
 ## Properties
 

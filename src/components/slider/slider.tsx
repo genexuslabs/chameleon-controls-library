@@ -10,18 +10,17 @@ import {
   h
 } from "@stencil/core";
 
-import { AccessibleNameComponent } from "../../common/interfaces";
-import { SyncWithRAF } from "../../common/sync-with-frames";
 import {
   analyzeLabelExistence,
   getElementInternalsLabel
 } from "../../common/analysis/accessibility";
+import { AccessibleNameComponent } from "../../common/interfaces";
+import { SyncWithRAF } from "../../common/sync-with-frames";
 
 const DEFAULT_PERCENTAGE_VALUE_WHEN_MIN_EQUALS_MAX = 0;
 
 /**
- * The `ch-slider` component is a range input that lets users select a numeric
- * value by dragging a thumb along a track between a configurable minimum and maximum.
+ * The `ch-slider` component is a range input that lets users select a numeric value by dragging a thumb along a track between a configurable minimum and maximum.
  *
  * @remarks
  * ## Features

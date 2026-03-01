@@ -5,9 +5,7 @@
 
 ## Overview
 
-The `ch-action-menu-render` component renders a dropdown menu triggered by an
-expandable button, supporting deeply nested sub-menus and full keyboard
-accessibility.
+The `ch-action-menu-render` component renders a dropdown menu triggered by an expandable button, supporting deeply nested sub-menus and full keyboard accessibility.
 
 ## Features
  - Deeply nested sub-menus with mouse hover expand/collapse.
@@ -31,6 +29,7 @@ accessibility.
  - The expandable button has `aria-expanded`, `aria-haspopup="true"`, `aria-controls`, and a configurable `aria-label` (`buttonAccessibleName`).
  - The popup window has `role="list"`.
  - Keyboard support: Escape closes the menu and returns focus to the trigger button; arrow keys navigate items.
+
 ## Properties
 
 | Property               | Attribute                | Description                                                                                                                                              | Type                                                                                          | Default         |

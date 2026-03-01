@@ -7,9 +7,7 @@ import { CodeDiffEditorOptions } from "./code-diff-editor-types.js";
 let autoId = 0;
 
 /**
- * The `ch-code-diff-editor` component provides a side-by-side or inline diff
- * view for comparing two versions of source code, powered by the
- * [Monaco Editor](https://microsoft.github.io/monaco-editor/).
+ * The `ch-code-diff-editor` component provides a side-by-side or inline diff view for comparing two versions of source code, powered by the [Monaco Editor](https://microsoft.github.io/monaco-editor/).
  *
  * @remarks
  * ## Features

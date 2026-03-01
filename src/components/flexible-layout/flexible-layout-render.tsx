@@ -64,8 +64,7 @@ const GENERATE_GUID = () => {
 };
 
 /**
- * The `ch-flexible-layout-render` component is a high-level shell for building
- * IDE-style dock layouts composed of lightweight, modular widgets.
+ * The `ch-flexible-layout-render` component is a high-level shell for building IDE-style dock layouts composed of lightweight, modular widgets.
  *
  * @remarks
  * ## Features

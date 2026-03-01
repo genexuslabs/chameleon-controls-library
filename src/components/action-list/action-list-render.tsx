@@ -194,8 +194,7 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
 };
 
 /**
- * The `ch-action-list-render` component renders an interactive list of
- * actionable items driven by a declarative model.
+ * The `ch-action-list-render` component renders an interactive list of actionable items driven by a declarative model.
  *
  * @remarks
  * ## Features

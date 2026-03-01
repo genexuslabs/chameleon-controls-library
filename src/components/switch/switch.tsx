@@ -9,17 +9,16 @@ import {
   Watch,
   h
 } from "@stencil/core";
+import { getElementInternalsLabel } from "../../common/analysis/accessibility";
 import { AccessibleNameComponent } from "../../common/interfaces";
 import {
   DISABLED_CLASS,
   SWITCH_PARTS_DICTIONARY
 } from "../../common/reserved-names";
 import { tokenMap } from "../../common/utils";
-import { getElementInternalsLabel } from "../../common/analysis/accessibility";
 
 /**
- * The `ch-switch` component is a toggle control that lets users switch between
- * two mutually exclusive states, typically representing an on/off or enabled/disabled choice.
+ * The `ch-switch` component is a toggle control that lets users switch between two mutually exclusive states, typically representing an on/off or enabled/disabled choice.
  *
  * @remarks
  * ## Features

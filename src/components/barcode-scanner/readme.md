@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-barcode-scanner` component provides real-time barcode and QR code
-scanning through the device camera, with support for file-based scanning.
+The `ch-barcode-scanner` component provides real-time barcode and QR code scanning through the device camera, with support for file-based scanning.
 
 ## Features
  - Real-time barcode and QR code scanning via device camera.
@@ -23,6 +22,7 @@ scanning through the device camera, with support for file-based scanning.
 ## Do not use when
  - Only generating QR codes for display — use `ch-qr` instead.
  - Generating a QR code from data is needed — prefer `ch-qr`.
+
 ## Properties
 
 | Property           | Attribute            | Description                                                                                                                                                                                           | Type                                         | Default     |

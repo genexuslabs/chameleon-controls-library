@@ -24,8 +24,7 @@ import "./internal/markdown-viewer.lit";
 import { markdownViewerExtension } from "./parsers/math";
 
 /**
- * The `ch-markdown-viewer` component renders Markdown content as rich HTML with
- * GFM support, code highlighting, math rendering, and streaming indicators.
+ * The `ch-markdown-viewer` component renders Markdown content as rich HTML with GFM support, code highlighting, math rendering, and streaming indicators.
  *
  * @remarks
  * ## Features

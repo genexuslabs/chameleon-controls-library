@@ -32,6 +32,7 @@ The `ch-accordion-render` component displays a vertical stack of collapsible pan
  - Each header is a `<button>` with `aria-expanded` and `aria-controls` linking to its section.
  - Sections are labelled via `aria-labelledby` pointing back to the header button, or via explicit `aria-label` when provided.
  - Supports the disclosure pattern: toggling a header expands or collapses its associated section.
+
 ## Properties
 
 | Property                   | Attribute                    | Description                                                                                                                                                                    | Type                                      | Default     |

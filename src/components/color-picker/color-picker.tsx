@@ -37,8 +37,7 @@ import { fromHsvToRgb } from "./utils/converters/hsv-to-rgb";
 import { fromHsvStringToHsvColor } from "./utils/parsers/hsv";
 
 /**
- * The `ch-color-picker` component is a full-featured color selection control
- * that lets users pick colors using a color field, hue slider, and optional alpha slider.
+ * The `ch-color-picker` component is a full-featured color selection control that lets users pick colors using a color field, hue slider, and optional alpha slider.
  *
  * @remarks
  * ## Features

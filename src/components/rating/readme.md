@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-rating` component displays a star-based rating control that allows
-users to select a value from zero up to a configurable maximum number of stars.
+The `ch-rating` component displays a star-based rating control that allows users to select a value from zero up to a configurable maximum number of stars.
 
 ## Features
  - Configurable number of stars.
@@ -32,6 +31,7 @@ users to select a value from zero up to a configurable maximum number of stars.
  - Implements the `radiogroup` pattern — the host receives `role="radiogroup"` and each star is a native `<input type="radio">`.
  - Each radio input carries an `aria-label` describing its value (e.g. "3 stars").
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+
 ## Properties
 
 | Property         | Attribute         | Description                                                                                                                                                       | Type      | Default     |

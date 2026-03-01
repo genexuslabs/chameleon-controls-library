@@ -61,8 +61,7 @@ const TEXTAREA_FLOATING_CLASSES = `content autofill multiline-floating ${SCROLLA
 const TEXTAREA_INLINE_CLASSES = `content autofill multiline-inline ${SCROLLABLE_CLASS}`;
 
 /**
- * The `ch-edit` component is a rich wrapper around the native `input` and
- * `textarea` elements, serving as the primary text input building block.
+ * The `ch-edit` component is a rich wrapper around the native `input` and `textarea` elements, serving as the primary text input building block.
  *
  * @remarks
  * ## Features

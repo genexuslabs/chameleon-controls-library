@@ -5,9 +5,7 @@
 
 ## Overview
 
-The `ch-theme` component loads and manages named stylesheets that can be
-shared and reused across the Document or any Shadow Root via the
-`adoptedStyleSheets` API.
+The `ch-theme` component loads and manages named stylesheets that can be shared and reused across the Document or any Shadow Root via the `adoptedStyleSheets` API.
 
 ## Features
  - Themes specified by name (resolved from a registry), by URL, or as inline `CSSStyleSheet` instances.
@@ -25,6 +23,7 @@ shared and reused across the Document or any Shadow Root via the
 ## Do not use when
  - Styling a single component with scoped CSS — use the component's own `styleUrl` instead.
  - Styles can be included as a static stylesheet link at build time — no runtime loading needed.
+
 ## Properties
 
 | Property                      | Attribute                         | Description                                                                                                                                                                  | Type                                                                                                                               | Default     |

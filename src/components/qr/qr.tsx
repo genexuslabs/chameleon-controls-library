@@ -1,10 +1,9 @@
-import { Component, Element, Host, h, Prop } from "@stencil/core";
+import { Component, Element, h, Host, Prop } from "@stencil/core";
 import QrCreator from "qr-creator";
 import { ErrorCorrectionLevel } from "./types";
 
 /**
- * The `ch-qr` component generates a QR code from any text, URL, or data
- * string and renders it as a canvas element in the Shadow DOM.
+ * The `ch-qr` component generates a QR code from any text, URL, or data string and renders it as a canvas element in the Shadow DOM.
  *
  * @remarks
  * ## Features

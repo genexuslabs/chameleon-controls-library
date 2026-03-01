@@ -35,9 +35,7 @@ const RESERVED_SPACE_CUSTOM_VAR =
   "--ch-smart-grid-smart-cell-reserved-space-size";
 
 /**
- * The `ch-smart-grid` component is an accessible grid layout for data-driven
- * applications that require infinite scrolling, virtual rendering, and dynamic
- * content loading.
+ * The `ch-smart-grid` component is an accessible grid layout for data-driven applications that require infinite scrolling, virtual rendering, and dynamic content loading.
  *
  * @remarks
  * ## Features

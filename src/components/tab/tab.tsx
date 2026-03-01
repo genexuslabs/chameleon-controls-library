@@ -228,8 +228,7 @@ const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
 ) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
 
 /**
- * The `ch-tab-render` component renders a tabbed interface where each tab
- * button switches the visible content panel.
+ * The `ch-tab-render` component renders a tabbed interface where each tab button switches the visible content panel.
  *
  * @remarks
  * ## Features

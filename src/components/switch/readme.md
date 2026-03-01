@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-switch` component is a toggle control that lets users switch between
-two mutually exclusive states, typically representing an on/off or enabled/disabled choice.
+The `ch-switch` component is a toggle control that lets users switch between two mutually exclusive states, typically representing an on/off or enabled/disabled choice.
 
 ## Features
  - Track with a sliding thumb for on/off toggling.
@@ -33,6 +32,7 @@ two mutually exclusive states, typically representing an on/off or enabled/disab
  - The input element has `role="switch"` and `aria-checked` reflecting the current state.
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
  - The decorative caption is hidden from assistive technology with `aria-hidden`.
+
 ## Properties
 
 | Property                    | Attribute            | Description                                                                                                                                                                            | Type      | Default     |

@@ -9,8 +9,7 @@
 
 ## Overview
 
-The `ch-action-list-render` component renders an interactive list of
-actionable items driven by a declarative model.
+The `ch-action-list-render` component renders an interactive list of actionable items driven by a declarative model.
 
 ## Features
  - Single and multiple selection with modifier-key multi-select.
@@ -34,6 +33,7 @@ actionable items driven by a declarative model.
  - The host element has `role="list"` with `aria-multiselectable` when `selection` is `"multiple"`.
  - Separator items have `role="separator"` and `aria-hidden="true"`.
  - Supports keyboard navigation for item selection.
+
 ## Properties
 
 | Property                    | Attribute        | Description                                                                                                                                                                            | Type                                                                                                                                                   | Default                         |

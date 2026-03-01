@@ -99,8 +99,7 @@ const isLastModalDialogOpened = (dialog: HTMLChDialogElement) =>
 // TODO: Specify in the description what happens when multiple modal dialogs are opened.
 
 /**
- * The `ch-dialog` component represents a modal or non-modal dialog box built
- * on top of the native `<dialog>` element.
+ * The `ch-dialog` component represents a modal or non-modal dialog box built on top of the native `<dialog>` element.
  *
  * @remarks
  * ## Features

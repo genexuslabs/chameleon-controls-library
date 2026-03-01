@@ -7,16 +7,16 @@ import {
   Watch,
   h
 } from "@stencil/core";
+import {
+  analyzeLabelExistence,
+  getElementInternalsLabel
+} from "../../common/analysis/accessibility";
 import { forceCSSMinMax } from "../../common/utils";
 import {
   PROGRESS_MAX_VALUE,
   PROGRESS_MIN_VALUE,
   PROGRESS_VALUE
 } from "./constants";
-import {
-  analyzeLabelExistence,
-  getElementInternalsLabel
-} from "../../common/analysis/accessibility";
 
 const ARIA_DESCRIBEDBY = "aria-describedby";
 const ARIA_BUSY = "aria-busy";
@@ -26,8 +26,7 @@ const SEPARATE_BY_COMMA_REGEX = /\s*,\s*/;
 let autoId = 0;
 
 /**
- * The `ch-progress` component displays the progress status for long-running
- * tasks, supporting both determinate and indeterminate modes.
+ * The `ch-progress` component displays the progress status for long-running tasks, supporting both determinate and indeterminate modes.
  *
  * @remarks
  * ## Features

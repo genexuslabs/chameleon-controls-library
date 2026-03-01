@@ -33,9 +33,7 @@ const VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}e
 const VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}end-display`;
 
 /**
- * The `ch-virtual-scroller` component provides efficient virtual scrolling
- * for large lists of items within a `ch-smart-grid`, keeping only visible
- * items plus a configurable buffer in the DOM.
+ * The `ch-virtual-scroller` component provides efficient virtual scrolling for large lists of items within a `ch-smart-grid`, keeping only visible items plus a configurable buffer in the DOM.
  *
  * @remarks
  * ## Features

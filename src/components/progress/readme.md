@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-progress` component displays the progress status for long-running
-tasks, supporting both determinate and indeterminate modes.
+The `ch-progress` component displays the progress status for long-running tasks, supporting both determinate and indeterminate modes.
 
 ## Features
  - Determinate mode with explicit `min`, `max`, and `value`.
@@ -32,6 +31,7 @@ tasks, supporting both determinate and indeterminate modes.
  - In indeterminate mode, value attributes are omitted per the ARIA specification.
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
  - Can automatically set `aria-busy` and `aria-describedby` on a referenced loading region element.
+
 ## Properties
 
 | Property              | Attribute               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Type          | Default     |

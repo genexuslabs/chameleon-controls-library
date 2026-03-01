@@ -5,11 +5,10 @@
 
 ## Overview
 
-The `ch-math-viewer` component renders LaTeX math expressions as accessible,
-high-quality typeset mathematics using [KaTeX](https://katex.org/).
+The `ch-math-viewer` component renders LaTeX math expressions as accessible, high-quality typeset mathematics using [KaTeX](https://katex.org/).
 
 ## Features
- - Accepts LaTeX blocks delimited by `$`, `\[...\]`, `\(...\)`, or bare expressions.
+ - Accepts LaTeX blocks delimited by `$$`, `\[...\]`, `\(...\)`, or bare expressions.
  - Supports both block and inline display modes.
  - Graceful error handling: exposes raw text with an error description when parsing fails.
  - Accessible output via `htmlAndMathml` rendering.
@@ -30,6 +29,7 @@ You must include the KaTeX custom fonts and declare their font-faces. In your ma
 SCSS file, import the font-faces mixin and include it:
 
 ```scss
+
 ## Properties
 
 | Property      | Attribute      | Description                                                   | Type                  | Default     |

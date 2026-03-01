@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-slider` component is a range input that lets users select a numeric
-value by dragging a thumb along a track between a configurable minimum and maximum.
+The `ch-slider` component is a range input that lets users select a numeric value by dragging a thumb along a track between a configurable minimum and maximum.
 
 ## Features
  - Configurable minimum, maximum, and step values.
@@ -33,6 +32,7 @@ value by dragging a thumb along a track between a configurable minimum and maxim
  - Uses a native `<input type="range">` which provides built-in keyboard support (arrow keys, Home, End).
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
  - The decorative track overlay is hidden from assistive technology with `aria-hidden`.
+
 ## Properties
 
 | Property         | Attribute         | Description                                                                                                                                                                                                                                                                                                                          | Type      | Default     |

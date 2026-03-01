@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-code-editor` component provides a fully-featured code editing
-experience powered by the [Monaco Editor](https://microsoft.github.io/monaco-editor/).
+The `ch-code-editor` component provides a fully-featured code editing experience powered by the [Monaco Editor](https://microsoft.github.io/monaco-editor/).
 
 ## Features
  - IntelliSense, syntax highlighting, and configurable themes via Monaco Editor.

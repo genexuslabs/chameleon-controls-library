@@ -5,9 +5,7 @@
 
 ## Overview
 
-The `ch-status` component provides a lightweight loading indicator that
-communicates an ongoing process to both visual users and assistive
-technologies.
+The `ch-status` component provides a lightweight loading indicator that communicates an ongoing process to both visual users and assistive technologies.
 
 ## Features
  - Sets `role="status"` and `aria-live="polite"` for non-interrupting screen reader announcements.
@@ -28,6 +26,7 @@ technologies.
  - The host has `role="status"` and `aria-live="polite"` for non-interrupting announcements to assistive technology.
  - Resolves its accessible name from the `accessibleName` property.
  - Can automatically set `aria-busy` and `aria-describedby` on a referenced loading region element.
+
 ## Properties
 
 | Property           | Attribute         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Type          | Default     |

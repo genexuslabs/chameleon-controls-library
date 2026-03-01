@@ -14,8 +14,7 @@ let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
 ) => GxImageMultiState | undefined;
 
 /**
- * The `ch-image` component renders a multi-state image that automatically
- * reflects the interactive state of its parent container.
+ * The `ch-image` component renders a multi-state image that automatically reflects the interactive state of its parent container.
  *
  * @remarks
  * ## Features

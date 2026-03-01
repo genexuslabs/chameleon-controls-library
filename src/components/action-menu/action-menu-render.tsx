@@ -48,9 +48,7 @@ import {
 } from "./internal/utils";
 
 /**
- * The `ch-action-menu-render` component renders a dropdown menu triggered by an
- * expandable button, supporting deeply nested sub-menus and full keyboard
- * accessibility.
+ * The `ch-action-menu-render` component renders a dropdown menu triggered by an expandable button, supporting deeply nested sub-menus and full keyboard accessibility.
  *
  * @remarks
  * ## Features

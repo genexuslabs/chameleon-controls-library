@@ -25,8 +25,7 @@ const cameraPreferenceDictionary = {
 // screen to save resources
 
 /**
- * The `ch-barcode-scanner` component provides real-time barcode and QR code
- * scanning through the device camera, with support for file-based scanning.
+ * The `ch-barcode-scanner` component provides real-time barcode and QR code scanning through the device camera, with support for file-based scanning.
  *
  * @remarks
  * ## Features

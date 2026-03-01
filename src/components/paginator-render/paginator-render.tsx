@@ -1,20 +1,20 @@
 import {
   Component,
   ComponentInterface,
-  Prop,
   Event,
   EventEmitter,
   h,
   Host,
+  Prop,
   State,
   Watch
 } from "@stencil/core";
-import { tokenMap } from "../../common/utils";
 import {
   COMBO_BOX_EXPORT_PARTS,
   PAGINATOR_PARTS_DICTIONARY
 } from "../../common/reserved-names";
-import { PaginatorTranslations } from "./translations";
+import { tokenMap } from "../../common/utils";
+import { ComboBoxModel } from "../combo-box/types";
 import {
   ACTUAL_PAGE,
   FIRST_ITEM_IN_PAGE,
@@ -23,17 +23,16 @@ import {
   TOTAL_PAGES,
   TOTAL_PAGES_UNDEFINED
 } from "./constants";
+import { PaginatorTranslations } from "./translations";
 import {
+  PaginatorControlsOrder,
   PaginatorRenderHyperlinkModel,
   PaginatorRenderModel,
-  PaginatorRenderNumericModel,
-  PaginatorControlsOrder
+  PaginatorRenderNumericModel
 } from "./types";
-import { ComboBoxModel } from "../combo-box/types";
 
 /**
- * The `ch-paginator-render` component provides a fully customizable pagination
- * control for navigating through paged data sets.
+ * The `ch-paginator-render` component provides a fully customizable pagination control for navigating through paged data sets.
  *
  * @remarks
  * ## Features

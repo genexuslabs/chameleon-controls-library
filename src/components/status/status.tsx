@@ -18,9 +18,7 @@ const ARIA_DESCRIBEDBY = "aria-describedby";
 let autoId = 0;
 
 /**
- * The `ch-status` component provides a lightweight loading indicator that
- * communicates an ongoing process to both visual users and assistive
- * technologies.
+ * The `ch-status` component provides a lightweight loading indicator that communicates an ongoing process to both visual users and assistive technologies.
  *
  * @remarks
  * ## Features

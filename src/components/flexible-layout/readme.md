@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-flexible-layout-render` component is a high-level shell for building
-IDE-style dock layouts composed of lightweight, modular widgets.
+The `ch-flexible-layout-render` component is a high-level shell for building IDE-style dock layouts composed of lightweight, modular widgets.
 
 ## Features
  - Hierarchical model of groups and leaves, where each leaf can host a single widget or a tabbed collection of widgets.
@@ -24,6 +23,7 @@ IDE-style dock layouts composed of lightweight, modular widgets.
 ## Do not use when
  - Building simple, static layouts -- prefer `ch-layout-splitter` or CSS Grid instead.
  - A simple fixed two-panel layout is sufficient — prefer `ch-layout-splitter` directly.
+
 ## Properties
 
 | Property         | Attribute         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                       | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default     |

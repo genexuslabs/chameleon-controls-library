@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-radio-group-render` component renders a group of mutually exclusive
-radio options, allowing users to select exactly one value from a short list.
+The `ch-radio-group-render` component renders a group of mutually exclusive radio options, allowing users to select exactly one value from a short list.
 
 ## Features
  - Mutually exclusive selection from a set of options.
@@ -36,6 +35,7 @@ radio options, allowing users to select exactly one value from a short list.
  - Each option uses a native `<input type="radio">` with a linked `<label>`.
  - When no caption is provided, the radio input receives an `aria-label`.
  - The decorative option overlay is hidden from assistive technology with `aria-hidden`.
+
 ## Properties
 
 | Property    | Attribute   | Description                                                                                                                                                  | Type                         | Default        |

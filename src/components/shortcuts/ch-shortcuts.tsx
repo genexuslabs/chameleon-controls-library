@@ -1,12 +1,12 @@
 import {
   Component,
-  Prop,
-  Listen,
-  State,
-  Host,
-  h,
   Element,
-  Watch
+  Host,
+  Listen,
+  Prop,
+  State,
+  Watch,
+  h
 } from "@stencil/core";
 import {
   Shortcut,
@@ -20,9 +20,7 @@ const KEY_SYMBOL = {
 };
 
 /**
- * The `ch-shortcuts` component loads keyboard shortcut definitions from a JSON
- * file and displays discoverable tooltip hints next to target elements when the
- * user presses a trigger key.
+ * The `ch-shortcuts` component loads keyboard shortcut definitions from a JSON file and displays discoverable tooltip hints next to target elements when the user presses a trigger key.
  *
  * @remarks
  * ## Features

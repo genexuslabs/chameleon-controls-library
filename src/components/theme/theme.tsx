@@ -1,13 +1,15 @@
 import {
   Component,
   Element,
-  Prop,
   Event,
   EventEmitter,
   h,
+  Prop,
   State,
   Watch
 } from "@stencil/core";
+import { removeElement } from "../../common/array";
+import { getTheme } from "./theme-stylesheet";
 import {
   ChThemeLoadedEvent,
   Theme,
@@ -16,15 +18,11 @@ import {
   ThemeItemModelUrl,
   ThemeModel
 } from "./theme-types";
-import { getTheme } from "./theme-stylesheet";
-import { removeElement } from "../../common/array";
 
 const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
 
 /**
- * The `ch-theme` component loads and manages named stylesheets that can be
- * shared and reused across the Document or any Shadow Root via the
- * `adoptedStyleSheets` API.
+ * The `ch-theme` component loads and manages named stylesheets that can be shared and reused across the Document or any Shadow Root via the `adoptedStyleSheets` API.
  *
  * @remarks
  * ## Features

@@ -7,8 +7,7 @@ import { CodeEditorOptions } from "./code-editor-types.js";
 let autoId = 0;
 
 /**
- * The `ch-code-editor` component provides a fully-featured code editing
- * experience powered by the [Monaco Editor](https://microsoft.github.io/monaco-editor/).
+ * The `ch-code-editor` component provides a fully-featured code editing experience powered by the [Monaco Editor](https://microsoft.github.io/monaco-editor/).
  *
  * @remarks
  * ## Features

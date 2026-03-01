@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-textblock` component displays text or HTML content with multi-line
-ellipsis truncation, automatic grow behavior, and overflow detection.
+The `ch-textblock` component displays text or HTML content with multi-line ellipsis truncation, automatic grow behavior, and overflow detection.
 
 ## Features
  - Multi-line ellipsis truncation with automatic line calculation.
@@ -28,6 +27,7 @@ ellipsis truncation, automatic grow behavior, and overflow detection.
 ## Accessibility
  - Supports configurable semantic role via `accessibleRole`: `"paragraph"`, `"heading"` (with `aria-level`), or `"none"`.
  - When content overflows and `showTooltipOnOverflow` is `true`, a `title` attribute provides the full text to assistive technology.
+
 ## Properties
 
 | Property                       | Attribute                          | Description                                                                                                                                                                                                                                                                                                                     | Type                                                  | Default     |

@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-tree-view-render` component displays hierarchical data as an
-interactive tree with full-featured node management.
+The `ch-tree-view-render` component displays hierarchical data as an interactive tree with full-featured node management.
 
 ## Features
  - Expand and collapse nodes with configurable expandable button styles.
@@ -37,6 +36,7 @@ interactive tree with full-featured node management.
  - Implements a tree-view keyboard pattern: Arrow keys to navigate, Enter/Space to select, Left/Right to collapse/expand.
  - Checkbox items support tri-state (`checked`, `unchecked`, `indeterminate`) with matching ARIA states.
  - Items can be individually disabled, preventing keyboard and pointer interaction.
+
 ## Properties
 
 | Property                     | Attribute           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Type                                                                                                                                                                        | Default                    |

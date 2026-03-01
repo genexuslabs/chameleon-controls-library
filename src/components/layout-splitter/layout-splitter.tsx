@@ -83,8 +83,7 @@ const ARROW_DOWN = "ArrowDown";
 const ARROW_LEFT = "ArrowLeft";
 
 /**
- * The `ch-layout-splitter` component renders a nestable grid of columns and
- * rows with draggable bars that let users resize adjacent areas in real time.
+ * The `ch-layout-splitter` component renders a nestable grid of columns and rows with draggable bars that let users resize adjacent areas in real time.
  *
  * @remarks
  * ## Features

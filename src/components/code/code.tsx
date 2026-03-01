@@ -1,11 +1,10 @@
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
-import { adoptCommonThemes } from "../../common/theme";
 import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
 import { parseCodeToJSX } from "./internal/code-highlight";
 
 /**
- * The `ch-code` component renders read-only, syntax-highlighted code blocks
- * powered by lowlight and highlight.js.
+ * The `ch-code` component renders read-only, syntax-highlighted code blocks powered by lowlight and highlight.js.
  *
  * @remarks
  * ## Features

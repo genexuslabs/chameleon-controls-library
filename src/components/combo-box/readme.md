@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-combo-box-render` component is a feature-rich combo box that combines
-an input field with a popover-based dropdown list for selecting values.
+The `ch-combo-box-render` component is a feature-rich combo box that combines an input field with a popover-based dropdown list for selecting values.
 
 ## Features
  - Flat lists and expandable item groups.
@@ -40,6 +39,7 @@ an input field with a popover-based dropdown list for selecting values.
  - The popup list has `role="listbox"`.
  - Full keyboard navigation: Arrow keys, Home, End, Enter, Tab, and type-ahead search.
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+
 ## Properties
 
 | Property               | Attribute              | Description                                                                                                                                                                                                                                                                        | Type                                                                                                                                                                                                                                         | Default          |

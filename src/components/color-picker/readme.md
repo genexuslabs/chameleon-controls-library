@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-color-picker` component is a full-featured color selection control
-that lets users pick colors using a color field, hue slider, and optional alpha slider.
+The `ch-color-picker` component is a full-featured color selection control that lets users pick colors using a color field, hue slider, and optional alpha slider.
 
 ## Features
  - Two-dimensional color field for saturation and brightness selection.
@@ -30,6 +29,7 @@ that lets users pick colors using a color field, hue slider, and optional alpha 
 ## Accessibility
  - Form-associated via `ElementInternals` — participates in native form validation and submission.
  - Validates label existence via `ElementInternals` for proper accessible name resolution.
+
 ## Properties
 
 | Property                  | Attribute                    | Description                                                                                                                                                                                                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Default                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |

@@ -7,9 +7,7 @@
 
 ## Overview
 
-The `ch-shortcuts` component loads keyboard shortcut definitions from a JSON
-file and displays discoverable tooltip hints next to target elements when the
-user presses a trigger key.
+The `ch-shortcuts` component loads keyboard shortcut definitions from a JSON file and displays discoverable tooltip hints next to target elements when the user presses a trigger key.
 
 ## Properties
 

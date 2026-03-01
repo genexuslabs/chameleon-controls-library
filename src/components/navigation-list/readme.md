@@ -5,8 +5,7 @@
 
 ## Overview
 
-The `ch-navigation-list-render` component renders a hierarchical navigation
-menu composed of expandable items that can act as hyperlinks or buttons.
+The `ch-navigation-list-render` component renders a hierarchical navigation menu composed of expandable items that can act as hyperlinks or buttons.
 
 ## Features
  - Nested items supported to any depth, each with optional start image, caption, and expandable indicator.
@@ -32,6 +31,7 @@ menu composed of expandable items that can act as hyperlinks or buttons.
 ## Accessibility
  - The host element has `role="list"`.
  - Expandable items use disclosure semantics so assistive technology can convey hierarchy.
+
 ## Properties
 
 | Property                   | Attribute                    | Description                                                                                                                                                                                                                            | Type                                                                                                                | Default                              |

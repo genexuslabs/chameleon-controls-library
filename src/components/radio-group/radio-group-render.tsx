@@ -22,8 +22,7 @@ const PARTS = (checked: boolean, disabled: boolean) => {
 };
 
 /**
- * The `ch-radio-group-render` component renders a group of mutually exclusive
- * radio options, allowing users to select exactly one value from a short list.
+ * The `ch-radio-group-render` component renders a group of mutually exclusive radio options, allowing users to select exactly one value from a short list.
  *
  * @remarks
  * ## Features

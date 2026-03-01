@@ -8,7 +8,7 @@ import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
 import { FLEXIBLE_LAYOUT_RENDERED_CONTENT, SLOT_CONTENT } from "./common";
 import { TEST1_ID, TEST2_ID } from "./renders-test";
 
-const ONE_SLOT_MODEL = {
+const ONE_WIDGET_SLOT_TRUE = {
   id: "root",
   direction: "columns",
   items: [
@@ -21,7 +21,7 @@ const ONE_SLOT_MODEL = {
   ]
 } satisfies FlexibleLayoutModel;
 
-const TWO_SLOT_MODEL = {
+const TWO_WIDGET_SLOT_TRUE = {
   id: "root",
   direction: "columns",
   items: [
@@ -36,6 +36,38 @@ const TWO_SLOT_MODEL = {
       size: "1fr",
       type: "single-content",
       widget: { id: TEST2_ID, name: "", slot: true }
+    }
+  ]
+} satisfies FlexibleLayoutModel;
+
+const ONE_WIDGET_SLOT_UNDEFINED = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: TEST1_ID,
+      size: "1fr",
+      type: "single-content",
+      widget: { id: TEST1_ID, name: "" }
+    }
+  ]
+} satisfies FlexibleLayoutModel;
+
+const TWO_WIDGET_SLOT_UNDEFINED = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: TEST1_ID,
+      size: "1fr",
+      type: "single-content",
+      widget: { id: TEST1_ID, name: "" }
+    },
+    {
+      id: TEST2_ID,
+      size: "1fr",
+      type: "single-content",
+      widget: { id: TEST2_ID, name: "" }
     }
   ]
 } satisfies FlexibleLayoutModel;
@@ -62,8 +94,10 @@ describe("[ch-flexible-layout-render][slots]", () => {
     );
   });
 
-  it('should render an slot when the model only contains an item with "slot: true"', async () => {
-    flexibleLayoutRef.setProperty("model", ONE_SLOT_MODEL);
+  // slot via model (widget.slot: true)
+
+  it('should render a slot when the model only contains an item with "widget.slot: true"', async () => {
+    flexibleLayoutRef.setProperty("model", ONE_WIDGET_SLOT_TRUE);
     await page.waitForChanges();
 
     expect(await getRenderedContent()).toBe(
@@ -76,8 +110,8 @@ describe("[ch-flexible-layout-render][slots]", () => {
     });
   });
 
-  it('should render two slots when the model contains items item with "slot: true"', async () => {
-    flexibleLayoutRef.setProperty("model", TWO_SLOT_MODEL);
+  it('should render two slots when the model contains items item with "widget.slot: true"', async () => {
+    flexibleLayoutRef.setProperty("model", TWO_WIDGET_SLOT_TRUE);
     await page.waitForChanges();
 
     expect(await getRenderedContent()).toBe(
@@ -92,11 +126,47 @@ describe("[ch-flexible-layout-render][slots]", () => {
     });
   });
 
-  it("should update the rendered slots when updating the model at runtime", async () => {
-    flexibleLayoutRef.setProperty("model", ONE_SLOT_MODEL);
+  // slot via property (slottedWidgets: true)
+
+  it('should render a slot when the model only contains an item with "widget.slot: undefined"', async () => {
+    flexibleLayoutRef.setProperty("slottedWidgets", true);
+    flexibleLayoutRef.setProperty("model", ONE_WIDGET_SLOT_UNDEFINED);
     await page.waitForChanges();
 
-    flexibleLayoutRef.setProperty("model", TWO_SLOT_MODEL);
+    expect(await getRenderedContent()).toBe(
+      FLEXIBLE_LAYOUT_RENDERED_CONTENT(SLOT_CONTENT(TEST1_ID))
+    );
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
+      rendered: [],
+      slotted: [TEST1_ID]
+    });
+  });
+
+  it('should render two slots when the model contains items item with "widget.slot: undefined"', async () => {
+    flexibleLayoutRef.setProperty("slottedWidgets", true);
+    flexibleLayoutRef.setProperty("model", TWO_WIDGET_SLOT_UNDEFINED);
+    await page.waitForChanges();
+
+    expect(await getRenderedContent()).toBe(
+      FLEXIBLE_LAYOUT_RENDERED_CONTENT(
+        SLOT_CONTENT(TEST1_ID) + SLOT_CONTENT(TEST2_ID)
+      )
+    );
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
+      rendered: [],
+      slotted: [TEST1_ID, TEST2_ID]
+    });
+  });
+
+  // slot updates
+
+  it("should update the rendered slots when updating the model at runtime", async () => {
+    flexibleLayoutRef.setProperty("model", ONE_WIDGET_SLOT_TRUE);
+    await page.waitForChanges();
+
+    flexibleLayoutRef.setProperty("model", TWO_WIDGET_SLOT_TRUE);
     await page.waitForChanges();
 
     expect(await getRenderedContent()).toBe(

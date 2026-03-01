@@ -101,11 +101,24 @@ function injectRemarksIntoReadme(readmeFilePath, remarks) {
   // Find the position to insert (right after Overview section ends)
   const overviewEndPos = content.indexOf(overviewEndMatch[0]) + overviewEndMatch[0].length;
 
-  // Prepare the remarks content to insert with proper formatting
-  const remarksSection = `\n\n${remarks}`;
+  // Check if remarks were already injected by looking for the ## Features pattern
+  // If found, replace the existing remarks section instead of adding a new one
+  const existingRemarksMatch = content.match(
+    /\n## Features[\s\S]*?(?=\n## Properties|\n## Shadow Parts|\n## Methods|\n---)/
+  );
 
-  // Insert the remarks
-  content = content.slice(0, overviewEndPos) + remarksSection + content.slice(overviewEndPos);
+  // Ensure remarks end with proper spacing before next section
+  const remarksSection = remarks.endsWith("```")
+    ? `\n\n${remarks}\n`
+    : `\n\n${remarks}`;
+
+  if (existingRemarksMatch) {
+    // Replace the existing remarks section
+    content = content.replace(existingRemarksMatch[0], remarksSection);
+  } else {
+    // Insert new remarks section after Overview
+    content = content.slice(0, overviewEndPos) + remarksSection + content.slice(overviewEndPos);
+  }
 
   fs.writeFileSync(readmeFilePath, content, "utf8");
 }

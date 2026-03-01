@@ -86,7 +86,7 @@ function injectRemarksIntoReadme(readmeFilePath, remarks) {
 
   let content = fs.readFileSync(readmeFilePath, "utf8");
 
-  // Find the insertion point (after Overview section, before Properties or Auto Generated marker)
+  // Find the insertion point (after Overview section, including any trailing whitespace)
   const overviewEndMatch = content.match(
     /## Overview\n([\s\S]*?)(?=\n## |\n<!-- Auto Generated Below -->)/
   );
@@ -98,8 +98,14 @@ function injectRemarksIntoReadme(readmeFilePath, remarks) {
     return;
   }
 
-  // Find the position to insert (right after Overview section ends)
-  const overviewEndPos = content.indexOf(overviewEndMatch[0]) + overviewEndMatch[0].length;
+  // Find the position to insert (right after Overview section)
+  // Include any trailing newlines/whitespace in the match to clean them up
+  const overviewFullMatch = content.match(
+    /## Overview\n([\s\S]*?)\n+(?=\n## |\n<!-- Auto Generated Below -->)/
+  );
+  const overviewEndPos = overviewFullMatch
+    ? content.indexOf(overviewFullMatch[0]) + overviewFullMatch[0].length - 1
+    : content.indexOf(overviewEndMatch[0]) + overviewEndMatch[0].length;
 
   // Check if remarks were already injected by looking for the ## Features pattern
   // If found, replace the existing remarks section instead of adding a new one
@@ -117,8 +123,19 @@ function injectRemarksIntoReadme(readmeFilePath, remarks) {
     content = content.replace(existingRemarksMatch[0], remarksSection);
   } else {
     // Insert new remarks section after Overview
-    content = content.slice(0, overviewEndPos) + remarksSection + content.slice(overviewEndPos);
+    const beforeRemarks = content.slice(0, overviewEndPos);
+    const afterRemarks = content.slice(overviewEndPos);
+
+    // Remove trailing newlines from before and leading newlines from after
+    const cleanedBefore = beforeRemarks.replace(/\n+$/, "");
+    const cleanedAfter = afterRemarks.replace(/^\n+/, "");
+
+    content = cleanedBefore + "\n\n" + remarks + "\n\n" + cleanedAfter;
   }
+
+  // Clean up any excessive blank lines (more than 2 consecutive newlines)
+  // This handles cases where Stencil generates extra whitespace
+  content = content.replace(/\n\n\n\n+/g, "\n\n");
 
   fs.writeFileSync(readmeFilePath, content, "utf8");
 }

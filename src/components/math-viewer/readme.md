@@ -8,6 +8,25 @@
 The `ch-math-viewer` component renders LaTeX math expressions as accessible,
 high-quality typeset mathematics using [KaTeX](https://katex.org/).
 
+
+## Features
+ - Accepts LaTeX blocks delimited by `$$`, `\[...\]`, `\(...\)`, or bare expressions.
+ - Supports both block and inline display modes.
+ - Graceful error handling: exposes raw text with an error description when parsing fails.
+ - Accessible output via `htmlAndMathml` rendering.
+
+## Use when
+ - Displaying mathematical formulas, equations, or scientific notation.
+
+## Do not use when
+ - Rendering general rich-text content that may include math — prefer `ch-markdown-viewer` instead.
+
+## Accessibility
+ - KaTeX renders both HTML and MathML output, allowing assistive technology to read mathematical expressions natively.
+ - Error spans carry `aria-description` and `title` attributes describing the parsing error.
+
+**Important:** You must include the KaTeX custom fonts from
+`node_modules/
 ## Properties
 
 | Property      | Attribute      | Description                                                   | Type                  | Default     |

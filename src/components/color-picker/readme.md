@@ -8,6 +8,29 @@
 The `ch-color-picker` component is a full-featured color selection control
 that lets users pick colors using a color field, hue slider, and optional alpha slider.
 
+
+## Features
+ - Two-dimensional color field for saturation and brightness selection.
+ - Hue slider and optional alpha (opacity) slider.
+ - Multiple color formats: HEX, RGB, HSL, and HSV.
+ - Built-in format selector for switching formats at runtime.
+ - Configurable palette of preset colors.
+ - Form-associated via `ElementInternals`.
+
+## Use when
+ - Precise color input is required in design tools or theming panels.
+ - Users need to switch between color formats.
+ - A color palette with preset colors is needed alongside free-form selection.
+ - Allowing users to select arbitrary colors in design or customization UIs.
+
+## Do not use when
+ - Only a predefined set of colors is needed — prefer `ch-combo-box-render` with color swatches instead.
+ - A small curated set of colors is sufficient — use color swatches or tiles instead, which are more scannable and accessible.
+ - Color alone is used to convey meaning downstream — always supplement with text or pattern (WCAG 1.4.1).
+
+## Accessibility
+ - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ - Validates label existence via `ElementInternals` for proper accessible name resolution.
 ## Properties
 
 | Property                  | Attribute                    | Description                                                                                                                                                                                                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Default                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |

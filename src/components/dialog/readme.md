@@ -10,6 +10,36 @@
 The `ch-dialog` component represents a modal or non-modal dialog box built
 on top of the native `<dialog>` element.
 
+
+## Features
+ - Modal and non-modal modes with native `<dialog>` semantics.
+ - Dragging from the header or the entire box.
+ - Resizing through edges and corners.
+ - Optional header with caption and close button, and optional footer slot.
+ - Full RTL layout support and `prefers-reduced-motion` respect.
+ - Stacking of multiple simultaneous modal dialogs (only the topmost reacts to outside clicks and Escape).
+ - Configurable `closable` property to prevent user dismissal.
+
+## Use when
+ - You need confirmation prompts, detail panels, form wizards, or any overlay that benefits from native dialog semantics.
+ - Interrupting the user to gather required input or confirmation before a workflow can continue.
+ - Short, focused tasks that are infrequent (e.g., rename, delete confirmation, quick settings form).
+
+## Do not use when
+ - You need lightweight, non-blocking overlays anchored to a trigger element -- prefer `ch-popover` or `ch-tooltip` instead.
+ - The information is non-critical — prefer inline notifications, toasts, or banners.
+ - The task involves large amounts of data or complex workflows — dialogs are not full pages.
+ - The user did not initiate the action — never open a dialog automatically.
+ - Users perform this task frequently — make it completable inline instead.
+ - Nesting dialogs within dialogs — this is always an anti-pattern.
+ - Lightweight contextual content anchored to a trigger element — prefer `ch-popover`.
+
+## Accessibility
+ - Built on the native `<dialog>` element, which provides modal semantics and focus trapping automatically.
+ - The dialog is labelled via `aria-labelledby` pointing to an `<h2>` heading in the header.
+ - The close button carries an `aria-label` (`closeButtonAccessibleName`).
+ - When `closable` is `true`, the Escape key dismisses the dialog.
+ - Multiple simultaneous modal dialogs are stacked so only the topmost reacts to outside clicks and Escape.
 ## Properties
 
 | Property                    | Attribute                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                  | Type                        | Default     |

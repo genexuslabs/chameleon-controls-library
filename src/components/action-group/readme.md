@@ -5,10 +5,27 @@
 
 ## Overview
 
-The `ch-action-group-render` component displays a horizontal group of
-actionable items that adapts to the available space by collapsing overflowing
-items into a "more actions" dropdown menu.
+The `ch-action-group-render` component displays a horizontal group of actionable items that adapts to the available space by collapsing overflowing items into a "more actions" dropdown menu.
 
+
+## Features
+ - Three overflow strategies: horizontal scroll, multiline wrap, or responsive collapse into a dropdown.
+ - Responsive-collapse mode uses `IntersectionObserver` to detect hidden items in real time.
+ - Overflow dropdown powered by `ch-action-menu-render`.
+ - Supports custom slot content that is forwarded into the overflow menu when collapsed.
+
+## Use when
+ - You have a dynamic set of toolbar-style actions that must remain usable at every viewport width.
+ - Building command bars or toolbars that need graceful degradation on smaller screens.
+ - Toolbars or command bars with a variable number of actions that must adapt to available space.
+
+## Do not use when
+ - The actions do not need responsive overflow handling -- prefer a plain list or `ch-action-menu-render` instead.
+ - All actions should always be visible — use individual buttons or `ch-action-list-render` instead.
+
+## Accessibility
+ - The host element has `role="list"`, and the overflow menu item has `role="listitem"`.
+ - The "more actions" button carries a configurable `aria-label` (`moreActionsAccessibleName`).
 ## Properties
 
 | Property                    | Attribute                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Type                                                                                          | Default                 |

@@ -10,6 +10,31 @@
 The `ch-rating` component displays a star-based rating control that allows
 users to select a value from zero up to a configurable maximum number of stars.
 
+
+## Features
+ - Configurable number of stars.
+ - Partial (fractional) star selection for averaged ratings.
+ - Form-associated via `ElementInternals` for native form submissions.
+ - Radio group pattern internally for full keyboard and screen reader accessibility.
+
+## Use when
+ - Product reviews, feedback forms, or satisfaction ratings are needed.
+ - A visual quality rating is required.
+ - Collecting subjective quality feedback (e.g., product reviews, content ratings).
+ - Displaying aggregated star ratings alongside user-generated content.
+
+## Do not use when
+ - Simple numeric input is needed — prefer `ch-slider` instead.
+ - Precise numeric input is needed — prefer `ch-slider` or `ch-edit` with `type="number"`.
+ - The scale semantics are unclear to users without a legend explaining what each star means.
+ - The rating is read-only / display-only — remove interactive behaviors and provide equivalent alt text.
+
+## Accessibility
+ - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ - Implements the `radiogroup` pattern — the host receives `role="radiogroup"` and each star is a native `<input type="radio">`.
+ - Each radio input carries an `aria-label` describing its value (e.g. "3 stars").
+ - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
 ## Properties
 
 | Property         | Attribute         | Description                                                                                                                                                       | Type      | Default     |

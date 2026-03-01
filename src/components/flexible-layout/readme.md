@@ -8,6 +8,23 @@
 The `ch-flexible-layout-render` component is a high-level shell for building
 IDE-style dock layouts composed of lightweight, modular widgets.
 
+
+## Features
+ - Hierarchical model of groups and leaves, where each leaf can host a single widget or a tabbed collection of widgets.
+ - Coordinates `ch-flexible-layout` and `ch-layout-splitter` primitives for draggable, resizable, and reorderable views.
+ - Add, remove, and reorder widgets and views at runtime via public methods.
+ - Slotted widget mode (`slottedWidgets`) projects widget content from outside the component via named slots.
+ - Close button support for tabbed leaves.
+ - Configurable CSS containment and overflow per widget.
+ - Theme support via the `theme` property.
+
+## Use when
+ - Building a complex, multi-pane workspace (code editors, dashboards, admin panels) where users can rearrange, close, and add views at runtime.
+ - Building IDE-like or dashboard interfaces with multiple movable, resizable widget panes.
+
+## Do not use when
+ - Building simple, static layouts -- prefer `ch-layout-splitter` or CSS Grid instead.
+ - A simple fixed two-panel layout is sufficient — prefer `ch-layout-splitter` directly.
 ## Properties
 
 | Property         | Attribute         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                       | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default     |

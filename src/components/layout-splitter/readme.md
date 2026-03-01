@@ -8,6 +8,27 @@
 The `ch-layout-splitter` component renders a nestable grid of columns and
 rows with draggable bars that let users resize adjacent areas in real time.
 
+
+## Features
+ - Relative (`fr`) and absolute (`px`) sizing for columns and rows.
+ - Draggable and keyboard-accessible separator bars between sibling items.
+ - Nestable groups to produce arbitrarily complex layouts (e.g., a top-level row split into columns where one column is itself split into rows).
+ - Sticky positioning support for individual items.
+ - Programmatic addition and removal of leaf items at runtime.
+ - Configurable drag bar size, accessibility label, and disabled state.
+
+## Use when
+ - Building user-resizable panes: code editors with side panels, master-detail views, or dashboard tiles.
+ - Users need to resize two adjacent panels to fit their workflow (e.g., code editor + preview).
+
+## Do not use when
+ - Building purely static layouts that do not require interactive resizing -- prefer CSS Grid instead.
+ - The layout is purely decorative with no user-adjustable panels — use CSS grid/flexbox instead.
+
+## Accessibility
+ - Each drag bar has `role="separator"` with `aria-orientation` (`vertical` or `horizontal`).
+ - Bars expose `aria-controls` referencing the adjacent panels, `aria-valuetext` with the current size, `aria-label`, and `aria-disabled`.
+ - Bars are focusable (`tabindex="0"`) and support keyboard resizing with Arrow keys.
 ## Properties
 
 | Property                | Attribute                 | Description                                                                                                                  | Type                                                                                    | Default                                                         |

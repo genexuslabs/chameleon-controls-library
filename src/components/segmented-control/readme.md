@@ -10,6 +10,29 @@
 The `ch-segmented-control-render` component presents a horizontal set of
 mutually exclusive options as a row of connected segments.
 
+
+## Features
+ - Connected segment buttons for mutually exclusive selection.
+ - Each segment supports a caption, start and end images.
+ - Individual segment disabling.
+ - Delegates rendering to `ch-segmented-control-item` elements with re-exported parts via `exportParts`.
+
+## Use when
+ - Toggling between views, modes, or filters with a small number of options (typically 2 to 5).
+ - Immediate selection feedback is desired.
+ - Switching between 2–5 mutually exclusive views of the same content (e.g., list vs. grid, day/week/month).
+ - The result changes immediately without a confirmation step.
+
+## Do not use when
+ - The option list is long — prefer `ch-combo-box-render` or `ch-radio-group-render` instead.
+ - More than 5 options are needed — prefer `ch-radio-group-render` or `ch-combo-box-render`.
+ - Used inside a form where the selection must be saved — prefer radio buttons.
+ - The segments navigate to different pages or routes — prefer `ch-tab` or navigation links.
+ - Confusing with `ch-tab`: segmented controls switch the FORMAT or VIEW of the same data; tabs switch to DIFFERENT content sections.
+
+## Accessibility
+ - The host element has `role="list"`, and each segment item acts as a list item.
+ - Selection changes are communicated via events to assistive technology.
 ## Properties
 
 | Property       | Attribute        | Description                                                                                                                                      | Type                          | Default                          |

@@ -10,6 +10,32 @@
 The `ch-slider` component is a range input that lets users select a numeric
 value by dragging a thumb along a track between a configurable minimum and maximum.
 
+
+## Features
+ - Configurable minimum, maximum, and step values.
+ - Optional value bubble display on interaction.
+ - Visual track split into selected and unselected portions.
+ - Form-associated via `ElementInternals`.
+
+## Use when
+ - Continuous or stepped numeric adjustments are needed, such as volume controls, price ranges, or thresholds.
+ - The relative position within a range is meaningful (e.g., volume, opacity, zoom level).
+ - An approximate value is acceptable (e.g., price range filter).
+
+## Do not use when
+ - A star-based discrete rating is needed — prefer `ch-rating` instead.
+ - Precise numeric entry is required — prefer `ch-edit` with `type="number"` instead.
+ - An exact numeric value is required — combine with or replace with `ch-edit` with `type="number"`.
+ - The range is very small (2–3 discrete steps) — prefer `ch-radio-group-render`.
+ - The range is extremely large (e.g., 0–1,000,000) and precision matters — use `ch-edit` instead.
+ - Increments are qualitative (e.g., Small/Medium/Large) — prefer `ch-radio-group-render`.
+
+## Accessibility
+ - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ - Uses a native `<input type="range">` which provides built-in keyboard support (arrow keys, Home, End).
+ - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+ - The decorative track overlay is hidden from assistive technology with `aria-hidden`.
 ## Properties
 
 | Property         | Attribute         | Description                                                                                                                                                                                                                                                                                                                          | Type      | Default     |

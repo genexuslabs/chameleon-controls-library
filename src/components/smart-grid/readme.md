@@ -11,6 +11,24 @@ The `ch-smart-grid` component is an accessible grid layout for data-driven
 applications that require infinite scrolling, virtual rendering, and dynamic
 content loading.
 
+
+## Features
+ - Infinite scrolling via `ch-infinite-scroll` integration with configurable thresholds.
+ - Standard and inverse loading orders (newest items at the bottom or top).
+ - Automatic scroll-position management to prevent layout shifts (CLS) during async content loads.
+ - Anchor a specific cell at the top of the viewport with reserved space, similar to code editors.
+ - Auto-grow mode to adjust size to content, or fixed size with scrollbars.
+ - ARIA live-region support for accessible announcements.
+
+## Use when
+ - Building chat-like interfaces with inverse loading.
+ - Displaying large, dynamically loaded data sets with virtual scrolling.
+ - Infinite-scroll or paginated feeds with bottom-to-top inverse loading (e.g., chat, activity streams).
+
+## Do not use when
+ - Displaying static tabular data with columns and headers — use `ch-tabular-grid` instead.
+ - Standard tabular data with columns and rows is needed — prefer `ch-tabular-grid`.
+ - A fixed, non-scrollable list is sufficient — prefer `ch-action-list-render`.
 ## Properties
 
 | Property                  | Attribute         | Description                                                                                                                                                                                                                                                                                                                                                                                               | Type                                                                     | Default           |

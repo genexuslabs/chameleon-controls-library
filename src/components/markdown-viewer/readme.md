@@ -10,6 +10,23 @@
 The `ch-markdown-viewer` component renders Markdown content as rich HTML with
 GFM support, code highlighting, math rendering, and streaming indicators.
 
+
+## Features
+ - Parses Markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown), with a reactive render layer that only updates changed DOM portions.
+ - GitHub Flavored Markdown (GFM) via [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+ - Code highlighting by parsing code blocks to [hast](https://github.com/syntax-tree/hast) using [lowlight](https://github.com/wooorm/lowlight), supporting all [highlight.js](https://github.com/highlightjs/highlight.js) languages.
+ - On-demand loading of code parsers and language grammars at runtime.
+ - Math rendering, raw HTML pass-through, and streaming indicator for real-time content.
+ - Custom extensions for adding new syntax and rendering behavior.
+
+## Use when
+ - Displaying user-authored or AI-generated Markdown in a polished, interactive way.
+ - Rendering user-generated Markdown content or AI-generated responses that include headings, lists, code blocks, and tables.
+
+## Do not use when
+ - You only need to display plain text with overflow handling — prefer `ch-textblock` instead.
+ - Only plain text needs to be displayed — prefer `ch-textblock` for better performance.
+ - Full math rendering is needed and Markdown is not involved — prefer `ch-math-viewer` directly.
 ## Properties
 
 | Property                      | Attribute                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Type                                                           | Default                |

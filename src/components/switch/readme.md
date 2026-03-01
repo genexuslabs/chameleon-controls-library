@@ -10,6 +10,32 @@
 The `ch-switch` component is a toggle control that lets users switch between
 two mutually exclusive states, typically representing an on/off or enabled/disabled choice.
 
+
+## Features
+ - Track with a sliding thumb for on/off toggling.
+ - Optional caption that changes based on the current state.
+ - Custom checked and unchecked values.
+ - Form-associated via `ElementInternals`.
+
+## Use when
+ - A boolean setting, feature flag, or preference toggle is needed.
+ - The semantics represent toggling a state on or off.
+ - A binary system or application setting that takes effect immediately (e.g., "Enable notifications", "Dark mode").
+ - The result is immediately visible and reversible without additional confirmation.
+
+## Do not use when
+ - Selecting an item from a list — prefer `ch-checkbox` or `ch-radio-group-render` instead.
+ - The change requires a confirmation or save step — prefer `ch-checkbox`.
+ - The toggle is part of a multi-field form submission — prefer `ch-checkbox`.
+ - More than two states are needed — prefer `ch-combo-box-render`, `ch-radio-group-render`, or `ch-segmented-control-render`.
+ - A destructive or irreversible action is triggered — always require explicit confirmation.
+
+## Accessibility
+ - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ - The input element has `role="switch"` and `aria-checked` reflecting the current state.
+ - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+ - The decorative caption is hidden from assistive technology with `aria-hidden`.
 ## Properties
 
 | Property                    | Attribute            | Description                                                                                                                                                                            | Type      | Default     |

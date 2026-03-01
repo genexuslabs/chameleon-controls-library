@@ -8,6 +8,33 @@
 The `ch-tab-render` component renders a tabbed interface where each tab
 button switches the visible content panel.
 
+
+## Features
+ - Tab list positioning along any edge of the container (`block-start`, `block-end`, `inline-start`, or `inline-end`).
+ - Optional images, icons, captions, and close buttons per tab.
+ - Keyboard navigation following WAI-ARIA tab patterns.
+ - Drag-to-reorder tabs within the tab list when `sortable` is enabled.
+ - Drag tabs outside the component for relocation in a flexible layout context when `dragOutside` is enabled.
+ - CSS containment and overflow configuration per tab panel.
+
+## Use when
+ - Building a multi-panel UI where content should be switchable through labeled tabs (settings dialogs, property inspectors, IDE-style editor groups).
+ - Organizing related but independent content sections within the same context (e.g., "Overview", "Files", "Commits").
+ - Users need to view one section at a time without leaving the page.
+
+## Do not use when
+ - Showing or hiding a single content section -- prefer an accordion instead.
+ - Users must compare content across sections — switching back and forth is too costly.
+ - The sections represent different pages or routes — prefer `ch-navigation-list-render`.
+ - Content follows a sequential linear process — prefer a stepper/wizard pattern.
+ - More than 6 tabs are needed — consider a sidebar or `ch-navigation-list-render`.
+ - Confusing with `ch-segmented-control-render`: tabs switch to DIFFERENT content sections; segmented controls switch the VIEW FORMAT of the same data.
+
+## Accessibility
+ - Implements the WAI-ARIA Tabs pattern with `role="tablist"`, `role="tab"`, and `role="tabpanel"`.
+ - Supports keyboard navigation: Arrow keys to move between tabs, Home/End to jump to first/last.
+ - Each tab button reflects `aria-selected` and `aria-controls` linking to its panel.
+ - Close buttons carry an accessible label.
 ## Properties
 
 | Property                    | Attribute                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                     | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default                     |

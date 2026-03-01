@@ -8,6 +8,38 @@
 The `ch-edit` component is a rich wrapper around the native `input` and
 `textarea` elements, serving as the primary text input building block.
 
+
+## Features
+ - Wide range of input types: text, password, email, number, search, date, datetime-local, time, tel, url, and file.
+ - Picture formatting for masked values.
+ - Auto-grow multiline mode, ideal for chat inputs.
+ - Debounced input events.
+ - Clear button for search inputs.
+ - Show/hide password toggle.
+ - Start images with multi-state support.
+ - Custom placeholders for date types.
+ - Additional content slots before and after the input.
+
+## Use when
+ - Building forms and data entry screens that require text input.
+ - A multiline auto-growing text area is needed.
+ - Masked or formatted input values are required.
+ - Collecting any text, numeric, email, phone, URL, date, or password value from the user.
+ - Providing a search input with a clear button.
+
+## Do not use when
+ - Selecting from a predefined set of options — prefer `ch-combo-box-render` instead.
+ - A simple on/off toggle is needed — prefer `ch-switch` instead.
+ - Valid values come from a fixed list — prefer `ch-combo-box-render` or `ch-radio-group-render`.
+ - A numeric value has a bounded range and an approximate value is acceptable — prefer `ch-slider`.
+ - Never use placeholder text as a substitute for a visible `<label>` — labels must always be visible.
+
+## Accessibility
+ - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+ - Action buttons (clear search, show/hide password) carry their own `aria-label`.
+ - The auto-grow helper and date placeholder are hidden from assistive technology with `aria-hidden`.
 ## Properties
 
 | Property                        | Attribute                            | Description                                                                                                                                                                                                                                                                                                           | Type                                                                                                                                       | Default                                                                                                                                                           |

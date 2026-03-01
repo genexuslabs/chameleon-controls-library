@@ -8,6 +8,33 @@
 The `ch-tabular-grid` component is a full-featured, accessible data grid
 and tree grid for displaying, selecting, and interacting with tabular data.
 
+
+## Features
+ - Single and multiple row selection, cell-level selection, and row marking (checkboxes).
+ - Row and cell highlighting on hover.
+ - Full keyboard navigation (arrow keys, Home/End, PageUp/PageDown, Enter, Space).
+ - Column reordering via drag-and-drop.
+ - Column resizing in single or splitter mode.
+ - Row expand/collapse for hierarchical tree data.
+ - Context menus and row actions.
+ - Touch support for mobile devices.
+ - Built-in settings panel for column visibility.
+ - Rich set of public methods and events for programmatic control.
+
+## Use when
+ - Displaying and interacting with structured tabular or hierarchical data.
+ - Users need to select, sort, reorder, or resize columns interactively.
+ - Displaying structured tabular data where users need to sort, filter, select rows, or perform bulk actions.
+ - The data has a tree/hierarchy that benefits from inline expand/collapse.
+
+## Do not use when
+ - Displaying a simple list or card layout — use `ch-smart-grid` instead.
+ - Simple display-only lists without interactivity — use a semantic `<table>` or `ch-action-list-render` instead.
+
+## Accessibility
+ - Full keyboard navigation: Arrow keys to move between cells, Home/End for row boundaries, Page Up/Down for vertical scrolling, Enter/Space for activation.
+ - Supports row and cell selection semantics with configurable selection modes.
+ - Hierarchical tree-grid rows support expand/collapse via keyboard.
 ## Properties
 
 | Property                 | Attribute                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Type                                                                                      | Default     |

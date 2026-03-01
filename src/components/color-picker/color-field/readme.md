@@ -1,9 +1,39 @@
 # ch-color-field
 
-
-
 <!-- Auto Generated Below -->
 
+
+## Overview
+
+The `ch-color-field` component provides an interactive 2D canvas for selecting colors
+by saturation and value (brightness) within a specific hue. It displays a color gradient
+allowing users to pick colors through click and drag interactions or keyboard navigation.
+
+## Features
+- Interactive 2D color field with canvas-based gradient visualization
+- Supports multiple color formats: HEX, RGB, RGBA, HSL, HSLA, HSV
+- Keyboard navigation with arrow keys for precise color selection
+- Accessible with proper ARIA attributes and form association
+- Drag and drop mouse interaction for smooth color selection
+- Real-time canvas marker positioning
+- Form-associated custom element for proper integration with form validation
+
+## Use when
+- Building a full-featured color picker that requires 2D color selection
+- Users need to fine-tune saturation and brightness of a selected hue
+- You want a visual, interactive color field component
+- Part of a larger color picker system (typically used with ch-color-picker)
+
+## Do not use when
+- You need a simple color input field — use `<input type="color">` instead
+- You need a complete color picker experience — use `ch-color-picker` instead
+- Users only need basic color selection without 2D gradient interaction
+
+## Accessibility
+- Proper ARIA attributes for screen reader support (role, aria-label, aria-disabled)
+- Form association with ElementInternals for form submission and validation
+- Keyboard navigation support (arrow keys for precise color selection)
+- Descriptive accessible names for the component
 
 ## Properties
 
@@ -22,6 +52,15 @@
 | Event   | Description                                                                                                                                                  | Type                                                                                               |
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
 | `input` | The `input` event is emitted when a change to the element's value is committed by the user.  It contains the new value (in all variants) of the color-field. | `CustomEvent<{ rgb: string; rgba: string; hsl: string; hsla: string; hex: string; hsv: string; }>` |
+
+
+## Shadow Parts
+
+| Part         | Description                                                        |
+| ------------ | ------------------------------------------------------------------ |
+| `"disabled"` | Applied to the marker when the component is disabled.              |
+| `"marker"`   | The circular marker/selector positioned on the color field canvas. |
+| `"readonly"` | Applied to the marker when the component is read-only.             |
 
 
 ## Dependencies

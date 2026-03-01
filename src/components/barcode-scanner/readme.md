@@ -8,7 +8,6 @@
 The `ch-barcode-scanner` component provides real-time barcode and QR code
 scanning through the device camera, with support for file-based scanning.
 
-
 ## Features
  - Real-time barcode and QR code scanning via device camera.
  - File-based scanning through the `scan` method.
@@ -59,9 +58,6 @@ Scan a file a return a promise with the decoded text.
 #### Returns
 
 Type: `Promise<string>`
-
-
-
 
 ----------------------------------------------
 

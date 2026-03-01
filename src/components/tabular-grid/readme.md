@@ -8,7 +8,6 @@
 The `ch-tabular-grid` component is a full-featured, accessible data grid
 and tree grid for displaying, selecting, and interacting with tabular data.
 
-
 ## Features
  - Single and multiple row selection, cell-level selection, and row marking (checkboxes).
  - Row and cell highlighting on hover.
@@ -81,8 +80,6 @@ Ensures that the cell is visible within the control, scrolling the contents of t
 
 Type: `Promise<void>`
 
-
-
 ### `collapseRow(rowId: string) => Promise<void>`
 
 Collapses a row, hiding its children.
@@ -96,8 +93,6 @@ Collapses a row, hiding its children.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `expandRow(rowId: string) => Promise<void>`
 
@@ -113,8 +108,6 @@ Expands a row, showing its children.
 
 Type: `Promise<void>`
 
-
-
 ### `getFocusedCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 Retrieves information about the currently focused cell.
@@ -122,8 +115,6 @@ Retrieves information about the currently focused cell.
 #### Returns
 
 Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
-
-
 
 ### `getFocusedRow() => Promise<string>`
 
@@ -133,8 +124,6 @@ Retrieves the rowId of the currently focused row.
 
 Type: `Promise<string>`
 
-
-
 ### `getHoveredRow() => Promise<string>`
 
 Retrieves the rowId of the currently hovered row.
@@ -142,8 +131,6 @@ Retrieves the rowId of the currently hovered row.
 #### Returns
 
 Type: `Promise<string>`
-
-
 
 ### `getMarkedRows() => Promise<string[]>`
 
@@ -153,8 +140,6 @@ Retrieves the list of rowId of the marked rows.
 
 Type: `Promise<string[]>`
 
-
-
 ### `getNextCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 Retrieves information about the next cell relative to the currently selected cell.
@@ -162,8 +147,6 @@ Retrieves information about the next cell relative to the currently selected cel
 #### Returns
 
 Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
-
-
 
 ### `getNextRow() => Promise<string | void>`
 
@@ -173,8 +156,6 @@ Retrieves the rowId of the next row relative to the currently selected cell.
 
 Type: `Promise<string | void>`
 
-
-
 ### `getPreviousCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 Retrieves information about the previous cell relative to the currently selected cell.
@@ -182,8 +163,6 @@ Retrieves information about the previous cell relative to the currently selected
 #### Returns
 
 Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
-
-
 
 ### `getPreviousRow() => Promise<string | void>`
 
@@ -193,8 +172,6 @@ Retrieves the rowId of the previous row relative to the currently selected cell.
 
 Type: `Promise<string | void>`
 
-
-
 ### `getSelectedCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 Retrieves information about the currently selected cell.
@@ -203,8 +180,6 @@ Retrieves information about the currently selected cell.
 
 Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
-
-
 ### `getSelectedRows() => Promise<string[]>`
 
 Retrieves the list of rowId of the selected rows.
@@ -212,8 +187,6 @@ Retrieves the list of rowId of the selected rows.
 #### Returns
 
 Type: `Promise<string[]>`
-
-
 
 ### `markAllRows(marked?: boolean) => Promise<void>`
 
@@ -228,8 +201,6 @@ Mark or unmark all rows.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `markRow(rowId: string, marked?: boolean) => Promise<void>`
 
@@ -246,8 +217,6 @@ Mark or unmark a row.
 
 Type: `Promise<void>`
 
-
-
 ### `rowEnsureVisible(rowId: string) => Promise<void>`
 
 Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
@@ -262,8 +231,6 @@ Ensures that the row is visible within the control, scrolling the contents of th
 
 Type: `Promise<void>`
 
-
-
 ### `selectAllRows(selected?: boolean) => Promise<void>`
 
 Selects or deselects all rows.
@@ -277,8 +244,6 @@ Selects or deselects all rows.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `selectCell(cellId?: string, rowId?: string, columnId?: string, selected?: boolean) => Promise<void>`
 
@@ -299,8 +264,6 @@ by using the rowId and columnId pair.
 
 Type: `Promise<void>`
 
-
-
 ### `selectRow(rowId: string, selected?: boolean) => Promise<void>`
 
 Selects or deselects a row.
@@ -316,8 +279,6 @@ Selects or deselects a row.
 
 Type: `Promise<void>`
 
-
-
 ### `syncRowState(el: HTMLElement) => Promise<void>`
 
 Synchronizes the state of a row in the grid.
@@ -331,9 +292,6 @@ Synchronizes the state of a row in the grid.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Slots
 

@@ -1,7 +1,5 @@
 # ch-smart-grid
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -10,7 +8,6 @@
 The `ch-smart-grid` component is an accessible grid layout for data-driven
 applications that require infinite scrolling, virtual rendering, and dynamic
 content loading.
-
 
 ## Features
  - Infinite scrolling via `ch-infinite-scroll` integration with configurable thresholds.
@@ -63,8 +60,6 @@ In other words, removes the reserved space that is used to aligned
 
 Type: `Promise<void>`
 
-
-
 ### `scrollEndContentToPosition(cellId: string, options: { position: "start" | "end"; behavior?: ScrollBehavior; }) => Promise<void>`
 
 Given the cell ID, it position the item at the start or end of the
@@ -86,9 +81,6 @@ when visualizing the last lines positioned at the top of the editor.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Slots
 

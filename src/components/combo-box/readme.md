@@ -8,7 +8,6 @@
 The `ch-combo-box-render` component is a feature-rich combo box that combines
 an input field with a popover-based dropdown list for selecting values.
 
-
 ## Features
  - Flat lists and expandable item groups.
  - Suggest (autocomplete) mode with strict matching, debounced input, and server-side filtering.

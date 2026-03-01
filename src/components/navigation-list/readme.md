@@ -1,7 +1,5 @@
 # ch-navigation-list-render
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-navigation-list-render` component renders a hierarchical navigation
 menu composed of expandable items that can act as hyperlinks or buttons.
-
 
 ## Features
  - Nested items supported to any depth, each with optional start image, caption, and expandable indicator.

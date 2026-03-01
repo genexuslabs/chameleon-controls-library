@@ -1,7 +1,5 @@
 # ch-theme
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -10,7 +8,6 @@
 The `ch-theme` component loads and manages named stylesheets that can be
 shared and reused across the Document or any Shadow Root via the
 `adoptedStyleSheets` API.
-
 
 ## Features
  - Themes specified by name (resolved from a registry), by URL, or as inline `CSSStyleSheet` instances.

@@ -1,7 +1,5 @@
 # gx-intersection-observer
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -10,7 +8,6 @@
 The `ch-intersection-observer` component is a declarative wrapper around the
 native `IntersectionObserver` API that emits events when slotted content
 crosses visibility thresholds.
-
 
 ## Features
  - Observes element visibility relative to a specified root element or the browser viewport.

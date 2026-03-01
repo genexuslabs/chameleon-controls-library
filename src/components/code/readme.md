@@ -1,7 +1,5 @@
 # ch-code
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-code` component renders read-only, syntax-highlighted code blocks
 powered by lowlight and highlight.js.
-
 
 ## Features
  - Syntax highlighting by parsing code to [hast](https://github.com/syntax-tree/hast) using [lowlight](https://github.com/wooorm/lowlight), with a custom reactive render layer.

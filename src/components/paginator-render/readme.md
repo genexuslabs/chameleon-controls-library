@@ -1,7 +1,5 @@
 # ch-paginator-render
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-paginator-render` component provides a fully customizable pagination
 control for navigating through paged data sets.
-
 
 ## Features
  - Numeric and hyperlink-based pagination models.

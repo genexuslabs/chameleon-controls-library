@@ -1,7 +1,5 @@
 # ch-rating
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-rating` component displays a star-based rating control that allows
 users to select a value from zero up to a configurable maximum number of stars.
-
 
 ## Features
  - Configurable number of stars.

@@ -8,7 +8,6 @@
 The `ch-popover` component renders a positioned overlay container anchored to
 a reference element using the native Popover API and `position: fixed`.
 
-
 ## Features
  - Configurable block and inline alignment (inside/outside/center) relative to the action element.
  - Optional flip-block or flip-inline fallback when the popover would overflow the viewport.

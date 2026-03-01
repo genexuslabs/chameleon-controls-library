@@ -1,7 +1,5 @@
 # ch-code-diff-editor
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -10,8 +8,6 @@
 The `ch-code-diff-editor` component provides a side-by-side or inline diff
 view for comparing two versions of source code, powered by the
 [Monaco Editor](https://microsoft.github.io/monaco-editor/).
-
-
 
 ## Features
  - Side-by-side and inline diff rendering with syntax highlighting.
@@ -45,7 +41,6 @@ to your `stencil.config.ts`:
 }
 ```
 
-
 ## Properties
 
 | Property                | Attribute         | Description                                                                                                                                                       | Type                    | Default                                                                                                                                                        |
@@ -74,9 +69,6 @@ Update the editor's options after the editor has been created.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ----------------------------------------------
 

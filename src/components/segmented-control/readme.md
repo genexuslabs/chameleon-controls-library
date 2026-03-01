@@ -1,7 +1,5 @@
 # ch-segmented-control-render
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-segmented-control-render` component presents a horizontal set of
 mutually exclusive options as a row of connected segments.
-
 
 ## Features
  - Connected segment buttons for mutually exclusive selection.

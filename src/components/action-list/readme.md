@@ -12,7 +12,6 @@
 The `ch-action-list-render` component renders an interactive list of
 actionable items driven by a declarative model.
 
-
 ## Features
  - Single and multiple selection with modifier-key multi-select.
  - In-place caption editing with optimistic UI updates.
@@ -85,8 +84,6 @@ has `type === "actionable"`
 
 Type: `Promise<void>`
 
-
-
 ### `getItemsInfo(itemsId: string[]) => Promise<ActionListItemModelExtended[]>`
 
 Given a list of ids, it returns an array of the items that exists in the
@@ -102,8 +99,6 @@ given list.
 
 Type: `Promise<ActionListItemModelExtended[]>`
 
-
-
 ### `removeItem(itemId: string) => Promise<void>`
 
 Remove the item and all its descendants from the control.
@@ -117,8 +112,6 @@ Remove the item and all its descendants from the control.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `updateItemProperties(itemId: string, properties: Partial<ActionListItemModel> & { type: ActionListItemType; }) => Promise<void>`
 
@@ -135,9 +128,6 @@ of the items in the list.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Shadow Parts
 

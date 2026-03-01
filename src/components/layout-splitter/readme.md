@@ -8,7 +8,6 @@
 The `ch-layout-splitter` component renders a nestable grid of columns and
 rows with draggable bars that let users resize adjacent areas in real time.
 
-
 ## Features
  - Relative (`fr`) and absolute (`px`) sizing for columns and rows.
  - Draggable and keyboard-accessible separator bars between sibling items.
@@ -43,8 +42,6 @@ rows with draggable bars that let users resize adjacent areas in real time.
 
 ### `addSiblingLeaf(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", leafInfo: LayoutSplitterLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<LayoutSplitterItemAddResult>`
 
-
-
 #### Parameters
 
 | Name                               | Type                                                                                                                                                                 | Description |
@@ -59,8 +56,6 @@ rows with draggable bars that let users resize adjacent areas in real time.
 
 Type: `Promise<LayoutSplitterItemAddResult>`
 
-
-
 ### `refreshLayout() => Promise<void>`
 
 Schedules a new render of the control even if no state changed.
@@ -68,8 +63,6 @@ Schedules a new render of the control even if no state changed.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `removeItem(itemId: string) => Promise<LayoutSplitterItemRemoveResult>`
 
@@ -85,9 +78,6 @@ The layout is rearranged depending on the state of the removed item.
 #### Returns
 
 Type: `Promise<LayoutSplitterItemRemoveResult>`
-
-
-
 
 ## Slots
 

@@ -8,8 +8,6 @@
 The `ch-code-editor` component provides a fully-featured code editing
 experience powered by the [Monaco Editor](https://microsoft.github.io/monaco-editor/).
 
-
-
 ## Features
  - IntelliSense, syntax highlighting, and configurable themes via Monaco Editor.
  - Support for any text-based language (source code, JSON, YAML, etc.).
@@ -62,7 +60,6 @@ export const config: Config = {
 };
 ```
 
-
 ## Properties
 
 | Property                | Attribute         | Description                                                                                                                                 | Type                | Default                                                                                                         |
@@ -90,9 +87,6 @@ Update the editor's options after the editor has been created.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ----------------------------------------------
 

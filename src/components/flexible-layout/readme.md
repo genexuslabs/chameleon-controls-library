@@ -8,7 +8,6 @@
 The `ch-flexible-layout-render` component is a high-level shell for building
 IDE-style dock layouts composed of lightweight, modular widgets.
 
-
 ## Features
  - Hierarchical model of groups and leaves, where each leaf can host a single widget or a tabbed collection of widgets.
  - Coordinates `ch-flexible-layout` and `ch-layout-splitter` primitives for draggable, resizable, and reorderable views.
@@ -69,8 +68,6 @@ the sibling view that its added with.
 
 Type: `Promise<boolean>`
 
-
-
 ### `addWidget(leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>`
 
 Add a widget in a `"tabbed"` type leaf.
@@ -92,8 +89,6 @@ To add a widget in a `"single-content"` type leaf, use the
 
 Type: `Promise<void>`
 
-
-
 ### `removeView(leafId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>`
 
 Removes a view and optionally all its rendered widget from the render.
@@ -109,8 +104,6 @@ The reserved space will be given to the closest view.
 #### Returns
 
 Type: `Promise<FlexibleLayoutViewRemoveResult>`
-
-
 
 ### `removeWidget(widgetId: string) => Promise<void>`
 
@@ -130,8 +123,6 @@ To remove a widget from a `"single-content"` type leaf, use the
 
 Type: `Promise<void>`
 
-
-
 ### `updateSelectedWidget(parentLeafId: string, newSelectedWidgetId: string) => Promise<void>`
 
 Update the selected widget from a `"tabbed"` type leaf.
@@ -147,8 +138,6 @@ Only works if the parent leaf is `"tabbed"` type.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `updateViewInfo(viewId: string, properties: Partial<Omit<FlexibleLayoutLeafConfigurationTabbed, "selectedWidgetId" | "widget" | "widgets">>) => Promise<void>`
 
@@ -167,8 +156,6 @@ update.
 
 Type: `Promise<void>`
 
-
-
 ### `updateWidgetInfo(widgetId: string, properties: Partial<Omit<FlexibleLayoutWidget, "id" | "wasRendered">>) => Promise<void>`
 
 Update the widget info.
@@ -183,9 +170,6 @@ Update the widget info.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Slots
 

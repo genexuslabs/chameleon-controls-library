@@ -1,7 +1,5 @@
 # ch-progress
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-progress` component displays the progress status for long-running
 tasks, supporting both determinate and indeterminate modes.
-
 
 ## Features
  - Determinate mode with explicit `min`, `max`, and `value`.

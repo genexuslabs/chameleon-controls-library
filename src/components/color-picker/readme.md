@@ -8,7 +8,6 @@
 The `ch-color-picker` component is a full-featured color selection control
 that lets users pick colors using a color field, hue slider, and optional alpha slider.
 
-
 ## Features
  - Two-dimensional color field for saturation and brightness selection.
  - Hue slider and optional alpha (opacity) slider.

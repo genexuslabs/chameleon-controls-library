@@ -1,7 +1,5 @@
 # ch-dialog
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-dialog` component represents a modal or non-modal dialog box built
 on top of the native `<dialog>` element.
-
 
 ## Features
  - Modal and non-modal modes with native `<dialog>` semantics.

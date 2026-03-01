@@ -1,7 +1,5 @@
 # ch-sidebar
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-sidebar` component provides a collapsible side panel typically used
 for primary or secondary navigation, tool palettes, or contextual information.
-
 
 ## Features
  - Expand or collapse programmatically or through an optional button with configurable position, caption, and accessible label.

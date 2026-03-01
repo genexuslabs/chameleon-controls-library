@@ -1,14 +1,11 @@
 # ch-accordion-render
 
-
-
 <!-- Auto Generated Below -->
 
 
 ## Overview
 
 The `ch-accordion-render` component displays a vertical stack of collapsible panels, each with a clickable header that toggles the visibility of its associated content section.
-
 
 ## Features
  - Expand or collapse panels on demand to organize lengthy content into space-efficient sections.

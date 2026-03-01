@@ -1,7 +1,5 @@
 # ch-markdown-viewer
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-markdown-viewer` component renders Markdown content as rich HTML with
 GFM support, code highlighting, math rendering, and streaming indicators.
-
 
 ## Features
  - Parses Markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown), with a reactive render layer that only updates changed DOM portions.

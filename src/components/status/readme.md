@@ -1,7 +1,5 @@
 # ch-status
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -10,7 +8,6 @@
 The `ch-status` component provides a lightweight loading indicator that
 communicates an ongoing process to both visual users and assistive
 technologies.
-
 
 ## Features
  - Sets `role="status"` and `aria-live="polite"` for non-interrupting screen reader announcements.

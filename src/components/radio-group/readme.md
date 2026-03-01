@@ -1,7 +1,5 @@
 # ch-radio-group-render
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-radio-group-render` component renders a group of mutually exclusive
 radio options, allowing users to select exactly one value from a short list.
-
 
 ## Features
  - Mutually exclusive selection from a set of options.

@@ -1,7 +1,5 @@
 # ch-tooltip
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -10,7 +8,6 @@
 The `ch-tooltip` component displays supplementary information in a small
 overlay that appears on hover or focus of a trigger element, following the
 WAI-ARIA tooltip pattern.
-
 
 ## Features
  - Configurable block and inline alignment via `ch-popover`.

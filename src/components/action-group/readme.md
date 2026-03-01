@@ -7,7 +7,6 @@
 
 The `ch-action-group-render` component displays a horizontal group of actionable items that adapts to the available space by collapsing overflowing items into a "more actions" dropdown menu.
 
-
 ## Features
  - Three overflow strategies: horizontal scroll, multiline wrap, or responsive collapse into a dropdown.
  - Responsive-collapse mode uses `IntersectionObserver` to detect hidden items in real time.

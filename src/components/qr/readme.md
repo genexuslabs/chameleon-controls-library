@@ -1,7 +1,5 @@
 # ch-qr
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-qr` component generates a QR code from any text, URL, or data
 string and renders it as a canvas element in the Shadow DOM.
-
 
 ## Features
  - Customizable foreground and background colors with `currentColor` support for theme integration.

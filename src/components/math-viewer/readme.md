@@ -8,10 +8,8 @@
 The `ch-math-viewer` component renders LaTeX math expressions as accessible,
 high-quality typeset mathematics using [KaTeX](https://katex.org/).
 
-
-
 ## Features
- - Accepts LaTeX blocks delimited by `$$`, `\[...\]`, `\(...\)`, or bare expressions.
+ - Accepts LaTeX blocks delimited by `$`, `\[...\]`, `\(...\)`, or bare expressions.
  - Supports both block and inline display modes.
  - Graceful error handling: exposes raw text with an error description when parsing fails.
  - Accessible output via `htmlAndMathml` rendering.
@@ -32,27 +30,6 @@ You must include the KaTeX custom fonts and declare their font-faces. In your ma
 SCSS file, import the font-faces mixin and include it:
 
 ```scss
-@import "@genexus/chameleon-controls-library/dist/assets/scss/math-viewer-font-face.scss";
-
-@include math-viewer-font-faces();
-```
-
-Additionally, ensure the font files from `node_modules/@genexus/chameleon-controls-library/dist/assets/fonts`
-are copied to your project's assets directory. If using StencilJS, add this to your `stencil.config.ts`:
-
-```ts
-{
-  type: "dist",
-  copy: [
-    {
-      src: "../node_modules/@genexus/chameleon-controls-library/dist/assets/fonts",
-      dest: "assets/fonts"
-    }
-  ]
-}
-```
-
-
 ## Properties
 
 | Property      | Attribute      | Description                                                   | Type                  | Default     |

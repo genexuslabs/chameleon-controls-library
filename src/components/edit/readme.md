@@ -8,7 +8,6 @@
 The `ch-edit` component is a rich wrapper around the native `input` and
 `textarea` elements, serving as the primary text input building block.
 
-
 ## Features
  - Wide range of input types: text, password, email, number, search, date, datetime-local, time, tel, url, and file.
  - Picture formatting for masked values.

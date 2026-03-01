@@ -1,7 +1,5 @@
 # ch-textblock
 
-
-
 <!-- Auto Generated Below -->
 
 
@@ -9,7 +7,6 @@
 
 The `ch-textblock` component displays text or HTML content with multi-line
 ellipsis truncation, automatic grow behavior, and overflow detection.
-
 
 ## Features
  - Multi-line ellipsis truncation with automatic line calculation.

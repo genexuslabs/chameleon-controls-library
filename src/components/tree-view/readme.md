@@ -8,7 +8,6 @@
 The `ch-tree-view-render` component displays hierarchical data as an
 interactive tree with full-featured node management.
 
-
 ## Features
  - Expand and collapse nodes with configurable expandable button styles.
  - Single or multi-selection of nodes.
@@ -100,8 +99,6 @@ it process the drops of the items in the tree.
 
 Type: `Promise<void>`
 
-
-
 ### `getItemPath(itemId: string) => Promise<TreeViewItemModel[] | null>`
 
 Returns item's path (an ordered array of the UI models that creates the path
@@ -121,8 +118,6 @@ applied.
 
 Type: `Promise<TreeViewItemModel[]>`
 
-
-
 ### `getItemsInfo(itemsId: string[]) => Promise<TreeViewItemModelExtended[]>`
 
 Given a list of ids, it returns an array of the items that exists in the
@@ -137,8 +132,6 @@ given list.
 #### Returns
 
 Type: `Promise<TreeViewItemModelExtended[]>`
-
-
 
 ### `loadLazyContent(itemId: string, model?: TreeViewModel, downloading?: boolean, lazy?: boolean) => Promise<void>`
 
@@ -158,8 +151,6 @@ lazy state, updates the item's UI Model.
 
 Type: `Promise<void>`
 
-
-
 ### `reloadItems(itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<boolean>`
 
 Given an item id and the additional properties to update before and after
@@ -178,8 +169,6 @@ reload, it reloads the items of the `itemId` node by using the
 
 Type: `Promise<boolean>`
 
-
-
 ### `removeItems(items: string[]) => Promise<void>`
 
 Given a list of ids, removes the items and their children in the tree.
@@ -193,8 +182,6 @@ Given a list of ids, removes the items and their children in the tree.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `scrollIntoVisible(path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<boolean>`
 
@@ -223,8 +210,6 @@ When using a path, this method will fail if:
 #### Returns
 
 Type: `Promise<boolean>`
-
-
 
 ### `toggleItems(treeItemIds: string[], expand?: boolean) => Promise<TreeViewItemExpandedInfo[]>`
 
@@ -257,8 +242,6 @@ Given a subset of item's properties, it updates all item UI models.
 
 Type: `Promise<void>`
 
-
-
 ### `updateItemsProperties(items: string[], properties: Partial<TreeViewItemModel>) => Promise<void>`
 
 Given a item list and the properties to update, it updates the properties
@@ -274,8 +257,6 @@ of the items in the list.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], dropType: TreeViewDropType, validDrop: boolean) => Promise<void>`
 
@@ -294,9 +275,6 @@ Update the information about the valid droppable zones.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Shadow Parts
 

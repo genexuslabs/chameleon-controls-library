@@ -8,7 +8,6 @@
 The `ch-tab-render` component renders a tabbed interface where each tab
 button switches the visible content panel.
 
-
 ## Features
  - Tab list positioning along any edge of the container (`block-start`, `block-end`, `inline-start`, or `inline-end`).
  - Optional images, icons, captions, and close buttons per tab.
@@ -79,8 +78,6 @@ keyboard interaction.
 
 Type: `Promise<void>`
 
-
-
 ### `getDraggableViews() => Promise<DraggableViewInfo>`
 
 Returns the info associated to the draggable view.
@@ -89,8 +86,6 @@ Returns the info associated to the draggable view.
 
 Type: `Promise<DraggableViewInfo>`
 
-
-
 ### `promoteDragPreviewToTopLayer() => Promise<void>`
 
 Promotes the drag preview to the top layer. Useful to avoid z-index issues.
@@ -98,8 +93,6 @@ Promotes the drag preview to the top layer. Useful to avoid z-index issues.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `removePage(pageId: string, forceRerender?: boolean) => Promise<void>`
 
@@ -115,9 +108,6 @@ Given an id, remove the page from the render
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Slots
 

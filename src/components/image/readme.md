@@ -8,7 +8,6 @@
 The `ch-image` component renders a multi-state image that automatically
 reflects the interactive state of its parent container.
 
-
 ## Features
  - Visual appearance changes in response to parent state (hover, focus, active, disabled).
  - Image source resolved via a configurable callback (`getImagePathCallback`) or a globally registered resolver.

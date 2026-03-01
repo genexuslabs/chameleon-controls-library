@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Build } from "@stencil/core";
-import { ROOT_VIEW } from "../../common/utils";
-import { DEFAULT_TAB_LIST_POSITION, isBlockDirection } from "../tab/utils";
 import {
-  FlexibleLayoutGroupModel,
-  FlexibleLayoutItemExtended,
-  FlexibleLayoutItemModel,
-  FlexibleLayoutLeafInfo,
-  FlexibleLayoutLeafModel,
-  FlexibleLayoutLeafType,
   FlexibleLayoutModel,
+  FlexibleLayoutGroupModel,
+  FlexibleLayoutItemModel,
+  FlexibleLayoutItemExtended,
+  FlexibleLayoutLeafModel,
+  FlexibleLayoutLeafInfo,
+  FlexibleLayoutLeafType,
   FlexibleLayoutWidgetExtended
 } from "./internal/flexible-layout/types";
+import { ROOT_VIEW } from "../../common/utils";
+import { DEFAULT_TAB_LIST_POSITION, isBlockDirection } from "../tab/utils";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
@@ -44,7 +44,7 @@ export const createAndSetLeafInfo = (
     renderedWidgets.add(widget.id);
 
     // Store the widget info
-    widgetsInfo.set(widget.id, { parentLeafId: leafId, info: widget });
+    widgetsInfo.set(leafId, { parentLeafId: leafId, info: widget });
 
     return {
       id: leafId,

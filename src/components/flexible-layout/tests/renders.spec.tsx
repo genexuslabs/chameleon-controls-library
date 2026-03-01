@@ -23,13 +23,6 @@ const SLOT_AND_RENDER_MODEL: FlexibleLayoutModel = {
   ]
 };
 
-/**
- * These tests run as spec (not E2E) because Puppeteer seemingly cannot
- * serialize functions like StencilJS's `h`, which is required by the
- * `renders` prop. Spec tests run in the same process, so we can pass
- * functions directly.
- */
-
 describe("[ch-flexible-layout-render][renders]", () => {
   let page: Awaited<ReturnType<typeof newSpecPage>>;
   let chFlexibleLayoutRender: HTMLChFlexibleLayoutRenderElement;
@@ -195,4 +188,13 @@ describe("[ch-flexible-layout-render][renders]", () => {
       })
     );
   });
+
+  /**
+   * Note: For tests for slots, see `slots.e2e.ts`. This file includes
+   * tests for the `renders` property (which expects functions). These
+   * tests are implemented in this spec file instead of E2E tests
+   * because Puppeteer cannot serialize JavaScript functions when
+   * passing them between Node.js and the browser context. Spec tests
+   * run in the same process, allowing us to pass functions directly.
+   */
 });

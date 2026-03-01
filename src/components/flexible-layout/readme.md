@@ -5,7 +5,24 @@
 
 ## Overview
 
-The `ch-flexible-layout-render` control is a shell composed of lightweight modular widgets that provide a solid foundation for draggable dock layouts.
+The `ch-flexible-layout-render` component is a high-level shell for building IDE-style dock layouts composed of lightweight, modular widgets.
+
+## Features
+ - Hierarchical model of groups and leaves, where each leaf can host a single widget or a tabbed collection of widgets.
+ - Coordinates `ch-flexible-layout` and `ch-layout-splitter` primitives for draggable, resizable, and reorderable views.
+ - Add, remove, and reorder widgets and views at runtime via public methods.
+ - Slotted widget mode (`slottedWidgets`) projects widget content from outside the component via named slots.
+ - Close button support for tabbed leaves.
+ - Configurable CSS containment and overflow per widget.
+ - Theme support via the `theme` property.
+
+## Use when
+ - Building a complex, multi-pane workspace (code editors, dashboards, admin panels) where users can rearrange, close, and add views at runtime.
+ - Building IDE-like or dashboard interfaces with multiple movable, resizable widget panes.
+
+## Do not use when
+ - Building simple, static layouts -- prefer `ch-layout-splitter` or CSS Grid instead.
+ - A simple fixed two-panel layout is sufficient — prefer `ch-layout-splitter` directly.
 
 ## Properties
 
@@ -15,7 +32,7 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 | `contain`        | `contain`         | Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes. | `"content" \| "inline-size" \| "layout" \| "none" \| "paint" \| "size" \| "strict" \| "style"`                                                                                                                                                                                                                                                                                                                                                                                     | `"none"`    |
 | `dragOutside`    | `drag-outside`    | When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.                                                                                                                                                                                                                                                                                         | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`     |
 | `model`          | --                | Specifies the distribution of the items in the flexible layout.                                                                                                                                                                                                                                                                                                                                                                                   | `Omit<LayoutSplitterModel, "items"> & { items: FlexibleLayoutItemModel[]; }`                                                                                                                                                                                                                                                                                                                                                                                                       | `undefined` |
-| `overflow`       | `overflow`        | Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.                                                                                                                                                                                                                                                         | `CssOverflowProperty \| "auto auto" \| "auto visible" \| "auto hidden" \| "auto clip" \| "auto scroll" \| "visible auto" \| "visible visible" \| "visible hidden" \| "visible clip" \| "visible scroll" \| "hidden auto" \| "hidden visible" \| "hidden hidden" \| "hidden clip" \| "hidden scroll" \| "clip auto" \| "clip visible" \| "clip hidden" \| "clip clip" \| "clip scroll" \| "scroll auto" \| "scroll visible" \| "scroll hidden" \| "scroll clip" \| "scroll scroll"` | `"visible"` |
+| `overflow`       | `overflow`        | Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.                                                                                                                                                                                                                                                         | `CssOverflowProperty \| "auto auto" \| "auto hidden" \| "auto clip" \| "auto scroll" \| "auto visible" \| "hidden auto" \| "hidden hidden" \| "hidden clip" \| "hidden scroll" \| "hidden visible" \| "clip auto" \| "clip hidden" \| "clip clip" \| "clip scroll" \| "clip visible" \| "scroll auto" \| "scroll hidden" \| "scroll clip" \| "scroll scroll" \| "scroll visible" \| "visible auto" \| "visible hidden" \| "visible clip" \| "visible scroll" \| "visible visible"` | `"visible"` |
 | `renders`        | --                | Specifies the distribution of the items in the flexible layout.                                                                                                                                                                                                                                                                                                                                                                                   | `{ [key: string]: (widgetInfo: FlexibleLayoutWidget) => any; }`                                                                                                                                                                                                                                                                                                                                                                                                                    | `undefined` |
 | `slottedWidgets` | `slotted-widgets` | Specifies whether widgets are rendered outside of the ch-flexible-layout-render by default by projecting a slot.                                                                                                                                                                                                                                                                                                                                  | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`     |
 | `sortable`       | `sortable`        | `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.                                                                                                                                                                                                                                                                               | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`     |
@@ -51,8 +68,6 @@ the sibling view that its added with.
 
 Type: `Promise<boolean>`
 
-
-
 ### `addWidget(leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>`
 
 Add a widget in a `"tabbed"` type leaf.
@@ -74,8 +89,6 @@ To add a widget in a `"single-content"` type leaf, use the
 
 Type: `Promise<void>`
 
-
-
 ### `removeView(leafId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>`
 
 Removes a view and optionally all its rendered widget from the render.
@@ -91,8 +104,6 @@ The reserved space will be given to the closest view.
 #### Returns
 
 Type: `Promise<FlexibleLayoutViewRemoveResult>`
-
-
 
 ### `removeWidget(widgetId: string) => Promise<void>`
 
@@ -112,8 +123,6 @@ To remove a widget from a `"single-content"` type leaf, use the
 
 Type: `Promise<void>`
 
-
-
 ### `updateSelectedWidget(parentLeafId: string, newSelectedWidgetId: string) => Promise<void>`
 
 Update the selected widget from a `"tabbed"` type leaf.
@@ -130,8 +139,6 @@ Only works if the parent leaf is `"tabbed"` type.
 
 Type: `Promise<void>`
 
-
-
 ### `updateViewInfo(viewId: string, properties: Partial<Omit<FlexibleLayoutLeafConfigurationTabbed, "selectedWidgetId" | "widget" | "widgets">>) => Promise<void>`
 
 Given the viewId, it updates the info of the view if the view is a leaf.
@@ -143,13 +150,11 @@ update.
 | Name         | Type                                                                                                                                                                                               | Description |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `viewId`     | `string`                                                                                                                                                                                           |             |
-| `properties` | `{ type?: "tabbed"; disabled?: boolean; closeButton?: boolean; dragOutside?: boolean; sortable?: boolean; showCaptions?: boolean; tabButtonHidden?: boolean; tabListPosition?: TabListPosition; }` |             |
+| `properties` | `{ disabled?: boolean; type?: "tabbed"; closeButton?: boolean; dragOutside?: boolean; sortable?: boolean; showCaptions?: boolean; tabButtonHidden?: boolean; tabListPosition?: TabListPosition; }` |             |
 
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `updateWidgetInfo(widgetId: string, properties: Partial<Omit<FlexibleLayoutWidget, "id" | "wasRendered">>) => Promise<void>`
 
@@ -160,13 +165,25 @@ Update the widget info.
 | Name         | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Description |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `widgetId`   | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |             |
-| `properties` | `{ slot?: boolean; name?: string; disabled?: boolean; accessibleName?: string; startImgSrc?: string; startImgType?: ImageRender; closeButton?: boolean; contain?: CssContainProperty; overflow?: CssOverflowProperty \| "auto auto" \| "auto visible" \| "auto hidden" \| "auto clip" \| "auto scroll" \| "visible auto" \| "visible visible" \| "visible hidden" \| "visible clip" \| "visible scroll" \| "hidden auto" \| "hidden visible" \| "hidden hidden" \| "hidden clip" \| "hidden scroll" \| "clip auto" \| "clip visible" \| "clip hidden" \| "clip clip" \| "clip scroll" \| "scroll auto" \| "scroll visible" \| "scroll hidden" \| "scroll clip" \| "scroll scroll"; renderId?: string; addWrapper?: boolean; conserveRenderState?: boolean; }` |             |
+| `properties` | `{ name?: string; slot?: boolean; disabled?: boolean; overflow?: CssOverflowProperty \| "auto auto" \| "auto hidden" \| "auto clip" \| "auto scroll" \| "auto visible" \| "hidden auto" \| "hidden hidden" \| "hidden clip" \| "hidden scroll" \| "hidden visible" \| "clip auto" \| "clip hidden" \| "clip clip" \| "clip scroll" \| "clip visible" \| "scroll auto" \| "scroll hidden" \| "scroll clip" \| "scroll scroll" \| "scroll visible" \| "visible auto" \| "visible hidden" \| "visible clip" \| "visible scroll" \| "visible visible"; accessibleName?: string; startImgSrc?: string; startImgType?: ImageRender; closeButton?: boolean; contain?: CssContainProperty; addWrapper?: boolean; conserveRenderState?: boolean; renderId?: string; }` |             |
 
 #### Returns
 
 Type: `Promise<void>`
 
+## Slots
 
+| Slot           | Description                                                                                                                                                      |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"{widgetId}"` | Named slot for each widget. Rendered when `slottedWidgets` is `true` (or the individual widget's `slot` property is `true`) and the widget is currently visible. |
+
+
+## Shadow Parts
+
+| Part               | Description                                                                                                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `"droppable-area"` | The overlay surface rendered over the layout when a widget is being dragged, enabling drop-zone detection. |
+| `"leaf"`           | The container element for a leaf node (either a single-widget view or a tabbed widget group).              |
 
 
 ## Dependencies

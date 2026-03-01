@@ -1,8 +1,30 @@
-import { Component, Element, Host, h, Prop } from "@stencil/core";
+import { Component, Element, h, Host, Prop } from "@stencil/core";
 import QrCreator from "qr-creator";
 import { ErrorCorrectionLevel } from "./types";
 
 /**
+ * The `ch-qr` component generates a QR code from any text, URL, or data string and renders it as a canvas element in the Shadow DOM.
+ *
+ * @remarks
+ * ## Features
+ *  - Customizable foreground and background colors with `currentColor` support for theme integration.
+ *  - Configurable error correction levels (L, M, Q, H).
+ *  - Adjustable block radius for rounded aesthetics.
+ *  - Scalable pixel size.
+ *  - Automatic re-render when any property changes.
+ *  - Accessible via `role="img"` and `aria-label`.
+ *
+ * ## Use when
+ *  - Displaying a QR code for a URL, text, or data string.
+ *  - Generating a machine-readable QR code from a URL, text, or identifier for mobile scanning.
+ *
+ * ## Do not use when
+ *  - Scanning or reading QR codes — use `ch-barcode-scanner` instead.
+ *  - Scanning a QR code from camera input is needed — prefer `ch-barcode-scanner`.
+ *
+ * ## Accessibility
+ *  - The generated QR code is rendered as an `<img>` element with an `aria-label` derived from the `accessibleName` property.
+ *
  * @status developer-preview
  */
 @Component({

@@ -46,7 +46,60 @@ import { TabularGridManager } from "./tabular-grid-manager";
 import { ManagerSelectionState } from "./tabular-grid-manager-selection";
 
 /**
- * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+ * The `ch-tabular-grid` component is a full-featured, accessible data grid and tree grid for displaying, selecting, and interacting with tabular data.
+ *
+ * @remarks
+ * ## Features
+ *  - Single and multiple row selection, cell-level selection, and row marking (checkboxes).
+ *  - Row and cell highlighting on hover.
+ *  - Full keyboard navigation (arrow keys, Home/End, PageUp/PageDown, Enter, Space).
+ *  - Column reordering via drag-and-drop.
+ *  - Column resizing in single or splitter mode.
+ *  - Row expand/collapse for hierarchical tree data.
+ *  - Context menus and row actions.
+ *  - Touch support for mobile devices.
+ *  - Built-in settings panel for column visibility.
+ *  - Rich set of public methods and events for programmatic control.
+ *
+ * ## Use when
+ *  - Displaying and interacting with structured tabular or hierarchical data.
+ *  - Users need to select, sort, reorder, or resize columns interactively.
+ *  - Displaying structured tabular data where users need to sort, filter, select rows, or perform bulk actions.
+ *  - The data has a tree/hierarchy that benefits from inline expand/collapse.
+ *
+ * ## Do not use when
+ *  - Displaying a simple list or card layout — use `ch-smart-grid` instead.
+ *  - Simple display-only lists without interactivity — use a semantic `<table>` or `ch-action-list-render` instead.
+ *
+ * ## Accessibility
+ *  - Full keyboard navigation: Arrow keys to move between cells, Home/End for row boundaries, Page Up/Down for vertical scrolling, Enter/Space for activation.
+ *  - Supports row and cell selection semantics with configurable selection modes.
+ *  - Hierarchical tree-grid rows support expand/collapse via keyboard.
+ *
+ * @status stable
+ *
+ * @part header - The header section rendered above the grid body.
+ * @part main - The main scrollable section containing the grid columns, rows, and cells.
+ * @part footer - The footer section rendered below the grid body.
+ * @part settings-mask - The backdrop overlay displayed behind the settings panel.
+ * @part settings-window - The settings panel window container.
+ * @part settings-header - The header area of the settings panel.
+ * @part settings-caption - The caption/title text in the settings panel header.
+ * @part settings-close - The close button in the settings panel.
+ * @part settings-main - The main content area of the settings panel.
+ * @part settings-footer - The footer area of the settings panel.
+ * @part settings-columns - The column visibility list inside the settings panel.
+ * @part settings-columns-item - An individual column entry in the settings column list.
+ * @part settings-columns-label - The label for a column entry in the settings panel.
+ * @part settings-columns-visible - The visibility toggle for a column in the settings panel.
+ * @part settings-columns-visible-checked - The visibility toggle when the column is visible.
+ *
+ * @slot default - The default slot for grid columns (`ch-tabular-grid-column`), rows, and rowsets that compose the grid body.
+ * @slot header - Content projected into the grid header section above the data area.
+ * @slot footer - Content projected into the grid footer section below the data area.
+ * @slot column-display - Custom column display UI rendered in the aside area.
+ * @slot row-actions - Custom row action controls rendered in the aside area, typically shown on hover or context menu.
+ * @slot settings - Custom content for the settings panel. When not provided, a default column visibility editor is rendered.
  */
 @Component({
   tag: "ch-tabular-grid",

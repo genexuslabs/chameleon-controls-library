@@ -36,6 +36,95 @@ import { fromStringToColorVariants } from "./utils/color-variants";
 import { fromHsvToRgb } from "./utils/converters/hsv-to-rgb";
 import { fromHsvStringToHsvColor } from "./utils/parsers/hsv";
 
+/**
+ * The `ch-color-picker` component is a full-featured color selection control that lets users pick colors using a color field, hue slider, and optional alpha slider.
+ *
+ * @remarks
+ * ## Features
+ *  - Two-dimensional color field for saturation and brightness selection.
+ *  - Hue slider and optional alpha (opacity) slider.
+ *  - Multiple color formats: HEX, RGB, HSL, and HSV.
+ *  - Built-in format selector for switching formats at runtime.
+ *  - Configurable palette of preset colors.
+ *  - Form-associated via `ElementInternals`.
+ *
+ * ## Use when
+ *  - Precise color input is required in design tools or theming panels.
+ *  - Users need to switch between color formats.
+ *  - A color palette with preset colors is needed alongside free-form selection.
+ *  - Allowing users to select arbitrary colors in design or customization UIs.
+ *
+ * ## Do not use when
+ *  - Only a predefined set of colors is needed — prefer `ch-combo-box-render` with color swatches instead.
+ *  - A small curated set of colors is sufficient — use color swatches or tiles instead, which are more scannable and accessible.
+ *  - Color alone is used to convey meaning downstream — always supplement with text or pattern (WCAG 1.4.1).
+ *
+ * ## Accessibility
+ *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ *  - Validates label existence via `ElementInternals` for proper accessible name resolution.
+ *
+ * @status experimental
+ *
+ * @part color-field - The two-dimensional gradient area where users pick saturation and brightness.
+ * @part color-field__label - The accessible label for the color field.
+ * @part marker - The draggable marker inside the color field that indicates the selected position.
+ * @part hue-slider__label - The accessible label for the hue slider.
+ * @part hue__slider - The slider control for selecting the hue value (0-360).
+ * @part alpha__slider-label - The accessible label for the alpha slider.
+ * @part alpha__slider - The slider control for selecting the alpha (opacity) value.
+ * @part alpha__input-group - The container wrapping the alpha input and its label.
+ * @part alpha__input-label - The label for the alpha numeric input.
+ * @part alpha__input - The numeric input for directly entering the alpha value.
+ * @part alpha-suffix - The suffix text (e.g., "%") displayed after the alpha input.
+ * @part color-preview-container - The container that wraps the color preview swatch and text.
+ * @part color-preview - The swatch element displaying the currently selected color.
+ * @part color-preview__text - The text representation of the current color shown alongside the preview.
+ * @part color-format-selector - The container for the color format selector controls.
+ * @part format-selector__header - The header area of the format selector section.
+ * @part format-selector__label - The label for the format selector dropdown.
+ * @part color-format__combo-box - The combo box used to switch between color formats (HEX, RGB, HSL, HSV).
+ * @part color-inputs - The container that holds all color channel inputs for the selected format.
+ * @part hex__input-group - The container wrapping the HEX input and its label.
+ * @part hex__input-label - The label for the HEX color input.
+ * @part hex__input - The text input for entering a HEX color value.
+ * @part rgb-inputs__group - The container wrapping all RGB channel inputs.
+ * @part rgb-r__group - The container for the red channel input and label.
+ * @part rgb-g__group - The container for the green channel input and label.
+ * @part rgb-b__group - The container for the blue channel input and label.
+ * @part rgb-r__label - The label for the red channel input.
+ * @part rgb-g__label - The label for the green channel input.
+ * @part rgb-b__label - The label for the blue channel input.
+ * @part rgb-r__input - The numeric input for the red channel value (0-255).
+ * @part rgb-g__input - The numeric input for the green channel value (0-255).
+ * @part rgb-b__input - The numeric input for the blue channel value (0-255).
+ * @part hsl-inputs__group - The container wrapping all HSL channel inputs.
+ * @part hsl-h__group - The container for the HSL hue input and label.
+ * @part hsl-s__group - The container for the HSL saturation input and label.
+ * @part hsl-l__group - The container for the HSL lightness input and label.
+ * @part hsl-h__label - The label for the HSL hue input.
+ * @part hsl-s__label - The label for the HSL saturation input.
+ * @part hsl-l__label - The label for the HSL lightness input.
+ * @part hsl-h__input - The numeric input for the HSL hue value (0-360).
+ * @part hsl-s__input - The numeric input for the HSL saturation value (0-100).
+ * @part hsl-l__input - The numeric input for the HSL lightness value (0-100).
+ * @part hsl-s-suffix - The suffix text displayed after the HSL saturation input.
+ * @part hsl-l-suffix - The suffix text displayed after the HSL lightness input.
+ * @part hsv-inputs__group - The container wrapping all HSV channel inputs.
+ * @part hsv-h__group - The container for the HSV hue input and label.
+ * @part hsv-s__group - The container for the HSV saturation input and label.
+ * @part hsv-v__group - The container for the HSV value input and label.
+ * @part hsv-h__label - The label for the HSV hue input.
+ * @part hsv-s__label - The label for the HSV saturation input.
+ * @part hsv-v__label - The label for the HSV value input.
+ * @part hsv-h__input - The numeric input for the HSV hue value (0-360).
+ * @part hsv-s__input - The numeric input for the HSV saturation value (0-100).
+ * @part hsv-v__input - The numeric input for the HSV value/brightness (0-100).
+ * @part hsv-s-suffix - The suffix text displayed after the HSV saturation input.
+ * @part hsv-v-suffix - The suffix text displayed after the HSV value input.
+ * @part color-palette-grid - The grid container for the preset color palette swatches.
+ * @part color-palette__label - The label for the color palette section.
+ * @part color-palette__button - A clickable button representing a single preset color in the palette.
+ */
 @Component({
   formAssociated: true,
   shadow: true,

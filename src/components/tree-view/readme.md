@@ -3,6 +3,40 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-tree-view-render` component displays hierarchical data as an interactive tree with full-featured node management.
+
+## Features
+ - Expand and collapse nodes with configurable expandable button styles.
+ - Single or multi-selection of nodes.
+ - Tri-state checkboxes with toggle support.
+ - Inline caption editing.
+ - Drag-and-drop reordering of nodes.
+ - Lazy loading of child items.
+ - Keyboard navigation.
+ - Filtering by caption, metadata, or custom list.
+ - Start and end images per node.
+ - Relationship lines connecting siblings and parents.
+ - Context menu support.
+
+## Use when
+ - Building a full-featured tree widget (file explorers, organizational charts, permission editors, or any master list with nested structure).
+ - Navigating or selecting nodes within deeply hierarchical data (e.g., file system, code symbols, category trees).
+ - Users need to expand, collapse, and select items at multiple nesting levels.
+
+## Do not use when
+ - Building simpler navigation hierarchies without checkboxes, drag-and-drop, or editing -- prefer `ch-navigation-list-render` instead.
+ - Used as a PRIMARY navigation menu — prefer `ch-navigation-list-render`, which carries proper navigation semantics for assistive technology.
+ - Content sections have collapsible summaries (FAQs) — prefer `ch-accordion-render`.
+ - The data is flat or only one level deep — prefer `ch-action-list-render`.
+ - Nesting depth regularly exceeds 10 levels — UX becomes untenable.
+
+## Accessibility
+ - Implements a tree-view keyboard pattern: Arrow keys to navigate, Enter/Space to select, Left/Right to collapse/expand.
+ - Checkbox items support tri-state (`checked`, `unchecked`, `indeterminate`) with matching ARIA states.
+ - Items can be individually disabled, preventing keyboard and pointer interaction.
+
 ## Properties
 
 | Property                     | Attribute           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Type                                                                                                                                                                        | Default                    |
@@ -65,8 +99,6 @@ it process the drops of the items in the tree.
 
 Type: `Promise<void>`
 
-
-
 ### `getItemPath(itemId: string) => Promise<TreeViewItemModel[] | null>`
 
 Returns item's path (an ordered array of the UI models that creates the path
@@ -86,8 +118,6 @@ applied.
 
 Type: `Promise<TreeViewItemModel[]>`
 
-
-
 ### `getItemsInfo(itemsId: string[]) => Promise<TreeViewItemModelExtended[]>`
 
 Given a list of ids, it returns an array of the items that exists in the
@@ -102,8 +132,6 @@ given list.
 #### Returns
 
 Type: `Promise<TreeViewItemModelExtended[]>`
-
-
 
 ### `loadLazyContent(itemId: string, model?: TreeViewModel, downloading?: boolean, lazy?: boolean) => Promise<void>`
 
@@ -123,8 +151,6 @@ lazy state, updates the item's UI Model.
 
 Type: `Promise<void>`
 
-
-
 ### `reloadItems(itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<boolean>`
 
 Given an item id and the additional properties to update before and after
@@ -143,8 +169,6 @@ reload, it reloads the items of the `itemId` node by using the
 
 Type: `Promise<boolean>`
 
-
-
 ### `removeItems(items: string[]) => Promise<void>`
 
 Given a list of ids, removes the items and their children in the tree.
@@ -158,8 +182,6 @@ Given a list of ids, removes the items and their children in the tree.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `scrollIntoVisible(path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<boolean>`
 
@@ -188,8 +210,6 @@ When using a path, this method will fail if:
 #### Returns
 
 Type: `Promise<boolean>`
-
-
 
 ### `toggleItems(treeItemIds: string[], expand?: boolean) => Promise<TreeViewItemExpandedInfo[]>`
 
@@ -222,8 +242,6 @@ Given a subset of item's properties, it updates all item UI models.
 
 Type: `Promise<void>`
 
-
-
 ### `updateItemsProperties(items: string[], properties: Partial<TreeViewItemModel>) => Promise<void>`
 
 Given a item list and the properties to update, it updates the properties
@@ -240,8 +258,6 @@ of the items in the list.
 
 Type: `Promise<void>`
 
-
-
 ### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], dropType: TreeViewDropType, validDrop: boolean) => Promise<void>`
 
 Update the information about the valid droppable zones.
@@ -253,15 +269,12 @@ Update the information about the valid droppable zones.
 | `requestTimestamp` | `number`                         | Time where the request to the server was made. Useful to avoid having old information. |
 | `newContainerId`   | `string`                         | ID of the container where the drag is trying to be made.                               |
 | `draggedItems`     | `GxDataTransferInfo[]`           | Information about the dragged items.                                                   |
-| `dropType`         | `"above" \| "after" \| "before"` | Type of drop that wants to be effected                                                 |
+| `dropType`         | `"after" \| "before" \| "above"` | Type of drop that wants to be effected                                                 |
 | `validDrop`        | `boolean`                        | Current state of the droppable zone.                                                   |
 
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Shadow Parts
 

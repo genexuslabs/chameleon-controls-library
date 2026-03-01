@@ -1,16 +1,28 @@
 # ch-theme
 
-
-
 <!-- Auto Generated Below -->
 
 
 ## Overview
 
-It allows you to load a style sheet in a similar way to the
-native LINK or STYLE tags, but assigning it a name so that
-it can be reused in different contexts,
-either in the Document or in a Shadow-Root.
+The `ch-theme` component loads and manages named stylesheets that can be shared and reused across the Document or any Shadow Root via the `adoptedStyleSheets` API.
+
+## Features
+ - Themes specified by name (resolved from a registry), by URL, or as inline `CSSStyleSheet` instances.
+ - Configurable loading timeout.
+ - Automatic attachment and detachment of stylesheets on connect/disconnect.
+ - Built-in flash-of-unstyled-content (FOUC) prevention that hides the host until themes finish loading.
+ - Toggle stylesheet attachment via the `attachStyleSheets` property.
+
+## Use when
+ - Applying shared design tokens or theme stylesheets across components.
+ - Loading external CSS themes by URL at runtime.
+ - Loading one or more CSS theme files lazily at runtime (e.g., dark mode, brand themes, component skins).
+ - Preventing flash of unstyled content before themes are applied.
+
+## Do not use when
+ - Styling a single component with scoped CSS — use the component's own `styleUrl` instead.
+ - Styles can be included as a static stylesheet link at build time — no runtime loading needed.
 
 ## Properties
 

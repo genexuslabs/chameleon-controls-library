@@ -7,6 +7,33 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-action-list-render` component renders an interactive list of actionable items driven by a declarative model.
+
+## Features
+ - Single and multiple selection with modifier-key multi-select.
+ - In-place caption editing with optimistic UI updates.
+ - Item pinning (fixed) and sorting.
+ - Grouping with expandable/collapsible sections.
+ - Programmatic add/remove operations.
+ - Three item types: `actionable`, `group`, and `separator`.
+ - Keyboard navigation.
+
+## Use when
+ - You need a rich, data-driven list with selection semantics (e.g., panel lists, filterable sidebars, or reorderable collections).
+ - Command palettes, selection panels, or item management lists where users can pick, pin, edit, or remove items.
+
+## Do not use when
+ - You need a simple static list without selection or editing -- use a plain HTML list instead.
+ - Navigation is the primary purpose — prefer `ch-navigation-list-render`.
+ - The list is hierarchical — prefer `ch-tree-view-render`.
+
+## Accessibility
+ - The host element has `role="list"` with `aria-multiselectable` when `selection` is `"multiple"`.
+ - Separator items have `role="separator"` and `aria-hidden="true"`.
+ - Supports keyboard navigation for item selection.
+
 ## Properties
 
 | Property                    | Attribute        | Description                                                                                                                                                                            | Type                                                                                                                                                   | Default                         |
@@ -23,7 +50,7 @@
 | `renderItem`                | --               | This property allows us to implement custom rendering of action-list items.                                                                                                            | `(itemModel: ActionListItemModel, actionListRenderState: ChActionListRender, disabled?: boolean, nested?: boolean, nestedExpandable?: boolean) => any` | `defaultRenderItem`             |
 | `selection`                 | `selection`      | Specifies the type of selection implemented by the control.                                                                                                                            | `"multiple" \| "none" \| "single"`                                                                                                                     | `"none"`                        |
 | `sortItemsCallback`         | --               | Callback that is executed when the action-list model is changed to order its items.                                                                                                    | `(subModel: ActionListModel) => void`                                                                                                                  | `defaultSortItemsCallback`      |
-| `translations`              | `translations`   | Specifies the literals required for the control.                                                                                                                                       | `ActionListTranslations`                                                                                                                               | `actionListDefaultTranslations` |
+| `translations`              | --               | Specifies the literals required for the control.                                                                                                                                       | `{ confirmDelete: string; cancelDelete: string; confirmModify: string; cancelModify: string; }`                                                        | `actionListDefaultTranslations` |
 
 
 ## Events
@@ -57,8 +84,6 @@ has `type === "actionable"`
 
 Type: `Promise<void>`
 
-
-
 ### `getItemsInfo(itemsId: string[]) => Promise<ActionListItemModelExtended[]>`
 
 Given a list of ids, it returns an array of the items that exists in the
@@ -74,8 +99,6 @@ given list.
 
 Type: `Promise<ActionListItemModelExtended[]>`
 
-
-
 ### `removeItem(itemId: string) => Promise<void>`
 
 Remove the item and all its descendants from the control.
@@ -89,8 +112,6 @@ Remove the item and all its descendants from the control.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `updateItemProperties(itemId: string, properties: Partial<ActionListItemModel> & { type: ActionListItemType; }) => Promise<void>`
 
@@ -108,7 +129,11 @@ of the items in the list.
 
 Type: `Promise<void>`
 
+## Shadow Parts
 
+| Part          | Description                                                                                         |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| `"separator"` | A horizontal divider rendered between items when the model contains an item of `type: "separator"`. |
 
 
 ## CSS Custom Properties

@@ -81,6 +81,7 @@ log.txt
 .versions/
 $RECYCLE.BIN/
 components.d.ts
+exported-docs/
 
 .DS_Store
 Thumbs.db

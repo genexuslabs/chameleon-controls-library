@@ -47,6 +47,52 @@ import {
   WINDOW_ID
 } from "./internal/utils";
 
+/**
+ * The `ch-action-menu-render` component renders a dropdown menu triggered by an expandable button, supporting deeply nested sub-menus and full keyboard accessibility.
+ *
+ * @remarks
+ * ## Features
+ *  - Deeply nested sub-menus with mouse hover expand/collapse.
+ *  - Keyboard navigation (arrow keys, Escape, Enter).
+ *  - Menu items can be buttons, hyperlinks, separators, or custom slots.
+ *  - Positioned using `ch-popover`; auto-closes on outside click or Escape.
+ *  - Internal expansion state management -- host only supplies data and reacts to events.
+ *
+ * ## Use when
+ *  - You need a multi-level dropdown menu with full keyboard accessibility (e.g., application menus, context menus, toolbar overflow menus).
+ *  - Space is constrained and 3 or more item-level actions must be accessible (e.g., Edit, Rename, Delete in a table row).
+ *  - Contextual actions that are secondary and do not need to be always visible.
+ *
+ * ## Do not use when
+ *  - You need a flat list of selectable items without nesting -- prefer `ch-action-list-render` instead.
+ *  - Fewer than 3 actions are available — show them as visible inline icon buttons (fewer clicks, more discoverable).
+ *  - Selection input is needed — never use `role="menu"` semantics for a value selector; prefer `ch-combo-box-render`.
+ *  - Actions should always be immediately visible and prominent — put them inline.
+ *
+ * ## Accessibility
+ *  - The expandable button has `aria-expanded`, `aria-haspopup="true"`, `aria-controls`, and a configurable `aria-label` (`buttonAccessibleName`).
+ *  - The popup window has `role="list"`.
+ *  - Keyboard support: Escape closes the menu and returns focus to the trigger button; arrow keys navigate items.
+ *
+ * @status experimental
+ *
+ * @part expandable-button - The top-level button that toggles the dropdown. Also receives the `expanded`, `collapsed`, and `disabled` state parts.
+ * @part window - The popover container that holds the dropdown menu items.
+ * @part action - The clickable row element for each menu item.
+ * @part button - A `<button>`-type action row. Receives `expandable`, `expanded`, `collapsed`, and `disabled` state parts.
+ * @part link - An `<a>`-type action row.
+ * @part content - The content area inside each action row (caption + optional icon).
+ * @part shortcut - The keyboard shortcut label rendered at the end of an action row.
+ * @part separator - A horizontal divider rendered for items of `type: "separator"`.
+ *
+ * @part expandable - Present in the `button` part when the item has sub-items.
+ * @part expanded - Present in the `button` part when the item's sub-menu is open.
+ * @part collapsed - Present in the `button` part when the item's sub-menu is closed.
+ * @part disabled - Present in the `button` part when the item is disabled.
+ *
+ * @slot - Default slot projected inside the expandable button. Use it to provide the button label or icon.
+ * @slot {name} - Named slots matching each item of `type: "slot"` in the model. Use them to inject custom content at specific positions in the menu.
+ */
 @Component({
   tag: "ch-action-menu-render",
   styleUrl: "action-menu-render.scss",

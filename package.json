@@ -17,11 +17,13 @@
     "loader/"
   ],
   "scripts": {
-    "build": "npm run build.monaco && npm run build.light && npm run build.extras && npm run build.showcase",
+    "build": "npm run build.monaco && npm run build.light && npm run build.extras && npm run build.showcase && npm run inject-remarks",
     "build.light": "stencil build --docs --react",
     "build.showcase": "stencil build",
     "build.extras": "tsc --project tsconfig-collection.json && node copy-files.mjs",
     "build.monaco": "vite build",
+    "inject-remarks": "node inject-remarks.mjs",
+    "export-docs": "node export-component-docs.mjs",
     "prettier": "prettier src/**/*.{tsx,ts,jsx,js,css,json,md} --write",
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "npm run build.monaco && node start-dev-server.js",

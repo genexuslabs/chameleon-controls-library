@@ -18,9 +18,33 @@ const DISPLAYED_LINES_CUSTOM_VAR = "--ch-textblock-displayed-lines";
 const LINE_HEIGHT_CUSTOM_VAR = "--ch-textblock-line-height";
 
 /**
+ * The `ch-textblock` component displays text or HTML content with multi-line ellipsis truncation, automatic grow behavior, and overflow detection.
+ *
+ * @remarks
+ * ## Features
+ *  - Multi-line ellipsis truncation with automatic line calculation.
+ *  - Auto-grow mode that expands the container to fit its content.
+ *  - Overflow detection with an `overflowingContentChange` event.
+ *  - Semantic role mapping (paragraph or heading levels h1-h6).
+ *  - Optional native tooltip on content overflow.
+ *
+ * ## Use when
+ *  - You need a text container that intelligently handles overflow across multiple lines.
+ *  - Displaying dynamic text that may overflow and requires a tooltip or line-clamping.
+ *  - Content needs a semantic heading role (`h1`–`h6`) without using native heading elements.
+ *
+ * ## Do not use when
+ *  - You need to render rich Markdown content — prefer `ch-markdown-viewer` instead.
+ *  - Rich Markdown or HTML formatting is needed — prefer `ch-markdown-viewer`.
+ *  - Static text that never overflows — a plain HTML element is more appropriate.
+ *
+ * ## Accessibility
+ *  - Supports configurable semantic role via `accessibleRole`: `"paragraph"`, `"heading"` (with `aria-level`), or `"none"`.
+ *  - When content overflows and `showTooltipOnOverflow` is `true`, a `title` attribute provides the full text to assistive technology.
+ *
  * @status developer-preview
  *
- * @slot - The slot for the HTML content.
+ * @slot - The default slot for HTML content. Rendered when `format` is set to `"HTML"`.
  */
 @Component({
   shadow: true,

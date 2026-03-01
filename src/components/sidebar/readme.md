@@ -1,9 +1,29 @@
 # ch-sidebar
 
-
-
 <!-- Auto Generated Below -->
 
+
+## Overview
+
+The `ch-sidebar` component provides a collapsible side panel typically used for primary or secondary navigation, tool palettes, or contextual information.
+
+## Features
+ - Expand or collapse programmatically or through an optional button with configurable position, caption, and accessible label.
+ - Observable system: descendant components (such as `ch-navigation-list-render`) automatically synchronize their expanded state.
+ - RTL-aware expand/collapse button rendering.
+ - Separate accessible names and captions for the expanded and collapsed states of the button.
+
+## Use when
+ - Wrapping content that should be togglable between a full and a compact view (navigation menus, tool palettes, contextual panels).
+ - Providing a collapsible side panel for secondary navigation, tools, or contextual content.
+ - The main content needs more horizontal space when the panel is collapsed.
+
+## Do not use when
+ - Displaying transient overlays -- prefer a dialog or popover instead.
+ - The sidebar content is always required and must never be hidden.
+
+## Accessibility
+ - The expand/collapse button carries an `aria-label` that changes based on the current state (`expandButtonExpandAccessibleName` / `expandButtonCollapseAccessibleName`).
 
 ## Properties
 
@@ -23,6 +43,22 @@
 | Event            | Description                                                                   | Type                   |
 | ---------------- | ----------------------------------------------------------------------------- | ---------------------- |
 | `expandedChange` | Emitted when the element is clicked or the space key is pressed and released. | `CustomEvent<boolean>` |
+
+
+## Slots
+
+| Slot | Description                           |
+| ---- | ------------------------------------- |
+|      | Default slot for the sidebar content. |
+
+
+## Shadow Parts
+
+| Part              | Description                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------- |
+| `"collapsed"`     | Present on the expand button when the sidebar is collapsed.                                       |
+| `"expand-button"` | The button that toggles the expanded/collapsed state. Rendered when `showExpandButton` is `true`. |
+| `"expanded"`      | Present on the expand button when the sidebar is expanded.                                        |
 
 
 ## CSS Custom Properties

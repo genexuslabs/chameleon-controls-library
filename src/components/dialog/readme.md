@@ -1,14 +1,41 @@
 # ch-dialog
 
-
-
 <!-- Auto Generated Below -->
 
 
 ## Overview
 
-The `ch-dialog` component represents a modal or non-modal dialog box or other
-interactive component.
+The `ch-dialog` component represents a modal or non-modal dialog box built on top of the native `<dialog>` element.
+
+## Features
+ - Modal and non-modal modes with native `<dialog>` semantics.
+ - Dragging from the header or the entire box.
+ - Resizing through edges and corners.
+ - Optional header with caption and close button, and optional footer slot.
+ - Full RTL layout support and `prefers-reduced-motion` respect.
+ - Stacking of multiple simultaneous modal dialogs (only the topmost reacts to outside clicks and Escape).
+ - Configurable `closable` property to prevent user dismissal.
+
+## Use when
+ - You need confirmation prompts, detail panels, form wizards, or any overlay that benefits from native dialog semantics.
+ - Interrupting the user to gather required input or confirmation before a workflow can continue.
+ - Short, focused tasks that are infrequent (e.g., rename, delete confirmation, quick settings form).
+
+## Do not use when
+ - You need lightweight, non-blocking overlays anchored to a trigger element -- prefer `ch-popover` or `ch-tooltip` instead.
+ - The information is non-critical — prefer inline notifications, toasts, or banners.
+ - The task involves large amounts of data or complex workflows — dialogs are not full pages.
+ - The user did not initiate the action — never open a dialog automatically.
+ - Users perform this task frequently — make it completable inline instead.
+ - Nesting dialogs within dialogs — this is always an anti-pattern.
+ - Lightweight contextual content anchored to a trigger element — prefer `ch-popover`.
+
+## Accessibility
+ - Built on the native `<dialog>` element, which provides modal semantics and focus trapping automatically.
+ - The dialog is labelled via `aria-labelledby` pointing to an `<h2>` heading in the header.
+ - The close button carries an `aria-label` (`closeButtonAccessibleName`).
+ - When `closable` is `true`, the Escape key dismisses the dialog.
+ - Multiple simultaneous modal dialogs are stacked so only the topmost reacts to outside clicks and Escape.
 
 ## Properties
 
@@ -35,32 +62,32 @@ interactive component.
 
 ## Slots
 
-| Slot        | Description                                                                                                                             |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `"content"` | Main content of the dialog.                                                                                                             |
-| `"footer"`  | Rendered below the content of the dialog if `showFooter === true`. It is used to place content that is considered footer of the dialog. |
+| Slot       | Description                                                                         |
+| ---------- | ----------------------------------------------------------------------------------- |
+|            | Default slot. Main body content of the dialog, projected inside the "content" part. |
+| `"footer"` | Footer content of the dialog. Rendered when `showFooter === true`.                  |
 
 
 ## Shadow Parts
 
-| Part                                | Description                                                                                                                                                |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"caption"`                         |                                                                                                                                                            |
-| `"close-button"`                    |                                                                                                                                                            |
-| `"content"`                         | The dialog content. It is a div element that acts as a wrapper of the slotted content.                                                                     |
-| `"corner"`                          | Represents any of the dialog corners that appear in-between the edges. These corners are used to resize the dialog dimensions by dragging.                 |
-| `"corner-block-end-inline-end"`     | Represents the dialog corner in-between the "edge-block-end" and "edge-inline-end" parts (see also "corner" part).                                         |
-| `"corner-block-end-inline-start"`   | Represents the dialog corner in-between the "edge-block-end" and "edge-inline-start" parts (see also "corner" part).                                       |
-| `"corner-block-start-inline-end"`   | Represents the dialog corner in-between the "edge-block-start" and "edge-inline-end" parts (see also "corner" part).                                       |
-| `"corner-block-start-inline-start"` | Represents the dialog corner in-between the "edge-block-start" and "edge-inline-start" parts (see also "corner" part).                                     |
-| `"dialog"`                          | The dialog html element, which is the first element inside the host.                                                                                       |
-| `"edge"`                            | Represents any of the dialog edges that appear before, after, above or below the dialog. These edges are used to resize the dialog dimensions by dragging. |
-| `"edge-block-end"`                  | Represents the "block-end" dialog edge (see also "edge" part).                                                                                             |
-| `"edge-block-start"`                | Represents the "block-start" dialog edge (see also "edge" part).                                                                                           |
-| `"edge-inline-end"`                 | Represents the "inline-end" dialog edge (see also "edge" part).                                                                                            |
-| `"edge-inline-start"`               | Represents the "inline-start" dialog edge (see also "edge" part).                                                                                          |
-| `"footer"`                          | The dialog footer which is only rendered if `showFooter === true`. The footer displays the caption and a close button.                                     |
-| `"header"`                          | The dialog header which is only rendered if `showHeader === true`. The header displays the caption and a close button.                                     |
+| Part                                | Description                                                                                                    |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `"caption"`                         | The `<h2>` heading inside the header. Rendered when `showHeader === true` and `caption` is defined.            |
+| `"close-button"`                    | The button that closes the dialog. Rendered when `showHeader === true` and `closable === true`.                |
+| `"content"`                         | A wrapper `<div>` around the default slot that holds the dialog body content.                                  |
+| `"corner"`                          | Any of the four dialog corners used as resize handles. Rendered when `resizable === true` and `show === true`. |
+| `"corner-block-end-inline-end"`     | Bottom-right (in LTR) resize corner (see also "corner" part).                                                  |
+| `"corner-block-end-inline-start"`   | Bottom-left (in LTR) resize corner (see also "corner" part).                                                   |
+| `"corner-block-start-inline-end"`   | Top-right (in LTR) resize corner (see also "corner" part).                                                     |
+| `"corner-block-start-inline-start"` | Top-left (in LTR) resize corner (see also "corner" part).                                                      |
+| `"dialog"`                          | The native `<dialog>` element, which is the first element inside the host.                                     |
+| `"edge"`                            | Any of the four dialog edges used as resize handles. Rendered when `resizable === true` and `show === true`.   |
+| `"edge-block-end"`                  | The bottom resize edge (see also "edge" part).                                                                 |
+| `"edge-block-start"`                | The top resize edge (see also "edge" part).                                                                    |
+| `"edge-inline-end"`                 | The inline-end (right in LTR) resize edge (see also "edge" part).                                              |
+| `"edge-inline-start"`               | The inline-start (left in LTR) resize edge (see also "edge" part).                                             |
+| `"footer"`                          | The dialog footer. Rendered when `showFooter === true`.                                                        |
+| `"header"`                          | The dialog header. Rendered when `showHeader === true`. Contains the caption and the close button.             |
 
 
 ## CSS Custom Properties

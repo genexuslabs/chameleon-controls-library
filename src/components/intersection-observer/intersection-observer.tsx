@@ -1,9 +1,9 @@
 import {
   Component,
-  h,
-  EventEmitter,
-  Event,
   Element,
+  Event,
+  EventEmitter,
+  h,
   Prop
 } from "@stencil/core";
 
@@ -11,6 +11,30 @@ const REGEX_TO_REPLACE_PERCENTAGE = /%/g;
 const REGEX_TO_TEST_DIP = /^\d+(dip)?$/;
 const REGEX_TO_TEST_PERCENTAGE = /^\d+(%)?$/;
 
+/**
+ * The `ch-intersection-observer` component is a declarative wrapper around the native `IntersectionObserver` API that emits events when slotted content crosses visibility thresholds.
+ *
+ * @remarks
+ * ## Features
+ *  - Observes element visibility relative to a specified root element or the browser viewport.
+ *  - Configurable visibility thresholds as comma-separated percentages.
+ *  - Root margins in device-independent pixels (dip) or percentages to expand or contract the intersection area.
+ *  - Emits an `intersectionUpdate` event with full `IntersectionObserverEntry` details.
+ *
+ * ## Use when
+ *  - Triggering actions when an element scrolls into or out of view.
+ *  - Implementing lazy loading or scroll-based animations.
+ *  - Implementing lazy loading of images or components that should only load when scrolled into view.
+ *  - Triggering animations or data fetching when an element enters the viewport.
+ *
+ * ## Do not use when
+ *  - You need to observe element resizing — use a `ResizeObserver` instead.
+ *  - Continuous scroll position tracking is needed — use a scroll event listener instead.
+ *
+ * @status experimental
+ *
+ * @slot content - The element to be observed for intersection changes.
+ */
 @Component({
   tag: "ch-intersection-observer",
   styleUrl: "intersection-observer.scss",

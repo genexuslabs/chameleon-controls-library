@@ -86,26 +86,27 @@ function injectRemarksIntoReadme(readmeFilePath, remarks) {
 
   let content = fs.readFileSync(readmeFilePath, "utf8");
 
-  // Find the insertion point (after Overview section, including any trailing whitespace)
-  const overviewEndMatch = content.match(
-    /## Overview\n([\s\S]*?)(?=\n## |\n<!-- Auto Generated Below -->)/
-  );
-
-  if (!overviewEndMatch) {
-    console.warn(
-      `Could not find insertion point in ${readmeFilePath}, skipping`
-    );
-    return;
-  }
-
-  // Find the position to insert (right after Overview section)
-  // Include any trailing newlines/whitespace in the match to clean them up
-  const overviewFullMatch = content.match(
+  // Find the insertion point (after Overview section, or after title if no Overview)
+  const overviewMatch = content.match(
     /## Overview\n([\s\S]*?)\n+(?=\n## |\n<!-- Auto Generated Below -->)/
   );
-  const overviewEndPos = overviewFullMatch
-    ? content.indexOf(overviewFullMatch[0]) + overviewFullMatch[0].length - 1
-    : content.indexOf(overviewEndMatch[0]) + overviewEndMatch[0].length;
+
+  let overviewEndPos;
+
+  if (overviewMatch) {
+    // If Overview section exists, insert after it
+    overviewEndPos = content.indexOf(overviewMatch[0]) + overviewMatch[0].length - 1;
+  } else {
+    // If no Overview section, find the auto-generated marker and insert before it
+    const autoGenMarker = content.match(/\n<!-- Auto Generated Below -->/);
+    if (!autoGenMarker) {
+      console.warn(
+        `Could not find insertion point in ${readmeFilePath}, skipping`
+      );
+      return;
+    }
+    overviewEndPos = content.indexOf(autoGenMarker[0]);
+  }
 
   // Check if remarks were already injected by looking for the ## Features pattern
   // If found, replace the existing remarks section instead of adding a new one
@@ -141,6 +142,70 @@ function injectRemarksIntoReadme(readmeFilePath, remarks) {
 }
 
 /**
+ * Recursively find and process component directories
+ * @param {string} dir - Directory to search in
+ * @param {string} relativePath - Relative path for display purposes
+ * @returns {{processedCount: number, skippedCount: number}}
+ */
+function processComponentsRecursively(dir, relativePath = "") {
+  let processedCount = 0;
+  let skippedCount = 0;
+
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+
+    const entryPath = path.join(dir, entry.name);
+    const displayPath = relativePath ? `${relativePath}/${entry.name}` : entry.name;
+
+    // Check if this directory contains a readme.md and component .tsx file
+    const readmePath = path.join(entryPath, "readme.md");
+    const files = fs.readdirSync(entryPath);
+    const hasReadme = fs.existsSync(readmePath);
+    const hasComponentFile = files.some(f => f.endsWith(".tsx"));
+
+    if (hasReadme && hasComponentFile) {
+      // This is a component directory - try to process it
+      const componentFile = files.find((file) => {
+        const baseName = path.basename(file, ".tsx");
+        return (
+          file === `${entry.name}.tsx` ||
+          file === `${entry.name}-render.tsx` ||
+          file.endsWith(".tsx")
+        );
+      });
+
+      if (componentFile) {
+        const componentPath = path.join(entryPath, componentFile);
+
+        try {
+          const { remarks, filename } = processComponentFile(componentPath);
+
+          if (remarks) {
+            injectRemarksIntoReadme(readmePath, remarks);
+            console.log(`✓ ${displayPath}: remarks injected`);
+            processedCount++;
+          } else {
+            console.log(`⊘ ${displayPath}: no @remarks found`);
+            skippedCount++;
+          }
+        } catch (error) {
+          console.error(`✗ Error processing ${displayPath}: ${error.message}`);
+        }
+      }
+    }
+
+    // Always recurse into subdirectories to find nested components
+    const subResults = processComponentsRecursively(entryPath, displayPath);
+    processedCount += subResults.processedCount;
+    skippedCount += subResults.skippedCount;
+  }
+
+  return { processedCount, skippedCount };
+}
+
+/**
  * Main function - processes all components
  */
 function main() {
@@ -151,50 +216,7 @@ function main() {
     process.exit(1);
   }
 
-  let processedCount = 0;
-  let skippedCount = 0;
-
-  // Get all subdirectories in src/components/
-  const dirs = fs
-    .readdirSync(componentsDir, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name);
-
-  for (const dir of dirs) {
-    const componentDir = path.join(componentsDir, dir);
-
-    // Look for the main component .tsx file
-    const files = fs.readdirSync(componentDir);
-
-    // Try to find the component file that matches the directory name
-    const componentFile = files.find((file) => {
-      return (
-        file === `${dir}.tsx` || file === `${dir}-render.tsx`
-      );
-    });
-
-    if (!componentFile) {
-      continue;
-    }
-
-    const componentPath = path.join(componentDir, componentFile);
-    const readmePath = path.join(componentDir, "readme.md");
-
-    try {
-      const { remarks, filename } = processComponentFile(componentPath);
-
-      if (remarks) {
-        injectRemarksIntoReadme(readmePath, remarks);
-        console.log(`✓ ${filename}: remarks injected`);
-        processedCount++;
-      } else {
-        console.log(`⊘ ${filename}: no @remarks found`);
-        skippedCount++;
-      }
-    } catch (error) {
-      console.error(`✗ Error processing ${dir}: ${error.message}`);
-    }
-  }
+  const { processedCount, skippedCount } = processComponentsRecursively(componentsDir);
 
   console.log(
     `\nProcessed: ${processedCount} components, Skipped: ${skippedCount}`

@@ -78,4 +78,43 @@ describe("[ch-flexible-layout-render][renders]", () => {
       })
     );
   });
+
+  it("should not render a slot when widget.slot is false and slottedWidgets is true, but render via renders instead", async () => {
+    chFlexibleLayoutRender.slottedWidgets = true;
+    chFlexibleLayoutRender.model = {
+      id: "root",
+      direction: "columns",
+      items: [
+        {
+          id: TEST3_ID,
+          size: "1fr",
+          type: "single-content",
+          widget: { id: TEST3_ID, name: "", slot: false }
+        }
+      ]
+    };
+    await page.waitForChanges();
+
+    const chFlexibleLayoutEl =
+      chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
+
+    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${TEST3_ID}"]`);
+    expect(slot).toBeNull();
+
+    const button = chFlexibleLayoutEl.querySelector(
+      `button[slot="${TEST3_ID}"]`
+    ) as HTMLButtonElement;
+    expect(button).not.toBeNull();
+    expect(button.type).toBe("button");
+    expect(button.textContent).toBe("Something");
+
+    expect(renderedWidgetsChangeSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        detail: {
+          rendered: [TEST3_ID],
+          slotted: []
+        }
+      })
+    );
+  });
 });

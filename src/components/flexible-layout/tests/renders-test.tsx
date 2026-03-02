@@ -1,19 +1,19 @@
 import { h } from "@stencil/core";
 import { FlexibleLayoutRenders } from "../internal/flexible-layout/types";
 
-export const TEST1_ID = "Test1";
-export const TEST2_ID = "Test2";
-export const TEST3_ID = "Test3";
-export const TEST4_ID = "Test4";
+export const WIDGET1_ID = "Widget1";
+export const WIDGET2_ID = "Widget2";
+export const WIDGET3_ID = "Widget3";
+export const WIDGET4_ID = "Widget4";
 
 export const flexibleLayoutTestRenders: FlexibleLayoutRenders = {
-  [TEST3_ID]: () => (
-    <button key={TEST3_ID} slot={TEST3_ID} type="button">
+  [WIDGET3_ID]: () => (
+    <button key={WIDGET3_ID} slot={WIDGET3_ID} type="button">
       Something
     </button>
   ),
-  [TEST4_ID]: () => (
-    <span key={TEST4_ID} slot={TEST4_ID}>
+  [WIDGET4_ID]: () => (
+    <span key={WIDGET4_ID} slot={WIDGET4_ID}>
       Something within the span
     </span>
   )

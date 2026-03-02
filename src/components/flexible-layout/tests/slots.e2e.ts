@@ -10,17 +10,20 @@ import {
   FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED,
   SLOT_CONTENT
 } from "./common";
-import { TEST1_ID, TEST2_ID } from "./renders-test";
+import { WIDGET1_ID, WIDGET2_ID } from "./renders-test";
+
+const LEAF1_ID = "Leaf1";
+const LEAF2_ID = "Leaf2";
 
 const ONE_WIDGET_SLOT_TRUE = {
   id: "root",
   direction: "columns",
   items: [
     {
-      id: TEST1_ID,
+      id: LEAF1_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: TEST1_ID, name: "", slot: true }
+      widget: { id: WIDGET1_ID, name: "", slot: true }
     }
   ]
 } satisfies FlexibleLayoutModel;
@@ -30,16 +33,16 @@ const TWO_WIDGET_SLOT_TRUE = {
   direction: "columns",
   items: [
     {
-      id: TEST1_ID,
+      id: LEAF1_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: TEST1_ID, name: "", slot: true }
+      widget: { id: WIDGET1_ID, name: "", slot: true }
     },
     {
-      id: TEST2_ID,
+      id: LEAF2_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: TEST2_ID, name: "", slot: true }
+      widget: { id: WIDGET2_ID, name: "", slot: true }
     }
   ]
 } satisfies FlexibleLayoutModel;
@@ -49,10 +52,10 @@ const ONE_WIDGET_SLOT_UNDEFINED = {
   direction: "columns",
   items: [
     {
-      id: TEST1_ID,
+      id: LEAF1_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: TEST1_ID, name: "" }
+      widget: { id: WIDGET1_ID, name: "" }
     }
   ]
 } satisfies FlexibleLayoutModel;
@@ -62,16 +65,16 @@ const TWO_WIDGET_SLOT_UNDEFINED = {
   direction: "columns",
   items: [
     {
-      id: TEST1_ID,
+      id: LEAF1_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: TEST1_ID, name: "" }
+      widget: { id: WIDGET1_ID, name: "" }
     },
     {
-      id: TEST2_ID,
+      id: LEAF2_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: TEST2_ID, name: "" }
+      widget: { id: WIDGET2_ID, name: "" }
     }
   ]
 } satisfies FlexibleLayoutModel;
@@ -84,10 +87,10 @@ const TWO_TABBED_WIDGET_SLOT_TRUE = {
       id: "tabbed-item",
       size: "1fr",
       type: "tabbed",
-      selectedWidgetId: TEST1_ID,
+      selectedWidgetId: WIDGET1_ID,
       widgets: [
-        { id: TEST1_ID, name: "Tab 1", slot: true },
-        { id: TEST2_ID, name: "Tab 2", slot: true }
+        { id: WIDGET1_ID, name: "Tab 1", slot: true },
+        { id: WIDGET2_ID, name: "Tab 2", slot: true }
       ]
     }
   ]
@@ -101,10 +104,10 @@ const TWO_TABBED_WIDGET_SLOT_UNDEFINED = {
       id: "tabbed-item",
       size: "1fr",
       type: "tabbed",
-      selectedWidgetId: TEST1_ID,
+      selectedWidgetId: WIDGET1_ID,
       widgets: [
-        { id: TEST1_ID, name: "Tab 1" },
-        { id: TEST2_ID, name: "Tab 2" }
+        { id: WIDGET1_ID, name: "Tab 1" },
+        { id: WIDGET2_ID, name: "Tab 2" }
       ]
     }
   ]
@@ -139,12 +142,12 @@ describe("[ch-flexible-layout-render][slots]", () => {
     await page.waitForChanges();
 
     expect(await getRenderedContent()).toBe(
-      FLEXIBLE_LAYOUT_RENDERED_CONTENT(SLOT_CONTENT(TEST1_ID))
+      FLEXIBLE_LAYOUT_RENDERED_CONTENT(SLOT_CONTENT(WIDGET1_ID))
     );
     expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
       rendered: [],
-      slotted: [TEST1_ID]
+      slotted: [WIDGET1_ID]
     });
   });
 
@@ -154,13 +157,13 @@ describe("[ch-flexible-layout-render][slots]", () => {
 
     expect(await getRenderedContent()).toBe(
       FLEXIBLE_LAYOUT_RENDERED_CONTENT(
-        SLOT_CONTENT(TEST1_ID) + SLOT_CONTENT(TEST2_ID)
+        SLOT_CONTENT(WIDGET1_ID) + SLOT_CONTENT(WIDGET2_ID)
       )
     );
     expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
       rendered: [],
-      slotted: [TEST1_ID, TEST2_ID]
+      slotted: [WIDGET1_ID, WIDGET2_ID]
     });
   });
 
@@ -172,12 +175,12 @@ describe("[ch-flexible-layout-render][slots]", () => {
     await page.waitForChanges();
 
     expect(await getRenderedContent()).toBe(
-      FLEXIBLE_LAYOUT_RENDERED_CONTENT(SLOT_CONTENT(TEST1_ID))
+      FLEXIBLE_LAYOUT_RENDERED_CONTENT(SLOT_CONTENT(WIDGET1_ID))
     );
     expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
       rendered: [],
-      slotted: [TEST1_ID]
+      slotted: [WIDGET1_ID]
     });
   });
 
@@ -188,13 +191,13 @@ describe("[ch-flexible-layout-render][slots]", () => {
 
     expect(await getRenderedContent()).toBe(
       FLEXIBLE_LAYOUT_RENDERED_CONTENT(
-        SLOT_CONTENT(TEST1_ID) + SLOT_CONTENT(TEST2_ID)
+        SLOT_CONTENT(WIDGET1_ID) + SLOT_CONTENT(WIDGET2_ID)
       )
     );
     expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
       rendered: [],
-      slotted: [TEST1_ID, TEST2_ID]
+      slotted: [WIDGET1_ID, WIDGET2_ID]
     });
   });
 
@@ -206,19 +209,19 @@ describe("[ch-flexible-layout-render][slots]", () => {
     flexibleLayoutRef.setProperty("model", TWO_TABBED_WIDGET_SLOT_TRUE);
     await page.waitForChanges();
 
-    // Only the selected widget (TEST1_ID) should be rendered initially
+    // Only the selected widget (WIDGET1_ID) should be rendered initially
     expect(await getRenderedContent()).toBe(
       FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED(
-        SLOT_CONTENT(TEST1_ID),
+        SLOT_CONTENT(WIDGET1_ID),
         "tabbed-item",
         "block-start",
-        [TEST1_ID, TEST2_ID]
+        [WIDGET1_ID, WIDGET2_ID]
       )
     );
     expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
       rendered: [],
-      slotted: [TEST1_ID]
+      slotted: [WIDGET1_ID]
     });
   });
 
@@ -231,19 +234,19 @@ describe("[ch-flexible-layout-render][slots]", () => {
     flexibleLayoutRef.setProperty("model", TWO_TABBED_WIDGET_SLOT_UNDEFINED);
     await page.waitForChanges();
 
-    // Only the selected widget (TEST1_ID) should be rendered initially
+    // Only the selected widget (WIDGET1_ID) should be rendered initially
     expect(await getRenderedContent()).toBe(
       FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED(
-        SLOT_CONTENT(TEST1_ID),
+        SLOT_CONTENT(WIDGET1_ID),
         "tabbed-item",
         "block-start",
-        [TEST1_ID, TEST2_ID]
+        [WIDGET1_ID, WIDGET2_ID]
       )
     );
     expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
       rendered: [],
-      slotted: [TEST1_ID]
+      slotted: [WIDGET1_ID]
     });
   });
 
@@ -258,17 +261,17 @@ describe("[ch-flexible-layout-render][slots]", () => {
 
     expect(await getRenderedContent()).toBe(
       FLEXIBLE_LAYOUT_RENDERED_CONTENT(
-        SLOT_CONTENT(TEST1_ID) + SLOT_CONTENT(TEST2_ID)
+        SLOT_CONTENT(WIDGET1_ID) + SLOT_CONTENT(WIDGET2_ID)
       )
     );
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventTimes(2);
     expect(renderedWidgetsChangeSpy).toHaveNthReceivedEventDetail(0, {
       rendered: [],
-      slotted: [TEST1_ID]
+      slotted: [WIDGET1_ID]
     });
     expect(renderedWidgetsChangeSpy).toHaveNthReceivedEventDetail(1, {
       rendered: [],
-      slotted: [TEST1_ID, TEST2_ID]
+      slotted: [WIDGET1_ID, WIDGET2_ID]
     });
   });
 

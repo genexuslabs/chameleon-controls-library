@@ -5,26 +5,29 @@ import { ChFlexibleLayout } from "../internal/flexible-layout/flexible-layout";
 import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
 import {
   flexibleLayoutTestRenders,
-  TEST1_ID,
-  TEST3_ID,
-  TEST4_ID
+  WIDGET1_ID,
+  WIDGET3_ID,
+  WIDGET4_ID
 } from "./renders-test";
+
+const LEAF1_ID = "Leaf1";
+const LEAF2_ID = "Leaf2";
 
 const SLOT_AND_RENDER_MODEL: FlexibleLayoutModel = {
   id: "root",
   direction: "columns",
   items: [
     {
-      id: TEST1_ID,
+      id: LEAF1_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: TEST1_ID, name: "", slot: true }
+      widget: { id: WIDGET1_ID, name: "", slot: true }
     },
     {
-      id: TEST3_ID,
+      id: LEAF2_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: TEST3_ID, name: "", renderId: TEST3_ID }
+      widget: { id: WIDGET3_ID, name: "", renderId: WIDGET3_ID }
     }
   ]
 };
@@ -60,12 +63,12 @@ describe("[ch-flexible-layout-render][renders]", () => {
     const chFlexibleLayoutEl =
       chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
 
-    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${TEST1_ID}"]`);
+    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${WIDGET1_ID}"]`);
     expect(slot).not.toBeNull();
-    expect(slot.getAttribute("slot")).toBe(TEST1_ID);
+    expect(slot.getAttribute("slot")).toBe(WIDGET1_ID);
 
     const button = chFlexibleLayoutEl.querySelector(
-      `button[slot="${TEST3_ID}"]`
+      `button[slot="${WIDGET3_ID}"]`
     ) as HTMLButtonElement;
     expect(button).not.toBeNull();
     expect(button.type).toBe("button");
@@ -74,8 +77,8 @@ describe("[ch-flexible-layout-render][renders]", () => {
     expect(renderedWidgetsChangeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         detail: {
-          rendered: [TEST3_ID],
-          slotted: [TEST1_ID]
+          rendered: [WIDGET3_ID],
+          slotted: [WIDGET1_ID]
         }
       })
     );
@@ -88,10 +91,10 @@ describe("[ch-flexible-layout-render][renders]", () => {
       direction: "columns",
       items: [
         {
-          id: TEST3_ID,
+          id: LEAF1_ID,
           size: "1fr",
           type: "single-content",
-          widget: { id: TEST3_ID, name: "", slot: false }
+          widget: { id: WIDGET3_ID, name: "", slot: false }
         }
       ]
     };
@@ -100,11 +103,11 @@ describe("[ch-flexible-layout-render][renders]", () => {
     const chFlexibleLayoutEl =
       chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
 
-    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${TEST3_ID}"]`);
+    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${WIDGET3_ID}"]`);
     expect(slot).toBeNull();
 
     const button = chFlexibleLayoutEl.querySelector(
-      `button[slot="${TEST3_ID}"]`
+      `button[slot="${WIDGET3_ID}"]`
     ) as HTMLButtonElement;
     expect(button).not.toBeNull();
     expect(button.type).toBe("button");
@@ -113,7 +116,7 @@ describe("[ch-flexible-layout-render][renders]", () => {
     expect(renderedWidgetsChangeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         detail: {
-          rendered: [TEST3_ID],
+          rendered: [WIDGET3_ID],
           slotted: []
         }
       })
@@ -127,10 +130,10 @@ describe("[ch-flexible-layout-render][renders]", () => {
       direction: "columns",
       items: [
         {
-          id: TEST3_ID,
+          id: LEAF1_ID,
           size: "1fr",
           type: "single-content",
-          widget: { id: TEST3_ID, name: "", slot: false }
+          widget: { id: WIDGET3_ID, name: "", slot: false }
         }
       ]
     };
@@ -139,11 +142,11 @@ describe("[ch-flexible-layout-render][renders]", () => {
     const chFlexibleLayoutEl =
       chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
 
-    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${TEST3_ID}"]`);
+    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${WIDGET3_ID}"]`);
     expect(slot).toBeNull();
 
     const button = chFlexibleLayoutEl.querySelector(
-      `button[slot="${TEST3_ID}"]`
+      `button[slot="${WIDGET3_ID}"]`
     ) as HTMLButtonElement;
     expect(button).not.toBeNull();
     expect(button.type).toBe("button");
@@ -152,7 +155,7 @@ describe("[ch-flexible-layout-render][renders]", () => {
     expect(renderedWidgetsChangeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         detail: {
-          rendered: [TEST3_ID],
+          rendered: [WIDGET3_ID],
           slotted: []
         }
       })
@@ -166,10 +169,10 @@ describe("[ch-flexible-layout-render][renders]", () => {
       direction: "columns",
       items: [
         {
-          id: TEST3_ID,
+          id: LEAF1_ID,
           size: "1fr",
           type: "single-content",
-          widget: { id: TEST3_ID, name: "" }
+          widget: { id: WIDGET3_ID, name: "" }
         }
       ]
     };
@@ -178,11 +181,11 @@ describe("[ch-flexible-layout-render][renders]", () => {
     const chFlexibleLayoutEl =
       chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
 
-    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${TEST3_ID}"]`);
+    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${WIDGET3_ID}"]`);
     expect(slot).toBeNull();
 
     const button = chFlexibleLayoutEl.querySelector(
-      `button[slot="${TEST3_ID}"]`
+      `button[slot="${WIDGET3_ID}"]`
     ) as HTMLButtonElement;
     expect(button).not.toBeNull();
     expect(button.type).toBe("button");
@@ -191,7 +194,7 @@ describe("[ch-flexible-layout-render][renders]", () => {
     expect(renderedWidgetsChangeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         detail: {
-          rendered: [TEST3_ID],
+          rendered: [WIDGET3_ID],
           slotted: []
         }
       })
@@ -212,10 +215,20 @@ describe("[ch-flexible-layout-render][renders]", () => {
           id: "tabbed-item",
           size: "1fr",
           type: "tabbed",
-          selectedWidgetId: TEST4_ID,
+          selectedWidgetId: WIDGET4_ID,
           widgets: [
-            { id: TEST3_ID, name: "Tab 1", slot: false, renderId: TEST3_ID },
-            { id: TEST4_ID, name: "Tab 2", slot: false, renderId: TEST4_ID }
+            {
+              id: WIDGET3_ID,
+              name: "Tab 1",
+              slot: false,
+              renderId: WIDGET3_ID
+            },
+            {
+              id: WIDGET4_ID,
+              name: "Tab 2",
+              slot: false,
+              renderId: WIDGET4_ID
+            }
           ]
         }
       ]
@@ -225,26 +238,26 @@ describe("[ch-flexible-layout-render][renders]", () => {
     const chFlexibleLayoutEl =
       chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
 
-    // Only the selected widget (TEST4_ID) should be rendered
-    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${TEST4_ID}"]`);
+    // Only the selected widget (WIDGET4_ID) should be rendered
+    const slot = chFlexibleLayoutEl.querySelector(`slot[name="${WIDGET4_ID}"]`);
     expect(slot).toBeNull();
 
     const span = chFlexibleLayoutEl.querySelector(
-      `span[slot="${TEST4_ID}"]`
+      `span[slot="${WIDGET4_ID}"]`
     ) as HTMLSpanElement;
     expect(span).not.toBeNull();
     expect(span.textContent).toBe("Something within the span");
 
-    // TEST3_ID should not be rendered (not selected)
+    // WIDGET3_ID should not be rendered (not selected)
     const button = chFlexibleLayoutEl.querySelector(
-      `button[slot="${TEST3_ID}"]`
+      `button[slot="${WIDGET3_ID}"]`
     );
     expect(button).toBeNull();
 
     expect(renderedWidgetsChangeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         detail: {
-          rendered: [TEST4_ID],
+          rendered: [WIDGET4_ID],
           slotted: []
         }
       })
@@ -261,10 +274,20 @@ describe("[ch-flexible-layout-render][renders]", () => {
           id: "tabbed-item",
           size: "1fr",
           type: "tabbed",
-          selectedWidgetId: TEST4_ID,
+          selectedWidgetId: WIDGET4_ID,
           widgets: [
-            { id: TEST3_ID, name: "Tab 1", slot: false, renderId: TEST3_ID },
-            { id: TEST4_ID, name: "Tab 2", slot: false, renderId: TEST4_ID }
+            {
+              id: WIDGET3_ID,
+              name: "Tab 1",
+              slot: false,
+              renderId: WIDGET3_ID
+            },
+            {
+              id: WIDGET4_ID,
+              name: "Tab 2",
+              slot: false,
+              renderId: WIDGET4_ID
+            }
           ]
         }
       ]
@@ -274,62 +297,65 @@ describe("[ch-flexible-layout-render][renders]", () => {
     const chFlexibleLayoutEl =
       chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
 
-    // Initially, only TEST4_ID should be rendered
+    // Initially, only WIDGET4_ID should be rendered
     const initialSpan = chFlexibleLayoutEl.querySelector(
-      `span[slot="${TEST4_ID}"]`
+      `span[slot="${WIDGET4_ID}"]`
     ) as HTMLSpanElement;
     expect(initialSpan).not.toBeNull();
     expect(initialSpan.textContent).toBe("Something within the span");
 
     const initialButton = chFlexibleLayoutEl.querySelector(
-      `button[slot="${TEST3_ID}"]`
+      `button[slot="${WIDGET3_ID}"]`
     );
     expect(initialButton).toBeNull();
 
-    // Verify initial event was emitted with TEST4_ID
+    // Verify initial event was emitted with WIDGET4_ID
     expect(renderedWidgetsChangeSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         detail: {
-          rendered: [TEST4_ID],
+          rendered: [WIDGET4_ID],
           slotted: []
         }
       })
     );
 
     // Use the updateSelectedWidget method to change the selected tab
-    await chFlexibleLayoutRender.updateSelectedWidget("tabbed-item", TEST3_ID);
+    await chFlexibleLayoutRender.updateSelectedWidget(
+      "tabbed-item",
+      WIDGET3_ID
+    );
     await page.waitForChanges();
 
     // Re-query the element after the change, as the DOM may have been updated
     const chFlexibleLayoutElAfterChange =
       chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
 
-    // Now TEST3_ID should be rendered and visible
+    // Now WIDGET3_ID should be rendered and visible
     const button = chFlexibleLayoutElAfterChange.querySelector(
-      `button[slot="${TEST3_ID}"]`
+      `button[slot="${WIDGET3_ID}"]`
     ) as HTMLButtonElement;
     expect(button).not.toBeNull();
     expect(button.type).toBe("button");
     expect(button.textContent).toBe("Something");
 
-    // Verify both events were emitted: initial with TEST4_ID, then with both widgets
+    // Verify both events were emitted: initial with WIDGET4_ID, then with both widgets
     expect(renderedWidgetsChangeSpy).toHaveBeenCalledTimes(2);
     expect(renderedWidgetsChangeSpy).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({
         detail: {
-          rendered: [TEST4_ID],
+          rendered: [WIDGET4_ID],
           slotted: []
         }
       })
     );
-    // After changing to TEST3_ID, both widgets remain in renderedWidgets
+    // After changing to WIDGET3_ID, both widgets remain in renderedWidgets
     // This is because updateSelectedWidget adds the new widget but doesn't remove the previous one
     expect(renderedWidgetsChangeSpy).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         detail: {
-          rendered: [TEST4_ID, TEST3_ID],
+          rendered: [WIDGET4_ID, WIDGET3_ID],
           slotted: []
         }
       })

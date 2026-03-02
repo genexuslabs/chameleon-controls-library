@@ -10,9 +10,9 @@ The `ch-flexible-layout-render` component renders widgets either via **slots** (
 - If `widget.slot` is defined → uses that value
 - If `widget.slot` is `undefined` → uses `slottedWidgets` (defaults to `false`)
 
-## Combination Matrix
+The tables below help understand and validate the necessary tests by combining the different options (`slottedWidgets` and `widget.slot`).
 
-### Single-Content Items (one widget per item)
+## Single-Content Items
 
 | `slottedWidgets` | `widget.slot` | Result | Test Location | Status |
 |------------------|---------------|--------|----------------|--------|
@@ -23,9 +23,9 @@ The `ch-flexible-layout-render` component renders widgets either via **slots** (
 | `true` | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) | ✅ Implemented |
 | `true` | `undefined` | slot | [`slots.e2e.ts`](slots.e2e.ts) | ✅ Implemented |
 
-### Tabbed Items (multiple widgets per item)
+## Tabbed Items
 
-**Note:** The slot/render decision logic (`#widgetIsSlotted`) is identical for both single-content and tabbed items. For tabbed items, we only test representative cases to verify tabbed-specific behavior: multiple widgets per item, only the selected widget (specified by `selectedWidgetId`) is rendered initially (optimization to avoid rendering all tabs at once), and tab switching works correctly. Other combinations are not tested separately for tabbed items since the decision logic is already fully covered by single-content item tests above.
+**Note:** Same decision logic as single-content items. Only representative cases tested to verify tabbed-specific behavior (multiple widgets, only selected rendered initially, tab switching).
 
 | `slottedWidgets` | `widget.slot` | Result | Test Location | Status | Notes |
 |------------------|---------------|--------|----------------|--------|-------|
@@ -33,8 +33,8 @@ The `ch-flexible-layout-render` component renders widgets either via **slots** (
 | `false` (default) | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) | ✅ Implemented | Multiple widgets, only selected rendered, includes tab switching test |
 | `true` | `undefined` | slot | [`slots.e2e.ts`](slots.e2e.ts) | ✅ Implemented | Multiple widgets, only selected rendered |
 
-Tests are split into two files:
+**Test files:**
+- `slots.e2e.ts` - E2E tests for slot scenarios
+- `renders.spec.tsx` - Spec tests for render function scenarios (requires `renders` prop)
 
-- **`slots.e2e.ts`**: E2E tests for slot-only scenarios.
-
-- **`renders.spec.tsx`**: Spec tests for scenarios that require the `renders` prop. The `renders` prop expects functions to render widgets internally, so these tests run in Node.js with jsdom where functions can be passed directly (Puppeteer cannot serialize functions between Node.js and the browser context).
+**Note:** The `renders` prop expects JavaScript functions. Puppeteer cannot serialize functions between Node.js and the browser context, so tests requiring `renders` use `.spec.tsx` files (run in the same process, functions can be passed directly). Slot tests use `.e2e.ts` since they don't need functions.

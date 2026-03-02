@@ -5,7 +5,11 @@ import {
   newE2EPage
 } from "@stencil/core/testing";
 import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
-import { FLEXIBLE_LAYOUT_RENDERED_CONTENT, SLOT_CONTENT } from "./common";
+import {
+  FLEXIBLE_LAYOUT_RENDERED_CONTENT,
+  FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED,
+  SLOT_CONTENT
+} from "./common";
 import { TEST1_ID, TEST2_ID } from "./renders-test";
 
 const ONE_WIDGET_SLOT_TRUE = {
@@ -68,6 +72,40 @@ const TWO_WIDGET_SLOT_UNDEFINED = {
       size: "1fr",
       type: "single-content",
       widget: { id: TEST2_ID, name: "" }
+    }
+  ]
+} satisfies FlexibleLayoutModel;
+
+const TWO_TABBED_WIDGET_SLOT_TRUE = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: "tabbed-item",
+      size: "1fr",
+      type: "tabbed",
+      selectedWidgetId: TEST1_ID,
+      widgets: [
+        { id: TEST1_ID, name: "Tab 1", slot: true },
+        { id: TEST2_ID, name: "Tab 2", slot: true }
+      ]
+    }
+  ]
+} satisfies FlexibleLayoutModel;
+
+const TWO_TABBED_WIDGET_SLOT_UNDEFINED = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: "tabbed-item",
+      size: "1fr",
+      type: "tabbed",
+      selectedWidgetId: TEST1_ID,
+      widgets: [
+        { id: TEST1_ID, name: "Tab 1" },
+        { id: TEST2_ID, name: "Tab 2" }
+      ]
     }
   ]
 } satisfies FlexibleLayoutModel;
@@ -157,6 +195,55 @@ describe("[ch-flexible-layout-render][slots]", () => {
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
       rendered: [],
       slotted: [TEST1_ID, TEST2_ID]
+    });
+  });
+
+  // tabbed widgets - slot via model (widget.slot: true)
+  // Note: We only test with multiple widgets to verify tabbed-specific behavior.
+  // The slot/render decision logic is already tested with single-content items.
+
+  it('should render a slot for selected tabbed widget when multiple widgets have "widget.slot: true"', async () => {
+    flexibleLayoutRef.setProperty("model", TWO_TABBED_WIDGET_SLOT_TRUE);
+    await page.waitForChanges();
+
+    // Only the selected widget (TEST1_ID) should be rendered initially
+    expect(await getRenderedContent()).toBe(
+      FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED(
+        SLOT_CONTENT(TEST1_ID),
+        "tabbed-item",
+        "block-start",
+        [TEST1_ID, TEST2_ID]
+      )
+    );
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
+      rendered: [],
+      slotted: [TEST1_ID]
+    });
+  });
+
+  // tabbed widgets - slot via property (slottedWidgets: true)
+  // Note: We only test with multiple widgets to verify tabbed-specific behavior.
+  // The slot/render decision logic is already tested with single-content items.
+
+  it('should render a slot for selected tabbed widget when multiple widgets have "widget.slot: undefined" and slottedWidgets is true', async () => {
+    flexibleLayoutRef.setProperty("slottedWidgets", true);
+    flexibleLayoutRef.setProperty("model", TWO_TABBED_WIDGET_SLOT_UNDEFINED);
+    await page.waitForChanges();
+
+    // Only the selected widget (TEST1_ID) should be rendered initially
+    expect(await getRenderedContent()).toBe(
+      FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED(
+        SLOT_CONTENT(TEST1_ID),
+        "tabbed-item",
+        "block-start",
+        [TEST1_ID, TEST2_ID]
+      )
+    );
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
+      rendered: [],
+      slotted: [TEST1_ID]
     });
   });
 

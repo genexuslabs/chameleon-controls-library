@@ -33,7 +33,12 @@
     "test.spec": "stencil test --spec --coverage --no-cache",
     "test.watch": "npm run test -- --watchAll --config stencil.config.optimized-test-watch.ts",
     "validate": "npm run lint && npm run test && npm run build",
-    "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug && npm run build.extras"
+    "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug && npm run build.extras",
+    "test.flexible-layout.slots": "stencil test --spec --e2e --maxWorkers=1 src/components/flexible-layout/tests/slots.e2e.ts",
+    "test.flexible-layout.spec": "stencil test --spec --maxWorkers=1 src/components/flexible-layout/tests/renders.spec.tsx",
+    "test.flexible-layout.german": "stencil test --spec --e2e --maxWorkers=1 src/components/flexible-layout/tests/custom/german.e2e.ts",
+    "test.flexible-layout.methods": "stencil test --spec --e2e --maxWorkers=1 src/components/flexible-layout/tests/methods.e2e.ts",
+    "test.flexible-layout.all": "npm run test.flexible-layout.slots && npm run test.flexible-layout.spec && npm run test.flexible-layout.german"
   },
   "license": "MIT",
   "bin": {

@@ -5,8 +5,34 @@
 
 ## Overview
 
-The `ch-popover` component represents a popover container that is positioned
-relative to an element, but placed on the top layer using `position: fixed`.
+The `ch-popover` component renders a positioned overlay container anchored to a reference element using the native Popover API and `position: fixed`.
+
+## Features
+ - Configurable block and inline alignment (inside/outside/center) relative to the action element.
+ - Optional flip-block or flip-inline fallback when the popover would overflow the viewport.
+ - Automatic size-matching to the action element.
+ - Dragging from a dedicated header or the entire box.
+ - Edge and corner resizing.
+ - Responsive re-alignment on scroll and resize.
+ - Full RTL layout support.
+ - Closes on outside click or Escape.
+
+## Use when
+ - You need precise, anchor-relative positioning for dropdowns, floating panels, or custom overlays.
+ - Contextual content that requires more space than a tooltip but less formality than a modal.
+ - The content includes interactive elements (links, buttons, form inputs, pickers).
+ - Feature spotlights, overflow menus, or positioned pickers near a trigger.
+
+## Do not use when
+ - You need simple tooltip-style overlays with hover/focus triggers -- prefer `ch-tooltip` instead.
+ - You need modal or non-modal dialog boxes -- prefer `ch-dialog` instead.
+ - Critical content requiring user confirmation — prefer `ch-dialog`.
+ - Brief, non-interactive supplementary text — prefer `ch-tooltip`.
+ - Nested inside another popover — always an anti-pattern.
+
+## Accessibility
+ - Does not impose a semantic role — consuming components are responsible for adding appropriate ARIA attributes (e.g. `role="dialog"`, `role="listbox"`).
+ - Keyboard: Escape closes the popover and returns focus to the action element.
 
 ## Properties
 
@@ -36,11 +62,19 @@ relative to an element, but placed on the top layer using `position: fixed`.
 | `popoverOpened` | Emitted when the popover is opened by an user interaction.  This event can be prevented (`preventDefault()`), interrupting the ch-popover's opening.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `CustomEvent<any>`                                                                                     |
 
 
+## Slots
+
+| Slot       | Description                                                                     |
+| ---------- | ------------------------------------------------------------------------------- |
+|            | Default slot. The main content of the popover.                                  |
+| `"header"` | Content projected into the header area. Rendered when `allowDrag === "header"`. |
+
+
 ## Shadow Parts
 
-| Part       | Description |
-| ---------- | ----------- |
-| `"header"` |             |
+| Part       | Description                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| `"header"` | A draggable header area rendered when `allowDrag === "header"`. Projects the "header" slot. |
 
 
 ## CSS Custom Properties

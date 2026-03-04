@@ -9,7 +9,7 @@
 
 ## Overview
 
-TODO: Add description
+The `ch-chat` component delivers a full-featured conversational interface with virtual scrolling for efficient rendering of large message histories.
 
 ## Properties
 
@@ -151,14 +151,27 @@ Type: `Promise<void>`
 
 
 
+## Slots
+
+| Slot                   | Description                                                                                                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"additional-content"` | Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state. |
+| `"empty-chat"`         | Displayed when all records are loaded but there are no messages.                                                                                           |
+| `"loading-chat"`       | Displayed while the chat is in the initial loading state.                                                                                                  |
+
+
 ## Shadow Parts
 
-| Part                     | Description |
-| ------------------------ | ----------- |
-| `"messages-container"`   |             |
-| `"send-button"`          |             |
-| `"send-container"`       |             |
-| `"stop-response-button"` |             |
+| Part                      | Description                                                                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"messages-container"`    | The scrollable container that holds the chat messages.                                                                                          |
+| `"send-button"`           | The button that sends the current message.                                                                                                      |
+| `"send-container"`        | The bottom area containing the input and action buttons.                                                                                        |
+| `"send-container-after"`  | Region after the send input within the send container. Rendered when `sendContainerLayout.sendContainerAfter` is defined.                       |
+| `"send-container-before"` | Region before the send input within the send container. Rendered when `sendContainerLayout.sendContainerBefore` is defined.                     |
+| `"send-input-after"`      | Region after the text input inside the edit control. Rendered when `sendContainerLayout.sendInputAfter` is defined.                             |
+| `"send-input-before"`     | Region before the text input inside the edit control. Rendered when `sendContainerLayout.sendInputBefore` is defined.                           |
+| `"stop-response-button"`  | The button that stops the assistant's response generation. Rendered when `waitingResponse` is `true` and a `stopResponse` callback is provided. |
 
 
 ## Dependencies

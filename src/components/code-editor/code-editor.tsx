@@ -7,11 +7,30 @@ import { CodeEditorOptions } from "./code-editor-types.js";
 let autoId = 0;
 
 /**
- * A Web Component based on the Monaco editor. We use Vite to prebundle the Monaco's chunks to avoid issues with StencilJS' rollup configuration.
+ * The `ch-code-editor` component provides a fully-featured code editing experience powered by the [Monaco Editor](https://microsoft.github.io/monaco-editor/).
  *
- * This control provides code editing and code diffing. It also presents properties to customize its behavior, such as `theme`, `language`, etc.
+ * @remarks
+ * ## Features
+ *  - IntelliSense, syntax highlighting, and configurable themes via Monaco Editor.
+ *  - Support for any text-based language (source code, JSON, YAML, etc.).
+ *  - YAML schema validation via `yamlSchemaUri`.
+ *  - Monaco chunks are pre-bundled with Vite to avoid issues with StencilJS' Rollup configuration.
  *
- * To use this control it's important to have a copy task that includes the Web Workers used by the Monaco editor. Those Web Workers are placed in the `@genexus/chameleon-controls-library/dist/chameleon/assets` folder. For example, in a StencilJS project add the following configuration:
+ * ## Use when
+ *  - Users need to author or edit source code, JSON, YAML, or other text-based languages.
+ *  - Providing an in-app code editing experience with syntax highlighting, IntelliSense, and language support.
+ *
+ * ## Do not use when
+ *  - You only need read-only code display — prefer `ch-code` instead.
+ *  - You need side-by-side diff comparison — prefer `ch-code-diff-editor` instead.
+ *  - Read-only code display is sufficient — prefer `ch-code` (lightweight, no Monaco dependency).
+ *  - Comparing two code versions — prefer `ch-code-diff-editor`.
+ *
+ * ## Configuration Required
+ *
+ * This control requires a copy task that includes the Monaco Web Workers from
+ * `@genexus/chameleon-controls-library/dist/chameleon/assets`. For example, in a
+ * StencilJS project:
  *
  * ```ts
  * // stencil.config.ts
@@ -41,6 +60,9 @@ let autoId = 0;
  *     }
  *   ]
  * };
+ * ```
+ *
+ * @status experimental
  */
 @Component({
   shadow: false,

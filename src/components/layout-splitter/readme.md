@@ -5,10 +5,28 @@
 
 ## Overview
 
-This component allows us to design a layout composed by columns and rows.
+The `ch-layout-splitter` component renders a nestable grid of columns and rows with draggable bars that let users resize adjacent areas in real time.
 
-- Columns and rows can have relative (`fr`) or absolute (`px`) size.
-- The line that separates two columns or two rows will always have a drag-bar to resize the layout.
+## Features
+ - Relative (`fr`) and absolute (`px`) sizing for columns and rows.
+ - Draggable and keyboard-accessible separator bars between sibling items.
+ - Nestable groups to produce arbitrarily complex layouts (e.g., a top-level row split into columns where one column is itself split into rows).
+ - Sticky positioning support for individual items.
+ - Programmatic addition and removal of leaf items at runtime.
+ - Configurable drag bar size, accessibility label, and disabled state.
+
+## Use when
+ - Building user-resizable panes: code editors with side panels, master-detail views, or dashboard tiles.
+ - Users need to resize two adjacent panels to fit their workflow (e.g., code editor + preview).
+
+## Do not use when
+ - Building purely static layouts that do not require interactive resizing -- prefer CSS Grid instead.
+ - The layout is purely decorative with no user-adjustable panels — use CSS grid/flexbox instead.
+
+## Accessibility
+ - Each drag bar has `role="separator"` with `aria-orientation` (`vertical` or `horizontal`).
+ - Bars expose `aria-controls` referencing the adjacent panels, `aria-valuetext` with the current size, `aria-label`, and `aria-disabled`.
+ - Bars are focusable (`tabindex="0"`) and support keyboard resizing with Arrow keys.
 
 ## Properties
 
@@ -24,8 +42,6 @@ This component allows us to design a layout composed by columns and rows.
 
 ### `addSiblingLeaf(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", leafInfo: LayoutSplitterLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<LayoutSplitterItemAddResult>`
 
-
-
 #### Parameters
 
 | Name                               | Type                                                                                                                                                                 | Description |
@@ -40,8 +56,6 @@ This component allows us to design a layout composed by columns and rows.
 
 Type: `Promise<LayoutSplitterItemAddResult>`
 
-
-
 ### `refreshLayout() => Promise<void>`
 
 Schedules a new render of the control even if no state changed.
@@ -49,8 +63,6 @@ Schedules a new render of the control even if no state changed.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `removeItem(itemId: string) => Promise<LayoutSplitterItemRemoveResult>`
 
@@ -67,14 +79,19 @@ The layout is rearranged depending on the state of the removed item.
 
 Type: `Promise<LayoutSplitterItemRemoveResult>`
 
+## Slots
 
+| Slot          | Description                                                                 |
+| ------------- | --------------------------------------------------------------------------- |
+| `"{item.id}"` | Named slot projected inside each leaf item. One slot per leaf in the model. |
 
 
 ## Shadow Parts
 
-| Part    | Description                                  |
-| ------- | -------------------------------------------- |
-| `"bar"` | The bar that divides two columns or two rows |
+| Part          | Description                                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `"bar"`       | The drag bar separator that divides two columns or two rows. May include an additional custom part when the item specifies `dragBar.part`. |
+| `"{item.id}"` | Exposed on every group container, enabling per-item styling from outside the shadow DOM.                                                   |
 
 
 ## Dependencies

@@ -3,6 +3,43 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-combo-box-render` component is a feature-rich combo box that combines an input field with a popover-based dropdown list for selecting values.
+
+## Features
+ - Flat lists and expandable item groups.
+ - Suggest (autocomplete) mode with strict matching, debounced input, and server-side filtering.
+ - Full keyboard navigation: Arrow keys, Home, End, Enter, Tab, and type-ahead search.
+ - Multiple selection support.
+ - Item images with multi-state support.
+ - Automatic min-width sizing based on the largest option.
+ - Lazy rendering of items only when the popup is displayed.
+ - Native `select` fallback on mobile devices.
+
+## Use when
+ - A dropdown selection from a list of options is needed.
+ - A searchable or autocomplete input is required.
+ - Options should be organized into groups.
+ - The list has more than 7 options and space is constrained.
+ - A searchable or filterable input improves discoverability of items.
+ - Options are organized into named groups.
+
+## Do not use when
+ - A simple binary choice is needed — prefer `ch-checkbox` or `ch-switch` instead.
+ - All options should be visible at once — prefer `ch-radio-group-render` instead.
+ - There are 2–3 options — prefer `ch-radio-group-render` (always visible, no extra click required).
+ - The selection has immediate side effects — clearly communicate what will happen on change.
+ - Navigation links are needed — never use a combo box to navigate between pages.
+
+## Accessibility
+ - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ - Implements the WAI-ARIA `combobox` pattern: the input has `role="combobox"`, `aria-expanded`, `aria-controls`, and `aria-haspopup`.
+ - The popup list has `role="listbox"`.
+ - Full keyboard navigation: Arrow keys, Home, End, Enter, Tab, and type-ahead search.
+ - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+
 ## Properties
 
 | Property               | Attribute              | Description                                                                                                                                                                                                                                                                        | Type                                                                                                                                                                                                                                         | Default          |
@@ -34,10 +71,10 @@
 
 ## Shadow Parts
 
-| Part       | Description |
-| ---------- | ----------- |
-| `"..."`    | ...         |
-| `"window"` |             |
+| Part            | Description                                                                         |
+| --------------- | ----------------------------------------------------------------------------------- |
+| `"placeholder"` | Present on the host when no item is selected and the placeholder text is displayed. |
+| `"window"`      | The popover element that contains the dropdown list of items.                       |
 
 
 ## CSS Custom Properties

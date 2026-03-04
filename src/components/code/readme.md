@@ -1,18 +1,26 @@
 # ch-code
 
-
-
 <!-- Auto Generated Below -->
 
 
 ## Overview
 
-A control to highlight code blocks.
-- It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+The `ch-code` component renders read-only, syntax-highlighted code blocks powered by lowlight and highlight.js.
 
-- It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+## Features
+ - Syntax highlighting by parsing code to [hast](https://github.com/syntax-tree/hast) using [lowlight](https://github.com/wooorm/lowlight), with a custom reactive render layer.
+ - Supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+ - On-demand loading of the code parser and language grammars at runtime.
+ - Streaming indicator for real-time code generation scenarios.
 
-- When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+## Use when
+ - Displaying source code snippets, configuration files, or any programming-language content with rich highlighting.
+ - Displaying read-only syntax-highlighted code snippets or configuration files in documentation or responses.
+
+## Do not use when
+ - Users need to edit code — prefer `ch-code-editor` instead.
+ - The user needs to edit the code — prefer `ch-code-editor`.
+ - Comparing two versions of code — prefer `ch-code-diff-editor`.
 
 ## Properties
 
@@ -22,6 +30,13 @@ A control to highlight code blocks.
 | `lastNestedChildClass` | `last-nested-child-class` |                                                                                                                                          | `string`  | `"last-nested-child"` |
 | `showIndicator`        | `show-indicator`          | Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed. | `boolean` | `false`               |
 | `value`                | `value`                   | Specifies the code string to highlight.                                                                                                  | `string`  | `undefined`           |
+
+
+## Shadow Parts
+
+| Part     | Description                                                                                                                                                      |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"code"` | The inner `<code>` element that wraps the highlighted content. Also exposes a `language-{lang}` part (e.g. `language-typescript`) for language-specific styling. |
 
 
 ## CSS Custom Properties

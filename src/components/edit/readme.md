@@ -5,15 +5,39 @@
 
 ## Overview
 
-A wrapper for the input and textarea elements. It additionally provides:
- - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
- - An action button.
- - Useful style resets.
- - Support for picture formatting.
- - Support to auto grow the control when used with multiline (useful to
-   model chat inputs).
- - An image which can have multiple states.
- - Support for debouncing the input event.
+The `ch-edit` component is a rich wrapper around the native `input` and `textarea` elements, serving as the primary text input building block.
+
+## Features
+ - Wide range of input types: text, password, email, number, search, date, datetime-local, time, tel, url, and file.
+ - Picture formatting for masked values.
+ - Auto-grow multiline mode, ideal for chat inputs.
+ - Debounced input events.
+ - Clear button for search inputs.
+ - Show/hide password toggle.
+ - Start images with multi-state support.
+ - Custom placeholders for date types.
+ - Additional content slots before and after the input.
+
+## Use when
+ - Building forms and data entry screens that require text input.
+ - A multiline auto-growing text area is needed.
+ - Masked or formatted input values are required.
+ - Collecting any text, numeric, email, phone, URL, date, or password value from the user.
+ - Providing a search input with a clear button.
+
+## Do not use when
+ - Selecting from a predefined set of options — prefer `ch-combo-box-render` instead.
+ - A simple on/off toggle is needed — prefer `ch-switch` instead.
+ - Valid values come from a fixed list — prefer `ch-combo-box-render` or `ch-radio-group-render`.
+ - A numeric value has a bounded range and an approximate value is acceptable — prefer `ch-slider`.
+ - Never use placeholder text as a substitute for a visible `<label>` — labels must always be visible.
+
+## Accessibility
+ - Form-associated via `ElementInternals` — participates in native form validation and submission.
+ - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+ - Action buttons (clear search, show/hide password) carry their own `aria-label`.
+ - The auto-grow helper and date placeholder are hidden from assistive technology with `aria-hidden`.
 
 ## Properties
 
@@ -61,17 +85,22 @@ A wrapper for the input and textarea elements. It additionally provides:
 
 ## Slots
 
-| Slot                          | Description                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------------- |
-| `"additional-content-after"`  | The slot used for the additional content when `showAdditionalContentAfter === true`.  |
-| `"additional-content-before"` | The slot used for the additional content when `showAdditionalContentBefore === true`. |
+| Slot                          | Description                                                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `"additional-content-after"`  | Rendered when `showAdditionalContentAfter === true`. Use it to place custom elements after the input content.   |
+| `"additional-content-before"` | Rendered when `showAdditionalContentBefore === true`. Use it to place custom elements before the input content. |
 
 
 ## Shadow Parts
 
-| Part                 | Description                                                                                                                                          |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"date-placeholder"` | A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" \| "date" \| "time"`. |
+| Part                     | Description                                                                                                                                          |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"clear-button"`         | The button rendered for clearing the value when `type` is `"search"` and the control has a value.                                                    |
+| `"date-placeholder"`     | A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" \| "date" \| "time"`. |
+| `"disabled"`             | Present in the `clear-button` and `show-password` parts when the control is disabled.                                                                |
+| `"password-displayed"`   | Present in the `show-password` part when the password is currently visible.                                                                          |
+| `"password-hidden"`      | Present in the `show-password` part when the password is currently hidden.                                                                           |
+| `"show-password-button"` | The button rendered for toggling password visibility when `showPasswordButton` is `true` and `type` is `"password"`.                                 |
 
 
 ## CSS Custom Properties

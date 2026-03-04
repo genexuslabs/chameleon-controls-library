@@ -12,6 +12,25 @@ import { removeElement } from "../../common/array";
 import { connectToRoom } from "./connect";
 import { LiveKitCallbacks } from "./types";
 
+/**
+ * The `ch-live-kit-room` component integrates with the LiveKit real-time communication platform to establish audio room connections and manage remote participants.
+ *
+ * @remarks
+ * ## Features
+ *  - Room lifecycle management: connect, disconnect, and track remote participants.
+ *  - Automatic attachment of remote audio tracks to rendered `<audio>` elements.
+ *  - Local microphone toggle support.
+ *  - Callbacks for transcription updates and active speaker changes.
+ *
+ * ## Use when
+ *  - Building voice-enabled conversational experiences with LiveKit.
+ *  - Adding real-time audio communication to a `ch-chat` component.
+ *
+ * ## Do not use when
+ *  - You need a full video conferencing UI — use a dedicated LiveKit UI framework instead.
+ *
+ * @status experimental
+ */
 @Component({
   tag: "ch-live-kit-room",
   styleUrl: "live-kit-room.scss",

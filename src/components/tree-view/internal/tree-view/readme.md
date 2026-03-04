@@ -54,7 +54,7 @@ Update the information about the valid droppable zones.
 | `requestTimestamp` | `number`                         | Time where the request to the server was made. Useful to avoid having old information. |
 | `newContainerId`   | `string`                         | ID of the container where the drag is trying to be made.                               |
 | `draggedItems`     | `GxDataTransferInfo[]`           | Information about the dragged items.                                                   |
-| `dropType`         | `"above" \| "after" \| "before"` |                                                                                        |
+| `dropType`         | `"after" \| "before" \| "above"` |                                                                                        |
 | `validDrop`        | `boolean`                        | Current state of the droppable zone.                                                   |
 
 #### Returns

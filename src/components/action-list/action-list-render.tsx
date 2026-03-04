@@ -193,6 +193,37 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
   });
 };
 
+/**
+ * The `ch-action-list-render` component renders an interactive list of actionable items driven by a declarative model.
+ *
+ * @remarks
+ * ## Features
+ *  - Single and multiple selection with modifier-key multi-select.
+ *  - In-place caption editing with optimistic UI updates.
+ *  - Item pinning (fixed) and sorting.
+ *  - Grouping with expandable/collapsible sections.
+ *  - Programmatic add/remove operations.
+ *  - Three item types: `actionable`, `group`, and `separator`.
+ *  - Keyboard navigation.
+ *
+ * ## Use when
+ *  - You need a rich, data-driven list with selection semantics (e.g., panel lists, filterable sidebars, or reorderable collections).
+ *  - Command palettes, selection panels, or item management lists where users can pick, pin, edit, or remove items.
+ *
+ * ## Do not use when
+ *  - You need a simple static list without selection or editing -- use a plain HTML list instead.
+ *  - Navigation is the primary purpose — prefer `ch-navigation-list-render`.
+ *  - The list is hierarchical — prefer `ch-tree-view-render`.
+ *
+ * ## Accessibility
+ *  - The host element has `role="list"` with `aria-multiselectable` when `selection` is `"multiple"`.
+ *  - Separator items have `role="separator"` and `aria-hidden="true"`.
+ *  - Supports keyboard navigation for item selection.
+ *
+ * @status experimental
+ *
+ * @part separator - A horizontal divider rendered between items when the model contains an item of `type: "separator"`.
+ */
 @Component({
   tag: "ch-action-list-render",
   styleUrl: "action-list-render.scss",

@@ -1,4 +1,4 @@
-# Widget Rendering Test Combinations
+# Slots vs Renders: Test Combinations
 
 The `ch-flexible-layout-render` component renders widgets either via **slots** (projected outside) or **renders** (internal functions). The decision is made by:
 
@@ -12,26 +12,26 @@ The `ch-flexible-layout-render` component renders widgets either via **slots** (
 
 The tables below help understand and validate the necessary tests by combining the different options (`slottedWidgets` and `widget.slot`).
 
-## Single-Content Items
+## `type="single-content"`
 
-| `slottedWidgets` | `widget.slot` | Result | Test Location | Status |
-|------------------|---------------|--------|----------------|--------|
-| `false` (default) | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) | ✅ Implemented |
-| `false` (default) | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) | ✅ Implemented |
-| `false` (default) | `undefined` | renders | [`renders.spec.tsx`](renders.spec.tsx) | ✅ Implemented |
-| `true` | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) | ✅ Implemented |
-| `true` | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) | ✅ Implemented |
-| `true` | `undefined` | slot | [`slots.e2e.ts`](slots.e2e.ts) | ✅ Implemented |
+| `slottedWidgets` | `widget.slot` | Result | Test Location |
+|------------------|---------------|--------|----------------|
+| `false` (default) | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
+| `false` (default) | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) |
+| `false` (default) | `undefined` | renders | [`renders.spec.tsx`](renders.spec.tsx) |
+| `true` | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
+| `true` | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) |
+| `true` | `undefined` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
 
-## Tabbed Items
+## `type="tabbed"`
 
 **Note:** Same decision logic as single-content items. Only representative cases tested to verify tabbed-specific behavior (multiple widgets, only selected rendered initially, tab switching).
 
-| `slottedWidgets` | `widget.slot` | Result | Test Location | Status | Notes |
-|------------------|---------------|--------|----------------|--------|-------|
-| `false` (default) | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) | ✅ Implemented | Multiple widgets, only selected rendered |
-| `false` (default) | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) | ✅ Implemented | Multiple widgets, only selected rendered, includes tab switching test |
-| `true` | `undefined` | slot | [`slots.e2e.ts`](slots.e2e.ts) | ✅ Implemented | Multiple widgets, only selected rendered |
+| `slottedWidgets` | `widget.slot` | Result | Test Location |
+|------------------|---------------|--------|----------------|
+| `false` (default) | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
+| `false` (default) | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) |
+| `true` | `undefined` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
 
 **Test files:**
 - `slots.e2e.ts` - E2E tests for slot scenarios

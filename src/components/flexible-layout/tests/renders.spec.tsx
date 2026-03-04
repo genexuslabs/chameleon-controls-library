@@ -411,11 +411,8 @@ describe("[ch-flexible-layout-render][renders]", () => {
   });
 
   /**
-   * Note: For tests for slots, see `slots.e2e.ts`. This file includes
-   * tests for the `renders` property (which expects functions). These
-   * tests are implemented in this spec file instead of E2E tests
-   * because Puppeteer cannot serialize JavaScript functions when
-   * passing them between Node.js and the browser context. Spec tests
-   * run in the same process, allowing us to pass functions directly.
+   * Note: For tests for slots, see `slots.e2e.ts`. Tests that require `renders`
+   * are in spec files because Puppeteer cannot serialize JavaScript functions
+   * when passing them between Node.js and the browser context.
    */
 });

@@ -240,8 +240,6 @@ describe("[ch-flexible-layout-render][slots]", () => {
   });
 
   // tabbed widgets - slot via model (widget.slot: true)
-  // Note: We only test with multiple widgets to verify tabbed-specific behavior.
-  // The slot/render decision logic is already tested with single-content items.
 
   it('should render a slot for selected tabbed widget when multiple widgets have "widget.slot: true"', async () => {
     flexibleLayoutRef.setProperty("model", TWO_TABBED_WIDGET_SLOT_TRUE);
@@ -264,8 +262,6 @@ describe("[ch-flexible-layout-render][slots]", () => {
   });
 
   // tabbed widgets - slot via property (slottedWidgets: true)
-  // Note: We only test with multiple widgets to verify tabbed-specific behavior.
-  // The slot/render decision logic is already tested with single-content items.
 
   it('should render a slot for selected tabbed widget when multiple widgets have "widget.slot: undefined" and slottedWidgets is true', async () => {
     flexibleLayoutRef.setProperty("slottedWidgets", true);
@@ -315,11 +311,8 @@ describe("[ch-flexible-layout-render][slots]", () => {
 
   /**
    * Note: For tests for the `renders` property, see `renders.spec.tsx`.
-   * This file includes tests for slots. These tests are implemented
-   * in this E2E file because they do not require the `renders` property
-   * (which expects functions). Puppeteer cannot serialize JavaScript
-   * functions when passing them between Node.js and the browser
-   * context, so tests that require `renders` are in spec files where
-   * functions can be passed directly.
+   * Tests that require `renders` are in spec files because Puppeteer cannot
+   * serialize JavaScript functions when passing them between Node.js and the
+   * browser context.
    */
 });

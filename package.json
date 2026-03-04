@@ -81,8 +81,8 @@
     "vite-plugin-static-copy": "~3.1.4"
   },
   "peerDependencies": {
-    "@genexus/kasstor-webkit": "~0.2.0",
-    "lit": "^3.3.1",
+    "@genexus/kasstor-webkit": "^0.3.0",
+    "lit": "^3.3.2",
     "katex": "~0.16.25"
   },
   "husky": {

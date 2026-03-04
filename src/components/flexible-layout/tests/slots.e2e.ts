@@ -1,14 +1,14 @@
 import {
-  E2EElement,
-  E2EPage,
-  EventSpy,
-  newE2EPage
+    E2EElement,
+    E2EPage,
+    EventSpy,
+    newE2EPage
 } from "@stencil/core/testing";
 import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
 import {
-  FLEXIBLE_LAYOUT_RENDERED_CONTENT,
-  FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED,
-  SLOT_CONTENT
+    FLEXIBLE_LAYOUT_RENDERED_CONTENT,
+    FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED,
+    SLOT_CONTENT
 } from "./common";
 import { WIDGET1_ID, WIDGET2_ID } from "./renders-test";
 
@@ -113,6 +113,23 @@ const TWO_TABBED_WIDGET_SLOT_UNDEFINED = {
   ]
 } satisfies FlexibleLayoutModel;
 
+/**
+ * Model where widget.id equals leaf.id.
+ * (For backward compatibility tests)
+ */
+const ONE_WIDGET_SAME_ID_AS_LEAF = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: LEAF1_ID,
+      size: "1fr",
+      type: "single-content",
+      widget: { id: LEAF1_ID, name: "", slot: true }
+    }
+  ]
+} satisfies FlexibleLayoutModel;
+
 describe("[ch-flexible-layout-render][slots]", () => {
   let page: E2EPage;
   let flexibleLayoutRef: E2EElement;
@@ -198,6 +215,27 @@ describe("[ch-flexible-layout-render][slots]", () => {
     expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
       rendered: [],
       slotted: [WIDGET1_ID, WIDGET2_ID]
+    });
+  });
+
+  /**
+   * Backward compatibility test: validates that slots render correctly when
+   * widget.id equals leaf.id. This ensures existing users who were using the
+   * same ID for both the leaf and its widget continue to work after the fix
+   * that changed slot names in `ch-flexible-layout` from `name={leaf.id}` to
+   * `name={leaf.widget.id}`.
+   */
+  it("should render a slot when widget.id equals leaf.id (backward compatibility)", async () => {
+    flexibleLayoutRef.setProperty("model", ONE_WIDGET_SAME_ID_AS_LEAF);
+    await page.waitForChanges();
+
+    expect(await getRenderedContent()).toBe(
+      FLEXIBLE_LAYOUT_RENDERED_CONTENT(SLOT_CONTENT(LEAF1_ID))
+    );
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEvent();
+    expect(renderedWidgetsChangeSpy).toHaveReceivedEventDetail({
+      rendered: [],
+      slotted: [LEAF1_ID]
     });
   });
 

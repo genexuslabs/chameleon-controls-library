@@ -43,8 +43,8 @@ export const createAndSetLeafInfo = (
     // Mark the widget as rendered
     renderedWidgets.add(widget.id);
 
-    // Store the widget info
-    widgetsInfo.set(leafId, { parentLeafId: leafId, info: widget });
+    // Store the widget info (widget.id as the key to be consistent with renderedWidgets and tabbed items)
+    widgetsInfo.set(widget.id, { parentLeafId: leafId, info: widget });
 
     return {
       id: leafId,

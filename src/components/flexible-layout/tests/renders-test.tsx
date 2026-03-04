@@ -6,6 +6,8 @@ export const WIDGET2_ID = "Widget2";
 export const WIDGET3_ID = "Widget3";
 export const WIDGET4_ID = "Widget4";
 
+export const LEAF1_ID = "Leaf1";
+
 export const flexibleLayoutTestRenders: FlexibleLayoutRenders = {
   [WIDGET3_ID]: () => (
     <button key={WIDGET3_ID} slot={WIDGET3_ID} type="button">
@@ -16,5 +18,10 @@ export const flexibleLayoutTestRenders: FlexibleLayoutRenders = {
     <span key={WIDGET4_ID} slot={WIDGET4_ID}>
       Something within the span
     </span>
+  ),
+  [LEAF1_ID]: () => (
+    <div key={LEAF1_ID} slot={LEAF1_ID}>
+      Leaf1 content
+    </div>
   )
 };

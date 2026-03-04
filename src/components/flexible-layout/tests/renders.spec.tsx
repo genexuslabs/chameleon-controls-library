@@ -4,13 +4,13 @@ import { ChFlexibleLayoutRender } from "../flexible-layout-render";
 import { ChFlexibleLayout } from "../internal/flexible-layout/flexible-layout";
 import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
 import {
-  flexibleLayoutTestRenders,
-  WIDGET1_ID,
-  WIDGET3_ID,
-  WIDGET4_ID
+    flexibleLayoutTestRenders,
+    LEAF1_ID,
+    WIDGET1_ID,
+    WIDGET3_ID,
+    WIDGET4_ID
 } from "./renders-test";
 
-const LEAF1_ID = "Leaf1";
 const LEAF2_ID = "Leaf2";
 
 const SLOT_AND_RENDER_MODEL: FlexibleLayoutModel = {
@@ -28,6 +28,23 @@ const SLOT_AND_RENDER_MODEL: FlexibleLayoutModel = {
       size: "1fr",
       type: "single-content",
       widget: { id: WIDGET3_ID, name: "", renderId: WIDGET3_ID }
+    }
+  ]
+};
+
+/**
+ * Model where widget.id equals leaf.id.
+ * (For backward compatibility tests)
+ */
+const ONE_WIDGET_SAME_ID_AS_LEAF_RENDER: FlexibleLayoutModel = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: LEAF1_ID,
+      size: "1fr",
+      type: "single-content",
+      widget: { id: LEAF1_ID, name: "", renderId: LEAF1_ID }
     }
   ]
 };
@@ -195,6 +212,37 @@ describe("[ch-flexible-layout-render][renders]", () => {
       expect.objectContaining({
         detail: {
           rendered: [WIDGET3_ID],
+          slotted: []
+        }
+      })
+    );
+  });
+
+  /**
+   * Backward compatibility test: validates that renders work correctly when
+   * widget.id equals leaf.id. This ensures existing users who were using the
+   * same ID for both the leaf and its widget continue to work after the fix
+   * that changed slot names in `ch-flexible-layout` from `name={leaf.id}` to
+   * `name={leaf.widget.id}`.
+   */
+  it("should render via renders when widget.id equals leaf.id (backward compatibility)", async () => {
+    chFlexibleLayoutRender.slottedWidgets = false;
+    chFlexibleLayoutRender.model = ONE_WIDGET_SAME_ID_AS_LEAF_RENDER;
+    await page.waitForChanges();
+
+    const chFlexibleLayoutEl =
+      chFlexibleLayoutRender.shadowRoot.querySelector("ch-flexible-layout");
+
+    const div = chFlexibleLayoutEl.querySelector(
+      `div[slot="${LEAF1_ID}"]`
+    ) as HTMLDivElement;
+    expect(div).not.toBeNull();
+    expect(div.textContent).toBe("Leaf1 content");
+
+    expect(renderedWidgetsChangeSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        detail: {
+          rendered: [LEAF1_ID],
           slotted: []
         }
       })

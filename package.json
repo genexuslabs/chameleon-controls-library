@@ -37,7 +37,6 @@
     "test.flexible-layout.slots": "stencil test --spec --e2e --maxWorkers=1 src/components/flexible-layout/tests/slots.e2e.ts",
     "test.flexible-layout.spec": "stencil test --spec --maxWorkers=1 src/components/flexible-layout/tests/renders.spec.tsx",
     "test.flexible-layout.german": "stencil test --spec --e2e --maxWorkers=1 src/components/flexible-layout/tests/custom/german.e2e.ts",
-    "test.flexible-layout.methods": "stencil test --spec --e2e --maxWorkers=1 src/components/flexible-layout/tests/methods.e2e.ts",
     "test.flexible-layout.all": "npm run test.flexible-layout.slots && npm run test.flexible-layout.spec && npm run test.flexible-layout.german"
   },
   "license": "MIT",

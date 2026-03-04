@@ -1,14 +1,14 @@
 import { h } from "@stencil/core";
 import { newSpecPage } from "@stencil/core/testing";
-import { ChFlexibleLayoutRender } from "../flexible-layout-render";
-import { ChFlexibleLayout } from "../internal/flexible-layout/flexible-layout";
-import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
+import { ChFlexibleLayoutRender } from "../../flexible-layout-render";
+import { ChFlexibleLayout } from "../../internal/flexible-layout/flexible-layout";
+import { FlexibleLayoutModel } from "../../internal/flexible-layout/types";
 import {
-    flexibleLayoutTestRenders,
-    LEAF1_ID,
-    WIDGET1_ID,
-    WIDGET3_ID,
-    WIDGET4_ID
+  flexibleLayoutTestRenders,
+  LEAF1_ID,
+  WIDGET1_ID,
+  WIDGET3_ID,
+  WIDGET4_ID
 } from "./renders-test";
 
 const LEAF2_ID = "Leaf2";

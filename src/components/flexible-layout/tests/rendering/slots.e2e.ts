@@ -1,16 +1,16 @@
 import {
-    E2EElement,
-    E2EPage,
-    EventSpy,
-    newE2EPage
+  E2EElement,
+  E2EPage,
+  EventSpy,
+  newE2EPage
 } from "@stencil/core/testing";
-import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
+import { FlexibleLayoutModel } from "../../internal/flexible-layout/types";
+import { WIDGET1_ID, WIDGET2_ID } from "../rendering/renders-test";
 import {
-    FLEXIBLE_LAYOUT_RENDERED_CONTENT,
-    FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED,
-    SLOT_CONTENT
+  FLEXIBLE_LAYOUT_RENDERED_CONTENT,
+  FLEXIBLE_LAYOUT_RENDERED_CONTENT_TABBED,
+  SLOT_CONTENT
 } from "./common";
-import { WIDGET1_ID, WIDGET2_ID } from "./renders-test";
 
 const LEAF1_ID = "Leaf1";
 const LEAF2_ID = "Leaf2";

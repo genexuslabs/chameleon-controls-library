@@ -1,5 +1,5 @@
 import { h } from "@stencil/core";
-import { FlexibleLayoutRenders } from "../internal/flexible-layout/types";
+import { FlexibleLayoutRenders } from "../../internal/flexible-layout/types";
 
 export const WIDGET1_ID = "Widget1";
 export const WIDGET2_ID = "Widget2";

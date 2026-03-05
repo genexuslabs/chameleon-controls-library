@@ -9,27 +9,27 @@
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
 
-const CENTER_LEAF_ID = "center";
-const SIDEBAR_LEAF_ID = "sidebar";
+const LEAF_ID = "leaf-1";
+const TABBED_LEAF_ID = "leaf-2";
 
-const PERSON_MANAGER_WIDGET_ID = "person-manager";
-const TAB_A_WIDGET_ID = "tab-A";
-const TAB_B_WIDGET_ID = "tab-B";
+const WIDGET_ID = "widget-1";
+const TAB_WIDGET_A_ID = "widget-a";
+const TAB_WIDGET_B_ID = "widget-b";
 
 const SHARED_LEAF_ID = "shared-id";
 const SHARED_TAB_LEAF_ID = "shared-tab-id";
 
 const SKIP_SINGLE_CONTENT_DIFFERENT_ID = false;
 
-const SINGLE_CONTENT_MODEL: FlexibleLayoutModel = {
+const SINGLE_CONTENT_DIFFERENT_ID_MODEL: FlexibleLayoutModel = {
   id: "root",
   direction: "columns",
   items: [
     {
-      id: CENTER_LEAF_ID,
+      id: LEAF_ID,
       size: "1fr",
       type: "single-content",
-      widget: { id: PERSON_MANAGER_WIDGET_ID, name: "", slot: true }
+      widget: { id: WIDGET_ID, name: "", slot: true }
     }
   ]
 };
@@ -52,13 +52,13 @@ const TABBED_MODEL: FlexibleLayoutModel = {
   direction: "columns",
   items: [
     {
-      id: SIDEBAR_LEAF_ID,
+      id: TABBED_LEAF_ID,
       size: "1fr",
       type: "tabbed",
-      selectedWidgetId: TAB_A_WIDGET_ID,
+      selectedWidgetId: TAB_WIDGET_A_ID,
       widgets: [
-        { id: TAB_A_WIDGET_ID, name: "Tab A", slot: true },
-        { id: TAB_B_WIDGET_ID, name: "Tab B", slot: true }
+        { id: TAB_WIDGET_A_ID, name: "Tab A", slot: true },
+        { id: TAB_WIDGET_B_ID, name: "Tab B", slot: true }
       ]
     }
   ]
@@ -75,7 +75,7 @@ const TABBED_SAME_ID_MODEL: FlexibleLayoutModel = {
       selectedWidgetId: SHARED_TAB_LEAF_ID,
       widgets: [
         { id: SHARED_TAB_LEAF_ID, name: "Tab Same", slot: true },
-        { id: TAB_B_WIDGET_ID, name: "Tab B", slot: true }
+        { id: TAB_WIDGET_B_ID, name: "Tab B", slot: true }
       ]
     }
   ]
@@ -155,10 +155,10 @@ describe("[ch-flexible-layout-render][content-projection]", () => {
   beforeEach(async () => {
     page = await newE2EPage({
       html: `<ch-flexible-layout-render>
-        <div slot="${PERSON_MANAGER_WIDGET_ID}">Person manager content</div>
+        <div slot="${WIDGET_ID}">Widget content</div>
         <div slot="${SHARED_LEAF_ID}">Shared id content</div>
-        <div slot="${TAB_A_WIDGET_ID}">Tab A content</div>
-        <div slot="${TAB_B_WIDGET_ID}">Tab B content</div>
+        <div slot="${TAB_WIDGET_A_ID}">Tab A content</div>
+        <div slot="${TAB_WIDGET_B_ID}">Tab B content</div>
         <div slot="${SHARED_TAB_LEAF_ID}">Shared tab id content</div>
       </ch-flexible-layout-render>`,
       failOnConsoleError: true
@@ -170,20 +170,21 @@ describe("[ch-flexible-layout-render][content-projection]", () => {
     "single-content leaf",
     () => {
       beforeEach(async () => {
-        flexibleLayoutRef.setProperty("model", SINGLE_CONTENT_MODEL);
+        flexibleLayoutRef.setProperty(
+          "model",
+          SINGLE_CONTENT_DIFFERENT_ID_MODEL
+        );
         await page.waitForChanges();
       });
 
       it("should project user content through all shadow DOM levels", async () => {
-        expect(await getProjectedTextAtLeaf(page, CENTER_LEAF_ID)).toBe(
-          "Person manager content"
+        expect(await getProjectedTextAtLeaf(page, LEAF_ID)).toBe(
+          "Widget content"
         );
       });
 
       it("should assign the user's content element to a slot", async () => {
-        expect(
-          await isContentAssignedToSlot(page, PERSON_MANAGER_WIDGET_ID)
-        ).toBe(true);
+        expect(await isContentAssignedToSlot(page, WIDGET_ID)).toBe(true);
       });
     }
   );
@@ -213,12 +214,12 @@ describe("[ch-flexible-layout-render][content-projection]", () => {
 
     it("should project selected tab content through all shadow DOM levels into the tab panel", async () => {
       expect(
-        await getProjectedTextInTabPanel(page, SIDEBAR_LEAF_ID, TAB_A_WIDGET_ID)
+        await getProjectedTextInTabPanel(page, TABBED_LEAF_ID, TAB_WIDGET_A_ID)
       ).toBe("Tab A content");
     });
 
     it("should not assign non-selected tab content to any slot", async () => {
-      expect(await isContentAssignedToSlot(page, TAB_B_WIDGET_ID)).toBe(false);
+      expect(await isContentAssignedToSlot(page, TAB_WIDGET_B_ID)).toBe(false);
     });
   });
 
@@ -239,7 +240,7 @@ describe("[ch-flexible-layout-render][content-projection]", () => {
     });
 
     it("should not assign non-selected tab content to any slot", async () => {
-      expect(await isContentAssignedToSlot(page, TAB_B_WIDGET_ID)).toBe(false);
+      expect(await isContentAssignedToSlot(page, TAB_WIDGET_B_ID)).toBe(false);
     });
   });
 
@@ -247,11 +248,14 @@ describe("[ch-flexible-layout-render][content-projection]", () => {
     (SKIP_SINGLE_CONTENT_DIFFERENT_ID ? it.skip : it)(
       "should keep projecting content after switching from one model to another",
       async () => {
-        flexibleLayoutRef.setProperty("model", SINGLE_CONTENT_MODEL);
+        flexibleLayoutRef.setProperty(
+          "model",
+          SINGLE_CONTENT_DIFFERENT_ID_MODEL
+        );
         await page.waitForChanges();
 
-        expect(await getProjectedTextAtLeaf(page, CENTER_LEAF_ID)).toBe(
-          "Person manager content"
+        expect(await getProjectedTextAtLeaf(page, LEAF_ID)).toBe(
+          "Widget content"
         );
 
         flexibleLayoutRef.setProperty("model", SINGLE_CONTENT_SAME_ID_MODEL);
@@ -266,11 +270,14 @@ describe("[ch-flexible-layout-render][content-projection]", () => {
     (SKIP_SINGLE_CONTENT_DIFFERENT_ID ? it.skip : it)(
       "should keep projecting content after switching from single-content to tabbed",
       async () => {
-        flexibleLayoutRef.setProperty("model", SINGLE_CONTENT_MODEL);
+        flexibleLayoutRef.setProperty(
+          "model",
+          SINGLE_CONTENT_DIFFERENT_ID_MODEL
+        );
         await page.waitForChanges();
 
-        expect(await getProjectedTextAtLeaf(page, CENTER_LEAF_ID)).toBe(
-          "Person manager content"
+        expect(await getProjectedTextAtLeaf(page, LEAF_ID)).toBe(
+          "Widget content"
         );
 
         flexibleLayoutRef.setProperty("model", TABBED_MODEL);
@@ -279,8 +286,8 @@ describe("[ch-flexible-layout-render][content-projection]", () => {
         expect(
           await getProjectedTextInTabPanel(
             page,
-            SIDEBAR_LEAF_ID,
-            TAB_A_WIDGET_ID
+            TABBED_LEAF_ID,
+            TAB_WIDGET_A_ID
           )
         ).toBe("Tab A content");
       }

@@ -22,7 +22,7 @@
   /**
    * @prop --ch-accordion__chevron-color:
    * Specifies the color of the chevron.
-   * @default 100%
+   * @default currentColor
    */
   --ch-accordion__chevron-color: currentColor; // TODO: rename "chevron" to "expandable-button"
 
@@ -55,8 +55,8 @@
   --ch-accordion__header-background-image-size: 100%;
 
   /**
-   * @prop --ch-accordion__header-background-image-size:
-   * Specifies the start image of the header.
+   * @prop --ch-accordion__header-background-image:
+   * Specifies the background image used for the expandable chevron in the header.
    * @default #{$expandable-icon}
    */
   --ch-accordion__header-background-image: #{$expandable-icon};

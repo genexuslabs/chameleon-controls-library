@@ -9,14 +9,14 @@
   display: grid;
 
   /**
-  * @prop --ch-color-picker-palette-button-inline-size:
+  * @prop --ch-color-picker-palette-button-min-inline-size:
   * Specifies the min width of the current color color-palette box.
   * @default 2em
   */
   --ch-color-picker-palette-button-min-inline-size: 2em;
 
   /**
-  * @prop --ch-color-picker-palette-button-block-size:
+  * @prop --ch-color-picker-palette-button-min-block-size:
   * Specifies the min height of the current color color-palette box.
   * @default 1.5em
   */

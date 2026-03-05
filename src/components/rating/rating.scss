@@ -8,14 +8,14 @@
   /**
    * @prop --ch-rating-star__selected-background-color:
    * Specifies the background-color of the selected portion of the star. 
-   * @default color-mix(in srgb, currentColor 15%, transparent)
+   * @default currentColor
    */
   --ch-rating-star__selected-background-color: currentColor;
 
   /**
    * @prop --ch-rating-star__unselected-background-color:
    * Specifies the background-color of the unselected portion of the star. 
-   * @default color-mix(in srgb, currentColor 15%, transparent)
+   * @default color-mix(in srgb, currentColor 50%, transparent 50%)
    */
   --ch-rating-star__unselected-background-color: color-mix(
     in srgb,

@@ -27,10 +27,11 @@ const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
  * @remarks
  * ## Features
  *  - Themes specified by name (resolved from a registry), by URL, or as inline `CSSStyleSheet` instances.
- *  - Configurable loading timeout.
+ *  - Configurable loading timeout with `Promise.allSettled` — partial failures do not block other themes from loading.
  *  - Automatic attachment and detachment of stylesheets on connect/disconnect.
  *  - Built-in flash-of-unstyled-content (FOUC) prevention that hides the host until themes finish loading.
  *  - Toggle stylesheet attachment via the `attachStyleSheets` property.
+ *  - Attaches to the nearest `Document` or `ShadowRoot` via `adoptedStyleSheets`, enabling cross-component theme sharing.
  *
  * ## Use when
  *  - Applying shared design tokens or theme stylesheets across components.
@@ -41,6 +42,9 @@ const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
  * ## Do not use when
  *  - Styling a single component with scoped CSS — use the component's own `styleUrl` instead.
  *  - Styles can be included as a static stylesheet link at build time — no runtime loading needed.
+ *
+ * ## Accessibility
+ *  - The host element is hidden (`hidden` attribute) and does not render visible content. It is a purely structural theming component.
  *
  * @status experimental
  */
@@ -57,7 +61,9 @@ export class ChTheme {
   /**
    * Indicates whether the theme should be attached to the Document or
    * the ShadowRoot after loading.
-   * The value can be overridden by the `attachStyleSheet` property of the model.
+   * The value can be overridden by the `attachStyleSheet` property of each
+   * individual item in the model. When toggled at runtime, already-loaded
+   * themes are attached or detached accordingly without re-fetching.
    */
   @Prop() readonly attachStyleSheets: boolean = true;
   @Watch("attachStyleSheets")
@@ -67,12 +73,23 @@ export class ChTheme {
 
   /**
    * `true` to visually hide the contents of the root node while the control's
-   * style is not loaded.
+   * style is not loaded. When enabled, a `<style>` element with
+   * `visibility: hidden !important` is rendered into the host until all themes
+   * resolve. Set to `false` if the initial unstyled flash is acceptable or
+   * if the themes are expected to be cached.
    */
   @Prop() readonly avoidFlashOfUnstyledContent: boolean = true;
 
   /**
-   * Specify themes to load
+   * Specifies the themes to load. Accepts a single theme name (string), an
+   * array of theme names, a single `ThemeItemModel` object, or an array of
+   * `ThemeItemModel` objects. Each item may specify a `name`, `url`,
+   * `styleSheet`, `themeBaseUrl`, and per-item `attachStyleSheet` override.
+   *
+   * When set to `undefined` or `null`, no themes are loaded.
+   *
+   * **Note:** The model is only processed on the first non-null assignment.
+   * Subsequent changes to an already-loaded model are currently not reactive.
    */
   @Prop() readonly model: ThemeModel | undefined | null;
   @Watch("model")
@@ -84,12 +101,23 @@ export class ChTheme {
   }
 
   /**
-   * Specifies the time to wait for the requested theme to load.
+   * Specifies the maximum time (in milliseconds) to wait for each requested
+   * theme to load. If a theme does not resolve within this window, it is
+   * treated as a rejected promise and logged to the console.
+   *
+   * Defaults to `10000` (10 seconds). This is an init-only property; changing
+   * it after the initial load has no effect.
    */
   @Prop() readonly timeout = 10000;
 
   /**
-   * Event emitted when the theme has successfully loaded
+   * Emitted after all theme loading promises have settled (via
+   * `Promise.allSettled`). The event payload contains a `success` array with
+   * the names of the themes that loaded successfully. Themes that failed are
+   * logged to the console but not included in the payload.
+   *
+   * Bubbles: `true`. Composed: `false` — the event does not cross shadow DOM
+   * boundaries.
    */
   @Event({ bubbles: true, composed: false })
   themeLoaded: EventEmitter<ChThemeLoadedEvent>;

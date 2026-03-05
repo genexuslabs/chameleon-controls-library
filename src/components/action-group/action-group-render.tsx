@@ -38,11 +38,11 @@ const INTERSECTION_OPTIONS: IntersectionObserverInit = { threshold: 1 };
  * ## Accessibility
  *  - The host element has `role="list"`, and the overflow menu item has `role="listitem"`.
  *  - The "more actions" button carries a configurable `aria-label` (`moreActionsAccessibleName`).
+ *  - The component delegates click, keyboard, and expanded-change events to
+ *    its embedded `ch-action-menu-render` for the overflow dropdown.
  *
- * @part actions - The container element that holds the visible action items.
- * @part more-actions - The container that wraps the overflow "more actions" button and its dropdown.
- * @part more-actions-button - The button that opens the overflow dropdown when items do not fit in the available space.
- * @part more-actions-window - The popover window containing the overflowed action items.
+ * @part separator - A horizontal divider rendered for items of `type: "separator"`. Also receives the item's `id` and custom `parts` if defined.
+ * @part vertical - Present on `separator` items.
  *
  * @status experimental
  *
@@ -100,7 +100,7 @@ export class ChActionGroupRender {
 
   /**
    * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
-   * to make the control responsive to changes in the Width of the container of ActionGroup.
+   * to make the control responsive to changes in the width of the container of ActionGroup.
    *
    * | Value                 | Details                                                                                          |
    * | --------------------- | ------------------------------------------------------------------------------------------------ |
@@ -292,6 +292,7 @@ export class ChActionGroupRender {
             role="listitem"
             exportparts={ACTION_MENU_ITEM_EXPORT_PARTS}
             blockAlign={this.moreActionsBlockAlign}
+            buttonAccessibleName={this.moreActionsAccessibleName}
             disabled={this.disabled}
             getImagePathCallback={this.getImagePathCallback}
             inlineAlign={this.moreActionsInlineAlign}

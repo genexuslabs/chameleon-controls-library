@@ -25,7 +25,7 @@
   --ch-tree-view-item__checkbox-size: #{$default-decorative-image-size};
 
   /**
-   * @prop --ch-tree-view-item__checkbox-size:
+   * @prop --ch-tree-view-item__expandable-button-size:
    * Specifies the expandable button size of the items.
    * @default #{$default-decorative-image-size}
    */
@@ -39,7 +39,7 @@
   --ch-tree-view-item__image-size: #{$default-decorative-image-size};
 
   /**
-   * @prop --ch-tree-view-item__image-size:
+   * @prop --ch-tree-view-item__background-image-size:
    * Specifies the size of the start and end images of the items.
    * @default 100%
    */

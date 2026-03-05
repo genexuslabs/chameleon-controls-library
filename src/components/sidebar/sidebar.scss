@@ -5,7 +5,18 @@
 @include box-sizing();
 
 :host {
+  /**
+   * @prop --ch-sidebar-inline-size--expanded:
+   * Specifies the inline size of the sidebar when expanded.
+   * @default auto
+   */
   --ch-sidebar-inline-size--expanded: auto;
+
+  /**
+   * @prop --ch-sidebar-inline-size--collapsed:
+   * Specifies the inline size of the sidebar when collapsed.
+   * @default auto
+   */
   --ch-sidebar-inline-size--collapsed: auto;
 
   /**

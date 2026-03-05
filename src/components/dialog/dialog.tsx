@@ -126,7 +126,7 @@ const isLastModalDialogOpened = (dialog: HTMLChDialogElement) =>
  *  - Lightweight contextual content anchored to a trigger element — prefer `ch-popover`.
  *
  * ## Accessibility
- *  - Built on the native `<dialog>` element, which provides modal semantics and focus trapping automatically.
+ *  - Built on the native `<dialog>` element, which provides modal semantics and automatic focus trapping in modal mode (focus cannot leave the dialog while it is open).
  *  - The dialog is labelled via `aria-labelledby` pointing to an `<h2>` heading in the header.
  *  - The close button carries an `aria-label` (`closeButtonAccessibleName`).
  *  - When `closable` is `true`, the Escape key dismisses the dialog.
@@ -314,14 +314,15 @@ export class ChDialog {
   @Prop() readonly adjustPositionAfterResize: boolean = false;
 
   /**
-   * "box" will allow the dialog to be draggable from both the header and the
-   * content. "header" will allow the dialog to be draggable only from the header.
-   * "no" disables dragging completely.
+   * `"box"` will allow the dialog to be draggable from both the header and the
+   * content. `"header"` will allow the dialog to be draggable only from the
+   * header (requires `showHeader: true` to have a visible drag handle).
+   * `"no"` disables dragging completely.
    */
   @Prop() readonly allowDrag: "box" | "header" | "no" = "no";
 
   /**
-   * Refers to the dialog title. I will ve visible if 'showHeader´is true.
+   * Refers to the dialog title. It will be visible if `showHeader` is `true`.
    */
   @Prop() readonly caption: string;
 
@@ -343,7 +344,9 @@ export class ChDialog {
   @Prop() readonly closeButtonAccessibleName?: string;
 
   /**
-   * Specifies whether the dialog is shown or not.
+   * Specifies whether the dialog is shown or not. This property is mutable:
+   * the component sets it to `false` when the dialog is closed by the user
+   * (via the close button, Escape key, or clicking outside).
    */
   @Prop({ mutable: true }) show: boolean = false;
   @Watch("show")
@@ -386,7 +389,8 @@ export class ChDialog {
 
   /**
    * Specifies whether the control can be resized. If `true` the control can be
-   * resized at runtime by dragging the edges or corners.
+   * resized at runtime by dragging the edges or corners. Resize handles are
+   * only rendered when `show` is `true`.
    */
   @Prop() readonly resizable: boolean = false;
   @Watch("resizable")

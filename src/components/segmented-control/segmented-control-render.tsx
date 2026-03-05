@@ -35,8 +35,9 @@ import { SegmentedControlItemModel, SegmentedControlModel } from "./types";
  *  - Confusing with `ch-tab`: segmented controls switch the FORMAT or VIEW of the same data; tabs switch to DIFFERENT content sections.
  *
  * ## Accessibility
- *  - The host element has `role="list"`, and each segment item acts as a list item.
- *  - Selection changes are communicated via events to assistive technology.
+ *  - The host element has `role="list"`, and each `ch-segmented-control-item` child renders with `role="listitem"`, following the ARIA list pattern.
+ *  - The selected segment is visually distinguished via CSS parts (`selected` / `unselected`); ensure custom styles provide sufficient contrast for assistive technology.
+ *  - Selection changes are communicated via the `selectedItemChange` event to assistive technology.
  *
  * @part action - The `<button>` element for each segment. Receives the `selected`, `unselected`, `disabled`, `first`, `last`, and `between` state parts.
  *
@@ -59,29 +60,38 @@ export class ChSegmentedControl {
    * Specifies the parts that are exported by the internal
    * segmented-control-item. This property is useful to override the exported
    * parts.
+   *
+   * **Caution:** Overriding this value can break the parts API for external
+   * consumers that rely on the default exported part names. Only change this
+   * if you need to remap or restrict the exposed parts intentionally.
    */
   @Prop() readonly exportParts: string = SEGMENTED_CONTROL_EXPORT_PARTS;
 
   /**
-   * A CSS class to set as the `ch-segmented-control-item` element class.
-   * This default class is used for the items that don't have an explicit class.
+   * A CSS class applied to the host element of each `ch-segmented-control-item`,
+   * not to the inner `<button>`. This default class is used for items that do
+   * not have an explicit `class` property in their model entry.
    */
   @Prop() readonly itemCssClass: string = "segmented-control-item";
 
   /**
-   * This property lets you define the items of the ch-segmented-control-render
-   * control.
+   * Defines the items rendered by the segmented control.
    */
   @Prop() readonly model?: SegmentedControlModel;
 
   /**
-   * Specifies the ID of the selected item
+   * Specifies the ID of the selected item. The value must match an `id` from
+   * the `model` array; if no item matches, no segment is visually selected.
+   *
+   * This property is mutable: it is updated internally when the user clicks a
+   * segment, so the host can read back the current selection at any time.
    */
   @Prop({ mutable: true }) selectedId: string;
 
   /**
-   * Fired when the selected item change. It contains the information about the
-   * new selected id.
+   * Fired when the selected item changes due to user interaction (click).
+   * It is **not** emitted when `selectedId` is changed programmatically.
+   * The event detail contains the `id` of the newly selected segment.
    */
   @Event() selectedItemChange: EventEmitter<string>;
 

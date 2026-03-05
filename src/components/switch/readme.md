@@ -26,32 +26,36 @@ The `ch-switch` component is a toggle control that lets users switch between two
  - More than two states are needed — prefer `ch-combo-box-render`, `ch-radio-group-render`, or `ch-segmented-control-render`.
  - A destructive or irreversible action is triggered — always require explicit confirmation.
 
+## Slots
+ - This component does not define any slots.
+
 ## Accessibility
  - Form-associated via `ElementInternals` — participates in native form validation and submission.
- - Delegates focus into the shadow DOM (`delegatesFocus: true`).
- - The input element has `role="switch"` and `aria-checked` reflecting the current state.
+ - Delegates focus into the shadow DOM (`delegatesFocus: true`), so focusing the host automatically focuses the internal `<input>`.
+ - The native `<input>` element has `role="switch"` and `aria-checked` reflecting the current checked state.
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
  - The decorative caption is hidden from assistive technology with `aria-hidden`.
+ - **Keyboard interaction**: `Space` toggles the switch, `Tab` moves focus to/from the control.
 
 ## Properties
 
-| Property                    | Attribute            | Description                                                                                                                                                                            | Type      | Default     |
-| --------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `accessibleName`            | `accessible-name`    | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.                      | `string`  | `undefined` |
-| `checkedCaption`            | `checked-caption`    | Caption displayed when the switch is 'on'                                                                                                                                              | `string`  | `undefined` |
-| `checkedValue` _(required)_ | `checked-value`      | The value when the switch is 'on'                                                                                                                                                      | `string`  | `undefined` |
-| `disabled`                  | `disabled`           | This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).                          | `boolean` | `false`     |
-| `name`                      | `name`               | This property specifies the `name` of the control when used in a form.                                                                                                                 | `string`  | `undefined` |
-| `unCheckedCaption`          | `un-checked-caption` | Caption displayed when the switch is 'off'                                                                                                                                             | `string`  | `undefined` |
-| `unCheckedValue`            | `un-checked-value`   | The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value. | `string`  | `undefined` |
-| `value`                     | `value`              | The value of the control.                                                                                                                                                              | `string`  | `null`      |
+| Property                    | Attribute            | Description                                                                                                                                                                                                                                                                                                                              | Type      | Default     |
+| --------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
+| `accessibleName`            | `accessible-name`    | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.                                                                                                                                                                        | `string`  | `undefined` |
+| `checkedCaption`            | `checked-caption`    | Caption displayed when the switch is 'on'. This is purely visual — the caption element is `aria-hidden="true"`, so it has no effect on assistive technology.                                                                                                                                                                             | `string`  | `undefined` |
+| `checkedValue` _(required)_ | `checked-value`      | The value when the switch is 'on'. This property is required (no default). The checked state is derived from `value === checkedValue`.                                                                                                                                                                                                   | `string`  | `undefined` |
+| `disabled`                  | `disabled`           | This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event). When `true`, all event handlers (click on host, input on the internal input, click on the label) are suppressed, and the `ch-disabled` class is added to the host element. | `boolean` | `false`     |
+| `name`                      | `name`               | This property specifies the `name` of the control when used in a form.                                                                                                                                                                                                                                                                   | `string`  | `undefined` |
+| `unCheckedCaption`          | `un-checked-caption` | Caption displayed when the switch is 'off'. This is purely visual — the caption element is `aria-hidden="true"`, so it has no effect on assistive technology.                                                                                                                                                                            | `string`  | `undefined` |
+| `unCheckedValue`            | `un-checked-value`   | The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value. When `undefined`, no form value is submitted in the unchecked state.                                                                              | `string`  | `undefined` |
+| `value`                     | `value`              | The value of the control. Mutated internally on toggle (set to `checkedValue` or `unCheckedValue`). During `connectedCallback`, it is initialized from `unCheckedValue` if unset. The `@Watch` handler syncs the value with `ElementInternals.setFormValue()` on every change.                                                           | `string`  | `null`      |
 
 
 ## Events
 
-| Event   | Description                                                                                 | Type               |
-| ------- | ------------------------------------------------------------------------------------------- | ------------------ |
-| `input` | The 'input' event is emitted when a change to the element's value is committed by the user. | `CustomEvent<any>` |
+| Event   | Description                                                                                                                                                                                                                                  | Type               |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `input` | The 'input' event is emitted when a change to the element's value is committed by the user. The native input event is stopped from propagating and re-emitted on the host. The payload is the original `UIEvent` (not the new value string). | `CustomEvent<any>` |
 
 
 ## Shadow Parts
@@ -71,7 +75,7 @@ The `ch-switch` component is a toggle control that lets users switch between two
 | Name                                            | Description                                                                                                                       |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `--ch-switch-thumb-size`                        | Specifies the size of the thumb. @default clamp(8px, 1em, 24px)                                                                   |
-| `--ch-switch-thumb__checked-background-color`   | Specifies the background color of the thumb when the control is unchecked. @default currentColor                                  |
+| `--ch-switch-thumb__checked-background-color`   | Specifies the background color of the thumb when the control is checked. @default currentColor                                    |
 | `--ch-switch-thumb__state-transition-duration`  | Specifies the transition duration of the thumb when switching between states. @default 0ms                                        |
 | `--ch-switch-thumb__unchecked-background-color` | Specifies the background color of the thumb when the control is unchecked. @default #b2b2b2                                       |
 | `--ch-switch-track-block-size`                  | Specifies the block size of the track. @default clamp(3px, 0.5em, 16px)                                                           |

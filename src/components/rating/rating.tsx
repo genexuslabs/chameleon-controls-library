@@ -37,11 +37,15 @@ import { tokenMap } from "../../common/utils";
  *  - The scale semantics are unclear to users without a legend explaining what each star means.
  *  - The rating is read-only / display-only — remove interactive behaviors and provide equivalent alt text.
  *
+ * ## Slots
+ *  - No slots. All content is rendered internally.
+ *
  * ## Accessibility
  *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
  *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
- *  - Implements the `radiogroup` pattern — the host receives `role="radiogroup"` and each star is a native `<input type="radio">`.
- *  - Each radio input carries an `aria-label` describing its value (e.g. "3 stars").
+ *  - The host receives `role="radiogroup"` set imperatively in `connectedCallback`.
+ *  - Each star is a native `<input type="radio">`, so Arrow keys navigate between stars and Space selects the focused star.
+ *  - Each radio input carries a hardcoded English `aria-label` describing its value (e.g. "3 stars").
  *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
  *
  * @status experimental
@@ -88,6 +92,8 @@ export class ChRating {
 
   /**
    * This property determine the number of stars displayed.
+   * Values less than 0 are treated as 0 (`Math.max(0, stars)`).
+   * The `value` property is clamped to the range `[0, stars]`.
    */
   @Prop() readonly stars: number = 5;
   @Watch("stars")
@@ -98,6 +104,11 @@ export class ChRating {
 
   /**
    * The current value displayed by the component.
+   * Fractional values are supported for display (partial star fill), but user
+   * interaction only produces whole numbers.
+   * The value is clamped between `0` and `stars`.
+   * The `@Watch` handler syncs the clamped value with
+   * `ElementInternals.setFormValue()`.
    */
   @Prop({ mutable: true }) value: number = 0;
   @Watch("value")
@@ -109,7 +120,8 @@ export class ChRating {
    * The `input` event is emitted when a change to the element's value is
    * committed by the user.
    *
-   * It contains the new value of the control.
+   * The payload is the new numeric value — always a whole number in the
+   * range `[0, stars]`.
    */
   @Event() input: EventEmitter<number>;
 

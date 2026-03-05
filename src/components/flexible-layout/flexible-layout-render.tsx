@@ -75,6 +75,7 @@ const GENERATE_GUID = () => {
  *  - Close button support for tabbed leaves.
  *  - Configurable CSS containment and overflow per widget.
  *  - Theme support via the `theme` property.
+ *  - Emits `renderedWidgetsChange` whenever the set of visible widgets changes, enabling host apps to lazy-mount or unmount content.
  *
  * ## Use when
  *  - Building a complex, multi-pane workspace (code editors, dashboards, admin panels) where users can rearrange, close, and add views at runtime.
@@ -82,14 +83,19 @@ const GENERATE_GUID = () => {
  *
  * ## Do not use when
  *  - Building simple, static layouts -- prefer `ch-layout-splitter` or CSS Grid instead.
- *  - A simple fixed two-panel layout is sufficient — prefer `ch-layout-splitter` directly.
+ *  - A simple fixed two-panel layout is sufficient -- prefer `ch-layout-splitter` directly.
+ *
+ * ## Accessibility
+ *  - Tab reordering in `"tabbed"` leaves supports keyboard-initiated drag via the inner `ch-tab` component.
+ *  - Focus management is delegated to the underlying `ch-flexible-layout` and `ch-tab` primitives.
+ *  - Close actions are cancelable through the `widgetClose` event, allowing confirmation dialogs before removal.
  *
  * @part droppable-area - The overlay surface rendered over the layout when a widget is being dragged, enabling drop-zone detection.
  * @part leaf - The container element for a leaf node (either a single-widget view or a tabbed widget group).
  *
  * @status experimental
  *
- * @slot {widgetId} - Named slot for each widget. Rendered when `slottedWidgets` is `true` (or the individual widget's `slot` property is `true`) and the widget is currently visible.
+ * @slot {widgetId} - Named slot for each widget. Each widget gets a named slot whose name equals the widget's `id`. Slots are only projected when `slottedWidgets` is `true` (or the individual widget's `slot` property is `true`) and the widget is currently visible.
  */
 @Component({
   shadow: true,
@@ -116,6 +122,9 @@ export class ChFlexibleLayoutRender {
 
   /**
    * `true` to display a close button for the `"tabbed"` type leafs.
+   * When a close button is clicked, the `widgetClose` event is emitted.
+   * The close can be prevented by calling `event.preventDefault()`.
+   * Has no effect on `"single-content"` type leaves.
    */
   @Prop() readonly closeButton: boolean = false;
 
@@ -131,15 +140,23 @@ export class ChFlexibleLayoutRender {
   @Prop() readonly contain: CssContainProperty = "none";
 
   /**
-   * When the "tabbed" type leafs are sortable, the items can be dragged
-   * outside of its tab-list.
+   * When the `"tabbed"` type leaves are sortable, the items can be dragged
+   * outside of their tab-list into a different leaf's drop zone.
    *
    * This property lets you specify if this behavior is enabled.
+   * Requires `sortable` to be `true`; otherwise this property has no effect.
    */
   @Prop() readonly dragOutside: boolean = false;
 
   /**
    * Specifies the distribution of the items in the flexible layout.
+   * The model is a tree of groups and leaves describing the hierarchical
+   * pane structure. When set to `null` or `undefined`, the component renders
+   * nothing.
+   *
+   * Changing this property at runtime fully rebuilds the internal state.
+   * Previously rendered widgets that still exist in the new model will
+   * keep their render state; widgets removed from the model are discarded.
    */
   @Prop() readonly model: FlexibleLayoutModel;
   @Watch("model")
@@ -157,21 +174,34 @@ export class ChFlexibleLayoutRender {
     | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
   /**
-   * Specifies the distribution of the items in the flexible layout.
+   * A dictionary mapping render IDs to render functions.
+   * Each function receives a `FlexibleLayoutWidget` and returns a JSX element
+   * to display inside the widget's container.
+   *
+   * When a widget's `renderId` is set, the component looks up this dictionary
+   * using that ID; otherwise it falls back to the widget's `id`.
+   * If no matching render is found, an error is logged to the console.
+   *
+   * Not used for slotted widgets (those projected via named slots).
    */
   @Prop() readonly renders: FlexibleLayoutRenders;
 
   /**
-   * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by
-   * dragging them in the tab-list.
+   * `true` to enable sorting the tab buttons in the `"tabbed"` type leaves
+   * by dragging them in the tab-list.
    *
-   * If `false`, the tab buttons can not be dragged out either.
+   * If `false`, the tab buttons cannot be dragged out either, regardless
+   * of the `dragOutside` property value.
    */
   @Prop() readonly sortable: boolean = false;
 
   /**
    * Specifies whether widgets are rendered outside of the
-   * ch-flexible-layout-render by default by projecting a slot.
+   * `ch-flexible-layout-render` by default by projecting a named slot.
+   *
+   * When `true`, each visible widget is rendered as a `<slot name="{widgetId}">`
+   * so the host application can provide content from outside the shadow DOM.
+   * Individual widgets can override this default via their own `slot` property.
    */
   @Prop() readonly slottedWidgets: boolean = false;
 
@@ -182,21 +212,33 @@ export class ChFlexibleLayoutRender {
   @Prop() readonly theme: ThemeModel | undefined;
 
   /**
-   * Emitted when the user pressed the close button in a widget.
+   * Emitted when the user presses the close button on a widget tab.
+   * The event is cancelable: calling `event.preventDefault()` prevents the
+   * widget from being removed, allowing the host to show a confirmation
+   * dialog or perform cleanup before removal.
+   *
+   * Payload contains `widgetId` and `viewId` identifying the closed widget.
    */
   @Event() widgetClose: EventEmitter<FlexibleLayoutWidgetCloseInfo>;
 
   /**
-   * Emitted every time the rendered widgets changes. It contains the detail
-   * of which widgets are rendered inside the `ch-flexible-layout-render`
-   * (`rendered` member) and those widgets that are rendered in an slot
-   * (`slotted` member).
+   * Emitted every time the set of rendered widgets changes (after each
+   * render cycle). The payload contains two arrays:
+   *  - `rendered`: widget IDs rendered internally by the component.
+   *  - `slotted`: widget IDs projected via named slots.
+   *
+   * Not emitted when the rendered set is identical to the previous cycle.
+   * Not cancelable.
    */
   @Event() renderedWidgetsChange: EventEmitter<FlexibleLayoutRenderedWidgets>;
 
   /**
-   * Add a view with widgets to render. The view will take the half space of
-   * the sibling view that its added with.
+   * Adds a new leaf view as a sibling of an existing item within a group.
+   * The new view takes half the space of the specified sibling when
+   * `takeHalfTheSpaceOfTheSiblingItem` is `true`.
+   *
+   * Returns `true` if the view was added successfully, `false` if the
+   * parent group or sibling item was not found.
    */
   @Method()
   async addSiblingView(
@@ -232,12 +274,16 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
-   * Add a widget in a `"tabbed"` type leaf.
-   * Only works if the parent leaf is `"tabbed"` type.
-   * If a widget with the same ID already exists, this method has not effect.
+   * Adds a widget to an existing `"tabbed"` type leaf.
+   * Only works if the parent leaf is `"tabbed"` type; no-ops for
+   * `"single-content"` leaves.
+   * If a widget with the same ID already exists, this method has no effect.
+   *
+   * By default, the newly added widget is selected (`selectWidget = true`).
+   * Set `selectWidget` to `false` to add the widget without switching to it.
    *
    * To add a widget in a `"single-content"` type leaf, use the
-   * `addSiblingView` method.
+   * `addSiblingView` method instead.
    */
   @Method()
   async addWidget(
@@ -272,8 +318,14 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
-   * Removes a view and optionally all its rendered widget from the render.
-   * The reserved space will be given to the closest view.
+   * Removes a leaf view and optionally all its rendered widgets.
+   * The space freed by the removed view is given to the closest sibling.
+   *
+   * Only works on `"tabbed"` type leaves. Returns `{ success: false }` if
+   * the leaf does not exist or is `"single-content"` type.
+   *
+   * When `removeRenderedWidgets` is `true`, widget render state is
+   * destroyed (unless the widget has `conserveRenderState === true`).
    */
   @Method()
   async removeView(
@@ -398,11 +450,15 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
-   * Remove a widget from a `"tabbed"` type leaf.
-   * Only works if the parent leaf is `"tabbed"` type.
+   * Removes a widget from a `"tabbed"` type leaf by its widget ID.
+   * Only works if the parent leaf is `"tabbed"` type; no-ops otherwise.
+   *
+   * If the removed widget was the only one in the leaf, the entire view
+   * is destroyed via `removeView`. If it was the selected widget, the
+   * adjacent widget is automatically selected.
    *
    * To remove a widget from a `"single-content"` type leaf, use the
-   * `removeView` method.
+   * `removeView` method instead.
    */
   @Method()
   async removeWidget(widgetId: string) {
@@ -425,8 +481,10 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
-   * Update the selected widget from a `"tabbed"` type leaf.
-   * Only works if the parent leaf is `"tabbed"` type.
+   * Updates the selected (visible) widget in a `"tabbed"` type leaf.
+   * Only works if the parent leaf is `"tabbed"` type and the specified
+   * widget belongs to that leaf. No-ops if the widget is already selected,
+   * the widget is not found, or the leaf is `"single-content"` type.
    */
   @Method()
   async updateSelectedWidget(
@@ -456,9 +514,13 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
-   * Given the viewId, it updates the info of the view if the view is a leaf.
-   * The `type` of the properties argument must match the `type` of the view to
-   * update.
+   * Updates leaf-level configuration properties (e.g., `tabListPosition`,
+   * `dragBar`) for the view identified by `viewId`.
+   *
+   * The `type` field in the `properties` argument must match the leaf's
+   * current type; otherwise the update is silently skipped.
+   * The `selectedWidgetId`, `widget`, and `widgets` fields cannot be
+   * changed through this method.
    */
   @Method()
   async updateViewInfo(
@@ -494,7 +556,11 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
-   * Update the widget info.
+   * Updates metadata properties on an existing widget (e.g., `name`,
+   * `startImgSrc`, `slot`). The `id` and `wasRendered` fields cannot be
+   * changed. No-ops if the widget is not found.
+   *
+   * Triggers a re-render of both the widget container and its parent leaf.
    */
   @Method()
   async updateWidgetInfo(

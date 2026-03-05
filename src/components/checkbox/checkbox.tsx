@@ -54,10 +54,10 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
  * @remarks
  * ## Features
  *  - Tri-state support: checked, unchecked, and indeterminate.
- *  - Optional label and start images with multi-state support.
+ *  - Optional label and start images with multi-state support (hover, active, focus, disabled).
  *  - Read-only mode to prevent user modifications.
  *  - Form-associated via `ElementInternals` for native form participation.
- *  - Accessible name resolution from external labels.
+ *  - Accessible name resolution from external `<label>` elements via `ElementInternals.labels`.
  *
  * ## Use when
  *  - A binary or tri-state selection is needed in forms, settings panels, or tree views.
@@ -73,22 +73,28 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
  *  - The list of options exceeds 7 items — prefer `ch-combo-box-render` with multiple selection instead.
  *  - A single checkbox is used in isolation as a binary toggle for a live system setting — prefer `ch-switch`.
  *
+ * ## Slots
+ * This component does not project any slots. All content is rendered from the `caption` and `startImgSrc` properties.
+ *
  * ## Accessibility
+ *  - Uses a native `<input type="checkbox">` internally, providing built-in ARIA semantics.
  *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
- *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
- *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+ *  - Delegates focus into the shadow DOM (`delegatesFocus: true`), so clicking the host or an associated external `<label>` automatically focuses the internal input.
+ *  - Resolves its accessible name from an external `<label>` element (via `ElementInternals.labels`) or the `accessibleName` property. The external label takes priority.
  *  - The decorative option overlay is hidden from assistive technology with `aria-hidden`.
+ *  - Keyboard: Space toggles the checkbox (native `<input type="checkbox">` behavior). Tab moves focus in/out.
+ *  - The `indeterminate` IDL property is set on the native input, so screen readers announce the mixed state.
  *
  * @status developer-preview
  *
  * @part container - The container that serves as a wrapper for the `input` and the `option` parts.
- * @part input - The input element that implements the interactions for the component.
- * @part option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.
- * @part label - The label that is rendered when the `caption` property is not empty.
+ * @part input - The native `<input type="checkbox">` element that implements the interactions for the component.
+ * @part option - The decorative overlay rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`, and is always `aria-hidden`.
+ * @part label - The `<label>` element that wraps the checkbox and caption text. Only present when `caption` is set or `startImgSrc` resolves to a valid image.
  *
  * @part checked - Present in the `input`, `option`, `label` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).
  * @part disabled - Present in the `input`, `option`, `label` and `container` parts when the control is disabled (`disabled` === `true`).
- * @part indeterminate - Present in the `input`, `option`, `label` and `container` parts when the control is indeterminate (`indeterminate` === `true`).
+ * @part indeterminate - Present in the `input`, `option`, `label` and `container` parts when the control is indeterminate (`indeterminate` === `true`). Takes precedence over `checked`/`unchecked`.
  * @part unchecked - Present in the `input`, `option`, `label` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`).
  */
 @Component({
@@ -118,25 +124,33 @@ export class ChCheckBox
   @Prop() readonly accessibleName?: string;
 
   /**
-   * Specifies the label of the checkbox.
+   * Specifies the visible label text of the checkbox. When set (or when
+   * `startImgSrc` resolves to a valid image), the checkbox is wrapped in a
+   * `<label>` element that also exposes the `label` part.
    */
   @Prop() readonly caption?: string;
 
   /**
-   * The value when the checkbox is 'on'
+   * The value assigned to the control when it is checked. This property is
+   * required — the component determines its checked state by comparing
+   * `value === checkedValue`.
    */
   @Prop() readonly checkedValue!: string;
 
   /**
-   * This attribute lets you specify if the element is disabled.
-   * If disabled, it will not fire any user interaction related event
-   * (for example, click event).
+   * If `true`, the checkbox is disabled: it will not respond to user
+   * interaction and will not fire any events. The internal `<input>` receives
+   * the native `disabled` attribute, and the `disabled` state part is added
+   * to all structural parts.
    */
   @Prop() readonly disabled: boolean = false;
 
   /**
-   * This property specifies a callback that is executed when the path for an
-   * startImgSrc needs to be resolved.
+   * A callback executed when `startImgSrc` needs to be resolved into a
+   * multi-state image object (`GxImageMultiState`). If not provided, the
+   * component falls back to the global registry
+   * (`getControlRegisterProperty("getImagePathCallback", "ch-checkbox")`),
+   * then to `DEFAULT_GET_IMAGE_PATH_CALLBACK`.
    */
   @Prop() readonly getImagePathCallback?: (
     imageSrc: string
@@ -147,12 +161,20 @@ export class ChCheckBox
   }
 
   /**
-   * True to highlight control when an action is fired.
+   * When `true`, the control emits the `click` event after each value change
+   * and applies the `ch-checkbox--actionable` CSS class even in `readonly`
+   * mode. This is a GeneXus-specific behavior for action highlighting.
    */
   @Prop() readonly highlightable: boolean = false;
 
   /**
-   * `true` if the control's value is indeterminate.
+   * `true` if the control's value is indeterminate (mixed state). When
+   * `indeterminate` is `true`, neither the `checked` nor `unchecked` state
+   * parts are applied — only the `indeterminate` part is present.
+   *
+   * This property is automatically reset to `false` on any user interaction
+   * (toggle). To re-enter the indeterminate state, the parent must set
+   * this property again from the outside.
    */
   @Prop({ mutable: true }) indeterminate: boolean = false;
 
@@ -162,9 +184,13 @@ export class ChCheckBox
   @Prop({ reflect: true }) readonly name?: string;
 
   /**
-   * This attribute indicates that the user cannot modify the value of the control.
-   * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
-   * attribute for `input` elements.
+   * When `true`, the user cannot modify the value of the control.
+   * Internally, this sets `disabled` on the native `<input>` (since
+   * `<input type="checkbox">` does not support the HTML `readonly`
+   * attribute). Unlike `disabled`, the form value is still submitted.
+   *
+   * If both `readonly` and `highlightable` are `true`, the
+   * `ch-checkbox--actionable` class is still applied.
    */
   @Prop() readonly readonly: boolean = false;
 
@@ -178,19 +204,27 @@ export class ChCheckBox
   }
 
   /**
-   * Specifies the source of the start image.
+   * Specifies the rendering mode for the start image. `"background"` uses
+   * a CSS `background-image`, while `"mask"` uses `-webkit-mask` (which
+   * allows the image to inherit `currentColor`).
    */
   @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
 
   /**
-   * The value when the switch is 'off'. If you want to not add the value when
-   * the control is used in a form and it's unchecked, just let this property
-   * with the default `undefined` value.
+   * The value assigned to the control when it is unchecked. If left as
+   * `undefined`, no value is submitted in forms when the checkbox is off.
+   * Also used as the initial value in `connectedCallback` when `value` is
+   * not set.
    */
   @Prop() readonly unCheckedValue?: string | undefined;
 
   /**
-   * The value of the control.
+   * The current value of the control. The checked state is derived from
+   * `value === checkedValue`. When changed externally, the form value is
+   * updated via `ElementInternals.setFormValue()`.
+   *
+   * Mutated internally on user interaction: set to `checkedValue` when
+   * toggled on, or `unCheckedValue` when toggled off.
    */
   @Prop({ mutable: true }) value?: string;
   @Watch("value")
@@ -200,16 +234,17 @@ export class ChCheckBox
   }
 
   /**
-   * Emitted when the element is clicked or the space key is pressed and
-   * released.
+   * Emitted after a value change **only when `highlightable` is `true`**.
+   * This is a GeneXus-specific event for action highlighting — it does
+   * NOT fire on every click or space press by default.
    */
   @Event() click: EventEmitter;
 
   /**
-   * The `input` event is emitted when a change to the element's value is
-   * committed by the user.
-   *
-   * It contains the new value of the control.
+   * Emitted when the user toggles the checkbox (via click, Space key, or
+   * external label activation). Contains the new `value` string
+   * (`checkedValue` or `unCheckedValue`). The native input event is
+   * stopped from propagating.
    */
   @Event() input: EventEmitter<string>;
 

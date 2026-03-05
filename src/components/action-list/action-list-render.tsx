@@ -218,11 +218,25 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
  * ## Accessibility
  *  - The host element has `role="list"` with `aria-multiselectable` when `selection` is `"multiple"`.
  *  - Separator items have `role="separator"` and `aria-hidden="true"`.
- *  - Supports keyboard navigation for item selection.
+ *  - Supports keyboard navigation: arrow keys move focus between items, Enter/Space selects, and modifier-click enables multi-select.
  *
  * @status experimental
  *
  * @part separator - A horizontal divider rendered between items when the model contains an item of `type: "separator"`.
+ *
+ * @part item__action - The clickable row element for each actionable item.
+ * @part item__caption - The text caption inside an actionable item.
+ * @part item__checkbox - The checkbox element rendered when `checkbox` is `true`.
+ *
+ * @part group__action - The clickable header row for a group item.
+ * @part group__caption - The text caption inside a group header.
+ * @part group__expandable - The expandable/collapsible container for a group's children.
+ *
+ * @part disabled - Present in the `item__action`, `item__caption`, `group__action`, and `group__caption` parts when the item is disabled.
+ * @part expanded - Present in the `group__expandable` part when the group is expanded.
+ * @part collapsed - Present in the `group__expandable` part when the group is collapsed.
+ * @part selected - Present in the `item__action` and `group__action` parts when the item is selected.
+ * @part not-selected - Present in the `item__action` and `group__action` parts when the item is not selected.
  */
 @Component({
   tag: "ch-action-list-render",
@@ -262,6 +276,8 @@ export class ChActionListRender {
   /**
    * This attribute lets you specify if the edit operation is enabled in all
    * items by default. If `true`, the items can edit its caption in place.
+   * Note: the default value is `true`, so items are editable unless
+   * explicitly disabled.
    */
   @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
 
@@ -282,7 +298,11 @@ export class ChActionListRender {
   @Prop() readonly getImagePathCallback?: ActionListImagePathCallback;
 
   /**
-   * This property lets you define the model of the control.
+   * This property lets you define the model of the control. The model is an
+   * array of `ActionListItemModel` objects. Each item has a `type`
+   * (`"actionable"`, `"group"`, or `"separator"`), an `id`, a `caption`,
+   * and optional properties such as `selected`, `disabled`, `fixed`, `order`,
+   * and nested `items` (for groups).
    */
   @Prop() readonly model: ActionListModel = [];
   @Watch("model")
@@ -401,6 +421,9 @@ export class ChActionListRender {
 
   /**
    * Specifies the type of selection implemented by the control.
+   *  - `"none"`: No selection; item clicks fire the `itemClick` event.
+   *  - `"single"`: Only one item can be selected at a time.
+   *  - `"multiple"`: Multiple items can be selected using modifier-key clicks.
    */
   @Prop() readonly selection: "single" | "multiple" | "none" = "none";
   @Watch("selection")

@@ -52,29 +52,29 @@ import { ManagerSelectionState } from "./tabular-grid-manager-selection";
  * ## Features
  *  - Single and multiple row selection, cell-level selection, and row marking (checkboxes).
  *  - Row and cell highlighting on hover.
- *  - Full keyboard navigation (arrow keys, Home/End, PageUp/PageDown, Enter, Space).
- *  - Column reordering via drag-and-drop.
- *  - Column resizing in single or splitter mode.
+ *  - Full keyboard navigation (Arrow keys, Home/End, PageUp/PageDown, Enter, Space, +/- for tree expand/collapse).
+ *  - Column reordering via drag-and-drop (controlled by `allowColumnReorder`).
+ *  - Column resizing in `"single"` or `"splitter"` mode.
  *  - Row expand/collapse for hierarchical tree data.
- *  - Context menus and row actions.
- *  - Touch support for mobile devices.
+ *  - Context menus and row actions via slotted content.
+ *  - Touch support for mobile devices (tap-to-select).
  *  - Built-in settings panel for column visibility.
  *  - Rich set of public methods and events for programmatic control.
  *
  * ## Use when
  *  - Displaying and interacting with structured tabular or hierarchical data.
  *  - Users need to select, sort, reorder, or resize columns interactively.
- *  - Displaying structured tabular data where users need to sort, filter, select rows, or perform bulk actions.
  *  - The data has a tree/hierarchy that benefits from inline expand/collapse.
  *
  * ## Do not use when
- *  - Displaying a simple list or card layout — use `ch-smart-grid` instead.
- *  - Simple display-only lists without interactivity — use a semantic `<table>` or `ch-action-list-render` instead.
+ *  - Displaying a simple list or card layout -- use `ch-smart-grid` instead.
+ *  - Simple display-only lists without interactivity -- use a semantic `<table>` or `ch-action-list-render` instead.
  *
  * ## Accessibility
- *  - Full keyboard navigation: Arrow keys to move between cells, Home/End for row boundaries, Page Up/Down for vertical scrolling, Enter/Space for activation.
- *  - Supports row and cell selection semantics with configurable selection modes.
+ *  - Full keyboard navigation: Arrow keys to move between cells, Home/End for row boundaries, PageUp/PageDown for vertical scrolling, Enter for row press, Space for toggle/mark, +/- for tree expand/collapse.
+ *  - Supports row and cell selection semantics with configurable selection modes (`rowSelectionMode`).
  *  - Hierarchical tree-grid rows support expand/collapse via keyboard.
+ *  - Focus is managed on the host element; row and cell focus states are tracked internally and exposed via CSS classes.
  *
  * @status stable
  *
@@ -94,7 +94,7 @@ import { ManagerSelectionState } from "./tabular-grid-manager-selection";
  * @part settings-columns-visible - The visibility toggle for a column in the settings panel.
  * @part settings-columns-visible-checked - The visibility toggle when the column is visible.
  *
- * @slot default - The default slot for grid columns (`ch-tabular-grid-column`), rows, and rowsets that compose the grid body.
+ * @slot - Default slot. The default slot for grid columns (`ch-tabular-grid-column`), rows, and rowsets that compose the grid body.
  * @slot header - Content projected into the grid header section above the data area.
  * @slot footer - Content projected into the grid footer section below the data area.
  * @slot column-display - Custom column display UI rendered in the aside area.
@@ -215,10 +215,15 @@ export class ChTabularGrid {
   @State() gridStyle: CSSProperties;
 
   /**
-   * One of "none", "single" or "multiple", indicating how rows can be selected.
-   * It can be set to "none" if no rows should be selectable,
-   * "single" if only one row can be selected at a time, or
-   * "multiple" if multiple rows can be selected at once.
+   * Controls how rows can be selected:
+   *  - `"none"`: No rows are selectable. Pointer and keyboard interactions
+   *    will not trigger selection events.
+   *  - `"single"`: Only one row can be selected at a time.
+   *  - `"multiple"`: Multiple rows can be selected using Ctrl/Cmd+click or
+   *    Shift+click.
+   *
+   * Also affects `rowHighlightEnabled` when set to `"auto"` -- highlighting
+   * is enabled for `"single"` and `"multiple"` modes.
    */
   @Prop() readonly rowSelectionMode: "none" | "single" | "multiple" = "single";
 
@@ -232,28 +237,42 @@ export class ChTabularGrid {
     "select";
 
   /**
-   * One of "false", "true" or "auto", indicating whether or not rows can be highlighted.
-   * "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
+   * Controls whether rows are visually highlighted on hover:
+   *  - `"auto"`: Highlighting is enabled when `rowSelectionMode` is
+   *    `"single"` or `"multiple"`, disabled when `"none"`.
+   *  - `true`: Always enabled regardless of selection mode.
+   *  - `false`: Always disabled.
+   *
+   * When enabled, the `rowHighlightedClass` CSS class is applied to the
+   * hovered row and the `row-actions` slot (if configured) is shown.
    */
   @Prop() readonly rowHighlightEnabled: boolean | "auto" = "auto";
 
   /**
    * A CSS class name applied to a row when it is selected.
+   * When `undefined`, no class is applied. Applied to `ch-tabular-grid-row`
+   * elements that are in the selected state.
    */
   @Prop() readonly rowSelectedClass: string;
 
   /**
-   * A CSS class name applied to a row when it is hovered.
+   * A CSS class name applied to a row when it is hovered (highlighted).
+   * When `undefined`, no class is applied. Only takes effect when
+   * `rowHighlightEnabled` is active.
    */
   @Prop() readonly rowHighlightedClass: string;
 
   /**
-   * A CSS class name applied to a row when it is focused.
+   * A CSS class name applied to a row when it is focused via keyboard
+   * navigation. When `undefined`, no class is applied.
    */
   @Prop() readonly rowFocusedClass: string;
 
   /**
-   * A CSS class name applied to a row when it is marked.
+   * A CSS class name applied to a row when it is marked (checked via the
+   * row selector checkbox). When `undefined`, no class is applied.
+   * Only relevant when the column selector's `richRowSelectorMode` is
+   * `"mark"`.
    */
   @Prop() readonly rowMarkedClass: string;
 
@@ -285,56 +304,78 @@ export class ChTabularGrid {
     | "row-inside" = "all";
 
   /**
-   * A boolean indicating whether the user can drag column headers to reorder columns.
+   * `true` to allow the user to drag column headers to reorder columns.
+   * When `false`, column headers are not draggable and the order is fixed.
    */
   @Prop() readonly allowColumnReorder: boolean = true;
 
   /**
-   * One of "single" or "splitter", indicating the behavior of column resizing.
-   * "single", resize a single column at a time.
-   * "splitter", when adjusts the width of one column, the neighboring columns
-   *    are also resized proportionally, maintaining the overall width.
+   * Controls the behavior of column resizing:
+   *  - `"single"`: Only the dragged column's width changes; the grid may
+   *    grow or shrink horizontally.
+   *  - `"splitter"`: Adjusting one column proportionally resizes the
+   *    neighboring column, maintaining the overall grid width.
    */
   @Prop() readonly columnResizeMode: "single" | "splitter" = "single";
 
   /**
-   * An object that contains localized strings for the grid.
+   * An object that contains localized strings for the grid UI (e.g.,
+   * settings panel labels, accessibility announcements).
+   * When `undefined`, default English strings are used.
    */
   @Prop() readonly localization: GridLocalization;
 
   /**
-   * Event emitted when the row selection is changed.
+   * Emitted when the set of selected rows changes (add, remove, or replace).
+   * Triggered by pointer clicks, keyboard navigation, or programmatic calls
+   * to `selectRow`/`selectAllRows`. Not cancelable.
+   * Payload includes arrays of added and removed row IDs.
    */
   @Event() selectionChanged: EventEmitter<TabularGridSelectionChangedEvent>;
 
   /**
-   * Event emitted when the row marking is changed.
+   * Emitted when the set of marked rows changes (checkboxes toggled).
+   * Only fires when the column selector's `richRowSelectorMode` is `"mark"`.
+   * Not cancelable. Payload includes arrays of added and removed row IDs.
    */
   @Event() rowMarkingChanged: EventEmitter<TabularGridMarkingChangedEvent>;
 
   /**
-   * Event emitted when the cell selection is changed.
+   * Emitted when the selected cell changes (a different cell gains
+   * selection). Payload contains `cellId`, `rowId`, and `columnId` of
+   * the newly selected cell, or `null` values if no cell is selected.
+   * Not cancelable.
    */
   @Event()
   cellSelectionChanged: EventEmitter<TabularGridCellSelectionChangedEvent>;
 
   /**
-   * Event emitted when a row is clicked.
+   * Emitted when a row is clicked (single click via pointer or touch).
+   * Payload contains `rowId`, `cellId`, and `columnId`.
+   * Not cancelable.
    */
   @Event() rowClicked: EventEmitter<TabularGridRowClickedEvent>;
 
   /**
-   * Event emitted when a row is double clicked.
+   * Emitted when a row is double-clicked.
+   * Payload contains `rowId`, `cellId`, and `columnId`.
+   * Not cancelable.
    */
   @Event() rowDoubleClicked: EventEmitter<TabularGridRowClickedEvent>;
 
   /**
-   * Event emitted when Enter is pressed on a row.
+   * Emitted when Enter is pressed on a focused row.
+   * Payload contains `rowId` of the pressed row.
+   * Not cancelable.
    */
   @Event() rowEnterPressed: EventEmitter<TabularGridRowPressedEvent>;
 
   /**
-   * Event emitted when attempts to open a context menu on a row.
+   * Emitted when a context menu is requested on a row (right-click or
+   * keyboard shortcut). Cancelable: calling `event.preventDefault()`
+   * suppresses the browser's native context menu.
+   * Payload includes `rowId`, `cellId`, `columnId`, `selectedRowsId`,
+   * and pointer coordinates (`clientX`, `clientY`).
    */
   @Event() rowContextMenu: EventEmitter<TabularGridRowContextMenuEvent>;
 
@@ -923,9 +964,12 @@ export class ChTabularGrid {
   }
 
   /**
-   * Mark or unmark a row.
-   * @param rowId - The rowId of the row to select or deselect.
-   * @param marked - A boolean indicating whether to mark or unmark the row.
+   * Mark or unmark a row via its checkbox selector.
+   * Only has effect when the column selector's `richRowSelectorMode` is
+   * `"mark"`. No-ops if the row is not found or marking is not enabled.
+   * Triggers the `rowMarkingChanged` event.
+   * @param rowId - The rowId of the row to mark or unmark.
+   * @param marked - `true` to mark the row, `false` to unmark it.
    */
   @Method()
   async markRow(rowId: string, marked = true): Promise<void> {
@@ -943,8 +987,10 @@ export class ChTabularGrid {
   }
 
   /**
-   * Mark or unmark all rows.
-   * @param marked - A boolean indicating whether to mark or unmark all rows.
+   * Marks or unmarks all rows at once.
+   * Only has effect when the column selector's `richRowSelectorMode` is
+   * `"mark"`. Triggers the `rowMarkingChanged` event.
+   * @param marked - `true` to mark all rows, `false` to unmark them all.
    */
   @Method()
   async markAllRows(marked = true): Promise<void> {
@@ -956,7 +1002,8 @@ export class ChTabularGrid {
   }
 
   /**
-   * Expands a row, showing its children.
+   * Expands a hierarchical (tree-grid) row, showing its children.
+   * No-ops if the row is not found or is not expandable.
    * @param rowId - The rowId of the row to expand.
    */
   @Method()
@@ -965,7 +1012,8 @@ export class ChTabularGrid {
   }
 
   /**
-   * Collapses a row, hiding its children.
+   * Collapses a hierarchical (tree-grid) row, hiding its children.
+   * No-ops if the row is not found or is not collapsible.
    * @param rowId - The rowId of the row to collapse.
    */
   @Method()
@@ -1060,7 +1108,9 @@ export class ChTabularGrid {
   }
 
   /**
-   * Synchronizes the state of a row in the grid.
+   * Synchronizes the selection, marking, and selector state of a row with
+   * the grid's internal state. Call this after programmatically changing
+   * a row's `selected` or `marked` attributes outside the grid's API.
    */
   @Method()
   async syncRowState(el: HTMLElement) {

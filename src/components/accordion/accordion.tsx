@@ -108,14 +108,17 @@ export class ChAccordionRender implements ComponentInterface {
   @Prop() readonly disabled: boolean = false;
 
   /**
-   * Specifies the position of the expandable button in the header of the
-   * panels.
+   * Specifies the position of the expandable button (chevron) in the header
+   * of the panels. `"start"` places the chevron at the inline-start edge of
+   * the header, while `"end"` places it at the inline-end edge.
    */
   @Prop() readonly expandableButtonPosition: "start" | "end" = "end";
 
   /**
    * This property specifies a callback that is executed when the path for an
-   * startImgSrc needs to be resolved.
+   * `startImgSrc` needs to be resolved. The resolution follows a fallback
+   * chain: per-instance callback → global registry callback → built-in
+   * default (which wraps the src in `{ base: imageSrc }`).
    */
   @Prop() readonly getImagePathCallback?: (
     imageSrc: string
@@ -126,7 +129,10 @@ export class ChAccordionRender implements ComponentInterface {
   }
 
   /**
-   * Specifies the items of the control.
+   * Specifies the items of the control. Each entry is an
+   * `AccordionItemModel` with at least `id`, `caption`, and `expanded`.
+   * The component mutates `item.expanded` directly on these model objects
+   * when the user toggles a panel.
    */
   @Prop() readonly model?: AccordionModel | undefined;
   @Watch("model")
@@ -155,7 +161,10 @@ export class ChAccordionRender implements ComponentInterface {
   }
 
   /**
-   * Fired when an item is expanded or collapsed
+   * Fired when an item is expanded or collapsed. The payload is
+   * `{ id: string; expanded: boolean }`. In `singleItemExpanded` mode,
+   * multiple events fire: one for each auto-collapsed item (with
+   * `expanded: false`) followed by one for the newly expanded item.
    */
   @Event() expandedChange: EventEmitter<AccordionItemExpandedChangeEvent>;
 

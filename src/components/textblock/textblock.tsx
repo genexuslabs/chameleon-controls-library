@@ -39,8 +39,11 @@ const LINE_HEIGHT_CUSTOM_VAR = "--ch-textblock-line-height";
  *  - Static text that never overflows — a plain HTML element is more appropriate.
  *
  * ## Accessibility
- *  - Supports configurable semantic role via `accessibleRole`: `"paragraph"`, `"heading"` (with `aria-level`), or `"none"`.
+ *  - Supports configurable semantic role via `accessibleRole`: `"p"` maps to `role="paragraph"`, and `"h1"`–`"h6"` map to `role="heading"` with the corresponding `aria-level`.
  *  - When content overflows and `showTooltipOnOverflow` is `true`, a `title` attribute provides the full text to assistive technology.
+ *
+ * ## Slots
+ *  - **default**: Slot for HTML content. Rendered when `format` is set to `"HTML"`. When using this slot, the `caption` property is ignored.
  *
  * @status developer-preview
  *
@@ -79,6 +82,10 @@ export class ChTextBlock implements ComponentInterface {
   /**
    * Specifies the accessible role of the component, which improves the
    * semantic that the component models.
+   *
+   * - `"p"` maps to `role="paragraph"`.
+   * - `"h1"` through `"h6"` map to `role="heading"` with the corresponding
+   *   `aria-level` (1–6).
    */
   @Prop() readonly accessibleRole:
     | "h1"
@@ -106,11 +113,19 @@ export class ChTextBlock implements ComponentInterface {
 
   /**
    * Specifies the content to be displayed when the control has `format = text`.
+   *
+   * When `format = "HTML"`, this property is ignored and the default slot is
+   * used instead.
    */
   @Prop() readonly caption: string | undefined;
 
   /**
-   * Specifies the character used to measure the line height
+   * Specifies the character used to measure the line height.
+   *
+   * This is configurable because different fonts may produce different
+   * rendered line heights. The component uses this character to calculate
+   * the actual rendered line height, which drives the overflow detection
+   * and line-clamping logic.
    */
   @Prop() readonly characterToMeasureLineHeight: string = "A";
 
@@ -139,8 +154,10 @@ export class ChTextBlock implements ComponentInterface {
   @Prop() readonly showTooltipOnOverflow: boolean = false;
 
   /**
-   * Fired when the displayed lines overflows the control's content.
-   * If `true`, the current content overflows the control.
+   * Fired when the overflow state of the control changes (i.e., when
+   * content starts or stops overflowing the container). The emitted
+   * boolean indicates the current overflow state: `true` if content
+   * currently overflows, `false` otherwise.
    */
   @Event() overflowingContentChange: EventEmitter<boolean>;
 

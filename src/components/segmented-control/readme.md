@@ -27,24 +27,25 @@ The `ch-segmented-control-render` component presents a horizontal set of mutuall
  - Confusing with `ch-tab`: segmented controls switch the FORMAT or VIEW of the same data; tabs switch to DIFFERENT content sections.
 
 ## Accessibility
- - The host element has `role="list"`, and each segment item acts as a list item.
- - Selection changes are communicated via events to assistive technology.
+ - The host element has `role="list"`, and each `ch-segmented-control-item` child renders with `role="listitem"`, following the ARIA list pattern.
+ - The selected segment is visually distinguished via CSS parts (`selected` / `unselected`); ensure custom styles provide sufficient contrast for assistive technology.
+ - Selection changes are communicated via the `selectedItemChange` event to assistive technology.
 
 ## Properties
 
-| Property       | Attribute        | Description                                                                                                                                      | Type                          | Default                          |
-| -------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- | -------------------------------- |
-| `exportParts`  | `export-parts`   | Specifies the parts that are exported by the internal segmented-control-item. This property is useful to override the exported parts.            | `string`                      | `SEGMENTED_CONTROL_EXPORT_PARTS` |
-| `itemCssClass` | `item-css-class` | A CSS class to set as the `ch-segmented-control-item` element class. This default class is used for the items that don't have an explicit class. | `string`                      | `"segmented-control-item"`       |
-| `model`        | --               | This property lets you define the items of the ch-segmented-control-render control.                                                              | `SegmentedControlItemModel[]` | `undefined`                      |
-| `selectedId`   | `selected-id`    | Specifies the ID of the selected item                                                                                                            | `string`                      | `undefined`                      |
+| Property       | Attribute        | Description                                                                                                                                                                                                                                                                                                                                               | Type                          | Default                          |
+| -------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | -------------------------------- |
+| `exportParts`  | `export-parts`   | Specifies the parts that are exported by the internal segmented-control-item. This property is useful to override the exported parts.  **Caution:** Overriding this value can break the parts API for external consumers that rely on the default exported part names. Only change this if you need to remap or restrict the exposed parts intentionally. | `string`                      | `SEGMENTED_CONTROL_EXPORT_PARTS` |
+| `itemCssClass` | `item-css-class` | A CSS class applied to the host element of each `ch-segmented-control-item`, not to the inner `<button>`. This default class is used for items that do not have an explicit `class` property in their model entry.                                                                                                                                        | `string`                      | `"segmented-control-item"`       |
+| `model`        | --               | Defines the items rendered by the segmented control.                                                                                                                                                                                                                                                                                                      | `SegmentedControlItemModel[]` | `undefined`                      |
+| `selectedId`   | `selected-id`    | Specifies the ID of the selected item. The value must match an `id` from the `model` array; if no item matches, no segment is visually selected.  This property is mutable: it is updated internally when the user clicks a segment, so the host can read back the current selection at any time.                                                         | `string`                      | `undefined`                      |
 
 
 ## Events
 
-| Event                | Description                                                                                 | Type                  |
-| -------------------- | ------------------------------------------------------------------------------------------- | --------------------- |
-| `selectedItemChange` | Fired when the selected item change. It contains the information about the new selected id. | `CustomEvent<string>` |
+| Event                | Description                                                                                                                                                                                                  | Type                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
+| `selectedItemChange` | Fired when the selected item changes due to user interaction (click). It is **not** emitted when `selectedId` is changed programmatically. The event detail contains the `id` of the newly selected segment. | `CustomEvent<string>` |
 
 
 ## Shadow Parts

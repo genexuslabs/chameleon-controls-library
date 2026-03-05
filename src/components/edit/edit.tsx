@@ -91,19 +91,20 @@ const TEXTAREA_INLINE_CLASSES = `content autofill multiline-inline ${SCROLLABLE_
  *
  * ## Accessibility
  *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
- *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ *  - Delegates focus into the shadow DOM (`delegatesFocus: true`), so clicking any part of the component focuses the inner `<input>` or `<textarea>`.
  *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
- *  - Action buttons (clear search, show/hide password) carry their own `aria-label`.
+ *  - Action buttons (clear search, show/hide password) carry their own `aria-label` and are fully keyboard-operable.
  *  - The auto-grow helper and date placeholder are hidden from assistive technology with `aria-hidden`.
+ *  - The `additional-content-before` and `additional-content-after` slots are only rendered when `showAdditionalContentBefore` or `showAdditionalContentAfter` are set to `true`, respectively.
  *
  * @status experimental
  *
  * @part date-placeholder - A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.
  * @part clear-button - The button rendered for clearing the value when `type` is `"search"` and the control has a value.
  * @part show-password-button - The button rendered for toggling password visibility when `showPasswordButton` is `true` and `type` is `"password"`.
- * @part disabled - Present in the `clear-button` and `show-password` parts when the control is disabled.
- * @part password-displayed - Present in the `show-password` part when the password is currently visible.
- * @part password-hidden - Present in the `show-password` part when the password is currently hidden.
+ * @part disabled - Present in the `clear-button` and `show-password-button` parts when the control is disabled.
+ * @part password-displayed - Present in the `show-password-button` part when the password is currently visible.
+ * @part password-hidden - Present in the `show-password-button` part when the password is currently hidden.
  *
  * @slot additional-content-before - Rendered when `showAdditionalContentBefore === true`. Use it to place custom elements before the input content.
  * @slot additional-content-after - Rendered when `showAdditionalContentAfter === true`. Use it to place custom elements after the input content.
@@ -177,11 +178,13 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   /**
    * This property defines if the control size will grow automatically, to
    * adjust to its content size.
+   * Only takes effect when `multiline === true`.
    */
   @Prop() readonly autoGrow: boolean = false;
 
   /**
-   * Specifies a debounce for the input event.
+   * Specifies a debounce for the `input` event only. The `change` event
+   * is NOT debounced by this property.
    */
   @Prop() readonly debounce?: number = 0;
 
@@ -195,6 +198,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   /**
    * This property specifies a callback that is executed when the path for an
    * startImgSrc needs to be resolved.
+   *
+   * Fallback chain: per-instance `getImagePathCallback` → global registry
+   * (`getControlRegisterProperty`) → `DEFAULT_GET_IMAGE_PATH_CALLBACK`.
    */
   @Prop() readonly getImagePathCallback?: (
     imageSrc: string
@@ -224,7 +230,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly mode: EditInputMode | undefined;
 
   /**
-   * Controls if the element accepts multiline text.
+   * Controls if the element accepts multiline text. When `true`, a
+   * `<textarea>` is rendered instead of an `<input>`. The `autoGrow`,
+   * `picture`, and `mode` props interact with this property.
    */
   @Prop() readonly multiline: boolean = false;
 
@@ -241,7 +249,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   /**
    * Specifies a picture to apply for the value of the control. Only works if
-   * not `multiline`.
+   * not `multiline`. The `pictureCallback` property must also be set for
+   * picture formatting to take effect.
    */
   @Prop() readonly picture?: string;
   @Watch("picture")
@@ -301,6 +310,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   /**
    * Specifies if the password is displayed as plain text when using
    * `type = "password"`.
+   * This property is mutable — the component modifies it internally when
+   * the password toggle button is clicked.
    */
   @Prop({ mutable: true }) showPassword: boolean = false;
 
@@ -326,7 +337,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   }
 
   /**
-   * Specifies the source of the start image.
+   * Specifies the rendering mode for the start image. `"background"` uses a
+   * CSS `background-image`, while `"mask"` uses `-webkit-mask` (which allows
+   * the image to inherit `currentColor`).
    */
   @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
 

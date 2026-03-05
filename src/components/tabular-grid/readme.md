@@ -10,58 +10,58 @@ The `ch-tabular-grid` component is a full-featured, accessible data grid and tre
 ## Features
  - Single and multiple row selection, cell-level selection, and row marking (checkboxes).
  - Row and cell highlighting on hover.
- - Full keyboard navigation (arrow keys, Home/End, PageUp/PageDown, Enter, Space).
- - Column reordering via drag-and-drop.
- - Column resizing in single or splitter mode.
+ - Full keyboard navigation (Arrow keys, Home/End, PageUp/PageDown, Enter, Space, +/- for tree expand/collapse).
+ - Column reordering via drag-and-drop (controlled by `allowColumnReorder`).
+ - Column resizing in `"single"` or `"splitter"` mode.
  - Row expand/collapse for hierarchical tree data.
- - Context menus and row actions.
- - Touch support for mobile devices.
+ - Context menus and row actions via slotted content.
+ - Touch support for mobile devices (tap-to-select).
  - Built-in settings panel for column visibility.
  - Rich set of public methods and events for programmatic control.
 
 ## Use when
  - Displaying and interacting with structured tabular or hierarchical data.
  - Users need to select, sort, reorder, or resize columns interactively.
- - Displaying structured tabular data where users need to sort, filter, select rows, or perform bulk actions.
  - The data has a tree/hierarchy that benefits from inline expand/collapse.
 
 ## Do not use when
- - Displaying a simple list or card layout — use `ch-smart-grid` instead.
- - Simple display-only lists without interactivity — use a semantic `<table>` or `ch-action-list-render` instead.
+ - Displaying a simple list or card layout -- use `ch-smart-grid` instead.
+ - Simple display-only lists without interactivity -- use a semantic `<table>` or `ch-action-list-render` instead.
 
 ## Accessibility
- - Full keyboard navigation: Arrow keys to move between cells, Home/End for row boundaries, Page Up/Down for vertical scrolling, Enter/Space for activation.
- - Supports row and cell selection semantics with configurable selection modes.
+ - Full keyboard navigation: Arrow keys to move between cells, Home/End for row boundaries, PageUp/PageDown for vertical scrolling, Enter for row press, Space for toggle/mark, +/- for tree expand/collapse.
+ - Supports row and cell selection semantics with configurable selection modes (`rowSelectionMode`).
  - Hierarchical tree-grid rows support expand/collapse via keyboard.
+ - Focus is managed on the host element; row and cell focus states are tracked internally and exposed via CSS classes.
 
 ## Properties
 
 | Property                 | Attribute                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Type                                                                                      | Default     |
 | ------------------------ | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------- |
-| `allowColumnReorder`     | `allow-column-reorder`     | A boolean indicating whether the user can drag column headers to reorder columns.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `boolean`                                                                                 | `true`      |
-| `columnResizeMode`       | `column-resize-mode`       | One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width.                                                                                                                                                                                                                                                                                                                                                                                                                                         | `"single" \| "splitter"`                                                                  | `"single"`  |
+| `allowColumnReorder`     | `allow-column-reorder`     | `true` to allow the user to drag column headers to reorder columns. When `false`, column headers are not draggable and the order is fixed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `boolean`                                                                                 | `true`      |
+| `columnResizeMode`       | `column-resize-mode`       | Controls the behavior of column resizing:  - `"single"`: Only the dragged column's width changes; the grid may    grow or shrink horizontally.  - `"splitter"`: Adjusting one column proportionally resizes the    neighboring column, maintaining the overall grid width.                                                                                                                                                                                                                                                                                                                                                                                                                                  | `"single" \| "splitter"`                                                                  | `"single"`  |
 | `keyboardNavigationMode` | `keyboard-navigation-mode` | Specifies the keyboard navigation mode for the component. - "none": Disables keyboard navigation for the grid rows. - "select": Allows keyboard navigation by changing the selection of grid rows. - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection.                                                                                                                                                                                                                                                                                                                                                                                                       | `"focus" \| "none" \| "select"`                                                           | `"select"`  |
-| `localization`           | --                         | An object that contains localized strings for the grid.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `GridLocalization`                                                                        | `undefined` |
-| `rowFocusedClass`        | `row-focused-class`        | A CSS class name applied to a row when it is focused.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `string`                                                                                  | `undefined` |
-| `rowHighlightEnabled`    | `row-highlight-enabled`    | One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `"auto" \| boolean`                                                                       | `"auto"`    |
-| `rowHighlightedClass`    | `row-highlighted-class`    | A CSS class name applied to a row when it is hovered.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `string`                                                                                  | `undefined` |
-| `rowMarkedClass`         | `row-marked-class`         | A CSS class name applied to a row when it is marked.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `string`                                                                                  | `undefined` |
-| `rowSelectedClass`       | `row-selected-class`       | A CSS class name applied to a row when it is selected.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `string`                                                                                  | `undefined` |
-| `rowSelectionMode`       | `row-selection-mode`       | One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `"multiple" \| "none" \| "single"`                                                        | `"single"`  |
+| `localization`           | --                         | An object that contains localized strings for the grid UI (e.g., settings panel labels, accessibility announcements). When `undefined`, default English strings are used.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `GridLocalization`                                                                        | `undefined` |
+| `rowFocusedClass`        | `row-focused-class`        | A CSS class name applied to a row when it is focused via keyboard navigation. When `undefined`, no class is applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `string`                                                                                  | `undefined` |
+| `rowHighlightEnabled`    | `row-highlight-enabled`    | Controls whether rows are visually highlighted on hover:  - `"auto"`: Highlighting is enabled when `rowSelectionMode` is    `"single"` or `"multiple"`, disabled when `"none"`.  - `true`: Always enabled regardless of selection mode.  - `false`: Always disabled.  When enabled, the `rowHighlightedClass` CSS class is applied to the hovered row and the `row-actions` slot (if configured) is shown.                                                                                                                                                                                                                                                                                                  | `"auto" \| boolean`                                                                       | `"auto"`    |
+| `rowHighlightedClass`    | `row-highlighted-class`    | A CSS class name applied to a row when it is hovered (highlighted). When `undefined`, no class is applied. Only takes effect when `rowHighlightEnabled` is active.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `string`                                                                                  | `undefined` |
+| `rowMarkedClass`         | `row-marked-class`         | A CSS class name applied to a row when it is marked (checked via the row selector checkbox). When `undefined`, no class is applied. Only relevant when the column selector's `richRowSelectorMode` is `"mark"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `string`                                                                                  | `undefined` |
+| `rowSelectedClass`       | `row-selected-class`       | A CSS class name applied to a row when it is selected. When `undefined`, no class is applied. Applied to `ch-tabular-grid-row` elements that are in the selected state.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `string`                                                                                  | `undefined` |
+| `rowSelectionMode`       | `row-selection-mode`       | Controls how rows can be selected:  - `"none"`: No rows are selectable. Pointer and keyboard interactions    will not trigger selection events.  - `"single"`: Only one row can be selected at a time.  - `"multiple"`: Multiple rows can be selected using Ctrl/Cmd+click or    Shift+click.  Also affects `rowHighlightEnabled` when set to `"auto"` -- highlighting is enabled for `"single"` and `"multiple"` modes.                                                                                                                                                                                                                                                                                    | `"multiple" \| "none" \| "single"`                                                        | `"single"`  |
 | `showLines`              | `show-lines`               | Defines which lines (or borders) are displayed within the tabular grid. Similar to the border options in spreadsheet applications, this property controls whether lines appear around and/or between rows and columns.  **Note:** At the moment, this property does not affect the rendering of the grid. It only reflects the property value as an HTML attribute.  - "all": Lines around and between all rows and columns. - "all-inside": Lines only between rows and columns. - "column": Lines around and between columns. - "column-inside": Lines only between columns. - "none": No lines at all. - "row": Lines around and between rows. - "row-inside": Lines only between rows.  Default: "all". | `"all" \| "all-inside" \| "column" \| "column-inside" \| "none" \| "row" \| "row-inside"` | `"all"`     |
 
 
 ## Events
 
-| Event                  | Description                                                  | Type                                                |
-| ---------------------- | ------------------------------------------------------------ | --------------------------------------------------- |
-| `cellSelectionChanged` | Event emitted when the cell selection is changed.            | `CustomEvent<TabularGridCellSelectionChangedEvent>` |
-| `rowClicked`           | Event emitted when a row is clicked.                         | `CustomEvent<TabularGridRowClickedEvent>`           |
-| `rowContextMenu`       | Event emitted when attempts to open a context menu on a row. | `CustomEvent<TabularGridRowContextMenuEvent>`       |
-| `rowDoubleClicked`     | Event emitted when a row is double clicked.                  | `CustomEvent<TabularGridRowClickedEvent>`           |
-| `rowEnterPressed`      | Event emitted when Enter is pressed on a row.                | `CustomEvent<TabularGridRowPressedEvent>`           |
-| `rowMarkingChanged`    | Event emitted when the row marking is changed.               | `CustomEvent<TabularGridMarkingChangedEvent>`       |
-| `selectionChanged`     | Event emitted when the row selection is changed.             | `CustomEvent<TabularGridSelectionChangedEvent>`     |
+| Event                  | Description                                                                                                                                                                                                                                                                                        | Type                                                |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `cellSelectionChanged` | Emitted when the selected cell changes (a different cell gains selection). Payload contains `cellId`, `rowId`, and `columnId` of the newly selected cell, or `null` values if no cell is selected. Not cancelable.                                                                                 | `CustomEvent<TabularGridCellSelectionChangedEvent>` |
+| `rowClicked`           | Emitted when a row is clicked (single click via pointer or touch). Payload contains `rowId`, `cellId`, and `columnId`. Not cancelable.                                                                                                                                                             | `CustomEvent<TabularGridRowClickedEvent>`           |
+| `rowContextMenu`       | Emitted when a context menu is requested on a row (right-click or keyboard shortcut). Cancelable: calling `event.preventDefault()` suppresses the browser's native context menu. Payload includes `rowId`, `cellId`, `columnId`, `selectedRowsId`, and pointer coordinates (`clientX`, `clientY`). | `CustomEvent<TabularGridRowContextMenuEvent>`       |
+| `rowDoubleClicked`     | Emitted when a row is double-clicked. Payload contains `rowId`, `cellId`, and `columnId`. Not cancelable.                                                                                                                                                                                          | `CustomEvent<TabularGridRowClickedEvent>`           |
+| `rowEnterPressed`      | Emitted when Enter is pressed on a focused row. Payload contains `rowId` of the pressed row. Not cancelable.                                                                                                                                                                                       | `CustomEvent<TabularGridRowPressedEvent>`           |
+| `rowMarkingChanged`    | Emitted when the set of marked rows changes (checkboxes toggled). Only fires when the column selector's `richRowSelectorMode` is `"mark"`. Not cancelable. Payload includes arrays of added and removed row IDs.                                                                                   | `CustomEvent<TabularGridMarkingChangedEvent>`       |
+| `selectionChanged`     | Emitted when the set of selected rows changes (add, remove, or replace). Triggered by pointer clicks, keyboard navigation, or programmatic calls to `selectRow`/`selectAllRows`. Not cancelable. Payload includes arrays of added and removed row IDs.                                             | `CustomEvent<TabularGridSelectionChangedEvent>`     |
 
 
 ## Methods
@@ -82,7 +82,8 @@ Type: `Promise<void>`
 
 ### `collapseRow(rowId: string) => Promise<void>`
 
-Collapses a row, hiding its children.
+Collapses a hierarchical (tree-grid) row, hiding its children.
+No-ops if the row is not found or is not collapsible.
 
 #### Parameters
 
@@ -96,7 +97,8 @@ Type: `Promise<void>`
 
 ### `expandRow(rowId: string) => Promise<void>`
 
-Expands a row, showing its children.
+Expands a hierarchical (tree-grid) row, showing its children.
+No-ops if the row is not found or is not expandable.
 
 #### Parameters
 
@@ -190,13 +192,15 @@ Type: `Promise<string[]>`
 
 ### `markAllRows(marked?: boolean) => Promise<void>`
 
-Mark or unmark all rows.
+Marks or unmarks all rows at once.
+Only has effect when the column selector's `richRowSelectorMode` is
+`"mark"`. Triggers the `rowMarkingChanged` event.
 
 #### Parameters
 
-| Name     | Type      | Description                                                |
-| -------- | --------- | ---------------------------------------------------------- |
-| `marked` | `boolean` | - A boolean indicating whether to mark or unmark all rows. |
+| Name     | Type      | Description                                            |
+| -------- | --------- | ------------------------------------------------------ |
+| `marked` | `boolean` | - `true` to mark all rows, `false` to unmark them all. |
 
 #### Returns
 
@@ -204,14 +208,17 @@ Type: `Promise<void>`
 
 ### `markRow(rowId: string, marked?: boolean) => Promise<void>`
 
-Mark or unmark a row.
+Mark or unmark a row via its checkbox selector.
+Only has effect when the column selector's `richRowSelectorMode` is
+`"mark"`. No-ops if the row is not found or marking is not enabled.
+Triggers the `rowMarkingChanged` event.
 
 #### Parameters
 
-| Name     | Type      | Description                                               |
-| -------- | --------- | --------------------------------------------------------- |
-| `rowId`  | `string`  | - The rowId of the row to select or deselect.             |
-| `marked` | `boolean` | - A boolean indicating whether to mark or unmark the row. |
+| Name     | Type      | Description                                     |
+| -------- | --------- | ----------------------------------------------- |
+| `rowId`  | `string`  | - The rowId of the row to mark or unmark.       |
+| `marked` | `boolean` | - `true` to mark the row, `false` to unmark it. |
 
 #### Returns
 
@@ -281,7 +288,9 @@ Type: `Promise<void>`
 
 ### `syncRowState(el: HTMLElement) => Promise<void>`
 
-Synchronizes the state of a row in the grid.
+Synchronizes the selection, marking, and selector state of a row with
+the grid's internal state. Call this after programmatically changing
+a row's `selected` or `marked` attributes outside the grid's API.
 
 #### Parameters
 
@@ -295,14 +304,14 @@ Type: `Promise<void>`
 
 ## Slots
 
-| Slot               | Description                                                                                                 |
-| ------------------ | ----------------------------------------------------------------------------------------------------------- |
-| `"column-display"` | Custom column display UI rendered in the aside area.                                                        |
-| `"default"`        | The default slot for grid columns (`ch-tabular-grid-column`), rows, and rowsets that compose the grid body. |
-| `"footer"`         | Content projected into the grid footer section below the data area.                                         |
-| `"header"`         | Content projected into the grid header section above the data area.                                         |
-| `"row-actions"`    | Custom row action controls rendered in the aside area, typically shown on hover or context menu.            |
-| `"settings"`       | Custom content for the settings panel. When not provided, a default column visibility editor is rendered.   |
+| Slot               | Description                                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+|                    | Default slot. The default slot for grid columns (`ch-tabular-grid-column`), rows, and rowsets that compose the grid body. |
+| `"column-display"` | Custom column display UI rendered in the aside area.                                                                      |
+| `"footer"`         | Content projected into the grid footer section below the data area.                                                       |
+| `"header"`         | Content projected into the grid header section above the data area.                                                       |
+| `"row-actions"`    | Custom row action controls rendered in the aside area, typically shown on hover or context menu.                          |
+| `"settings"`       | Custom content for the settings panel. When not provided, a default column visibility editor is rendered.                 |
 
 
 ## Shadow Parts

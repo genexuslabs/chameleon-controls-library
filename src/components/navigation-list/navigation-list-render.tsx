@@ -159,6 +159,9 @@ const NAVIGATION_LIST_ITEM = "ch-navigation-list-item";
  * @part collapsed - Present in the `item__action` and `item__group` parts when the item is collapsed.
  * @part selected - Present in the `item__caption`, `item__group`, and `item__link` parts when the item is selected.
  * @part not-selected - Present in the `item__caption`, `item__group`, and `item__link` parts when the item is not selected.
+ * @part start - Present in the `item__action` and `item__group` parts when the expandable button position is `"start"`.
+ * @part end - Present in the `item__action` and `item__group` parts when the expandable button position is `"end"`.
+ *
  * @part navigation-list-collapsed - Present in the `item__action` and `item__caption` parts when the parent `ch-sidebar` is collapsed.
  * @part tooltip - Present in the `item__caption` part to style the tooltip that appears when the sidebar is collapsed.
  * @part even-level - Present in the `item__action` and `item__group` parts when the item is at an even nesting level.
@@ -182,8 +185,10 @@ export class ChNavigationListRender implements ComponentInterface {
   @Element() el!: HTMLChNavigationListRenderElement;
 
   /**
-   * If `false` the overflowing content of the control will be clipped to the
-   * borders of its container.
+   * When `true`, the control grows in the block direction to fit all its
+   * content (no clipping or scrollbars). When `false`, the overflowing
+   * content is clipped to the borders of its container and a scrollbar may
+   * appear.
    */
   @Prop() readonly autoGrow: boolean = false;
 
@@ -191,7 +196,10 @@ export class ChNavigationListRender implements ComponentInterface {
    * Specifies what kind of expandable button is displayed in the items by
    * default.
    *  - `"decorative"`: Only a decorative icon is rendered to display the state
-   *     of the item.
+   *     of the item. The icon is not interactive; clicking the row itself
+   *     expands or collapses the item.
+   *  - `"no"`: No expandable button is rendered; the item is still expandable
+   *     via row click but has no visual expand/collapse indicator.
    */
   @Prop() readonly expandableButton: "decorative" | "no" = "decorative";
 
@@ -233,7 +241,10 @@ export class ChNavigationListRender implements ComponentInterface {
   @Prop() readonly gxSettings: any;
 
   /**
-   * Specifies the items of the control.
+   * Specifies the items of the control. The model is an array of
+   * `NavigationListItemModel` objects, each defining an `id`, `caption`,
+   * optional `link` (URL navigation), optional `startImgSrc`/`startImgType`
+   * for icons, and a nested `items` array for child nodes.
    */
   @Prop() readonly model?: NavigationListModel | undefined;
   @Watch("model")
@@ -267,7 +278,7 @@ export class ChNavigationListRender implements ComponentInterface {
   }
 
   /**
-   * Specifies if the selected item indicator is displayed (only work for hyperlink)
+   * Specifies if the selected item indicator is displayed (only works for hyperlink items).
    */
   @Prop() readonly selectedLinkIndicator: boolean = false;
 
@@ -289,14 +300,18 @@ export class ChNavigationListRender implements ComponentInterface {
   @Prop() readonly useGxRender: boolean = false;
 
   /**
-   * Fired when an button is clicked.
-   * This event can be prevented.
+   * Fired when a button item is clicked.
+   * This event can be prevented. Calling `preventDefault()` on the event
+   * stops the default expand/collapse toggle so you can handle the action
+   * entirely in your own handler.
    */
   @Event() buttonClick: EventEmitter<NavigationListItemModel>;
 
   /**
-   * Fired when an hyperlink is clicked.
-   * This event can be prevented.
+   * Fired when a hyperlink item is clicked.
+   * This event can be prevented. Calling `preventDefault()` on the event
+   * stops the browser's native navigation so you can perform client-side
+   * routing instead.
    */
   @Event() hyperlinkClick: EventEmitter<NavigationListHyperlinkClickEvent>;
 

@@ -91,13 +91,6 @@ const TABBED_SAME_ID_MODEL: FlexibleLayoutModel = {
   ]
 };
 
-// When true, all tests run (including single-content leaves where widget.id !== leaf.id).
-// When false, tests that use SINGLE_CONTENT_MODEL are skipped because the bug
-// (using leafId instead of widget.id as key for widget info) causes slot
-// mismatches in that scenario.
-
-const FIX_APPLIED = true;
-
 type SlotAttr = { name: string | null; slot: string | null };
 
 describe("[ch-flexible-layout-render][slot-attributes]", () => {
@@ -118,7 +111,7 @@ describe("[ch-flexible-layout-render][slot-attributes]", () => {
     flexibleLayoutRef = await page.find("ch-flexible-layout-render");
   });
 
-  (FIX_APPLIED ? describe : xdescribe)("single-content leaf", () => {
+  describe("single-content leaf", () => {
     beforeEach(async () => {
       flexibleLayoutRef.setProperty("slottedWidgets", true);
       flexibleLayoutRef.setProperty("model", SINGLE_CONTENT_MODEL);

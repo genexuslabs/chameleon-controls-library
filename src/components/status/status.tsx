@@ -37,13 +37,14 @@ let autoId = 0;
  *  - Actual progress percentage is known — prefer `ch-progress` with determinate mode instead.
  *
  * ## Accessibility
- *  - The host has `role="status"` and `aria-live="polite"` for non-interrupting announcements to assistive technology.
+ *  - `role="status"` is set on the host in `connectedCallback`, which carries an implicit `aria-live="polite"` and `aria-atomic="true"` semantic. An explicit `aria-live="polite"` is also set for maximum compatibility.
  *  - Resolves its accessible name from the `accessibleName` property.
- *  - Can automatically set `aria-busy` and `aria-describedby` on a referenced loading region element.
+ *  - `aria-busy` and `aria-describedby` are set on the `loadingRegionRef` element while the status is rendered, and cleaned up on disconnect.
+ *  - No keyboard interaction — the component is a passive indicator, not an interactive control.
  *
  * @status experimental
  *
- * @slot - Default slot. Use it to project custom visual content such as a spinner icon or loading text.
+ * @slot - Default slot. Use it to project custom visual content such as a spinner icon or loading text. Content changes trigger polite `aria-live` announcements to assistive technologies.
  */
 @Component({
   formAssociated: true,
@@ -71,9 +72,12 @@ export class ChStatus {
    * This will set the `aria-describedby` and `aria-busy` attributes on the
    * loading region to improve accessibility while the control is in rendered.
    *
-   * When the control detects that is no longer in rendered (aka it is removed
-   * from the DOM), it will remove the `aria-busy` attribute and update (or
-   * remove if necessary) the`aria-describedby` attribute.
+   * When the control detects that is no longer rendered (aka it is removed
+   * from the DOM), it will remove the `aria-busy` attribute and the
+   * `aria-describedby` attribute.
+   *
+   * **Note**: Setting this prop overwrites any existing `aria-describedby`
+   * value on the referenced element — it replaces rather than appends.
    *
    * If an ID is set prior to the component's first render, the ch-status will use
    * this ID for the `aria-describedby`. Otherwise, the ch-status will compute a

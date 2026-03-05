@@ -49,14 +49,16 @@ let autoId = 0;
  *  - Step-by-step wizard progress is needed — use a stepper/progress-indicator pattern instead.
  *
  * ## Accessibility
- *  - Implements the WAI-ARIA `progressbar` role with `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, and `aria-valuetext`.
- *  - In indeterminate mode, value attributes are omitted per the ARIA specification.
+ *  - `role="progressbar"` is set on the host element in `connectedCallback`.
+ *  - `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, and `aria-valuetext` are managed dynamically on every render based on the current `min`, `max`, `value`, and `indeterminate` properties.
+ *  - In indeterminate mode, ALL `aria-value*` attributes are omitted per the ARIA specification.
  *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
- *  - Can automatically set `aria-busy` and `aria-describedby` on a referenced loading region element.
+ *  - `aria-busy` and `aria-describedby` are set on the `loadingRegionRef` element while the progress is active, and cleaned up when complete or disconnected.
+ *  - No keyboard interaction — the component is a passive indicator, not an interactive control.
  *
  * @status experimental
  *
- * @slot - Default slot. Projected when `renderType === "custom"`. Use it to provide a fully custom visual representation of the progress.
+ * @slot - Default slot. Projected when `renderType === "custom"`. Use it to provide a fully custom visual representation of the progress while the component handles all ARIA semantics automatically.
  */
 @Component({
   formAssociated: true,
@@ -84,8 +86,13 @@ export class ChProgress {
    * would not be accurate use this property to make the progress bar value
    * understandable.
    *
+   * The string must contain literal token placeholders (`{{PROGRESS_VALUE}}`,
+   * `{{PROGRESS_MAX_VALUE}}`, `{{PROGRESS_MIN_VALUE}}`) — these are replaced
+   * at render time. Do NOT use JavaScript template literals; pass a plain
+   * string with the token text.
+   *
    * @example
-   * accessibleValueText = `Downloading ${PROGRESS_VALUE} MB of ${PROGRESS_MAX_VALUE} MB`
+   * accessibleValueText = "Downloading {{PROGRESS_VALUE}} MB of {{PROGRESS_MAX_VALUE}} MB"
    */
   @Prop() readonly accessibleValueText?: string | undefined;
 
@@ -95,13 +102,18 @@ export class ChProgress {
    * expected to take.
    *
    * If `true`, the `max`, `min` and `value` properties won't be taken into
-   * account.
+   * account. All `aria-value*` attributes (`aria-valuemin`, `aria-valuemax`,
+   * `aria-valuenow`, `aria-valuetext`) are omitted from the host element, and
+   * the component is always considered "in progress" regardless of `value`.
    */
   @Prop({ reflect: true }) readonly indeterminate?: boolean = false;
 
   /**
    * Specifies the maximum value of progress. In other words, how much work the
    * task indicated by the progress component requires.
+   *
+   * Internally, `Math.max(min, max)` is applied so that `max >= min` is
+   * always enforced.
    *
    * This property is not used if indeterminate === true.
    */
@@ -115,11 +127,14 @@ export class ChProgress {
   @Prop() readonly min?: number = 0;
 
   /**
-   * This property specifies how the progress will be render.
+   * This property specifies how the progress will be rendered.
    *  - `"custom"`: Useful for making custom renders of the progress. The
    *    control doesn't render anything and only projects the content of the
    *    default slot. Besides that, all specified properties are still used to
    *    implement the control's accessibility.
+   *
+   * Unknown values silently fall back to `"custom"` (default slot
+   * projection). This serves as an extension point for future render types.
    */
   @Prop() readonly renderType: "custom" | string = "custom";
 
@@ -153,6 +168,9 @@ export class ChProgress {
   /**
    * Specifies the current value of the component. In other words, how much of
    * the task that has been completed.
+   *
+   * The value is clamped between `min` and `max` for both display and ARIA
+   * purposes.
    *
    * This property is not used if indeterminate === true.
    */

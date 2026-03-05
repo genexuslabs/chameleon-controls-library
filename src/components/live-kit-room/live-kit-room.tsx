@@ -17,10 +17,11 @@ import { LiveKitCallbacks } from "./types";
  *
  * @remarks
  * ## Features
- *  - Room lifecycle management: connect, disconnect, and track remote participants.
- *  - Automatic attachment of remote audio tracks to rendered `<audio>` elements.
- *  - Local microphone toggle support.
- *  - Callbacks for transcription updates and active speaker changes.
+ *  - Room lifecycle management: connect, disconnect, and track remote participants via the `livekit-client` SDK.
+ *  - Automatic attachment of remote audio tracks to dynamically rendered `<audio>` elements in the shadow DOM.
+ *  - Local microphone toggle support via the `microphoneEnabled` property.
+ *  - Callbacks for transcription updates, active speaker changes, mute/unmute, and connection quality via the `callbacks` property.
+ *  - Renders a default `<slot>` for projecting custom UI (e.g., transcription display, controls).
  *
  * ## Use when
  *  - Building voice-enabled conversational experiences with LiveKit.
@@ -28,6 +29,13 @@ import { LiveKitCallbacks } from "./types";
  *
  * ## Do not use when
  *  - You need a full video conferencing UI — use a dedicated LiveKit UI framework instead.
+ *  - Video tracks are required — this component only handles audio tracks.
+ *
+ * ## Accessibility
+ *  - The rendered `<audio>` elements are hidden (`display: none`) and play automatically when remote tracks are attached. No keyboard interaction is required for audio playback.
+ *  - The host uses `display: contents`, so it does not affect the layout of slotted content.
+ *
+ * @slot - Default slot. Projects custom content (e.g., control buttons, transcription UI) within the component's shadow root.
  *
  * @status experimental
  */
@@ -48,12 +56,25 @@ export class ChLiveKitRoom {
   }[] = [];
 
   /**
-   * Specifies the callbacks required in the control.
+   * Specifies the callback handlers for room events. Includes:
+   *  - `activeSpeakersChanged`: called when the list of active speakers changes.
+   *  - `updateTranscriptions`: called when transcription segments are received.
+   *  - `muteMic` / `unmuteMic`: called when the local microphone is muted/unmuted.
+   *  - `connectionEvents`: sub-callbacks for track mute/unmute, speaking state, and connection quality changes.
+   *
+   * When `undefined`, no callbacks are invoked. This property is read during
+   * `connect()` — changing it after connection has no effect until the next
+   * reconnection.
    */
   @Prop() readonly callbacks?: LiveKitCallbacks | undefined;
 
   /**
-   * Specifies the room state.
+   * Controls the connection state of the LiveKit room. Set to `true` to
+   * connect using the current `url` and `token`; set to `false` to disconnect.
+   *
+   * When toggled to `true`, the component calls `connectToRoom()` and begins
+   * tracking remote participants. When toggled to `false`, the room is
+   * disconnected and audio tracks are detached.
    */
   @Prop() readonly connected: boolean = false;
 
@@ -67,7 +88,12 @@ export class ChLiveKitRoom {
   }
 
   /**
-   * Specifies the microphone state.
+   * Controls whether the local participant's microphone is enabled. When
+   * `true`, the local participant publishes audio; when `false`, the mic is
+   * muted. This property is only effective while `connected` is `true`.
+   *
+   * Toggling this property immediately enables or disables the local
+   * microphone track.
    */
   @Prop() readonly microphoneEnabled: boolean = false;
 
@@ -79,12 +105,22 @@ export class ChLiveKitRoom {
   }
 
   /**
-   * Specifies the token to connect to the room
+   * Specifies the LiveKit access token used to authenticate and connect to
+   * the room. The token encodes the participant identity, room name, and
+   * permissions. Must be set before `connected` is toggled to `true`.
+   *
+   * Changing this value while connected does not trigger a reconnection —
+   * disconnect and reconnect to use a new token.
    */
   @Prop() readonly token: string = "";
 
   /**
-   * Specifies the url to connect to the room
+   * Specifies the WebSocket URL of the LiveKit server (e.g.,
+   * `"wss://my-livekit-server.example.com"`). Must be set before `connected`
+   * is toggled to `true`.
+   *
+   * Changing this value while connected does not trigger a reconnection —
+   * disconnect and reconnect to use a new URL.
    */
   @Prop() readonly url: string = "";
 

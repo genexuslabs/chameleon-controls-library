@@ -28,7 +28,7 @@ let autoId = 0;
  * @remarks
  * ## Features
  *  - Expand or collapse programmatically or through an optional button with configurable position, caption, and accessible label.
- *  - Observable system: descendant components (such as `ch-navigation-list-render`) automatically synchronize their expanded state.
+ *  - Observable system: descendant components (such as `ch-navigation-list-render`) automatically synchronize their expanded state. The component auto-assigns `el.id` on connect so the observer system can identify it.
  *  - RTL-aware expand/collapse button rendering.
  *  - Separate accessible names and captions for the expanded and collapsed states of the button.
  *
@@ -95,7 +95,9 @@ export class ChSidebar {
   @Prop() readonly expandButtonExpandCaption?: string;
 
   /**
-   * Specifies whether the control is expanded or collapsed.
+   * Specifies whether the control is expanded or collapsed. This property
+   * uses mutable two-way binding: the component updates it directly when
+   * the user clicks the expand/collapse button.
    */
   @Prop({ mutable: true }) expanded: boolean = true;
   @Watch("expanded")
@@ -118,8 +120,8 @@ export class ChSidebar {
   @Prop() readonly showExpandButton: boolean = false;
 
   /**
-   * Emitted when the element is clicked or the space key is pressed and
-   * released.
+   * Emitted when the expand/collapse button is activated. The payload is
+   * the new `expanded` value.
    */
   @Event() expandedChange: EventEmitter<boolean>;
 

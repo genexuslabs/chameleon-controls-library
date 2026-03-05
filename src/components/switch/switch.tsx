@@ -40,12 +40,16 @@ import { tokenMap } from "../../common/utils";
  *  - More than two states are needed — prefer `ch-combo-box-render`, `ch-radio-group-render`, or `ch-segmented-control-render`.
  *  - A destructive or irreversible action is triggered — always require explicit confirmation.
  *
+ * ## Slots
+ *  - This component does not define any slots.
+ *
  * ## Accessibility
  *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
- *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
- *  - The input element has `role="switch"` and `aria-checked` reflecting the current state.
+ *  - Delegates focus into the shadow DOM (`delegatesFocus: true`), so focusing the host automatically focuses the internal `<input>`.
+ *  - The native `<input>` element has `role="switch"` and `aria-checked` reflecting the current checked state.
  *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
  *  - The decorative caption is hidden from assistive technology with `aria-hidden`.
+ *  - **Keyboard interaction**: `Space` toggles the switch, `Tab` moves focus to/from the control.
  *
  * @status experimental
  *
@@ -79,19 +83,24 @@ export class ChSwitch implements AccessibleNameComponent {
   @Prop() readonly accessibleName?: string;
 
   /**
-   * Caption displayed when the switch is 'on'
+   * Caption displayed when the switch is 'on'.
+   * This is purely visual — the caption element is `aria-hidden="true"`, so
+   * it has no effect on assistive technology.
    */
   @Prop() readonly checkedCaption: string;
 
   /**
-   * The value when the switch is 'on'
+   * The value when the switch is 'on'. This property is required (no default).
+   * The checked state is derived from `value === checkedValue`.
    */
   @Prop() readonly checkedValue!: string;
 
   /**
    * This attribute allows you specify if the element is disabled.
    * If disabled, it will not trigger any user interaction related event
-   * (for example, click event).
+   * (for example, click event). When `true`, all event handlers (click on
+   * host, input on the internal input, click on the label) are suppressed,
+   * and the `ch-disabled` class is added to the host element.
    */
   @Prop() readonly disabled: boolean = false;
 
@@ -101,19 +110,25 @@ export class ChSwitch implements AccessibleNameComponent {
   @Prop({ reflect: true }) readonly name?: string;
 
   /**
-   * Caption displayed when the switch is 'off'
+   * Caption displayed when the switch is 'off'.
+   * This is purely visual — the caption element is `aria-hidden="true"`, so
+   * it has no effect on assistive technology.
    */
   @Prop() readonly unCheckedCaption: string;
 
   /**
    * The value when the switch is 'off'. If you want to not add the value when
    * the control is used in a form and it's unchecked, just let this property
-   * with the default `undefined` value.
+   * with the default `undefined` value. When `undefined`, no form value is
+   * submitted in the unchecked state.
    */
   @Prop() readonly unCheckedValue: string = undefined;
 
   /**
-   * The value of the control.
+   * The value of the control. Mutated internally on toggle (set to
+   * `checkedValue` or `unCheckedValue`). During `connectedCallback`, it is
+   * initialized from `unCheckedValue` if unset. The `@Watch` handler syncs
+   * the value with `ElementInternals.setFormValue()` on every change.
    */
   @Prop({ mutable: true }) value: string = null;
   @Watch("value")
@@ -123,7 +138,10 @@ export class ChSwitch implements AccessibleNameComponent {
   }
 
   /**
-   * The 'input' event is emitted when a change to the element's value is committed by the user.
+   * The 'input' event is emitted when a change to the element's value is
+   * committed by the user. The native input event is stopped from propagating
+   * and re-emitted on the host. The payload is the original `UIEvent` (not
+   * the new value string).
    */
   @Event() input: EventEmitter;
 

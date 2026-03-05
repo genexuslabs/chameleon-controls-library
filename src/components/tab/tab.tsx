@@ -234,7 +234,7 @@ const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
  * ## Features
  *  - Tab list positioning along any edge of the container (`block-start`, `block-end`, `inline-start`, or `inline-end`).
  *  - Optional images, icons, captions, and close buttons per tab.
- *  - Keyboard navigation following WAI-ARIA tab patterns.
+ *  - Keyboard navigation following WAI-ARIA tab patterns (Arrow keys are direction-aware based on `tabListPosition`; Home/End jump to first/last tab).
  *  - Drag-to-reorder tabs within the tab list when `sortable` is enabled.
  *  - Drag tabs outside the component for relocation in a flexible layout context when `dragOutside` is enabled.
  *  - CSS containment and overflow configuration per tab panel.
@@ -394,7 +394,8 @@ export class ChTabRender implements DraggableView {
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
-   * for the element.
+   * for the element. This value is applied as the accessible name of the
+   * `role="tablist"` element.
    */
   @Prop() readonly accessibleName: string;
 
@@ -437,8 +438,8 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly dragOutside: boolean = false;
 
   /**
-   * `true` if the group has is view section expanded. Otherwise, only the
-   * toolbar will be displayed.
+   * `true` if the tab panel container is visible. When `false`, only the
+   * tab-list toolbar is displayed and all tab panels are hidden.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly expanded: boolean = true;
@@ -456,7 +457,9 @@ export class ChTabRender implements DraggableView {
   }
 
   /**
-   * Specifies the items of the tab control.
+   * Specifies the items of the tab control. Tab panels use lazy rendering:
+   * a panel's content slot is only rendered after the tab has been selected
+   * at least once (tracked internally via `wasRendered`).
    */
   @Prop() readonly model: TabModel;
   @Watch("model")

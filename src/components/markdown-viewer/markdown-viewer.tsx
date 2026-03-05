@@ -32,17 +32,22 @@ import { markdownViewerExtension } from "./parsers/math";
  *  - GitHub Flavored Markdown (GFM) via [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
  *  - Code highlighting by parsing code blocks to [hast](https://github.com/syntax-tree/hast) using [lowlight](https://github.com/wooorm/lowlight), supporting all [highlight.js](https://github.com/highlightjs/highlight.js) languages.
  *  - On-demand loading of code parsers and language grammars at runtime.
- *  - Math rendering, raw HTML pass-through, and streaming indicator for real-time content.
+ *  - Math rendering (built-in extension), raw HTML pass-through, and streaming indicator for real-time content.
  *  - Custom extensions for adding new syntax and rendering behavior.
+ *  - Theming support via the `theme` property with optional flash-of-unstyled-content prevention.
  *
  * ## Use when
  *  - Displaying user-authored or AI-generated Markdown in a polished, interactive way.
- *  - Rendering user-generated Markdown content or AI-generated responses that include headings, lists, code blocks, and tables.
+ *  - Rendering Markdown content that includes headings, lists, code blocks, tables, and math expressions.
  *
  * ## Do not use when
- *  - You only need to display plain text with overflow handling — prefer `ch-textblock` instead.
- *  - Only plain text needs to be displayed — prefer `ch-textblock` for better performance.
- *  - Full math rendering is needed and Markdown is not involved — prefer `ch-math-viewer` directly.
+ *  - Only plain text needs to be displayed -- prefer `ch-textblock` for better performance.
+ *  - Full math rendering is needed and Markdown is not involved -- prefer `ch-math-viewer` directly.
+ *
+ * ## Accessibility
+ *  - Renders semantic HTML elements (headings, lists, tables, code blocks) that are natively accessible to assistive technologies.
+ *  - Code blocks are rendered via `ch-code`, which provides scrollable, labeled code regions.
+ *  - Math expressions rendered via the math extension include MathML for screen reader compatibility.
  *
  * @status experimental
  */
@@ -64,8 +69,10 @@ export class ChMarkdownViewer {
   // @Prop() readonly allowDangerousHtml: boolean = false;
 
   /**
-   * `true` to visually hide the contents of the root node while the control's
-   * style is not loaded. Only works if the `theme` property is set.
+   * When `true`, visually hides the contents of the root node until the
+   * theme stylesheet has loaded, preventing a flash of unstyled content.
+   * Only takes effect when the `theme` property is set; otherwise this
+   * property has no visible effect.
    */
   @Prop() readonly avoidFlashOfUnstyledContent: boolean = false;
 
@@ -92,29 +99,50 @@ export class ChMarkdownViewer {
   }
 
   /**
-   * `true` to render raw HTML with sanitization.
+   * When `true`, raw HTML blocks in the Markdown source are rendered as
+   * actual HTML elements (with sanitization). When `false`, HTML blocks
+   * are ignored and not rendered.
+   *
+   * Note: in the current version, `allowDangerousHtml` is always `true`
+   * internally, so this flag controls whether HTML is passed through to
+   * the rendered output.
    */
   @Prop() readonly rawHtml: boolean = false;
 
   /**
-   * This property allows us to implement custom rendering for the code blocks.
+   * Allows custom rendering of code blocks (fenced code).
+   * When `undefined`, the default code renderer (which uses `ch-code`) is
+   * used. Provide a custom function to render code blocks with a different
+   * component or UI (e.g., adding copy buttons, line numbers, etc.).
    */
   @Prop() readonly renderCode?: MarkdownViewerCodeRender | undefined;
 
   /**
-   * Specifies if an indicator is displayed in the last element rendered.
-   * Useful for streaming scenarios where a loading indicator is needed.
+   * When `true`, a blinking cursor-like indicator is displayed after the
+   * last rendered element. Useful for streaming scenarios where Markdown
+   * content is being generated in real time (e.g., AI chat responses).
+   *
+   * The indicator's appearance is controlled by the CSS custom properties
+   * `--ch-markdown-viewer-indicator-color`, `--ch-markdown-viewer-inline-size`,
+   * and `--ch-markdown-viewer-block-size`.
    */
   @Prop() readonly showIndicator: boolean = false;
 
   /**
-   * Specifies the theme to be used for rendering the control.
+   * Specifies the theme model name to be used for rendering the control.
+   * When set, a `ch-theme` element is rendered to load the theme stylesheet.
    * If `undefined`, no theme will be applied.
+   *
+   * Works together with `avoidFlashOfUnstyledContent` to prevent unstyled
+   * content from being visible before the theme loads.
    */
   @Prop() readonly theme: string | undefined = "ch-markdown-viewer";
 
   /**
-   * Specifies the markdown string to parse.
+   * Specifies the Markdown string to parse and render.
+   * When `undefined` or empty, the component renders nothing.
+   * If parsing fails, the error is logged to the console and the
+   * previously rendered content is preserved.
    */
   @Prop() readonly value?: string | undefined;
 

@@ -106,6 +106,7 @@ const ARROW_LEFT = "ArrowLeft";
  *  - Each drag bar has `role="separator"` with `aria-orientation` (`vertical` or `horizontal`).
  *  - Bars expose `aria-controls` referencing the adjacent panels, `aria-valuetext` with the current size, `aria-label`, and `aria-disabled`.
  *  - Bars are focusable (`tabindex="0"`) and support keyboard resizing with Arrow keys.
+ *  - Note: the component does not emit an event when a resize operation completes.
  *
  * @status experimental
  *
@@ -137,7 +138,8 @@ export class ChLayoutSplitter implements ChComponent {
   @State() dragging = false;
 
   /**
-   * This attribute lets you specify the label for the drag bar.
+   * This attribute lets you specify the label for the drag bar. This value
+   * is set as the `aria-label` on each `role="separator"` element.
    * Important for accessibility.
    */
   @Prop() readonly barAccessibleName: string = "Resize";
@@ -149,14 +151,16 @@ export class ChLayoutSplitter implements ChComponent {
   @Prop() readonly dragBarDisabled: boolean = false;
 
   /**
-   * Specifies the resizing increment (in pixel) that is applied when using the
-   * keyboard to resize a drag bar.
+   * Specifies the resizing increment, in pixels, that is applied per
+   * Arrow-key press when using the keyboard to resize a drag bar.
    */
   @Prop() readonly incrementWithKeyboard: number = 2;
 
   /**
-   * Specifies the list of component that are displayed. Each component will be
-   * separated via a drag bar.
+   * Specifies the layout tree. The root is a `LayoutSplitterGroupModel` with
+   * a `direction` (`"columns"` or `"rows"`) and an `items` array. Each item
+   * is either a leaf (`LayoutSplitterLeafModel`) or a nested group, enabling
+   * arbitrarily complex layouts. Sibling items are separated by drag bars.
    */
   @Prop() readonly model: LayoutSplitterModel = {
     id: "root",
@@ -177,7 +181,9 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   /**
-   *
+   * Adds a new leaf item as a sibling of the specified item within the
+   * given parent group. The new leaf is placed `"before"` or `"after"` the
+   * sibling, optionally taking half its space.
    */
   @Method()
   async addSiblingLeaf(

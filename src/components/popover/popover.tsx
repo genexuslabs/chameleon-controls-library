@@ -370,7 +370,9 @@ export class ChPopover {
   @Prop() readonly allowDrag: "box" | "header" | "no" = "no";
 
   /**
-   * Specifies the block alignment of the window.
+   * Specifies the block alignment of the popover relative to its action
+   * element. Valid values: `"outside-start"`, `"inside-start"`, `"center"`,
+   * `"inside-end"`, `"outside-end"`.
    */
   @Prop() readonly blockAlign: ChPopoverAlign = "center";
   @Watch("blockAlign")
@@ -423,12 +425,17 @@ export class ChPopover {
   @Prop() readonly closeOnClickOutside: boolean = false;
 
   /**
-   * `true` if the control is not stacked with another top layer.
+   * `true` if the popover is not stacked inside another top layer (e.g., not
+   * nested within another popover). When `true`, a CSS class is temporarily
+   * applied to prevent initial positioning flickering while the popover
+   * calculates its alignment.
    */
   @Prop() readonly firstLayer: boolean = true;
 
   /**
-   * Specifies the inline alignment of the window.
+   * Specifies the inline alignment of the popover relative to its action
+   * element. Valid values: `"outside-start"`, `"inside-start"`, `"center"`,
+   * `"inside-end"`, `"outside-end"`.
    */
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
   @Watch("inlineAlign")

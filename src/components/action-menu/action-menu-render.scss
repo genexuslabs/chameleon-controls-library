@@ -18,8 +18,28 @@
    */
   --ch-action-menu-item__background-image-size: 100%;
 
+  /**
+   * @prop --ch-action-menu-separation:
+   * Specifies the base separation between the action menu trigger and the
+   * dropdown menu on both axes.
+   * @default 0px
+   */
   --ch-action-menu-separation: 0px;
+
+  /**
+   * @prop --ch-action-menu-separation-x:
+   * Specifies the separation on the inline (x) axis between the action menu
+   * trigger and the dropdown menu.
+   * @default var(--ch-action-menu-separation)
+   */
   --ch-action-menu-separation-x: var(--ch-action-menu-separation);
+
+  /**
+   * @prop --ch-action-menu-separation-y:
+   * Specifies the separation on the block (y) axis between the action menu
+   * trigger and the dropdown menu.
+   * @default var(--ch-action-menu-separation)
+   */
   --ch-action-menu-separation-y: var(--ch-action-menu-separation);
 
   display: contents;

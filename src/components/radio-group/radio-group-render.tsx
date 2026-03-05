@@ -46,13 +46,18 @@ const PARTS = (checked: boolean, disabled: boolean) => {
  *  - The setting takes immediate effect — prefer `ch-switch`.
  *  - A single radio button is used in isolation — radio inputs must always work as a group and cannot be unchecked once selected.
  *
+ * ## Slots
+ *  - No slots. All content is rendered from the `model` property.
+ *
  * ## Accessibility
  *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
  *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ *  - Uses native `<input type="radio">` elements grouped by a shared `name` attribute, so the browser provides built-in keyboard navigation: Arrow keys move between options and select them, Space selects the focused option, and Tab moves focus in and out of the group.
  *  - The host element has `role="radiogroup"`.
  *  - Each option uses a native `<input type="radio">` with a linked `<label>`.
- *  - When no caption is provided, the radio input receives an `aria-label`.
- *  - The decorative option overlay is hidden from assistive technology with `aria-hidden`.
+ *  - When no caption is provided, the radio input receives an `aria-label` from the item's `accessibleName`.
+ *  - Each item's decorative option overlay is hidden from assistive technology with `aria-hidden`.
+ *  - No group-level accessible name property exists on this component; wrap it in a `<fieldset>` / `<legend>` to provide a group label for screen readers.
  *
  * @status experimental
  *
@@ -76,7 +81,9 @@ export class ChRadioGroupRender {
   @AttachInternals() internals: ElementInternals;
 
   /**
-   * Specifies the direction of the items.
+   * Specifies the layout direction of the items.
+   * `"horizontal"` renders items in a row using `display: flex; flex-wrap: wrap`.
+   * `"vertical"` renders items in a column using `display: inline-grid`.
    */
   @Prop() readonly direction: "horizontal" | "vertical" = "horizontal";
 
@@ -84,16 +91,21 @@ export class ChRadioGroupRender {
    * This attribute lets you specify if the radio-group is disabled.
    * If disabled, it will not fire any user interaction related event
    * (for example, click event).
+   * This is combined with each item's individual `disabled` flag from the
+   * model — if either is `true`, the item is disabled.
    */
   @Prop() readonly disabled: boolean = false;
 
   /**
-   * This property lets you define the items of the ch-radio-group-render control.
+   * Defines the items rendered by the radio group.
    */
   @Prop() readonly model?: RadioGroupModel;
 
   /**
-   * The value of the control.
+   * The value of the control. This property is mutated internally when the
+   * user selects an option. A `@Watch` handler syncs the new value to
+   * `ElementInternals.setFormValue()` so the form always reflects the
+   * current selection.
    */
   @Prop({ mutable: true }) value: string;
   @Watch("value")
@@ -105,6 +117,9 @@ export class ChRadioGroupRender {
   /**
    * Fired when the selected item change. It contains the information about the
    * new selected value.
+   * Note: despite the name, this event is wired to the native DOM `input`
+   * event (not the DOM `change` event). The native event is stopped from
+   * propagating via `event.stopPropagation()`.
    */
   @Event() change: EventEmitter<string>;
 

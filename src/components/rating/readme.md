@@ -25,29 +25,33 @@ The `ch-rating` component displays a star-based rating control that allows users
  - The scale semantics are unclear to users without a legend explaining what each star means.
  - The rating is read-only / display-only — remove interactive behaviors and provide equivalent alt text.
 
+## Slots
+ - No slots. All content is rendered internally.
+
 ## Accessibility
  - Form-associated via `ElementInternals` — participates in native form validation and submission.
  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
- - Implements the `radiogroup` pattern — the host receives `role="radiogroup"` and each star is a native `<input type="radio">`.
- - Each radio input carries an `aria-label` describing its value (e.g. "3 stars").
+ - The host receives `role="radiogroup"` set imperatively in `connectedCallback`.
+ - Each star is a native `<input type="radio">`, so Arrow keys navigate between stars and Space selects the focused star.
+ - Each radio input carries a hardcoded English `aria-label` describing its value (e.g. "3 stars").
  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
 
 ## Properties
 
-| Property         | Attribute         | Description                                                                                                                                                       | Type      | Default     |
-| ---------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `accessibleName` | `accessible-name` | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. | `string`  | `undefined` |
-| `disabled`       | `disabled`        | This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).     | `boolean` | `false`     |
-| `name`           | `name`            | This property specifies the `name` of the control when used in a form.                                                                                            | `string`  | `undefined` |
-| `stars`          | `stars`           | This property determine the number of stars displayed.                                                                                                            | `number`  | `5`         |
-| `value`          | `value`           | The current value displayed by the component.                                                                                                                     | `number`  | `0`         |
+| Property         | Attribute         | Description                                                                                                                                                                                                                                                                                         | Type      | Default     |
+| ---------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
+| `accessibleName` | `accessible-name` | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.                                                                                                                                   | `string`  | `undefined` |
+| `disabled`       | `disabled`        | This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).                                                                                                                                       | `boolean` | `false`     |
+| `name`           | `name`            | This property specifies the `name` of the control when used in a form.                                                                                                                                                                                                                              | `string`  | `undefined` |
+| `stars`          | `stars`           | This property determine the number of stars displayed. Values less than 0 are treated as 0 (`Math.max(0, stars)`). The `value` property is clamped to the range `[0, stars]`.                                                                                                                       | `number`  | `5`         |
+| `value`          | `value`           | The current value displayed by the component. Fractional values are supported for display (partial star fill), but user interaction only produces whole numbers. The value is clamped between `0` and `stars`. The `@Watch` handler syncs the clamped value with `ElementInternals.setFormValue()`. | `number`  | `0`         |
 
 
 ## Events
 
-| Event   | Description                                                                                                                            | Type                  |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
-| `input` | The `input` event is emitted when a change to the element's value is committed by the user.  It contains the new value of the control. | `CustomEvent<number>` |
+| Event   | Description                                                                                                                                                                          | Type                  |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
+| `input` | The `input` event is emitted when a change to the element's value is committed by the user.  The payload is the new numeric value — always a whole number in the range `[0, stars]`. | `CustomEvent<number>` |
 
 
 ## Shadow Parts
@@ -64,11 +68,11 @@ The `ch-rating` component displays a star-based rating control that allows users
 
 ## CSS Custom Properties
 
-| Name                                            | Description                                                                                                                      |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `--ch-rating-star__selected-background-color`   | Specifies the background-color of the selected portion of the star. @default color-mix(in srgb, currentColor 15%, transparent)   |
-| `--ch-rating-star__size`                        | Specifies the size of the star.                                                                                                  |
-| `--ch-rating-star__unselected-background-color` | Specifies the background-color of the unselected portion of the star. @default color-mix(in srgb, currentColor 15%, transparent) |
+| Name                                            | Description                                                                                                                          |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `--ch-rating-star__selected-background-color`   | Specifies the background-color of the selected portion of the star. @default currentColor                                            |
+| `--ch-rating-star__size`                        | Specifies the size of the star.                                                                                                      |
+| `--ch-rating-star__unselected-background-color` | Specifies the background-color of the unselected portion of the star. @default color-mix(in srgb, currentColor 50%, transparent 50%) |
 
 
 ----------------------------------------------

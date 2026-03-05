@@ -27,20 +27,25 @@ The `ch-layout-splitter` component renders a nestable grid of columns and rows w
  - Each drag bar has `role="separator"` with `aria-orientation` (`vertical` or `horizontal`).
  - Bars expose `aria-controls` referencing the adjacent panels, `aria-valuetext` with the current size, `aria-label`, and `aria-disabled`.
  - Bars are focusable (`tabindex="0"`) and support keyboard resizing with Arrow keys.
+ - Note: the component does not emit an event when a resize operation completes.
 
 ## Properties
 
-| Property                | Attribute                 | Description                                                                                                                  | Type                                                                                    | Default                                                         |
-| ----------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `barAccessibleName`     | `bar-accessible-name`     | This attribute lets you specify the label for the drag bar. Important for accessibility.                                     | `string`                                                                                | `"Resize"`                                                      |
-| `dragBarDisabled`       | `drag-bar-disabled`       | This attribute lets you specify if the resize operation is disabled in all drag bars. If `true`, the drag bars are disabled. | `boolean`                                                                               | `false`                                                         |
-| `incrementWithKeyboard` | `increment-with-keyboard` | Specifies the resizing increment (in pixel) that is applied when using the keyboard to resize a drag bar.                    | `number`                                                                                | `2`                                                             |
-| `model`                 | --                        | Specifies the list of component that are displayed. Each component will be separated via a drag bar.                         | `{ id: "root"; direction: LayoutSplitterDirection; items: LayoutSplitterItemModel[]; }` | `{     id: "root",     direction: "columns",     items: []   }` |
+| Property                | Attribute                 | Description                                                                                                                                                                                                                                                                                      | Type                                                                                    | Default                                                         |
+| ----------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `barAccessibleName`     | `bar-accessible-name`     | This attribute lets you specify the label for the drag bar. This value is set as the `aria-label` on each `role="separator"` element. Important for accessibility.                                                                                                                               | `string`                                                                                | `"Resize"`                                                      |
+| `dragBarDisabled`       | `drag-bar-disabled`       | This attribute lets you specify if the resize operation is disabled in all drag bars. If `true`, the drag bars are disabled.                                                                                                                                                                     | `boolean`                                                                               | `false`                                                         |
+| `incrementWithKeyboard` | `increment-with-keyboard` | Specifies the resizing increment, in pixels, that is applied per Arrow-key press when using the keyboard to resize a drag bar.                                                                                                                                                                   | `number`                                                                                | `2`                                                             |
+| `model`                 | --                        | Specifies the layout tree. The root is a `LayoutSplitterGroupModel` with a `direction` (`"columns"` or `"rows"`) and an `items` array. Each item is either a leaf (`LayoutSplitterLeafModel`) or a nested group, enabling arbitrarily complex layouts. Sibling items are separated by drag bars. | `{ id: "root"; direction: LayoutSplitterDirection; items: LayoutSplitterItemModel[]; }` | `{     id: "root",     direction: "columns",     items: []   }` |
 
 
 ## Methods
 
 ### `addSiblingLeaf(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", leafInfo: LayoutSplitterLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<LayoutSplitterItemAddResult>`
+
+Adds a new leaf item as a sibling of the specified item within the
+given parent group. The new leaf is placed `"before"` or `"after"` the
+sibling, optionally taking half its space.
 
 #### Parameters
 

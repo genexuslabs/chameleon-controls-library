@@ -131,15 +131,34 @@ const NEGATIVE_INDEX = -1;
  * ## Accessibility
  *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
  *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
- *  - Implements the WAI-ARIA `combobox` pattern: the input has `role="combobox"`, `aria-expanded`, `aria-controls`, and `aria-haspopup`.
+ *  - Implements the WAI-ARIA `combobox` pattern: the input has `role="combobox"` with `aria-expanded`, `aria-controls`, and `aria-haspopup` attributes.
  *  - The popup list has `role="listbox"`.
- *  - Full keyboard navigation: Arrow keys, Home, End, Enter, Tab, and type-ahead search.
+ *  - Keyboard navigation:
+ *    - **Arrow Up / Arrow Down**: Navigate through items in the dropdown. If the dropdown is closed, opens it.
+ *    - **Home / End**: Jump to the first or last item (non-suggest mode).
+ *    - **Enter / NumpadEnter**: Toggle the dropdown open/closed; in suggest mode, confirms the current selection.
+ *    - **Space**: Opens the dropdown (non-suggest mode only).
+ *    - **Tab**: Closes the dropdown and confirms the selection.
+ *    - **Type-ahead**: In non-suggest mode, typing characters while the dropdown is open performs incremental search to jump to matching items.
  *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+ *  - On mobile devices, falls back to a native `<select>` element for optimal touch interaction and OS-level accessibility.
  *
  * @status experimental
  *
  * @part window - The popover element that contains the dropdown list of items.
- * @part placeholder - Present on the host when no item is selected and the placeholder text is displayed.
+ * @part expandable - Applied to group headers that can be expanded or collapsed.
+ * @part group - Applied to each item group container.
+ * @part group__header - The header element of an item group.
+ * @part group__header-caption - The caption text inside a group header.
+ * @part group__content - The container that wraps the child items of a group.
+ * @part item - Applied to each selectable leaf item in the list.
+ * @part section - Applied to section containers in the dropdown.
+ * @part disabled - State part applied to disabled items, groups, group headers, and expandable headers.
+ * @part expanded - State part applied to expanded group headers and expandable buttons.
+ * @part collapsed - State part applied to collapsed group headers and expandable buttons.
+ * @part nested - State part applied to items that are nested inside a group.
+ * @part selected - State part applied to the currently selected item.
+ * @part ch-combo-box-render--placeholder - Present on the host when no item is selected and the placeholder text is displayed.
  */
 @Component({
   formAssociated: true,
@@ -470,7 +489,10 @@ export class ChComboBoxRender
   @Prop() readonly hostParts?: string;
 
   /**
-   * Specifies the items of the control
+   * Specifies the items of the control.
+   *
+   * `ComboBoxModel` is an array of `ComboBoxItemModel` entries. Each entry is
+   * either a `ComboBoxItemLeaf` (a selectable item) or a `ComboBoxItemGroup` (a group header containing nested items).
    */
   @Prop() readonly model: ComboBoxModel = [];
   @Watch("model")
@@ -501,6 +523,9 @@ export class ChComboBoxRender
    * If it is not specified, then only one option can be selected at a time.
    * When multiple is specified, the control will show a scrolling list box
    * instead of a single line dropdown.
+   *
+   * **Note:** Currently declared but not yet implemented. Setting this property
+   * has no effect on the component behavior.
    */
   @Prop() readonly multiple: boolean = false;
 
@@ -536,8 +561,13 @@ export class ChComboBoxRender
 
   /**
    * This property lets you specify if the control behaves like a suggest.
-   * If `true` the combo-box value will be editable an displayed items will be
+   * If `true` the combo-box value will be editable and displayed items will be
    * filtered according to the input's value.
+   *
+   * When enabled, the `suggestDebounce` property controls how long the control
+   * waits before processing input changes, and the `suggestOptions` property
+   * configures filtering behavior (e.g., strict matching, case sensitivity,
+   * server-side filtering).
    */
   @Prop() readonly suggest: boolean = false;
   @Watch("suggest")
@@ -562,7 +592,22 @@ export class ChComboBoxRender
 
   /**
    * This property lets you determine the options that will be applied to the
-   * suggest.
+   * suggest. Available options (`ComboBoxSuggestOptions`):
+   *
+   *  - `alreadyProcessed` (boolean) — `true` if the model is already filtered
+   *    server-side and the control should skip client-side filtering.
+   *  - `autoExpand` (boolean) — expand matching groups when filtering. *(Not yet implemented.)*
+   *  - `hideMatchesAndShowNonMatches` (boolean) — invert the filter: hide
+   *    matches and show non-matches.
+   *  - `highlightMatchedItems` (boolean) — highlight matched text in items.
+   *    *(Not yet implemented.)*
+   *  - `matchCase` (boolean) — make the filter case-sensitive (ignored when
+   *    `regularExpression` is `true`).
+   *  - `regularExpression` (boolean) — treat the filter value as a regular expression.
+   *  - `renderActiveItemIconOnExpand` (boolean) — keep the selected item icon
+   *    visible in the input while the dropdown is expanded in suggest mode.
+   *  - `strict` (boolean) — when the popover closes, revert to the last
+   *    confirmed value if the input does not match any item.
    */
   @Prop() readonly suggestOptions: ComboBoxSuggestOptions = {};
   @Watch("suggestOptions")
@@ -587,7 +632,9 @@ export class ChComboBoxRender
    * The `input` event is emitted when a change to the element's value is
    * committed by the user.
    *
-   * If `suggest = true`, this event is debounced by the `suggestDebounce` value.
+   * When `suggest === true`, this event is debounced by the `suggestDebounce`
+   * value (default 250 ms). When `suggest === false`, debouncing does not
+   * apply and the event is emitted immediately on value change.
    */
   @Event() input: EventEmitter<string>;
 

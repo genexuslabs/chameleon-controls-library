@@ -124,6 +124,8 @@ import { fromHsvStringToHsvColor } from "./utils/parsers/hsv";
  * @part color-palette-grid - The grid container for the preset color palette swatches.
  * @part color-palette__label - The label for the color palette section.
  * @part color-palette__button - A clickable button representing a single preset color in the palette.
+ * @part disabled - Present on the host when the component is disabled.
+ * @part readonly - Present on the host when the component is readonly.
  */
 @Component({
   formAssociated: true,
@@ -169,7 +171,7 @@ export class ChColorPicker {
   @Prop() readonly alphaSliderStep: number = 1;
 
   /**
-   * Specifies the step size in pixels for the alpha slider.
+   * Specifies the step size in pixels for the hue slider control.
    * Default = 1.
    */
   @Prop() readonly hueSliderStep: number = 1;
@@ -195,7 +197,10 @@ export class ChColorPicker {
   @Prop() readonly readonly: boolean = false;
 
   /**
-   * Specifies the order for the controls.
+   * Specifies the order for the controls. Uses the CSS `order` property
+   * internally to reorder them visually. The default layout order is:
+   * colorField (1), colorPreview (2), hueSlider (3), alphaSlider (4),
+   * colorFormatSelector (5), colorPalette (6).
    */
   @Prop() readonly order: ColorPickerControlsOrder = {
     colorField: 1,
@@ -220,6 +225,8 @@ export class ChColorPicker {
   /**
    * Shows/hides the alpha (transparency) slider.
    * Allows users to adjust color opacity from 0% (transparent) to 100% (opaque).
+   * The alpha channel value is only meaningful in the output when the selected
+   * color format supports it (RGBA, HSLA).
    */
   @Prop() readonly showAlphaSlider: boolean = false;
 
@@ -239,6 +246,7 @@ export class ChColorPicker {
   /**
    * Shows/hides the color palette section.
    * Displays a customizable grid of color swatches for quick selection.
+   * The `colorPalette` property must also have items for the palette to be visible.
    */
   @Prop() readonly showColorPalette: boolean = false;
 
@@ -251,6 +259,9 @@ export class ChColorPicker {
 
   /**
    * Specifies the literals required in the control.
+   * Some translation strings support the `SELECTED_COLOR` token placeholder
+   * which is replaced at runtime with the actual color value
+   * (e.g., `colorPaletteButton` and `currentColorPreview`).
    */
   @Prop() readonly translations: ColorPickerTranslations = {
     accessibleName: {
@@ -297,6 +308,7 @@ export class ChColorPicker {
    * in one of the following formats:
    *   - HEX
    *   - HSL
+   *   - HSV
    *   - RGB
    * This value determines the selected color and can be updated by the user.
    *
@@ -304,6 +316,8 @@ export class ChColorPicker {
    * value = "#FF00AA"
    * @example // HSL format
    * value = "hsl(120, 100%, 25%)"
+   * @example // HSV format
+   * value = "hsv(120, 100%, 50%)"
    * @example // RGB format
    * value = "rgb(255, 125, 50)"
    */
@@ -318,7 +332,8 @@ export class ChColorPicker {
 
   /**
    * The `input` event is emitted whenever the color value changes.
-   * The event detail contains the color in all available formats for convenience.
+   * The event detail payload is a `ColorVariants` object which provides the
+   * color in all supported formats simultaneously (HEX, RGB, HSL, HSV).
    */
   @Event() input: EventEmitter<ColorVariants>;
 

@@ -72,7 +72,7 @@ import {
  * ## Accessibility
  *  - The expandable button has `aria-expanded`, `aria-haspopup="true"`, `aria-controls`, and a configurable `aria-label` (`buttonAccessibleName`).
  *  - The popup window has `role="list"`.
- *  - Keyboard support: Escape closes the menu and returns focus to the trigger button; arrow keys navigate items.
+ *  - Keyboard support: Enter/Space activates the focused item, ArrowUp/ArrowDown navigate within a menu level, ArrowRight opens a sub-menu, ArrowLeft closes it, and Escape closes the menu returning focus to the trigger button.
  *
  * @status experimental
  *
@@ -107,13 +107,16 @@ export class ChActionMenuRender {
 
   /**
    * This attribute lets you specify the label for the first expandable button.
-   * Important for accessibility.
+   * Important for accessibility. This property is practically required: without
+   * it the trigger button has no accessible name, making the menu unusable for
+   * screen-reader users.
    */
   @Prop() readonly buttonAccessibleName: string;
 
   /**
    * Specifies the block alignment of the dropdown menu that is placed
-   * relative to the expandable button.
+   * relative to the expandable button. Valid values are `"inside-start"`,
+   * `"center"`, `"inside-end"`, `"outside-start"`, and `"outside-end"`.
    */
   @Prop() readonly blockAlign: ChPopoverAlign = "outside-end";
 
@@ -131,7 +134,8 @@ export class ChActionMenuRender {
   @Prop() readonly getImagePathCallback?: ActionMenuImagePathCallback;
 
   /**
-   * `true` to expand the dropdown window.
+   * Controls the visibility of the dropdown menu. Set to `true` to open the
+   * dropdown and `false` to close it.
    */
   @Prop({ mutable: true }) expanded: boolean = false;
   @Watch("expanded")
@@ -155,7 +159,8 @@ export class ChActionMenuRender {
 
   /**
    * Specifies the inline alignment of the dropdown section that is placed
-   * relative to the expandable button.
+   * relative to the expandable button. Valid values are `"inside-start"`,
+   * `"center"`, `"inside-end"`, `"outside-start"`, and `"outside-end"`.
    */
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
 

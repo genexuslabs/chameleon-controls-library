@@ -297,7 +297,7 @@ type ImmediateFilter = "immediate" | "debounced" | undefined;
  *  - Nesting depth regularly exceeds 10 levels — UX becomes untenable.
  *
  * ## Accessibility
- *  - Implements a tree-view keyboard pattern: Arrow keys to navigate, Enter/Space to select, Left/Right to collapse/expand.
+ *  - Implements a tree-view keyboard pattern: Arrow keys to navigate, Enter/Space to select, Left/Right to collapse/expand, F2 to start editing the caption, and Delete/Backspace to remove the focused item.
  *  - Checkbox items support tri-state (`checked`, `unchecked`, `indeterminate`) with matching ARIA states.
  *  - Items can be individually disabled, preventing keyboard and pointer interaction.
  *
@@ -425,12 +425,16 @@ export class ChTreeViewRender {
   /**
    * This attribute lets you specify if the drag operation is disabled in all
    * items by default. If `true`, the items can't be dragged.
+   * Note: the default value is `true` (dragging disabled), so you must
+   * explicitly set this to `false` to enable drag.
    */
   @Prop() readonly dragDisabled: boolean = true;
 
   /**
    * This attribute lets you specify if the drop operation is disabled in all
    * items by default. If `true`, the items won't accept any drops.
+   * Note: the default value is `true` (dropping disabled), so you must
+   * explicitly set this to `false` to enable drop.
    */
   @Prop() readonly dropDisabled: boolean = true;
 
@@ -445,6 +449,10 @@ export class ChTreeViewRender {
   /**
    * This attribute lets you specify which kind of drop operation can be
    * effected in the items.
+   *  - `"above"`: Items can only be dropped on top of another item (reparent).
+   *  - `"before-and-after"`: Items can be dropped before or after a sibling
+   *     (reorder), but not on top of another item.
+   *  - `"all"`: Both above and before-and-after drop targets are available.
    */
   @Prop() readonly dropMode: "above" | "before-and-after" | "all" = "above";
 
@@ -457,10 +465,11 @@ export class ChTreeViewRender {
   /**
    * Specifies what kind of expandable button is displayed in the items by
    * default.
-   *  - `"expandableButton"`: Expandable button that allows to expand/collapse
-   *     the items of the control.
+   *  - `"action"`: An interactive expandable button that allows users to
+   *     expand/collapse the items of the control.
    *  - `"decorative"`: Only a decorative icon is rendered to display the state
    *     of the item.
+   *  - `"no"`: No expandable button is rendered.
    */
   @Prop() readonly expandableButton: "action" | "decorative" | "no" =
     "decorative";
@@ -519,7 +528,9 @@ export class ChTreeViewRender {
 
   /**
    * This property lets you determine the options that will be applied to the
-   * filter.
+   * filter. `TreeViewFilterOptions` accepts `hideMatchesAndDescendants` and
+   * `regularExpression` flags that control how filtered items and their
+   * descendants are displayed.
    */
   @Prop() readonly filterOptions: TreeViewFilterOptions = {};
   @Watch("filterOptions")
@@ -572,7 +583,10 @@ export class ChTreeViewRender {
   @Prop() readonly getImagePathCallback: TreeViewImagePathCallback;
 
   /**
-   * Callback that is executed when a item request to load its subitems.
+   * Callback that is executed when an item requests to load its subitems.
+   * The callback receives the `id` of the item being expanded and must
+   * return a `Promise` that resolves with the child `TreeViewModel` array.
+   * While the promise is pending the item shows a loading indicator.
    */
   @Prop() readonly lazyLoadTreeItemsCallback: LazyLoadTreeItemsCallback;
 

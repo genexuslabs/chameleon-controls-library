@@ -42,9 +42,10 @@ const RESERVED_SPACE_CUSTOM_VAR =
  *  - Infinite scrolling via `ch-infinite-scroll` integration with configurable thresholds.
  *  - Standard and inverse loading orders (newest items at the bottom or top).
  *  - Automatic scroll-position management to prevent layout shifts (CLS) during async content loads.
- *  - Anchor a specific cell at the top of the viewport with reserved space, similar to code editors.
- *  - Auto-grow mode to adjust size to content, or fixed size with scrollbars.
+ *  - Anchor a specific cell at the top of the viewport with reserved space, similar to code editors (via `scrollEndContentToPosition`).
+ *  - Auto-grow mode (`autoGrow`) to adjust size to content, or fixed size with scrollbars.
  *  - ARIA live-region support for accessible announcements.
+ *  - Virtual-scroller integration for rendering only visible items.
  *
  * ## Use when
  *  - Building chat-like interfaces with inverse loading.
@@ -52,14 +53,18 @@ const RESERVED_SPACE_CUSTOM_VAR =
  *  - Infinite-scroll or paginated feeds with bottom-to-top inverse loading (e.g., chat, activity streams).
  *
  * ## Do not use when
- *  - Displaying static tabular data with columns and headers — use `ch-tabular-grid` instead.
- *  - Standard tabular data with columns and rows is needed — prefer `ch-tabular-grid`.
- *  - A fixed, non-scrollable list is sufficient — prefer `ch-action-list-render`.
+ *  - Displaying static tabular data with columns and headers -- use `ch-tabular-grid` instead.
+ *  - A fixed, non-scrollable list is sufficient -- prefer `ch-action-list-render`.
+ *
+ * ## Accessibility
+ *  - The host element uses `aria-live="polite"` to announce content changes to assistive technologies.
+ *  - `aria-busy` is set to `"true"` during `"initial"` and `"loading"` states, preventing premature announcements.
+ *  - The `accessibleName` property maps to `aria-label` on the host.
  *
  * @status experimental
  *
- * @slot grid-initial-loading-placeholder - Placeholder content displayed during the initial loading state before any data has been fetched.
- * @slot grid-content - The primary content slot for grid cells. Rendered when the grid has records and loading is complete.
+ * @slot grid-initial-loading-placeholder - Placeholder content shown during the initial loading state before any data has been fetched.
+ * @slot grid-content - Primary content slot for grid cells. Rendered when the grid has records and is not in the initial loading state.
  * @slot grid-content-empty - Fallback content displayed when the grid has finished loading but contains no records.
  */
 @Component({
@@ -127,10 +132,17 @@ export class ChSmartGrid
   @Prop() readonly accessibleName: string;
 
   /**
-   * This attribute defines if the control size will grow automatically,
-   * to adjust to its content size.
-   * If set to `false`, it won't grow automatically and it will show scrollbars
-   * if the content overflows.
+   * When `true`, the control size grows automatically to fit its content
+   * (no scrollbars). When `false`, the control has a fixed size and
+   * shows scrollbars if the content overflows.
+   *
+   * When `false`, the `ch-scrollable` class is applied to the host,
+   * enabling `contain: strict` and `overflow: auto`.
+   *
+   * Interacts with `inverseLoading`: when both `autoGrow` and
+   * `inverseLoading` are `true`, the CLS-avoidance opacity class is
+   * removed after the first render instead of waiting for the
+   * virtual-scroller load event.
    */
   @Prop() readonly autoGrow: boolean = false;
 
@@ -147,8 +159,10 @@ export class ChSmartGrid
   @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
 
   /**
-   * `true` if the control has a data provider and therefore must implement a
-   * infinite scroll to load data.
+   * `true` if the control has an external data provider and therefore must
+   * implement infinite scrolling to load data progressively.
+   * When `true`, a `ch-infinite-scroll` element is rendered at the top
+   * (if `inverseLoading`) or bottom of the grid content.
    */
   @Prop() readonly dataProvider: boolean = false;
 
@@ -160,15 +174,26 @@ export class ChSmartGrid
   @Prop() readonly inverseLoading: boolean = false;
 
   /**
-   * Grid current row count. This property is used in order to be able to
-   * re-render the Grid every time the Grid data changes.
-   * If not specified, then grid empty and loading placeholders may not work
+   * The current number of items (rows/cells) in the grid.
+   * This is a required property used to trigger re-renders whenever the
+   * data set changes. When `itemsCount` is `0`, the `grid-content-empty`
+   * slot is rendered instead of `grid-content`.
+   *
+   * If not specified, grid empty and loading placeholders may not work
    * correctly.
    */
   @Prop() readonly itemsCount!: number;
 
   /**
-   * Specifies the loading state of the grid.
+   * Specifies the loading state of the grid:
+   *  - `"initial"`: First load; shows the `grid-initial-loading-placeholder`
+   *    slot.
+   *  - `"loading"`: Data is being fetched (infinite scroll triggered). The
+   *    `ch-infinite-scroll` component shows its loading indicator.
+   *  - `"loaded"`: Data fetch is complete. Normal content is rendered.
+   *
+   * This property is mutable: the component sets it to `"loading"` when
+   * the infinite-scroll threshold is reached.
    */
   @Prop({ mutable: true }) loadingState: SmartGridDataState = "initial";
   // @Watch("loadingState")
@@ -189,20 +214,27 @@ export class ChSmartGrid
   @Prop() readonly threshold: string = "10px";
 
   /**
-   * This Handler will be called every time grid threshold is reached. Needed
-   * for infinite scrolling grids.
+   * Emitted every time the infinite-scroll threshold is reached.
+   * The host should respond by fetching the next page of data and updating
+   * `loadingState` back to `"loaded"` when done.
+   *
+   * Does not bubble (`bubbles: false`). Not cancelable. Payload is `void`.
+   * Before emitting, the component automatically sets `loadingState` to
+   * `"loading"`.
    */
   @Event({ bubbles: false }) infiniteThresholdReached: EventEmitter<void>;
 
   /**
-   * Given the cell ID, it position the item at the start or end of the
-   * scrollbar.
+   * Scrolls the grid so that the cell identified by `cellId` is aligned at
+   * the `"start"` or `"end"` of the viewport.
    *
-   * If `position === "start"` it will reserve the necessary space to visualize
-   * the item at the start of the `ch-smart-grid` viewport if the content is
-   * not large enough.
-   * This behavior is the same as the Monaco editor does for reserving space
-   * when visualizing the last lines positioned at the top of the editor.
+   * When `position === "start"`, the component reserves extra space after
+   * the last cell (similar to how the Monaco editor reserves space for the
+   * last lines) to keep the anchor cell visible at the top even when there
+   * is not enough content below it.
+   *
+   * The reserved space is automatically recalculated as cells are added or
+   * removed. Call `removeScrollEndContentReference()` to clear the anchor.
    */
   @Method()
   async scrollEndContentToPosition(

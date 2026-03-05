@@ -1,3 +1,11 @@
+/**
+ * Validates widget rendering via the `renders` property (JSX callbacks).
+ * Uses spec tests because Puppeteer cannot serialize JavaScript functions.
+ *
+ * For slot-based projection tests see `slots.e2e.ts`. For end-to-end slot
+ * attribute validation across all three shadow DOM levels, see
+ * `slot-attributes.e2e.ts`.
+ */
 import { h } from "@stencil/core";
 import { newSpecPage } from "@stencil/core/testing";
 import { ChFlexibleLayoutRender } from "../../flexible-layout-render";
@@ -409,10 +417,4 @@ describe("[ch-flexible-layout-render][renders]", () => {
       })
     );
   });
-
-  /**
-   * Note: For tests for slots, see `slots.e2e.ts`. Tests that require `renders`
-   * are in spec files because Puppeteer cannot serialize JavaScript functions
-   * when passing them between Node.js and the browser context.
-   */
 });

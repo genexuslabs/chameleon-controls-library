@@ -1,3 +1,10 @@
+/**
+ * Validates that `ch-flexible-layout-render` creates `<slot>` elements in its
+ * shadow DOM (Level 1) when widgets use slot-based content projection.
+ *
+ * For end-to-end slot attribute validation across all three shadow DOM levels,
+ * see `slot-attributes.e2e.ts`.
+ */
 import {
   E2EElement,
   E2EPage,
@@ -308,11 +315,4 @@ describe("[ch-flexible-layout-render][slots]", () => {
       slotted: [WIDGET1_ID, WIDGET2_ID]
     });
   });
-
-  /**
-   * Note: For tests for the `renders` property, see `renders.spec.tsx`.
-   * Tests that require `renders` are in spec files because Puppeteer cannot
-   * serialize JavaScript functions when passing them between Node.js and the
-   * browser context.
-   */
 });

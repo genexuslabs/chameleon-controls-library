@@ -28,29 +28,34 @@ The `ch-radio-group-render` component renders a group of mutually exclusive radi
  - The setting takes immediate effect — prefer `ch-switch`.
  - A single radio button is used in isolation — radio inputs must always work as a group and cannot be unchecked once selected.
 
+## Slots
+ - No slots. All content is rendered from the `model` property.
+
 ## Accessibility
  - Form-associated via `ElementInternals` — participates in native form validation and submission.
  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+ - Uses native `<input type="radio">` elements grouped by a shared `name` attribute, so the browser provides built-in keyboard navigation: Arrow keys move between options and select them, Space selects the focused option, and Tab moves focus in and out of the group.
  - The host element has `role="radiogroup"`.
  - Each option uses a native `<input type="radio">` with a linked `<label>`.
- - When no caption is provided, the radio input receives an `aria-label`.
- - The decorative option overlay is hidden from assistive technology with `aria-hidden`.
+ - When no caption is provided, the radio input receives an `aria-label` from the item's `accessibleName`.
+ - Each item's decorative option overlay is hidden from assistive technology with `aria-hidden`.
+ - No group-level accessible name property exists on this component; wrap it in a `<fieldset>` / `<legend>` to provide a group label for screen readers.
 
 ## Properties
 
-| Property    | Attribute   | Description                                                                                                                                                  | Type                         | Default        |
-| ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- | -------------- |
-| `direction` | `direction` | Specifies the direction of the items.                                                                                                                        | `"horizontal" \| "vertical"` | `"horizontal"` |
-| `disabled`  | `disabled`  | This attribute lets you specify if the radio-group is disabled. If disabled, it will not fire any user interaction related event (for example, click event). | `boolean`                    | `false`        |
-| `model`     | --          | This property lets you define the items of the ch-radio-group-render control.                                                                                | `RadioGroupItemModel[]`      | `undefined`    |
-| `value`     | `value`     | The value of the control.                                                                                                                                    | `string`                     | `undefined`    |
+| Property    | Attribute   | Description                                                                                                                                                                                                                                                                           | Type                         | Default        |
+| ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | -------------- |
+| `direction` | `direction` | Specifies the layout direction of the items. `"horizontal"` renders items in a row using `display: flex; flex-wrap: wrap`. `"vertical"` renders items in a column using `display: inline-grid`.                                                                                       | `"horizontal" \| "vertical"` | `"horizontal"` |
+| `disabled`  | `disabled`  | This attribute lets you specify if the radio-group is disabled. If disabled, it will not fire any user interaction related event (for example, click event). This is combined with each item's individual `disabled` flag from the model — if either is `true`, the item is disabled. | `boolean`                    | `false`        |
+| `model`     | --          | Defines the items rendered by the radio group.                                                                                                                                                                                                                                        | `RadioGroupItemModel[]`      | `undefined`    |
+| `value`     | `value`     | The value of the control. This property is mutated internally when the user selects an option. A `@Watch` handler syncs the new value to `ElementInternals.setFormValue()` so the form always reflects the current selection.                                                         | `string`                     | `undefined`    |
 
 
 ## Events
 
-| Event    | Description                                                                                    | Type                  |
-| -------- | ---------------------------------------------------------------------------------------------- | --------------------- |
-| `change` | Fired when the selected item change. It contains the information about the new selected value. | `CustomEvent<string>` |
+| Event    | Description                                                                                                                                                                                                                                                                          | Type                  |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
+| `change` | Fired when the selected item change. It contains the information about the new selected value. Note: despite the name, this event is wired to the native DOM `input` event (not the DOM `change` event). The native event is stopped from propagating via `event.stopPropagation()`. | `CustomEvent<string>` |
 
 
 ## Shadow Parts

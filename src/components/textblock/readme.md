@@ -25,26 +25,29 @@ The `ch-textblock` component displays text or HTML content with multi-line ellip
  - Static text that never overflows — a plain HTML element is more appropriate.
 
 ## Accessibility
- - Supports configurable semantic role via `accessibleRole`: `"paragraph"`, `"heading"` (with `aria-level`), or `"none"`.
+ - Supports configurable semantic role via `accessibleRole`: `"p"` maps to `role="paragraph"`, and `"h1"`–`"h6"` map to `role="heading"` with the corresponding `aria-level`.
  - When content overflows and `showTooltipOnOverflow` is `true`, a `title` attribute provides the full text to assistive technology.
+
+## Slots
+ - **default**: Slot for HTML content. Rendered when `format` is set to `"HTML"`. When using this slot, the `caption` property is ignored.
 
 ## Properties
 
 | Property                       | Attribute                          | Description                                                                                                                                                                                                                                                                                                                     | Type                                                  | Default     |
 | ------------------------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ----------- |
-| `accessibleRole`               | `accessible-role`                  | Specifies the accessible role of the component, which improves the semantic that the component models.                                                                                                                                                                                                                          | `"h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6" \| "p"` | `"p"`       |
+| `accessibleRole`               | `accessible-role`                  | Specifies the accessible role of the component, which improves the semantic that the component models.  - `"p"` maps to `role="paragraph"`. - `"h1"` through `"h6"` map to `role="heading"` with the corresponding   `aria-level` (1–6).                                                                                        | `"h1" \| "h2" \| "h3" \| "h4" \| "h5" \| "h6" \| "p"` | `"p"`       |
 | `autoGrow`                     | `auto-grow`                        | This property defines if the control size will grow automatically, to adjust to its content size.  If `false` the overflowing content will be displayed with an ellipsis. This ellipsis takes into account multiple lines.                                                                                                      | `boolean`                                             | `false`     |
-| `caption`                      | `caption`                          | Specifies the content to be displayed when the control has `format = text`.                                                                                                                                                                                                                                                     | `string`                                              | `undefined` |
-| `characterToMeasureLineHeight` | `character-to-measure-line-height` | Specifies the character used to measure the line height                                                                                                                                                                                                                                                                         | `string`                                              | `"A"`       |
+| `caption`                      | `caption`                          | Specifies the content to be displayed when the control has `format = text`.  When `format = "HTML"`, this property is ignored and the default slot is used instead.                                                                                                                                                             | `string`                                              | `undefined` |
+| `characterToMeasureLineHeight` | `character-to-measure-line-height` | Specifies the character used to measure the line height.  This is configurable because different fonts may produce different rendered line heights. The component uses this character to calculate the actual rendered line height, which drives the overflow detection and line-clamping logic.                                | `string`                                              | `"A"`       |
 | `format`                       | `format`                           | It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `text`, the control works as a normal textblock control    and it is affected by most of the defined properties. | `"HTML" \| "text"`                                    | `"text"`    |
 | `showTooltipOnOverflow`        | `show-tooltip-on-overflow`         | `true` to display a tooltip when the caption overflows the size of the container.  Only works if `format = text` and `autoGrow = false`.                                                                                                                                                                                        | `boolean`                                             | `false`     |
 
 
 ## Events
 
-| Event                      | Description                                                                                                           | Type                   |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `overflowingContentChange` | Fired when the displayed lines overflows the control's content. If `true`, the current content overflows the control. | `CustomEvent<boolean>` |
+| Event                      | Description                                                                                                                                                                                                                              | Type                   |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `overflowingContentChange` | Fired when the overflow state of the control changes (i.e., when content starts or stops overflowing the container). The emitted boolean indicates the current overflow state: `true` if content currently overflows, `false` otherwise. | `CustomEvent<boolean>` |
 
 
 ## Slots

@@ -561,7 +561,7 @@ export class ChFlexibleLayout {
     leaf: FlexibleLayoutLeafInfo<T>
   ) =>
     leaf.type === "single-content" ? (
-      <slot key={leaf.widget.id} slot={leaf.id} name={leaf.widget.id} />
+      <slot key={leaf.id} slot={leaf.id} name={leaf.widget.id} />
     ) : (
       this.#renderTab(leaf)
     );

@@ -5,18 +5,18 @@ import {
 } from "../../flexible-layout/internal/flexible-layout/types";
 
 import {
-  eagerLargeModel,
-  importObjectsModel,
-  lazyLoadItemsDictionary,
-  kbExplorerModel,
-  preferencesModel
-} from "../../../showcase/assets/components/tree-view/models";
-import { TreeViewItemModel } from "../../tree-view/types";
-import {
   ChTreeViewRenderCustomEvent,
   ThemeModel,
   TreeViewItemOpenReferenceInfo
 } from "../../../components";
+import {
+  eagerLargeModel,
+  importObjectsModel,
+  kbExplorerModel,
+  lazyLoadItemsDictionary,
+  preferencesModel
+} from "../../../showcase/assets/components/tree-view/models";
+import { TreeViewItemModel } from "../../tree-view/types";
 
 const UNANIMO_THEME: ThemeModel = [
   {
@@ -54,6 +54,13 @@ const OUTPUT = "output";
 const IMPORT_OBJECTS = "import-objects";
 const PANEL1 = "panel-1";
 const PANEL2 = "panel-2";
+
+// German layout constants
+const SIDEBAR_LEAF_ID = "sidebar";
+const CENTER_LEAF_ID = "center";
+export const INFO_PANEL_1 = "info-panel-1";
+export const INFO_PANEL_2 = "info-panel-2";
+export const PERSON_MANAGER_WIDGET = "person-manager-content";
 
 // Common renders
 const PANEL = "Panel";
@@ -462,6 +469,32 @@ export const layout3: FlexibleLayoutModel = {
   ]
 };
 
+export const germanLayout: FlexibleLayoutModel = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: SIDEBAR_LEAF_ID,
+      size: "280px",
+      type: "tabbed",
+      selectedWidgetId: INFO_PANEL_1,
+      tabListPosition: "block-start",
+      widgets: [
+        { id: INFO_PANEL_1, name: "Overview" },
+        { id: INFO_PANEL_2, name: "Details" }
+      ]
+    },
+    {
+      id: CENTER_LEAF_ID,
+      size: "1fr",
+      type: "single-content",
+      widget: { id: PERSON_MANAGER_WIDGET },
+      slot: true,
+      overflow: "auto"
+    }
+  ]
+};
+
 const lazyLoadTreeItems = (modelId: string): Promise<TreeViewItemModel[]> =>
   new Promise(resolve => {
     const lazyModelResultFromDictionary = lazyLoadItemsDictionary[
@@ -726,6 +759,21 @@ export const layoutRenders = (
   [PANEL]: widget => (
     <div slot={widget.id} key={widget.id}>
       This is the render for the <strong>{widget.id}</strong> widget
+    </div>
+  ),
+  [INFO_PANEL_1]: () => (
+    <div slot={INFO_PANEL_1} key={INFO_PANEL_1}>
+      Overview panel content
+    </div>
+  ),
+  [INFO_PANEL_2]: () => (
+    <div slot={INFO_PANEL_2} key={INFO_PANEL_2}>
+      Details panel content
+    </div>
+  ),
+  [PERSON_MANAGER_WIDGET]: () => (
+    <div slot={PERSON_MANAGER_WIDGET} key={PERSON_MANAGER_WIDGET}>
+      Person manager content
     </div>
   )
 });

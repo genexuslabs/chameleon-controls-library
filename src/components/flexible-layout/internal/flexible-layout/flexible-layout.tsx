@@ -14,12 +14,12 @@ import {
 import {
   DraggableView,
   DraggableViewExtendedInfo,
-  FlexibleLayoutModel,
-  FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
-  FlexibleLayoutLeafModel,
+  FlexibleLayoutItemModel,
   FlexibleLayoutLeafInfo,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutLeafType,
+  FlexibleLayoutModel,
   FlexibleLayoutViewRemoveResult,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
@@ -29,30 +29,30 @@ import {
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import { TabItemCloseInfo, TabSelectedItemInfo } from "../../../tab/types";
-import { ChTabRenderCustomEvent } from "../../../../components";
-import {
-  getWidgetDropInfo,
-  handleWidgetDrag,
-  removeDroppableAreaStyles
-} from "./utils";
-import { getLeafInfo } from "../../utils";
-import { isRTL, tokenMap } from "../../../../common/utils";
-import {
-  CssContainProperty,
-  CssOverflowProperty
-} from "../../../../common/types";
-import {
-  DEFAULT_TAB_LIST_POSITION,
-  isBlockDirection,
-  isStartDirection
-} from "../../../tab/utils";
 import {
   FLEXIBLE_LAYOUT_PARTS_DICTIONARY,
   LAYOUT_SPLITTER_PARTS_DICTIONARY,
   TAB_EXPORT_PARTS,
   TAB_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
+import {
+  CssContainProperty,
+  CssOverflowProperty
+} from "../../../../common/types";
+import { isRTL, tokenMap } from "../../../../common/utils";
+import { ChTabRenderCustomEvent } from "../../../../components";
+import { TabItemCloseInfo, TabSelectedItemInfo } from "../../../tab/types";
+import {
+  DEFAULT_TAB_LIST_POSITION,
+  isBlockDirection,
+  isStartDirection
+} from "../../../tab/utils";
+import { getLeafInfo } from "../../utils";
+import {
+  getWidgetDropInfo,
+  handleWidgetDrag,
+  removeDroppableAreaStyles
+} from "./utils";
 
 const LEAF_SELECTOR = (id: string) => `[id="${id}"]`;
 
@@ -561,7 +561,7 @@ export class ChFlexibleLayout {
     leaf: FlexibleLayoutLeafInfo<T>
   ) =>
     leaf.type === "single-content" ? (
-      <slot key={leaf.id} slot={leaf.id} name={leaf.id} />
+      <slot key={leaf.id} slot={leaf.id} name={leaf.widget.id} />
     ) : (
       this.#renderTab(leaf)
     );

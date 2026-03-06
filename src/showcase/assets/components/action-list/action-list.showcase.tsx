@@ -1,6 +1,7 @@
 import { h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import {
+  CustomActions,
   GitHubChangesModel,
   GitHubHistoryModel,
   GxEAINotifications,
@@ -48,7 +49,8 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionListRenderE
             { caption: "GX EAI recent chats", value: GxEAIRecentChats },
             { caption: "GX EAI notifications", value: GxEAINotifications },
             { caption: "Keyboard Navigation", value: keyboardNavigation },
-            { caption: "Ticket List", value: ticketList }
+            { caption: "Ticket List", value: ticketList },
+            { caption: "Custom actions", value: CustomActions }
           ],
           value: GitHubChangesModel
         }

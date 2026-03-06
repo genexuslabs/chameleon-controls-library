@@ -9,7 +9,7 @@ import {
 
 // Tags
 export const ACTION_LIST_ITEM_TAG = "ch-action-list-item";
-export const ACTION_LIST_GROUP_TAG = "ch-action-list-group";
+export const ACTION_LIST_GROUP_TAG = "ch-action-list-item"; // TODO: Deprecate "ch-action-list-group"
 
 // Selectors
 export const ACTION_LIST_ITEM_SELECTOR = (id: string) =>

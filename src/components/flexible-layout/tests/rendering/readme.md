@@ -1,40 +1,120 @@
-# Slots vs Renders: Test Combinations
+# Widget Rendering & Content Projection Tests
 
-The `ch-flexible-layout-render` component renders widgets either via **slots** (projected outside) or **renders** (internal functions). The decision is made by:
+Tests validating how `ch-flexible-layout-render` renders widget content via **slots** (user-provided projection) or **renders** (function-based rendering).
+
+**Note:** Some tests use `.spec.tsx` (instead of `.e2e.ts`) because the `renders` prop requires JavaScript functions, which Puppeteer cannot serialize.
+
+## How Rendering Works
 
 ```typescript
 #widgetIsSlotted = (widgetInfo: FlexibleLayoutWidget) =>
   widgetInfo.slot ?? this.slottedWidgets;
 ```
 
-- If `widget.slot` is defined → uses that value
-- If `widget.slot` is `undefined` → uses `slottedWidgets` (defaults to `false`)
+- `widget.slot` defined → uses that value
+- `widget.slot` undefined → uses `slottedWidgets` (defaults to `false`)
 
-The tables below help understand and validate the necessary tests by combining the different options (`slottedWidgets` and `widget.slot`).
+## Configuration Combinations
 
-## `type="single-content"`
+### `type="single-content"`
 
-| `slottedWidgets` | `widget.slot` | Result | Test Location |
-|------------------|---------------|--------|----------------|
-| `false` (default) | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
-| `false` (default) | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) |
-| `false` (default) | `undefined` | renders | [`renders.spec.tsx`](renders.spec.tsx) |
-| `true` | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
-| `true` | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) |
-| `true` | `undefined` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
+| `slottedWidgets` | `widget.slot` | Result | Test Files |
+|------------------|---------------|--------|------------|
+| `false` (default) | `true` | slot | slots, content-projection |
+| `false` (default) | `false` | renders | renders, content-projection |
+| `false` (default) | `undefined` | renders | renders, content-projection |
+| `true` | `true` | slot | slots, content-projection |
+| `true` | `false` | renders | renders, content-projection |
+| `true` | `undefined` | slot | slots, content-projection |
 
-## `type="tabbed"`
+### `type="tabbed"`
 
-**Note:** Same decision logic as single-content items. Only representative cases tested to verify tabbed-specific behavior (multiple widgets, only selected rendered initially, tab switching).
+Same logic. Representative cases only (multiple widgets, selected tab rendered, tab switching).
 
-| `slottedWidgets` | `widget.slot` | Result | Test Location |
-|------------------|---------------|--------|----------------|
-| `false` (default) | `true` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
-| `false` (default) | `false` | renders | [`renders.spec.tsx`](renders.spec.tsx) |
-| `true` | `undefined` | slot | [`slots.e2e.ts`](slots.e2e.ts) |
+| `slottedWidgets` | `widget.slot` | Result | Test Files |
+|------------------|---------------|--------|------------|
+| `false` (default) | `true` | slot | slots, content-projection |
+| `false` (default) | `false` | renders | renders, content-projection |
+| `true` | `undefined` | slot | slots, content-projection |
 
-**Test files:**
-- `slots.e2e.ts` - E2E tests for slot scenarios
-- `renders.spec.tsx` - Spec tests for render function scenarios (requires `renders` prop)
+---
 
-**Note:** The `renders` prop expects JavaScript functions. Puppeteer cannot serialize functions between Node.js and the browser context, so tests requiring `renders` use `.spec.tsx` files (run in the same process, functions can be passed directly). Slot tests use `.e2e.ts` since they don't need functions.
+## Content Projection
+
+Validates content reaches final destination through all shadow DOM levels.
+
+### [`content-projection.e2e.ts`](content-projection.e2e.ts)
+
+**Slotted content projection (E2E)**
+
+- Uses `assignedNodes({ flatten: true })` and `assignedSlot` to verify actual DOM projection
+- Tests single-content and tabbed leaves
+- Covers `widget.id === leaf.id` cases
+
+**Cases:**
+- Single-content: content projects through shadow boundaries
+- Tabbed: selected tab projects, non-selected tabs NOT assigned
+
+### [`content-projection.spec.tsx`](content-projection.spec.tsx)
+
+**Renders-based content projection (Spec)**
+
+- Validates `renders` functions produce content that reaches destination
+- Tests single-content and tabbed leaves
+- Covers `widget.id === leaf.id` cases
+
+**Cases:**
+- Single-content: rendered content with correct slot attributes
+- Tabbed: selected tab rendered, non-selected tabs NOT rendered, `ch-tab-render` present
+
+---
+
+## Renders
+
+Validates `renders` property behavior and function execution.
+
+### [`renders.spec.tsx`](renders.spec.tsx)
+
+**Render function execution and element creation (Spec)**
+
+- Tests all `slottedWidgets` and `widget.slot={false}` / `undefined` combinations
+- Validates functions execute and DOM elements created
+- Tests mixing slots and renders
+- Tests lifecycle: only selected tab rendered initially
+- Tests `renderedWidgetsChange` event
+- Covers `widget.id === leaf.id` cases
+
+**Validations:**
+- Functions execute when `widget.slot={false}` or renders override `slottedWidgets`
+- Content appears with correct slot attributes
+- Lazy rendering for tabbed leaves
+- Events fire correctly
+
+---
+
+## Slots
+
+Validates slot element creation and attributes.
+
+### [`slots.e2e.ts`](slots.e2e.ts)
+
+**Slot element creation at Level 1 (E2E)**
+
+- Tests all `slottedWidgets` and `widget.slot={true}` / `undefined` combinations
+- Validates slot elements exist with correct `name` attributes
+- Tests single-content and tabbed leaves
+- Tests `renderedWidgetsChange` event
+
+**Validations:**
+- Slots created when `widget.slot={true}` or `slottedWidgets={true}`
+- Slot `name` matches widget ID
+- Tabbed leaves: one slot per widget, all created upfront
+- Events fire correctly
+
+---
+
+## Related Tests
+
+- [`../slot-attributes.e2e.ts`](../slot-attributes.e2e.ts) - Slot attribute propagation across all shadow DOM levels
+- [`../model-switching.e2e.ts`](../model-switching.e2e.ts) - Content projection persists when switching models (slots)
+- [`../model-switching.spec.tsx`](../model-switching.spec.tsx) - Content projection persists when switching models (renders)

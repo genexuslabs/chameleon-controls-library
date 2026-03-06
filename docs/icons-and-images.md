@@ -407,7 +407,7 @@ interface GxImageMultiState {
 }
 ```
 
-The component tracks the parent element's state via a `data-ch-image` attribute and swaps images through CSS custom properties (`--ch-start-img--base`, `--ch-start-img--hover`, etc.).
+The component tracks the parent element's state via a `data-ch-image` attribute and swaps images through CSS custom properties.
 
 ### Example
 

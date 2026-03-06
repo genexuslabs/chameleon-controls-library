@@ -4,10 +4,23 @@
  *
  * These tests focus on whether content actually reaches its final destination
  * (via `assignedNodes({ flatten: true })`), not on intermediate slot attribute
- * values — see `slot-attributes.e2e.ts` for that.
+ * values -- see `../slot-attributes.e2e.ts` for that.
+ * For model switching tests see `../model-switching.e2e.ts`.
+ *
+ * Covered cases:
+ *
+ *  1. single-content leaf, widget.id != leaf.id    (skip-flag controlled)
+ *  2. single-content leaf, widget.id === leaf.id
+ *
+ *  3. tabbed leaf, all widget.id != leaf.id
+ *     - selected tab projected   - non-selected tab NOT assigned
+ *  4. tabbed leaf, selected widget.id === leaf.id
+ *     - selected tab projected   - non-selected tab NOT assigned
+ *  5. tabbed leaf, NON-selected widget.id === leaf.id
+ *     - selected tab projected   - non-selected tab NOT assigned
  */
 import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { FlexibleLayoutModel } from "../internal/flexible-layout/types";
+import { FlexibleLayoutModel } from "../../internal/flexible-layout/types";
 
 const LEAF_ID = "leaf-1";
 const TABBED_LEAF_ID = "leaf-2";
@@ -76,6 +89,23 @@ const TABBED_SAME_ID_MODEL: FlexibleLayoutModel = {
       widgets: [
         { id: SHARED_TAB_LEAF_ID, name: "Tab Same", slot: true },
         { id: TAB_WIDGET_B_ID, name: "Tab B", slot: true }
+      ]
+    }
+  ]
+};
+
+const TABBED_NON_SELECTED_SAME_ID_MODEL: FlexibleLayoutModel = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: SHARED_TAB_LEAF_ID,
+      size: "1fr",
+      type: "tabbed",
+      selectedWidgetId: TAB_WIDGET_A_ID,
+      widgets: [
+        { id: TAB_WIDGET_A_ID, name: "Tab A", slot: true },
+        { id: SHARED_TAB_LEAF_ID, name: "Tab Same", slot: true }
       ]
     }
   ]
@@ -244,53 +274,26 @@ describe("[ch-flexible-layout-render][content-projection]", () => {
     });
   });
 
-  describe("model updates", () => {
-    (SKIP_SINGLE_CONTENT_DIFFERENT_ID ? it.skip : it)(
-      "should keep projecting content after switching from one model to another",
-      async () => {
-        flexibleLayoutRef.setProperty(
-          "model",
-          SINGLE_CONTENT_DIFFERENT_ID_MODEL
-        );
-        await page.waitForChanges();
+  describe("tabbed leaf (non-selected widget.id === leaf.id)", () => {
+    beforeEach(async () => {
+      flexibleLayoutRef.setProperty("model", TABBED_NON_SELECTED_SAME_ID_MODEL);
+      await page.waitForChanges();
+    });
 
-        expect(await getProjectedTextAtLeaf(page, LEAF_ID)).toBe(
-          "Widget content"
-        );
+    it("should project selected tab content through all shadow DOM levels into the tab panel", async () => {
+      expect(
+        await getProjectedTextInTabPanel(
+          page,
+          SHARED_TAB_LEAF_ID,
+          TAB_WIDGET_A_ID
+        )
+      ).toBe("Tab A content");
+    });
 
-        flexibleLayoutRef.setProperty("model", SINGLE_CONTENT_SAME_ID_MODEL);
-        await page.waitForChanges();
-
-        expect(await getProjectedTextAtLeaf(page, SHARED_LEAF_ID)).toBe(
-          "Shared id content"
-        );
-      }
-    );
-
-    (SKIP_SINGLE_CONTENT_DIFFERENT_ID ? it.skip : it)(
-      "should keep projecting content after switching from single-content to tabbed",
-      async () => {
-        flexibleLayoutRef.setProperty(
-          "model",
-          SINGLE_CONTENT_DIFFERENT_ID_MODEL
-        );
-        await page.waitForChanges();
-
-        expect(await getProjectedTextAtLeaf(page, LEAF_ID)).toBe(
-          "Widget content"
-        );
-
-        flexibleLayoutRef.setProperty("model", TABBED_MODEL);
-        await page.waitForChanges();
-
-        expect(
-          await getProjectedTextInTabPanel(
-            page,
-            TABBED_LEAF_ID,
-            TAB_WIDGET_A_ID
-          )
-        ).toBe("Tab A content");
-      }
-    );
+    it("should not assign non-selected tab content to any slot", async () => {
+      expect(await isContentAssignedToSlot(page, SHARED_TAB_LEAF_ID)).toBe(
+        false
+      );
+    });
   });
 });

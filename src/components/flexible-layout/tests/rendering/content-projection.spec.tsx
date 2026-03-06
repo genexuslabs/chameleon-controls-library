@@ -4,17 +4,31 @@
  *
  * Uses spec tests because Puppeteer cannot serialize JavaScript functions.
  * For slot-based content projection tests see `content-projection.e2e.ts`.
+ * For model switching tests see `../model-switching.spec.tsx`.
+ *
+ * Covered cases:
+ *
+ *  1. single-content leaf, widget.id != leaf.id
+ *  2. single-content leaf, widget.id === leaf.id
+ *
+ *  3. tabbed leaf, all widget.id != leaf.id
+ *     - selected tab rendered   - non-selected tab NOT rendered
+ *     - ch-tab-render present
+ *  4. tabbed leaf, selected widget.id === leaf.id
+ *     - selected tab rendered   - non-selected tab NOT rendered
+ *  5. tabbed leaf, NON-selected widget.id === leaf.id
+ *     - selected tab rendered   - non-selected tab NOT rendered
  */
 import { h } from "@stencil/core";
 import { newSpecPage } from "@stencil/core/testing";
-import { ChLayoutSplitter } from "../../layout-splitter/layout-splitter";
-import { ChTabRender } from "../../tab/tab";
-import { ChFlexibleLayoutRender } from "../flexible-layout-render";
-import { ChFlexibleLayout } from "../internal/flexible-layout/flexible-layout";
+import { ChLayoutSplitter } from "../../../layout-splitter/layout-splitter";
+import { ChTabRender } from "../../../tab/tab";
+import { ChFlexibleLayoutRender } from "../../flexible-layout-render";
+import { ChFlexibleLayout } from "../../internal/flexible-layout/flexible-layout";
 import {
   FlexibleLayoutModel,
   FlexibleLayoutRenders
-} from "../internal/flexible-layout/types";
+} from "../../internal/flexible-layout/types";
 
 const LEAF_ID = "leaf-1";
 const TABBED_LEAF_ID = "leaf-2";
@@ -26,7 +40,7 @@ const TAB_WIDGET_B_ID = "widget-b";
 const SHARED_LEAF_ID = "shared-id";
 const SHARED_TAB_LEAF_ID = "shared-tab-id";
 
-const SKIP_SINGLE_CONTENT_DIFFERENT_ID = true;
+const SKIP_SINGLE_CONTENT_DIFFERENT_ID = false;
 
 const testRenders: FlexibleLayoutRenders = {
   [WIDGET_ID]: () => (
@@ -115,6 +129,27 @@ const TABBED_SAME_ID_MODEL: FlexibleLayoutModel = {
           renderId: SHARED_TAB_LEAF_ID
         },
         { id: TAB_WIDGET_B_ID, name: "Tab B", renderId: TAB_WIDGET_B_ID }
+      ]
+    }
+  ]
+};
+
+const TABBED_NON_SELECTED_SAME_ID_MODEL: FlexibleLayoutModel = {
+  id: "root",
+  direction: "columns",
+  items: [
+    {
+      id: SHARED_TAB_LEAF_ID,
+      size: "1fr",
+      type: "tabbed",
+      selectedWidgetId: TAB_WIDGET_A_ID,
+      widgets: [
+        { id: TAB_WIDGET_A_ID, name: "Tab A", renderId: TAB_WIDGET_A_ID },
+        {
+          id: SHARED_TAB_LEAF_ID,
+          name: "Tab Same",
+          renderId: SHARED_TAB_LEAF_ID
+        }
       ]
     }
   ]
@@ -248,6 +283,11 @@ describe("[ch-flexible-layout-render][content-projection][renders]", () => {
       const tabRender = getTabRender(flexLayout, TABBED_LEAF_ID);
       expect(tabRender).not.toBeNull();
     });
+
+    it("should not render non-selected tab content", () => {
+      const flexLayout = getFlexibleLayout(chFlexibleLayoutRender);
+      expect(getRenderedContentText(flexLayout, TAB_WIDGET_B_ID)).toBeNull();
+    });
   });
 
   describe("tabbed leaf (selected widget.id === leaf.id)", () => {
@@ -268,47 +308,35 @@ describe("[ch-flexible-layout-render][content-projection][renders]", () => {
       const splitter = getLayoutSplitter(flexLayout);
       expect(getSplitterLeafSlot(splitter, SHARED_TAB_LEAF_ID)).not.toBeNull();
     });
+
+    it("should not render non-selected tab content", () => {
+      const flexLayout = getFlexibleLayout(chFlexibleLayoutRender);
+      expect(getRenderedContentText(flexLayout, TAB_WIDGET_B_ID)).toBeNull();
+    });
   });
 
-  describe("model updates", () => {
-    (SKIP_SINGLE_CONTENT_DIFFERENT_ID ? it.skip : it)(
-      "should keep rendering content after switching from one model to another",
-      async () => {
-        chFlexibleLayoutRender.model = SINGLE_CONTENT_DIFFERENT_ID_MODEL;
-        await page.waitForChanges();
+  describe("tabbed leaf (non-selected widget.id === leaf.id)", () => {
+    beforeEach(async () => {
+      chFlexibleLayoutRender.model = TABBED_NON_SELECTED_SAME_ID_MODEL;
+      await page.waitForChanges();
+    });
 
-        const flexLayout = getFlexibleLayout(chFlexibleLayoutRender);
-        expect(getRenderedContentText(flexLayout, WIDGET_ID)).toBe(
-          "Widget content"
-        );
+    it("should render selected tab content with correct slot attribute", () => {
+      const flexLayout = getFlexibleLayout(chFlexibleLayoutRender);
+      expect(getRenderedContentText(flexLayout, TAB_WIDGET_A_ID)).toBe(
+        "Tab A content"
+      );
+    });
 
-        chFlexibleLayoutRender.model = SINGLE_CONTENT_SAME_ID_MODEL;
-        await page.waitForChanges();
+    it("should have a matching slot in ch-layout-splitter for the tabbed leaf", () => {
+      const flexLayout = getFlexibleLayout(chFlexibleLayoutRender);
+      const splitter = getLayoutSplitter(flexLayout);
+      expect(getSplitterLeafSlot(splitter, SHARED_TAB_LEAF_ID)).not.toBeNull();
+    });
 
-        expect(getRenderedContentText(flexLayout, SHARED_LEAF_ID)).toBe(
-          "Shared id content"
-        );
-      }
-    );
-
-    (SKIP_SINGLE_CONTENT_DIFFERENT_ID ? it.skip : it)(
-      "should keep rendering content after switching from single-content to tabbed",
-      async () => {
-        chFlexibleLayoutRender.model = SINGLE_CONTENT_DIFFERENT_ID_MODEL;
-        await page.waitForChanges();
-
-        const flexLayout = getFlexibleLayout(chFlexibleLayoutRender);
-        expect(getRenderedContentText(flexLayout, WIDGET_ID)).toBe(
-          "Widget content"
-        );
-
-        chFlexibleLayoutRender.model = TABBED_MODEL;
-        await page.waitForChanges();
-
-        expect(getRenderedContentText(flexLayout, TAB_WIDGET_A_ID)).toBe(
-          "Tab A content"
-        );
-      }
-    );
+    it("should not render non-selected tab content (widget.id === leaf.id)", () => {
+      const flexLayout = getFlexibleLayout(chFlexibleLayoutRender);
+      expect(getRenderedContentText(flexLayout, SHARED_TAB_LEAF_ID)).toBeNull();
+    });
   });
 });

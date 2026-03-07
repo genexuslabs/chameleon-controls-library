@@ -112,7 +112,7 @@ export function svgDashedRect(x, y, width, height, { stroke, label } = {}) {
 
   if (label) {
     // Small label at the top-left corner of the dashed rect
-    const labelWidth = label.length * 5.5 + 8;
+    const labelWidth = label.length * 5 + 6;
     svg += svgRect(x + 4, y - 6, labelWidth, 12, {
       fill: "#ffffff",
       rx: 2

@@ -254,6 +254,7 @@ function position(node, measurement, x, y) {
   let inCondScope = false;
   result.condScopes = [];
   let currentScope = null;
+  let lastContentBottomY = cy;
 
   for (let i = 0; i < visibleMeasurements.length; i++) {
     const childMeasure = visibleMeasurements[i];
@@ -267,7 +268,14 @@ function position(node, measurement, x, y) {
       if (isCommentNode(childNode)) {
         // Close previous scope if it exists
         if (currentScope) {
-          currentScope.endY = cy - SIZES.commentGap;
+          // For else/else-when continuations, extend scope line to the badge.
+          // For independent conditions (new when/for-each), end at last content.
+          const isContinuation =
+            childNode.type === "comment-else" ||
+            childNode.type === "comment-else-when";
+          currentScope.endY = isContinuation
+            ? cy - SIZES.commentGap
+            : lastContentBottomY;
           result.condScopes.push(currentScope);
         }
         // Place badge at base indent
@@ -288,8 +296,9 @@ function position(node, measurement, x, y) {
         const childPos = position(childNode, childMeasure, childCx, cy);
         result.children.push(childPos);
         // Extend scope to cover this child
+        lastContentBottomY = cy + childMeasure.height;
         if (currentScope) {
-          currentScope.endY = cy + childMeasure.height;
+          currentScope.endY = lastContentBottomY;
         }
       }
 
@@ -410,7 +419,7 @@ function renderNode(positioned) {
       label.primary,
       {
         fontSize: SIZES.partFontSize,
-        fill: colors.text
+        fill: "#888"
       }
     );
     labelY += SIZES.partFontSize + 2;
@@ -650,11 +659,17 @@ function hasFloatingPill(node) {
   );
 }
 
+function isNewConditionGroup(node) {
+  return node.type === "comment-when" || node.type === "comment-for-each";
+}
+
 function gapAfterChild(currentMeasure, nextMeasure) {
   if (!nextMeasure) return 0;
   const pillMargin = hasFloatingPill(nextMeasure.node) ? SIZES.tagFloat : 0;
   // Comment followed by anything: tiny gap (badge sticks to next element)
   if (isCommentNode(currentMeasure.node)) return SIZES.commentGap + pillMargin;
+  // Content followed by a new independent condition group: extra separation
+  if (isNewConditionGroup(nextMeasure.node)) return SIZES.gap * 2 + pillMargin;
   return SIZES.gap + pillMargin;
 }
 

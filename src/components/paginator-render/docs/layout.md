@@ -11,7 +11,7 @@ Controls rendered depend on the `controlsOrder` property. Each control is option
   | <!-- items-per-page control -->
   | <form part="items-per-page">
   |   <label part="items-per-page__label">Items per page</label>
-  |   <ch-combo-box-render part="items-per-page__combo-box" exportparts="expandable,group,group__header,group__header-caption,group__content,item,section,window,disabled,expanded,collapsed,nested,selected">
+  |   <ch-combo-box-render part="items-per-page__combo-box">
   |     | #shadow-root
   |     | <span class="invisible-text"></span>
   |     | <div role="combobox">

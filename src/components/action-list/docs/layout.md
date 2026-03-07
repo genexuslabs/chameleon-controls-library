@@ -8,7 +8,7 @@
   |
   | <!-- for each item in model -->
   | <!-- Item -->
-  | <ch-action-list-item exportparts="item__action,item__additional-item,item__additional-item-confirm,item__caption,item__checkbox,item__checkbox-container,item__checkbox-input,item__checkbox-option,item__edit-caption,action,image,text,action--fix,action--modify,action--remove,action--custom,action--accept,action--cancel,fixed,not-fixed,disabled,nested,nested-expandable,selectable,not-selectable,selected,not-selected,editing,not-editing,checked,unchecked,indeterminate">
+  | <ch-action-list-item>
   |   | #shadow-root
   |   | <button part="item__action [nested] [nested-expandable] [selectable | not-selectable] [selected | not-selected] [disabled]">
   |   |
@@ -65,7 +65,7 @@
   |
   | <!-- Group -->
   | <!-- for each group in model -->
-  | <ch-action-list-group exportparts="group__action,group__caption,group__expandable,disabled,expanded,collapsed,lazy-loaded,selected,not-selected">
+  | <ch-action-list-group>
   |   | #shadow-root
   |   | <!-- when expandable -->
   |   | <button part="group__action [selected | not-selected] [disabled]">

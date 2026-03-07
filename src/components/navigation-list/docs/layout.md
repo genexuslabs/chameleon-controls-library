@@ -7,7 +7,7 @@
   | #shadow-root
   |
   | <!-- for each item in model -->
-  | <ch-navigation-list-item exportparts="item__action,item__button,item__caption,item__group,item__link,indicator,disabled,expanded,collapsed,expand-button,start,end,selected,not-selected,navigation-list-collapsed,tooltip,even-level,odd-level">
+  | <ch-navigation-list-item>
   |   | #shadow-root
   |   |
   |   | <!-- Link item -->
@@ -42,11 +42,11 @@
   | #shadow-root
   |
   | <!-- for each item in model -->
-  | <ch-navigation-list-item exportparts="item__action,item__button,item__caption,item__group,item__link,indicator,disabled,expanded,collapsed,expand-button,start,end,selected,not-selected,navigation-list-collapsed,tooltip,even-level,odd-level">
+  | <ch-navigation-list-item>
   |   | #shadow-root
   |   | <button part="item__action item__button [selected | not-selected] [disabled] [even-level | odd-level] navigation-list-collapsed">
   |   |   <!-- when showCaptionOnCollapse === "tooltip" -->
-  |   |   <ch-tooltip exportparts="item__caption,tooltip">
+  |   |   <ch-tooltip>
   |   |     | #shadow-root
   |   |     | <button part="item__caption">
   |   |     |   <slot name="action" />

@@ -73,7 +73,7 @@ Controls rendered depend on the `controlsOrder` property. Each control is option
   | <div part="color-format-selector">
   |   <div part="format-selector__header">
   |     <label part="format-selector__label">Format</label>
-  |     <ch-combo-box-render part="color-format__combo-box" exportparts="expandable,group,group__header,group__header-caption,group__content,item,section,window,disabled,expanded,collapsed,nested,selected">
+  |     <ch-combo-box-render part="color-format__combo-box">
   |       | #shadow-root
   |       | <span class="invisible-text"></span>
   |       | <div role="combobox">

@@ -11,7 +11,7 @@
   |   | <slot />
   |
   |   <!-- for each item in model -->
-  |   <ch-tree-view-item part="item [drag-enter]" exportparts="item__action,item__checkbox,item__checkbox-container,item__checkbox-input,item__checkbox-option,item__downloading,item__edit-caption,item__expandable-button,item__group,item__header,item__img,item__line,disabled,expanded,collapsed,expand-button,even-level,odd-level,last-line,lazy-loaded,start-img,end-img,editing,not-editing,level-0-leaf,selected,not-selected,checked,unchecked,indeterminate,drag-enter">
+  |   <ch-tree-view-item part="item [drag-enter]">
   |     | #shadow-root
   |     | <button part="item__header [disabled] [drag-enter] [selected | not-selected] [expand-button] [editing | not-editing] [level-0-leaf] [even-level | odd-level] [expanded | collapsed]">
   |     |
@@ -19,7 +19,7 @@
   |     |   <button part="item__expandable-button [disabled] [expanded | collapsed]"></button>
   |     |
   |     |   <!-- when checkbox -->
-  |     |   <ch-checkbox part="item__checkbox [checked | unchecked | indeterminate] [disabled]" exportparts="item__checkbox-container,item__checkbox-input,item__checkbox-option,disabled,checked,unchecked,indeterminate">
+  |     |   <ch-checkbox part="item__checkbox [checked | unchecked | indeterminate] [disabled]">
   |     |     | #shadow-root
   |     |     | <div part="item__checkbox-container">
   |     |     |   <input part="item__checkbox-input" type="checkbox" />

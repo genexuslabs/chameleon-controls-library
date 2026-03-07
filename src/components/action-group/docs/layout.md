@@ -7,7 +7,7 @@
   | #shadow-root
   |
   | <!-- when responsive collapse && collapsedItems > 0 -->
-  | <ch-action-menu-render exportparts="content,shortcut,action,button,link,window,separator,expandable,expanded,collapsed,disabled">
+  | <ch-action-menu-render>
   |   | #shadow-root
   |   | <button part="expandable-button [expanded | collapsed] [disabled]">
   |   |   <slot />
@@ -18,7 +18,7 @@
   |   |   | <slot />
   |   |
   |   |   <!-- for each collapsedItem in collapsedItems -->
-  |   |   <ch-action-menu role="listitem" exportparts="content,shortcut,action,button,link,window,separator,expandable,expanded,collapsed,disabled">
+  |   |   <ch-action-menu role="listitem">
   |   |     | #shadow-root
   |   |     | <!-- Button item (no link) -->
   |   |     | <button part="button [disabled] [expanded | collapsed] [{parts}]">
@@ -50,7 +50,7 @@
   |
   | <!-- for each item in model -->
   | <!-- Actionable item -->
-  | <ch-action-menu-render role="listitem" exportparts="content,shortcut,action,button,link,window,separator,expandable,expanded,collapsed,disabled">
+  | <ch-action-menu-render role="listitem">
   |   | #shadow-root
   |   | <button part="expandable-button [expanded | collapsed] [disabled]">
   |   |   <slot />
@@ -61,7 +61,7 @@
   |   |   | <slot />
   |   |
   |   |   <!-- for each item in model -->
-  |   |   <ch-action-menu role="listitem" exportparts="content,shortcut,action,button,link,window,separator,expandable,expanded,collapsed,disabled">
+  |   |   <ch-action-menu role="listitem">
   |   |     | #shadow-root
   |   |     | <!-- Button item (no link) -->
   |   |     | <button part="button [disabled] [expanded | collapsed] [{parts}]">

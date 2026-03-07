@@ -14,9 +14,9 @@
   | </section>
   |
   | <aside>
-  |   <ch-tabular-grid-settings exportparts="settings-mask,settings-window,settings-header,settings-caption,settings-close,settings-main,settings-footer">
+  |   <ch-tabular-grid-settings>
   |     | #shadow-root
-  |     | <ch-window exportparts="settings-mask,settings-window,settings-header,settings-caption,settings-close,settings-main,settings-footer">
+  |     | <ch-window>
   |     |   | #shadow-root
   |     |   | <div part="settings-mask"></div>
   |     |   | <div part="settings-window">
@@ -34,7 +34,7 @@
   |     | </ch-window>
   |
   |     <slot name="settings">
-  |       <ch-tabular-grid-settings-columns part="settings-columns" exportparts="settings-columns-item,settings-columns-label,settings-columns-visible,settings-columns-visible-checked">
+  |       <ch-tabular-grid-settings-columns part="settings-columns">
   |         | #shadow-root
   |         | <ul>
   |         |   <!-- for each column in columns -->

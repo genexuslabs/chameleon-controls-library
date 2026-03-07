@@ -13,7 +13,7 @@
   |   | <slot />
   |
   |   <!-- for each item in model -->
-  |   <ch-action-menu role="listitem" exportparts="content,shortcut,action,button,link,window,separator,expandable,expanded,collapsed,disabled">
+  |   <ch-action-menu role="listitem">
   |     | #shadow-root
   |     | <!-- Button item (no link) -->
   |     | <button part="button [disabled] [expanded | collapsed] [{parts}]">

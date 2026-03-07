@@ -10,7 +10,7 @@
   |
   | <ch-flexible-layout>
   |   | #shadow-root
-  |   | <ch-layout-splitter exportparts="bar,{item IDs}">
+  |   | <ch-layout-splitter>
   |   |   | #shadow-root
   |   |   | <div>
   |   |   |   <!-- for each item in layout.items -->
@@ -24,7 +24,7 @@
   |   |   <slot name="{widget.id}" slot="{leaf.id}" />
   |   |
   |   |   <!-- for each tabbed leaf in layout -->
-  |   |   <ch-tab-render slot="{leaf.id}" part="{leaf.id} leaf" exportparts="tab,tab-caption,close-button,tab-list,tab-list-start,tab-list-end,tab-panel,tab-panel-container,img,closable,not-closable,disabled,dragging,dragging-over-tab-list,dragging-out-of-tab-list,expanded,collapsed,selected,not-selected,block,inline,start,end">
+  |   |   <ch-tab-render slot="{leaf.id}" part="{leaf.id} leaf">
   |   |     | #shadow-root
   |   |     | <div part="tab-list">
   |   |     |   <!-- for each widget in leaf.widgets -->

@@ -17,6 +17,9 @@ export const SIZES = {
   gap: 6,
   commentGap: 1, // Minimal gap between a comment badge and the element it annotates
   condIndent: 12, // Horizontal indent for content inside a condition scope
+  tagPillHeight: 12, // Height of the floating tag pill
+  tagPillPadX: 4, // Horizontal padding inside the tag pill
+  tagFloat: 5, // How many px the tag pill extends above the box top edge
   labelGap: 4,
   minWidth: 50,
   minHeight: 24,

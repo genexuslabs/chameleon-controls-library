@@ -284,6 +284,27 @@ function renderNode(positioned) {
     rx: 4
   });
 
+  // Floating tag pill (sits on top border of the box)
+  if (label.tagText) {
+    const pillX = x + SIZES.padding;
+    const pillY = y - SIZES.tagFloat;
+    const pillW = label.tagWidth;
+    const pillH = SIZES.tagPillHeight;
+
+    // Background pill that "cuts" the border
+    svg += svgRect(pillX, pillY, pillW, pillH, {
+      fill: colors.fill === "#ffffff" ? "#ffffff" : colors.fill,
+      stroke: colors.stroke,
+      strokeWidth: 1,
+      rx: 3
+    });
+    svg += svgText(pillX + SIZES.tagPillPadX, pillY + pillH - 3, label.tagText, {
+      fontSize: SIZES.tagFontSize,
+      fill: colors.text,
+      fontWeight: "bold"
+    });
+  }
+
   // Shadow root boundary
   if (node.shadowRoot) {
     const shadowY = y + SIZES.padding + label.height + SIZES.labelGap;
@@ -297,12 +318,12 @@ function renderNode(positioned) {
     );
   }
 
-  // Labels
+  // Internal labels
   let labelY = y + SIZES.padding;
 
-  // Tag name (bold)
-  if (label.secondary) {
-    svg += svgText(x + SIZES.padding, labelY + SIZES.tagFontSize, label.secondary, {
+  // Inline tag for slots (rendered inside the box, not as floating pill)
+  if (label.inlineTag) {
+    svg += svgText(x + SIZES.padding, labelY + SIZES.tagFontSize, label.inlineTag, {
       fontSize: SIZES.tagFontSize,
       fill: colors.text,
       fontWeight: "bold"
@@ -310,7 +331,7 @@ function renderNode(positioned) {
     labelY += SIZES.tagFontSize + 2;
   }
 
-  // Static part names (normal weight)
+  // Static part names
   if (label.primary) {
     svg += svgText(x + SIZES.padding, labelY + SIZES.partFontSize, label.primary, {
       fontSize: SIZES.partFontSize,
@@ -428,14 +449,16 @@ function computeLabel(node) {
   // Conditional parts
   const condParts = parts.filter(p => p.conditional || p.dynamic);
 
-  // Primary: first static part name, or tag name
+  // Primary: static part names
   const primary = staticParts.length > 0
     ? staticParts.map(p => p.name).join(" ")
     : "";
 
-  // Secondary: tag name (shown if we have parts, or always for slot/custom elements)
-  const showTag = tag.includes("-") || node.type === "slot" || parts.length > 0;
-  const secondary = showTag ? `<${tag}>` : `<${tag}>`;
+  // Tag name: floating pill for most elements, inline for slots
+  const isSlotNode = node.type === "slot";
+  const tagRaw = `<${tag}>`;
+  const tagText = isSlotNode ? null : tagRaw;
+  const tagWidth = isSlotNode ? 0 : Math.ceil(tagRaw.length * SIZES.charWidth * 0.85 + SIZES.tagPillPadX * 2);
 
   // Conditional line
   const conditional = condParts.length > 0
@@ -447,14 +470,16 @@ function computeLabel(node) {
       }).join(" ")
     : "";
 
-  // Calculate dimensions
-  let maxWidth = 0;
+  // Calculate dimensions (floating tag is not included in internal height, inline tag is)
+  let maxWidth = tagWidth; // Tag pill width still contributes to min width
   let totalHeight = 0;
 
-  if (secondary) {
-    maxWidth = Math.max(maxWidth, secondary.length * SIZES.charWidth);
+  // Slots keep the tag inside the box
+  if (isSlotNode) {
+    maxWidth = Math.max(maxWidth, tagRaw.length * SIZES.charWidth * 0.85);
     totalHeight += SIZES.tagFontSize + 2;
   }
+
   if (primary) {
     maxWidth = Math.max(maxWidth, primary.length * SIZES.charWidth);
     totalHeight += SIZES.partFontSize + 2;
@@ -464,7 +489,7 @@ function computeLabel(node) {
     totalHeight += SIZES.condFontSize + 2;
   }
 
-  return { primary, secondary, conditional, parts, width: maxWidth, height: totalHeight };
+  return { primary, tagText, tagWidth, inlineTag: isSlotNode ? tagRaw : null, conditional, parts, width: maxWidth, height: totalHeight };
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -519,12 +544,16 @@ function getVisibleChildren(node) {
  * Compute the gap after a child in a column layout.
  * Comments use a tiny gap so they stick to the element they annotate.
  */
+function hasFloatingPill(node) {
+  return node.tag && node.type !== "slot" && node.type !== "text" && !isCommentNode(node);
+}
+
 function gapAfterChild(currentMeasure, nextMeasure) {
   if (!nextMeasure) return 0;
+  const pillMargin = hasFloatingPill(nextMeasure.node) ? SIZES.tagFloat : 0;
   // Comment followed by anything: tiny gap (badge sticks to next element)
-  if (isCommentNode(currentMeasure.node)) return SIZES.commentGap;
-  // Normal element followed by a comment: normal gap
-  return SIZES.gap;
+  if (isCommentNode(currentMeasure.node)) return SIZES.commentGap + pillMargin;
+  return SIZES.gap + pillMargin;
 }
 
 /**

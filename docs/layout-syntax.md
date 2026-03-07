@@ -202,36 +202,57 @@ When a component renders a child that has its own shadow DOM, the child's
 internal structure is **expanded inline** with an additional pipe level:
 
 ```
-| <ch-child part="child-part" exportparts="inner-a,inner-b">
+| <ch-child part="child-part">
 |   | #shadow-root
 |   | <div part="inner-a"></div>
 |   | <div part="inner-b"></div>
 | </ch-child>
 ```
 
-### `exportparts`
+### Part resolution for nested shadow DOM
 
-The `exportparts` attribute is shown **in full** on the child element (never
-truncated with `...`). It lists only the **final exported names** — the names
-accessible from the consumer's perspective. The renaming syntax
-(`original:renamed`) is never shown; the diagram always uses the renamed form.
+Parts on inner elements are shown with their **final resolved names** — the
+names accessible via `::part()` from the outermost consumer's perspective.
+The `exportparts` attribute itself is **never shown** in diagrams; it is an
+implementation detail.
 
-Inside the nested shadow root, parts are shown with their **renamed** names to
-match the `exportparts` list. If the parent does **not** export a specific part,
-that part is omitted from the nested diagram.
+Resolution rules:
 
-Example — a checkbox inside a tree-view item renames `container` →
-`item__checkbox-container`:
+- If a parent does **not** export a part, **omit** that part from the inner
+  element in the diagram.
+- If a parent renames a part via `exportparts` (e.g. `container:item__checkbox-container`),
+  show the **renamed** name.
+- If multiple shadow boundaries rename the same part, show the name from the
+  **outermost** rename.
+
+Example — `ch-tree-view-item` renders a `ch-checkbox` whose original parts
+(`container`, `input`, `option`) are renamed via `exportparts` to
+`item__checkbox-container`, `item__checkbox-input`, `item__checkbox-option`.
+The diagram shows the full nesting with the resolved names:
 
 ```
-| <ch-checkbox exportparts="item__checkbox-container,item__checkbox-input,item__checkbox-option">
-|   | #shadow-root
-|   | <div part="item__checkbox-container">
-|   |   <input part="item__checkbox-input" type="checkbox" />
-|   |   <div part="item__checkbox-option"></div>
-|   | </div>
-| </ch-checkbox>
+<ch-tree-view-render>
+  | #shadow-root
+  | <ch-tree-view-item part="item">
+  |   | #shadow-root
+  |   | <button part="item__header">
+  |   |   <ch-checkbox part="item__checkbox [checked | unchecked | indeterminate] [disabled]">
+  |   |     | #shadow-root
+  |   |     | <div part="item__checkbox-container">
+  |   |     |   <input part="item__checkbox-input" type="checkbox" />
+  |   |     |   <div part="item__checkbox-option"></div>
+  |   |     | </div>
+  |   |   </ch-checkbox>
+  |   | </button>
+  | </ch-tree-view-item>
+</ch-tree-view-render>
 ```
+
+### Light DOM exception
+
+Elements projected via `<slot>` are in light DOM — their parts are directly
+accessible without `exportparts`. The part resolution algorithm above only
+applies to elements rendered inside shadow DOM.
 
 ### Always expand inline
 

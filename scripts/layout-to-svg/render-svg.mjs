@@ -70,9 +70,12 @@ function renderCase(ast, caseMeta) {
   const diagramWidth = measured.width + SIZES.padding * 2;
   const diagramHeight = measured.height + SIZES.padding * 2;
 
-  const legend = renderLegend(SIZES.padding, diagramHeight + 8, diagramWidth);
-  const totalWidth = diagramWidth;
-  const totalHeight = diagramHeight + 8 + legend.height + SIZES.padding;
+  const legendGap = 16;
+  const legendX = diagramWidth + legendGap;
+  const legend = renderLegend(legendX, SIZES.padding);
+
+  const totalWidth = legendX + legend.width + SIZES.padding;
+  const totalHeight = Math.max(diagramHeight, legend.height + SIZES.padding * 2);
 
   const content = renderNode(positioned) + legend.svg;
   return svgDocument(content, totalWidth, totalHeight);
@@ -177,6 +180,7 @@ function measure(node, caseMeta, path) {
 
   // Shadow boundary adds extra padding
   const extraPad = node.shadowRoot ? SIZES.shadowPad : 0;
+  const shadowLabelExtra = node.shadowRoot ? SIZES.shadowLabelGap : 0;
 
   // First child's floating pill needs extra top space
   const firstChildPillSpace =
@@ -196,7 +200,8 @@ function measure(node, caseMeta, path) {
       firstChildPillSpace +
       contentHeight +
       SIZES.padding +
-      extraPad,
+      extraPad +
+      shadowLabelExtra,
     SIZES.minHeight
   );
 
@@ -227,8 +232,8 @@ function position(node, measurement, x, y) {
   let cy = y + SIZES.padding + labelSpace;
 
   if (node.shadowRoot) {
-    // Offset children inside the shadow boundary
-    cy += SIZES.shadowPad;
+    // Offset children inside the shadow boundary (past dashed rect top + label)
+    cy += SIZES.shadowPad + SIZES.shadowLabelGap;
   }
 
   const visibleMeasurements = childMeasurements.filter(
@@ -761,39 +766,21 @@ const LEGEND_ITEMS = [
   }
 ];
 
-function renderLegend(x, y, maxWidth) {
+function renderLegend(x, y) {
   const rowHeight = 16;
-  const itemGap = 14;
-  const availWidth = maxWidth - SIZES.padding * 2;
   let svg = "";
-
-  // Separator line
-  svg += `<line x1="${x}" y1="${y}" x2="${
-    x + maxWidth - SIZES.padding * 2
-  }" y2="${y}" stroke="#e0e0e0" stroke-width="0.5" />\n`;
-
-  let cx = x;
-  let cy = y + 8;
-  let rows = 1;
+  let cy = y;
+  let maxWidth = 0;
 
   for (const item of LEGEND_ITEMS) {
-    const result = item.render(cx, cy);
-    // Wrap to next row if item would overflow
-    if (cx - x + result.width > availWidth && cx > x) {
-      cx = x;
-      cy += rowHeight;
-      rows++;
-      const wrapped = item.render(cx, cy);
-      svg += wrapped.svg;
-      cx += wrapped.width + itemGap;
-    } else {
-      svg += result.svg;
-      cx += result.width + itemGap;
-    }
+    const result = item.render(x, cy);
+    svg += result.svg;
+    maxWidth = Math.max(maxWidth, result.width);
+    cy += rowHeight;
   }
 
-  const totalHeight = 8 + rowHeight * rows + 4;
-  return { svg, width: availWidth, height: totalHeight };
+  const totalHeight = LEGEND_ITEMS.length * rowHeight;
+  return { svg, width: maxWidth, height: totalHeight };
 }
 
 // ─── CLI ─────────────────────────────────────────────────────────────────

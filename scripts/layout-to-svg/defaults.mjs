@@ -19,11 +19,11 @@ export const SIZES = {
   condIndent: 12, // Horizontal indent for content inside a condition scope
   tagPillHeight: 12, // Height of the floating tag pill
   tagPillPadX: 4, // Horizontal padding inside the tag pill
-  tagFloat: 5, // How many px the tag pill extends above the box top edge
+  tagFloat: 6, // How many px the tag pill extends above the box top edge
   labelGap: 4,
   minWidth: 50,
   minHeight: 24,
-  shadowPad: 14, // Extra breathing room between dashed boundary and inner boxes
+  shadowPad: 10, // Extra breathing room between dashed boundary and inner boxes
   badgeHeight: 16,
   badgePadX: 6,
   badgeRadius: 3

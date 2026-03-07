@@ -11,25 +11,22 @@
  *   node scripts/layout-to-svg/render-svg.mjs --all [--out dir]
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
-import { resolve, dirname, basename, join } from "node:path";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { basename, dirname, join, resolve } from "node:path";
+import {
+  BADGE_COLORS,
+  COLORS,
+  SIZES,
+  defaultHints,
+  inferStyle
+} from "./defaults.mjs";
 import { parseLayoutFile } from "./parse-layout.mjs";
 import {
-  SIZES,
-  COLORS,
-  BADGE_COLORS,
-  SHADOW_TINTS,
-  inferStyle,
-  defaultHints
-} from "./defaults.mjs";
-import {
-  svgRect,
-  svgText,
-  svgGroup,
   svgBadge,
   svgDashedRect,
   svgDocument,
-  esc
+  svgRect,
+  svgText
 } from "./svg-primitives.mjs";
 
 // ─── Public API ──────────────────────────────────────────────────────────
@@ -44,14 +41,16 @@ import {
 export function renderLayoutFile(layoutPath, metadataPath, outputDir) {
   const cases = parseLayoutFile(layoutPath);
   const outDir = outputDir || dirname(layoutPath);
-  const metadata = metadataPath && existsSync(metadataPath)
-    ? JSON.parse(readFileSync(metadataPath, "utf-8"))
-    : null;
+  const metadata =
+    metadataPath && existsSync(metadataPath)
+      ? JSON.parse(readFileSync(metadataPath, "utf-8"))
+      : null;
 
   const generatedFiles = [];
 
   for (const layoutCase of cases) {
-    const caseMeta = metadata?.cases?.find(c => c.case === layoutCase.case) || null;
+    const caseMeta =
+      metadata?.cases?.find(c => c.case === layoutCase.case) || null;
     const svg = renderCase(layoutCase.ast, caseMeta);
     const fileName = `anatomy-case-${layoutCase.case}.svg`;
     const outPath = join(outDir, fileName);
@@ -86,7 +85,14 @@ function measure(node, caseMeta, path) {
 
   // Skip hidden nodes
   if (hints.hidden) {
-    return { width: 0, height: 0, label: { primary: "", width: 0, height: 0 }, childMeasurements: [], hints, path };
+    return {
+      width: 0,
+      height: 0,
+      label: { primary: "", width: 0, height: 0 },
+      childMeasurements: [],
+      hints,
+      path
+    };
   }
 
   const label = computeLabel(node);
@@ -96,14 +102,22 @@ function measure(node, caseMeta, path) {
     return {
       width: label.width,
       height: label.height,
-      label, childMeasurements: [], hints, direction: "column", path
+      label,
+      childMeasurements: [],
+      hints,
+      direction: "column",
+      path
     };
   }
   if (node.type === "text") {
     return {
       width: label.width,
       height: label.height,
-      label, childMeasurements: [], hints, direction: "column", path
+      label,
+      childMeasurements: [],
+      hints,
+      direction: "column",
+      path
     };
   }
 
@@ -114,7 +128,15 @@ function measure(node, caseMeta, path) {
   if (visibleChildren.length === 0) {
     const w = Math.max(label.width + SIZES.padding * 2, SIZES.minWidth);
     const h = Math.max(label.height + SIZES.padding * 2, SIZES.minHeight);
-    return { width: w, height: h, label, childMeasurements: [], hints, direction, path };
+    return {
+      width: w,
+      height: h,
+      label,
+      childMeasurements: [],
+      hints,
+      direction,
+      path
+    };
   }
 
   // Measure children
@@ -141,8 +163,12 @@ function measure(node, caseMeta, path) {
     contentHeight = Math.max(0, ...visibleMeasurements.map(c => c.height));
   } else {
     // Indented content may be wider than badges, account for both
-    const badgeWidths = visibleMeasurements.filter(c => isCommentNode(c.node)).map(c => c.width);
-    const contentWidths = visibleMeasurements.filter(c => !isCommentNode(c.node)).map(c => c.width + condIndentWidth);
+    const badgeWidths = visibleMeasurements
+      .filter(c => isCommentNode(c.node))
+      .map(c => c.width);
+    const contentWidths = visibleMeasurements
+      .filter(c => !isCommentNode(c.node))
+      .map(c => c.width + condIndentWidth);
     contentWidth = Math.max(0, ...badgeWidths, ...contentWidths);
     contentHeight = computeColumnHeight(visibleMeasurements);
   }
@@ -152,13 +178,25 @@ function measure(node, caseMeta, path) {
   // Shadow boundary adds extra padding
   const extraPad = node.shadowRoot ? SIZES.shadowPad : 0;
 
+  // First child's floating pill needs extra top space
+  const firstChildPillSpace =
+    visibleMeasurements.length > 0 &&
+    hasFloatingPill(visibleMeasurements[0].node)
+      ? SIZES.tagFloat
+      : 0;
+
   const width = Math.max(
     label.width + SIZES.padding * 2,
     contentWidth + SIZES.padding * 2 + extraPad * 2,
     SIZES.minWidth
   );
   const height = Math.max(
-    SIZES.padding + labelSpace + contentHeight + SIZES.padding + extraPad,
+    SIZES.padding +
+      labelSpace +
+      firstChildPillSpace +
+      contentHeight +
+      SIZES.padding +
+      extraPad,
     SIZES.minHeight
   );
 
@@ -197,6 +235,14 @@ function position(node, measurement, x, y) {
     c => c.width > 0 && c.height > 0
   );
 
+  // If the first child has a floating pill, add space so it doesn't overlap parent labels
+  if (
+    visibleMeasurements.length > 0 &&
+    hasFloatingPill(visibleMeasurements[0].node)
+  ) {
+    cy += SIZES.tagFloat;
+  }
+
   // Track condition scopes for indentation and scope lines
   const hasConditions = visibleMeasurements.some(c => isCommentNode(c.node));
   const condIndent = hasConditions ? SIZES.condIndent : 0;
@@ -224,7 +270,12 @@ function position(node, measurement, x, y) {
         result.children.push(childPos);
         // Start new scope
         const scopeColor = getScopeColor(childNode);
-        currentScope = { startY: cy + childMeasure.height, endY: cy + childMeasure.height, x: cx + condIndent - 4, color: scopeColor };
+        currentScope = {
+          startY: cy + childMeasure.height,
+          endY: cy + childMeasure.height,
+          x: cx + condIndent - 4,
+          color: scopeColor
+        };
         inCondScope = true;
       } else {
         // Content element: indent if under a condition
@@ -298,17 +349,27 @@ function renderNode(positioned) {
       strokeWidth: 1,
       rx: 3
     });
-    svg += svgText(pillX + SIZES.tagPillPadX, pillY + pillH - 3, label.tagText, {
-      fontSize: SIZES.tagFontSize,
-      fill: colors.text,
-      fontWeight: "bold"
-    });
+    svg += svgText(
+      pillX + SIZES.tagPillPadX,
+      pillY + pillH - 3,
+      label.tagText,
+      {
+        fontSize: SIZES.tagFontSize,
+        fill: colors.text,
+        fontWeight: "bold"
+      }
+    );
   }
 
   // Shadow root boundary
   if (node.shadowRoot) {
     const shadowY = y + SIZES.padding + label.height + SIZES.labelGap;
-    const shadowHeight = height - SIZES.padding - label.height - SIZES.labelGap - SIZES.shadowPad / 2;
+    const shadowHeight =
+      height -
+      SIZES.padding -
+      label.height -
+      SIZES.labelGap -
+      SIZES.shadowPad / 2;
     svg += svgDashedRect(
       x + SIZES.shadowPad / 2,
       shadowY,
@@ -323,30 +384,45 @@ function renderNode(positioned) {
 
   // Inline tag for slots (rendered inside the box, not as floating pill)
   if (label.inlineTag) {
-    svg += svgText(x + SIZES.padding, labelY + SIZES.tagFontSize, label.inlineTag, {
-      fontSize: SIZES.tagFontSize,
-      fill: colors.text,
-      fontWeight: "bold"
-    });
+    svg += svgText(
+      x + SIZES.padding - 4,
+      labelY + SIZES.tagFontSize,
+      label.inlineTag,
+      {
+        fontSize: SIZES.tagFontSize,
+        fill: colors.text,
+        fontWeight: "bold"
+      }
+    );
     labelY += SIZES.tagFontSize + 2;
   }
 
   // Static part names
   if (label.primary) {
-    svg += svgText(x + SIZES.padding, labelY + SIZES.partFontSize, label.primary, {
-      fontSize: SIZES.partFontSize,
-      fill: colors.text
-    });
+    svg += svgText(
+      x + SIZES.padding,
+      labelY + SIZES.partFontSize,
+      label.primary,
+      {
+        fontSize: SIZES.partFontSize,
+        fill: colors.text
+      }
+    );
     labelY += SIZES.partFontSize + 2;
   }
 
   // Conditional/dynamic parts (smaller, italic)
   if (label.conditional) {
-    svg += svgText(x + SIZES.padding, labelY + SIZES.condFontSize, label.conditional, {
-      fontSize: SIZES.condFontSize,
-      fill: "#888",
-      fontStyle: "italic"
-    });
+    svg += svgText(
+      x + SIZES.padding,
+      labelY + SIZES.condFontSize,
+      label.conditional,
+      {
+        fontSize: SIZES.condFontSize,
+        fill: "#888",
+        fontStyle: "italic"
+      }
+    );
   }
 
   // Render condition scope lines (thin vertical lines showing condition extent)
@@ -378,7 +454,9 @@ function renderCommentNode(positioned) {
       break;
     case "comment-else":
       badgeColor = BADGE_COLORS.else;
-      text = node.description ? `\u25C7 else (${node.description})` : "\u25C7 else";
+      text = node.description
+        ? `\u25C7 else (${node.description})`
+        : "\u25C7 else";
       break;
     case "comment-else-when":
       badgeColor = BADGE_COLORS.else;
@@ -424,7 +502,8 @@ function renderTextNode(positioned) {
 function computeLabel(node) {
   if (isCommentNode(node)) {
     const text = commentText(node);
-    const truncated = text.length > 60 ? text.substring(0, 59) + "\u2026" : text;
+    const truncated =
+      text.length > 60 ? text.substring(0, 59) + "\u2026" : text;
     return {
       primary: "",
       width: truncated.length * SIZES.condFontSize * 0.6 + SIZES.badgePadX * 2,
@@ -450,25 +529,29 @@ function computeLabel(node) {
   const condParts = parts.filter(p => p.conditional || p.dynamic);
 
   // Primary: static part names
-  const primary = staticParts.length > 0
-    ? staticParts.map(p => p.name).join(" ")
-    : "";
+  const primary =
+    staticParts.length > 0 ? staticParts.map(p => p.name).join(" ") : "";
 
   // Tag name: floating pill for most elements, inline for slots
   const isSlotNode = node.type === "slot";
   const tagRaw = `<${tag}>`;
   const tagText = isSlotNode ? null : tagRaw;
-  const tagWidth = isSlotNode ? 0 : Math.ceil(tagRaw.length * SIZES.charWidth * 0.85 + SIZES.tagPillPadX * 2);
+  const tagWidth = isSlotNode
+    ? 0
+    : Math.ceil(tagRaw.length * SIZES.charWidth * 0.85 + SIZES.tagPillPadX * 2);
 
   // Conditional line
-  const conditional = condParts.length > 0
-    ? condParts.map(p => {
-        if (p.dynamic && p.conditional) return `[{${p.name}}]`;
-        if (p.dynamic) return `{${p.name}}`;
-        if (p.exclusive) return `[${p.exclusive.join("|")}]`;
-        return `[${p.name}]`;
-      }).join(" ")
-    : "";
+  const conditional =
+    condParts.length > 0
+      ? condParts
+          .map(p => {
+            if (p.dynamic && p.conditional) return `[{${p.name}}]`;
+            if (p.dynamic) return `{${p.name}}`;
+            if (p.exclusive) return `[${p.exclusive.join("|")}]`;
+            return `[${p.name}]`;
+          })
+          .join(" ")
+      : "";
 
   // Calculate dimensions (floating tag is not included in internal height, inline tag is)
   let maxWidth = tagWidth; // Tag pill width still contributes to min width
@@ -489,7 +572,16 @@ function computeLabel(node) {
     totalHeight += SIZES.condFontSize + 2;
   }
 
-  return { primary, tagText, tagWidth, inlineTag: isSlotNode ? tagRaw : null, conditional, parts, width: maxWidth, height: totalHeight };
+  return {
+    primary,
+    tagText,
+    tagWidth,
+    inlineTag: isSlotNode ? tagRaw : null,
+    conditional,
+    parts,
+    width: maxWidth,
+    height: totalHeight
+  };
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -545,7 +637,12 @@ function getVisibleChildren(node) {
  * Comments use a tiny gap so they stick to the element they annotate.
  */
 function hasFloatingPill(node) {
-  return node.tag && node.type !== "slot" && node.type !== "text" && !isCommentNode(node);
+  return (
+    node.tag &&
+    node.type !== "slot" &&
+    node.type !== "text" &&
+    !isCommentNode(node)
+  );
 }
 
 function gapAfterChild(currentMeasure, nextMeasure) {
@@ -585,8 +682,13 @@ const LEGEND_ITEMS = [
   {
     label: "#shadow-root",
     render: (x, y) => {
-      let s = `<line x1="${x}" y1="${y + 6}" x2="${x + 24}" y2="${y + 6}" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />\n`;
-      s += svgText(x + 28, y + 10, "#shadow-root", { fontSize: 8, fill: "#666" });
+      let s = `<line x1="${x}" y1="${y + 6}" x2="${x + 24}" y2="${
+        y + 6
+      }" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />\n`;
+      s += svgText(x + 28, y + 10, "#shadow-root", {
+        fontSize: 8,
+        fill: "#666"
+      });
       return { svg: s, width: 100 };
     }
   },
@@ -595,23 +697,38 @@ const LEGEND_ITEMS = [
     render: (x, y) => {
       let s = svgRect(x, y, 12, 12, { fill: BADGE_COLORS.when.fill, rx: 2 });
       s += svgText(x + 5, y + 9.5, "\u25C7", { fontSize: 7, fill: "#fff" });
-      s += svgText(x + 16, y + 10, "condition (when / else)", { fontSize: 8, fill: "#666" });
+      s += svgText(x + 16, y + 10, "condition (when / else)", {
+        fontSize: 8,
+        fill: "#666"
+      });
       return { svg: s, width: 160 };
     }
   },
   {
     label: "for-each",
     render: (x, y) => {
-      let s = svgRect(x, y, 12, 12, { fill: BADGE_COLORS["for-each"].fill, rx: 2 });
+      let s = svgRect(x, y, 12, 12, {
+        fill: BADGE_COLORS["for-each"].fill,
+        rx: 2
+      });
       s += svgText(x + 4, y + 9.5, "\u21BB", { fontSize: 7, fill: "#fff" });
-      s += svgText(x + 16, y + 10, "iteration (for each)", { fontSize: 8, fill: "#666" });
+      s += svgText(x + 16, y + 10, "iteration (for each)", {
+        fontSize: 8,
+        fill: "#666"
+      });
       return { svg: s, width: 148 };
     }
   },
   {
     label: "slot",
     render: (x, y) => {
-      let s = svgRect(x, y, 20, 12, { fill: COLORS.slot.fill, stroke: COLORS.slot.stroke, strokeWidth: 1, strokeDasharray: "3 1.5", rx: 2 });
+      let s = svgRect(x, y, 20, 12, {
+        fill: COLORS.slot.fill,
+        stroke: COLORS.slot.stroke,
+        strokeWidth: 1,
+        strokeDasharray: "3 1.5",
+        rx: 2
+      });
       s += svgText(x + 24, y + 10, "slot", { fontSize: 8, fill: "#666" });
       return { svg: s, width: 52 };
     }
@@ -620,15 +737,25 @@ const LEGEND_ITEMS = [
     label: "part",
     render: (x, y) => {
       let s = svgText(x, y + 10, "part", { fontSize: 9, fill: "#424242" });
-      s += svgText(x + 28, y + 10, "static part", { fontSize: 8, fill: "#666" });
+      s += svgText(x + 28, y + 10, "static part", {
+        fontSize: 8,
+        fill: "#666"
+      });
       return { svg: s, width: 92 };
     }
   },
   {
     label: "conditional part",
     render: (x, y) => {
-      let s = svgText(x, y + 10, "[part]", { fontSize: 9, fill: "#888", fontStyle: "italic" });
-      s += svgText(x + 40, y + 10, "conditional part", { fontSize: 8, fill: "#666" });
+      let s = svgText(x, y + 10, "[part]", {
+        fontSize: 9,
+        fill: "#888",
+        fontStyle: "italic"
+      });
+      s += svgText(x + 40, y + 10, "conditional part", {
+        fontSize: 8,
+        fill: "#666"
+      });
       return { svg: s, width: 128 };
     }
   }
@@ -641,7 +768,9 @@ function renderLegend(x, y, maxWidth) {
   let svg = "";
 
   // Separator line
-  svg += `<line x1="${x}" y1="${y}" x2="${x + maxWidth - SIZES.padding * 2}" y2="${y}" stroke="#e0e0e0" stroke-width="0.5" />\n`;
+  svg += `<line x1="${x}" y1="${y}" x2="${
+    x + maxWidth - SIZES.padding * 2
+  }" y2="${y}" stroke="#e0e0e0" stroke-width="0.5" />\n`;
 
   let cx = x;
   let cy = y + 8;
@@ -673,7 +802,9 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log("Usage: node render-svg.mjs <layout.md> [--metadata path] [--out dir] [--component name]");
+    console.log(
+      "Usage: node render-svg.mjs <layout.md> [--metadata path] [--out dir] [--component name]"
+    );
     console.log("       node render-svg.mjs --all [--out dir]");
     process.exit(0);
   }

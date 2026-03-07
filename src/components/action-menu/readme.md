@@ -1,7 +1,22 @@
 # ch-action-menu-render
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -46,7 +61,6 @@ The `ch-action-menu-render` component renders a dropdown menu triggered by an ex
 | `positionTry`          | `position-try`           | Specifies an alternative position to try when the popover overflows the window.                                                                                                                                                                        | `"flip-block" \| "flip-inline" \| "none"`                                                     | `"none"`        |
 | `useGxRender`          | `use-gx-render`          | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                                                                                                                                                               | `boolean`                                                                                     | `false`         |
 
-
 ## Events
 
 | Event                | Description                                                                                                                      | Type                                                                                                                                                                                                                                                                                                                                                                                                                                         |
@@ -56,43 +70,12 @@ The `ch-action-menu-render` component renders a dropdown menu triggered by an ex
 | `expandedItemChange` | Fired when the visibility of a dropdown item is changed.                                                                         | `CustomEvent<{ item: ActionMenuItemActionableModel; expanded: boolean; }>`                                                                                                                                                                                                                                                                                                                                                                   |
 | `hyperlinkClick`     | Fired when an hyperlink is clicked. This event can be prevented, but the dropdown will be closed in any case (prevented or not). | `CustomEvent<{ event: PointerEvent; item: ActionMenuItemActionableModel; }>`                                                                                                                                                                                                                                                                                                                                                                 |
 
-
 ## Slots
 
 | Slot       | Description                                                                                                                         |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 |            | Default slot projected inside the expandable button. Use it to provide the button label or icon.                                    |
 | `"{name}"` | Named slots matching each item of `type: "slot"` in the model. Use them to inject custom content at specific positions in the menu. |
-
-
-## Shadow Parts
-
-| Part                  | Description                                                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `"action"`            | The clickable row element for each menu item.                                                                          |
-| `"button"`            | A `<button>`-type action row. Receives `expandable`, `expanded`, `collapsed`, and `disabled` state parts.              |
-| `"collapsed"`         | Present in the `button` part when the item's sub-menu is closed.                                                       |
-| `"content"`           | The content area inside each action row (caption + optional icon).                                                     |
-| `"disabled"`          | Present in the `button` part when the item is disabled.                                                                |
-| `"expandable"`        | Present in the `button` part when the item has sub-items.                                                              |
-| `"expandable-button"` | The top-level button that toggles the dropdown. Also receives the `expanded`, `collapsed`, and `disabled` state parts. |
-| `"expanded"`          | Present in the `button` part when the item's sub-menu is open.                                                         |
-| `"link"`              | An `<a>`-type action row.                                                                                              |
-| `"separator"`         | A horizontal divider rendered for items of `type: "separator"`.                                                        |
-| `"shortcut"`          | The keyboard shortcut label rendered at the end of an action row.                                                      |
-| `"window"`            | The popover container that holds the dropdown menu items.                                                              |
-
-
-## CSS Custom Properties
-
-| Name                                           | Description                                                                                                                                      |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--ch-action-menu-item__background-image-size` | Specifies the size of the start and end images of the items. @default 100%                                                                       |
-| `--ch-action-menu-item__image-size`            | Specifies the box size that contains the start or end images of the items. @default 0.875em                                                      |
-| `--ch-action-menu-separation`                  | Specifies the base separation between the action menu trigger and the dropdown menu on both axes. @default 0px                                   |
-| `--ch-action-menu-separation-x`                | Specifies the separation on the inline (x) axis between the action menu trigger and the dropdown menu. @default var(--ch-action-menu-separation) |
-| `--ch-action-menu-separation-y`                | Specifies the separation on the block (y) axis between the action menu trigger and the dropdown menu. @default var(--ch-action-menu-separation)  |
-
 
 ## Dependencies
 

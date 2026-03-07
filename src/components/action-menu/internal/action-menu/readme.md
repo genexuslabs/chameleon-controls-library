@@ -1,7 +1,14 @@
 # ch-action-menu
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+
+<!-- Auto Generated Below -->
 
 ## Properties
 
@@ -25,7 +32,6 @@
 | `shortcut`                 | `shortcut`            | Specifies the shortcut caption that the control will display.                                                                                                                             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined`    |
 | `startImgSrc`              | `start-img-src`       | Specifies the src for the left img.                                                                                                                                                       | `string`                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined`    |
 | `startImgType`             | `start-img-type`      | Specifies how the start image will be rendered.                                                                                                                                           | `"background" \| "img" \| "mask"`                                                                                                                                                                                                                                                                                                                                                                                               | `"background"` |
-
 
 ## Dependencies
 

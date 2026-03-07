@@ -1,7 +1,18 @@
 # ch-sidebar
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Slots](#slots)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -37,40 +48,17 @@ The `ch-sidebar` component provides a collapsible side panel typically used for 
 | `expanded`                           | `expanded`                               | Specifies whether the control is expanded or collapsed. This property uses mutable two-way binding: the component updates it directly when the user clicks the expand/collapse button.                                                                | `boolean`             | `true`      |
 | `showExpandButton`                   | `show-expand-button`                     | `true` to display a expandable button at the bottom of the control.                                                                                                                                                                                   | `boolean`             | `false`     |
 
-
 ## Events
 
 | Event            | Description                                                                                    | Type                   |
 | ---------------- | ---------------------------------------------------------------------------------------------- | ---------------------- |
 | `expandedChange` | Emitted when the expand/collapse button is activated. The payload is the new `expanded` value. | `CustomEvent<boolean>` |
 
-
 ## Slots
 
 | Slot | Description                           |
 | ---- | ------------------------------------- |
 |      | Default slot for the sidebar content. |
-
-
-## Shadow Parts
-
-| Part              | Description                                                                                       |
-| ----------------- | ------------------------------------------------------------------------------------------------- |
-| `"collapsed"`     | Present on the expand button when the sidebar is collapsed.                                       |
-| `"expand-button"` | The button that toggles the expanded/collapsed state. Rendered when `showExpandButton` is `true`. |
-| `"expanded"`      | Present on the expand button when the sidebar is expanded.                                        |
-
-
-## CSS Custom Properties
-
-| Name                                     | Description                                                                                                                                                                                                                                                                        |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--ch-sidebar-inline-size--collapsed`    | Specifies the inline size of the sidebar when collapsed. @default auto                                                                                                                                                                                                             |
-| `--ch-sidebar-inline-size--expanded`     | Specifies the inline size of the sidebar when expanded. @default auto                                                                                                                                                                                                              |
-| `--ch-sidebar__chevron-background-image` | Specifies the image of expand button. @default url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" style="transform:rotate(-90deg)" viewBox="0 0 18 18" fill="none"><path d="M16.5 5L8.7 12.7L1 5" stroke="%23000" stroke-width="1.2" stroke-linecap="round"/></svg>') |
-| `--ch-sidebar__chevron-image-size`       | Specifies the image size of the expandable button. @default 100%                                                                                                                                                                                                                   |
-| `--ch-sidebar__chevron-size`             | Specifies the expandable button size. @default 0.875em                                                                                                                                                                                                                             |
-
 
 ----------------------------------------------
 

@@ -1,7 +1,21 @@
 # ch-checkbox
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Slots](#slots)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -58,41 +72,12 @@ This component does not project any slots. All content is rendered from the `cap
 | `unCheckedValue`            | `un-checked-value` | The value assigned to the control when it is unchecked. If left as `undefined`, no value is submitted in forms when the checkbox is off. Also used as the initial value in `connectedCallback` when `value` is not set.                                                                                                                                                                   | `string`                                  | `undefined`    |
 | `value`                     | `value`            | The current value of the control. The checked state is derived from `value === checkedValue`. When changed externally, the form value is updated via `ElementInternals.setFormValue()`.  Mutated internally on user interaction: set to `checkedValue` when toggled on, or `unCheckedValue` when toggled off.                                                                             | `string`                                  | `undefined`    |
 
-
 ## Events
 
 | Event   | Description                                                                                                                                                                                                                | Type                  |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
 | `click` | Emitted after a value change **only when `highlightable` is `true`**. This is a GeneXus-specific event for action highlighting — it does NOT fire on every click or space press by default.                                | `CustomEvent<any>`    |
 | `input` | Emitted when the user toggles the checkbox (via click, Space key, or external label activation). Contains the new `value` string (`checkedValue` or `unCheckedValue`). The native input event is stopped from propagating. | `CustomEvent<string>` |
-
-
-## Shadow Parts
-
-| Part              | Description                                                                                                                                                                      |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"checked"`       | Present in the `input`, `option`, `label` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).     |
-| `"container"`     | The container that serves as a wrapper for the `input` and the `option` parts.                                                                                                   |
-| `"disabled"`      | Present in the `input`, `option`, `label` and `container` parts when the control is disabled (`disabled` === `true`).                                                            |
-| `"indeterminate"` | Present in the `input`, `option`, `label` and `container` parts when the control is indeterminate (`indeterminate` === `true`). Takes precedence over `checked`/`unchecked`.     |
-| `"input"`         | The native `<input type="checkbox">` element that implements the interactions for the component.                                                                                 |
-| `"label"`         | The `<label>` element that wraps the checkbox and caption text. Only present when `caption` is set or `startImgSrc` resolves to a valid image.                                   |
-| `"option"`        | The decorative overlay rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`, and is always `aria-hidden`.                              |
-| `"unchecked"`     | Present in the `input`, `option`, `label` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`). |
-
-
-## CSS Custom Properties
-
-| Name                                        | Description                                                                                                                                                                                                                                                |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--ch-checkbox__background-image-size`      | Specifies the size of the start image of the control. @default 100%                                                                                                                                                                                        |
-| `--ch-checkbox__container-size`             | Specifies the size for the container of the `input` and `option` elements. @default min(1em, 20px)                                                                                                                                                         |
-| `--ch-checkbox__image-size`                 | Specifies the box size that contains the start image of the control. @default 0.875em                                                                                                                                                                      |
-| `--ch-checkbox__option-checked-image`       | Specifies the image of the checkbox when is checked. @default url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")       |
-| `--ch-checkbox__option-image-size`          | Specifies the image size of the `option` element. @default 100%                                                                                                                                                                                            |
-| `--ch-checkbox__option-indeterminate-image` | Specifies the image of the checkbox when is indeterminate. @default url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>") |
-| `--ch-checkbox__option-size`                | Specifies the size for the `option` element. @default 50%                                                                                                                                                                                                  |
-
 
 ## Dependencies
 

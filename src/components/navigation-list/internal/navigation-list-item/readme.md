@@ -1,9 +1,14 @@
 # ch-navigation-list-item
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -26,7 +31,6 @@
 | `startImgSrc`              | `start-img-src`              | Specifies the src of the start image.                                                                                                                                                                                                  | `string`                                                                                                                                                                                                  | `undefined`    |
 | `startImgType`             | `start-img-type`             | Specifies how the start image will be rendered.                                                                                                                                                                                        | `"background" \| "mask"`                                                                                                                                                                                  | `"background"` |
 | `tooltipDelay`             | `tooltip-delay`              | Specifies the delay (in ms) for the tooltip to be displayed.                                                                                                                                                                           | `number`                                                                                                                                                                                                  | `100`          |
-
 
 ## Dependencies
 

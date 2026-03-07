@@ -1,7 +1,18 @@
 # ch-rating
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Slots](#slots)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -46,34 +57,11 @@ The `ch-rating` component displays a star-based rating control that allows users
 | `stars`          | `stars`           | This property determine the number of stars displayed. Values less than 0 are treated as 0 (`Math.max(0, stars)`). The `value` property is clamped to the range `[0, stars]`.                                                                                                                       | `number`  | `5`         |
 | `value`          | `value`           | The current value displayed by the component. Fractional values are supported for display (partial star fill), but user interaction only produces whole numbers. The value is clamped between `0` and `stars`. The `@Watch` handler syncs the clamped value with `ElementInternals.setFormValue()`. | `number`  | `0`         |
 
-
 ## Events
 
 | Event   | Description                                                                                                                                                                          | Type                  |
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
 | `input` | The `input` event is emitted when a change to the element's value is committed by the user.  The payload is the new numeric value — always a whole number in the range `[0, stars]`. | `CustomEvent<number>` |
-
-
-## Shadow Parts
-
-| Part                 | Description                                                                                                     |
-| -------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `"partial-selected"` | Present in the `star-container` and `star` parts when the star is partially selected (fractional value).        |
-| `"selected"`         | Present in the `star-container` and `star` parts when the star is fully selected.                               |
-| `"star"`             | The visual star element rendered inside each star container. Combined with state parts to indicate selection.   |
-| `"star-container"`   | The wrapper for an individual star, including its radio input. Combined with state parts to indicate selection. |
-| `"stars-container"`  | The container that wraps all individual star elements.                                                          |
-| `"unselected"`       | Present in the `star-container` and `star` parts when the star is not selected at all.                          |
-
-
-## CSS Custom Properties
-
-| Name                                            | Description                                                                                                                          |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `--ch-rating-star__selected-background-color`   | Specifies the background-color of the selected portion of the star. @default currentColor                                            |
-| `--ch-rating-star__size`                        | Specifies the size of the star.                                                                                                      |
-| `--ch-rating-star__unselected-background-color` | Specifies the background-color of the unselected portion of the star. @default color-mix(in srgb, currentColor 50%, transparent 50%) |
-
 
 ----------------------------------------------
 

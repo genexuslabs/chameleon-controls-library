@@ -1,9 +1,14 @@
 # ch-next-data-modeling-render
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -31,14 +36,12 @@
 | `subFieldClass`              | `sub-field-class`             | A CSS class to set as the `ch-next-data-modeling-item` element class with `level = "2"` and `mode !== "add"`.                                                                                                    | `string`                                                                                                                                                                                                                                                                                    | `undefined`                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `subFieldContainerClass`     | `sub-field-container-class`   | A CSS class to set as the `ch-next-data-modeling` element class with `level === "2"`.                                                                                                                            | `string`                                                                                                                                                                                                                                                                                    | `undefined`                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
-
 ## Events
 
 | Event          | Description                                  | Type               |
 | -------------- | -------------------------------------------- | ------------------ |
 | `fieldAdded`   | Emitted when a new field is added or edited. | `CustomEvent<any>` |
 | `fieldRemoved` | Emitted when a new field is removed.         | `CustomEvent<any>` |
-
 
 ## Dependencies
 

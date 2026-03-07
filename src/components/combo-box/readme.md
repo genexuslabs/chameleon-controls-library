@@ -1,7 +1,21 @@
 # ch-combo-box-render
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -67,57 +81,12 @@ The `ch-combo-box-render` component is a feature-rich combo box that combines an
 | `suggestOptions`       | --                     | This property lets you determine the options that will be applied to the suggest. Available options (`ComboBoxSuggestOptions`):   - `alreadyProcessed` (boolean) — `true` if the model is already filtered    server-side and the control should skip client-side filtering.  - `autoExpand` (boolean) — expand matching groups when filtering. *(Not yet implemented.)*  - `hideMatchesAndShowNonMatches` (boolean) — invert the filter: hide    matches and show non-matches.  - `highlightMatchedItems` (boolean) — highlight matched text in items.    *(Not yet implemented.)*  - `matchCase` (boolean) — make the filter case-sensitive (ignored when    `regularExpression` is `true`).  - `regularExpression` (boolean) — treat the filter value as a regular expression.  - `renderActiveItemIconOnExpand` (boolean) — keep the selected item icon    visible in the input while the dropdown is expanded in suggest mode.  - `strict` (boolean) — when the popover closes, revert to the last    confirmed value if the input does not match any item. | `{ alreadyProcessed?: boolean; autoExpand?: boolean; hideMatchesAndShowNonMatches?: boolean; highlightMatchedItems?: boolean; matchCase?: boolean; regularExpression?: boolean; renderActiveItemIconOnExpand?: boolean; strict?: boolean; }` | `{}`             |
 | `value`                | `value`                | Specifies the value (selected item) of the control.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `string`                                                                                                                                                                                                                                     | `undefined`      |
 
-
 ## Events
 
 | Event    | Description                                                                                                                                                                                                                                                                                                                                                    | Type                  |
 | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
 | `change` | The `change` event is emitted when a change to the element's value is committed by the user.  - In normal mode (suggest = false), it is emitted after each input event.   - In suggest mode (suggest = true), it is emitted after the popover is closed and a new value is committed by the user.  This event is NOT debounced by the `suggestDebounce` value. | `CustomEvent<string>` |
 | `input`  | The `input` event is emitted when a change to the element's value is committed by the user.  When `suggest === true`, this event is debounced by the `suggestDebounce` value (default 250 ms). When `suggest === false`, debouncing does not apply and the event is emitted immediately on value change.                                                       | `CustomEvent<string>` |
-
-
-## Shadow Parts
-
-| Part                                 | Description                                                                          |
-| ------------------------------------ | ------------------------------------------------------------------------------------ |
-| `"ch-combo-box-render--placeholder"` | Present on the host when no item is selected and the placeholder text is displayed.  |
-| `"collapsed"`                        | State part applied to collapsed group headers and expandable buttons.                |
-| `"disabled"`                         | State part applied to disabled items, groups, group headers, and expandable headers. |
-| `"expandable"`                       | Applied to group headers that can be expanded or collapsed.                          |
-| `"expanded"`                         | State part applied to expanded group headers and expandable buttons.                 |
-| `"group"`                            | Applied to each item group container.                                                |
-| `"group__content"`                   | The container that wraps the child items of a group.                                 |
-| `"group__header"`                    | The header element of an item group.                                                 |
-| `"group__header-caption"`            | The caption text inside a group header.                                              |
-| `"item"`                             | Applied to each selectable leaf item in the list.                                    |
-| `"nested"`                           | State part applied to items that are nested inside a group.                          |
-| `"section"`                          | Applied to section containers in the dropdown.                                       |
-| `"selected"`                         | State part applied to the currently selected item.                                   |
-| `"window"`                           | The popover element that contains the dropdown list of items.                        |
-
-
-## CSS Custom Properties
-
-| Name                                                 | Description                                                                                                                                                                                                                                                                                                 |
-| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--ch-combo-box-group__expandable-button-image-size` | Specifies the image size of the expandable button size in the group items. @default 100%                                                                                                                                                                                                                    |
-| `--ch-combo-box-group__expandable-button-size`       | Specifies the expandable button size in the group items. @default 0.875em                                                                                                                                                                                                                                   |
-| `--ch-combo-box-item-gap`                            | Specifies the spacing between the images, text and the expandable button on items. @default 0px                                                                                                                                                                                                             |
-| `--ch-combo-box-item__background-image-size`         | Specifies the image size of the items. For example, the image size for the startImgSrc and endImgSrc @default 100%                                                                                                                                                                                          |
-| `--ch-combo-box-item__image-size`                    | Specifies the box size that contains an image in the items. For example, the box for the startImgSrc and endImgSrc @default 0.875em                                                                                                                                                                         |
-| `--ch-combo-box-separation`                          | Specifies the separation between the combo-box and the displayed popover. @default 0px                                                                                                                                                                                                                      |
-| `--ch-combo-box-separation-x`                        | Specifies the separation between the combo-box and the popover displayed on the x-axis. @default var(--ch-combo-box-separation)                                                                                                                                                                             |
-| `--ch-combo-box-separation-y`                        | Specifies the separation between the combo-box and the popover displayed on the y-axis. @default var(--ch-combo-box-separation)                                                                                                                                                                             |
-| `--ch-combo-box__picker`                             | Specifies the image of the combo-box's picker. @default url('data:image/svg+xml,<svg width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path d="M4.16669 0.666626L7.66669 4.66663H0.666687L4.16669 0.666626ZM4.16669 11.3333L0.666687 7.33329H7.66669L4.16669 11.3333Z"/></svg>') |
-| `--ch-combo-box__picker-collapsed`                   | Specifies the image of the combo-box's picker when it is collapsed. @default var(--ch-combo-box__picker)                                                                                                                                                                                                    |
-| `--ch-combo-box__picker-color`                       | Specifies the color of the combo-box's picker. @default currentColor                                                                                                                                                                                                                                        |
-| `--ch-combo-box__picker-expanded`                    | Specifies the image of the combo-box's picker when it is expanded. @default var(--ch-combo-box__picker)                                                                                                                                                                                                     |
-| `--ch-combo-box__picker-image-size`                  | Specifies the image size of the combo-box's picker. @default 100%                                                                                                                                                                                                                                           |
-| `--ch-combo-box__picker-size`                        | Specifies the box size that contains the combo-box's picker. @default 0.875em                                                                                                                                                                                                                               |
-| `--ch-combo-box__placeholder-color`                  | Define the placeholder color when the combo-box does not have a value set. (currentColor by default)                                                                                                                                                                                                        |
-| `--ch-combo-box__popover-max-block-size`             | Specifies the maximum block size of the popover. Only px values are supported. @default auto                                                                                                                                                                                                                |
-| `--ch-combo-box__popover-max-inline-size`            | Specifies the maximum inline size of the popover. Only px values are supported. @default auto                                                                                                                                                                                                               |
-
 
 ## Dependencies
 

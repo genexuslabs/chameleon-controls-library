@@ -1,7 +1,19 @@
 # ch-shortcuts
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -33,16 +45,6 @@ The `ch-shortcuts` component loads keyboard shortcut definitions from a JSON fil
 | `showKey`          | `show-key` | Key to show shortcut tooltips.       | `"F10"`   | `"F10"`     |
 | `src` _(required)_ | `src`      | The URL of the shortcut definitions. | `string`  | `undefined` |
 | `suspend`          | `suspend`  | Suspend shortcuts.                   | `boolean` | `false`     |
-
-
-## Shadow Parts
-
-| Part      | Description                                                                    |
-| --------- | ------------------------------------------------------------------------------ |
-| `"key"`   | Each individual `<kbd>` element representing a single key in the shortcut.     |
-| `"plus"`  | The "+" separator rendered between keys in a combination (e.g., Ctrl **+** S). |
-| `"slash"` | The "/" separator rendered between alternative keys in a shortcut definition.  |
-
 
 ## Dependencies
 

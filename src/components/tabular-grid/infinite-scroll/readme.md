@@ -1,9 +1,14 @@
 # ch-grid-infinite-scroller
 
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`complete`](#complete)
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -15,13 +20,11 @@ The 'ch-tabular-grid-infinite-scroll' provides infinite scroll functionality for
 | -------- | --------- | -------------------------------------------------------- | ----------------------- | ---------- |
 | `status` | `status`  | Indicates whether the grid is loading or already loaded. | `"loaded" \| "loading"` | `"loaded"` |
 
-
 ## Events
 
 | Event      | Description                        | Type               |
 | ---------- | ---------------------------------- | ------------------ |
 | `infinite` | Event emitted when end is reached. | `CustomEvent<any>` |
-
 
 ## Methods
 
@@ -32,9 +35,6 @@ Indicates that the grid is already loaded.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ----------------------------------------------
 

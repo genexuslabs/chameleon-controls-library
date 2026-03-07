@@ -1,7 +1,13 @@
 # ch-tabular-grid-render
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+
+<!-- Auto Generated Below -->
 
 ## Properties
 
@@ -12,7 +18,6 @@
 | `columnSortable`  | `column-sortable`  | Determines if the columns can be sorted by the user.  | `boolean`                                                                 | `true`      |
 | `model`           | --                 | Specifies the content of the tabular grid control.    | `{ columns: TabularGridColumnsModel; rowsets: TabularGridRowsetsModel; }` | `undefined` |
 | `theme`           | `theme`            | TODO: Remove this property                            | `string`                                                                  | `undefined` |
-
 
 ## Dependencies
 

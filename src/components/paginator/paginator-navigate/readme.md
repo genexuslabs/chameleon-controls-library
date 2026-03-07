@@ -1,7 +1,15 @@
 # ch-paginator-navigate
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -14,13 +22,11 @@ The 'ch-paginator-navigate' component represents the navigation buttons for the 
 | `disabled` | `disabled` | Flag indicating if the button is disabled. | `boolean`                                   | `undefined` |
 | `type`     | `type`     | The type of navigation button.             | `"first" \| "last" \| "next" \| "previous"` | `undefined` |
 
-
 ## Events
 
 | Event             | Description                                          | Type                                           |
 | ----------------- | ---------------------------------------------------- | ---------------------------------------------- |
 | `navigateClicked` | Event emitted when the navigation button is pressed. | `CustomEvent<ChPaginatorNavigateClickedEvent>` |
-
 
 ## Dependencies
 

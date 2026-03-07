@@ -1,7 +1,17 @@
 # ch-math-viewer
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Configuration Required](#configuration-required)
+- [Properties](#properties)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -36,14 +46,6 @@ You must include the KaTeX custom fonts and declare their font-faces. In your ma
 | ------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- | ----------- |
 | `displayMode` | `display-mode` | Specifies whether to render the math in block or inline mode.  - `"block"`: Renders display-style math (centered, larger, with vertical    spacing). The host element uses `display: block`.  - `"inline"`: Renders inline math that flows with surrounding text. The    host element uses `display: inline-block`.  This property is reflected as an HTML attribute, enabling CSS selectors like `:host([display-mode="inline"])` for layout customization.  Individual math blocks in the `value` string may auto-detect as block-style if they start with `\\[`, `$$`, `\\begin`, or contain alignment operators (`&=`, `^`), overriding this setting for that block. | `"block" \| "inline"` | `"block"`   |
 | `value`       | `value`        | Specifies the LaTeX math string to render. Multiple math blocks can be separated by blank lines (double newlines); each block is rendered independently.  Delimiters (`$$`, `\[...\]`, `\(...\)`, `$...$`) are automatically stripped before passing to KaTeX. When `undefined` or empty, the component renders nothing.                                                                                                                                                                                                                                                                                                                                                 | `string`              | `undefined` |
-
-
-## Shadow Parts
-
-| Part      | Description                                                                                                                                                                           |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"error"` | A `<span>` rendered in place of a math block when KaTeX fails to parse the expression. Contains the raw source text and exposes the error message via `aria-description` and `title`. |
-
 
 ----------------------------------------------
 

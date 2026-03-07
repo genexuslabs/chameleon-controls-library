@@ -175,9 +175,8 @@ function fixDependencyLinks(content, exportedComponentTags) {
         const componentMatch = linkText.match(/ch-[\w-]+/);
 
         if (componentMatch && exportedComponentTags.has(componentMatch[0])) {
-          // Link to exported component - fix the path
-          const exportedFile = `${componentMatch[0]}.md`;
-          validLines.push(` - [${linkText}](./${exportedFile})`);
+          // Link to exported component folder
+          validLines.push(` - [${linkText}](../${componentMatch[0]}/README.md)`);
         }
         // If component tag not found in exported tags, skip this line (broken link)
       } else if (line.trim()) {
@@ -298,23 +297,35 @@ function exportComponentDocs(outputDir) {
       // Read the README file
       let readmeContent = fs.readFileSync(readmePath, "utf8");
 
-      // Fix dependency links
+      // Fix dependency links (folder-based: ../tag/README.md)
       readmeContent = fixDependencyLinks(readmeContent, exportedComponentTags);
 
-      // Create output filename using component tag: ch-component-name.md
-      const outputFileName = `${componentTag}.md`;
-      const outputFilePath = path.join(outputDir, outputFileName);
+      // Create output folder: exported-docs/ch-component-name/
+      const componentFolder = path.join(outputDir, componentTag);
+      fs.mkdirSync(componentFolder, { recursive: true });
 
-      // Write the README to output directory
-      fs.writeFileSync(outputFilePath, readmeContent, "utf8");
+      // Fix styling link: ./docs/styling.md → ./styling.md (now siblings in export folder)
+      readmeContent = readmeContent.replace(
+        /\(\.\/docs\/styling\.md\)/g,
+        "(./styling.md)"
+      );
+
+      // Write README.md inside the component folder
+      fs.writeFileSync(path.join(componentFolder, "README.md"), readmeContent, "utf8");
+
+      // Copy styling.md if it exists
+      const stylingPath = path.join(component.path, "docs", "styling.md");
+      if (fs.existsSync(stylingPath)) {
+        fs.copyFileSync(stylingPath, path.join(componentFolder, "styling.md"));
+      }
 
       exportedFiles.push({
         component: componentTag,
         readable: getReadableComponentName(componentTag),
-        file: outputFileName
+        file: `${componentTag}/README.md`
       });
 
-      console.log(`✓ ${component.relativeId}: exported as ${outputFileName}`);
+      console.log(`✓ ${component.relativeId}: exported as ${componentTag}/README.md`);
       exportedCount++;
     } catch (error) {
       console.error(

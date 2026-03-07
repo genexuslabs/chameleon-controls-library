@@ -1,9 +1,16 @@
 # ch-notifications-item
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -18,24 +25,12 @@
 | `showTimeoutBar`            | `show-timeout-bar`             | If dismissTimeout > 0, a progress bar is displayed at the bottom of the element showing the time left for the alert to show. The progress stops when the element is hovered. | `boolean` | `false`               |
 | `timerInterval`             | `timer-interval`               | Sets the desired interval                                                                                                                                                    | `50`      | `50`                  |
 
-
 ## Events
 
 | Event                 | Description                   | Type                  |
 | --------------------- | ----------------------------- | --------------------- |
 | `notificationClick`   | the notificationClick event   | `CustomEvent<number>` |
 | `notificationDismiss` | the notificationDismiss event | `CustomEvent<number>` |
-
-
-## Shadow Parts
-
-| Part                    | Description |
-| ----------------------- | ----------- |
-| `"close-button"`        |             |
-| `"content"`             |             |
-| `"image"`               |             |
-| `"indicator-container"` |             |
-
 
 ## Dependencies
 

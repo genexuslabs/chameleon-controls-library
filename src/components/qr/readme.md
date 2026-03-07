@@ -1,7 +1,16 @@
 # ch-qr
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -38,7 +47,6 @@ The `ch-qr` component generates a QR code from any text, URL, or data string and
 | `radius`               | `radius`                 | Defines how round the QR code blocks should be. Valid range is `0` (squares) to `0.5` (maximum rounding / circles). Values outside this range may produce unexpected visual results.                                                                                                                                                                                                                            | `number`                                    | `0`         |
 | `size`                 | `size`                   | The total size (width and height) of the rendered QR code canvas in pixels. The canvas is always square.                                                                                                                                                                                                                                                                                                        | `number`                                    | `128`       |
 | `value`                | `value`                  | The text, URL, or data to encode into the QR code. Accepts any string value. When set to `undefined` or an empty string, no QR code is rendered and the ARIA `role` and `aria-label` attributes are removed from the host.                                                                                                                                                                                      | `string`                                    | `undefined` |
-
 
 ----------------------------------------------
 

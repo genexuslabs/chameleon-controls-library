@@ -1,9 +1,20 @@
 # ch-grid-row-actions
 
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`close`](#close)
+  - [`openRowActions`](#openrowactions)
+  - [`openRowContext`](#openrowcontext)
+  - [`openRowHover`](#openrowhover)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -17,13 +28,11 @@ The `ch-tabular-grid-row-actions` component represents a group row actions.
 | `showOnRowContext` | `show-on-row-context` | Indicates that the row actions are displayed when right-clicks on the row.           | `boolean` | `undefined` |
 | `showOnRowHover`   | `show-on-row-hover`   | Indicates to show row actions when hovering over row.                                | `boolean` | `undefined` |
 
-
 ## Events
 
 | Event             | Description                               | Type               |
 | ----------------- | ----------------------------------------- | ------------------ |
 | `rowActionOpened` | Event emitted when row actions is opened. | `CustomEvent<any>` |
-
 
 ## Methods
 
@@ -34,8 +43,6 @@ Closes the row actions window.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `openRowActions(cell: HTMLElement) => Promise<void>`
 
@@ -50,8 +57,6 @@ Opens the row actions on the row-actions-button cell.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `openRowContext(clientX: number, clientY: number) => Promise<void>`
 
@@ -68,8 +73,6 @@ Opens the row actions on the row-actions-button cell.
 
 Type: `Promise<void>`
 
-
-
 ### `openRowHover(row: HTMLElement) => Promise<void>`
 
 Opens the row actions on row hover.
@@ -83,9 +86,6 @@ Opens the row actions on row hover.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Dependencies
 

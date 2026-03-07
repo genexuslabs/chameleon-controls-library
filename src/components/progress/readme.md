@@ -1,7 +1,17 @@
 # ch-progress
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Slots](#slots)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -47,13 +57,11 @@ The `ch-progress` component displays the progress status for long-running tasks,
 | `renderType`          | `render-type`           | This property specifies how the progress will be rendered.  - `"custom"`: Useful for making custom renders of the progress. The    control doesn't render anything and only projects the content of the    default slot. Besides that, all specified properties are still used to    implement the control's accessibility.  Unknown values silently fall back to `"custom"` (default slot projection). This serves as an extension point for future render types.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `string`      | `"custom"`  |
 | `value`               | `value`                 | Specifies the current value of the component. In other words, how much of the task that has been completed.  The value is clamped between `min` and `max` for both display and ARIA purposes.  This property is not used if indeterminate === true.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `number`      | `0`         |
 
-
 ## Slots
 
 | Slot | Description                                                                                                                                                                                  |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |      | Default slot. Projected when `renderType === "custom"`. Use it to provide a fully custom visual representation of the progress while the component handles all ARIA semantics automatically. |
-
 
 ----------------------------------------------
 

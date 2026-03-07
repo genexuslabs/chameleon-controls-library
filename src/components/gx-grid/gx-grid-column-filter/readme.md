@@ -1,9 +1,16 @@
 # gx-grid-chameleon-column-filter
 
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -20,25 +27,11 @@ Represents a component that provides filtering controls for a grid column.
 | `greater`             | `greater`           | The value to filter for greater-than comparison. | `string`       | `undefined` |
 | `less`                | `less`              | The value to filter for less-than comparison.    | `string`       | `undefined` |
 
-
 ## Events
 
 | Event                   | Description                                                                                                 | Type                                            |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | `columnSettingsChanged` | Emitted when the filter settings for the column have changed. This event carries the updated filter values. | `CustomEvent<GridChameleonColumnFilterChanged>` |
-
-
-## Shadow Parts
-
-| Part        | Description |
-| ----------- | ----------- |
-| `"apply"`   |             |
-| `"button"`  |             |
-| `"caption"` |             |
-| `"footer"`  |             |
-| `"main"`    |             |
-| `"reset"`   |             |
-
 
 ## Dependencies
 

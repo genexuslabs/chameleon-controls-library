@@ -114,10 +114,8 @@ function injectRemarksIntoReadme(readmeFilePath, remarks) {
     /\n## Features[\s\S]*?(?=\n## Properties|\n## Shadow Parts|\n## Methods|\n---)/
   );
 
-  // Ensure remarks end with proper spacing before next section
-  const remarksSection = remarks.endsWith("```")
-    ? `\n\n${remarks}\n`
-    : `\n\n${remarks}`;
+  // Ensure remarks end with a trailing newline for proper spacing before the next section
+  const remarksSection = `\n\n${remarks}\n`;
 
   if (existingRemarksMatch) {
     // Replace the existing remarks section
@@ -140,6 +138,256 @@ function injectRemarksIntoReadme(readmeFilePath, remarks) {
 
   fs.writeFileSync(readmeFilePath, content, "utf8");
 }
+
+// ─── Styling extraction ──────────────────────────────────────────────
+
+/**
+ * Extracts a markdown section (## heading + content) from content.
+ * Returns { text, startIndex, endIndex } or null if not found.
+ */
+function extractSection(content, sectionHeading) {
+  // Match the section heading and everything until the next ## heading or end of file
+  const escapedHeading = sectionHeading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(
+    `(\\n## ${escapedHeading}\\n[\\s\\S]*?)(?=\\n## |\\n------|$)`
+  );
+  const match = content.match(regex);
+  if (!match) return null;
+
+  return {
+    text: match[1],
+    startIndex: match.index,
+    endIndex: match.index + match[0].length
+  };
+}
+
+/**
+ * Generates a GitHub-style anchor link from a heading text
+ */
+function toAnchorLink(headingText) {
+  return headingText
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "") // strip special chars except hyphens
+    .replace(/\s+/g, "-")     // spaces to hyphens
+    .replace(/-+/g, "-")      // collapse multiple hyphens
+    .replace(/^-|-$/g, "");   // trim leading/trailing hyphens
+}
+
+/**
+ * Generates a table of contents from markdown headings (h2 and h3)
+ * @param {string} content - Markdown content
+ * @param {string} skipTitle - The h1 title to skip
+ * @returns {string} TOC markdown
+ */
+function generateTOC(content) {
+  const lines = content.split("\n");
+  const tocEntries = [];
+
+  for (const line of lines) {
+    // Match h2 headings
+    const h2Match = line.match(/^## (.+)$/);
+    if (h2Match) {
+      const heading = h2Match[1];
+      // Skip the TOC heading itself
+      if (heading === "Table of Contents") continue;
+      tocEntries.push({ level: 2, text: heading });
+      continue;
+    }
+
+    // Match h3 headings
+    const h3Match = line.match(/^### (.+)$/);
+    if (h3Match) {
+      let text = h3Match[1];
+
+      // For method signatures like `methodName(params) => ReturnType`, show only `methodName`
+      const methodMatch = text.match(/^`(\w+)\(/);
+      if (methodMatch) {
+        text = `\`${methodMatch[1]}\``;
+      }
+
+      tocEntries.push({ level: 3, text: text });
+    }
+  }
+
+  if (tocEntries.length === 0) return null;
+
+  const tocLines = ["## Table of Contents", ""];
+  for (const entry of tocEntries) {
+    const anchor = toAnchorLink(entry.text);
+    const indent = entry.level === 3 ? "  " : "";
+    tocLines.push(`${indent}- [${entry.text}](#${anchor})`);
+  }
+
+  return tocLines.join("\n");
+}
+
+/**
+ * Extracts Shadow Parts and CSS Custom Properties from readme.md,
+ * removes them, and writes docs/styling.md combining with layout.md
+ * @param {string} componentDir - Path to the component directory
+ * @param {string} readmeFilePath - Path to the readme.md file
+ * @returns {boolean} True if styling.md was generated
+ */
+function extractStylingDocs(componentDir, readmeFilePath) {
+  if (!fs.existsSync(readmeFilePath)) return false;
+
+  let content = fs.readFileSync(readmeFilePath, "utf8");
+
+  // Extract the h1 title to get the component tag name
+  const titleMatch = content.match(/^# (.+)$/m);
+  const componentTag = titleMatch ? titleMatch[1] : "component";
+
+  // Extract Shadow Parts and CSS Custom Properties sections
+  const shadowPartsSection = extractSection(content, "Shadow Parts");
+  const cssPropsSection = extractSection(content, "CSS Custom Properties");
+
+  // Check if layout.md exists
+  const layoutPath = path.join(componentDir, "docs", "layout.md");
+  const hasLayout = fs.existsSync(layoutPath);
+
+  // Only generate styling.md if there's at least one source of content
+  if (!shadowPartsSection && !cssPropsSection && !hasLayout) {
+    return false;
+  }
+
+  // Build styling.md content
+  const stylingParts = [];
+  stylingParts.push(`# ${componentTag}: Styling`);
+
+  // Collect sections for TOC
+  const sectionsForTOC = [];
+
+  let shadowPartsText = "";
+  if (shadowPartsSection) {
+    shadowPartsText = shadowPartsSection.text.trim();
+    sectionsForTOC.push({ level: 2, text: "Shadow Parts" });
+  }
+
+  let cssPropsText = "";
+  if (cssPropsSection) {
+    cssPropsText = cssPropsSection.text.trim();
+    sectionsForTOC.push({ level: 2, text: "CSS Custom Properties" });
+  }
+
+  let layoutText = "";
+  if (hasLayout) {
+    const layoutContent = fs.readFileSync(layoutPath, "utf8");
+    // Skip the h1 title from layout.md and use its content under ## Shadow DOM Layout
+    const layoutBody = layoutContent.replace(/^# .+\n+/, "").trim();
+    layoutText = layoutBody;
+    sectionsForTOC.push({ level: 2, text: "Shadow DOM Layout" });
+
+    // Extract h2 subheadings from layout content for TOC
+    const layoutLines = layoutBody.split("\n");
+    for (const line of layoutLines) {
+      const h2Match = line.match(/^## (.+)$/);
+      if (h2Match) {
+        sectionsForTOC.push({ level: 3, text: h2Match[1] });
+      }
+    }
+  }
+
+  // Generate TOC for styling.md
+  const tocLines = ["## Table of Contents", ""];
+  for (const entry of sectionsForTOC) {
+    const anchor = toAnchorLink(entry.text);
+    const indent = entry.level === 3 ? "  " : "";
+    tocLines.push(`${indent}- [${entry.text}](#${anchor})`);
+  }
+  stylingParts.push(tocLines.join("\n"));
+
+  // Add sections
+  if (shadowPartsText) {
+    stylingParts.push(shadowPartsText);
+  }
+
+  if (cssPropsText) {
+    stylingParts.push(cssPropsText);
+  }
+
+  if (layoutText) {
+    stylingParts.push(`## Shadow DOM Layout\n\n${layoutText}`);
+  }
+
+  const stylingContent = stylingParts.join("\n\n") + "\n";
+
+  // Write styling.md
+  const docsDir = path.join(componentDir, "docs");
+  if (!fs.existsSync(docsDir)) {
+    fs.mkdirSync(docsDir, { recursive: true });
+  }
+  fs.writeFileSync(path.join(docsDir, "styling.md"), stylingContent, "utf8");
+
+  // Remove extracted sections from readme.md
+  // Process from end to start so indices remain valid
+  const sectionsToRemove = [cssPropsSection, shadowPartsSection].filter(Boolean);
+  sectionsToRemove.sort((a, b) => b.startIndex - a.startIndex);
+
+  for (const section of sectionsToRemove) {
+    content = content.slice(0, section.startIndex) + content.slice(section.endIndex);
+  }
+
+  // Clean up excessive blank lines after removal
+  content = content.replace(/\n\n\n+/g, "\n\n");
+
+  fs.writeFileSync(readmeFilePath, content, "utf8");
+
+  return true;
+}
+
+/**
+ * Inserts TOC into readme.md after h1 title, before <!-- Auto Generated Below -->
+ * @param {string} readmeFilePath - Path to the readme.md file
+ * @param {boolean} hasStyling - Whether styling.md was generated
+ */
+function insertTOCIntoReadme(readmeFilePath, hasStyling) {
+  if (!fs.existsSync(readmeFilePath)) return;
+
+  let content = fs.readFileSync(readmeFilePath, "utf8");
+
+  // Remove existing TOC if present
+  content = content.replace(
+    /\n## Table of Contents\n[\s\S]*?(?=\n## |\n<!-- Auto Generated Below -->)/,
+    "\n"
+  );
+
+  // Generate TOC from the current content
+  const toc = generateTOC(content);
+  if (!toc) return;
+
+  // Add Styling link to TOC if styling.md was generated
+  let tocContent = toc;
+  if (hasStyling) {
+    tocContent += `\n- [Styling](./docs/styling.md)`;
+  }
+
+  // Find insertion point: after h1 title, before <!-- Auto Generated Below -->
+  const autoGenMarker = "<!-- Auto Generated Below -->";
+  const autoGenIndex = content.indexOf(autoGenMarker);
+  if (autoGenIndex === -1) return;
+
+  // Split content at the auto-gen marker
+  const beforeAutoGen = content.slice(0, autoGenIndex).replace(/\n+$/, "");
+  const afterAutoGen = content.slice(autoGenIndex);
+
+  // Find the h1 line end
+  const h1Match = beforeAutoGen.match(/^# .+$/m);
+  if (!h1Match) return;
+
+  const h1End = beforeAutoGen.indexOf(h1Match[0]) + h1Match[0].length;
+  const h1Part = beforeAutoGen.slice(0, h1End);
+
+  content = h1Part + "\n\n" + tocContent + "\n\n" + afterAutoGen + "\n";
+
+  // Clean up excessive blank lines
+  content = content.replace(/\n\n\n+/g, "\n\n");
+  // Clean trailing whitespace
+  content = content.replace(/\n+$/, "\n");
+
+  fs.writeFileSync(readmeFilePath, content, "utf8");
+}
+
+// ─── Main processing ────────────────────────────────────────────────
 
 /**
  * Recursively find and process component directories
@@ -182,6 +430,7 @@ function processComponentsRecursively(dir, relativePath = "") {
         try {
           const { remarks, filename } = processComponentFile(componentPath);
 
+          // Step 1: Inject remarks
           if (remarks) {
             injectRemarksIntoReadme(readmePath, remarks);
             console.log(`✓ ${displayPath}: remarks injected`);
@@ -190,6 +439,17 @@ function processComponentsRecursively(dir, relativePath = "") {
             console.log(`⊘ ${displayPath}: no @remarks found`);
             skippedCount++;
           }
+
+          // Step 2: Extract styling docs (Shadow Parts + CSS Custom Properties + layout.md)
+          const hasStyling = extractStylingDocs(entryPath, readmePath);
+          if (hasStyling) {
+            console.log(`  ✓ ${displayPath}: styling.md generated`);
+          }
+
+          // Step 3: Insert TOC into readme.md
+          insertTOCIntoReadme(readmePath, hasStyling);
+          console.log(`  ✓ ${displayPath}: TOC inserted`);
+
         } catch (error) {
           console.error(`✗ Error processing ${displayPath}: ${error.message}`);
         }

@@ -1,7 +1,17 @@
 # ch-grid-column
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -40,7 +50,6 @@ The `ch-tabular-grid-column` component represents a grid column.
 | `sortDirection`        | `sort-direction`          | One of "asc" or "desc", indicating the current sort direction.                                                                                                                                                                                                             | `"asc" \| "desc"`                    | `undefined` |
 | `sortable`             | `sortable`                | A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).                                                                                                                             | `boolean`                            | `true`      |
 
-
 ## Events
 
 | Event                   | Description                                                                                                              | Type                                                 |
@@ -55,26 +64,6 @@ The `ch-tabular-grid-column` component represents a grid column.
 | `columnSizeChanged`     | Event emitted when the `size` property has been changed (i.e. when the user finishes dragging to resize the column).     | `CustomEvent<TabularGridColumnSizeChangedEvent>`     |
 | `columnSizeChanging`    | Event emitted when the `size` property is currently being changed (i.e. when the user is dragging to resize the column). | `CustomEvent<TabularGridColumnSizeChangedEvent>`     |
 | `columnSortChanged`     | Event emitted when the `sortDirection` property is changed.                                                              | `CustomEvent<TabularGridColumnSortChangedEvent>`     |
-
-
-## Shadow Parts
-
-| Part                    | Description |
-| ----------------------- | ----------- |
-| `"bar"`                 |             |
-| `"bar-name"`            |             |
-| `"bar-name-icon"`       |             |
-| `"bar-name-text"`       |             |
-| `"bar-resize"`          |             |
-| `"bar-resize-split"`    |             |
-| `"bar-selector"`        |             |
-| `"bar-settings"`        |             |
-| `"bar-settings-button"` |             |
-| `"bar-sort"`            |             |
-| `"bar-sort-ascending"`  |             |
-| `"bar-sort-descending"` |             |
-| `"selector-label"`      |             |
-
 
 ## Dependencies
 

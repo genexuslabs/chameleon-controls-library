@@ -1,7 +1,16 @@
 # ch-image
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -37,15 +46,6 @@ The `ch-image` component renders a multi-state image that automatically reflects
 | `getImagePathCallback` | --         | Specifies a callback that resolves an image source string into a `GxImageMultiState` object containing CSS custom property styles for each interactive state. If not provided, the component falls back to a globally registered resolver (registered via the control registry under `"getImagePathCallback"`).  If neither this callback nor the global registry provides a resolver, the image will not render (internal `#image` is set to `null`).                                                                                            | `(imageSrc: string) => GxImageMultiState` | `undefined`    |
 | `src`                  | `src`      | Specifies the source identifier for the image. This value is passed to `getImagePathCallback` (or the global registry resolver) to obtain the multi-state image definition. When set to `undefined`, the image is cleared. When set to a non-empty string but the resolver returns `undefined`, the internal image reference is set to `null` (nothing renders).                                                                                                                                                                                  | `string`                                  | `undefined`    |
 | `type`                 | `type`     | Specifies how the image will be rendered.  - `"background"`: renders the image as a CSS `background-image`.  - `"mask"`: renders as a CSS `mask-image` with `background-color: currentColor`, which makes the image inherit the parent's text color (useful for monochrome icons).  Defaults to `"background"`. This is an init-only property; changing it after initial render may not correctly update the CSS class.                                                                                                                           | `"background" \| "mask"`                  | `"background"` |
-
-
-## CSS Custom Properties
-
-| Name                         | Description                                                      |
-| ---------------------------- | ---------------------------------------------------------------- |
-| `--ch-image-background-size` | Specifies the size of the image. @default 100%                   |
-| `--ch-image-size`            | Specifies the box size that contains the image. @default 0.875em |
-
 
 ----------------------------------------------
 

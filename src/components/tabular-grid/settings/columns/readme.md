@@ -1,7 +1,15 @@
 # ch-grid-settings-columns
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -12,15 +20,6 @@ The `ch-tabular-grid-settings-columns` component represents the settings for a g
 | Property               | Attribute | Description                            | Type                               | Default     |
 | ---------------------- | --------- | -------------------------------------- | ---------------------------------- | ----------- |
 | `columns` _(required)_ | --        | An array of column elements to render. | `HTMLChTabularGridColumnElement[]` | `undefined` |
-
-
-## Shadow Parts
-
-| Part             | Description |
-| ---------------- | ----------- |
-| `"column"`       |             |
-| `"column-label"` |             |
-
 
 ## Dependencies
 

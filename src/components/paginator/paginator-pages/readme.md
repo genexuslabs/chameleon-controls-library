@@ -1,7 +1,16 @@
 # ch-paginator-pages
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -17,23 +26,11 @@ The 'ch-paginator-pages' component represents the pagination pages for the 'ch-p
 | `textDots`             | `text-dots`               | The text to display for the dots.                         | `string`  | `"..."` |
 | `totalPages`           | `total-pages`             | The total number of pages.                                | `1`       | `1`     |
 
-
 ## Events
 
 | Event         | Description                          | Type                                            |
 | ------------- | ------------------------------------ | ----------------------------------------------- |
 | `pageChanged` | Event emitted when the page changes. | `CustomEvent<ChPaginatorPagesPageChangedEvent>` |
-
-
-## Shadow Parts
-
-| Part       | Description |
-| ---------- | ----------- |
-| `"button"` |             |
-| `"dots"`   |             |
-| `"page"`   |             |
-| `"pages"`  |             |
-
 
 ## Dependencies
 

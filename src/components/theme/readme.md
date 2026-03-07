@@ -1,7 +1,19 @@
 # ch-theme
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -37,13 +49,11 @@ The `ch-theme` component loads and manages named stylesheets that can be shared 
 | `model`                       | `model`                           | Specifies the themes to load. Accepts a single theme name (string), an array of theme names, a single `ThemeItemModel` object, or an array of `ThemeItemModel` objects. Each item may specify a `name`, `url`, `styleSheet`, `themeBaseUrl`, and per-item `attachStyleSheet` override.  When set to `undefined` or `null`, no themes are loaded.  **Note:** The model is only processed on the first non-null assignment. Subsequent changes to an already-loaded model are currently not reactive. | `ThemeItemBaseModel & { styleSheet: string; } \| ThemeItemBaseModel & { url?: string; } \| ThemeItemModel[] \| string \| string[]` | `undefined` |
 | `timeout`                     | `timeout`                         | Specifies the maximum time (in milliseconds) to wait for each requested theme to load. If a theme does not resolve within this window, it is treated as a rejected promise and logged to the console.  Defaults to `10000` (10 seconds). This is an init-only property; changing it after the initial load has no effect.                                                                                                                                                                           | `10000`                                                                                                                            | `10000`     |
 
-
 ## Events
 
 | Event         | Description                                                                                                                                                                                                                                                                                                                                               | Type                              |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
 | `themeLoaded` | Emitted after all theme loading promises have settled (via `Promise.allSettled`). The event payload contains a `success` array with the names of the themes that loaded successfully. Themes that failed are logged to the console but not included in the payload.  Bubbles: `true`. Composed: `false` — the event does not cross shadow DOM boundaries. | `CustomEvent<ChThemeLoadedEvent>` |
-
 
 ## Dependencies
 

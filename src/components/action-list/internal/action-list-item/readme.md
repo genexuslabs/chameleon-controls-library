@@ -1,9 +1,16 @@
 # ch-action-list-item
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -31,7 +38,6 @@
 | `showDownloadingSpinner`    | `show-downloading-spinner` | `true` to show the downloading spinner when lazy loading the sub items of the control.                                                                   | `boolean`                                                                                                                                                                                                                                           | `true`      |
 | `translations` _(required)_ | --                         | Specifies the literals required for the control.                                                                                                         | `{ confirmDelete: string; cancelDelete: string; confirmModify: string; cancelModify: string; }`                                                                                                                                                     | `undefined` |
 
-
 ## Events
 
 | Event           | Description                                              | Type                                                   |
@@ -40,16 +46,6 @@
 | `fixedChange`   | Fired when the control is asking to modify its caption   | `CustomEvent<{ itemId: string; value: boolean; }>`     |
 | `itemDragEnd`   | Fired when the item is no longer being dragged.          | `CustomEvent<any>`                                     |
 | `remove`        | Fired when the remove button was clicked in the control. | `CustomEvent<string>`                                  |
-
-
-## Shadow Parts
-
-| Part                     | Description |
-| ------------------------ | ----------- |
-| `"end"`                  |             |
-| `"item__inline-caption"` |             |
-| `"start"`                |             |
-
 
 ## Dependencies
 

@@ -1,7 +1,21 @@
 # ch-segmented-control-render
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -40,26 +54,11 @@ The `ch-segmented-control-render` component presents a horizontal set of mutuall
 | `model`        | --               | Defines the items rendered by the segmented control.                                                                                                                                                                                                                                                                                                      | `SegmentedControlItemModel[]` | `undefined`                      |
 | `selectedId`   | `selected-id`    | Specifies the ID of the selected item. The value must match an `id` from the `model` array; if no item matches, no segment is visually selected.  This property is mutable: it is updated internally when the user clicks a segment, so the host can read back the current selection at any time.                                                         | `string`                      | `undefined`                      |
 
-
 ## Events
 
 | Event                | Description                                                                                                                                                                                                  | Type                  |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
 | `selectedItemChange` | Fired when the selected item changes due to user interaction (click). It is **not** emitted when `selectedId` is changed programmatically. The event detail contains the `id` of the newly selected segment. | `CustomEvent<string>` |
-
-
-## Shadow Parts
-
-| Part           | Description                                                                                                                             |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `"action"`     | The `<button>` element for each segment. Receives the `selected`, `unselected`, `disabled`, `first`, `last`, and `between` state parts. |
-| `"between"`    | Present in the `action` part when the segment is neither the first nor the last item.                                                   |
-| `"disabled"`   | Present in the `action` part when the segment is disabled.                                                                              |
-| `"first"`      | Present in the `action` part when the segment is the first item in the group.                                                           |
-| `"last"`       | Present in the `action` part when the segment is the last item in the group.                                                            |
-| `"selected"`   | Present in the `action` part when the segment is the currently selected one.                                                            |
-| `"unselected"` | Present in the `action` part when the segment is not selected.                                                                          |
-
 
 ## Dependencies
 

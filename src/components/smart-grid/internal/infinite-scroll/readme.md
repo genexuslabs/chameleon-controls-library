@@ -1,9 +1,13 @@
 # ch-infinite-scroll
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -16,7 +20,6 @@
 | `loadingState` _(required)_                     | `loading-state` | If `"more-data-to-fetch"`, the infinite scroll will execute the `infiniteThresholdReachedCallback` when the `threshold` is met. When the threshold is met, the internal `loadingState` will be changed to `"loading"` and the user has to keep in sync the `loadingState` of the component with the real state of the data.  Set this to `"all-records-loaded"` to disable the infinite scroll from actively trying to receive new data while reaching the threshold. This is useful when it is known that there is no more data that can be added, and the infinite scroll is no longer needed. | `"all-records-loaded" \| "initial" \| "loading" \| "more-data-to-fetch"` | `undefined`       |
 | `position`                                      | `position`      | The position of the infinite scroll element. The value can be either `top` or `bottom`. When `position === "top"`, the control also implements inverse loading.                                                                                                                                                                                                                                                                                                                                                                                                                                  | `"bottom" \| "top"`                                                      | `"bottom"`        |
 | `threshold`                                     | `threshold`     | The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.                                                                                                                                                                                        | `string`                                                                 | `"150px"`         |
-
 
 ## Dependencies
 

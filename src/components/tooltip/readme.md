@@ -1,7 +1,21 @@
 # ch-tooltip
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -43,31 +57,12 @@ The `ch-tooltip` component displays supplementary information in a small overlay
 | `delay`                       | `delay`                          | Specifies the delay (in ms) for the tooltip to be displayed.                                                                                                                                                                                                       | `number`                                                                         | `100`           |
 | `inlineAlign`                 | `inline-align`                   | Specifies the inline alignment of the window.                                                                                                                                                                                                                      | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"center"`      |
 
-
 ## Slots
 
 | Slot       | Description                                                                                         |
 | ---------- | --------------------------------------------------------------------------------------------------- |
 |            | Default slot. The tooltip content displayed inside the popover window.                              |
 | `"action"` | Content projected inside the internal trigger button. Rendered when `actionElement` is `undefined`. |
-
-
-## Shadow Parts
-
-| Part       | Description                                                                                                                                                           |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"action"` | The internally rendered `<button>` that acts as the tooltip trigger. Only present when `actionElement` is `undefined` (i.e., the action lives inside the shadow DOM). |
-| `"window"` | The `ch-popover` element that contains the tooltip content. Only present while the tooltip is visible.                                                                |
-
-
-## CSS Custom Properties
-
-| Name                        | Description                                                                                                                |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `--ch-tooltip-separation`   | Specifies the separation between the action and the displayed tooltip. @default 0px                                        |
-| `--ch-tooltip-separation-x` | Specifies the separation between the action and the tooltip displayed on the x-axis. @default var(--ch-tooltip-separation) |
-| `--ch-tooltip-separation-y` | Specifies the separation between the action and the tooltip displayed on the y-axis. @default var(--ch-tooltip-separation) |
-
 
 ## Dependencies
 

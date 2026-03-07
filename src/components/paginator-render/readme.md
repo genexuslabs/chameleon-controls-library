@@ -1,7 +1,20 @@
 # ch-paginator-render
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -59,40 +72,12 @@ The `ch-paginator-render` component provides a fully customizable pagination con
 | `totalItems`                 | `total-items`                   | Number for Total Items, default = undefined.                                                   | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `undefined`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `translations`               | --                              | Specifies the literals required in the control.                                                | `{ accessibleName: { currentPage: string; goToPage: string; goToInput: string; itemsPerPageOptions: string; firstButton: string; lastButton: string; nextButton: string; previousButton: string; }; text: { first: string; goToButton: string; of: string; itemsPerPage: string; ellipsis: string; last: string; next: string; goToInputLabel: string; prev: string; showingItems: string; showingPage: string; unknownPages: string; unknownItems: string; }; }` | `{     accessibleName: {       currentPage: "current page, page ",       goToPage: "go to page ",       goToInput: "Go to page",       itemsPerPageOptions: "Select amount of items to show",       firstButton: "Go to first page",       nextButton: "Go to next page",       lastButton: "Go to last page",       previousButton: "Go to previous page"     },     text: {       goToButton: "Go",       itemsPerPage: "Items per page:",       of: "of ",       ellipsis: "...",       first: "First",       prev: "Prev",       next: "Next",       last: "Last",       unknownPages: "many",       unknownItems: "many",       showingItems: `Showing ${FIRST_ITEM_IN_PAGE} - ${LAST_ITEM_IN_PAGE} of ${TOTAL_ITEMS} items`,       goToInputLabel: "Page:",       showingPage: `Showing ${ACTUAL_PAGE} of ${TOTAL_PAGES} pages`     }   }` |
 
-
 ## Events
 
 | Event                | Description                                            | Type                  |
 | -------------------- | ------------------------------------------------------ | --------------------- |
 | `itemsPerPageChange` | Event fired when the amount of items per page changes. | `CustomEvent<number>` |
 | `pageChange`         | Event fired when there is a new page selection.        | `CustomEvent<number>` |
-
-
-## Shadow Parts
-
-| Part                          | Description                                                                        |
-| ----------------------------- | ---------------------------------------------------------------------------------- |
-| `"disabled"`                  | Applied to navigation buttons when they are disabled (e.g. "first" on page 1).     |
-| `"ellipsis"`                  | Applied to ellipsis elements within the page navigation.                           |
-| `"first__button"`             | The "first page" navigation button.                                                |
-| `"go-to"`                     | Container for the "go to page" control.                                            |
-| `"go-to__input"`              | The numeric input for jumping to a specific page.                                  |
-| `"go-to__label"`              | Label for the "go to page" input.                                                  |
-| `"items-per-page"`            | Container for the items-per-page selector control.                                 |
-| `"items-per-page-info"`       | Container for the items-per-page informational text.                               |
-| `"items-per-page-info__text"` | The text span showing the current item range (e.g. "Showing 1 - 10 of 100 items"). |
-| `"items-per-page__combo-box"` | The combo-box used to select items per page.                                       |
-| `"items-per-page__label"`     | Label text for the items-per-page selector.                                        |
-| `"last__button"`              | The "last page" navigation button.                                                 |
-| `"navigation-info"`           | Container for the page navigation informational text.                              |
-| `"navigation-info__text"`     | The text span showing the current page info (e.g. "Showing 3 of 10 pages").        |
-| `"next__button"`              | The "next page" navigation button.                                                 |
-| `"not-selected"`              | Applied to page elements that are not selected.                                    |
-| `"page"`                      | An individual page button, anchor, or ellipsis element.                            |
-| `"pages"`                     | Container wrapping the page number navigation controls.                            |
-| `"prev__button"`              | The "previous page" navigation button.                                             |
-| `"selected"`                  | Applied to the currently selected page element.                                    |
-
 
 ## Dependencies
 

@@ -1,7 +1,24 @@
 # ch-layout-splitter
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Methods](#methods)
+  - [`addSiblingLeaf`](#addsiblingleaf)
+  - [`refreshLayout`](#refreshlayout)
+  - [`removeItem`](#removeitem)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -37,7 +54,6 @@ The `ch-layout-splitter` component renders a nestable grid of columns and rows w
 | `dragBarDisabled`       | `drag-bar-disabled`       | This attribute lets you specify if the resize operation is disabled in all drag bars. If `true`, the drag bars are disabled.                                                                                                                                                                     | `boolean`                                                                               | `false`                                                         |
 | `incrementWithKeyboard` | `increment-with-keyboard` | Specifies the resizing increment, in pixels, that is applied per Arrow-key press when using the keyboard to resize a drag bar.                                                                                                                                                                   | `number`                                                                                | `2`                                                             |
 | `model`                 | --                        | Specifies the layout tree. The root is a `LayoutSplitterGroupModel` with a `direction` (`"columns"` or `"rows"`) and an `items` array. Each item is either a leaf (`LayoutSplitterLeafModel`) or a nested group, enabling arbitrarily complex layouts. Sibling items are separated by drag bars. | `{ id: "root"; direction: LayoutSplitterDirection; items: LayoutSplitterItemModel[]; }` | `{     id: "root",     direction: "columns",     items: []   }` |
-
 
 ## Methods
 
@@ -89,15 +105,6 @@ Type: `Promise<LayoutSplitterItemRemoveResult>`
 | Slot          | Description                                                                 |
 | ------------- | --------------------------------------------------------------------------- |
 | `"{item.id}"` | Named slot projected inside each leaf item. One slot per leaf in the model. |
-
-
-## Shadow Parts
-
-| Part          | Description                                                                                                                                |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `"bar"`       | The drag bar separator that divides two columns or two rows. May include an additional custom part when the item specifies `dragBar.part`. |
-| `"{item.id}"` | Exposed on every group container, enabling per-item styling from outside the shadow DOM.                                                   |
-
 
 ## Dependencies
 

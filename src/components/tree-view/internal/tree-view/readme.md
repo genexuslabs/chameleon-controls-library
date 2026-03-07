@@ -1,7 +1,18 @@
 # ch-tree-view
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`scrollIntoVisible`](#scrollintovisible)
+  - [`updateValidDropZone`](#updatevaliddropzone)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Properties
 
@@ -13,7 +24,6 @@
 | `selectedItemsCallback` | --                        | Callback that is executed to get the current selected items.                                                       | `() => Map<string, TreeViewItemSelectedInfo>` | `undefined` |
 | `waitDropProcessing`    | `wait-drop-processing`    | This property lets you specify if the tree is waiting to process the drop of items.                                | `boolean`                                     | `false`     |
 
-
 ## Events
 
 | Event                 | Description                                                                                                                   | Type                                                                                                                                                                             |
@@ -23,7 +33,6 @@
 | `itemContextmenu`     | Fired when an element displays its contextmenu.                                                                               | `CustomEvent<{ id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; contextmenuEvent: PointerEvent; }>`                                                             |
 | `itemsDropped`        | Fired when the dragged items are dropped in another item of the tree.                                                         | `CustomEvent<{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; draggingSelectedItems: boolean; dropInTheSameTree: boolean; dropType: TreeViewDropType; }>` |
 | `selectedItemsChange` | Fired when the selected items change.                                                                                         | `CustomEvent<Map<string, TreeViewItemSelectedInfo>>`                                                                                                                             |
-
 
 ## Methods
 
@@ -40,8 +49,6 @@ Given an item id, it scrolls into the item's view.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], dropType: TreeViewDropType, validDrop: boolean) => Promise<void>`
 
@@ -60,16 +67,6 @@ Update the information about the valid droppable zones.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
-
-## Shadow Parts
-
-| Part             | Description                                                             |
-| ---------------- | ----------------------------------------------------------------------- |
-| `"drag-preview"` | The element that contains the preview information for the current drag. |
-
 
 ## Dependencies
 

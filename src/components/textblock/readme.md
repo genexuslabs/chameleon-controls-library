@@ -1,7 +1,22 @@
 # ch-textblock
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Slots](#slots)
+- [Properties](#properties)
+- [Events](#events)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -42,20 +57,17 @@ The `ch-textblock` component displays text or HTML content with multi-line ellip
 | `format`                       | `format`                           | It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `text`, the control works as a normal textblock control    and it is affected by most of the defined properties. | `"HTML" \| "text"`                                    | `"text"`    |
 | `showTooltipOnOverflow`        | `show-tooltip-on-overflow`         | `true` to display a tooltip when the caption overflows the size of the container.  Only works if `format = text` and `autoGrow = false`.                                                                                                                                                                                        | `boolean`                                             | `false`     |
 
-
 ## Events
 
 | Event                      | Description                                                                                                                                                                                                                              | Type                   |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `overflowingContentChange` | Fired when the overflow state of the control changes (i.e., when content starts or stops overflowing the container). The emitted boolean indicates the current overflow state: `true` if content currently overflows, `false` otherwise. | `CustomEvent<boolean>` |
 
-
 ## Slots
 
 | Slot | Description                                                                   |
 | ---- | ----------------------------------------------------------------------------- |
 |      | The default slot for HTML content. Rendered when `format` is set to `"HTML"`. |
-
 
 ## Dependencies
 

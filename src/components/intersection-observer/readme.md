@@ -1,7 +1,19 @@
 # gx-intersection-observer
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Slots](#slots)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Slots](#slots)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -42,20 +54,17 @@ The `ch-intersection-observer` component is a declarative wrapper around the nat
 | `threshold`    | `threshold`     | Comma-separated percentage values representing the visibility thresholds at which the `intersectionUpdate` event fires. Each value must be a number optionally followed by `%` (e.g., `"25%,50%,75%"`). Values exceeding 100% are ignored. If not specified, defaults to `[0]` (fires as soon as even one pixel is visible).  Init-only — changes after `componentDidLoad` have no effect. | `string` | `undefined` |
 | `topMargin`    | `top-margin`    | Top margin around the root element. Accepts a device-independent pixel value (e.g., `"200dip"`, converted to `px`) or a percentage (e.g., `"10%"`). Invalid values default to `"0px"`.  Init-only — changes after `componentDidLoad` have no effect.                                                                                                                                       | `string` | `undefined` |
 
-
 ## Events
 
 | Event                | Description                                                                                                                                                                                                                                                                                                                                                                       | Type                                     |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
 | `intersectionUpdate` | Emitted whenever the observed element crosses one of the visibility thresholds specified by the `threshold` property. The event payload is the first `IntersectionObserverEntry` from the observer callback, which contains the intersection ratio, bounding rectangles, and visibility state.  Not cancelable. Emitted synchronously within the `IntersectionObserver` callback. | `CustomEvent<IntersectionObserverEntry>` |
 
-
 ## Slots
 
 | Slot        | Description                                          |
 | ----------- | ---------------------------------------------------- |
 | `"content"` | The element to be observed for intersection changes. |
-
 
 ----------------------------------------------
 

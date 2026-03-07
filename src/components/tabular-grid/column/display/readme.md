@@ -1,7 +1,11 @@
 # ch-grid-column-display
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -12,7 +16,6 @@ The `ch-tabular-grid-column-display` component is responsible for determining th
 | Property              | Attribute | Description                                 | Type                             | Default     |
 | --------------------- | --------- | ------------------------------------------- | -------------------------------- | ----------- |
 | `column` _(required)_ | --        | The column element that is being monitored. | `HTMLChTabularGridColumnElement` | `undefined` |
-
 
 ----------------------------------------------
 

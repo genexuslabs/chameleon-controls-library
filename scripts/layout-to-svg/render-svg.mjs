@@ -23,6 +23,7 @@ import {
 } from "./defaults.mjs";
 import { parseLayoutFile } from "./parse-layout.mjs";
 import {
+  BADGE_ICONS,
   svgBadge,
   svgDashedRect,
   svgDocument,
@@ -457,8 +458,8 @@ function renderNode(positioned) {
       svg += svgBadge(
         x + SIZES.padding,
         projLabelY,
-        "→ projected content (light DOM)",
-        { bgColor: BADGE_COLORS.projected.fill, textColor: BADGE_COLORS.projected.text, height: SIZES.badgeHeight, paddingX: SIZES.badgePadX, rx: SIZES.badgeRadius }
+        "projected content (light DOM)",
+        { bgColor: BADGE_COLORS.projected.fill, textColor: BADGE_COLORS.projected.text, height: SIZES.badgeHeight, paddingX: SIZES.badgePadX, rx: SIZES.badgeRadius, icon: BADGE_ICONS.projected }
       );
     }
   }
@@ -529,26 +530,30 @@ function renderNode(positioned) {
 function renderCommentNode(positioned) {
   const { node, x, y, width, height } = positioned;
 
-  let badgeColor, text;
+  let badgeColor, text, icon;
 
   switch (node.type) {
     case "comment-when":
       badgeColor = BADGE_COLORS.when;
-      text = `\u25C7 when ${node.condition}`;
+      icon = BADGE_ICONS.condition;
+      text = `when ${node.condition}`;
       break;
     case "comment-else":
       badgeColor = BADGE_COLORS.else;
+      icon = BADGE_ICONS.condition;
       text = node.description
-        ? `\u25C7 else (${node.description})`
-        : "\u25C7 else";
+        ? `else (${node.description})`
+        : "else";
       break;
     case "comment-else-when":
       badgeColor = BADGE_COLORS.else;
-      text = `\u25C7 else when ${node.condition}`;
+      icon = BADGE_ICONS.condition;
+      text = `else when ${node.condition}`;
       break;
     case "comment-for-each":
       badgeColor = BADGE_COLORS["for-each"];
-      text = `\u21BB for each ${node.iteration.item} in ${node.iteration.collection}`;
+      icon = BADGE_ICONS.iteration;
+      text = `for each ${node.iteration.item} in ${node.iteration.collection}`;
       break;
     case "comment-descriptive":
       badgeColor = BADGE_COLORS.descriptive;
@@ -568,6 +573,7 @@ function renderCommentNode(positioned) {
     fontSize: SIZES.condFontSize,
     height: SIZES.badgeHeight,
     paddingX: SIZES.badgePadX,
+    icon,
     rx: SIZES.badgeRadius
   });
 }
@@ -786,6 +792,15 @@ function getHints(node, caseMeta, path) {
 
 // ─── Legend ──────────────────────────────────────────────────────────────
 
+// Render an icon path in the legend (white color on colored background)
+function legendIcon(icon, x, y, size) {
+  const scale = size / icon.viewBox;
+  if (icon.type === "fill") {
+    return `<path d="${icon.path}" fill="#fff" transform="translate(${x},${y}) scale(${scale})" />\n`;
+  }
+  return `<path d="${icon.path}" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(${x},${y}) scale(${scale})" />\n`;
+}
+
 const LEGEND_ITEMS = [
   {
     render: (x, y) => {
@@ -802,7 +817,7 @@ const LEGEND_ITEMS = [
   {
     render: (x, y) => {
       let s = svgRect(x, y, 12, 12, { fill: BADGE_COLORS.when.fill, rx: 2 });
-      s += svgText(x + 5, y + 9.5, "\u25C7", { fontSize: 7, fill: "#fff" });
+      s += legendIcon(BADGE_ICONS.condition, x + 1, y + 1, 10);
       s += svgText(x + 16, y + 10, "condition (when / else)", {
         fontSize: 8,
         fill: "#666"
@@ -816,7 +831,7 @@ const LEGEND_ITEMS = [
         fill: BADGE_COLORS["for-each"].fill,
         rx: 2
       });
-      s += svgText(x + 4, y + 9.5, "\u21BB", { fontSize: 7, fill: "#fff" });
+      s += legendIcon(BADGE_ICONS.iteration, x + 1, y + 1, 10);
       s += svgText(x + 16, y + 10, "iteration (for each)", {
         fontSize: 8,
         fill: "#666"
@@ -856,7 +871,7 @@ const LEGEND_ITEMS = [
         fill: BADGE_COLORS.projected.fill,
         rx: 2
       });
-      s += svgText(x + 3, y + 9.5, "\u2192", { fontSize: 7, fill: "#fff" });
+      s += legendIcon(BADGE_ICONS.projected, x + 1, y + 1, 10);
       s += svgText(x + 16, y + 10, "projected content (light DOM)", {
         fontSize: 8,
         fill: "#666"

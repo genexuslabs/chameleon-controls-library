@@ -153,41 +153,63 @@ function measure(node, caseMeta, path) {
     c => c.width > 0 && c.height > 0
   );
 
-  let contentWidth, contentHeight;
+  // Split shadow vs projected children
+  const hasShadow = node.shadowRoot;
+  const shadowMeasurements = hasShadow
+    ? visibleMeasurements.filter(c => !isProjectedChild(node, c.node))
+    : visibleMeasurements;
+  const projectedMeasurements = hasShadow
+    ? visibleMeasurements.filter(c => isProjectedChild(node, c.node))
+    : [];
 
-  // Check if any children are condition comments (need indent for their content)
-  const hasConditions = visibleMeasurements.some(c => isCommentNode(c.node));
-  const condIndentWidth = hasConditions ? SIZES.condIndent : 0;
-
-  if (direction === "row") {
-    contentWidth =
-      visibleMeasurements.reduce((sum, c) => sum + c.width, 0) +
-      Math.max(0, visibleMeasurements.length - 1) * SIZES.gap;
-    contentHeight = Math.max(0, ...visibleMeasurements.map(c => c.height));
-  } else {
-    // Indented content may be wider than badges, account for both
-    const badgeWidths = visibleMeasurements
-      .filter(c => isCommentNode(c.node))
-      .map(c => c.width);
-    const contentWidths = visibleMeasurements
-      .filter(c => !isCommentNode(c.node))
-      .map(c => c.width + condIndentWidth);
-    contentWidth = Math.max(0, ...badgeWidths, ...contentWidths);
-    contentHeight = computeColumnHeight(visibleMeasurements);
+  function measureGroup(group) {
+    if (group.length === 0) return { width: 0, height: 0 };
+    const hasConditions = group.some(c => isCommentNode(c.node));
+    const condIndentW = hasConditions ? SIZES.condIndent : 0;
+    if (direction === "row") {
+      return {
+        width: group.reduce((sum, c) => sum + c.width, 0) +
+          Math.max(0, group.length - 1) * SIZES.gap,
+        height: Math.max(0, ...group.map(c => c.height))
+      };
+    }
+    const badgeWidths = group.filter(c => isCommentNode(c.node)).map(c => c.width);
+    const contentWidths = group.filter(c => !isCommentNode(c.node)).map(c => c.width + condIndentW);
+    return {
+      width: Math.max(0, ...badgeWidths, ...contentWidths),
+      height: computeColumnHeight(group)
+    };
   }
+
+  const shadowContent = measureGroup(shadowMeasurements);
+  const projectedContent = measureGroup(projectedMeasurements);
 
   const labelSpace = label.height > 0 ? label.height + SIZES.labelGap : 0;
 
   // Shadow boundary adds extra padding
-  const extraPad = node.shadowRoot ? SIZES.shadowPad : 0;
-  const shadowLabelExtra = node.shadowRoot ? SIZES.shadowLabelGap : 0;
+  const extraPad = hasShadow ? SIZES.shadowPad : 0;
+  const shadowLabelExtra = hasShadow ? SIZES.shadowLabelGap : 0;
 
-  // First child's floating pill needs extra top space
-  const firstChildPillSpace =
-    visibleMeasurements.length > 0 &&
-    hasFloatingPill(visibleMeasurements[0].node)
+  // First shadow child's floating pill needs extra top space
+  const firstShadowPillSpace =
+    shadowMeasurements.length > 0 &&
+    hasFloatingPill(shadowMeasurements[0].node)
       ? SIZES.tagFloat
       : 0;
+
+  // First projected child's floating pill needs extra top space
+  const firstProjPillSpace =
+    projectedMeasurements.length > 0 &&
+    hasFloatingPill(projectedMeasurements[0].node)
+      ? SIZES.tagFloat
+      : 0;
+
+  // Projected section adds: separator gap + projected label + content
+  const projectedSectionHeight = projectedMeasurements.length > 0
+    ? SIZES.gap + SIZES.badgeHeight + SIZES.commentGap + firstProjPillSpace + projectedContent.height
+    : 0;
+
+  const contentWidth = Math.max(shadowContent.width, projectedContent.width);
 
   const width = Math.max(
     label.width + SIZES.padding * 2,
@@ -197,21 +219,85 @@ function measure(node, caseMeta, path) {
   const height = Math.max(
     SIZES.padding +
       labelSpace +
-      firstChildPillSpace +
-      contentHeight +
+      firstShadowPillSpace +
+      shadowContent.height +
       SIZES.padding +
       extraPad +
-      shadowLabelExtra,
+      shadowLabelExtra +
+      projectedSectionHeight,
     SIZES.minHeight
   );
 
-  return { width, height, label, childMeasurements, hints, direction, path };
+  return {
+    width, height, label, childMeasurements, hints, direction, path,
+    shadowMeasurements, projectedMeasurements,
+    shadowContentHeight: shadowContent.height
+  };
 }
 
 // ─── Phase 2: Position (top-down) ────────────────────────────────────────
 
+function positionGroup(group, cx, cy, direction, result) {
+  const hasConditions = group.some(c => isCommentNode(c.node));
+  const condIndent = hasConditions ? SIZES.condIndent : 0;
+  let inCondScope = false;
+  let currentScope = null;
+  let lastContentBottomY = cy;
+
+  for (let i = 0; i < group.length; i++) {
+    const childMeasure = group[i];
+    const childNode = childMeasure.node;
+
+    if (direction === "row") {
+      const childPos = position(childNode, childMeasure, cx, cy);
+      result.children.push(childPos);
+      cx += childMeasure.width + SIZES.gap;
+    } else {
+      if (isCommentNode(childNode)) {
+        if (currentScope) {
+          const isContinuation =
+            childNode.type === "comment-else" ||
+            childNode.type === "comment-else-when";
+          currentScope.endY = isContinuation
+            ? cy - SIZES.commentGap
+            : lastContentBottomY;
+          result.condScopes.push(currentScope);
+        }
+        const childPos = position(childNode, childMeasure, cx, cy);
+        result.children.push(childPos);
+        const scopeColor = getScopeColor(childNode);
+        currentScope = {
+          startY: cy + childMeasure.height,
+          endY: cy + childMeasure.height,
+          x: cx + condIndent - 4,
+          color: scopeColor
+        };
+        inCondScope = true;
+      } else {
+        const childCx = inCondScope ? cx + condIndent : cx;
+        const childPos = position(childNode, childMeasure, childCx, cy);
+        result.children.push(childPos);
+        lastContentBottomY = cy + childMeasure.height;
+        if (currentScope) {
+          currentScope.endY = lastContentBottomY;
+        }
+      }
+
+      const gap = gapAfterChild(childMeasure, group[i + 1]);
+      cy += childMeasure.height + gap;
+    }
+  }
+
+  if (currentScope && currentScope.endY > currentScope.startY) {
+    result.condScopes.push(currentScope);
+  }
+
+  return cy;
+}
+
 function position(node, measurement, x, y) {
-  const { label, childMeasurements, hints, direction, path } = measurement;
+  const { label, hints, direction, path,
+    shadowMeasurements, projectedMeasurements } = measurement;
 
   const result = {
     node,
@@ -232,84 +318,34 @@ function position(node, measurement, x, y) {
   let cy = y + SIZES.padding + labelSpace;
 
   if (node.shadowRoot) {
-    // Offset children inside the shadow boundary (past dashed rect top + label)
     cy += SIZES.shadowPad + SIZES.shadowLabelGap;
   }
 
-  const visibleMeasurements = childMeasurements.filter(
-    c => c.width > 0 && c.height > 0
-  );
-
-  // If the first child has a floating pill, add space so it doesn't overlap parent labels
-  if (
-    visibleMeasurements.length > 0 &&
-    hasFloatingPill(visibleMeasurements[0].node)
-  ) {
-    cy += SIZES.tagFloat;
-  }
-
-  // Track condition scopes for indentation and scope lines
-  const hasConditions = visibleMeasurements.some(c => isCommentNode(c.node));
-  const condIndent = hasConditions ? SIZES.condIndent : 0;
-  let inCondScope = false;
   result.condScopes = [];
-  let currentScope = null;
-  let lastContentBottomY = cy;
 
-  for (let i = 0; i < visibleMeasurements.length; i++) {
-    const childMeasure = visibleMeasurements[i];
-    const childNode = childMeasure.node;
-
-    if (direction === "row") {
-      const childPos = position(childNode, childMeasure, cx, cy);
-      result.children.push(childPos);
-      cx += childMeasure.width + SIZES.gap;
-    } else {
-      if (isCommentNode(childNode)) {
-        // Close previous scope if it exists
-        if (currentScope) {
-          // For else/else-when continuations, extend scope line to the badge.
-          // For independent conditions (new when/for-each), end at last content.
-          const isContinuation =
-            childNode.type === "comment-else" ||
-            childNode.type === "comment-else-when";
-          currentScope.endY = isContinuation
-            ? cy - SIZES.commentGap
-            : lastContentBottomY;
-          result.condScopes.push(currentScope);
-        }
-        // Place badge at base indent
-        const childPos = position(childNode, childMeasure, cx, cy);
-        result.children.push(childPos);
-        // Start new scope
-        const scopeColor = getScopeColor(childNode);
-        currentScope = {
-          startY: cy + childMeasure.height,
-          endY: cy + childMeasure.height,
-          x: cx + condIndent - 4,
-          color: scopeColor
-        };
-        inCondScope = true;
-      } else {
-        // Content element: indent if under a condition
-        const childCx = inCondScope ? cx + condIndent : cx;
-        const childPos = position(childNode, childMeasure, childCx, cy);
-        result.children.push(childPos);
-        // Extend scope to cover this child
-        lastContentBottomY = cy + childMeasure.height;
-        if (currentScope) {
-          currentScope.endY = lastContentBottomY;
-        }
-      }
-
-      const gap = gapAfterChild(childMeasure, visibleMeasurements[i + 1]);
-      cy += childMeasure.height + gap;
+  // --- Shadow children ---
+  const shadowGroup = shadowMeasurements || [];
+  if (shadowGroup.length > 0) {
+    if (hasFloatingPill(shadowGroup[0].node)) {
+      cy += SIZES.tagFloat;
     }
+    cy = positionGroup(shadowGroup, cx, cy, direction, result);
   }
 
-  // Close final scope
-  if (currentScope && currentScope.endY > currentScope.startY) {
-    result.condScopes.push(currentScope);
+  // --- Projected children (light DOM) ---
+  const projGroup = projectedMeasurements || [];
+  if (projGroup.length > 0) {
+    // Record where the projected section starts for rendering
+    cy += SIZES.gap;
+    result.projectedLabelY = cy;
+    cy += SIZES.badgeHeight + SIZES.commentGap;
+
+    // Reset cx to component padding (no shadow extraPad for projected content)
+    const projCx = x + SIZES.padding;
+    if (hasFloatingPill(projGroup[0].node)) {
+      cy += SIZES.tagFloat;
+    }
+    cy = positionGroup(projGroup, projCx, cy, direction, result);
   }
 
   return result;
@@ -375,15 +411,16 @@ function renderNode(positioned) {
     );
   }
 
-  // Shadow root boundary
+  // Shadow root boundary (sized to only cover shadow children, not projected)
   if (node.shadowRoot) {
     const shadowY = y + SIZES.padding + label.height + SIZES.labelGap;
-    const shadowHeight =
-      height -
-      SIZES.padding -
-      label.height -
-      SIZES.labelGap -
-      SIZES.shadowPad / 2;
+
+    // If there are projected children, shadow boundary only covers shadow content
+    const hasProjected = positioned.projectedLabelY != null;
+    const shadowHeight = hasProjected
+      ? positioned.projectedLabelY - shadowY - SIZES.gap / 2
+      : height - SIZES.padding - label.height - SIZES.labelGap - SIZES.shadowPad / 2;
+
     svg += svgDashedRect(
       x + SIZES.shadowPad / 2,
       shadowY,
@@ -391,6 +428,17 @@ function renderNode(positioned) {
       shadowHeight,
       { stroke: COLORS.shadow.stroke, label: "#shadow-root" }
     );
+
+    // Projected content label
+    if (hasProjected) {
+      const projLabelY = positioned.projectedLabelY;
+      svg += svgBadge(
+        x + SIZES.padding,
+        projLabelY,
+        "→ projected content (light DOM)",
+        { bgColor: "#546e7a", textColor: "#ffffff", height: SIZES.badgeHeight, paddingX: SIZES.badgePadX, rx: SIZES.badgeRadius }
+      );
+    }
   }
 
   // Internal labels
@@ -548,7 +596,15 @@ function computeLabel(node) {
 
   // Tag name: floating pill for most elements, inline for slots
   const isSlotNode = node.type === "slot";
-  const tagRaw = `<${tag}>`;
+  const slotName = isSlotNode && node.attributes?.name ? node.attributes.name : null;
+
+  // Slot assignment integrated into the tag pill (e.g. <div slot="header">)
+  const slotAssignment = !isSlotNode && node.attributes?.slot
+    ? ` slot="${node.attributes.slot}"`
+    : "";
+  const tagRaw = slotName
+    ? `<slot name="${slotName}">`
+    : `<${tag}${slotAssignment}>`;
   const tagText = isSlotNode ? null : tagRaw;
   const tagWidth = isSlotNode
     ? 0
@@ -644,6 +700,16 @@ function getScopeColor(node) {
 function getVisibleChildren(node) {
   if (!node.children || !Array.isArray(node.children)) return [];
   return node.children;
+}
+
+/**
+ * Check if a child node is projected (light DOM) content of a shadow host.
+ * Projected children have the same or lower shadowDepth as the parent.
+ */
+function isProjectedChild(parentNode, childNode) {
+  if (!parentNode.shadowRoot) return false;
+  const childDepth = childNode.shadowDepth ?? 0;
+  return childDepth <= (parentNode.shadowDepth ?? 0);
 }
 
 /**

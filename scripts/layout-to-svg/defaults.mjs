@@ -33,7 +33,7 @@ export const SIZES = {
 // ─── Colors ──────────────────────────────────────────────────────────────
 
 export const COLORS = {
-  container: { fill: "#f5f5f5", stroke: "#bdbdbd", text: "#424242" },
+  container: { fill: "#fafafa", stroke: "#bdbdbd", text: "#424242" },
   interactive: { fill: "#e3f2fd", stroke: "#1976d2", text: "#0d47a1" },
   slot: { fill: "#fff8e1", stroke: "#f57f17", text: "#e65100" },
   text: { fill: "none", stroke: "none", text: "#616161" },

@@ -16,6 +16,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import {
   BADGE_COLORS,
   COLORS,
+  CONTAINER_FILLS,
   SIZES,
   defaultHints,
   inferStyle
@@ -237,7 +238,7 @@ function measure(node, caseMeta, path) {
 
 // ─── Phase 2: Position (top-down) ────────────────────────────────────────
 
-function positionGroup(group, cx, cy, direction, result) {
+function positionGroup(group, cx, cy, direction, result, containerDepth) {
   const hasConditions = group.some(c => isCommentNode(c.node));
   const condIndent = hasConditions ? SIZES.condIndent : 0;
   let inCondScope = false;
@@ -249,7 +250,7 @@ function positionGroup(group, cx, cy, direction, result) {
     const childNode = childMeasure.node;
 
     if (direction === "row") {
-      const childPos = position(childNode, childMeasure, cx, cy);
+      const childPos = position(childNode, childMeasure, cx, cy, containerDepth);
       result.children.push(childPos);
       cx += childMeasure.width + SIZES.gap;
     } else {
@@ -263,7 +264,7 @@ function positionGroup(group, cx, cy, direction, result) {
             : lastContentBottomY;
           result.condScopes.push(currentScope);
         }
-        const childPos = position(childNode, childMeasure, cx, cy);
+        const childPos = position(childNode, childMeasure, cx, cy, containerDepth);
         result.children.push(childPos);
         const scopeColor = getScopeColor(childNode);
         currentScope = {
@@ -275,11 +276,20 @@ function positionGroup(group, cx, cy, direction, result) {
         inCondScope = true;
       } else {
         const childCx = inCondScope ? cx + condIndent : cx;
-        const childPos = position(childNode, childMeasure, childCx, cy);
+        const childPos = position(childNode, childMeasure, childCx, cy, containerDepth);
         result.children.push(childPos);
         lastContentBottomY = cy + childMeasure.height;
         if (currentScope) {
           currentScope.endY = lastContentBottomY;
+        }
+
+        // Close scope if next node is not a continuation (else/else-when)
+        const nextNode = group[i + 1]?.node;
+        if (inCondScope && currentScope && (!nextNode || !isCommentNode(nextNode) ||
+            (nextNode.type !== "comment-else" && nextNode.type !== "comment-else-when"))) {
+          result.condScopes.push(currentScope);
+          currentScope = null;
+          inCondScope = false;
         }
       }
 
@@ -295,9 +305,15 @@ function positionGroup(group, cx, cy, direction, result) {
   return cy;
 }
 
-function position(node, measurement, x, y) {
+function position(node, measurement, x, y, containerDepth = 0) {
   const { label, hints, direction, path,
     shadowMeasurements, projectedMeasurements } = measurement;
+
+  // Track container nesting depth for alternating fill colors
+  const style = hints?.style || inferStyle(node);
+  const isContainer = style === "container";
+  const myContainerDepth = isContainer ? containerDepth : containerDepth;
+  const childContainerDepth = isContainer ? containerDepth + 1 : containerDepth;
 
   const result = {
     node,
@@ -308,7 +324,8 @@ function position(node, measurement, x, y) {
     label,
     hints,
     path,
-    children: []
+    children: [],
+    containerDepth: myContainerDepth
   };
 
   const labelSpace = label.height > 0 ? label.height + SIZES.labelGap : 0;
@@ -329,7 +346,7 @@ function position(node, measurement, x, y) {
     if (hasFloatingPill(shadowGroup[0].node)) {
       cy += SIZES.tagFloat;
     }
-    cy = positionGroup(shadowGroup, cx, cy, direction, result);
+    cy = positionGroup(shadowGroup, cx, cy, direction, result, childContainerDepth);
   }
 
   // --- Projected children (light DOM) ---
@@ -345,7 +362,7 @@ function position(node, measurement, x, y) {
     if (hasFloatingPill(projGroup[0].node)) {
       cy += SIZES.tagFloat;
     }
-    cy = positionGroup(projGroup, projCx, cy, direction, result);
+    cy = positionGroup(projGroup, projCx, cy, direction, result, childContainerDepth);
   }
 
   return result;
@@ -361,7 +378,12 @@ function renderNode(positioned) {
 
   let svg = "";
   const style = hints?.style || inferStyle(node);
-  const colors = COLORS[style] || COLORS.container;
+  const baseColors = COLORS[style] || COLORS.container;
+
+  // Alternate container fill by visual nesting depth so nested components are distinguishable
+  const colors = style === "container"
+    ? { ...baseColors, fill: CONTAINER_FILLS[(positioned.containerDepth ?? 0) % CONTAINER_FILLS.length] }
+    : baseColors;
 
   // Determine if this is a comment-type node
   if (isCommentNode(node)) {
@@ -436,7 +458,7 @@ function renderNode(positioned) {
         x + SIZES.padding,
         projLabelY,
         "→ projected content (light DOM)",
-        { bgColor: "#546e7a", textColor: "#ffffff", height: SIZES.badgeHeight, paddingX: SIZES.badgePadX, rx: SIZES.badgeRadius }
+        { bgColor: BADGE_COLORS.projected.fill, textColor: BADGE_COLORS.projected.text, height: SIZES.badgeHeight, paddingX: SIZES.badgePadX, rx: SIZES.badgeRadius }
       );
     }
   }
@@ -766,7 +788,6 @@ function getHints(node, caseMeta, path) {
 
 const LEGEND_ITEMS = [
   {
-    label: "#shadow-root",
     render: (x, y) => {
       let s = `<line x1="${x}" y1="${y + 6}" x2="${x + 24}" y2="${
         y + 6
@@ -779,7 +800,6 @@ const LEGEND_ITEMS = [
     }
   },
   {
-    label: "condition",
     render: (x, y) => {
       let s = svgRect(x, y, 12, 12, { fill: BADGE_COLORS.when.fill, rx: 2 });
       s += svgText(x + 5, y + 9.5, "\u25C7", { fontSize: 7, fill: "#fff" });
@@ -791,7 +811,6 @@ const LEGEND_ITEMS = [
     }
   },
   {
-    label: "for-each",
     render: (x, y) => {
       let s = svgRect(x, y, 12, 12, {
         fill: BADGE_COLORS["for-each"].fill,
@@ -806,7 +825,19 @@ const LEGEND_ITEMS = [
     }
   },
   {
-    label: "slot",
+    render: (x, y) => {
+      let s = svgRect(x, y, 12, 12, {
+        fill: BADGE_COLORS.descriptive.fill,
+        rx: 2
+      });
+      s += svgText(x + 16, y + 10, "descriptive comment", {
+        fontSize: 8,
+        fill: "#666"
+      });
+      return { svg: s, width: 136 };
+    }
+  },
+  {
     render: (x, y) => {
       let s = svgRect(x, y, 20, 12, {
         fill: COLORS.slot.fill,
@@ -820,9 +851,22 @@ const LEGEND_ITEMS = [
     }
   },
   {
-    label: "part",
     render: (x, y) => {
-      let s = svgText(x, y + 10, "part", { fontSize: 9, fill: "#424242" });
+      let s = svgRect(x, y, 12, 12, {
+        fill: BADGE_COLORS.projected.fill,
+        rx: 2
+      });
+      s += svgText(x + 3, y + 9.5, "\u2192", { fontSize: 7, fill: "#fff" });
+      s += svgText(x + 16, y + 10, "projected content (light DOM)", {
+        fontSize: 8,
+        fill: "#666"
+      });
+      return { svg: s, width: 196 };
+    }
+  },
+  {
+    render: (x, y) => {
+      let s = svgText(x, y + 10, "part", { fontSize: 9, fill: "#888" });
       s += svgText(x + 28, y + 10, "static part", {
         fontSize: 8,
         fill: "#666"
@@ -831,7 +875,6 @@ const LEGEND_ITEMS = [
     }
   },
   {
-    label: "conditional part",
     render: (x, y) => {
       let s = svgText(x, y + 10, "[part]", {
         fontSize: 9,
@@ -849,19 +892,39 @@ const LEGEND_ITEMS = [
 
 function renderLegend(x, y) {
   const rowHeight = 16;
-  let svg = "";
-  let cy = y;
+  const paddingX = 10;
+  const paddingY = 8;
+  const titleHeight = 14;
+
+  // Title "Legend"
+  let svg = svgText(x + paddingX, y + titleHeight, "Legend", {
+    fontSize: 10,
+    fill: "#424242",
+    fontWeight: "bold"
+  });
+
+  let cy = y + titleHeight + paddingY;
   let maxWidth = 0;
 
   for (const item of LEGEND_ITEMS) {
-    const result = item.render(x, cy);
+    const result = item.render(x + paddingX, cy);
     svg += result.svg;
     maxWidth = Math.max(maxWidth, result.width);
     cy += rowHeight;
   }
 
-  const totalHeight = LEGEND_ITEMS.length * rowHeight;
-  return { svg, width: maxWidth, height: totalHeight };
+  const totalWidth = maxWidth + paddingX * 2;
+  const totalHeight = cy - y + paddingY;
+
+  // Border around the legend
+  const border = svgRect(x, y, totalWidth, totalHeight, {
+    fill: "none",
+    stroke: "#bdbdbd",
+    strokeWidth: 1,
+    rx: 4
+  });
+
+  return { svg: border + svg, width: totalWidth, height: totalHeight };
 }
 
 // ─── CLI ─────────────────────────────────────────────────────────────────

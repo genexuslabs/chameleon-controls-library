@@ -46,7 +46,8 @@ export const BADGE_COLORS = {
   when: { fill: "#7b1fa2", text: "#ffffff" },
   else: { fill: "#ad1457", text: "#ffffff" },
   "for-each": { fill: "#00695c", text: "#ffffff" },
-  descriptive: { fill: "#546e7a", text: "#ffffff" }
+  descriptive: { fill: "#546e7a", text: "#ffffff" },
+  projected: { fill: "#0277bd", text: "#ffffff" }
 };
 
 // Shadow depth background tints (progressively darker)
@@ -56,6 +57,15 @@ export const SHADOW_TINTS = [
   "rgba(0,0,0,0.030)", // depth 2
   "rgba(0,0,0,0.045)", // depth 3
   "rgba(0,0,0,0.060)" // depth 4
+];
+
+// Alternating container fills by shadow depth (cycles every 4 levels)
+// All colors are light enough to contrast well with #888 and #424242 text
+export const CONTAINER_FILLS = [
+  "#fafafa", // depth 0: neutral gray
+  "#f3f0ff", // depth 1: light lavender
+  "#f0f7f4", // depth 2: light mint
+  "#fff8f0"  // depth 3: light peach
 ];
 
 // ─── Style inference ─────────────────────────────────────────────────────

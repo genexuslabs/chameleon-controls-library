@@ -253,8 +253,8 @@ function parseComment(text) {
     return { type: "comment-else", description: elseMatch[1] || null };
   }
 
-  // for each X in Y
-  const forEachMatch = text.match(/^for each\s+(\w+)\s+in\s+(.+)$/);
+  // for each X in Y (item can be multiple words, e.g. "single-content leaf")
+  const forEachMatch = text.match(/^for each\s+(.+?)\s+in\s+(.+)$/);
   if (forEachMatch) {
     return {
       type: "comment-for-each",

@@ -491,21 +491,21 @@ function renderNode(positioned) {
       label.primary,
       {
         fontSize: SIZES.partFontSize,
-        fill: "#888"
+        fill: "#666"
       }
     );
     labelY += SIZES.partFontSize + 2;
   }
 
-  // Conditional/dynamic parts (smaller, italic)
+  // Conditional/dynamic parts (same size, italic)
   if (label.conditional) {
     svg += svgText(
       x + SIZES.padding,
-      labelY + SIZES.condFontSize,
+      labelY + SIZES.partFontSize,
       label.conditional,
       {
-        fontSize: SIZES.condFontSize,
-        fill: "#888",
+        fontSize: SIZES.partFontSize,
+        fill: "#666",
         fontStyle: "italic"
       }
     );
@@ -668,7 +668,7 @@ function computeLabel(node) {
   }
   if (conditional) {
     maxWidth = Math.max(maxWidth, conditional.length * SIZES.charWidth * 0.85);
-    totalHeight += SIZES.condFontSize + 2;
+    totalHeight += SIZES.partFontSize + 2;
   }
 
   return {
@@ -855,25 +855,25 @@ const LEGEND_ITEMS = [
   {
     label: "static part",
     preview: (x, y) => {
-      return svgText(x, y + 10, "part", { fontSize: 9, fill: "#888" });
+      return svgText(x, y + 10, "part", { fontSize: 9, fill: "#666" });
     }
   },
   {
     label: "conditional part",
     preview: (x, y) => {
-      return svgText(x, y + 10, "[part]", { fontSize: 9, fill: "#888", fontStyle: "italic" });
+      return svgText(x, y + 10, "[part]", { fontSize: 9, fill: "#666", fontStyle: "italic" });
     }
   },
   {
     label: "dynamic part",
     preview: (x, y) => {
-      return svgText(x, y + 10, "{part}", { fontSize: 9, fill: "#888", fontStyle: "italic" });
+      return svgText(x, y + 10, "{part}", { fontSize: 9, fill: "#666", fontStyle: "italic" });
     }
   },
   {
     label: "conditional dynamic part",
     preview: (x, y) => {
-      return svgText(x, y + 10, "[{part}]", { fontSize: 9, fill: "#888", fontStyle: "italic" });
+      return svgText(x, y + 10, "[{part}]", { fontSize: 9, fill: "#666", fontStyle: "italic" });
     }
   }
 ];

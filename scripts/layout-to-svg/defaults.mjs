@@ -11,7 +11,7 @@ export const SIZES = {
   charWidth: 6.5, // monospace ~10px
   lineHeight: 14,
   tagFontSize: 9,
-  partFontSize: 10,
+  partFontSize: 9,
   condFontSize: 9,
   padding: 10,
   gap: 6,
@@ -20,7 +20,7 @@ export const SIZES = {
   tagPillHeight: 12, // Height of the floating tag pill
   tagPillPadX: 4, // Horizontal padding inside the tag pill
   tagFloat: 6, // How many px the tag pill extends above the box top edge
-  labelGap: 6,
+  labelGap: 10,
   minWidth: 50,
   minHeight: 24,
   shadowMarginX: 2, // Inline margin between parent container border and dashed shadow boundary

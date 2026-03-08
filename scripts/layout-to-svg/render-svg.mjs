@@ -24,6 +24,7 @@ import {
 import { parseLayoutFile } from "./parse-layout.mjs";
 import {
   BADGE_ICONS,
+  esc,
   svgBadge,
   svgDashedRect,
   svgDocument,
@@ -131,8 +132,16 @@ function measure(node, caseMeta, path) {
 
   // Leaf element (no children)
   if (visibleChildren.length === 0) {
-    const w = Math.max(label.width + SIZES.padding * 2, SIZES.minWidth);
-    const h = Math.max(label.height + SIZES.padding * 2, SIZES.minHeight);
+    let w, h;
+    if (label.inlineTag) {
+      // Slots render their tag inside a compact box
+      w = Math.max(label.width + SIZES.padding * 2, SIZES.minWidth);
+      h = label.height + 4;
+    } else {
+      // Element with floating pill: pill only, no box
+      w = label.width;
+      h = label.pillHeight;
+    }
     return {
       width: w,
       height: h,
@@ -186,24 +195,33 @@ function measure(node, caseMeta, path) {
   const shadowContent = measureGroup(shadowMeasurements);
   const projectedContent = measureGroup(projectedMeasurements);
 
-  const labelSpace = label.height > 0 ? label.height + SIZES.labelGap : 0;
+  // Pill overlap is the portion of the floating pill that extends into the box
+  const labelSpace = label.height;
 
   // Shadow boundary adds extra spacing (margin for dashed border + padding for children)
   const extraInline = hasShadow ? SIZES.shadowMarginX + SIZES.shadowPadX : 0;
   const extraPadY = hasShadow ? SIZES.shadowPadY : 0;
   const shadowLabelExtra = hasShadow ? SIZES.shadowLabelGap : 0;
 
-  // First shadow child's floating pill needs extra top space
+  // First shadow child's floating pill needs extra top space (only for parent nodes, not pill-only leaves)
+  const firstShadowChild = shadowMeasurements[0];
+  const firstShadowIsLeafPill = firstShadowChild &&
+    hasFloatingPill(firstShadowChild.node) &&
+    firstShadowChild.childMeasurements?.length === 0 &&
+    firstShadowChild.node.type !== "slot";
   const firstShadowPillSpace =
-    shadowMeasurements.length > 0 &&
-    hasFloatingPill(shadowMeasurements[0].node)
+    firstShadowChild && hasFloatingPill(firstShadowChild.node) && !firstShadowIsLeafPill
       ? SIZES.tagFloat
       : 0;
 
   // First projected child's floating pill needs extra top space
+  const firstProjChild = projectedMeasurements[0];
+  const firstProjIsLeafPill = firstProjChild &&
+    hasFloatingPill(firstProjChild.node) &&
+    firstProjChild.childMeasurements?.length === 0 &&
+    firstProjChild.node.type !== "slot";
   const firstProjPillSpace =
-    projectedMeasurements.length > 0 &&
-    hasFloatingPill(projectedMeasurements[0].node)
+    firstProjChild && hasFloatingPill(firstProjChild.node) && !firstProjIsLeafPill
       ? SIZES.tagFloat
       : 0;
 
@@ -330,7 +348,7 @@ function position(node, measurement, x, y, containerDepth = 0) {
     containerDepth: myContainerDepth
   };
 
-  const labelSpace = label.height > 0 ? label.height + SIZES.labelGap : 0;
+  const labelSpace = label.height;
   const extraInline = node.shadowRoot ? SIZES.shadowMarginX + SIZES.shadowPadX : 0;
 
   let cx = x + SIZES.padding + extraInline;
@@ -345,7 +363,10 @@ function position(node, measurement, x, y, containerDepth = 0) {
   // --- Shadow children ---
   const shadowGroup = shadowMeasurements || [];
   if (shadowGroup.length > 0) {
-    if (hasFloatingPill(shadowGroup[0].node)) {
+    const first = shadowGroup[0];
+    const isFirstLeafPill = hasFloatingPill(first.node) &&
+      first.childMeasurements?.length === 0 && first.node.type !== "slot";
+    if (hasFloatingPill(first.node) && !isFirstLeafPill) {
       cy += SIZES.tagFloat;
     }
     cy = positionGroup(shadowGroup, cx, cy, direction, result, childContainerDepth);
@@ -361,7 +382,10 @@ function position(node, measurement, x, y, containerDepth = 0) {
 
     // Reset cx to component padding (no shadow extraPad for projected content)
     const projCx = x + SIZES.padding;
-    if (hasFloatingPill(projGroup[0].node)) {
+    const firstProj = projGroup[0];
+    const isFirstProjLeafPill = hasFloatingPill(firstProj.node) &&
+      firstProj.childMeasurements?.length === 0 && firstProj.node.type !== "slot";
+    if (hasFloatingPill(firstProj.node) && !isFirstProjLeafPill) {
       cy += SIZES.tagFloat;
     }
     cy = positionGroup(projGroup, projCx, cy, direction, result, childContainerDepth);
@@ -393,57 +417,111 @@ function renderNode(positioned) {
     return svg;
   }
 
-  // Determine if this is a text node
+  // Text nodes are rendered inline (no box)
   if (node.type === "text") {
-    svg += renderTextNode(positioned);
+    const display = `"${node.text}"`;
+    svg += svgText(x, y + SIZES.partFontSize, display, {
+      fontSize: SIZES.partFontSize,
+      fill: "#888",
+      fontStyle: "italic"
+    });
     return svg;
   }
 
-  // Background rectangle
+  // Leaf nodes with a floating pill render pill-only (no background box)
+  const isLeafPillOnly =
+    children.length === 0 &&
+    !label.inlineTag &&
+    (label.tagText || label.tagLines);
+
+  // Background rectangle (skip for pill-only leaves)
   const isSlot = style === "slot";
-  svg += svgRect(x, y, width, height, {
-    fill: colors.fill,
-    stroke: colors.stroke,
-    strokeWidth: isSlot ? 1.5 : 1,
-    strokeDasharray: isSlot ? "4 2" : undefined,
-    rx: 4
-  });
+  if (!isLeafPillOnly) {
+    svg += svgRect(x, y, width, height, {
+      fill: colors.fill,
+      stroke: colors.stroke,
+      strokeWidth: isSlot ? 1.5 : 1,
+      strokeDasharray: isSlot ? "4 2" : undefined,
+      rx: 4
+    });
+  }
 
-  // Floating tag pill (sits on top border of the box)
+  // Floating tag pill (sits on top border of the box, or at y for pill-only leaves)
   if (label.tagText) {
-    const pillX = x + SIZES.padding;
-    const pillY = y - SIZES.tagFloat;
+    // Single-line pill
+    const pillX = isLeafPillOnly ? x : x + SIZES.padding;
+    const pillY = isLeafPillOnly ? y : y - SIZES.tagFloat;
     const pillW = label.tagWidth;
-    const pillH = SIZES.tagPillHeight;
+    const pillH = label.pillHeight;
 
-    // Background pill that "cuts" the border
     svg += svgRect(pillX, pillY, pillW, pillH, {
       fill: colors.fill === "#ffffff" ? "#ffffff" : colors.fill,
       stroke: colors.stroke,
       strokeWidth: 1,
       rx: 3
     });
-    svg += svgText(
-      pillX + SIZES.tagPillPadX,
-      pillY + pillH - 3,
-      label.tagText,
-      {
-        fontSize: SIZES.tagFontSize,
-        fill: colors.text,
-        fontWeight: "bold"
+    // Tag name is bold; brackets and attributes are normal weight
+    const textX = pillX + SIZES.tagPillPadX;
+    const textY = pillY + pillH - 3;
+    if (label.tagAttrStr) {
+      svg += `<text x="${textX}" y="${textY}" font-size="${SIZES.tagFontSize}" fill="${colors.text}" font-weight="normal">` +
+        `<tspan>&lt;</tspan>` +
+        `<tspan font-weight="bold">${esc(label.tagName)}</tspan>` +
+        `<tspan>${esc(label.tagAttrStr)}</tspan>` +
+        `<tspan>${esc(label.tagSuffix)}</tspan>` +
+        `</text>\n`;
+    } else {
+      // No attributes: <tagName> — brackets normal, name bold
+      svg += `<text x="${textX}" y="${textY}" font-size="${SIZES.tagFontSize}" fill="${colors.text}" font-weight="normal">` +
+        `<tspan>&lt;</tspan>` +
+        `<tspan font-weight="bold">${esc(label.tagName)}</tspan>` +
+        `<tspan>${esc(label.tagSuffix)}</tspan>` +
+        `</text>\n`;
+    }
+  } else if (label.tagLines) {
+    // Multi-line pill (Prettier style)
+    const pillX = isLeafPillOnly ? x : x + SIZES.padding;
+    const pillY = isLeafPillOnly ? y : y - SIZES.tagFloat;
+    const pillW = label.tagWidth;
+    const pillH = label.pillHeight;
+    const indentPx = Math.round(2 * SIZES.charWidth * 0.85);
+
+    svg += svgRect(pillX, pillY, pillW, pillH, {
+      fill: colors.fill === "#ffffff" ? "#ffffff" : colors.fill,
+      stroke: colors.stroke,
+      strokeWidth: 1,
+      rx: 3
+    });
+    for (let i = 0; i < label.tagLines.length; i++) {
+      // First line (tag) and last line (bracket) have no indent; attribute lines are indented
+      const isAttrLine = i > 0 && i < label.tagLines.length - 1;
+      const lineX = pillX + SIZES.tagPillPadX + (isAttrLine ? indentPx : 0);
+      const lineY = pillY + 2 + SIZES.tagFontSize + i * SIZES.pillLineHeight;
+      if (i === 0) {
+        // First line: <tagName — bracket normal, name bold
+        svg += `<text x="${lineX}" y="${lineY}" font-size="${SIZES.tagFontSize}" fill="${colors.text}" font-weight="normal">` +
+          `<tspan>&lt;</tspan>` +
+          `<tspan font-weight="bold">${esc(label.tagName)}</tspan>` +
+          `</text>\n`;
+      } else {
+        svg += svgText(lineX, lineY, label.tagLines[i], {
+          fontSize: SIZES.tagFontSize,
+          fill: colors.text,
+          fontWeight: "normal"
+        });
       }
-    );
+    }
   }
 
   // Shadow root boundary (sized to only cover shadow children, not projected)
   if (node.shadowRoot) {
-    const shadowY = y + SIZES.padding + label.height + SIZES.labelGap;
+    const shadowY = y + SIZES.padding + label.height;
 
     // If there are projected children, shadow boundary only covers shadow content
     const hasProjected = positioned.projectedLabelY != null;
     const shadowHeight = hasProjected
       ? positioned.projectedLabelY - shadowY - SIZES.gap / 2
-      : height - SIZES.padding - label.height - SIZES.labelGap - SIZES.shadowPadY / 2;
+      : height - SIZES.padding - label.height - SIZES.shadowPadY / 2;
 
     svg += svgDashedRect(
       x + SIZES.shadowMarginX,
@@ -465,14 +543,11 @@ function renderNode(positioned) {
     }
   }
 
-  // Internal labels
-  let labelY = y + SIZES.padding;
-
-  // Inline tag for slots (rendered inside the box, not as floating pill)
+  // Inline tag for slots (rendered inside the box, vertically centered)
   if (label.inlineTag) {
     svg += svgText(
       x + SIZES.padding - 4,
-      labelY + SIZES.tagFontSize,
+      y + Math.round((height + SIZES.tagFontSize * 0.7) / 2),
       label.inlineTag,
       {
         fontSize: SIZES.tagFontSize,
@@ -480,50 +555,15 @@ function renderNode(positioned) {
         fontWeight: "bold"
       }
     );
-    labelY += SIZES.tagFontSize + 2;
   }
 
-  // Static part names
-  if (label.primary) {
-    svg += svgText(
-      x + SIZES.padding,
-      labelY + SIZES.partFontSize,
-      label.primary,
-      {
-        fontSize: SIZES.partFontSize,
-        fill: "#666"
-      }
-    );
-    labelY += SIZES.partFontSize + 2;
-  }
-
-  // Conditional/dynamic parts (same size, italic)
-  if (label.conditional) {
-    svg += svgText(
-      x + SIZES.padding,
-      labelY + SIZES.partFontSize,
-      label.conditional,
-      {
-        fontSize: SIZES.partFontSize,
-        fill: "#666",
-        fontStyle: "italic"
-      }
-    );
-    labelY += SIZES.partFontSize + 2;
-  }
-
-  // ARIA attributes line (smaller, distinct color)
-  if (label.ariaLine) {
-    svg += svgText(
-      x + SIZES.padding,
-      labelY + SIZES.partFontSize,
-      label.ariaLine,
-      {
-        fontSize: SIZES.partFontSize,
-        fill: COLORS.aria,
-        fontStyle: "italic"
-      }
-    );
+  // Inline text content (e.g. "Caption text")
+  if (label.inlineText) {
+    svg += svgText(x, y + SIZES.lineHeight, label.inlineText, {
+      fontSize: SIZES.partFontSize,
+      fill: "#888",
+      fontStyle: "italic"
+    });
   }
 
   // Render condition scope lines (thin vertical lines showing condition extent)
@@ -594,16 +634,13 @@ function renderCommentNode(positioned) {
   });
 }
 
-function renderTextNode(positioned) {
-  const { node, x, y } = positioned;
-  return svgText(x, y + SIZES.lineHeight, `"${node.text}"`, {
-    fontSize: SIZES.partFontSize,
-    fill: "#888",
-    fontStyle: "italic"
-  });
-}
-
 // ─── Label computation ───────────────────────────────────────────────────
+
+// Known void HTML elements that use self-closing syntax
+const VOID_ELEMENTS = new Set(["input", "img", "hr", "br"]);
+
+// Attributes to skip in the tag pill (implementation details)
+const SKIP_ATTRS = new Set(["class", "style", "popover"]);
 
 function computeLabel(node) {
   if (isCommentNode(node)) {
@@ -611,7 +648,6 @@ function computeLabel(node) {
     const truncated =
       text.length > 60 ? text.substring(0, 59) + "\u2026" : text;
     return {
-      primary: "",
       width: truncated.length * SIZES.condFontSize * 0.6 + SIZES.badgePadX * 2,
       height: SIZES.badgeHeight
     };
@@ -620,101 +656,130 @@ function computeLabel(node) {
   if (node.type === "text") {
     const display = `"${node.text}"`;
     return {
-      primary: display,
+      inlineText: display,
       width: display.length * SIZES.charWidth,
-      height: SIZES.lineHeight
+      height: SIZES.partFontSize + 2
     };
   }
 
   const tag = node.tag || "";
   const parts = node.parts || [];
   const attrs = node.attributes || {};
-
-  // Static parts
-  const staticParts = parts.filter(p => !p.conditional && !p.dynamic);
-  // Conditional parts
-  const condParts = parts.filter(p => p.conditional || p.dynamic);
-
-  // Primary: static part names
-  const primary =
-    staticParts.length > 0 ? staticParts.map(p => p.name).join(" ") : "";
-
-  // Tag name: floating pill for most elements, inline for slots
   const isSlotNode = node.type === "slot";
-  const slotName = isSlotNode && attrs.name ? attrs.name : null;
 
-  // ID integrated into the tag pill (e.g. <div id="heading">)
-  const idAttr = attrs.id ? ` id="${attrs.id}"` : "";
-
-  // Role integrated into the tag pill (e.g. <div role="tablist">)
-  const roleAttr = attrs.role ? ` role="${attrs.role}"` : "";
-
-  // Slot assignment integrated into the tag pill (e.g. <div slot="header">)
-  const slotAssignment = !isSlotNode && attrs.slot
-    ? ` slot="${attrs.slot}"`
-    : "";
-
-  const tagRaw = slotName
-    ? `<slot name="${slotName}">`
-    : `<${tag}${idAttr}${roleAttr}${slotAssignment}>`;
-  const tagText = isSlotNode ? null : tagRaw;
-  const tagWidth = isSlotNode
-    ? 0
-    : Math.ceil(tagRaw.length * SIZES.charWidth * 0.85 + SIZES.tagPillPadX * 2);
-
-  // Conditional line
-  const conditional =
-    condParts.length > 0
-      ? condParts
-          .map(p => {
-            if (p.dynamic && p.conditional) return `[{${p.name}}]`;
-            if (p.dynamic) return `{${p.name}}`;
-            if (p.exclusive) return `[${p.exclusive.join("|")}]`;
-            return `[${p.name}]`;
-          })
-          .join(" ")
-      : "";
-
-  // ARIA attributes line (aria-* attributes shown below parts)
-  const ariaEntries = Object.entries(attrs)
-    .filter(([k]) => k.startsWith("aria-"))
-    .map(([k, v]) => v === true ? k : `${k}="${v}"`);
-  const ariaLine = ariaEntries.length > 0 ? ariaEntries.join("  ") : "";
-
-  // Calculate dimensions (floating tag is not included in internal height, inline tag is)
-  let maxWidth = tagWidth; // Tag pill width still contributes to min width
-  let totalHeight = 0;
-
-  // Slots keep the tag inside the box
+  // Slots use an inline tag inside the box, not a floating pill
   if (isSlotNode) {
-    maxWidth = Math.max(maxWidth, tagRaw.length * SIZES.charWidth * 0.85);
-    totalHeight += SIZES.tagFontSize + 2;
+    const slotName = attrs.name || null;
+    const tagRaw = slotName ? `<slot name="${slotName}" />` : `<slot />`;
+    return {
+      inlineTag: tagRaw,
+      tagText: null,
+      tagLines: null,
+      tagWidth: 0,
+      pillHeight: 0,
+      width: tagRaw.length * SIZES.charWidth * 0.85,
+      height: SIZES.tagFontSize + 2
+    };
   }
 
-  if (primary) {
-    maxWidth = Math.max(maxWidth, primary.length * SIZES.charWidth);
-    totalHeight += SIZES.partFontSize + 2;
+  // Build ordered attribute list for the tag pill
+  const tagAttrs = buildTagAttributes(node);
+  const selfClosing = VOID_ELEMENTS.has(tag) && (!node.children || node.children.length === 0);
+  const closeBracket = selfClosing ? " />" : ">";
+
+  // Try single-line tag
+  const attrStr = tagAttrs.length > 0 ? " " + tagAttrs.join(" ") : "";
+  const singleLine = `<${tag}${attrStr}${closeBracket}`;
+
+  if (singleLine.length <= SIZES.maxTagChars || tagAttrs.length === 0) {
+    const w = Math.ceil(singleLine.length * SIZES.charWidth * 0.85 + SIZES.tagPillPadX * 2);
+    const ph = SIZES.tagPillHeight;
+    return {
+      tagText: singleLine,
+      tagName: tag,
+      tagAttrStr: attrStr,
+      tagSuffix: closeBracket,
+      tagLines: null,
+      tagWidth: w,
+      pillHeight: ph,
+      inlineTag: null,
+      width: w,
+      height: Math.max(ph - SIZES.tagFloat, 0)
+    };
   }
-  if (conditional) {
-    maxWidth = Math.max(maxWidth, conditional.length * SIZES.charWidth * 0.85);
-    totalHeight += SIZES.partFontSize + 2;
-  }
-  if (ariaLine) {
-    maxWidth = Math.max(maxWidth, ariaLine.length * SIZES.charWidth * 0.75);
-    totalHeight += SIZES.partFontSize + 2;
-  }
+
+  // Multi-line (Prettier style): tag on first line, each attr indented via pixel offset, closing bracket on last line
+  const lines = [`<${tag}`, ...tagAttrs, closeBracket];
+  const indentChars = 2;
+  const attrMaxLen = Math.max(0, ...tagAttrs.map(a => a.length + indentChars));
+  const maxLineLen = Math.max(`<${tag}`.length, attrMaxLen, closeBracket.length);
+  const w = Math.ceil(maxLineLen * SIZES.charWidth * 0.85 + SIZES.tagPillPadX * 2);
+  const ph = 2 + lines.length * SIZES.pillLineHeight;
 
   return {
-    primary,
-    tagText,
-    tagWidth,
-    inlineTag: isSlotNode ? tagRaw : null,
-    conditional,
-    ariaLine,
-    parts,
-    width: maxWidth,
-    height: totalHeight
+    tagText: null,
+    tagName: tag,
+    tagLines: lines,
+    tagWidth: w,
+    pillHeight: ph,
+    inlineTag: null,
+    width: w,
+    height: Math.max(ph - SIZES.tagFloat, 0)
   };
+}
+
+/**
+ * Build an ordered list of HTML attribute strings for display in the tag pill.
+ * Order: id, role, aria-*, slot, part, other attrs.
+ */
+function buildTagAttributes(node) {
+  const attrs = node.attributes || {};
+  const parts = node.parts || [];
+  const result = [];
+
+  // 1. id
+  if (attrs.id) result.push(`id="${attrs.id}"`);
+
+  // 2. role
+  if (attrs.role) result.push(`role="${attrs.role}"`);
+
+  // 3. aria-* (sorted)
+  const ariaKeys = Object.keys(attrs).filter(k => k.startsWith("aria-")).sort();
+  for (const k of ariaKeys) {
+    const v = attrs[k];
+    result.push(v === true ? k : `${k}="${v}"`);
+  }
+
+  // 4. slot
+  if (attrs.slot) result.push(`slot="${attrs.slot}"`);
+
+  // 5. part
+  if (parts.length > 0) {
+    result.push(`part="${formatPartString(parts)}"`);
+  }
+
+  // 6. Other attributes (type, name on non-slots, etc.)
+  for (const [k, v] of Object.entries(attrs)) {
+    if (SKIP_ATTRS.has(k) || k === "id" || k === "role" || k === "slot" || k.startsWith("aria-")) continue;
+    result.push(v === true ? k : `${k}="${v}"`);
+  }
+
+  return result;
+}
+
+/**
+ * Format a parts array back into the display string used in the part attribute.
+ */
+function formatPartString(parts) {
+  return parts.map(p => {
+    if (p.dynamic && p.conditional) return `[{${p.name}}]`;
+    if (p.dynamic) return `{${p.name}}`;
+    if (p.conditional) {
+      if (p.exclusive) return `[${p.exclusive.join(" | ")}]`;
+      return `[${p.name}]`;
+    }
+    return p.name;
+  }).join(" ");
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -794,7 +859,11 @@ function isNewConditionGroup(node) {
 
 function gapAfterChild(currentMeasure, nextMeasure) {
   if (!nextMeasure) return 0;
-  const pillMargin = hasFloatingPill(nextMeasure.node) ? SIZES.tagFloat : 0;
+  // Pill-only leaves render at y (no float above box), parent nodes need extra tagFloat margin
+  const isNextLeafPill = hasFloatingPill(nextMeasure.node) &&
+    nextMeasure.childMeasurements?.length === 0 &&
+    nextMeasure.node.type !== "slot";
+  const pillMargin = hasFloatingPill(nextMeasure.node) && !isNextLeafPill ? SIZES.tagFloat : 0;
   // Comment followed by anything: tiny gap (badge sticks to next element)
   if (isCommentNode(currentMeasure.node)) return SIZES.commentGap + pillMargin;
   // Content followed by a new independent condition group: extra separation
@@ -887,41 +956,35 @@ const LEGEND_ITEMS = [
     }
   },
   {
-    label: "static part",
+    label: "tag pill (id, role, aria-*, part)",
     preview: (x, y) => {
-      return svgText(x, y + 10, "part", { fontSize: 9, fill: "#666" });
-    }
-  },
-  {
-    label: "conditional part",
-    preview: (x, y) => {
-      return svgText(x, y + 10, "[part]", { fontSize: 9, fill: "#666", fontStyle: "italic" });
-    }
-  },
-  {
-    label: "dynamic part",
-    preview: (x, y) => {
-      return svgText(x, y + 10, "{part}", { fontSize: 9, fill: "#666", fontStyle: "italic" });
-    }
-  },
-  {
-    label: "conditional dynamic part",
-    preview: (x, y) => {
-      return svgText(x, y + 10, "[{part}]", { fontSize: 9, fill: "#666", fontStyle: "italic" });
-    }
-  },
-  {
-    label: "id, role (in tag pill)",
-    preview: (x, y) => {
-      let s = svgRect(x, y, 20, 12, { fill: "#fafafa", stroke: "#bdbdbd", strokeWidth: 1, rx: 3 });
-      s += svgText(x + 2, y + 9, "id", { fontSize: 7, fill: "#424242", fontWeight: "bold" });
+      let s = svgRect(x, y, 28, 12, { fill: "#fafafa", stroke: "#bdbdbd", strokeWidth: 1, rx: 3 });
+      s += svgText(x + 2, y + 9, "<tag>", { fontSize: 7, fill: "#424242", fontWeight: "bold" });
       return s;
     }
   },
   {
-    label: "aria-* attribute",
+    label: "part=\"name\"  (static)",
     preview: (x, y) => {
-      return svgText(x, y + 10, "aria-*", { fontSize: 9, fill: COLORS.aria, fontStyle: "italic" });
+      return svgText(x, y + 10, "part", { fontSize: 9, fill: "#424242" });
+    }
+  },
+  {
+    label: "[part]  (conditional)",
+    preview: (x, y) => {
+      return svgText(x, y + 10, "[part]", { fontSize: 9, fill: "#424242" });
+    }
+  },
+  {
+    label: "{part}  (dynamic)",
+    preview: (x, y) => {
+      return svgText(x, y + 10, "{part}", { fontSize: 9, fill: "#424242" });
+    }
+  },
+  {
+    label: "[{part}]  (conditional dynamic)",
+    preview: (x, y) => {
+      return svgText(x, y + 10, "[{part}]", { fontSize: 9, fill: "#424242" });
     }
   }
 ];

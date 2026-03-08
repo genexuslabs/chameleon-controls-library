@@ -17,15 +17,17 @@ export const SIZES = {
   gap: 6,
   commentGap: 1, // Minimal gap between a comment badge and the element it annotates
   condIndent: 12, // Horizontal indent for content inside a condition scope
-  tagPillHeight: 12, // Height of the floating tag pill
+  tagPillHeight: 12, // Height of the floating tag pill (single-line)
   tagPillPadX: 4, // Horizontal padding inside the tag pill
   tagFloat: 6, // How many px the tag pill extends above the box top edge
-  labelGap: 10,
+  pillLineHeight: 12, // Baseline-to-baseline inside multi-line tag pills
+  maxTagChars: 60, // Character threshold before multi-line wrapping
+  labelGap: 0, // Legacy: was gap between label lines and children, now handled by pill overlap
   minWidth: 50,
   minHeight: 24,
   shadowMarginX: 2, // Inline margin between parent container border and dashed shadow boundary
   shadowPadX: 0, // Extra inline padding inside the dashed shadow boundary for children
-  shadowPadY: 10, // Extra block breathing room between dashed boundary and inner boxes
+  shadowPadY: 4, // Extra block breathing room between dashed boundary and inner boxes
   shadowLabelGap: 4, // Extra space after #shadow-root label before children
   badgeHeight: 16,
   badgePadX: 6,
@@ -41,8 +43,7 @@ export const COLORS = {
   text: { fill: "none", stroke: "none", text: "#616161" },
   decorative: { fill: "#e8f5e9", stroke: "#388e3c", text: "#1b5e20" },
   host: { fill: "#ffffff", stroke: "#424242", text: "#212121" },
-  shadow: { fill: "rgba(0,0,0,0.02)", stroke: "#9e9e9e" },
-  aria: "#1565c0" // Blue text for aria-* attribute annotations
+  shadow: { fill: "rgba(0,0,0,0.02)", stroke: "#9e9e9e" }
 };
 
 export const BADGE_COLORS = {

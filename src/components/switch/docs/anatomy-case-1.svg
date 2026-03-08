@@ -21,8 +21,8 @@
 <text x="42" y="75" font-size="9" fill="#666">track</text>
 <text x="42" y="86" font-size="9" fill="#666" font-style="italic">[checked|unchecked] [disabled]</text>
 <rect x="42" y="104" width="185.75" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="52" y="98" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="56" y="107" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
+<rect x="52" y="98" width="125" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="56" y="107" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input role=&quot;switch&quot;&gt;</text>
 <text x="52" y="123" font-size="9" fill="#666">thumb</text>
 <text x="52" y="134" font-size="9" fill="#666" font-style="italic">[checked|unchecked] [disabled]</text>
 <rect x="32" y="168" width="185.75" height="66" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
@@ -31,7 +31,7 @@
 <text x="42" y="187" font-size="9" fill="#666">caption</text>
 <text x="42" y="198" font-size="9" fill="#666" font-style="italic">[checked|unchecked] [disabled]</text>
 <text x="42" y="224" font-size="9" fill="#888" font-style="italic">&quot;Caption text&quot;</text>
-<rect x="285.75" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="285.75" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <text x="295.75" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
 <line x1="295.75" y1="38" x2="319.75" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
 <text x="341.75" y="42" font-size="8" fill="#666">#shadow-root</text>
@@ -56,5 +56,10 @@
 <text x="341.75" y="170" font-size="8" fill="#666">dynamic part</text>
 <text x="295.75" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
 <text x="341.75" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+<rect x="295.75" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="297.75" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
+<text x="341.75" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
+<text x="295.75" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
+<text x="341.75" y="218" font-size="8" fill="#666">aria-* attribute</text>
 
 </svg>

@@ -39,12 +39,12 @@
 ## Case 1: Default (items from model)
 
 ```
-<ch-action-list-render>
+<ch-action-list-render aria-multiselectable="{multiSelection}">
   | #shadow-root
   |
   | <!-- for each item in model -->
   | <!-- Item -->
-  | <ch-action-list-item>
+  | <ch-action-list-item aria-selected="{selected}">
   |   | #shadow-root
   |   | <button part="item__action [nested] [nested-expandable] [selectable | not-selectable] [selected | not-selected] [disabled]">
   |   |
@@ -104,14 +104,14 @@
   | <ch-action-list-group>
   |   | #shadow-root
   |   | <!-- when expandable -->
-  |   | <button part="group__action [selected | not-selected] [disabled]">
+  |   | <button aria-expanded="{expanded}" aria-controls="expandable" part="group__action [selected | not-selected] [disabled]">
   |   |   Caption text
   |   | </button>
   |   | <!-- else (not expandable) -->
   |   | <span part="group__caption [disabled]">Caption text</span>
   |   |
   |   | <!-- when hasContent -->
-  |   | <ul part="group__expandable [expanded | collapsed] [lazy-loaded]">
+  |   | <ul id="expandable" aria-busy="{downloading}" part="group__expandable [expanded | collapsed] [lazy-loaded]">
   |   |   <slot />
   |   | </ul>
   | </ch-action-list-group>

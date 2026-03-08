@@ -62,7 +62,7 @@
 ## Case 1: Default
 
 ```
-<ch-tree-view-render>
+<ch-tree-view-render aria-multiselectable="{multiSelection}">
   | #shadow-root
   | <ch-tree-view>
   |   | #shadow-root
@@ -70,9 +70,9 @@
   |   | <slot />
   |
   |   <!-- for each item in model -->
-  |   <ch-tree-view-item part="item [drag-enter]">
+  |   <ch-tree-view-item role="treeitem" aria-level="{level}" aria-selected="{selected}" part="item [drag-enter]">
   |     | #shadow-root
-  |     | <button part="item__header [disabled] [drag-enter] [selected | not-selected] [expand-button] [editing | not-editing] [level-0-leaf] [even-level | odd-level] [expanded | collapsed]">
+  |     | <button aria-expanded="{expanded}" aria-controls="expandable" part="item__header [disabled] [drag-enter] [selected | not-selected] [expand-button] [editing | not-editing] [level-0-leaf] [even-level | odd-level] [expanded | collapsed]">
   |     |
   |     |   <!-- when expandableButton === "action" && !leaf -->
   |     |   <button part="item__expandable-button [disabled] [expanded | collapsed]"></button>
@@ -110,7 +110,7 @@
   |     | </button>
   |     |
   |     | <!-- when !leaf (has children) -->
-  |     | <div role="group" part="item__group [expanded | collapsed] [even-level | odd-level] [lazy-loaded]">
+  |     | <div id="expandable" role="group" aria-busy="{downloading}" part="item__group [expanded | collapsed] [even-level | odd-level] [lazy-loaded]">
   |     |   <slot />
   |     | </div>
   |   </ch-tree-view-item>

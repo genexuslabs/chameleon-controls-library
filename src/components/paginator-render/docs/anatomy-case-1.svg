@@ -42,15 +42,15 @@
 <rect x="56" y="212" width="62" height="24" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <rect x="66" y="206" width="42" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
 <text x="70" y="215" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
-<rect x="56" y="248" width="87" height="50" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="66" y="242" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="70" y="251" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<rect x="56" y="248" width="145" height="50" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="66" y="242" width="125" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="70" y="251" font-size="9" fill="#424242" font-weight="bold">&lt;div role=&quot;combobox&quot;&gt;</text>
 <rect x="66" y="264" width="67" height="24" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
 <rect x="76" y="258" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
 <text x="80" y="267" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
 <rect x="56" y="310" width="293.575" height="198" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="66" y="304" width="75" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="70" y="313" font-size="9" fill="#424242" font-weight="bold">&lt;ch-popover&gt;</text>
+<rect x="66" y="304" width="158" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="70" y="313" font-size="9" fill="#424242" font-weight="bold">&lt;ch-popover role=&quot;listbox&quot;&gt;</text>
 <rect x="58" y="341" width="289.575" height="48" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
 <rect x="62" y="335" width="66" height="12" fill="#ffffff" rx="2" />
 <text x="66" y="343" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
@@ -65,8 +65,8 @@
 <path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#ffffff" transform="translate(72,412) scale(0.625)" />
 <text x="145.4" y="420.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">for each item in model</text>
 <rect x="78" y="432" width="257.575" height="66" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="88" y="426" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="92" y="435" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
+<rect x="88" y="426" width="130" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="92" y="435" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button role=&quot;option&quot;&gt;</text>
 <text x="88" y="451" font-size="9" fill="#666">item</text>
 <text x="88" y="462" font-size="9" fill="#666" font-style="italic">{item.value} [nested] [disabled] [selected]</text>
 <text x="88" y="488" font-size="9" fill="#888" font-style="italic">&quot;Caption text&quot;</text>
@@ -172,7 +172,7 @@
 <rect x="54" y="1565" width="42" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
 <text x="58" y="1574" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
 <text x="54" y="1595" font-size="9" fill="#888" font-style="italic">&quot;of 10&quot;</text>
-<rect x="409.575" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="409.575" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <text x="419.575" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
 <line x1="419.575" y1="38" x2="443.575" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
 <text x="465.575" y="42" font-size="8" fill="#666">#shadow-root</text>
@@ -197,5 +197,10 @@
 <text x="465.575" y="170" font-size="8" fill="#666">dynamic part</text>
 <text x="419.575" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
 <text x="465.575" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+<rect x="419.575" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="421.575" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
+<text x="465.575" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
+<text x="419.575" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
+<text x="465.575" y="218" font-size="8" fill="#666">aria-* attribute</text>
 
 </svg>

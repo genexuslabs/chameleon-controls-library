@@ -38,7 +38,7 @@
 <text x="46" y="261" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
 <text x="42" y="277" font-size="9" fill="#666">thumb</text>
 <text x="42" y="288" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="230.5" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="230.5" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <text x="240.5" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
 <line x1="240.5" y1="38" x2="264.5" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
 <text x="286.5" y="42" font-size="8" fill="#666">#shadow-root</text>
@@ -63,5 +63,10 @@
 <text x="286.5" y="170" font-size="8" fill="#666">dynamic part</text>
 <text x="240.5" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
 <text x="286.5" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+<rect x="240.5" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="242.5" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
+<text x="286.5" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
+<text x="240.5" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
+<text x="286.5" y="218" font-size="8" fill="#666">aria-* attribute</text>
 
 </svg>

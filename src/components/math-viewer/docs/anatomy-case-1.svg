@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 508 210"
-     width="508" height="210"
+     viewBox="0 0 508 242"
+     width="508" height="242"
      font-family="monospace, Consolas">
   <style>
     text { dominant-baseline: auto; }
@@ -20,7 +20,7 @@
 <rect x="44" y="51" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
 <text x="48" y="60" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
 <text x="44" y="81" font-size="9" fill="#888" font-style="italic">&quot;&lt;!-- rendered KaTeX HTML --&gt;&quot;</text>
-<rect x="287" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="287" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <text x="297" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
 <line x1="297" y1="38" x2="321" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
 <text x="343" y="42" font-size="8" fill="#666">#shadow-root</text>
@@ -45,5 +45,10 @@
 <text x="343" y="170" font-size="8" fill="#666">dynamic part</text>
 <text x="297" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
 <text x="343" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+<rect x="297" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="299" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
+<text x="343" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
+<text x="297" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
+<text x="343" y="218" font-size="8" fill="#666">aria-* attribute</text>
 
 </svg>

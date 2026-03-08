@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 465.79999999999995 210"
-     width="465.79999999999995" height="210"
+     viewBox="0 0 465.79999999999995 242"
+     width="465.79999999999995" height="242"
      font-family="monospace, Consolas">
   <style>
     text { dominant-baseline: auto; }
@@ -21,7 +21,7 @@
 <text x="48" y="60" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
 <text x="44" y="76" font-size="9" fill="#666">error</text>
 <text x="44" y="102" font-size="9" fill="#888" font-style="italic">&quot;Raw expression text&quot;</text>
-<rect x="244.79999999999998" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="244.79999999999998" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <text x="254.79999999999998" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
 <line x1="254.79999999999998" y1="38" x2="278.79999999999995" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
 <text x="300.79999999999995" y="42" font-size="8" fill="#666">#shadow-root</text>
@@ -46,5 +46,10 @@
 <text x="300.79999999999995" y="170" font-size="8" fill="#666">dynamic part</text>
 <text x="254.79999999999998" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
 <text x="300.79999999999995" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+<rect x="254.79999999999998" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="256.79999999999995" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
+<text x="300.79999999999995" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
+<text x="254.79999999999998" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
+<text x="300.79999999999995" y="218" font-size="8" fill="#666">aria-* attribute</text>
 
 </svg>

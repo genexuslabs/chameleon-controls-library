@@ -59,11 +59,11 @@
   |   <slot name="{tabListPosition}" />
   | </div>
   |
-  | <div role="tablist" part="tab-list [block | inline] [start | end] {tabListPosition} [dragging]">
+  | <div role="tablist" aria-label="{accessibleName}" part="tab-list [block | inline] [start | end] {tabListPosition} [dragging]">
   |   <!-- for each item in model -->
-  |   <button role="tab" part="{item.id} tab {tabListPosition} [block | inline] [start | end] [closable | not-closable] [selected | not-selected] [disabled] [dragging] [dragging-over-tab-list | dragging-out-of-tab-list]">
+  |   <button id="{item.id}" role="tab" aria-selected="{selected}" aria-controls="panel-{item.id}" part="{item.id} tab {tabListPosition} [block | inline] [start | end] [closable | not-closable] [selected | not-selected] [disabled] [dragging] [dragging-over-tab-list | dragging-out-of-tab-list]">
   |     <!-- when startImgType === "img" -->
-  |     <img part="img" />
+  |     <img aria-hidden="true" part="img" />
   |     <!-- when showCaptions -->
   |     <ch-textblock part="{item.id} tab-caption {tabListPosition} [block | inline] [start | end] [closable | not-closable] [selected | not-selected] [disabled] [dragging] [dragging-over-tab-list | dragging-out-of-tab-list]">
   |       | #shadow-root
@@ -81,7 +81,7 @@
   |
   | <div part="tab-panel-container [block | inline] [start | end] {tabListPosition} [expanded | collapsed]">
   |   <!-- for each item in model -->
-  |   <div role="tabpanel" part="{item.id} tab-panel {tabListPosition} [block | inline] [start | end] [selected | not-selected] [disabled]">
+  |   <div id="panel-{item.id}" role="tabpanel" aria-labelledby="{item.id}" part="{item.id} tab-panel {tabListPosition} [block | inline] [start | end] [selected | not-selected] [disabled]">
   |     <slot name="{item.id}" />
   |   </div>
   | </div>

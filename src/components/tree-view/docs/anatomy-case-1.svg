@@ -1,155 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 1168.6 1256"
-     width="1168.6" height="1256"
+     viewBox="0 0 1168.6 1310"
+     width="1168.6" height="1310"
      font-family="monospace, Consolas">
   <style>
     text { dominant-baseline: auto; }
   </style>
-  <rect x="10" y="10" width="911.6" height="1236" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
+  <rect x="10" y="10" width="911.6" height="1290" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
 <rect x="20" y="4" width="125" height="12" fill="#ffffff" stroke="#424242" stroke-width="1" rx="3" />
 <text x="24" y="13" font-size="9" fill="#212121" font-weight="bold">&lt;ch-tree-view-render&gt;</text>
-<rect x="12" y="30" width="907.6" height="1211" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="16" y="24" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="20" y="32" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<rect x="22" y="40" width="887.6" height="1196" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="32" y="34" width="86" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="36" y="43" font-size="9" fill="#424242" font-weight="bold">&lt;ch-tree-view&gt;</text>
-<rect x="24" y="60" width="883.6" height="81" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="28" y="54" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="32" y="62" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<rect x="32" y="144" width="182.6" height="16" fill="#0277bd" rx="3" />
-<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#ffffff" transform="translate(38,147) scale(0.625)" />
-<text x="130.3" y="155.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">projected content (light DOM)</text>
-<line x1="40" y1="177" x2="40" y2="1226" stroke="#00695c" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="34" y="70" width="98" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="44" y="64" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="48" y="73" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="44" y="89" font-size="9" fill="#666">drag-preview</text>
-<rect x="34" y="107" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="40" y="126" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
-<rect x="32" y="161" width="144.8" height="16" fill="#00695c" rx="3" />
-<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#ffffff" transform="translate(38,164) scale(0.625)" />
-<text x="111.4" y="172.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">for each item in model</text>
-<rect x="44" y="184" width="851.6" height="1042" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="178" width="113" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="187" font-size="9" fill="#424242" font-weight="bold">&lt;ch-tree-view-item&gt;</text>
-<rect x="46" y="226" width="847.6" height="995" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="50" y="220" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="54" y="228" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<text x="54" y="203" font-size="9" fill="#666">item</text>
-<text x="54" y="214" font-size="9" fill="#666" font-style="italic">[drag-enter]</text>
-<line x1="64" y1="1126" x2="64" y2="1216" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="56" y="246" width="815.6" height="852" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="66" y="240" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="70" y="249" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
-<text x="66" y="265" font-size="9" fill="#666">item__header</text>
-<text x="66" y="276" font-size="9" fill="#666" font-style="italic">[disabled] [drag-enter] [selected|not-selected] [expand-button] [editing|not-editing] [level-0-leaf] [even-level|odd-level] [expanded|collapsed]</text>
-<line x1="74" y1="304" x2="74" y2="353" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="74" y1="381" x2="74" y2="581" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="74" y1="609" x2="74" y2="646" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="74" y1="663" x2="74" y2="945" stroke="#ad1457" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="74" y1="973" x2="74" y2="1011" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="74" y1="1039" x2="74" y2="1088" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="66" y="288" width="258.2" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,291) scale(1)" />
-<text x="202.1" y="299.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when expandableButton === &quot;action&quot; &amp;&amp; !leaf</text>
-<rect x="78" y="311" width="191.275" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="88" y="305" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="92" y="314" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
-<text x="88" y="330" font-size="9" fill="#666">item__expandable-button</text>
-<text x="88" y="341" font-size="9" fill="#666" font-style="italic">[disabled] [expanded|collapsed]</text>
-<rect x="66" y="365" width="96.2" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,368) scale(1)" />
-<text x="121.1" y="376.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when checkbox</text>
-<rect x="78" y="388" width="263.1" height="193" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="88" y="382" width="80" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="92" y="391" font-size="9" fill="#424242" font-weight="bold">&lt;ch-checkbox&gt;</text>
-<rect x="80" y="430" width="259.1" height="146" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="84" y="424" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="88" y="432" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<text x="88" y="407" font-size="9" fill="#666">item__checkbox</text>
-<text x="88" y="418" font-size="9" fill="#666" font-style="italic">[checked|unchecked|indeterminate] [disabled]</text>
-<rect x="90" y="450" width="176.5" height="121" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="100" y="444" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="104" y="453" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="100" y="469" font-size="9" fill="#666">item__checkbox-container</text>
-<rect x="100" y="487" width="150" height="31" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="110" y="481" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="114" y="490" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="110" y="506" font-size="9" fill="#666">item__checkbox-input</text>
-<rect x="100" y="530" width="156.5" height="31" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="110" y="524" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="114" y="533" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="110" y="549" font-size="9" fill="#666">item__checkbox-option</text>
-<rect x="66" y="593" width="231.2" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,596) scale(1)" />
-<text x="188.6" y="604.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when customRender: custom content slot</text>
-<rect x="78" y="610" width="174.7" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="84" y="629" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;custom-content&quot;&gt;</text>
-<rect x="66" y="647" width="139.39999999999998" height="16" fill="#ad1457" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,650) scale(1)" />
-<text x="142.7" y="658.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">else (default action)</text>
-<rect x="78" y="670" width="252.04999999999998" height="275" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="88" y="664" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="92" y="673" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="88" y="689" font-size="9" fill="#666">item__action</text>
-<text x="88" y="700" font-size="9" fill="#666" font-style="italic">[editing|not-editing] [expanded|collapsed]</text>
-<line x1="96" y1="728" x2="96" y2="766" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="96" y1="794" x2="96" y2="837" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="96" y1="854" x2="96" y2="869" stroke="#ad1457" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="96" y1="897" x2="96" y2="935" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="88" y="712" width="112.39999999999999" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(94,715) scale(1)" />
-<text x="151.2" y="723.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when startImgSrc</text>
-<rect x="100" y="735" width="143.5" height="31" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="110" y="729" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="114" y="738" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="110" y="754" font-size="9" fill="#666">item__img start-img</text>
-<rect x="88" y="778" width="90.8" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(94,781) scale(1)" />
-<text x="140.4" y="789.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when editing</text>
-<rect x="100" y="801" width="137" height="31" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="110" y="795" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="114" y="804" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="110" y="820" font-size="9" fill="#666">item__edit-caption</text>
-<rect x="88" y="838" width="47.599999999999994" height="16" fill="#ad1457" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(94,841) scale(1)" />
-<text x="118.8" y="849.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">else</text>
-<text x="100" y="869" font-size="9" fill="#888" font-style="italic">&quot;Caption text&quot;</text>
-<rect x="88" y="881" width="101.6" height="16" fill="#7b1fa2" rx="3" />
+<rect x="12" y="41" width="907.6" height="1254" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="16" y="35" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="20" y="43" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<text x="20" y="29" font-size="9" fill="#1565c0" font-style="italic">aria-multiselectable=&quot;{multiSelection}&quot;</text>
+<rect x="22" y="61" width="887.6" height="1229" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="32" y="55" width="86" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="36" y="64" font-size="9" fill="#424242" font-weight="bold">&lt;ch-tree-view&gt;</text>
+<rect x="24" y="81" width="883.6" height="81" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="28" y="75" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="32" y="83" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="32" y="165" width="182.6" height="16" fill="#0277bd" rx="3" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#ffffff" transform="translate(38,168) scale(0.625)" />
+<text x="130.3" y="176.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">projected content (light DOM)</text>
+<line x1="40" y1="198" x2="40" y2="1280" stroke="#00695c" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="34" y="91" width="98" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="85" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="94" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="44" y="110" font-size="9" fill="#666">drag-preview</text>
+<rect x="34" y="128" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="40" y="147" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
+<rect x="32" y="182" width="144.8" height="16" fill="#00695c" rx="3" />
+<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#ffffff" transform="translate(38,185) scale(0.625)" />
+<text x="111.4" y="193.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">for each item in model</text>
+<rect x="44" y="205" width="851.6" height="1075" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="199" width="202" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="208" font-size="9" fill="#424242" font-weight="bold">&lt;ch-tree-view-item role=&quot;treeitem&quot;&gt;</text>
+<rect x="46" y="258" width="847.6" height="1017" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="50" y="252" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="54" y="260" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<text x="54" y="224" font-size="9" fill="#666">item</text>
+<text x="54" y="235" font-size="9" fill="#666" font-style="italic">[drag-enter]</text>
+<text x="54" y="246" font-size="9" fill="#1565c0" font-style="italic">aria-level=&quot;{level}&quot;  aria-selected=&quot;{selected}&quot;</text>
+<line x1="64" y1="1169" x2="64" y2="1270" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="56" y="278" width="815.6" height="863" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
+<rect x="66" y="272" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="70" y="281" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
+<text x="66" y="297" font-size="9" fill="#666">item__header</text>
+<text x="66" y="308" font-size="9" fill="#666" font-style="italic">[disabled] [drag-enter] [selected|not-selected] [expand-button] [editing|not-editing] [level-0-leaf] [even-level|odd-level] [expanded|collapsed]</text>
+<text x="66" y="319" font-size="9" fill="#1565c0" font-style="italic">aria-expanded=&quot;{expanded}&quot;  aria-controls=&quot;expandable&quot;</text>
+<line x1="74" y1="347" x2="74" y2="396" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="74" y1="424" x2="74" y2="624" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="74" y1="652" x2="74" y2="689" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="74" y1="706" x2="74" y2="988" stroke="#ad1457" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="74" y1="1016" x2="74" y2="1054" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="74" y1="1082" x2="74" y2="1131" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="66" y="331" width="258.2" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,334) scale(1)" />
+<text x="202.1" y="342.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when expandableButton === &quot;action&quot; &amp;&amp; !leaf</text>
+<rect x="78" y="354" width="191.275" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
+<rect x="88" y="348" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="92" y="357" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
+<text x="88" y="373" font-size="9" fill="#666">item__expandable-button</text>
+<text x="88" y="384" font-size="9" fill="#666" font-style="italic">[disabled] [expanded|collapsed]</text>
+<rect x="66" y="408" width="96.2" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,411) scale(1)" />
+<text x="121.1" y="419.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when checkbox</text>
+<rect x="78" y="431" width="263.1" height="193" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="88" y="425" width="80" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="92" y="434" font-size="9" fill="#424242" font-weight="bold">&lt;ch-checkbox&gt;</text>
+<rect x="80" y="473" width="259.1" height="146" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="84" y="467" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="88" y="475" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<text x="88" y="450" font-size="9" fill="#666">item__checkbox</text>
+<text x="88" y="461" font-size="9" fill="#666" font-style="italic">[checked|unchecked|indeterminate] [disabled]</text>
+<rect x="90" y="493" width="176.5" height="121" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="100" y="487" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="104" y="496" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="100" y="512" font-size="9" fill="#666">item__checkbox-container</text>
+<rect x="100" y="530" width="150" height="31" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
+<rect x="110" y="524" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="114" y="533" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
+<text x="110" y="549" font-size="9" fill="#666">item__checkbox-input</text>
+<rect x="100" y="573" width="156.5" height="31" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="110" y="567" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="114" y="576" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="110" y="592" font-size="9" fill="#666">item__checkbox-option</text>
+<rect x="66" y="636" width="231.2" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,639) scale(1)" />
+<text x="188.6" y="647.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when customRender: custom content slot</text>
+<rect x="78" y="653" width="174.7" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="84" y="672" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;custom-content&quot;&gt;</text>
+<rect x="66" y="690" width="139.39999999999998" height="16" fill="#ad1457" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,693) scale(1)" />
+<text x="142.7" y="701.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">else (default action)</text>
+<rect x="78" y="713" width="252.04999999999998" height="275" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="88" y="707" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="92" y="716" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="88" y="732" font-size="9" fill="#666">item__action</text>
+<text x="88" y="743" font-size="9" fill="#666" font-style="italic">[editing|not-editing] [expanded|collapsed]</text>
+<line x1="96" y1="771" x2="96" y2="809" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="96" y1="837" x2="96" y2="880" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="96" y1="897" x2="96" y2="912" stroke="#ad1457" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="96" y1="940" x2="96" y2="978" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="88" y="755" width="112.39999999999999" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(94,758) scale(1)" />
+<text x="151.2" y="766.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when startImgSrc</text>
+<rect x="100" y="778" width="143.5" height="31" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="110" y="772" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="114" y="781" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="110" y="797" font-size="9" fill="#666">item__img start-img</text>
+<rect x="88" y="821" width="90.8" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(94,824) scale(1)" />
+<text x="140.4" y="832.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when editing</text>
+<rect x="100" y="844" width="137" height="31" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
+<rect x="110" y="838" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="114" y="847" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
+<text x="110" y="863" font-size="9" fill="#666">item__edit-caption</text>
+<rect x="88" y="881" width="47.599999999999994" height="16" fill="#ad1457" rx="3" />
 <path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(94,884) scale(1)" />
-<text x="145.8" y="892.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when endImgSrc</text>
-<rect x="100" y="904" width="130.5" height="31" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="110" y="898" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="114" y="907" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="110" y="923" font-size="9" fill="#666">item__img end-img</text>
-<rect x="66" y="957" width="161" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,960) scale(1)" />
-<text x="153.5" y="968.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when downloading &amp;&amp; !leaf</text>
-<rect x="78" y="980" width="130.5" height="31" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="88" y="974" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="92" y="983" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="88" y="999" font-size="9" fill="#666">item__downloading</text>
-<rect x="66" y="1023" width="101.6" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,1026) scale(1)" />
-<text x="123.8" y="1034.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showLines</text>
-<rect x="78" y="1046" width="85" height="42" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="88" y="1040" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="92" y="1049" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="88" y="1065" font-size="9" fill="#666">item__line</text>
-<text x="88" y="1076" font-size="9" fill="#666" font-style="italic">[last-line]</text>
-<rect x="56" y="1110" width="161" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(62,1113) scale(1)" />
-<text x="143.5" y="1121.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when !leaf (has children)</text>
-<rect x="68" y="1133" width="334.925" height="83" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="78" y="1127" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="82" y="1136" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="78" y="1152" font-size="9" fill="#666">item__group</text>
-<text x="78" y="1163" font-size="9" fill="#666" font-style="italic">[expanded|collapsed] [even-level|odd-level] [lazy-loaded]</text>
-<rect x="78" y="1175" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="84" y="1194" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
-<rect x="947.6" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<text x="118.8" y="892.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">else</text>
+<text x="100" y="912" font-size="9" fill="#888" font-style="italic">&quot;Caption text&quot;</text>
+<rect x="88" y="924" width="101.6" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(94,927) scale(1)" />
+<text x="145.8" y="935.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when endImgSrc</text>
+<rect x="100" y="947" width="130.5" height="31" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="110" y="941" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="114" y="950" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="110" y="966" font-size="9" fill="#666">item__img end-img</text>
+<rect x="66" y="1000" width="161" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,1003) scale(1)" />
+<text x="153.5" y="1011.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when downloading &amp;&amp; !leaf</text>
+<rect x="78" y="1023" width="130.5" height="31" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="88" y="1017" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="92" y="1026" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="88" y="1042" font-size="9" fill="#666">item__downloading</text>
+<rect x="66" y="1066" width="101.6" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(72,1069) scale(1)" />
+<text x="123.8" y="1077.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showLines</text>
+<rect x="78" y="1089" width="85" height="42" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="88" y="1083" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="92" y="1092" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="88" y="1108" font-size="9" fill="#666">item__line</text>
+<text x="88" y="1119" font-size="9" fill="#666" font-style="italic">[last-line]</text>
+<rect x="56" y="1153" width="161" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(62,1156) scale(1)" />
+<text x="143.5" y="1164.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when !leaf (has children)</text>
+<rect x="68" y="1176" width="334.925" height="94" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="78" y="1170" width="196" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="82" y="1179" font-size="9" fill="#424242" font-weight="bold">&lt;div id=&quot;expandable&quot; role=&quot;group&quot;&gt;</text>
+<text x="78" y="1195" font-size="9" fill="#666">item__group</text>
+<text x="78" y="1206" font-size="9" fill="#666" font-style="italic">[expanded|collapsed] [even-level|odd-level] [lazy-loaded]</text>
+<text x="78" y="1217" font-size="9" fill="#1565c0" font-style="italic">aria-busy=&quot;{downloading}&quot;</text>
+<rect x="78" y="1229" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="84" y="1248" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
+<rect x="947.6" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <text x="957.6" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
 <line x1="957.6" y1="38" x2="981.6" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
 <text x="1003.6" y="42" font-size="8" fill="#666">#shadow-root</text>
@@ -174,5 +178,10 @@
 <text x="1003.6" y="170" font-size="8" fill="#666">dynamic part</text>
 <text x="957.6" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
 <text x="1003.6" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+<rect x="957.6" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="959.6" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
+<text x="1003.6" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
+<text x="957.6" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
+<text x="1003.6" y="218" font-size="8" fill="#666">aria-* attribute</text>
 
 </svg>

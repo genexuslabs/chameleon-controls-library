@@ -275,3 +275,80 @@ labels that describe a section of the layout:
 These have no semantic effect on the diagram; they exist only to aid
 readability.
 
+---
+
+## Accessibility attributes — `role`, `aria-*`
+
+### `id` attribute
+
+The `id` attribute is shown in the element's tag when it is referenced by an
+ARIA relationship attribute (`aria-controls`, `aria-labelledby`,
+`aria-describedby`, etc.) on another element. This makes it clear which element
+the relationship points to:
+
+```
+| <h2 id="heading" part="caption">Caption text</h2>
+| <button id="{item.id}" role="tab" aria-controls="panel-{item.id}" part="tab"></button>
+| <div id="panel-{item.id}" role="tabpanel" aria-labelledby="{item.id}" part="panel"></div>
+```
+
+In the SVG diagram, `id` appears inside the floating tag pill:
+`<h2 id="heading">`, `<div id="panel-{item.id}" role="tabpanel">`.
+
+Only include `id` when it participates in an ARIA relationship. Omit it for
+elements whose `id` is purely internal (e.g. used only by JavaScript logic).
+
+### `role` attribute
+
+The `role` attribute is shown directly in the element's tag, just like `id`
+and `slot`:
+
+```
+| <div role="tablist" part="tablist"></div>
+| <button role="tab" part="tab [selected]"></button>
+```
+
+In the SVG diagram, `role` appears inside the floating tag pill:
+`<div role="tablist">`.
+
+### `aria-*` attributes
+
+ARIA attributes describe the accessible state and relationships of elements.
+They are shown as regular HTML attributes on the element:
+
+```
+| <button id="{item.id}" role="tab" aria-selected="true" aria-controls="panel-{item.id}" part="tab"></button>
+| <div id="panel-{item.id}" role="tabpanel" aria-labelledby="{item.id}" part="panel"></div>
+```
+
+In the SVG diagram, `aria-*` attributes are displayed as a separate annotation
+line (in blue italic) below the part names.
+
+### Dynamic ARIA values — `{expression}`
+
+When an ARIA value comes from a runtime variable, use the same `{expression}`
+syntax as dynamic parts:
+
+```
+| <button role="tab" aria-controls="{item.id}-panel" part="{item.id} tab [selected]"></button>
+```
+
+### Boolean ARIA attributes
+
+Boolean ARIA attributes (like `aria-expanded`, `aria-disabled`) that toggle
+at runtime should show their "truthy" value:
+
+```
+| <button aria-expanded="true" part="header [expanded | collapsed]"></button>
+```
+
+### Conditional ARIA attributes
+
+ARIA attributes that are only present under certain conditions follow the same
+`<!-- when -->` pattern as conditional rendering:
+
+```
+| <!-- when hasPopup -->
+| <button aria-haspopup="dialog" part="trigger"></button>
+```
+

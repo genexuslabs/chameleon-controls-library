@@ -60,7 +60,7 @@
   | #shadow-root
   | <span class="invisible-text"></span>
   | <div role="combobox">
-  |   <input />
+  |   <input aria-controls="popover" />
   | </div>
   | <ch-popover id="popover" role="listbox" part="window">
   |   | #shadow-root
@@ -81,22 +81,22 @@
   | #shadow-root
   | <span class="invisible-text"></span>
   | <div role="combobox">
-  |   <input />
+  |   <input aria-controls="popover" />
   | </div>
   | <ch-popover id="popover" role="listbox" part="window">
   |   | #shadow-root
   |   | <slot />
   |
   |   <!-- for each group in model -->
-  |   <div role="group" part="{item.value} group [disabled]">
+  |   <div role="group" aria-labelledby="{index}" part="{item.value} group [disabled]">
   |     <!-- when expandable -->
-  |     <button part="{item.value} group__header expandable [disabled] [expanded | collapsed]">
+  |     <button id="{index}" aria-expanded="{expanded}" aria-controls="{index}__content" part="{item.value} group__header expandable [disabled] [expanded | collapsed]">
   |       <span part="group__header-caption {item.value}">Caption text</span>
   |     </button>
   |     <!-- else (not expandable) -->
-  |     <span part="{item.value} group__header [disabled]">Caption text</span>
+  |     <span id="{index}" part="{item.value} group__header [disabled]">Caption text</span>
   |
-  |     <div part="group__content {item.value}">
+  |     <div id="{index}__content" part="group__content {item.value}">
   |       <!-- for each item in group.items -->
   |       <button role="option" part="{item.value} item nested [disabled] [selected]">
   |         Caption text
@@ -114,7 +114,7 @@
   | #shadow-root
   | <span class="invisible-text"></span>
   | <div role="combobox">
-  |   <input />
+  |   <input aria-controls="popover" />
   | </div>
 </ch-combo-box-render>
 ```

@@ -509,6 +509,21 @@ function renderNode(positioned) {
         fontStyle: "italic"
       }
     );
+    labelY += SIZES.partFontSize + 2;
+  }
+
+  // ARIA attributes line (smaller, distinct color)
+  if (label.ariaLine) {
+    svg += svgText(
+      x + SIZES.padding,
+      labelY + SIZES.partFontSize,
+      label.ariaLine,
+      {
+        fontSize: SIZES.partFontSize,
+        fill: COLORS.aria,
+        fontStyle: "italic"
+      }
+    );
   }
 
   // Render condition scope lines (thin vertical lines showing condition extent)
@@ -613,6 +628,7 @@ function computeLabel(node) {
 
   const tag = node.tag || "";
   const parts = node.parts || [];
+  const attrs = node.attributes || {};
 
   // Static parts
   const staticParts = parts.filter(p => !p.conditional && !p.dynamic);
@@ -625,15 +641,22 @@ function computeLabel(node) {
 
   // Tag name: floating pill for most elements, inline for slots
   const isSlotNode = node.type === "slot";
-  const slotName = isSlotNode && node.attributes?.name ? node.attributes.name : null;
+  const slotName = isSlotNode && attrs.name ? attrs.name : null;
+
+  // ID integrated into the tag pill (e.g. <div id="heading">)
+  const idAttr = attrs.id ? ` id="${attrs.id}"` : "";
+
+  // Role integrated into the tag pill (e.g. <div role="tablist">)
+  const roleAttr = attrs.role ? ` role="${attrs.role}"` : "";
 
   // Slot assignment integrated into the tag pill (e.g. <div slot="header">)
-  const slotAssignment = !isSlotNode && node.attributes?.slot
-    ? ` slot="${node.attributes.slot}"`
+  const slotAssignment = !isSlotNode && attrs.slot
+    ? ` slot="${attrs.slot}"`
     : "";
+
   const tagRaw = slotName
     ? `<slot name="${slotName}">`
-    : `<${tag}${slotAssignment}>`;
+    : `<${tag}${idAttr}${roleAttr}${slotAssignment}>`;
   const tagText = isSlotNode ? null : tagRaw;
   const tagWidth = isSlotNode
     ? 0
@@ -651,6 +674,12 @@ function computeLabel(node) {
           })
           .join(" ")
       : "";
+
+  // ARIA attributes line (aria-* attributes shown below parts)
+  const ariaEntries = Object.entries(attrs)
+    .filter(([k]) => k.startsWith("aria-"))
+    .map(([k, v]) => v === true ? k : `${k}="${v}"`);
+  const ariaLine = ariaEntries.length > 0 ? ariaEntries.join("  ") : "";
 
   // Calculate dimensions (floating tag is not included in internal height, inline tag is)
   let maxWidth = tagWidth; // Tag pill width still contributes to min width
@@ -670,6 +699,10 @@ function computeLabel(node) {
     maxWidth = Math.max(maxWidth, conditional.length * SIZES.charWidth * 0.85);
     totalHeight += SIZES.partFontSize + 2;
   }
+  if (ariaLine) {
+    maxWidth = Math.max(maxWidth, ariaLine.length * SIZES.charWidth * 0.75);
+    totalHeight += SIZES.partFontSize + 2;
+  }
 
   return {
     primary,
@@ -677,6 +710,7 @@ function computeLabel(node) {
     tagWidth,
     inlineTag: isSlotNode ? tagRaw : null,
     conditional,
+    ariaLine,
     parts,
     width: maxWidth,
     height: totalHeight
@@ -874,6 +908,20 @@ const LEGEND_ITEMS = [
     label: "conditional dynamic part",
     preview: (x, y) => {
       return svgText(x, y + 10, "[{part}]", { fontSize: 9, fill: "#666", fontStyle: "italic" });
+    }
+  },
+  {
+    label: "id, role (in tag pill)",
+    preview: (x, y) => {
+      let s = svgRect(x, y, 20, 12, { fill: "#fafafa", stroke: "#bdbdbd", strokeWidth: 1, rx: 3 });
+      s += svgText(x + 2, y + 9, "id", { fontSize: 7, fill: "#424242", fontWeight: "bold" });
+      return s;
+    }
+  },
+  {
+    label: "aria-* attribute",
+    preview: (x, y) => {
+      return svgText(x, y + 10, "aria-*", { fontSize: 9, fill: COLORS.aria, fontStyle: "italic" });
     }
   }
 ];

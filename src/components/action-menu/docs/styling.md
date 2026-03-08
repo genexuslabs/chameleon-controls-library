@@ -42,10 +42,10 @@
 ```
 <ch-action-menu-render>
   | #shadow-root
-  | <button part="expandable-button [expanded | collapsed] [disabled]">
+  | <button aria-controls="window" part="expandable-button [expanded | collapsed] [disabled]">
   |   <slot />
   | </button>
-  | <ch-popover role="list" part="window">
+  | <ch-popover id="window" role="list" part="window">
   |   | #shadow-root
   |   | <slot />
   |

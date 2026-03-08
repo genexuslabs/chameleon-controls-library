@@ -50,13 +50,13 @@
 ```
 <ch-dialog>
   | #shadow-root
-  | <dialog part="dialog">
+  | <dialog aria-labelledby="heading" part="dialog">
   |   <!-- when showHeader -->
   |   <div part="header">
   |     <!-- when caption -->
-  |     <h2 part="caption">Caption text</h2>
+  |     <h2 id="heading" part="caption">Caption text</h2>
   |     <!-- when closable -->
-  |     <button part="close-button"></button>
+  |     <button aria-label="{closeButtonAccessibleName}" part="close-button"></button>
   |   </div>
   |
   |   <div part="content">

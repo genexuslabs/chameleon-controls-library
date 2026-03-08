@@ -1,102 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 580 903"
-     width="580" height="903"
+     viewBox="0 0 580 925"
+     width="580" height="925"
      font-family="monospace, Consolas">
   <style>
     text { dominant-baseline: auto; }
   </style>
-  <rect x="10" y="10" width="323" height="883" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
+  <rect x="10" y="10" width="323" height="905" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
 <rect x="20" y="4" width="69" height="12" fill="#ffffff" stroke="#424242" stroke-width="1" rx="3" />
 <text x="24" y="13" font-size="9" fill="#212121" font-weight="bold">&lt;ch-dialog&gt;</text>
-<rect x="12" y="30" width="319" height="858" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="12" y="30" width="319" height="880" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
 <rect x="16" y="24" width="66" height="12" fill="#ffffff" rx="2" />
 <text x="20" y="32" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<rect x="22" y="40" width="299" height="843" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="22" y="40" width="299" height="865" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <rect x="32" y="34" width="53" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
 <text x="36" y="43" font-size="9" fill="#424242" font-weight="bold">&lt;dialog&gt;</text>
 <text x="32" y="59" font-size="9" fill="#666">dialog</text>
-<line x1="40" y1="87" x2="40" y2="279" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="40" y1="391" x2="40" y2="470" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="40" y1="498" x2="40" y2="536" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="32" y="71" width="107" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(38,74) scale(1)" />
-<text x="92.5" y="82.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showHeader</text>
-<rect x="44" y="94" width="143" height="185" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="88" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="97" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="54" y="113" font-size="9" fill="#666">header</text>
-<line x1="62" y1="141" x2="62" y2="203" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="62" y1="231" x2="62" y2="269" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="54" y="125" width="90.8" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,128) scale(1)" />
-<text x="106.4" y="136.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when caption</text>
-<rect x="66" y="148" width="111" height="55" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="142" width="31" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="151" font-size="9" fill="#424242" font-weight="bold">&lt;h2&gt;</text>
-<text x="76" y="167" font-size="9" fill="#666">caption</text>
-<text x="76" y="193" font-size="9" fill="#888" font-style="italic">&quot;Caption text&quot;</text>
-<rect x="54" y="215" width="96.2" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,218) scale(1)" />
-<text x="109.1" y="226.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when closable</text>
-<rect x="66" y="238" width="98" height="31" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="76" y="232" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="80" y="241" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
-<text x="76" y="257" font-size="9" fill="#666">close-button</text>
-<rect x="32" y="291" width="73.15" height="72" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="285" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="294" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="42" y="310" font-size="9" fill="#666">content</text>
-<rect x="42" y="322" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="48" y="341" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
-<rect x="32" y="375" width="107" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(38,378) scale(1)" />
-<text x="92.5" y="386.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showFooter</text>
-<rect x="44" y="398" width="150.5" height="72" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="392" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="401" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="54" y="417" font-size="9" fill="#666">footer</text>
-<rect x="54" y="429" width="130.5" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="60" y="448" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;footer&quot;&gt;</text>
-<rect x="32" y="482" width="144.8" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(38,485) scale(1)" />
-<text x="111.4" y="493.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when resizable &amp;&amp; show</text>
-<rect x="44" y="505" width="156.5" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="499" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="508" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="54" y="524" font-size="9" fill="#666">edge edge-block-start</text>
-<rect x="32" y="548" width="150" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="542" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="551" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="42" y="567" font-size="9" fill="#666">edge edge-inline-end</text>
-<rect x="32" y="591" width="143.5" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="585" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="594" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="42" y="610" font-size="9" fill="#666">edge edge-block-end</text>
-<rect x="32" y="634" width="163" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="628" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="637" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="42" y="653" font-size="9" fill="#666">edge edge-inline-start</text>
-<rect x="32" y="677" width="267" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="671" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="680" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="42" y="696" font-size="9" fill="#666">corner corner-block-start-inline-start</text>
-<rect x="32" y="720" width="254" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="714" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="723" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="42" y="739" font-size="9" fill="#666">corner corner-block-start-inline-end</text>
-<rect x="32" y="763" width="254" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="757" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="766" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="42" y="782" font-size="9" fill="#666">corner corner-block-end-inline-start</text>
-<rect x="32" y="806" width="241" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="800" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="809" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="42" y="825" font-size="9" fill="#666">corner corner-block-end-inline-end</text>
-<rect x="32" y="849" width="56" height="24" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="42" y="843" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="46" y="852" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<rect x="359" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<text x="32" y="70" font-size="9" fill="#1565c0" font-style="italic">aria-labelledby=&quot;heading&quot;</text>
+<line x1="40" y1="98" x2="40" y2="301" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="40" y1="413" x2="40" y2="492" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="40" y1="520" x2="40" y2="558" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="32" y="82" width="107" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(38,85) scale(1)" />
+<text x="92.5" y="93.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showHeader</text>
+<rect x="44" y="105" width="247" height="196" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="99" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="108" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="54" y="124" font-size="9" fill="#666">header</text>
+<line x1="62" y1="152" x2="62" y2="214" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="62" y1="242" x2="62" y2="291" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="54" y="136" width="90.8" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,139) scale(1)" />
+<text x="106.4" y="147.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when caption</text>
+<rect x="66" y="159" width="122" height="55" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="153" width="102" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="162" font-size="9" fill="#424242" font-weight="bold">&lt;h2 id=&quot;heading&quot;&gt;</text>
+<text x="76" y="178" font-size="9" fill="#666">caption</text>
+<text x="76" y="204" font-size="9" fill="#888" font-style="italic">&quot;Caption text&quot;</text>
+<rect x="54" y="226" width="96.2" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,229) scale(1)" />
+<text x="109.1" y="237.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when closable</text>
+<rect x="66" y="249" width="215" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
+<rect x="76" y="243" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="80" y="252" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
+<text x="76" y="268" font-size="9" fill="#666">close-button</text>
+<text x="76" y="279" font-size="9" fill="#1565c0" font-style="italic">aria-label=&quot;{closeButtonAccessibleName}&quot;</text>
+<rect x="32" y="313" width="73.15" height="72" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="307" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="316" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="42" y="332" font-size="9" fill="#666">content</text>
+<rect x="42" y="344" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="48" y="363" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
+<rect x="32" y="397" width="107" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(38,400) scale(1)" />
+<text x="92.5" y="408.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showFooter</text>
+<rect x="44" y="420" width="150.5" height="72" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="414" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="423" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="54" y="439" font-size="9" fill="#666">footer</text>
+<rect x="54" y="451" width="130.5" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="60" y="470" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;footer&quot;&gt;</text>
+<rect x="32" y="504" width="144.8" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(38,507) scale(1)" />
+<text x="111.4" y="515.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when resizable &amp;&amp; show</text>
+<rect x="44" y="527" width="156.5" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="521" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="530" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="54" y="546" font-size="9" fill="#666">edge edge-block-start</text>
+<rect x="32" y="570" width="150" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="564" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="573" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="42" y="589" font-size="9" fill="#666">edge edge-inline-end</text>
+<rect x="32" y="613" width="143.5" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="607" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="616" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="42" y="632" font-size="9" fill="#666">edge edge-block-end</text>
+<rect x="32" y="656" width="163" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="650" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="659" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="42" y="675" font-size="9" fill="#666">edge edge-inline-start</text>
+<rect x="32" y="699" width="267" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="693" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="702" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="42" y="718" font-size="9" fill="#666">corner corner-block-start-inline-start</text>
+<rect x="32" y="742" width="254" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="736" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="745" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="42" y="761" font-size="9" fill="#666">corner corner-block-start-inline-end</text>
+<rect x="32" y="785" width="254" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="779" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="788" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="42" y="804" font-size="9" fill="#666">corner corner-block-end-inline-start</text>
+<rect x="32" y="828" width="241" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="822" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="831" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="42" y="847" font-size="9" fill="#666">corner corner-block-end-inline-end</text>
+<rect x="32" y="871" width="56" height="24" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="865" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="874" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<rect x="359" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <text x="369" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
 <line x1="369" y1="38" x2="393" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
 <text x="415" y="42" font-size="8" fill="#666">#shadow-root</text>
@@ -121,5 +123,10 @@
 <text x="415" y="170" font-size="8" fill="#666">dynamic part</text>
 <text x="369" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
 <text x="415" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+<rect x="369" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="371" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
+<text x="415" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
+<text x="369" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
+<text x="415" y="218" font-size="8" fill="#666">aria-* attribute</text>
 
 </svg>

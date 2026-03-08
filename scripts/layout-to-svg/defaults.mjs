@@ -41,7 +41,8 @@ export const COLORS = {
   text: { fill: "none", stroke: "none", text: "#616161" },
   decorative: { fill: "#e8f5e9", stroke: "#388e3c", text: "#1b5e20" },
   host: { fill: "#ffffff", stroke: "#424242", text: "#212121" },
-  shadow: { fill: "rgba(0,0,0,0.02)", stroke: "#9e9e9e" }
+  shadow: { fill: "rgba(0,0,0,0.02)", stroke: "#9e9e9e" },
+  aria: "#1565c0" // Blue text for aria-* attribute annotations
 };
 
 export const BADGE_COLORS = {

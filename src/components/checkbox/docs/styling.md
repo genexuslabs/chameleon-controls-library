@@ -42,8 +42,8 @@
   | #shadow-root
   | <label part="label [checked | unchecked] [indeterminate] [disabled]">
   |   <div part="container [checked | unchecked] [indeterminate] [disabled]">
-  |     <input part="input" type="checkbox" />
-  |     <div part="option [checked | unchecked] [indeterminate] [disabled]"></div>
+  |     <input aria-label="{accessibleName}" part="input" type="checkbox" />
+  |     <div aria-hidden="true" part="option [checked | unchecked] [indeterminate] [disabled]"></div>
   |   </div>
   |   Caption text
   | </label>
@@ -56,8 +56,8 @@
 <ch-checkbox>
   | #shadow-root
   | <div part="container [checked | unchecked] [indeterminate] [disabled]">
-  |   <input part="input" type="checkbox" />
-  |   <div part="option [checked | unchecked] [indeterminate] [disabled]"></div>
+  |   <input aria-label="{accessibleName}" part="input" type="checkbox" />
+  |   <div aria-hidden="true" part="option [checked | unchecked] [indeterminate] [disabled]"></div>
   | </div>
 </ch-checkbox>
 ```

@@ -1,15 +1,14 @@
 # Shadow DOM Layout Syntax
 
-Each component has a `docs/layout.md` file that describes its shadow DOM
-structure using an ASCII-tree notation. This document explains the syntax
-conventions used in those files.
+Each component has a `docs/styling.md` file that includes a Shadow DOM Layout
+section describing its shadow DOM structure using an ASCII-tree notation.
+This document explains the syntax conventions used in those sections.
 
 ---
 
 ## File structure
 
-Every `layout.md` starts with a heading that names the component, followed by
-one or more **Cases**. Each case represents a significant rendering variant
+The Shadow DOM Layout section in `styling.md` contains one or more **Cases**. Each case represents a significant rendering variant
 (e.g. expanded vs collapsed, desktop vs mobile).
 
 ```markdown

@@ -3,10 +3,10 @@
 /**
  * parse-layout.mjs
  *
- * Parses layout.md files into a typed AST.
+ * Parses Shadow DOM Layout sections from styling.md files into a typed AST.
  *
  * Usage:
- *   node scripts/layout-to-svg/parse-layout.mjs <path-to-layout.md>
+ *   node scripts/layout-to-svg/parse-layout.mjs <path-to-styling.md>
  *
  * Output: JSON AST to stdout
  */

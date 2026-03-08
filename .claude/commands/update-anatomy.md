@@ -1,7 +1,7 @@
 # Update Anatomy
 
 Update the `layout-metadata.json` and regenerate anatomy SVG diagrams for Chameleon components.
-Use this when component styles (`.scss`) or shadow DOM layout (`layout.md`) have changed.
+Use this when component styles (`.scss`) or shadow DOM layout (in `styling.md`) have changed.
 
 ## Input
 
@@ -16,20 +16,20 @@ The user provides one of:
 ### 1. Resolve target components
 
 - Parse the argument to get component name(s)
-- For `--all`: scan `src/components/*/docs/layout.md` to find all components with layout files
-- Verify each component has a `docs/layout.md` — if missing, report and skip
+- For `--all`: scan `src/components/*/docs/styling.md` to find all components with layout sections
+- Verify each component has a `docs/styling.md` with a Shadow DOM Layout section — if missing, report and skip
 
 ### 2. For each component, gather context
 
 Read these files:
-- `src/components/{name}/docs/layout.md` — the shadow DOM layout description
+- `src/components/{name}/docs/styling.md` — contains Shadow Parts, CSS Custom Properties, and Shadow DOM Layout
 - `src/components/{name}/{name}.scss` — the component's main SCSS
 - If the layout references sub-components (`ch-*` tags with shadow roots), also read their SCSS files
 - `src/components/{name}/docs/layout-metadata.json` — existing metadata (if any)
 
 ### 3. Detect changes
 
-- Compute a hash of `layout.md + SCSS` content
+- Compute a hash of `styling.md + SCSS` content
 - Compare with the `sourceHash` field in existing `layout-metadata.json`
 - If hashes match and `--force` is not set, skip this component (report "no changes detected")
 
@@ -37,12 +37,12 @@ Read these files:
 
 Run the parser to get the AST:
 ```bash
-node scripts/layout-to-svg/parse-layout.mjs src/components/{name}/docs/layout.md
+node scripts/layout-to-svg/parse-layout.mjs src/components/{name}/docs/styling.md
 ```
 
 ### 5. Analyze SCSS and generate metadata
 
-For each node in the AST (identified by path like "0", "0.0", "0.1.0"), determine visual hints by analyzing the SCSS:
+For each node in the AST (identified by path like "0", "0.0", "0.1.0") determine visual hints by analyzing the SCSS:
 
 #### SCSS Analysis Guide
 
@@ -71,7 +71,7 @@ Only include entries for nodes that DIFFER from defaults (direction="column", po
   "cases": [
     {
       "case": 1,
-      "title": "Case title from layout.md",
+      "title": "Case title from styling.md",
       "canvas": { "width": 600, "height": 400 },
       "nodes": {
         "0": { "direction": "row" },
@@ -115,23 +115,23 @@ List:
 ## Relationship with /layout-doc
 
 These commands are complementary:
-- `/layout-doc {name}` → creates/updates `layout.md` (analyzes `.tsx` + `reserved-names.ts`)
-- `/update-anatomy {name}` → creates/updates `layout-metadata.json` + regenerates SVGs (analyzes `layout.md` + `.scss`)
+- `/layout-doc {name}` → creates/updates the Shadow DOM Layout section in `styling.md` (analyzes `.tsx` + `reserved-names.ts`)
+- `/update-anatomy {name}` → creates/updates `layout-metadata.json` + regenerates SVGs (analyzes `styling.md` + `.scss`)
 
 Typical flow when a component changes:
 1. Modify `.tsx` and/or `.scss`
-2. `/layout-doc {name}` → update layout.md
+2. `/layout-doc {name}` → update the layout section in styling.md
 3. `/update-anatomy {name}` → update metadata + SVGs
 
 If only styles changed (no DOM structure change):
 1. Modify `.scss`
-2. `/update-anatomy {name}` → update metadata + SVGs (layout.md unchanged)
+2. `/update-anatomy {name}` → update metadata + SVGs (styling.md unchanged)
 
 ## Key Reference Files
 
-- `scripts/layout-to-svg/parse-layout.mjs` — Parser (layout.md → AST)
+- `scripts/layout-to-svg/parse-layout.mjs` — Parser (styling.md → AST)
 - `scripts/layout-to-svg/render-svg.mjs` — SVG renderer (AST + metadata → SVG)
 - `scripts/layout-to-svg/generate-metadata.mjs` — Batch AI metadata generator
 - `scripts/layout-to-svg/defaults.mjs` — Default visual hints and colors
 - `scripts/layout-to-svg/types.d.ts` — TypeScript interfaces (documentation)
-- `docs/layout-syntax.md` — Layout.md syntax conventions
+- `docs/layout-syntax.md` — Layout syntax conventions

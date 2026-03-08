@@ -1,6 +1,6 @@
 # Layout Doc
 
-Create or update a component's `docs/layout.md` file describing its shadow DOM structure.
+Create or update the Shadow DOM Layout section in a component's `docs/styling.md` file.
 
 ## Input
 
@@ -32,10 +32,10 @@ The component source lives at `src/components/<name>/`.
    - Conditionals: `<!-- when condition -->` / `<!-- else -->`
    - The `exportparts` attribute is **never shown** in diagrams
 
-7. **Generate the `docs/layout.md` file** following the file structure:
+7. **Update the `## Shadow DOM Layout` section in `docs/styling.md`** following this structure:
 
 ```markdown
-# ch-<component-name>: Shadow DOM layout
+## Shadow DOM Layout
 
 ## Case 1: Short description
 
@@ -49,6 +49,9 @@ The component source lives at `src/components/<name>/`.
 ## Case 2: Another variant (if needed)
 ...
 ```
+
+> **Important:** `styling.md` is the single source of truth for styling documentation.
+> It also contains Shadow Parts and CSS Custom Properties sections — do not remove or modify those.
 
 ## Part Resolution Algorithm
 
@@ -93,7 +96,7 @@ In the diagram, the checkbox's inner parts appear with their renamed names:
 - `docs/layout-syntax.md` — Full syntax conventions
 - `src/common/reserved-names.ts` — Part name dictionaries and exportparts mappings
 - `src/components/<name>/<name>.tsx` — Component render method
-- Existing `docs/layout.md` files in other components — Examples to follow
+- Existing `docs/styling.md` files in other components — Examples to follow
 
 ## Checklist Before Finishing
 

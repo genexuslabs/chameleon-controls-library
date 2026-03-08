@@ -955,7 +955,7 @@ function main() {
   if (all || component) {
     const srcRoot = resolve("src/components");
     const patterns = component
-      ? [join(srcRoot, component, "docs", "layout.md")]
+      ? [join(srcRoot, component, "docs", "styling.md")]
       : findAllLayouts(srcRoot);
 
     let total = 0;
@@ -990,9 +990,9 @@ function findAllLayouts(srcRoot) {
   try {
     for (const entry of readdirSync(srcRoot, { withFileTypes: true })) {
       if (entry.isDirectory()) {
-        const layoutPath = join(srcRoot, entry.name, "docs", "layout.md");
-        if (existsSync(layoutPath)) {
-          results.push(layoutPath);
+        const stylingPath = join(srcRoot, entry.name, "docs", "styling.md");
+        if (existsSync(stylingPath)) {
+          results.push(stylingPath);
         }
       }
     }

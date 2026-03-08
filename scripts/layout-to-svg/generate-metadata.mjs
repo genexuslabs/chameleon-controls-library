@@ -4,7 +4,7 @@
  * generate-metadata.mjs
  *
  * AI-assisted metadata generator for layout anatomy diagrams.
- * Analyzes layout.md AST + component SCSS to produce layout-metadata.json
+ * Analyzes styling.md AST + component SCSS to produce layout-metadata.json
  * with visual hints (direction, position, sizing, style).
  *
  * Uses `claude -p` (Claude Code CLI) for AI analysis.
@@ -60,12 +60,12 @@ function main() {
 
 function processComponent(name, force) {
   const compDir = join(SRC_ROOT, name);
-  const layoutPath = join(compDir, "docs", "layout.md");
+  const layoutPath = join(compDir, "docs", "styling.md");
   const metadataPath = join(compDir, "docs", "layout-metadata.json");
   const scssPath = join(compDir, `${name}.scss`);
 
   if (!existsSync(layoutPath)) {
-    console.error(`  ${name}: no layout.md found, skipping`);
+    console.error(`  ${name}: no styling.md found, skipping`);
     return "error";
   }
 
@@ -251,8 +251,8 @@ function findAllComponents() {
   const results = [];
   for (const entry of readdirSync(SRC_ROOT, { withFileTypes: true })) {
     if (entry.isDirectory()) {
-      const layoutPath = join(SRC_ROOT, entry.name, "docs", "layout.md");
-      if (existsSync(layoutPath)) {
+      const stylingPath = join(SRC_ROOT, entry.name, "docs", "styling.md");
+      if (existsSync(stylingPath)) {
         results.push(entry.name);
       }
     }

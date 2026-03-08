@@ -237,16 +237,22 @@ function extractStylingDocs(componentDir, readmeFilePath) {
   const titleMatch = content.match(/^# (.+)$/m);
   const componentTag = titleMatch ? titleMatch[1] : "component";
 
-  // Extract Shadow Parts and CSS Custom Properties sections
+  // Extract Shadow Parts and CSS Custom Properties sections from readme.md
   const shadowPartsSection = extractSection(content, "Shadow Parts");
   const cssPropsSection = extractSection(content, "CSS Custom Properties");
 
-  // Check if layout.md exists
-  const layoutPath = path.join(componentDir, "docs", "layout.md");
-  const hasLayout = fs.existsSync(layoutPath);
+  // Read existing styling.md to preserve the Shadow DOM Layout section
+  const stylingPath = path.join(componentDir, "docs", "styling.md");
+  const existingStyling = fs.existsSync(stylingPath)
+    ? fs.readFileSync(stylingPath, "utf8")
+    : "";
+
+  // Extract existing layout section from styling.md (everything from "## Shadow DOM Layout" onwards)
+  const layoutMatch = existingStyling.match(/\n(## Shadow DOM Layout\n[\s\S]*)$/);
+  const layoutText = layoutMatch ? layoutMatch[1].trim() : "";
 
   // Only generate styling.md if there's at least one source of content
-  if (!shadowPartsSection && !cssPropsSection && !hasLayout) {
+  if (!shadowPartsSection && !cssPropsSection && !layoutText) {
     return false;
   }
 
@@ -269,18 +275,13 @@ function extractStylingDocs(componentDir, readmeFilePath) {
     sectionsForTOC.push({ level: 2, text: "CSS Custom Properties" });
   }
 
-  let layoutText = "";
-  if (hasLayout) {
-    const layoutContent = fs.readFileSync(layoutPath, "utf8");
-    // Skip the h1 title from layout.md and use its content under ## Shadow DOM Layout
-    const layoutBody = layoutContent.replace(/^# .+\n+/, "").trim();
-    layoutText = layoutBody;
+  if (layoutText) {
     sectionsForTOC.push({ level: 2, text: "Shadow DOM Layout" });
 
-    // Extract h2 subheadings from layout content for TOC
-    const layoutLines = layoutBody.split("\n");
+    // Extract h2 subheadings from layout content for TOC (Case headers)
+    const layoutLines = layoutText.split("\n");
     for (const line of layoutLines) {
-      const h2Match = line.match(/^## (.+)$/);
+      const h2Match = line.match(/^## (Case .+)$/);
       if (h2Match) {
         sectionsForTOC.push({ level: 3, text: h2Match[1] });
       }
@@ -306,7 +307,7 @@ function extractStylingDocs(componentDir, readmeFilePath) {
   }
 
   if (layoutText) {
-    stylingParts.push(`## Shadow DOM Layout\n\n${layoutText}`);
+    stylingParts.push(layoutText);
   }
 
   const stylingContent = stylingParts.join("\n\n") + "\n";

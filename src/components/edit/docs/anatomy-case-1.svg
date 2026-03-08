@@ -1,89 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 572.675 463"
-     width="572.675" height="463"
+     viewBox="0 0 758 328"
+     width="758" height="328"
      font-family="monospace, Consolas">
   <style>
     text { dominant-baseline: auto; }
   </style>
-  <rect x="10" y="10" width="315.675" height="443" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
-<rect x="20" y="4" width="58" height="12" fill="#ffffff" stroke="#424242" stroke-width="1" rx="3" />
-<text x="24" y="13" font-size="9" fill="#212121" font-weight="bold">&lt;ch-edit&gt;</text>
-<rect x="12" y="41" width="311.675" height="407" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="16" y="35" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="20" y="43" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<text x="20" y="29" font-size="9" fill="#666" font-style="italic">[ch-edit--empty-value] [{hostParts}]</text>
-<line x1="30" y1="71" x2="30" y2="103" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="167" x2="30" y2="229" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="257" x2="30" y2="289" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="317" x2="30" y2="366" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="394" x2="30" y2="443" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="22" y="55" width="198.79999999999998" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,58) scale(1)" />
-<text x="128.39999999999998" y="66.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showAdditionalContentBefore</text>
-<rect x="34" y="72" width="235.475" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="40" y="91" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;additional-content-before&quot;&gt;</text>
-<rect x="22" y="115" width="67" height="24" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="32" y="109" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="36" y="118" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<rect x="22" y="151" width="269" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,154) scale(1)" />
-<text x="163.5" y="162.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when type === &quot;date&quot; &amp;&amp; placeholder &amp;&amp; !value</text>
-<rect x="34" y="174" width="137" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="44" y="168" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="48" y="177" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="44" y="193" font-size="9" fill="#666">date-placeholder</text>
-<text x="44" y="219" font-size="9" fill="#888" font-style="italic">&quot;Placeholder text&quot;</text>
-<rect x="22" y="241" width="193.4" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,244) scale(1)" />
-<text x="125.7" y="252.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showAdditionalContentAfter</text>
-<rect x="34" y="258" width="229.95" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="40" y="277" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;additional-content-after&quot;&gt;</text>
-<rect x="22" y="301" width="193.4" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,304) scale(1)" />
-<text x="125.7" y="312.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when type === &quot;search&quot; &amp;&amp; value</text>
-<rect x="34" y="324" width="98" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="44" y="318" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="48" y="327" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
-<text x="44" y="343" font-size="9" fill="#666">clear-button</text>
-<text x="44" y="354" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="22" y="378" width="274.4" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,381) scale(1)" />
-<text x="166.2" y="389.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when type === &quot;password&quot; &amp;&amp; showPasswordButton</text>
-<rect x="34" y="401" width="279.675" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="44" y="395" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="48" y="404" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
-<text x="44" y="420" font-size="9" fill="#666">show-password-button</text>
-<text x="44" y="431" font-size="9" fill="#666" font-style="italic">[disabled] [password-displayed|password-hidden]</text>
-<rect x="351.675" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<text x="361.675" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
-<line x1="361.675" y1="38" x2="385.675" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
-<text x="407.675" y="42" font-size="8" fill="#666">#shadow-root</text>
-<rect x="361.675" y="48" width="12" height="12" fill="#7b1fa2" rx="2" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(362.675,49) scale(1)" />
-<text x="407.675" y="58" font-size="8" fill="#666">condition (when / else)</text>
-<rect x="361.675" y="64" width="12" height="12" fill="#00695c" rx="2" />
-<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#fff" transform="translate(362.675,65) scale(0.625)" />
-<text x="407.675" y="74" font-size="8" fill="#666">iteration (for each)</text>
-<rect x="361.675" y="80" width="12" height="12" fill="#546e7a" rx="2" />
-<text x="407.675" y="90" font-size="8" fill="#666">descriptive comment</text>
-<rect x="361.675" y="96" width="20" height="12" fill="#fff8e1" stroke="#f57f17" stroke-width="1" stroke-dasharray="3 1.5" rx="2" />
-<text x="407.675" y="106" font-size="8" fill="#666">slot</text>
-<rect x="361.675" y="112" width="12" height="12" fill="#0277bd" rx="2" />
-<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#fff" transform="translate(362.675,113) scale(0.625)" />
-<text x="407.675" y="122" font-size="8" fill="#666">projected content (light DOM)</text>
-<text x="361.675" y="138" font-size="9" fill="#666">part</text>
-<text x="407.675" y="138" font-size="8" fill="#666">static part</text>
-<text x="361.675" y="154" font-size="9" fill="#666" font-style="italic">[part]</text>
-<text x="407.675" y="154" font-size="8" fill="#666">conditional part</text>
-<text x="361.675" y="170" font-size="9" fill="#666" font-style="italic">{part}</text>
-<text x="407.675" y="170" font-size="8" fill="#666">dynamic part</text>
-<text x="361.675" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
-<text x="407.675" y="186" font-size="8" fill="#666">conditional dynamic part</text>
-<rect x="361.675" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="363.675" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
-<text x="407.675" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
-<text x="361.675" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
-<text x="407.675" y="218" font-size="8" fill="#666">aria-* attribute</text>
+  <rect x="10" y="10" width="481" height="308" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
+<rect x="20" y="4" width="301" height="12" fill="#ffffff" stroke="#424242" stroke-width="1" rx="3" />
+<text x="24" y="13" font-size="9" fill="#212121" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ch-edit</tspan><tspan> part=&quot;[ch-edit--empty-value] [{hostParts}]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="12" y="26" width="477" height="290" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="16" y="20" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="20" y="28" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<line x1="30" y1="50" x2="30" y2="66" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="112" x2="30" y2="156" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="184" x2="30" y2="200" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="228" x2="30" y2="241" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="269" x2="30" y2="308" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="22" y="34" width="198.79999999999998" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,37) scale(1)" />
+<text x="128.39999999999998" y="45.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showAdditionalContentBefore</text>
+<rect x="34" y="51" width="246.525" height="15" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="40" y="62" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;additional-content-before&quot; /&gt;</text>
+<rect x="22" y="72" width="312" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="26" y="81" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan><tspan> type=&quot;text | email | number | password | ...&quot;</tspan><tspan> /&gt;</tspan></text>
+<rect x="22" y="96" width="269" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,99) scale(1)" />
+<text x="163.5" y="107.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when type === &quot;date&quot; &amp;&amp; placeholder &amp;&amp; !value</text>
+<rect x="34" y="119" width="189" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="113" width="169" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="122" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;date-placeholder&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="44" y="144" font-size="9" fill="#888" font-style="italic">&quot;Placeholder text&quot;</text>
+<rect x="22" y="168" width="193.4" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,171) scale(1)" />
+<text x="125.7" y="179.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showAdditionalContentAfter</text>
+<rect x="34" y="185" width="241" height="15" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="40" y="196" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;additional-content-after&quot; /&gt;</text>
+<rect x="22" y="212" width="193.4" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,215) scale(1)" />
+<text x="125.7" y="223.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when type === &quot;search&quot; &amp;&amp; value</text>
+<rect x="34" y="229" width="224" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="38" y="238" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">button</tspan><tspan> part=&quot;clear-button [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="22" y="253" width="274.4" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,256) scale(1)" />
+<text x="166.2" y="264.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when type === &quot;password&quot; &amp;&amp; showPasswordButton</text>
+<rect x="34" y="270" width="445" height="38" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="38" y="281" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">button</tspan></text>
+<text x="49" y="293" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;show-password-button [disabled] [password-displayed | password-hidden]&quot;</text>
+<text x="38" y="305" font-size="9" fill="#0d47a1" font-weight="normal">&gt;</text>
+<rect x="517" y="10" width="231" height="206" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<text x="527" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
+<line x1="527" y1="38" x2="551" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
+<text x="573" y="42" font-size="8" fill="#666">#shadow-root</text>
+<rect x="527" y="48" width="12" height="12" fill="#7b1fa2" rx="2" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(528,49) scale(1)" />
+<text x="573" y="58" font-size="8" fill="#666">condition (when / else)</text>
+<rect x="527" y="64" width="12" height="12" fill="#00695c" rx="2" />
+<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#fff" transform="translate(528,65) scale(0.625)" />
+<text x="573" y="74" font-size="8" fill="#666">iteration (for each)</text>
+<rect x="527" y="80" width="12" height="12" fill="#546e7a" rx="2" />
+<text x="573" y="90" font-size="8" fill="#666">descriptive comment</text>
+<rect x="527" y="96" width="20" height="12" fill="#fff8e1" stroke="#f57f17" stroke-width="1" stroke-dasharray="3 1.5" rx="2" />
+<text x="573" y="106" font-size="8" fill="#666">slot</text>
+<rect x="527" y="112" width="12" height="12" fill="#0277bd" rx="2" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#fff" transform="translate(528,113) scale(0.625)" />
+<text x="573" y="122" font-size="8" fill="#666">projected content (light DOM)</text>
+<rect x="527" y="128" width="28" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="529" y="137" font-size="7" fill="#424242" font-weight="bold">&lt;tag&gt;</text>
+<text x="573" y="138" font-size="8" fill="#666">tag pill (id, role, aria-*, part)</text>
+<text x="527" y="154" font-size="9" fill="#424242">part</text>
+<text x="573" y="154" font-size="8" fill="#666">part=&quot;name&quot;  (static)</text>
+<text x="527" y="170" font-size="9" fill="#424242">[part]</text>
+<text x="573" y="170" font-size="8" fill="#666">[part]  (conditional)</text>
+<text x="527" y="186" font-size="9" fill="#424242">{part}</text>
+<text x="573" y="186" font-size="8" fill="#666">{part}  (dynamic)</text>
+<text x="527" y="202" font-size="9" fill="#424242">[{part}]</text>
+<text x="573" y="202" font-size="8" fill="#666">[{part}]  (conditional dynamic)</text>
 
 </svg>

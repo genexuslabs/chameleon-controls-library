@@ -1,474 +1,392 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 650.575 4690"
-     width="650.575" height="4690"
+     viewBox="0 0 756 3518"
+     width="756" height="3518"
      font-family="monospace, Consolas">
   <style>
     text { dominant-baseline: auto; }
   </style>
-  <rect x="10" y="10" width="393.575" height="4670" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
+  <rect x="10" y="10" width="479" height="3498" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
 <rect x="20" y="4" width="102" height="12" fill="#ffffff" stroke="#424242" stroke-width="1" rx="3" />
-<text x="24" y="13" font-size="9" fill="#212121" font-weight="bold">&lt;ch-color-picker&gt;</text>
-<rect x="12" y="30" width="389.575" height="4645" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="16" y="24" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="20" y="32" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<line x1="30" y1="50" x2="30" y2="289" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="311" x2="30" y2="742" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="764" x2="30" y2="1195" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="1217" x2="30" y2="1369" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="1391" x2="30" y2="1649" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="30" y1="1671" x2="30" y2="4670" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<text x="24" y="13" font-size="9" fill="#212121" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ch-color-picker</tspan><tspan>&gt;</tspan></text>
+<rect x="12" y="26" width="475" height="3480" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="16" y="20" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="20" y="28" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<line x1="30" y1="50" x2="30" y2="202" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="224" x2="30" y2="476" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="498" x2="30" y2="750" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="772" x2="30" y2="866" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="888" x2="30" y2="1095" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="1117" x2="30" y2="3498" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
 <rect x="22" y="34" width="114.6" height="16" fill="#546e7a" rx="3" />
 <text x="79.3" y="45.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Color field control</text>
-<rect x="34" y="57" width="180.02499999999998" height="232" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="34" y="57" width="279" height="145" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <rect x="44" y="51" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="48" y="60" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<rect x="44" y="73" width="137" height="55" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="67" width="47" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="76" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="54" y="92" font-size="9" fill="#666">color-field__label</text>
-<text x="54" y="118" font-size="9" fill="#888" font-style="italic">&quot;Color field&quot;</text>
-<rect x="44" y="140" width="160.02499999999998" height="139" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="134" width="97" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="143" font-size="9" fill="#424242" font-weight="bold">&lt;ch-color-field&gt;</text>
-<rect x="46" y="171" width="156.02499999999998" height="103" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="50" y="165" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="54" y="173" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<text x="54" y="159" font-size="9" fill="#666">color-field</text>
-<rect x="56" y="191" width="73" height="24" fill="#e8f5e9" stroke="#388e3c" stroke-width="1" rx="4" />
-<rect x="66" y="185" width="53" height="12" fill="#e8f5e9" stroke="#388e3c" stroke-width="1" rx="3" />
-<text x="70" y="194" font-size="9" fill="#1b5e20" font-weight="bold">&lt;canvas&gt;</text>
-<rect x="56" y="227" width="136.02499999999998" height="42" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="66" y="221" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="70" y="230" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="66" y="246" font-size="9" fill="#666">marker</text>
-<text x="66" y="257" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="22" y="295" width="109.2" height="16" fill="#546e7a" rx="3" />
-<text x="76.6" y="306.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Hue slider control</text>
-<rect x="34" y="318" width="214.5" height="424" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="44" y="312" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="48" y="321" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<rect x="44" y="334" width="130.5" height="55" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="328" width="47" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="337" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="54" y="353" font-size="9" fill="#666">hue-slider__label</text>
-<text x="54" y="379" font-size="9" fill="#888" font-style="italic">&quot;Hue&quot;</text>
-<rect x="44" y="401" width="194.5" height="331" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="395" width="69" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="404" font-size="9" fill="#424242" font-weight="bold">&lt;ch-slider&gt;</text>
-<rect x="46" y="432" width="190.5" height="295" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="50" y="426" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="54" y="434" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<text x="54" y="420" font-size="9" fill="#666">hue__slider</text>
-<rect x="56" y="452" width="170.5" height="270" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="66" y="446" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="70" y="455" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<rect x="66" y="468" width="67" height="24" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="76" y="462" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="80" y="471" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<rect x="66" y="504" width="150.5" height="154" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="498" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="507" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="523" font-size="9" fill="#666">track</text>
-<text x="76" y="534" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="76" y="552" width="117.5" height="42" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="546" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="555" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="571" font-size="9" fill="#666">track__selected</text>
-<text x="86" y="582" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="76" y="606" width="130.5" height="42" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="600" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="609" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="625" font-size="9" fill="#666">track__unselected</text>
-<text x="86" y="636" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="66" y="670" width="75.25" height="42" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="664" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="673" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="689" font-size="9" fill="#666">thumb</text>
-<text x="76" y="700" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="22" y="748" width="120" height="16" fill="#546e7a" rx="3" />
-<text x="82" y="759.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Alpha slider control</text>
-<rect x="34" y="771" width="214.5" height="424" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="44" y="765" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="48" y="774" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<rect x="44" y="787" width="143.5" height="55" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="781" width="47" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="790" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="54" y="806" font-size="9" fill="#666">alpha__slider-label</text>
-<text x="54" y="832" font-size="9" fill="#888" font-style="italic">&quot;Alpha&quot;</text>
-<rect x="44" y="854" width="194.5" height="331" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="848" width="69" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="857" font-size="9" fill="#424242" font-weight="bold">&lt;ch-slider&gt;</text>
-<rect x="46" y="885" width="190.5" height="295" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="50" y="879" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="54" y="887" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<text x="54" y="873" font-size="9" fill="#666">alpha__slider</text>
-<rect x="56" y="905" width="170.5" height="270" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="66" y="899" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="70" y="908" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<rect x="66" y="921" width="67" height="24" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="76" y="915" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="80" y="924" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<rect x="66" y="957" width="150.5" height="154" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="951" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="960" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="976" font-size="9" fill="#666">track</text>
-<text x="76" y="987" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="76" y="1005" width="117.5" height="42" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="999" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="1008" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="1024" font-size="9" fill="#666">track__selected</text>
-<text x="86" y="1035" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="76" y="1059" width="130.5" height="42" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="1053" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="1062" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="1078" font-size="9" fill="#666">track__unselected</text>
-<text x="86" y="1089" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="66" y="1123" width="75.25" height="42" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="1117" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="1126" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="1142" font-size="9" fill="#666">thumb</text>
-<text x="76" y="1153" font-size="9" fill="#666" font-style="italic">[disabled]</text>
-<rect x="22" y="1201" width="125.39999999999999" height="16" fill="#546e7a" rx="3" />
-<text x="84.69999999999999" y="1212.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Color preview control</text>
-<rect x="34" y="1224" width="169.5" height="145" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="44" y="1218" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="48" y="1227" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="44" y="1243" font-size="9" fill="#666">color-preview-container</text>
-<rect x="44" y="1261" width="143.5" height="55" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="1255" width="42" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="1264" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
-<text x="54" y="1280" font-size="9" fill="#666">color-preview__text</text>
-<text x="54" y="1306" font-size="9" fill="#888" font-style="italic">&quot;Current color&quot;</text>
-<rect x="44" y="1328" width="117" height="31" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="1322" width="97" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="1331" font-size="9" fill="#424242" font-weight="bold">&lt;div role=&quot;img&quot;&gt;</text>
-<text x="54" y="1347" font-size="9" fill="#666">color-preview</text>
-<rect x="22" y="1375" width="125.39999999999999" height="16" fill="#546e7a" rx="3" />
-<text x="84.69999999999999" y="1386.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Color palette control</text>
-<rect x="34" y="1398" width="248.5" height="251" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="44" y="1392" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="48" y="1401" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<rect x="44" y="1414" width="150" height="55" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="1408" width="47" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="1417" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="54" y="1433" font-size="9" fill="#666">color-palette__label</text>
-<text x="54" y="1459" font-size="9" fill="#888" font-style="italic">&quot;Palette&quot;</text>
-<rect x="44" y="1481" width="228.5" height="158" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="1475" width="108" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="1484" font-size="9" fill="#424242" font-weight="bold">&lt;div role=&quot;group&quot;&gt;</text>
-<text x="54" y="1500" font-size="9" fill="#666">color-palette-grid</text>
-<rect x="54" y="1518" width="208.5" height="111" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="64" y="1512" width="31" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="68" y="1521" font-size="9" fill="#424242" font-weight="bold">&lt;ul&gt;</text>
-<line x1="72" y1="1544" x2="72" y2="1619" stroke="#00695c" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="64" y="1528" width="161" height="16" fill="#00695c" rx="3" />
-<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#ffffff" transform="translate(70,1531) scale(0.625)" />
-<text x="151.5" y="1539.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">for each color in palette</text>
-<rect x="76" y="1551" width="176.5" height="68" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="1545" width="31" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="1554" font-size="9" fill="#424242" font-weight="bold">&lt;li&gt;</text>
-<rect x="86" y="1567" width="156.5" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="1561" width="53" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="1570" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button&gt;</text>
-<text x="96" y="1586" font-size="9" fill="#666">color-palette__button</text>
-<text x="96" y="1597" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="22" y="1655" width="168.6" height="16" fill="#546e7a" rx="3" />
-<text x="106.3" y="1666.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Color format selector control</text>
-<rect x="34" y="1678" width="357.575" height="2992" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="44" y="1672" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="48" y="1681" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="44" y="1697" font-size="9" fill="#666">color-format-selector</text>
-<rect x="44" y="1715" width="337.575" height="471" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="1709" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="1718" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="54" y="1734" font-size="9" fill="#666">format-selector__header</text>
-<rect x="54" y="1752" width="163" height="55" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="64" y="1746" width="47" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="68" y="1755" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="64" y="1771" font-size="9" fill="#666">format-selector__label</text>
-<text x="64" y="1797" font-size="9" fill="#888" font-style="italic">&quot;Format&quot;</text>
-<rect x="54" y="1819" width="317.575" height="357" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="64" y="1813" width="125" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="68" y="1822" font-size="9" fill="#424242" font-weight="bold">&lt;ch-combo-box-render&gt;</text>
-<rect x="56" y="1850" width="313.575" height="321" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="60" y="1844" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="64" y="1852" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<text x="64" y="1838" font-size="9" fill="#666">color-format__combo-box</text>
-<rect x="66" y="1870" width="62" height="24" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="1864" width="42" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="1873" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
-<rect x="66" y="1906" width="145" height="50" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="1900" width="125" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="1909" font-size="9" fill="#424242" font-weight="bold">&lt;div role=&quot;combobox&quot;&gt;</text>
-<rect x="76" y="1922" width="67" height="24" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="86" y="1916" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="90" y="1925" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<rect x="66" y="1968" width="293.575" height="198" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="1962" width="158" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="1971" font-size="9" fill="#424242" font-weight="bold">&lt;ch-popover role=&quot;listbox&quot;&gt;</text>
-<rect x="68" y="1999" width="289.575" height="48" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="72" y="1993" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="76" y="2001" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<rect x="76" y="2050" width="182.6" height="16" fill="#0277bd" rx="3" />
-<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#ffffff" transform="translate(82,2053) scale(0.625)" />
-<text x="174.3" y="2061.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">projected content (light DOM)</text>
-<text x="76" y="1987" font-size="9" fill="#666">window</text>
-<line x1="84" y1="2083" x2="84" y2="2156" stroke="#00695c" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="78" y="2013" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="84" y="2032" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
-<rect x="76" y="2067" width="144.8" height="16" fill="#00695c" rx="3" />
-<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#ffffff" transform="translate(82,2070) scale(0.625)" />
-<text x="155.4" y="2078.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">for each item in model</text>
-<rect x="88" y="2090" width="257.575" height="66" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="98" y="2084" width="130" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="102" y="2093" font-size="9" fill="#0d47a1" font-weight="bold">&lt;button role=&quot;option&quot;&gt;</text>
-<text x="98" y="2109" font-size="9" fill="#666">item</text>
-<text x="98" y="2120" font-size="9" fill="#666" font-style="italic">{item.value} [nested] [disabled] [selected]</text>
-<text x="98" y="2146" font-size="9" fill="#888" font-style="italic">&quot;Caption text&quot;</text>
-<rect x="44" y="2198" width="312.8" height="2462" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="54" y="2192" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="58" y="2201" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="54" y="2217" font-size="9" fill="#666">color-inputs</text>
-<line x1="62" y1="2245" x2="62" y2="2408" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="62" y1="2436" x2="62" y2="2982" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="62" y1="3010" x2="62" y2="3690" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="62" y1="3718" x2="62" y2="4398" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<line x1="62" y1="4420" x2="62" y2="4650" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
-<rect x="54" y="2229" width="209.6" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,2232) scale(1)" />
-<text x="165.8" y="2240.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when selectedColorFormat === &quot;hex&quot;</text>
-<rect x="66" y="2252" width="156.02499999999998" height="156" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="2246" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="2255" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="2271" font-size="9" fill="#666">hex__input-group</text>
-<rect x="76" y="2289" width="124" height="55" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="2283" width="47" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="2292" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="86" y="2308" font-size="9" fill="#666">hex__input-label</text>
-<text x="86" y="2334" font-size="9" fill="#888" font-style="italic">&quot;Hex&quot;</text>
-<rect x="76" y="2356" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="86" y="2350" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="90" y="2359" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="86" y="2375" font-size="9" fill="#666">hex__input</text>
-<text x="86" y="2386" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="54" y="2420" width="209.6" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,2423) scale(1)" />
-<text x="165.8" y="2431.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when selectedColorFormat === &quot;rgb&quot;</text>
-<rect x="66" y="2443" width="176.02499999999998" height="539" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="2437" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="2446" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="2462" font-size="9" fill="#666">rgb-inputs__group</text>
-<rect x="76" y="2480" width="156.02499999999998" height="156" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="2474" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="2483" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="2499" font-size="9" fill="#666">rgb-r__group</text>
-<rect x="86" y="2517" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="2511" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="2520" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="2536" font-size="9" fill="#666">rgb-r__label</text>
-<text x="96" y="2562" font-size="9" fill="#888" font-style="italic">&quot;R&quot;</text>
-<rect x="86" y="2584" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="2578" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="2587" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="2603" font-size="9" fill="#666">rgb-r__input</text>
-<text x="96" y="2614" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="76" y="2648" width="156.02499999999998" height="156" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="2642" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="2651" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="2667" font-size="9" fill="#666">rgb-g__group</text>
-<rect x="86" y="2685" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="2679" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="2688" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="2704" font-size="9" fill="#666">rgb-g__label</text>
-<text x="96" y="2730" font-size="9" fill="#888" font-style="italic">&quot;G&quot;</text>
-<rect x="86" y="2752" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="2746" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="2755" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="2771" font-size="9" fill="#666">rgb-g__input</text>
-<text x="96" y="2782" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="76" y="2816" width="156.02499999999998" height="156" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="2810" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="2819" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="2835" font-size="9" fill="#666">rgb-b__group</text>
-<rect x="86" y="2853" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="2847" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="2856" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="2872" font-size="9" fill="#666">rgb-b__label</text>
-<text x="96" y="2898" font-size="9" fill="#888" font-style="italic">&quot;B&quot;</text>
-<rect x="86" y="2920" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="2914" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="2923" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="2939" font-size="9" fill="#666">rgb-b__input</text>
-<text x="96" y="2950" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="54" y="2994" width="209.6" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,2997) scale(1)" />
-<text x="165.8" y="3005.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when selectedColorFormat === &quot;hsl&quot;</text>
-<rect x="66" y="3017" width="176.02499999999998" height="673" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="3011" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="3020" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="3036" font-size="9" fill="#666">hsl-inputs__group</text>
-<rect x="76" y="3054" width="156.02499999999998" height="156" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="3048" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="3057" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="3073" font-size="9" fill="#666">hsl-h__group</text>
-<rect x="86" y="3091" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="3085" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="3094" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="3110" font-size="9" fill="#666">hsl-h__label</text>
-<text x="96" y="3136" font-size="9" fill="#888" font-style="italic">&quot;H&quot;</text>
-<rect x="86" y="3158" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="3152" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="3161" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="3177" font-size="9" fill="#666">hsl-h__input</text>
-<text x="96" y="3188" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="76" y="3222" width="156.02499999999998" height="223" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="3216" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="3225" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="3241" font-size="9" fill="#666">hsl-s__group</text>
-<rect x="86" y="3259" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="3253" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="3262" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="3278" font-size="9" fill="#666">hsl-s__label</text>
-<text x="96" y="3304" font-size="9" fill="#888" font-style="italic">&quot;S&quot;</text>
-<rect x="86" y="3326" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="3320" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="3329" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="3345" font-size="9" fill="#666">hsl-s__input</text>
-<text x="96" y="3356" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="86" y="3380" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="3374" width="42" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="3383" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
-<text x="96" y="3399" font-size="9" fill="#666">hsl-s-suffix</text>
-<text x="96" y="3425" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
-<rect x="76" y="3457" width="156.02499999999998" height="223" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="3451" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="3460" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="3476" font-size="9" fill="#666">hsl-l__group</text>
-<rect x="86" y="3494" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="3488" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="3497" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="3513" font-size="9" fill="#666">hsl-l__label</text>
-<text x="96" y="3539" font-size="9" fill="#888" font-style="italic">&quot;L&quot;</text>
-<rect x="86" y="3561" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="3555" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="3564" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="3580" font-size="9" fill="#666">hsl-l__input</text>
-<text x="96" y="3591" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="86" y="3615" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="3609" width="42" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="3618" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
-<text x="96" y="3634" font-size="9" fill="#666">hsl-l-suffix</text>
-<text x="96" y="3660" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
-<rect x="54" y="3702" width="209.6" height="16" fill="#7b1fa2" rx="3" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,3705) scale(1)" />
-<text x="165.8" y="3713.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when selectedColorFormat === &quot;hsv&quot;</text>
-<rect x="66" y="3725" width="176.02499999999998" height="673" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="3719" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="3728" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="3744" font-size="9" fill="#666">hsv-inputs__group</text>
-<rect x="76" y="3762" width="156.02499999999998" height="156" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="3756" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="3765" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="3781" font-size="9" fill="#666">hsv-h__group</text>
-<rect x="86" y="3799" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="3793" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="3802" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="3818" font-size="9" fill="#666">hsv-h__label</text>
-<text x="96" y="3844" font-size="9" fill="#888" font-style="italic">&quot;H&quot;</text>
-<rect x="86" y="3866" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="3860" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="3869" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="3885" font-size="9" fill="#666">hsv-h__input</text>
-<text x="96" y="3896" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="76" y="3930" width="156.02499999999998" height="223" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="3924" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="3933" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="3949" font-size="9" fill="#666">hsv-s__group</text>
-<rect x="86" y="3967" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="3961" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="3970" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="3986" font-size="9" fill="#666">hsv-s__label</text>
-<text x="96" y="4012" font-size="9" fill="#888" font-style="italic">&quot;S&quot;</text>
-<rect x="86" y="4034" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="4028" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="4037" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="4053" font-size="9" fill="#666">hsv-s__input</text>
-<text x="96" y="4064" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="86" y="4088" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="4082" width="42" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="4091" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
-<text x="96" y="4107" font-size="9" fill="#666">hsv-s-suffix</text>
-<text x="96" y="4133" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
-<rect x="76" y="4165" width="156.02499999999998" height="223" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="4159" width="36" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="4168" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="86" y="4184" font-size="9" fill="#666">hsv-v__group</text>
-<rect x="86" y="4202" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="4196" width="47" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="4205" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="96" y="4221" font-size="9" fill="#666">hsv-v__label</text>
-<text x="96" y="4247" font-size="9" fill="#888" font-style="italic">&quot;V&quot;</text>
-<rect x="86" y="4269" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="96" y="4263" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="100" y="4272" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="96" y="4288" font-size="9" fill="#666">hsv-v__input</text>
-<text x="96" y="4299" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="86" y="4323" width="98" height="55" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="96" y="4317" width="42" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="100" y="4326" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
-<text x="96" y="4342" font-size="9" fill="#666">hsv-v-suffix</text>
-<text x="96" y="4368" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
-<rect x="54" y="4404" width="292.8" height="16" fill="#546e7a" rx="3" />
-<text x="200.4" y="4415.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Alpha input (always rendered within format selector)</text>
-<rect x="66" y="4427" width="157" height="223" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="76" y="4421" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="80" y="4430" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
-<text x="76" y="4446" font-size="9" fill="#666">alpha__input-group</text>
-<rect x="76" y="4464" width="137" height="55" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="4458" width="47" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="4467" font-size="9" fill="#424242" font-weight="bold">&lt;label&gt;</text>
-<text x="86" y="4483" font-size="9" fill="#666">alpha__input-label</text>
-<text x="86" y="4509" font-size="9" fill="#888" font-style="italic">&quot;A&quot;</text>
-<rect x="76" y="4531" width="136.02499999999998" height="42" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
-<rect x="86" y="4525" width="47" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
-<text x="90" y="4534" font-size="9" fill="#0d47a1" font-weight="bold">&lt;input&gt;</text>
-<text x="86" y="4550" font-size="9" fill="#666">alpha__input</text>
-<text x="86" y="4561" font-size="9" fill="#666" font-style="italic">[disabled] [readonly]</text>
-<rect x="76" y="4585" width="98" height="55" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<rect x="86" y="4579" width="42" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="90" y="4588" font-size="9" fill="#424242" font-weight="bold">&lt;span&gt;</text>
-<text x="86" y="4604" font-size="9" fill="#666">alpha-suffix</text>
-<text x="86" y="4630" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
-<rect x="429.575" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
-<text x="439.575" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
-<line x1="439.575" y1="38" x2="463.575" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
-<text x="485.575" y="42" font-size="8" fill="#666">#shadow-root</text>
-<rect x="439.575" y="48" width="12" height="12" fill="#7b1fa2" rx="2" />
-<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(440.575,49) scale(1)" />
-<text x="485.575" y="58" font-size="8" fill="#666">condition (when / else)</text>
-<rect x="439.575" y="64" width="12" height="12" fill="#00695c" rx="2" />
-<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#fff" transform="translate(440.575,65) scale(0.625)" />
-<text x="485.575" y="74" font-size="8" fill="#666">iteration (for each)</text>
-<rect x="439.575" y="80" width="12" height="12" fill="#546e7a" rx="2" />
-<text x="485.575" y="90" font-size="8" fill="#666">descriptive comment</text>
-<rect x="439.575" y="96" width="20" height="12" fill="#fff8e1" stroke="#f57f17" stroke-width="1" stroke-dasharray="3 1.5" rx="2" />
-<text x="485.575" y="106" font-size="8" fill="#666">slot</text>
-<rect x="439.575" y="112" width="12" height="12" fill="#0277bd" rx="2" />
-<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#fff" transform="translate(440.575,113) scale(0.625)" />
-<text x="485.575" y="122" font-size="8" fill="#666">projected content (light DOM)</text>
-<text x="439.575" y="138" font-size="9" fill="#666">part</text>
-<text x="485.575" y="138" font-size="8" fill="#666">static part</text>
-<text x="439.575" y="154" font-size="9" fill="#666" font-style="italic">[part]</text>
-<text x="485.575" y="154" font-size="8" fill="#666">conditional part</text>
-<text x="439.575" y="170" font-size="9" fill="#666" font-style="italic">{part}</text>
-<text x="485.575" y="170" font-size="8" fill="#666">dynamic part</text>
-<text x="439.575" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
-<text x="485.575" y="186" font-size="8" fill="#666">conditional dynamic part</text>
-<rect x="439.575" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="441.575" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
-<text x="485.575" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
-<text x="439.575" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
-<text x="485.575" y="218" font-size="8" fill="#666">aria-* attribute</text>
+<text x="48" y="60" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan>&gt;</tspan></text>
+<rect x="44" y="79" width="211" height="37" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="73" width="191" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="82" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;color-field__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="54" y="104" font-size="9" fill="#888" font-style="italic">&quot;Color field&quot;</text>
+<rect x="44" y="128" width="259" height="64" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="122" width="202" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="131" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ch-color-field</tspan><tspan> part=&quot;color-field&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="46" y="144" width="255" height="46" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="50" y="138" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="54" y="146" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="56" y="152" width="53" height="12" fill="#e8f5e9" stroke="#388e3c" stroke-width="1" rx="3" />
+<text x="60" y="161" font-size="9" fill="#1b5e20" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">canvas</tspan><tspan>&gt;</tspan></text>
+<rect x="56" y="170" width="235" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="60" y="179" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;marker [disabled] [readonly]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="22" y="208" width="109.2" height="16" fill="#546e7a" rx="3" />
+<text x="76.6" y="219.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Hue slider control</text>
+<rect x="34" y="231" width="319" height="245" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="225" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="234" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan>&gt;</tspan></text>
+<rect x="44" y="253" width="205" height="37" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="247" width="185" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="256" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;hue-slider__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="54" y="278" font-size="9" fill="#888" font-style="italic">&quot;Hue&quot;</text>
+<rect x="44" y="302" width="299" height="164" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="296" width="174" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="305" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ch-slider</tspan><tspan> part=&quot;hue__slider&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="46" y="318" width="295" height="146" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="50" y="312" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="54" y="320" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="56" y="332" width="275" height="124" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="66" y="326" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="70" y="335" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan>&gt;</tspan></text>
+<rect x="66" y="348" width="130" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="70" y="357" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan><tspan> type=&quot;range&quot;</tspan><tspan> /&gt;</tspan></text>
+<rect x="66" y="372" width="255" height="56" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="366" width="169" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="375" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;track [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="388" width="224" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="397" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;track__selected [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="406" width="235" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="415" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;track__unselected [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="66" y="434" width="169" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="70" y="443" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;thumb [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="22" y="482" width="120" height="16" fill="#546e7a" rx="3" />
+<text x="82" y="493.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Alpha slider control</text>
+<rect x="34" y="505" width="319" height="245" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="499" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="508" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan>&gt;</tspan></text>
+<rect x="44" y="527" width="216" height="37" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="521" width="196" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="530" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;alpha__slider-label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="54" y="552" font-size="9" fill="#888" font-style="italic">&quot;Alpha&quot;</text>
+<rect x="44" y="576" width="299" height="164" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="570" width="185" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="579" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ch-slider</tspan><tspan> part=&quot;alpha__slider&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="46" y="592" width="295" height="146" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="50" y="586" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="54" y="594" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="56" y="606" width="275" height="124" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="66" y="600" width="36" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="70" y="609" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan>&gt;</tspan></text>
+<rect x="66" y="622" width="130" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="70" y="631" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan><tspan> type=&quot;range&quot;</tspan><tspan> /&gt;</tspan></text>
+<rect x="66" y="646" width="255" height="56" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="640" width="169" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="649" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;track [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="662" width="224" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="671" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;track__selected [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="680" width="235" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="689" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;track__unselected [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="66" y="708" width="169" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="70" y="717" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;thumb [disabled]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="22" y="756" width="125.39999999999999" height="16" fill="#546e7a" rx="3" />
+<text x="84.69999999999999" y="767.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Color preview control</text>
+<rect x="34" y="779" width="233" height="87" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="773" width="207" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="782" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;color-preview-container&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="44" y="801" width="211" height="37" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="795" width="191" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="804" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">span</tspan><tspan> part=&quot;color-preview__text&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="54" y="826" font-size="9" fill="#888" font-style="italic">&quot;Current color&quot;</text>
+<rect x="44" y="844" width="213" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="853" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> role=&quot;img&quot; part=&quot;color-preview&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="22" y="872" width="125.39999999999999" height="16" fill="#546e7a" rx="3" />
+<text x="84.69999999999999" y="883.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Color palette control</text>
+<rect x="34" y="895" width="426" height="200" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="889" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="898" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan>&gt;</tspan></text>
+<rect x="44" y="917" width="222" height="37" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="911" width="202" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="920" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;color-palette__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="54" y="942" font-size="9" fill="#888" font-style="italic">&quot;Palette&quot;</text>
+<rect x="44" y="966" width="406" height="119" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="960" width="252" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="969" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> role=&quot;group&quot; part=&quot;color-palette-grid&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="54" y="988" width="386" height="87" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="64" y="982" width="31" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="68" y="991" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ul</tspan><tspan>&gt;</tspan></text>
+<line x1="72" y1="1020" x2="72" y2="1065" stroke="#00695c" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="64" y="1004" width="161" height="16" fill="#00695c" rx="3" />
+<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#ffffff" transform="translate(70,1007) scale(0.625)" />
+<text x="151.5" y="1015.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">for each color in palette</text>
+<rect x="76" y="1027" width="354" height="38" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="1021" width="31" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="1030" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">li</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="1043" width="334" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="1052" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">button</tspan><tspan> part=&quot;color-palette__button [disabled] [readonly]&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="22" y="1101" width="168.6" height="16" fill="#546e7a" rx="3" />
+<text x="106.3" y="1112.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Color format selector control</text>
+<rect x="34" y="1124" width="443" height="2374" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="1118" width="196" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="1127" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;color-format-selector&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="44" y="1146" width="423" height="359" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="1140" width="207" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="1149" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;format-selector__header&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="54" y="1168" width="233" height="37" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="64" y="1162" width="213" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="68" y="1171" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;format-selector__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="64" y="1193" font-size="9" fill="#888" font-style="italic">&quot;Format&quot;</text>
+<rect x="54" y="1217" width="403" height="278" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="64" y="1211" width="296" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="68" y="1220" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ch-combo-box-render</tspan><tspan> part=&quot;color-format__combo-box&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="56" y="1233" width="399" height="260" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="60" y="1227" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="64" y="1235" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="66" y="1241" width="42" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="70" y="1250" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">span</tspan><tspan>&gt;</tspan></text>
+<rect x="66" y="1265" width="145" height="38" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="1259" width="125" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="1268" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> role=&quot;combobox&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="1281" width="58" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="80" y="1290" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan><tspan> /&gt;</tspan></text>
+<rect x="66" y="1315" width="379" height="170" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="1309" width="235" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="1318" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ch-popover</tspan><tspan> role=&quot;listbox&quot; part=&quot;window&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="68" y="1331" width="375" height="26" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="72" y="1325" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="76" y="1333" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="76" y="1360" width="182.6" height="16" fill="#0277bd" rx="3" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#ffffff" transform="translate(82,1363) scale(0.625)" />
+<text x="174.3" y="1371.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">projected content (light DOM)</text>
+<line x1="84" y1="1393" x2="84" y2="1475" stroke="#00695c" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="78" y="1339" width="64.19999999999999" height="15" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="84" y="1350" font-size="9" fill="#e65100" font-weight="bold">&lt;slot /&gt;</text>
+<rect x="76" y="1377" width="144.8" height="16" fill="#00695c" rx="3" />
+<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#ffffff" transform="translate(82,1380) scale(0.625)" />
+<text x="155.4" y="1388.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">for each item in model</text>
+<rect x="88" y="1400" width="343" height="75" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
+<rect x="98" y="1394" width="323" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="102" y="1405" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">button</tspan></text>
+<text x="113" y="1417" font-size="9" fill="#0d47a1" font-weight="normal">role=&quot;option&quot;</text>
+<text x="113" y="1429" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;{item.value} item [nested] [disabled] [selected]&quot;</text>
+<text x="102" y="1441" font-size="9" fill="#0d47a1" font-weight="normal">&gt;</text>
+<text x="98" y="1463" font-size="9" fill="#888" font-style="italic">&quot;Caption text&quot;</text>
+<rect x="44" y="1517" width="318" height="1971" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="1511" width="147" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="1520" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;color-inputs&quot;</tspan><tspan>&gt;</tspan></text>
+<line x1="62" y1="1549" x2="62" y2="1681" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="62" y1="1709" x2="62" y2="2147" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="62" y1="2175" x2="62" y2="2711" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="62" y1="2739" x2="62" y2="3275" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="62" y1="3297" x2="62" y2="3478" stroke="#546e7a" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="54" y="1533" width="209.6" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,1536) scale(1)" />
+<text x="165.8" y="1544.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when selectedColorFormat === &quot;hex&quot;</text>
+<rect x="66" y="1556" width="255" height="125" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="1550" width="169" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="1559" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hex__input-group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="1578" width="200" height="37" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="1572" width="180" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="1581" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;hex__input-label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="86" y="1603" font-size="9" fill="#888" font-style="italic">&quot;Hex&quot;</text>
+<rect x="76" y="1621" width="235" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="80" y="1632" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="91" y="1644" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;hex__input [disabled] [readonly]&quot;</text>
+<text x="91" y="1656" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;text&quot;</text>
+<text x="80" y="1668" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="54" y="1693" width="209.6" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,1696) scale(1)" />
+<text x="165.8" y="1704.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when selectedColorFormat === &quot;rgb&quot;</text>
+<rect x="66" y="1716" width="286" height="431" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="1710" width="174" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="1719" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;rgb-inputs__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="1738" width="266" height="125" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="1732" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="1741" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;rgb-r__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="1760" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="1754" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="1763" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;rgb-r__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="1785" font-size="9" fill="#888" font-style="italic">&quot;R&quot;</text>
+<rect x="86" y="1803" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="1814" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="1826" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;rgb-r__input [disabled] [readonly]&quot;</text>
+<text x="101" y="1838" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="1850" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="76" y="1875" width="266" height="125" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="1869" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="1878" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;rgb-g__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="1897" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="1891" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="1900" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;rgb-g__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="1922" font-size="9" fill="#888" font-style="italic">&quot;G&quot;</text>
+<rect x="86" y="1940" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="1951" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="1963" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;rgb-g__input [disabled] [readonly]&quot;</text>
+<text x="101" y="1975" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="1987" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="76" y="2012" width="266" height="125" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="2006" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="2015" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;rgb-b__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="2034" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="2028" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="2037" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;rgb-b__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="2059" font-size="9" fill="#888" font-style="italic">&quot;B&quot;</text>
+<rect x="86" y="2077" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="2088" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="2100" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;rgb-b__input [disabled] [readonly]&quot;</text>
+<text x="101" y="2112" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="2124" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="54" y="2159" width="209.6" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,2162) scale(1)" />
+<text x="165.8" y="2170.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when selectedColorFormat === &quot;hsl&quot;</text>
+<rect x="66" y="2182" width="286" height="529" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="2176" width="174" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="2185" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hsl-inputs__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="2204" width="266" height="125" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="2198" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="2207" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hsl-h__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="2226" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="2220" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="2229" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;hsl-h__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="2251" font-size="9" fill="#888" font-style="italic">&quot;H&quot;</text>
+<rect x="86" y="2269" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="2280" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="2292" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;hsl-h__input [disabled] [readonly]&quot;</text>
+<text x="101" y="2304" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="2316" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="76" y="2341" width="266" height="174" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="2335" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="2344" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hsl-s__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="2363" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="2357" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="2366" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;hsl-s__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="2388" font-size="9" fill="#888" font-style="italic">&quot;S&quot;</text>
+<rect x="86" y="2406" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="2417" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="2429" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;hsl-s__input [disabled] [readonly]&quot;</text>
+<text x="101" y="2441" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="2453" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="86" y="2468" width="172" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="2462" width="152" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="2471" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">span</tspan><tspan> part=&quot;hsl-s-suffix&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="2493" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
+<rect x="76" y="2527" width="266" height="174" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="2521" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="2530" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hsl-l__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="2549" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="2543" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="2552" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;hsl-l__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="2574" font-size="9" fill="#888" font-style="italic">&quot;L&quot;</text>
+<rect x="86" y="2592" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="2603" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="2615" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;hsl-l__input [disabled] [readonly]&quot;</text>
+<text x="101" y="2627" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="2639" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="86" y="2654" width="172" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="2648" width="152" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="2657" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">span</tspan><tspan> part=&quot;hsl-l-suffix&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="2679" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
+<rect x="54" y="2723" width="209.6" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(60,2726) scale(1)" />
+<text x="165.8" y="2734.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when selectedColorFormat === &quot;hsv&quot;</text>
+<rect x="66" y="2746" width="286" height="529" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="2740" width="174" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="2749" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hsv-inputs__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="2768" width="266" height="125" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="2762" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="2771" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hsv-h__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="2790" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="2784" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="2793" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;hsv-h__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="2815" font-size="9" fill="#888" font-style="italic">&quot;H&quot;</text>
+<rect x="86" y="2833" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="2844" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="2856" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;hsv-h__input [disabled] [readonly]&quot;</text>
+<text x="101" y="2868" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="2880" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="76" y="2905" width="266" height="174" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="2899" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="2908" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hsv-s__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="2927" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="2921" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="2930" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;hsv-s__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="2952" font-size="9" fill="#888" font-style="italic">&quot;S&quot;</text>
+<rect x="86" y="2970" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="2981" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="2993" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;hsv-s__input [disabled] [readonly]&quot;</text>
+<text x="101" y="3005" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="3017" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="86" y="3032" width="172" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="3026" width="152" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="3035" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">span</tspan><tspan> part=&quot;hsv-s-suffix&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="3057" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
+<rect x="76" y="3091" width="266" height="174" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="3085" width="147" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="3094" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;hsv-v__group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="86" y="3113" width="178" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="3107" width="158" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="3116" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;hsv-v__label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="3138" font-size="9" fill="#888" font-style="italic">&quot;V&quot;</text>
+<rect x="86" y="3156" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="90" y="3167" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="101" y="3179" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;hsv-v__input [disabled] [readonly]&quot;</text>
+<text x="101" y="3191" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="90" y="3203" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="86" y="3218" width="172" height="37" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="96" y="3212" width="152" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="100" y="3221" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">span</tspan><tspan> part=&quot;hsv-v-suffix&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="96" y="3243" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
+<rect x="54" y="3281" width="292.8" height="16" fill="#546e7a" rx="3" />
+<text x="200.4" y="3292.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Alpha input (always rendered within format selector)</text>
+<rect x="66" y="3304" width="266" height="174" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="76" y="3298" width="180" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="80" y="3307" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">div</tspan><tspan> part=&quot;alpha__input-group&quot;</tspan><tspan>&gt;</tspan></text>
+<rect x="76" y="3326" width="211" height="37" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="3320" width="191" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="3329" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">label</tspan><tspan> part=&quot;alpha__input-label&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="86" y="3351" font-size="9" fill="#888" font-style="italic">&quot;A&quot;</text>
+<rect x="76" y="3369" width="246" height="50" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="80" y="3380" font-size="9" fill="#0d47a1" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">input</tspan></text>
+<text x="91" y="3392" font-size="9" fill="#0d47a1" font-weight="normal">part=&quot;alpha__input [disabled] [readonly]&quot;</text>
+<text x="91" y="3404" font-size="9" fill="#0d47a1" font-weight="normal">type=&quot;number&quot;</text>
+<text x="80" y="3416" font-size="9" fill="#0d47a1" font-weight="normal"> /&gt;</text>
+<rect x="76" y="3431" width="172" height="37" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="86" y="3425" width="152" height="12" fill="#fff8f0" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="90" y="3434" font-size="9" fill="#424242" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">span</tspan><tspan> part=&quot;alpha-suffix&quot;</tspan><tspan>&gt;</tspan></text>
+<text x="86" y="3456" font-size="9" fill="#888" font-style="italic">&quot;%&quot;</text>
+<rect x="515" y="10" width="231" height="206" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<text x="525" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
+<line x1="525" y1="38" x2="549" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
+<text x="571" y="42" font-size="8" fill="#666">#shadow-root</text>
+<rect x="525" y="48" width="12" height="12" fill="#7b1fa2" rx="2" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(526,49) scale(1)" />
+<text x="571" y="58" font-size="8" fill="#666">condition (when / else)</text>
+<rect x="525" y="64" width="12" height="12" fill="#00695c" rx="2" />
+<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#fff" transform="translate(526,65) scale(0.625)" />
+<text x="571" y="74" font-size="8" fill="#666">iteration (for each)</text>
+<rect x="525" y="80" width="12" height="12" fill="#546e7a" rx="2" />
+<text x="571" y="90" font-size="8" fill="#666">descriptive comment</text>
+<rect x="525" y="96" width="20" height="12" fill="#fff8e1" stroke="#f57f17" stroke-width="1" stroke-dasharray="3 1.5" rx="2" />
+<text x="571" y="106" font-size="8" fill="#666">slot</text>
+<rect x="525" y="112" width="12" height="12" fill="#0277bd" rx="2" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#fff" transform="translate(526,113) scale(0.625)" />
+<text x="571" y="122" font-size="8" fill="#666">projected content (light DOM)</text>
+<rect x="525" y="128" width="28" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="527" y="137" font-size="7" fill="#424242" font-weight="bold">&lt;tag&gt;</text>
+<text x="571" y="138" font-size="8" fill="#666">tag pill (id, role, aria-*, part)</text>
+<text x="525" y="154" font-size="9" fill="#424242">part</text>
+<text x="571" y="154" font-size="8" fill="#666">part=&quot;name&quot;  (static)</text>
+<text x="525" y="170" font-size="9" fill="#424242">[part]</text>
+<text x="571" y="170" font-size="8" fill="#666">[part]  (conditional)</text>
+<text x="525" y="186" font-size="9" fill="#424242">{part}</text>
+<text x="571" y="186" font-size="8" fill="#666">{part}  (dynamic)</text>
+<text x="525" y="202" font-size="9" fill="#424242">[{part}]</text>
+<text x="571" y="202" font-size="8" fill="#666">[{part}]  (conditional dynamic)</text>
 
 </svg>

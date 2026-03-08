@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
-     viewBox="0 0 346 242"
-     width="346" height="242"
+     viewBox="0 0 366 226"
+     width="366" height="226"
      font-family="monospace, Consolas">
   <style>
     text { dominant-baseline: auto; }
   </style>
-  <rect x="10" y="10" width="89" height="65" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
+  <rect x="10" y="10" width="89" height="49" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
 <rect x="20" y="4" width="69" height="12" fill="#ffffff" stroke="#424242" stroke-width="1" rx="3" />
-<text x="24" y="13" font-size="9" fill="#212121" font-weight="bold">&lt;ch-status&gt;</text>
-<rect x="12" y="30" width="85" height="40" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
-<rect x="16" y="24" width="66" height="12" fill="#ffffff" rx="2" />
-<text x="20" y="32" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
-<rect x="22" y="34" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
-<text x="28" y="53" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
-<rect x="125" y="10" width="211" height="222" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<text x="24" y="13" font-size="9" fill="#212121" font-weight="normal"><tspan>&lt;</tspan><tspan font-weight="bold">ch-status</tspan><tspan>&gt;</tspan></text>
+<rect x="12" y="26" width="85" height="31" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="16" y="20" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="20" y="28" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="22" y="34" width="64.19999999999999" height="15" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="28" y="45" font-size="9" fill="#e65100" font-weight="bold">&lt;slot /&gt;</text>
+<rect x="125" y="10" width="231" height="206" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
 <text x="135" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
 <line x1="135" y1="38" x2="159" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
 <text x="181" y="42" font-size="8" fill="#666">#shadow-root</text>
@@ -31,18 +31,16 @@
 <rect x="135" y="112" width="12" height="12" fill="#0277bd" rx="2" />
 <path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#fff" transform="translate(136,113) scale(0.625)" />
 <text x="181" y="122" font-size="8" fill="#666">projected content (light DOM)</text>
-<text x="135" y="138" font-size="9" fill="#666">part</text>
-<text x="181" y="138" font-size="8" fill="#666">static part</text>
-<text x="135" y="154" font-size="9" fill="#666" font-style="italic">[part]</text>
-<text x="181" y="154" font-size="8" fill="#666">conditional part</text>
-<text x="135" y="170" font-size="9" fill="#666" font-style="italic">{part}</text>
-<text x="181" y="170" font-size="8" fill="#666">dynamic part</text>
-<text x="135" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
-<text x="181" y="186" font-size="8" fill="#666">conditional dynamic part</text>
-<rect x="135" y="192" width="20" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
-<text x="137" y="201" font-size="7" fill="#424242" font-weight="bold">id</text>
-<text x="181" y="202" font-size="8" fill="#666">id, role (in tag pill)</text>
-<text x="135" y="218" font-size="9" fill="#1565c0" font-style="italic">aria-*</text>
-<text x="181" y="218" font-size="8" fill="#666">aria-* attribute</text>
+<rect x="135" y="128" width="28" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="137" y="137" font-size="7" fill="#424242" font-weight="bold">&lt;tag&gt;</text>
+<text x="181" y="138" font-size="8" fill="#666">tag pill (id, role, aria-*, part)</text>
+<text x="135" y="154" font-size="9" fill="#424242">part</text>
+<text x="181" y="154" font-size="8" fill="#666">part=&quot;name&quot;  (static)</text>
+<text x="135" y="170" font-size="9" fill="#424242">[part]</text>
+<text x="181" y="170" font-size="8" fill="#666">[part]  (conditional)</text>
+<text x="135" y="186" font-size="9" fill="#424242">{part}</text>
+<text x="181" y="186" font-size="8" fill="#666">{part}  (dynamic)</text>
+<text x="135" y="202" font-size="9" fill="#424242">[{part}]</text>
+<text x="181" y="202" font-size="8" fill="#666">[{part}]  (conditional dynamic)</text>
 
 </svg>

@@ -188,8 +188,8 @@ function measure(node, caseMeta, path) {
 
   const labelSpace = label.height > 0 ? label.height + SIZES.labelGap : 0;
 
-  // Shadow boundary adds extra padding (separate inline vs block)
-  const extraPadX = hasShadow ? SIZES.shadowPadX : 0;
+  // Shadow boundary adds extra spacing (margin for dashed border + padding for children)
+  const extraInline = hasShadow ? SIZES.shadowMarginX + SIZES.shadowPadX : 0;
   const extraPadY = hasShadow ? SIZES.shadowPadY : 0;
   const shadowLabelExtra = hasShadow ? SIZES.shadowLabelGap : 0;
 
@@ -216,7 +216,7 @@ function measure(node, caseMeta, path) {
 
   const width = Math.max(
     label.width + SIZES.padding * 2,
-    contentWidth + SIZES.padding * 2 + extraPadX * 2,
+    contentWidth + SIZES.padding * 2 + extraInline * 2,
     SIZES.minWidth
   );
   const height = Math.max(
@@ -331,9 +331,9 @@ function position(node, measurement, x, y, containerDepth = 0) {
   };
 
   const labelSpace = label.height > 0 ? label.height + SIZES.labelGap : 0;
-  const extraPadX = node.shadowRoot ? SIZES.shadowPadX : 0;
+  const extraInline = node.shadowRoot ? SIZES.shadowMarginX + SIZES.shadowPadX : 0;
 
-  let cx = x + SIZES.padding + extraPadX;
+  let cx = x + SIZES.padding + extraInline;
   let cy = y + SIZES.padding + labelSpace;
 
   if (node.shadowRoot) {
@@ -446,9 +446,9 @@ function renderNode(positioned) {
       : height - SIZES.padding - label.height - SIZES.labelGap - SIZES.shadowPadY / 2;
 
     svg += svgDashedRect(
-      x + SIZES.shadowPadX / 2,
+      x + SIZES.shadowMarginX,
       shadowY,
-      width - SIZES.shadowPadX,
+      width - SIZES.shadowMarginX * 2,
       shadowHeight,
       { stroke: COLORS.shadow.stroke, label: "#shadow-root" }
     );

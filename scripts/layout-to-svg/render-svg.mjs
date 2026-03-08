@@ -188,8 +188,9 @@ function measure(node, caseMeta, path) {
 
   const labelSpace = label.height > 0 ? label.height + SIZES.labelGap : 0;
 
-  // Shadow boundary adds extra padding
-  const extraPad = hasShadow ? SIZES.shadowPad : 0;
+  // Shadow boundary adds extra padding (separate inline vs block)
+  const extraPadX = hasShadow ? SIZES.shadowPadX : 0;
+  const extraPadY = hasShadow ? SIZES.shadowPadY : 0;
   const shadowLabelExtra = hasShadow ? SIZES.shadowLabelGap : 0;
 
   // First shadow child's floating pill needs extra top space
@@ -215,7 +216,7 @@ function measure(node, caseMeta, path) {
 
   const width = Math.max(
     label.width + SIZES.padding * 2,
-    contentWidth + SIZES.padding * 2 + extraPad * 2,
+    contentWidth + SIZES.padding * 2 + extraPadX * 2,
     SIZES.minWidth
   );
   const height = Math.max(
@@ -224,7 +225,7 @@ function measure(node, caseMeta, path) {
       firstShadowPillSpace +
       shadowContent.height +
       SIZES.padding +
-      extraPad +
+      extraPadY +
       shadowLabelExtra +
       projectedSectionHeight,
     SIZES.minHeight
@@ -330,13 +331,13 @@ function position(node, measurement, x, y, containerDepth = 0) {
   };
 
   const labelSpace = label.height > 0 ? label.height + SIZES.labelGap : 0;
-  const extraPad = node.shadowRoot ? SIZES.shadowPad : 0;
+  const extraPadX = node.shadowRoot ? SIZES.shadowPadX : 0;
 
-  let cx = x + SIZES.padding + extraPad;
+  let cx = x + SIZES.padding + extraPadX;
   let cy = y + SIZES.padding + labelSpace;
 
   if (node.shadowRoot) {
-    cy += SIZES.shadowPad + SIZES.shadowLabelGap;
+    cy += SIZES.shadowPadY + SIZES.shadowLabelGap;
   }
 
   result.condScopes = [];
@@ -442,12 +443,12 @@ function renderNode(positioned) {
     const hasProjected = positioned.projectedLabelY != null;
     const shadowHeight = hasProjected
       ? positioned.projectedLabelY - shadowY - SIZES.gap / 2
-      : height - SIZES.padding - label.height - SIZES.labelGap - SIZES.shadowPad / 2;
+      : height - SIZES.padding - label.height - SIZES.labelGap - SIZES.shadowPadY / 2;
 
     svg += svgDashedRect(
-      x + SIZES.shadowPad / 2,
+      x + SIZES.shadowPadX / 2,
       shadowY,
-      width - SIZES.shadowPad,
+      width - SIZES.shadowPadX,
       shadowHeight,
       { stroke: COLORS.shadow.stroke, label: "#shadow-root" }
     );
@@ -801,106 +802,78 @@ function legendIcon(icon, x, y, size) {
   return `<path d="${icon.path}" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(${x},${y}) scale(${scale})" />\n`;
 }
 
+// Each legend item has a preview (icon/swatch) and a label, rendered in two aligned columns
 const LEGEND_ITEMS = [
   {
-    render: (x, y) => {
-      let s = `<line x1="${x}" y1="${y + 6}" x2="${x + 24}" y2="${
-        y + 6
-      }" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />\n`;
-      s += svgText(x + 28, y + 10, "#shadow-root", {
-        fontSize: 8,
-        fill: "#666"
-      });
-      return { svg: s, width: 100 };
+    label: "#shadow-root",
+    preview: (x, y) => {
+      return `<line x1="${x}" y1="${y + 6}" x2="${x + 24}" y2="${y + 6}" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />\n`;
     }
   },
   {
-    render: (x, y) => {
+    label: "condition (when / else)",
+    preview: (x, y) => {
       let s = svgRect(x, y, 12, 12, { fill: BADGE_COLORS.when.fill, rx: 2 });
       s += legendIcon(BADGE_ICONS.condition, x + 1, y + 1, 10);
-      s += svgText(x + 16, y + 10, "condition (when / else)", {
-        fontSize: 8,
-        fill: "#666"
-      });
-      return { svg: s, width: 160 };
+      return s;
     }
   },
   {
-    render: (x, y) => {
-      let s = svgRect(x, y, 12, 12, {
-        fill: BADGE_COLORS["for-each"].fill,
-        rx: 2
-      });
+    label: "iteration (for each)",
+    preview: (x, y) => {
+      let s = svgRect(x, y, 12, 12, { fill: BADGE_COLORS["for-each"].fill, rx: 2 });
       s += legendIcon(BADGE_ICONS.iteration, x + 1, y + 1, 10);
-      s += svgText(x + 16, y + 10, "iteration (for each)", {
-        fontSize: 8,
-        fill: "#666"
-      });
-      return { svg: s, width: 148 };
+      return s;
     }
   },
   {
-    render: (x, y) => {
-      let s = svgRect(x, y, 12, 12, {
-        fill: BADGE_COLORS.descriptive.fill,
-        rx: 2
-      });
-      s += svgText(x + 16, y + 10, "descriptive comment", {
-        fontSize: 8,
-        fill: "#666"
-      });
-      return { svg: s, width: 136 };
+    label: "descriptive comment",
+    preview: (x, y) => {
+      return svgRect(x, y, 12, 12, { fill: BADGE_COLORS.descriptive.fill, rx: 2 });
     }
   },
   {
-    render: (x, y) => {
-      let s = svgRect(x, y, 20, 12, {
+    label: "slot",
+    preview: (x, y) => {
+      return svgRect(x, y, 20, 12, {
         fill: COLORS.slot.fill,
         stroke: COLORS.slot.stroke,
         strokeWidth: 1,
         strokeDasharray: "3 1.5",
         rx: 2
       });
-      s += svgText(x + 24, y + 10, "slot", { fontSize: 8, fill: "#666" });
-      return { svg: s, width: 52 };
     }
   },
   {
-    render: (x, y) => {
-      let s = svgRect(x, y, 12, 12, {
-        fill: BADGE_COLORS.projected.fill,
-        rx: 2
-      });
+    label: "projected content (light DOM)",
+    preview: (x, y) => {
+      let s = svgRect(x, y, 12, 12, { fill: BADGE_COLORS.projected.fill, rx: 2 });
       s += legendIcon(BADGE_ICONS.projected, x + 1, y + 1, 10);
-      s += svgText(x + 16, y + 10, "projected content (light DOM)", {
-        fontSize: 8,
-        fill: "#666"
-      });
-      return { svg: s, width: 196 };
+      return s;
     }
   },
   {
-    render: (x, y) => {
-      let s = svgText(x, y + 10, "part", { fontSize: 9, fill: "#888" });
-      s += svgText(x + 28, y + 10, "static part", {
-        fontSize: 8,
-        fill: "#666"
-      });
-      return { svg: s, width: 92 };
+    label: "static part",
+    preview: (x, y) => {
+      return svgText(x, y + 10, "part", { fontSize: 9, fill: "#888" });
     }
   },
   {
-    render: (x, y) => {
-      let s = svgText(x, y + 10, "[part]", {
-        fontSize: 9,
-        fill: "#888",
-        fontStyle: "italic"
-      });
-      s += svgText(x + 40, y + 10, "conditional part", {
-        fontSize: 8,
-        fill: "#666"
-      });
-      return { svg: s, width: 128 };
+    label: "conditional part",
+    preview: (x, y) => {
+      return svgText(x, y + 10, "[part]", { fontSize: 9, fill: "#888", fontStyle: "italic" });
+    }
+  },
+  {
+    label: "dynamic part",
+    preview: (x, y) => {
+      return svgText(x, y + 10, "{part}", { fontSize: 9, fill: "#888", fontStyle: "italic" });
+    }
+  },
+  {
+    label: "conditional dynamic part",
+    preview: (x, y) => {
+      return svgText(x, y + 10, "[{part}]", { fontSize: 9, fill: "#888", fontStyle: "italic" });
     }
   }
 ];
@@ -910,6 +883,7 @@ function renderLegend(x, y) {
   const paddingX = 10;
   const paddingY = 8;
   const titleHeight = 14;
+  const labelX = 46; // Fixed x offset for all labels, aligned after the widest preview ([{part}])
 
   // Title "Legend"
   let svg = svgText(x + paddingX, y + titleHeight, "Legend", {
@@ -919,16 +893,19 @@ function renderLegend(x, y) {
   });
 
   let cy = y + titleHeight + paddingY;
-  let maxWidth = 0;
+  let maxLabelWidth = 0;
 
   for (const item of LEGEND_ITEMS) {
-    const result = item.render(x + paddingX, cy);
-    svg += result.svg;
-    maxWidth = Math.max(maxWidth, result.width);
+    svg += item.preview(x + paddingX, cy);
+    svg += svgText(x + paddingX + labelX, cy + 10, item.label, {
+      fontSize: 8,
+      fill: "#666"
+    });
+    maxLabelWidth = Math.max(maxLabelWidth, item.label.length * 5);
     cy += rowHeight;
   }
 
-  const totalWidth = maxWidth + paddingX * 2;
+  const totalWidth = paddingX + labelX + maxLabelWidth + paddingX;
   const totalHeight = cy - y + paddingY;
 
   // Border around the legend

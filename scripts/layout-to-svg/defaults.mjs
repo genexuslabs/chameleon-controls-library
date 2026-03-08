@@ -23,7 +23,8 @@ export const SIZES = {
   labelGap: 6,
   minWidth: 50,
   minHeight: 24,
-  shadowPad: 10, // Extra breathing room between dashed boundary and inner boxes
+  shadowPadX: 5, // Extra inline breathing room between dashed boundary and inner boxes
+  shadowPadY: 10, // Extra block breathing room between dashed boundary and inner boxes
   shadowLabelGap: 4, // Extra space after #shadow-root label before children
   badgeHeight: 16,
   badgePadX: 6,

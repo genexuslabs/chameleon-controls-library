@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 664.8 1205"
+     width="664.8" height="1205"
+     font-family="monospace, Consolas">
+  <style>
+    text { dominant-baseline: auto; }
+  </style>
+  <rect x="10" y="10" width="407.8" height="1185" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
+<rect x="20" y="4" width="58" height="12" fill="#ffffff" stroke="#424242" stroke-width="1" rx="3" />
+<text x="24" y="13" font-size="9" fill="#212121" font-weight="bold">&lt;ch-chat&gt;</text>
+<rect x="12" y="30" width="403.8" height="1160" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="16" y="24" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="20" y="32" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<line x1="30" y1="50" x2="30" y2="81" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="474" x2="30" y2="506" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="30" y1="1113" x2="30" y2="1185" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="22" y="34" width="80" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,37) scale(1)" />
+<text x="69" y="45.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when theme</text>
+<rect x="34" y="57" width="84" height="24" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="51" width="64" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="60" font-size="9" fill="#424242" font-weight="bold">&lt;ch-theme&gt;</text>
+<rect x="22" y="93" width="279" height="353" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="32" y="87" width="91" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="36" y="96" font-size="9" fill="#424242" font-weight="bold">&lt;ch-smart-grid&gt;</text>
+<rect x="24" y="113" width="275" height="132" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="28" y="107" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="32" y="115" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="32" y="248" width="182.6" height="16" fill="#0277bd" rx="3" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#ffffff" transform="translate(38,251) scale(0.625)" />
+<text x="130.3" y="259.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">projected content (light DOM)</text>
+<rect x="34" y="123" width="203.4" height="82" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="117" width="119" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="126" font-size="9" fill="#424242" font-weight="bold">&lt;ch-infinite-scroll&gt;</text>
+<rect x="36" y="143" width="199.4" height="57" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="40" y="137" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="44" y="145" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<line x1="54" y1="163" x2="54" y2="195" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="46" y="147" width="193.4" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(52,150) scale(1)" />
+<text x="149.7" y="158.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when loadingState === &quot;loading&quot;</text>
+<rect x="58" y="164" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="64" y="183" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
+<rect x="34" y="211" width="163.65" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="40" y="230" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;grid-content&quot;&gt;</text>
+<rect x="32" y="271" width="255" height="165" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="265" width="235" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="274" font-size="9" fill="#424242" font-weight="bold">&lt;ch-virtual-scroller slot=&quot;grid-content&quot;&gt;</text>
+<rect x="34" y="302" width="251" height="48" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="38" y="296" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="42" y="304" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="42" y="353" width="182.6" height="16" fill="#0277bd" rx="3" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#ffffff" transform="translate(48,356) scale(0.625)" />
+<text x="140.3" y="364.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">projected content (light DOM)</text>
+<text x="42" y="290" font-size="9" fill="#666">messages-container</text>
+<rect x="44" y="316" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="50" y="335" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
+<rect x="42" y="376" width="127.8" height="50" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="52" y="370" width="80" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="56" y="379" font-size="9" fill="#424242" font-weight="bold">&lt;ch-chat-lit&gt;</text>
+<rect x="44" y="396" width="123.8" height="25" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="48" y="390" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="52" y="398" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="54" y="400" width="103.8" height="16" fill="#546e7a" rx="3" />
+<text x="105.9" y="411.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Rendered messages</text>
+<rect x="22" y="458" width="166.4" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,461) scale(1)" />
+<text x="112.2" y="469.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showAdditionalContent</text>
+<rect x="34" y="475" width="196.79999999999998" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="40" y="494" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;additional-content&quot;&gt;</text>
+<rect x="22" y="518" width="371.8" height="567" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="32" y="512" width="36" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="36" y="521" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="32" y="537" font-size="9" fill="#666">send-container</text>
+<line x1="40" y1="565" x2="40" y2="629" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="40" y1="1011" x2="40" y2="1075" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="32" y="549" width="242" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(38,552) scale(1)" />
+<text x="160" y="560.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when sendContainerBefore layout elements</text>
+<rect x="44" y="572" width="339.8" height="57" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="566" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="575" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="54" y="591" font-size="9" fill="#666">send-container-before</text>
+<rect x="54" y="603" width="319.8" height="16" fill="#546e7a" rx="3" />
+<text x="213.9" y="614.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Layout elements such as send-button, stop-response-button</text>
+<rect x="32" y="641" width="274" height="342" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="42" y="635" width="58" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="46" y="644" font-size="9" fill="#424242" font-weight="bold">&lt;ch-edit&gt;</text>
+<rect x="34" y="672" width="270" height="161" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="38" y="666" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="42" y="674" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="42" y="836" width="182.6" height="16" fill="#0277bd" rx="3" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#ffffff" transform="translate(48,839) scale(0.625)" />
+<text x="140.3" y="847.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">projected content (light DOM)</text>
+<text x="42" y="660" font-size="9" fill="#666">send-input</text>
+<line x1="52" y1="702" x2="52" y2="734" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="52" y1="798" x2="52" y2="830" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="50" y1="869" x2="50" y2="907" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<line x1="50" y1="935" x2="50" y2="973" stroke="#7b1fa2" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round" />
+<rect x="44" y="686" width="198.79999999999998" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(50,689) scale(1)" />
+<text x="150.39999999999998" y="697.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showAdditionalContentBefore</text>
+<rect x="56" y="703" width="235.475" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="62" y="722" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;additional-content-before&quot;&gt;</text>
+<rect x="44" y="746" width="84" height="24" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="4" />
+<rect x="54" y="740" width="64" height="12" fill="#e3f2fd" stroke="#1976d2" stroke-width="1" rx="3" />
+<text x="58" y="749" font-size="9" fill="#0d47a1" font-weight="bold">&lt;textarea&gt;</text>
+<rect x="44" y="782" width="193.4" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(50,785) scale(1)" />
+<text x="147.7" y="793.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when showAdditionalContentAfter</text>
+<rect x="56" y="799" width="229.95" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="62" y="818" font-size="9" fill="#e65100" font-weight="bold">&lt;slot name=&quot;additional-content-after&quot;&gt;</text>
+<rect x="42" y="853" width="220.4" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(48,856) scale(1)" />
+<text x="159.2" y="864.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when sendInputBefore layout elements</text>
+<rect x="54" y="876" width="238" height="31" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="64" y="870" width="218" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="68" y="879" font-size="9" fill="#424242" font-weight="bold">&lt;div slot=&quot;additional-content-before&quot;&gt;</text>
+<text x="64" y="895" font-size="9" fill="#666">send-input-before</text>
+<rect x="42" y="919" width="215" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(48,922) scale(1)" />
+<text x="156.5" y="930.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when sendInputAfter layout elements</text>
+<rect x="54" y="942" width="233" height="31" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="64" y="936" width="213" height="12" fill="#f0f7f4" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="68" y="945" font-size="9" fill="#424242" font-weight="bold">&lt;div slot=&quot;additional-content-after&quot;&gt;</text>
+<text x="64" y="961" font-size="9" fill="#666">send-input-after</text>
+<rect x="32" y="995" width="236.6" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(38,998) scale(1)" />
+<text x="157.3" y="1006.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when sendContainerAfter layout elements</text>
+<rect x="44" y="1018" width="339.8" height="57" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="54" y="1012" width="36" height="12" fill="#f3f0ff" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="58" y="1021" font-size="9" fill="#424242" font-weight="bold">&lt;div&gt;</text>
+<text x="54" y="1037" font-size="9" fill="#666">send-container-after</text>
+<rect x="54" y="1049" width="319.8" height="16" fill="#546e7a" rx="3" />
+<text x="213.9" y="1060.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">Layout elements such as send-button, stop-response-button</text>
+<rect x="22" y="1097" width="96.2" height="16" fill="#7b1fa2" rx="3" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(28,1100) scale(1)" />
+<text x="77.1" y="1108.15" font-size="9" fill="#ffffff" font-family="monospace" text-anchor="middle">when liveMode</text>
+<rect x="34" y="1120" width="128" height="65" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<rect x="44" y="1114" width="108" height="12" fill="#fafafa" stroke="#bdbdbd" stroke-width="1" rx="3" />
+<text x="48" y="1123" font-size="9" fill="#424242" font-weight="bold">&lt;ch-live-kit-room&gt;</text>
+<rect x="36" y="1140" width="124" height="40" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="40" y="1134" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="44" y="1142" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<rect x="46" y="1144" width="53.15" height="31" fill="#fff8e1" stroke="#f57f17" stroke-width="1.5" stroke-dasharray="4 2" rx="4" />
+<text x="52" y="1163" font-size="9" fill="#e65100" font-weight="bold">&lt;slot&gt;</text>
+<rect x="443.8" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<text x="453.8" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
+<line x1="453.8" y1="38" x2="477.8" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
+<text x="499.8" y="42" font-size="8" fill="#666">#shadow-root</text>
+<rect x="453.8" y="48" width="12" height="12" fill="#7b1fa2" rx="2" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(454.8,49) scale(1)" />
+<text x="499.8" y="58" font-size="8" fill="#666">condition (when / else)</text>
+<rect x="453.8" y="64" width="12" height="12" fill="#00695c" rx="2" />
+<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#fff" transform="translate(454.8,65) scale(0.625)" />
+<text x="499.8" y="74" font-size="8" fill="#666">iteration (for each)</text>
+<rect x="453.8" y="80" width="12" height="12" fill="#546e7a" rx="2" />
+<text x="499.8" y="90" font-size="8" fill="#666">descriptive comment</text>
+<rect x="453.8" y="96" width="20" height="12" fill="#fff8e1" stroke="#f57f17" stroke-width="1" stroke-dasharray="3 1.5" rx="2" />
+<text x="499.8" y="106" font-size="8" fill="#666">slot</text>
+<rect x="453.8" y="112" width="12" height="12" fill="#0277bd" rx="2" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#fff" transform="translate(454.8,113) scale(0.625)" />
+<text x="499.8" y="122" font-size="8" fill="#666">projected content (light DOM)</text>
+<text x="453.8" y="138" font-size="9" fill="#666">part</text>
+<text x="499.8" y="138" font-size="8" fill="#666">static part</text>
+<text x="453.8" y="154" font-size="9" fill="#666" font-style="italic">[part]</text>
+<text x="499.8" y="154" font-size="8" fill="#666">conditional part</text>
+<text x="453.8" y="170" font-size="9" fill="#666" font-style="italic">{part}</text>
+<text x="499.8" y="170" font-size="8" fill="#666">dynamic part</text>
+<text x="453.8" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
+<text x="499.8" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+
+</svg>

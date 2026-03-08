@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 658 210"
+     width="658" height="210"
+     font-family="monospace, Consolas">
+  <style>
+    text { dominant-baseline: auto; }
+  </style>
+  <rect x="10" y="10" width="401" height="48" fill="#ffffff" stroke="#424242" stroke-width="1" rx="4" />
+<rect x="20" y="4" width="64" height="12" fill="#ffffff" stroke="#424242" stroke-width="1" rx="3" />
+<text x="24" y="13" font-size="9" fill="#212121" font-weight="bold">&lt;ch-image&gt;</text>
+<rect x="12" y="30" width="397" height="23" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="6 3" rx="3" />
+<rect x="16" y="24" width="66" height="12" fill="#ffffff" rx="2" />
+<text x="20" y="32" font-size="8" fill="#9e9e9e" font-family="monospace">#shadow-root</text>
+<text x="22" y="48" font-size="9" fill="#888" font-style="italic">&quot;(empty — image rendered via CSS background/mask on Host)&quot;</text>
+<rect x="437" y="10" width="211" height="190" fill="none" stroke="#bdbdbd" stroke-width="1" rx="4" />
+<text x="447" y="24" font-size="10" fill="#424242" font-weight="bold">Legend</text>
+<line x1="447" y1="38" x2="471" y2="38" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="4 2" />
+<text x="493" y="42" font-size="8" fill="#666">#shadow-root</text>
+<rect x="447" y="48" width="12" height="12" fill="#7b1fa2" rx="2" />
+<path d="M5 0.5 L9.5 5 L5 9.5 L0.5 5 Z" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(448,49) scale(1)" />
+<text x="493" y="58" font-size="8" fill="#666">condition (when / else)</text>
+<rect x="447" y="64" width="12" height="12" fill="#00695c" rx="2" />
+<path d="M8 14.667a5.806 5.806 0 0 1-2.342-.475 6.1 6.1 0 0 1-1.9-1.284 6.097 6.097 0 0 1-1.283-1.9A5.804 5.804 0 0 1 2 8.667a5.8 5.8 0 0 1 .475-2.342 6.099 6.099 0 0 1 1.283-1.9 6.099 6.099 0 0 1 1.9-1.283A5.805 5.805 0 0 1 8 2.667h.1L7.533 2.1a.622.622 0 0 1-.183-.458.68.68 0 0 1 .183-.475.68.68 0 0 1 .475-.209.62.62 0 0 1 .475.192L10.2 2.867a.632.632 0 0 1 .183.466.632.632 0 0 1-.183.467L8.483 5.517a.62.62 0 0 1-.475.191.68.68 0 0 1-.475-.208.68.68 0 0 1-.183-.475c0-.183.061-.336.183-.458L8.1 4H8c-1.3 0-2.403.453-3.308 1.358-.906.906-1.359 2.009-1.359 3.309 0 1.3.453 2.402 1.359 3.308.905.906 2.008 1.358 3.308 1.358 1.178 0 2.206-.383 3.083-1.15.878-.766 1.395-1.733 1.55-2.9a.68.68 0 0 1 .234-.441.687.687 0 0 1 .466-.175c.178 0 .334.055.467.166a.44.44 0 0 1 .167.417c-.156 1.544-.8 2.833-1.934 3.867C10.9 14.15 9.556 14.667 8 14.667Z" fill="#fff" transform="translate(448,65) scale(0.625)" />
+<text x="493" y="74" font-size="8" fill="#666">iteration (for each)</text>
+<rect x="447" y="80" width="12" height="12" fill="#546e7a" rx="2" />
+<text x="493" y="90" font-size="8" fill="#666">descriptive comment</text>
+<rect x="447" y="96" width="20" height="12" fill="#fff8e1" stroke="#f57f17" stroke-width="1" stroke-dasharray="3 1.5" rx="2" />
+<text x="493" y="106" font-size="8" fill="#666">slot</text>
+<rect x="447" y="112" width="12" height="12" fill="#0277bd" rx="2" />
+<path d="M10.817 8.664H3.642a.613.613 0 0 1-.457-.19.647.647 0 0 1-.185-.47c0-.187.062-.343.185-.47a.613.613 0 0 1 .457-.19h7.175l-3.146-3.23a.613.613 0 0 1-.185-.462.668.668 0 0 1 .65-.651.58.58 0 0 1 .45.189l4.237 4.353c.065.066.11.137.137.214a.75.75 0 0 1 .04.247.75.75 0 0 1-.04.248.581.581 0 0 1-.137.214l-4.237 4.353a.59.59 0 0 1-.442.181.645.645 0 0 1-.457-.181.65.65 0 0 1-.193-.47.65.65 0 0 1 .193-.47l3.13-3.215Z" fill="#fff" transform="translate(448,113) scale(0.625)" />
+<text x="493" y="122" font-size="8" fill="#666">projected content (light DOM)</text>
+<text x="447" y="138" font-size="9" fill="#666">part</text>
+<text x="493" y="138" font-size="8" fill="#666">static part</text>
+<text x="447" y="154" font-size="9" fill="#666" font-style="italic">[part]</text>
+<text x="493" y="154" font-size="8" fill="#666">conditional part</text>
+<text x="447" y="170" font-size="9" fill="#666" font-style="italic">{part}</text>
+<text x="493" y="170" font-size="8" fill="#666">dynamic part</text>
+<text x="447" y="186" font-size="9" fill="#666" font-style="italic">[{part}]</text>
+<text x="493" y="186" font-size="8" fill="#666">conditional dynamic part</text>
+
+</svg>

@@ -1,7 +1,6 @@
 # Shadow DOM Layout Syntax
 
-Each component has a `docs/styling.md` file that includes a Shadow DOM Layout
-section describing its shadow DOM structure using an ASCII-tree notation.
+Each component has a `docs/styling.md` file that includes a Shadow DOM Layout section describing its shadow DOM structure using an ASCII-tree notation.
 This document explains the syntax conventions used in those sections.
 
 ---
@@ -16,14 +15,15 @@ The Shadow DOM Layout section in `styling.md` contains one or more **Cases**. Ea
 
 ## Case 1: Short description
 
-​```
+​`
 <ch-component-name>
   | #shadow-root
   | ...
 </ch-component-name>
-​```
+​`
 
 ## Case 2: Another variant
+
 ...
 ```
 
@@ -274,3 +274,4 @@ labels that describe a section of the layout:
 
 These have no semantic effect on the diagram; they exist only to aid
 readability.
+

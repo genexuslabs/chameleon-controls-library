@@ -1,7 +1,43 @@
 # ch-grid
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`cellEnsureVisible`](#cellensurevisible)
+  - [`collapseRow`](#collapserow)
+  - [`expandRow`](#expandrow)
+  - [`getFocusedCell`](#getfocusedcell)
+  - [`getFocusedRow`](#getfocusedrow)
+  - [`getHoveredRow`](#gethoveredrow)
+  - [`getMarkedRows`](#getmarkedrows)
+  - [`getNextCell`](#getnextcell)
+  - [`getNextRow`](#getnextrow)
+  - [`getPreviousCell`](#getpreviouscell)
+  - [`getPreviousRow`](#getpreviousrow)
+  - [`getSelectedCell`](#getselectedcell)
+  - [`getSelectedRows`](#getselectedrows)
+  - [`markAllRows`](#markallrows)
+  - [`markRow`](#markrow)
+  - [`rowEnsureVisible`](#rowensurevisible)
+  - [`selectAllRows`](#selectallrows)
+  - [`selectCell`](#selectcell)
+  - [`selectRow`](#selectrow)
+  - [`syncRowState`](#syncrowstate)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -50,7 +86,6 @@ The `ch-tabular-grid` component is a full-featured, accessible data grid and tre
 | `rowSelectionMode`       | `row-selection-mode`       | Controls how rows can be selected:  - `"none"`: No rows are selectable. Pointer and keyboard interactions    will not trigger selection events.  - `"single"`: Only one row can be selected at a time.  - `"multiple"`: Multiple rows can be selected using Ctrl/Cmd+click or    Shift+click.  Also affects `rowHighlightEnabled` when set to `"auto"` -- highlighting is enabled for `"single"` and `"multiple"` modes.                                                                                                                                                                                                                                                                                    | `"multiple" \| "none" \| "single"`                                                        | `"single"`  |
 | `showLines`              | `show-lines`               | Defines which lines (or borders) are displayed within the tabular grid. Similar to the border options in spreadsheet applications, this property controls whether lines appear around and/or between rows and columns.  **Note:** At the moment, this property does not affect the rendering of the grid. It only reflects the property value as an HTML attribute.  - "all": Lines around and between all rows and columns. - "all-inside": Lines only between rows and columns. - "column": Lines around and between columns. - "column-inside": Lines only between columns. - "none": No lines at all. - "row": Lines around and between rows. - "row-inside": Lines only between rows.  Default: "all". | `"all" \| "all-inside" \| "column" \| "column-inside" \| "none" \| "row" \| "row-inside"` | `"all"`     |
 
-
 ## Events
 
 | Event                  | Description                                                                                                                                                                                                                                                                                        | Type                                                |
@@ -62,7 +97,6 @@ The `ch-tabular-grid` component is a full-featured, accessible data grid and tre
 | `rowEnterPressed`      | Emitted when Enter is pressed on a focused row. Payload contains `rowId` of the pressed row. Not cancelable.                                                                                                                                                                                       | `CustomEvent<TabularGridRowPressedEvent>`           |
 | `rowMarkingChanged`    | Emitted when the set of marked rows changes (checkboxes toggled). Only fires when the column selector's `richRowSelectorMode` is `"mark"`. Not cancelable. Payload includes arrays of added and removed row IDs.                                                                                   | `CustomEvent<TabularGridMarkingChangedEvent>`       |
 | `selectionChanged`     | Emitted when the set of selected rows changes (add, remove, or replace). Triggered by pointer clicks, keyboard navigation, or programmatic calls to `selectRow`/`selectAllRows`. Not cancelable. Payload includes arrays of added and removed row IDs.                                             | `CustomEvent<TabularGridSelectionChangedEvent>`     |
-
 
 ## Methods
 
@@ -312,28 +346,6 @@ Type: `Promise<void>`
 | `"header"`         | Content projected into the grid header section above the data area.                                                       |
 | `"row-actions"`    | Custom row action controls rendered in the aside area, typically shown on hover or context menu.                          |
 | `"settings"`       | Custom content for the settings panel. When not provided, a default column visibility editor is rendered.                 |
-
-
-## Shadow Parts
-
-| Part                                 | Description                                                               |
-| ------------------------------------ | ------------------------------------------------------------------------- |
-| `"footer"`                           | The footer section rendered below the grid body.                          |
-| `"header"`                           | The header section rendered above the grid body.                          |
-| `"main"`                             | The main scrollable section containing the grid columns, rows, and cells. |
-| `"settings-caption"`                 | The caption/title text in the settings panel header.                      |
-| `"settings-close"`                   | The close button in the settings panel.                                   |
-| `"settings-columns"`                 | The column visibility list inside the settings panel.                     |
-| `"settings-columns-item"`            | An individual column entry in the settings column list.                   |
-| `"settings-columns-label"`           | The label for a column entry in the settings panel.                       |
-| `"settings-columns-visible"`         | The visibility toggle for a column in the settings panel.                 |
-| `"settings-columns-visible-checked"` | The visibility toggle when the column is visible.                         |
-| `"settings-footer"`                  | The footer area of the settings panel.                                    |
-| `"settings-header"`                  | The header area of the settings panel.                                    |
-| `"settings-main"`                    | The main content area of the settings panel.                              |
-| `"settings-mask"`                    | The backdrop overlay displayed behind the settings panel.                 |
-| `"settings-window"`                  | The settings panel window container.                                      |
-
 
 ## Dependencies
 

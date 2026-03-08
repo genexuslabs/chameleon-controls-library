@@ -1,9 +1,22 @@
 # ch-next-data-modeling-item
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`checkErrors`](#checkerrors)
+  - [`clearInput`](#clearinput)
+  - [`delete`](#delete)
+  - [`hideWaitingMode`](#hidewaitingmode)
+  - [`setAddingMode`](#setaddingmode)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -24,7 +37,6 @@
 | `showNewFieldBtn`  | `show-new-field-btn` | `true` to show the new field button when `mode === "add"`                                                                                                                                                        | `boolean`                                                                                                                                                                                                                                                                                   | `true`      |
 | `type`             | `type`               | The type of the field.                                                                                                                                                                                           | `"ATT" \| "ENTITY" \| "LEVEL"`                                                                                                                                                                                                                                                              | `"LEVEL"`   |
 
-
 ## Events
 
 | Event                 | Description                                                                                                       | Type                                                    |
@@ -35,7 +47,6 @@
 | `firstNewFieldErrors` | Fired when the new field of the new entity tries to commits the adding operation, but fails because it has errors | `CustomEvent<any>`                                      |
 | `newEntity`           | Fired when a new entity is committed to be added                                                                  | `CustomEvent<{ name: string; level: ItemInfo[]; }>`     |
 | `newField`            | Fired when a new file is committed to be added                                                                    | `CustomEvent<{ name: string; type?: EntityItemType; }>` |
-
 
 ## Methods
 
@@ -54,8 +65,6 @@ Check errors in the item when `level !== 0`
 
 Type: `Promise<void>`
 
-
-
 ### `clearInput() => Promise<void>`
 
 Remove the value of the input when mode === "add" | "edit"
@@ -63,8 +72,6 @@ Remove the value of the input when mode === "add" | "edit"
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `delete(event: UIEvent) => Promise<void>`
 
@@ -80,8 +87,6 @@ Deletes the field.
 
 Type: `Promise<void>`
 
-
-
 ### `hideWaitingMode() => Promise<void>`
 
 Hides the waiting mode to continue editing the field.
@@ -89,8 +94,6 @@ Hides the waiting mode to continue editing the field.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `setAddingMode() => Promise<void>`
 
@@ -100,15 +103,11 @@ Set the adding mode for the first field of the entity.
 
 Type: `Promise<void>`
 
-
-
-
 ## Slots
 
 | Slot      | Description                                        |
 | --------- | -------------------------------------------------- |
 | `"items"` | The first level items (entities) of the data model |
-
 
 ## Dependencies
 

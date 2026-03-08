@@ -1,7 +1,10 @@
 # ch-grid-toolbar
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 

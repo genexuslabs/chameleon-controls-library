@@ -1,16 +1,19 @@
 # ch-next-data-modeling
 
+## Table of Contents
 
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Slots
 
 | Slot | Description                                        |
 | ---- | -------------------------------------------------- |
 |      | The first level items (entities) of the data model |
-
 
 ## Dependencies
 

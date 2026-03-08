@@ -1,7 +1,30 @@
 # ch-flexible-layout-render
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`addSiblingView`](#addsiblingview)
+  - [`addWidget`](#addwidget)
+  - [`removeView`](#removeview)
+  - [`removeWidget`](#removewidget)
+  - [`updateSelectedWidget`](#updateselectedwidget)
+  - [`updateViewInfo`](#updateviewinfo)
+  - [`updateWidgetInfo`](#updatewidgetinfo)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -44,14 +67,12 @@ The `ch-flexible-layout-render` component is a high-level shell for building IDE
 | `sortable`       | `sortable`        | `true` to enable sorting the tab buttons in the `"tabbed"` type leaves by dragging them in the tab-list.  If `false`, the tab buttons cannot be dragged out either, regardless of the `dragOutside` property value.                                                                                                                                                                                                                                  | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`     |
 | `theme`          | `theme`           | Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied.                                                                                                                                                                                                                                                                                                                                                  | `ThemeItemBaseModel & { styleSheet: string; } \| ThemeItemBaseModel & { url?: string; } \| ThemeItemModel[] \| string \| string[]`                                                                                                                                                                                                                                                                                                                                                 | `undefined` |
 
-
 ## Events
 
 | Event                   | Description                                                                                                                                                                                                                                                                                                                   | Type                                                      |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | `renderedWidgetsChange` | Emitted every time the set of rendered widgets changes (after each render cycle). The payload contains two arrays:  - `rendered`: widget IDs rendered internally by the component.  - `slotted`: widget IDs projected via named slots.  Not emitted when the rendered set is identical to the previous cycle. Not cancelable. | `CustomEvent<{ rendered: string[]; slotted: string[]; }>` |
 | `widgetClose`           | Emitted when the user presses the close button on a widget tab. The event is cancelable: calling `event.preventDefault()` prevents the widget from being removed, allowing the host to show a confirmation dialog or perform cleanup before removal.  Payload contains `widgetId` and `viewId` identifying the closed widget. | `CustomEvent<{ widgetId: string; viewId: string; }>`      |
-
 
 ## Methods
 
@@ -210,15 +231,6 @@ Type: `Promise<void>`
 | Slot           | Description                                                                                                                                                                                                                                         |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `"{widgetId}"` | Named slot for each widget. Each widget gets a named slot whose name equals the widget's `id`. Slots are only projected when `slottedWidgets` is `true` (or the individual widget's `slot` property is `true`) and the widget is currently visible. |
-
-
-## Shadow Parts
-
-| Part               | Description                                                                                                |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- |
-| `"droppable-area"` | The overlay surface rendered over the layout when a widget is being dragged, enabling drop-zone detection. |
-| `"leaf"`           | The container element for a leaf node (either a single-widget view or a tabbed widget group).              |
-
 
 ## Dependencies
 

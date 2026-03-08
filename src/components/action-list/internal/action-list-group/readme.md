@@ -1,9 +1,16 @@
 # ch-action-list-group
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`setFocus`](#setfocus)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -20,13 +27,11 @@
 | `selected`               | `selected`                 | This attribute lets you specify if the item is selected                                                                                                  | `boolean` | `false`     |
 | `showDownloadingSpinner` | `show-downloading-spinner` | `true` to show the downloading spinner when lazy loading the sub items of the control.                                                                   | `boolean` | `true`      |
 
-
 ## Events
 
 | Event             | Description                                                            | Type                  |
 | ----------------- | ---------------------------------------------------------------------- | --------------------- |
 | `loadLazyContent` | Fired when the lazy control is expanded an its content must be loaded. | `CustomEvent<string>` |
-
 
 ## Methods
 
@@ -37,9 +42,6 @@ Set the focus in the control if `expandable === true`.
 #### Returns
 
 Type: `Promise<void>`
-
-
-
 
 ## Dependencies
 

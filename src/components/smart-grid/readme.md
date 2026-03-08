@@ -1,7 +1,25 @@
 # ch-smart-grid
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`removeScrollEndContentReference`](#removescrollendcontentreference)
+  - [`scrollEndContentToPosition`](#scrollendcontenttoposition)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -43,13 +61,11 @@ The `ch-smart-grid` component is an accessible grid layout for data-driven appli
 | `loadingState`            | `loading-state`   | Specifies the loading state of the grid:  - `"initial"`: First load; shows the `grid-initial-loading-placeholder`    slot.  - `"loading"`: Data is being fetched (infinite scroll triggered). The    `ch-infinite-scroll` component shows its loading indicator.  - `"loaded"`: Data fetch is complete. Normal content is rendered.  This property is mutable: the component sets it to `"loading"` when the infinite-scroll threshold is reached.                                                                  | `"all-records-loaded" \| "initial" \| "loading" \| "more-data-to-fetch"` | `"initial"`       |
 | `threshold`               | `threshold`       | The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.                                                                                                           | `string`                                                                 | `"10px"`          |
 
-
 ## Events
 
 | Event                      | Description                                                                                                                                                                                                                                                                                                                               | Type                |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
 | `infiniteThresholdReached` | Emitted every time the infinite-scroll threshold is reached. The host should respond by fetching the next page of data and updating `loadingState` back to `"loaded"` when done.  Does not bubble (`bubbles: false`). Not cancelable. Payload is `void`. Before emitting, the component automatically sets `loadingState` to `"loading"`. | `CustomEvent<void>` |
-
 
 ## Methods
 
@@ -95,7 +111,6 @@ Type: `Promise<void>`
 | `"grid-content"`                     | Primary content slot for grid cells. Rendered when the grid has records and is not in the initial loading state. |
 | `"grid-content-empty"`               | Fallback content displayed when the grid has finished loading but contains no records.                           |
 | `"grid-initial-loading-placeholder"` | Placeholder content shown during the initial loading state before any data has been fetched.                     |
-
 
 ## Dependencies
 

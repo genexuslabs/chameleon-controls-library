@@ -1,7 +1,12 @@
 # ch-grid-action-refresh
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -13,13 +18,11 @@ The `ch-tabular-grid-action-refresh` component represents a refresh button for a
 | ---------- | ---------- | -------------------------------------------------------- | --------- | ----------- |
 | `disabled` | `disabled` | Indicates whether the refresh button is disabled or not. | `boolean` | `undefined` |
 
-
 ## Events
 
 | Event            | Description                                       | Type               |
 | ---------------- | ------------------------------------------------- | ------------------ |
 | `refreshClicked` | Event emitted when the refresh button is clicked. | `CustomEvent<any>` |
-
 
 ----------------------------------------------
 

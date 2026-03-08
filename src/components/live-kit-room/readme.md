@@ -1,7 +1,20 @@
 # ch-live-kit-room
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -36,13 +49,11 @@ The `ch-live-kit-room` component integrates with the LiveKit real-time communica
 | `token`             | `token`              | Specifies the LiveKit access token used to authenticate and connect to the room. The token encodes the participant identity, room name, and permissions. Must be set before `connected` is toggled to `true`.  Changing this value while connected does not trigger a reconnection — disconnect and reconnect to use a new token.                                                                                                                                                                                                                                              | `string`                                                                                                                                                                                                                                                                                      | `""`        |
 | `url`               | `url`                | Specifies the WebSocket URL of the LiveKit server (e.g., `"wss://my-livekit-server.example.com"`). Must be set before `connected` is toggled to `true`.  Changing this value while connected does not trigger a reconnection — disconnect and reconnect to use a new URL.                                                                                                                                                                                                                                                                                                      | `string`                                                                                                                                                                                                                                                                                      | `""`        |
 
-
 ## Slots
 
 | Slot | Description                                                                                                         |
 | ---- | ------------------------------------------------------------------------------------------------------------------- |
 |      | Default slot. Projects custom content (e.g., control buttons, transcription UI) within the component's shadow root. |
-
 
 ## Dependencies
 

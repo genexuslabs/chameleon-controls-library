@@ -1,7 +1,20 @@
 # ch-color-field
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -44,22 +57,11 @@ The `ch-color-field` component provides an interactive 2D canvas for selecting c
 | `step`                      | `step`                        | Step size in pixels for keyboard navigation on the canvas. Determines how many pixels the marker moves when using arrow keys. Default = 1.                                                                       | `number`  | `1`                |
 | `value`                     | `value`                       | The current value of the `ch-color-field` component, representing a color in one of the following formats:   - HEX   - HSL   - RGB This value determines the selected color and can be updated by the user.      | `string`  | `FALLBACK_COLOR`   |
 
-
 ## Events
 
 | Event   | Description                                                                                                                                                  | Type                                                                                               |
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
 | `input` | The `input` event is emitted when a change to the element's value is committed by the user.  It contains the new value (in all variants) of the color-field. | `CustomEvent<{ rgb: string; rgba: string; hsl: string; hsla: string; hex: string; hsv: string; }>` |
-
-
-## Shadow Parts
-
-| Part         | Description                                                        |
-| ------------ | ------------------------------------------------------------------ |
-| `"disabled"` | Applied to the marker when the component is disabled.              |
-| `"marker"`   | The circular marker/selector positioned on the color field canvas. |
-| `"readonly"` | Applied to the marker when the component is read-only.             |
-
 
 ## Dependencies
 

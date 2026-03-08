@@ -1,7 +1,21 @@
 # ch-popover
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -53,7 +67,6 @@ The `ch-popover` component renders a positioned overlay container anchored to a 
 | `resizable`           | `resizable`              | Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.                                                                                                                                                                                                                                                                                                                                                            | `boolean`                                                                        | `false`      |
 | `show`                | `show`                   | Specifies whether the popover is hidden or visible.                                                                                                                                                                                                                                                                                                                                                                                                                                        | `boolean`                                                                        | `false`      |
 
-
 ## Events
 
 | Event           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Type                                                                                                   |
@@ -61,36 +74,12 @@ The `ch-popover` component renders a positioned overlay container anchored to a 
 | `popoverClosed` | Emitted when the popover is closed by an user interaction.  This event can be prevented (`preventDefault()`), interrupting the `ch-popover`'s closing.  The `reason` property of the event provides more information about the cause of the closing:  - `"click-outside"`: The popover is being closed because the user clicked    outside the popover when using `closeOnClickOutside === true` and    `mode === "manual"`.   - `"escape-key"`: The popover is being closed because the user pressed the    "Escape" key when using `closeOnClickOutside === true` and    `mode === "manual"`.   - `"popover-no-longer-visible"`: The popover is being closed because it    is no longer visible.   - `"toggle"`: The popover is being closed by the native toggle behavior    of popover. It can be produced by the user clicking the `actionElement`,    pressing the "Enter" or "Space" keys on the `actionElement`, pressing    the "Escape" key or other. Used when `mode === "auto"`. | `CustomEvent<{ reason: "click-outside" \| "escape-key" \| "popover-no-longer-visible" \| "toggle"; }>` |
 | `popoverOpened` | Emitted when the popover is opened by an user interaction.  This event can be prevented (`preventDefault()`), interrupting the ch-popover's opening.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `CustomEvent<any>`                                                                                     |
 
-
 ## Slots
 
 | Slot       | Description                                                                     |
 | ---------- | ------------------------------------------------------------------------------- |
 |            | Default slot. The main content of the popover.                                  |
 | `"header"` | Content projected into the header area. Rendered when `allowDrag === "header"`. |
-
-
-## Shadow Parts
-
-| Part       | Description                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------- |
-| `"header"` | A draggable header area rendered when `allowDrag === "header"`. Projects the "header" slot. |
-
-
-## CSS Custom Properties
-
-| Name                            | Description                                                                                                                                        |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--ch-popover-block-size`       | Specifies the block size of the popover. Useful for scenarios where the popover is resizable. @default max-content                                 |
-| `--ch-popover-inline-size`      | Specifies the inline size of the popover. Useful for scenarios where the popover is resizable. @default max-content                                |
-| `--ch-popover-max-block-size`   | Specifies the maximum block size of the popover. Useful for scenarios where the popover is resizable. Only px values are supported. @default auto  |
-| `--ch-popover-max-inline-size`  | Specifies the maximum inline size of the popover. Useful for scenarios where the popover is resizable. Only px values are supported. @default auto |
-| `--ch-popover-min-block-size`   | Specifies the minimum block size of the popover. Useful for scenarios where the popover is resizable. @default auto                                |
-| `--ch-popover-min-inline-size`  | Specifies the minimum inline size of the popover. Useful for scenarios where the popover is resizable. @default auto                               |
-| `--ch-popover-resize-threshold` | Specifies the size of the threshold to resize the popover. @default 8px                                                                            |
-| `--ch-popover-separation-x`     | Specifies the separation between the action and popover in the x axis. @default 0px                                                                |
-| `--ch-popover-separation-y`     | Specifies the separation between the action and popover in the y axis. @default 0px                                                                |
-
 
 ## Dependencies
 

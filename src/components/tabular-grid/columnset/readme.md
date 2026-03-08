@@ -1,7 +1,14 @@
 # ch-grid-columnset
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -12,7 +19,6 @@ The `ch-tabular-grid-columnset` component represents a group of columns.
 | Property | Attribute | Description                                                                                                                                                                                                                                                                | Type                | Default     |
 | -------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------- |
 | `parts`  | `parts`   | A boolean or string that controls the parts applied to the column. - When `true`, it automatically applies the part names "column" and the column's unique ID. - When a string is provided, it appends that string to the default part names "column" and the column's ID. | `boolean \| string` | `undefined` |
-
 
 ## Dependencies
 

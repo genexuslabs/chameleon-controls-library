@@ -1,9 +1,13 @@
 # ch-test-flexible-layout
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -11,7 +15,6 @@
 | --------------------------- | --------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- | ----------- |
 | `designSystem` _(required)_ | `design-system` | Specifies the design system used. Only for testing purposes.    | `"mercury" \| "unanimo"`                                                     | `undefined` |
 | `model`                     | --              | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterModel, "items"> & { items: FlexibleLayoutItemModel[]; }` | `layout3`   |
-
 
 ## Dependencies
 

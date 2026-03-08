@@ -1,7 +1,13 @@
 # gx-grid-chameleon
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+
+<!-- Auto Generated Below -->
 
 ## Properties
 
@@ -10,7 +16,6 @@
 | `grid` _(required)_ | --               | The GxGrid instance representing the data to be displayed in the grid. | `GxGrid`             | `undefined` |
 | `gridTimestamp`     | `grid-timestamp` | The timestamp indicating the time when the grid was last updated.      | `number`             | `undefined` |
 | `state`             | --               | The UI state of the Grid.                                              | `GridChameleonState` | `undefined` |
-
 
 ## Dependencies
 

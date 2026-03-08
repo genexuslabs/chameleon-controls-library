@@ -1,7 +1,16 @@
 # ch-grid-settings
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -14,13 +23,11 @@ The `ch-tabular-grid-settings` component represents a settings window for a grid
 | `grid` _(required)_ | --        | The `HTMLChTabularGridElement` that the settings window is associated with. | `HTMLChTabularGridElement` | `undefined` |
 | `show`              | `show`    | Indicates whether the settings window is currently shown or not.            | `boolean`                  | `false`     |
 
-
 ## Events
 
 | Event                  | Description                                                            | Type               |
 | ---------------------- | ---------------------------------------------------------------------- | ------------------ |
 | `settingsCloseClicked` | Event emitted when the close button of the settings window is clicked. | `CustomEvent<any>` |
-
 
 ## Dependencies
 

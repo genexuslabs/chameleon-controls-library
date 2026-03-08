@@ -1,9 +1,12 @@
 # ch-grid-virtual-scroller
 
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -18,13 +21,11 @@ It optimizes the rendering of large data sets by only rendering the items that a
 | `itemsCount`    | `items-count` | The number of elements in the items list. Use if the list changes, without recreating the array. | `number` | `undefined` |
 | `viewPortItems` | --            | The list of items to display within the current viewport.                                        | `any[]`  | `undefined` |
 
-
 ## Events
 
 | Event                  | Description                                                       | Type               |
 | ---------------------- | ----------------------------------------------------------------- | ------------------ |
 | `viewPortItemsChanged` | Event emitted when the list of visible items in the grid changes. | `CustomEvent<any>` |
-
 
 ----------------------------------------------
 

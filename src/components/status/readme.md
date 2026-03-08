@@ -1,7 +1,17 @@
 # ch-status
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Slots](#slots)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -35,13 +45,11 @@ The `ch-status` component provides a lightweight loading indicator that communic
 | `accessibleName`   | `accessible-name` | Specifies a short string that authors associate with an element to provide users of assistive technologies with a label for the element.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `string`      | `undefined` |
 | `loadingRegionRef` | --                | If the control is describing the loading progress of a particular region of a page, set this property with the reference of the loading region. This will set the `aria-describedby` and `aria-busy` attributes on the loading region to improve accessibility while the control is in rendered.  When the control detects that is no longer rendered (aka it is removed from the DOM), it will remove the `aria-busy` attribute and the `aria-describedby` attribute.  **Note**: Setting this prop overwrites any existing `aria-describedby` value on the referenced element — it replaces rather than appends.  If an ID is set prior to the component's first render, the ch-status will use this ID for the `aria-describedby`. Otherwise, the ch-status will compute a unique ID for this matter.  **Important**: If you are using Shadow DOM, take into account that the `loadingRegionRef` must be in the same Shadow Tree as the ch-status. Otherwise, the `aria-describedby` binding won't work, since the control ID is not visible for the `loadingRegionRef`. | `HTMLElement` | `undefined` |
 
-
 ## Slots
 
 | Slot | Description                                                                                                                                                                       |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |      | Default slot. Use it to project custom visual content such as a spinner icon or loading text. Content changes trigger polite `aria-live` announcements to assistive technologies. |
-
 
 ----------------------------------------------
 

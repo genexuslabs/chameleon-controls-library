@@ -1,14 +1,16 @@
 # ch-grid-rowset
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Properties](#properties)
+
+<!-- Auto Generated Below -->
 
 ## Properties
 
 | Property    | Attribute   | Description | Type      | Default |
 | ----------- | ----------- | ----------- | --------- | ------- |
 | `collapsed` | `collapsed` |             | `boolean` | `false` |
-
 
 ----------------------------------------------
 

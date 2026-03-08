@@ -1,9 +1,13 @@
 # ch-tree-view-drop
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -13,7 +17,6 @@
 | `level`      | `level`        | Level in the tree at which the item is placed.                                       | `number`                       | `INITIAL_LEVEL` |
 | `treeItemId` | `tree-item-id` | Specifies the id of the tree item that this element controls.                        | `string`                       | `undefined`     |
 | `type`       | `type`         | Specifies the type of drop that is performed over the control.                       | `"after" \| "before"`          | `"before"`      |
-
 
 ## Dependencies
 

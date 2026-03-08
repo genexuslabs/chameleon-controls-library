@@ -1,11 +1,26 @@
 # ch-action-list-render
 
-## Item Layout
+## Table of Contents
 
-![ActionListItem layout](action-list-item-layout.svg "Action List Item Layout")
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`addItem`](#additem)
+  - [`getItemsInfo`](#getitemsinfo)
+  - [`removeItem`](#removeitem)
+  - [`updateItemProperties`](#updateitemproperties)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -52,14 +67,12 @@ The `ch-action-list-render` component renders an interactive list of actionable 
 | `sortItemsCallback`         | --               | Callback that is executed when the action-list model is changed to order its items.                                                                                                                                                                                                                                    | `(subModel: ActionListModel) => void`                                                                                                                  | `defaultSortItemsCallback`      |
 | `translations`              | --               | Specifies the literals required for the control.                                                                                                                                                                                                                                                                       | `{ confirmDelete: string; cancelDelete: string; confirmModify: string; cancelModify: string; }`                                                        | `actionListDefaultTranslations` |
 
-
 ## Events
 
 | Event                 | Description                                                                                                                                                     | Type                                                                                                                                    |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `itemClick`           | Fired when an item is clicked and `selection === "none"`. Applies for items that have `type === "actionable"` or (`type === "group"` and `expandable === true`) | `CustomEvent<{ parentItem: ActionListItemGroup; item: ActionListItemModel; } \| { root: ActionListModel; item: ActionListItemModel; }>` |
 | `selectedItemsChange` | Fired when the selected items change and `selection !== "none"`                                                                                                 | `CustomEvent<ActionListItemModelExtended[]>`                                                                                            |
-
 
 ## Methods
 
@@ -128,34 +141,6 @@ of the items in the list.
 #### Returns
 
 Type: `Promise<void>`
-
-## Shadow Parts
-
-| Part                  | Description                                                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `"collapsed"`         | Present in the `group__expandable` part when the group is collapsed.                                                   |
-| `"disabled"`          | Present in the `item__action`, `item__caption`, `group__action`, and `group__caption` parts when the item is disabled. |
-| `"expanded"`          | Present in the `group__expandable` part when the group is expanded.                                                    |
-| `"group__action"`     | The clickable header row for a group item.                                                                             |
-| `"group__caption"`    | The text caption inside a group header.                                                                                |
-| `"group__expandable"` | The expandable/collapsible container for a group's children.                                                           |
-| `"item__action"`      | The clickable row element for each actionable item.                                                                    |
-| `"item__caption"`     | The text caption inside an actionable item.                                                                            |
-| `"item__checkbox"`    | The checkbox element rendered when `checkbox` is `true`.                                                               |
-| `"not-selected"`      | Present in the `item__action` and `group__action` parts when the item is not selected.                                 |
-| `"selected"`          | Present in the `item__action` and `group__action` parts when the item is selected.                                     |
-| `"separator"`         | A horizontal divider rendered between items when the model contains an item of `type: "separator"`.                    |
-
-
-## CSS Custom Properties
-
-| Name                                                   | Description                                                                                 |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| `--ch-action-list-group__expandable-button-image-size` | Specifies the image size of the expandable button. @default 100%                            |
-| `--ch-action-list-group__expandable-button-size`       | Specifies the box size that contains the expandable button image. @default 0.875em          |
-| `--ch-action-list-item__background-image-size`         | Specifies the image size of the additional images. @default 100%                            |
-| `--ch-action-list-item__image-size`                    | Specifies the box size that contains the images for the additional images. @default 0.875em |
-
 
 ## Dependencies
 

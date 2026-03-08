@@ -1,7 +1,15 @@
 # ch-grid-column-resize
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -13,7 +21,6 @@ The `ch-tabular-grid-column-resize` component responsible for resizing a column 
 | --------------------- | --------- | ----------------------------------------- | -------------------------------- | ----------- |
 | `column` _(required)_ | --        | The column element that is being resized. | `HTMLChTabularGridColumnElement` | `undefined` |
 
-
 ## Events
 
 | Event                  | Description                                               | Type                                        |
@@ -21,7 +28,6 @@ The `ch-tabular-grid-column-resize` component responsible for resizing a column 
 | `columnResizeFinished` | Event emitted when the user finishes resizing the column. | `CustomEvent<TabularGridColumnResizeEvent>` |
 | `columnResizeStarted`  | Event emitted when the user starts resizing the column.   | `CustomEvent<TabularGridColumnResizeEvent>` |
 | `columnResizing`       | Event emitted when the user is resizing the column.       | `CustomEvent<TabularGridColumnResizeEvent>` |
-
 
 ## Dependencies
 

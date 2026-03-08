@@ -1,7 +1,19 @@
 # ch-markdown-viewer
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -40,7 +52,6 @@ The `ch-markdown-viewer` component renders Markdown content as rich HTML with GF
 | `showIndicator`               | `show-indicator`                  | When `true`, a blinking cursor-like indicator is displayed after the last rendered element. Useful for streaming scenarios where Markdown content is being generated in real time (e.g., AI chat responses).  The indicator's appearance is controlled by the CSS custom properties `--ch-markdown-viewer-indicator-color`, `--ch-markdown-viewer-inline-size`, and `--ch-markdown-viewer-block-size`.                                                                                            | `boolean`                                                      | `false`                |
 | `theme`                       | `theme`                           | Specifies the theme model name to be used for rendering the control. When set, a `ch-theme` element is rendered to load the theme stylesheet. If `undefined`, no theme will be applied.  Works together with `avoidFlashOfUnstyledContent` to prevent unstyled content from being visible before the theme loads.                                                                                                                                                                                 | `string`                                                       | `"ch-markdown-viewer"` |
 | `value`                       | `value`                           | Specifies the Markdown string to parse and render. When `undefined` or empty, the component renders nothing. If parsing fails, the error is logged to the console and the previously rendered content is preserved.                                                                                                                                                                                                                                                                               | `string`                                                       | `undefined`            |
-
 
 ## Dependencies
 

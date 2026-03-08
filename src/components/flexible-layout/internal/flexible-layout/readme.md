@@ -1,9 +1,20 @@
 # ch-flexible-layout
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`addSiblingView`](#addsiblingview)
+  - [`refreshLeaf`](#refreshleaf)
+  - [`removeItemPageInView`](#removeitempageinview)
+  - [`removeView`](#removeview)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -18,7 +29,6 @@
 | `overflow`            | `overflow`     | Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.                                                                                                                                                                                                                                                         | `CssOverflowProperty \| "auto auto" \| "auto hidden" \| "auto clip" \| "auto scroll" \| "auto visible" \| "hidden auto" \| "hidden hidden" \| "hidden clip" \| "hidden scroll" \| "hidden visible" \| "clip auto" \| "clip hidden" \| "clip clip" \| "clip scroll" \| "clip visible" \| "scroll auto" \| "scroll hidden" \| "scroll clip" \| "scroll scroll" \| "scroll visible" \| "visible auto" \| "visible hidden" \| "visible clip" \| "visible scroll" \| "visible visible"` | `"visible"` |
 | `sortable`            | `sortable`     | `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.                                                                                                                                                                                                                                                                               | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`     |
 
-
 ## Events
 
 | Event                    | Description                                             | Type                                                                                                           |
@@ -27,12 +37,9 @@
 | `viewItemClose`          | Fired when a item of a view request to be closed.       | `CustomEvent<{ itemId: string; itemIndex: number; viewId: string; }>`                                          |
 | `viewItemReorder`        | Fired when a widget is dragged and dropped into a view. | `CustomEvent<WidgetDragInfo & WidgetDropInfo>`                                                                 |
 
-
 ## Methods
 
 ### `addSiblingView(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>`
-
-
 
 #### Parameters
 
@@ -48,8 +55,6 @@
 
 Type: `Promise<boolean>`
 
-
-
 ### `refreshLeaf(leafId: string) => Promise<void>`
 
 Schedules a new render for a leaf even if no state changed.
@@ -63,8 +68,6 @@ Schedules a new render for a leaf even if no state changed.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `removeItemPageInView(viewId: string, itemId: string, forceRerender?: boolean) => Promise<void>`
 
@@ -82,8 +85,6 @@ Given the view ID and the item id, remove the page of the item from the view.
 
 Type: `Promise<void>`
 
-
-
 ### `removeView(itemId: string) => Promise<FlexibleLayoutViewRemoveResult>`
 
 Removes the view that is identified by the given ID.
@@ -98,9 +99,6 @@ The layout is rearranged depending on the state of the removed view.
 #### Returns
 
 Type: `Promise<FlexibleLayoutViewRemoveResult>`
-
-
-
 
 ## Dependencies
 

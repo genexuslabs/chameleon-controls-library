@@ -82,6 +82,7 @@ log.txt
 $RECYCLE.BIN/
 components.d.ts
 exported-docs/
+.claude/skills/skill-creator
 
 .DS_Store
 Thumbs.db

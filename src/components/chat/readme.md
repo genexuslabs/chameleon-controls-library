@@ -1,11 +1,24 @@
 # ch-chat
 
-## Layout
+## Table of Contents
 
-![ch-chat layout](./ch-chat-layout.svg)
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`addNewMessage`](#addnewmessage)
+  - [`focusChatInput`](#focuschatinput)
+  - [`sendChatMessage`](#sendchatmessage)
+  - [`setChatInputMessage`](#setchatinputmessage)
+  - [`updateChatMessage`](#updatechatmessage)
+  - [`updateLastMessage`](#updatelastmessage)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -35,13 +48,11 @@ The `ch-chat` component delivers a full-featured conversational interface with v
 | `virtualScrollerBufferSize`    | `virtual-scroller-buffer-size`     | Specifies the number of elements to be rendered above and below the virtual scroll.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `number`                                                                                                                                                                                                                                                                                                                                                                                                                             | `5`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `waitingResponse`              | `waiting-response`                 | `true` if the `ch-chat` is waiting for a response from the server. If so, the `sendChatMessages` won't be executed when the user tries to send a new message. Although, the `send-input` and `send-button` won't be disabled, so the user can interact with the chat.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                            | `false`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
-
 ## Events
 
 | Event              | Description                                                                                                                                                                                                                                                                                                                                            | Type                                                                                                                             |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | `userMessageAdded` | Fired when a new user message is added in the chat via user interaction.  Since developers can define their own render for file attachment, this event serves to synchronize the cleanup of the `send-input` with the cleanup of the custom file attachment, or or even blocking user interactions before the `sendChatMessages` callback is executed. | `CustomEvent<{ id: string; role: "user"; content: ChatMessageContent; metadata?: any; parts?: string; transcribed?: boolean; }>` |
-
 
 ## Methods
 
@@ -59,8 +70,6 @@ Add a new message at the end of the record, performing a re-render.
 
 Type: `Promise<void>`
 
-
-
 ### `focusChatInput() => Promise<void>`
 
 Focus the chat input
@@ -68,8 +77,6 @@ Focus the chat input
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `sendChatMessage(content?: ChatMessageUser | undefined, files?: File[]) => Promise<void>`
 
@@ -97,8 +104,6 @@ Whether or not the `content` parameter is provided, the content of the
 
 Type: `Promise<void>`
 
-
-
 ### `setChatInputMessage(text: string) => Promise<void>`
 
 Set the text for the chat input
@@ -112,8 +117,6 @@ Set the text for the chat input
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `updateChatMessage(messageIndex: number, message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => Promise<void>`
 
@@ -131,8 +134,6 @@ Given the id of the message, it updates the content of the indexed message.
 
 Type: `Promise<void>`
 
-
-
 ### `updateLastMessage(message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => Promise<void>`
 
 Update the content of the last message, performing a re-render.
@@ -148,9 +149,6 @@ Update the content of the last message, performing a re-render.
 
 Type: `Promise<void>`
 
-
-
-
 ## Slots
 
 | Slot                   | Description                                                                                                                                                |
@@ -158,21 +156,6 @@ Type: `Promise<void>`
 | `"additional-content"` | Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state. |
 | `"empty-chat"`         | Displayed when all records are loaded but there are no messages.                                                                                           |
 | `"loading-chat"`       | Displayed while the chat is in the initial loading state.                                                                                                  |
-
-
-## Shadow Parts
-
-| Part                      | Description                                                                                                                                     |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"messages-container"`    | The scrollable container that holds the chat messages.                                                                                          |
-| `"send-button"`           | The button that sends the current message.                                                                                                      |
-| `"send-container"`        | The bottom area containing the input and action buttons.                                                                                        |
-| `"send-container-after"`  | Region after the send input within the send container. Rendered when `sendContainerLayout.sendContainerAfter` is defined.                       |
-| `"send-container-before"` | Region before the send input within the send container. Rendered when `sendContainerLayout.sendContainerBefore` is defined.                     |
-| `"send-input-after"`      | Region after the text input inside the edit control. Rendered when `sendContainerLayout.sendInputAfter` is defined.                             |
-| `"send-input-before"`     | Region before the text input inside the edit control. Rendered when `sendContainerLayout.sendInputBefore` is defined.                           |
-| `"stop-response-button"`  | The button that stops the assistant's response generation. Rendered when `waitingResponse` is `true` and a `stopResponse` callback is provided. |
-
 
 ## Dependencies
 

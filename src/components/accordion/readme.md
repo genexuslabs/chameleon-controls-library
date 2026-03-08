@@ -1,7 +1,18 @@
 # ch-accordion-render
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Slots](#slots)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -43,13 +54,11 @@ The `ch-accordion-render` component displays a vertical stack of collapsible pan
 | `model`                    | --                           | Specifies the items of the control. Each entry is an `AccordionItemModel` with at least `id`, `caption`, and `expanded`. The component mutates `item.expanded` directly on these model objects when the user toggles a panel.                                            | `AccordionItemModel[]`                    | `undefined` |
 | `singleItemExpanded`       | `single-item-expanded`       | If `true` only one item will be expanded at the same time.                                                                                                                                                                                                               | `boolean`                                 | `false`     |
 
-
 ## Events
 
 | Event            | Description                                                                                                                                                                                                                                                 | Type                                              |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `expandedChange` | Fired when an item is expanded or collapsed. The payload is `{ id: string; expanded: boolean }`. In `singleItemExpanded` mode, multiple events fire: one for each auto-collapsed item (with `expanded: false`) followed by one for the newly expanded item. | `CustomEvent<{ id: string; expanded: boolean; }>` |
-
 
 ## Slots
 
@@ -57,33 +66,6 @@ The `ch-accordion-render` component displays a vertical stack of collapsible pan
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `"{item.headerSlotId}"` | Named slot projected inside the `header` button for custom header content. Rendered when the item defines a `headerSlotId`. |
 | `"{item.id}"`           | Named slot projected inside the `section` for each item's collapsible body content.                                         |
-
-
-## Shadow Parts
-
-| Part          | Description                                                                                   |
-| ------------- | --------------------------------------------------------------------------------------------- |
-| `"collapsed"` | Present in the `header`, `panel`, and `section` parts when the item is collapsed.             |
-| `"disabled"`  | Present in the `header`, `panel`, and `section` parts when the item is disabled.              |
-| `"expanded"`  | Present in the `header`, `panel`, and `section` parts when the item is expanded.              |
-| `"header"`    | The clickable `<button>` element that toggles the collapsible section. Present on every item. |
-| `"panel"`     | The outer container that wraps the `header` and the `section` of each item.                   |
-| `"section"`   | The collapsible `<section>` element that contains the item's body content.                    |
-
-
-## CSS Custom Properties
-
-| Name                                                                                                                            | Description                                                                                                                                                                                                                                                                               |
-| ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--ch-accordion-expand-collapse-duration Specifies duration of the expand and collapse animation @default 0ms`                  |                                                                                                                                                                                                                                                                                           |
-| `--ch-accordion-expand-collapse-timing-function Specifies timing function of the expand and collapse animation @default linear` |                                                                                                                                                                                                                                                                                           |
-| `--ch-accordion__chevron-color`                                                                                                 | Specifies the color of the chevron. @default currentColor                                                                                                                                                                                                                                 |
-| `--ch-accordion__chevron-image-size`                                                                                            | Specifies the image size of the chevron. @default 100%                                                                                                                                                                                                                                    |
-| `--ch-accordion__chevron-size`                                                                                                  | Specifies the box size of the chevron. @default 0.875em                                                                                                                                                                                                                                   |
-| `--ch-accordion__header-background-image`                                                                                       | Specifies the background image used for the expandable chevron in the header. @default url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><path d="M16.5 5L8.7 12.7L1 5" stroke="%23000" stroke-width="1.2" stroke-linecap="round"/></svg>') |
-| `--ch-accordion__header-background-image-size`                                                                                  | Specifies the size of the start image of the header. @default 100%                                                                                                                                                                                                                        |
-| `--ch-accordion__header-image-size`                                                                                             | Specifies the box size that contains the start image of the header. @default 0.875em                                                                                                                                                                                                      |
-
 
 ----------------------------------------------
 

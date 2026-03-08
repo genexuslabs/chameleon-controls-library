@@ -1,9 +1,14 @@
 # ch-timer
 
+## Table of Contents
 
+- [Properties](#properties)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -13,14 +18,6 @@
 | `animationTime`  | `animation-time`  | Sets the animationTime to set the custom var for the css animation. | `number`  | `0`       |
 | `presented`      | `presented`       | Sets the presented property to handle the component presentation.   | `boolean` | `false`   |
 | `progress`       | `progress`        | Sets the progress propiety to determine the progress.               | `number`  | `0`       |
-
-
-## Shadow Parts
-
-| Part          | Description |
-| ------------- | ----------- |
-| `"indicator"` |             |
-
 
 ## Dependencies
 

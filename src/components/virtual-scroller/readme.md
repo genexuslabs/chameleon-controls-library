@@ -1,7 +1,23 @@
-# ch-smart-grid-virtual-scroller
+# ch-virtual-scroller
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`addItems`](#additems)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -50,14 +66,12 @@ The `ch-virtual-scroller` component provides efficient virtual scrolling for lar
 | `itemsCount`                 | `items-count`                   | The total number of elements in the `items` array. Set this property when you mutate the existing array (e.g., push/splice) without assigning a new reference, so the virtual scroller knows the length has changed.  If `items` is reassigned as a new array reference, this property is not needed since the `@Watch` on `items` will handle the reset.                                                                                                                                            | `number`                            | `undefined`        |
 | `mode`                       | `mode`                          | Specifies how the control will behave.   - "virtual-scroll": Only the items at the start of the viewport that are   not visible will be removed from the DOM. The items at the end of the   viewport that are not visible will remain rendered to avoid flickering   issues.    - "lazy-render": It behaves similarly to "virtual-scroll" on the initial   load, but when the user scrolls and new items are rendered, those items   that are outside of the viewport won't be removed from the DOM. | `"lazy-render" \| "virtual-scroll"` | `"virtual-scroll"` |
 
-
 ## Events
 
 | Event                    | Description                                                                                                                                                                                                                                                                                                                    | Type                                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
 | `virtualItemsChanged`    | Emitted when the slice of visible items changes due to scrolling, resizing, or programmatic updates. The payload includes `startIndex`, `endIndex`, `totalItems`, and the `virtualItems` sub-array that should be rendered.  This event is the primary mechanism for the parent `ch-smart-grid` to know which cells to render. | `CustomEvent<{ virtualItems: SmartGridModel; startIndex: number; endIndex: number; totalItems: number; }>` |
 | `virtualScrollerDidLoad` | Fired once when all cells in the initial viewport have been rendered and are visible. After this event, the scroller removes `opacity: 0` and starts listening for scroll/resize events. This event has no payload.                                                                                                            | `CustomEvent<any>`                                                                                         |
-
 
 ## Methods
 
@@ -89,7 +103,6 @@ Type: `Promise<void>`
 | Slot | Description                                                                                               |
 | ---- | --------------------------------------------------------------------------------------------------------- |
 |      | Default slot. The slot for `ch-smart-grid-cell` elements representing the items to be virtually scrolled. |
-
 
 ## Dependencies
 

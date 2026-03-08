@@ -1,9 +1,16 @@
 # ch-segmented-control-item
 
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
-
 
 ## Overview
 
@@ -26,20 +33,11 @@ This control represents and item of the ch-segmented-control-render
 | `startImgSrc`    | `start-img-src`   | Specifies the src of the start image.                                                                                                                             | `string`                 | `undefined`    |
 | `startImgType`   | `start-img-type`  | Specifies how the start image will be rendered.                                                                                                                   | `"background" \| "mask"` | `"background"` |
 
-
 ## Events
 
 | Event            | Description                                             | Type                  |
 | ---------------- | ------------------------------------------------------- | --------------------- |
 | `selectedChange` | Fired when the control is selected by user interaction. | `CustomEvent<string>` |
-
-
-## Shadow Parts
-
-| Part         | Description |
-| ------------ | ----------- |
-| `"selected"` | ...         |
-
 
 ## Dependencies
 

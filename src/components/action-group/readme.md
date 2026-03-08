@@ -1,7 +1,21 @@
 # ch-action-group-render
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Slots](#slots)
+- [Dependencies](#dependencies)
+  - [Used by](#used-by)
+  - [Depends on](#depends-on)
+  - [Graph](#graph)
+- [Styling](./docs/styling.md)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -44,21 +58,11 @@ The `ch-action-group-render` component displays a horizontal group of actionable
 | `moreActionsInlineAlign`    | `more-actions-inline-align`    | Specifies the inline alignment of the more actions dropdown that is placed relative to the "more actions" button.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"`              | `"inside-start"`        |
 | `useGxRender`               | `use-gx-render`                | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `boolean`                                                                                     | `false`                 |
 
-
 ## Slots
 
 | Slot       | Description                                                                                                                                                                                              |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `"{name}"` | Named slots matching each item of `type: "slot"` in the model. These slots allow projecting custom content for individual action items and are forwarded into the overflow menu when the item collapses. |
-
-
-## Shadow Parts
-
-| Part          | Description                                                                                                                  |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `"separator"` | A horizontal divider rendered for items of `type: "separator"`. Also receives the item's `id` and custom `parts` if defined. |
-| `"vertical"`  | Present on `separator` items.                                                                                                |
-
 
 ## Dependencies
 

@@ -1,7 +1,12 @@
 # ch-grid-action-settings
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Properties](#properties)
+- [Events](#events)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -13,13 +18,11 @@ The `ch-tabular-grid-action-settings` component represents a settings button for
 | ---------- | ---------- | --------------------------------------------------------- | --------- | ----------- |
 | `disabled` | `disabled` | Indicates whether the settings button is disabled or not. | `boolean` | `undefined` |
 
-
 ## Events
 
 | Event                 | Description                                        | Type               |
 | --------------------- | -------------------------------------------------- | ------------------ |
 | `settingsShowClicked` | Event emitted when the settings button is clicked. | `CustomEvent<any>` |
-
 
 ----------------------------------------------
 

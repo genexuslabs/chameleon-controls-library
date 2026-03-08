@@ -1,7 +1,18 @@
 # ch-code-editor
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Configuration Required](#configuration-required)
+- [Properties](#properties)
+- [Methods](#methods)
+  - [`updateOptions`](#updateoptions)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -71,7 +82,6 @@ export const config: Config = {
 | `theme`                 | `theme`           | Specifies the Monaco theme to be used for rendering (e.g., `"vs"`, `"vs-dark"`, `"hc-black"`).  Overridden if `options.theme` is set.                                                                                                                                                                                                                                                       | `string`            | `"vs"`                                                                                                          |
 | `value`                 | `value`           | Specifies the text content of the editor. Setting this property replaces the entire editor content (cursor position and undo stack may be affected).                                                                                                                                                                                                                                        | `string`            | `undefined`                                                                                                     |
 | `yamlSchemaUri`         | `yaml-schema-uri` | Specifies a remote schema URI for YAML language validation. Only takes effect when `language` is `"yaml"`. When changed at runtime, the editor model is recreated to apply the new schema. Set to an empty string to disable schema validation.                                                                                                                                             | `string`            | `""`                                                                                                            |
-
 
 ## Methods
 

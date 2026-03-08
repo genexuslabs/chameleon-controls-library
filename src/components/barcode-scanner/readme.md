@@ -1,7 +1,18 @@
 # Barcode Scanner
 
-<!-- Auto Generated Below -->
+## Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Use when](#use-when)
+- [Do not use when](#do-not-use-when)
+- [Accessibility](#accessibility)
+- [Properties](#properties)
+- [Events](#events)
+- [Methods](#methods)
+  - [`scan`](#scan)
+
+<!-- Auto Generated Below -->
 
 ## Overview
 
@@ -37,14 +48,12 @@ The `ch-barcode-scanner` component provides real-time barcode and QR code scanni
 | `readDebounce`     | `read-debounce`      | Specifies the minimum time (in milliseconds) that must elapse before the `read` event is re-emitted for the same decoded text. If the newly decoded text differs from the last decoded text, the event fires immediately regardless of this value.  The new value applies to the next scan callback invocation.                                                      | `number`                                     | `200`       |
 | `scanning`         | `scanning`           | Controls whether the scanner is actively scanning. Set to `true` to start the camera feed and begin decoding; set to `false` to stop the camera and disconnect the `ResizeObserver`.  Toggling this property starts or stops the scanner without destroying the component.                                                                                           | `boolean`                                    | `true`      |
 
-
 ## Events
 
 | Event     | Description                                                                                                                                                                                                                                         | Type                    |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
 | `cameras` | Emitted once during `componentDidLoad` after camera enumeration completes. The payload is an array of camera ID strings. If no cameras are found or enumeration fails, an empty array is emitted.  Use this event to populate a camera selector UI. | `CustomEvent<string[]>` |
 | `read`    | Emitted when a barcode or QR code is successfully decoded from the camera feed. The payload is the decoded text string. Subject to `readDebounce` filtering when the same code is scanned consecutively.  Not cancelable.                           | `CustomEvent<string>`   |
-
 
 ## Methods
 
@@ -66,7 +75,6 @@ Type: `Promise<string>`
 
 A promise that resolves with the decoded text, or rejects if no
 barcode is found in the image.
-
 
 ----------------------------------------------
 

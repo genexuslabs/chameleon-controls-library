@@ -19,6 +19,8 @@ import { CHECKBOX_PARTS_DICTIONARY } from "../../utilities/reserved-names/parts/
 
 import styles from "./checkbox.scss?inline";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+
 // In the server we need to preload the ch-image just in case to properly
 // render it, because Lit doesn't support async rendering in the server.
 // In the client we can lazy load the ch-image, since not all ch-checkbox will

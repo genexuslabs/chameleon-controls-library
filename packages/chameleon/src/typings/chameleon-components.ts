@@ -13,6 +13,8 @@ export type ChameleonPublicControlsTagName = Exclude<
   | "ch-performance-scan-item"
   | "ch-segmented-control-item"
   | "ch-tabular-grid-column"
+  | "ch-breadcrumb-render"
+  | "ch-breadcrumb-item"
 >;
 
 export type ChameleonControls = {
@@ -35,6 +37,7 @@ export type ChameleonImagePathCallbackControlsTagName = Extract<
   | "ch-navigation-list-render"
   | "ch-tab-render"
   | "ch-tree-view-render"
+  | "ch-breadcrumb-render"
 >;
 
 export type ChameleonImagePathCallbackControls = {

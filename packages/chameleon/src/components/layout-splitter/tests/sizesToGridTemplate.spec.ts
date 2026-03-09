@@ -5,6 +5,8 @@ import {
 } from "../types";
 import { fixAndUpdateLayoutModel, sizesToGridTemplate } from "../utils";
 
+import { describe, expect, it } from "vitest";
+
 describe("[ch-layout-splitter] [sizesToGridTemplate]", () => {
   const model: LayoutSplitterModel = {
     id: "root",

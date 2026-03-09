@@ -1,0 +1,46 @@
+@use "../../../../utilities/scss/base" as *;
+@use "../../../../utilities/scss/icons" as *;
+
+@include button-reset();
+@include box-sizing();
+
+:host {
+  display: grid;
+  position: relative;
+}
+
+.indicator {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  background-color: currentColor;
+  pointer-events: none;
+}
+
+.ch-disabled {
+  pointer-events: none;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.action {
+  display: flex;
+  align-items: center;
+  gap: var(--ch-breadcrumb-item-gap);
+
+  // Defined in the breadcrumb-render.scss file
+  padding-inline-start: var(--ch-breadcrumb-item-indentation);
+}
+
+ch-image {
+  --ch-image-size: var(--ch-breadcrumb-item__image-size);
+  --ch-image-background-size: var(--ch-breadcrumb-item__background-image-size);
+}

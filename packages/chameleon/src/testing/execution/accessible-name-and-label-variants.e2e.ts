@@ -9,9 +9,10 @@ const testConfiguration = {
 
   // "ch-progress": ["ch-progress", "input"],
 
-  "ch-slider": ["ch-slider", "input"]
+  "ch-slider": ["ch-slider", "input"],
+  "ch-breadcrumb-render": ["ch-breadcrumb-render"]
 } satisfies {
-  [key in "ch-checkbox" | "ch-slider"]: ArgumentTypes<
+  [key in "ch-checkbox" | "ch-slider" | "ch-breadcrumb-render"]: ArgumentTypes<
     typeof testAccessibleNameWithElementInternals<key>
   >;
 };

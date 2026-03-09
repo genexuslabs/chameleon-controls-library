@@ -16,6 +16,7 @@
 - [Dependencies](#dependencies)
   - [Depends on](#depends-on)
   - [Graph](#graph)
+- [Usage](./docs/usage.md)
 - [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->

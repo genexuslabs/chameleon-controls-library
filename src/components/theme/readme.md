@@ -7,11 +7,13 @@
 - [Use when](#use-when)
 - [Do not use when](#do-not-use-when)
 - [Accessibility](#accessibility)
+- [Usage](./docs/usage.md)
 - [Properties](#properties)
 - [Events](#events)
 - [Dependencies](#dependencies)
   - [Used by](#used-by)
   - [Graph](#graph)
+- [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->
 

@@ -9,6 +9,9 @@
   - [Case 2: Desktop, expanded with groups](#case-2-desktop-expanded-with-groups)
   - [Case 3: Desktop, collapsed](#case-3-desktop-collapsed)
   - [Case 4: Mobile (native select)](#case-4-mobile-native-select)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -135,3 +138,161 @@
   | </select>
 </ch-combo-box-render>
 ```
+
+## Styling Recipes
+
+### Bordered Select-like Combo Box
+
+```css
+ch-combo-box-render {
+  --ch-combo-box-item-gap: 8px;
+  --ch-combo-box-separation-y: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: border-color 0.2s;
+}
+
+ch-combo-box-render:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+```
+
+### Popover with Constrained Height
+
+```css
+ch-combo-box-render {
+  --ch-combo-box__popover-max-block-size: 240px;
+  --ch-combo-box-separation-y: 6px;
+}
+
+ch-combo-box-render::part(window) {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  overflow-y: auto;
+}
+
+ch-combo-box-render::part(item) {
+  padding: 8px 16px;
+}
+```
+
+### Custom Picker Arrow
+
+```css
+ch-combo-box-render {
+  --ch-combo-box__picker: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>');
+  --ch-combo-box__picker-expanded: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path d="M2 8l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2"/></svg>');
+  --ch-combo-box__picker-size: 16px;
+  --ch-combo-box__picker-color: #374151;
+}
+```
+
+### Items with Images
+
+```css
+ch-combo-box-render {
+  --ch-combo-box-item__image-size: 24px;
+  --ch-combo-box-item__background-image-size: 20px;
+  --ch-combo-box-item-gap: 10px;
+}
+
+ch-combo-box-render::part(item) {
+  padding: 6px 12px;
+  min-block-size: 36px;
+}
+```
+
+### Grouped Items with Expandable Sections
+
+```css
+ch-combo-box-render {
+  --ch-combo-box-group__expandable-button-size: 18px;
+  --ch-combo-box-group__expandable-button-image-size: 14px;
+  --ch-combo-box-item-gap: 8px;
+}
+
+ch-combo-box-render::part(group__header) {
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+ch-combo-box-render::part(item nested) {
+  padding-inline-start: 32px;
+}
+
+ch-combo-box-render::part(expandable) {
+  transition: transform 0.2s;
+}
+```
+
+## Anti-patterns
+
+### Using max-height instead of the custom property for the popover
+
+The popover is rendered inside the shadow DOM. External `max-height` will not reach it. Use the dedicated custom property instead.
+
+```css
+/* Avoid */
+ch-combo-box-render .popover {
+  max-height: 200px;
+}
+
+/* Prefer */
+ch-combo-box-render {
+  --ch-combo-box__popover-max-block-size: 200px;
+}
+```
+
+### Setting the picker size to 0 to hide it
+
+Setting `--ch-combo-box__picker-size: 0px` hides the picker but leaves the grid column, potentially causing alignment issues. If you need a suggest-only mode, use the `suggest` property on the component instead.
+
+```css
+/* Avoid */
+ch-combo-box-render {
+  --ch-combo-box__picker-size: 0px;
+}
+
+/* Prefer: use the suggest property */
+<ch-combo-box-render suggest="strict"></ch-combo-box-render>
+```
+
+### Overriding popover separation with margin or padding
+
+The popover positioning is calculated internally. Using margin or padding on the host to create separation between the combo-box and its popover will misalign the popover. Use the separation custom properties instead.
+
+```css
+/* Avoid */
+ch-combo-box-render {
+  margin-block-end: 8px;
+}
+
+/* Prefer */
+ch-combo-box-render {
+  --ch-combo-box-separation-y: 8px;
+}
+```
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-combo-box__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-combo-box::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.
+
+---
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).

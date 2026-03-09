@@ -6,6 +6,9 @@
 - [CSS Custom Properties](#css-custom-properties)
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Full layout (all controls)](#case-1-full-layout-all-controls)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -240,3 +243,180 @@ Controls rendered depend on the `controlsOrder` property. Each control is option
   | </div>
 </ch-color-picker>
 ```
+
+## Styling Recipes
+
+### Compact Color Picker
+
+```css
+ch-color-picker {
+  --ch-color-picker-preview-inline-size: 16px;
+  --ch-color-picker-preview-block-size: 16px;
+  --ch-color-picker-palette-columns: 12;
+  --ch-color-picker-palette-button-min-inline-size: 20px;
+  --ch-color-picker-palette-button-min-block-size: 20px;
+  max-inline-size: 260px;
+  font-size: 0.85rem;
+}
+```
+
+### Rounded Palette Swatches
+
+```css
+ch-color-picker {
+  --ch-color-picker-palette-button-min-inline-size: 24px;
+  --ch-color-picker-palette-button-min-block-size: 24px;
+}
+
+ch-color-picker::part(color-palette__button) {
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+ch-color-picker::part(color-palette__button):hover {
+  border-color: rgba(0, 0, 0, 0.3);
+  transform: scale(1.15);
+}
+
+ch-color-picker::part(color-palette-grid) {
+  gap: 6px;
+  padding: 8px;
+}
+```
+
+### Custom Labels Styling
+
+```css
+ch-color-picker::part(color-field__label),
+ch-color-picker::part(hue-slider__label),
+ch-color-picker::part(alpha__slider-label),
+ch-color-picker::part(color-palette__label) {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  margin-block-end: 4px;
+}
+```
+
+### Large Preview with Rounded Corners
+
+```css
+ch-color-picker {
+  --ch-color-picker-preview-inline-size: 48px;
+  --ch-color-picker-preview-block-size: 48px;
+}
+
+ch-color-picker::part(color-preview) {
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+ch-color-picker::part(color-preview-container) {
+  gap: 12px;
+  align-items: center;
+}
+```
+
+### Styled Input Groups
+
+```css
+ch-color-picker::part(rgb-r__input),
+ch-color-picker::part(rgb-g__input),
+ch-color-picker::part(rgb-b__input),
+ch-color-picker::part(hsl-h__input),
+ch-color-picker::part(hsl-s__input),
+ch-color-picker::part(hsl-l__input),
+ch-color-picker::part(hex__input),
+ch-color-picker::part(alpha__input) {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+ch-color-picker::part(rgb-r__label),
+ch-color-picker::part(rgb-g__label),
+ch-color-picker::part(rgb-b__label),
+ch-color-picker::part(hex__input-label) {
+  font-size: 0.7rem;
+  text-align: center;
+  color: #9ca3af;
+}
+```
+
+## Anti-patterns
+
+### Using `overflow: hidden` on the host
+
+The color field marker can extend to the edges of the color field area. Setting `overflow: hidden` on the host element will clip the marker when it is positioned at the boundaries.
+
+```css
+/* Avoid */
+ch-color-picker {
+  overflow: hidden;
+}
+
+/* Prefer */
+ch-color-picker {
+  overflow: visible;
+}
+```
+
+### Styling palette buttons with fixed width/height instead of min-size
+
+Using fixed `width` and `height` on palette buttons via `::part(color-palette__button)` prevents the buttons from adapting to different screen sizes and font scaling. Use the CSS custom properties which set `min-inline-size` and `min-block-size` instead.
+
+```css
+/* Avoid */
+ch-color-picker::part(color-palette__button) {
+  width: 24px;
+  height: 24px;
+}
+
+/* Prefer */
+ch-color-picker {
+  --ch-color-picker-palette-button-min-inline-size: 24px;
+  --ch-color-picker-palette-button-min-block-size: 24px;
+}
+```
+
+### Targeting internal elements by class name
+
+The component uses shadow DOM. Selectors like `ch-color-picker .color-palette-grid` will not match any internal elements. Always use the `::part()` pseudo-element to target internal elements.
+
+```css
+/* Avoid - will not work */
+ch-color-picker .color-palette-grid {
+  gap: 4px;
+}
+
+/* Prefer */
+ch-color-picker::part(color-palette-grid) {
+  gap: 4px;
+}
+```
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-color-picker__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-color-picker::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.
+
+---
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).

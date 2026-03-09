@@ -7,6 +7,9 @@
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Single-line input](#case-1-single-line-input)
   - [Case 2: Multiline (textarea)](#case-2-multiline-textarea)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -72,3 +75,170 @@
   | <slot name="additional-content-after" />
 </ch-edit>
 ```
+
+## Styling Recipes
+
+### Bordered Input with Focus Ring
+
+```css
+ch-edit {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+ch-edit:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+```
+
+### Search Input with Icon
+
+```css
+ch-edit[type="search"] {
+  --ch-edit__image-size: 18px;
+  --ch-edit-gap: 8px;
+  --ch-edit__background-image-size: 80%;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 6px 12px;
+}
+
+ch-edit[type="search"]::part(clear-button) {
+  margin-inline-end: 4px;
+  opacity: 0.5;
+}
+
+ch-edit[type="search"]::part(clear-button):hover {
+  opacity: 1;
+}
+```
+
+### Password Field with Toggle
+
+```css
+ch-edit[type="password"] {
+  --ch-edit__image-size: 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+ch-edit::part(show-password-button) {
+  padding: 4px 8px;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+ch-edit::part(show-password-button):hover {
+  opacity: 1;
+}
+
+ch-edit::part(show-password-button password-displayed) {
+  color: #2563eb;
+}
+```
+
+### Disabled State Styling
+
+```css
+ch-edit[disabled] {
+  opacity: 0.5;
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+ch-edit::part(clear-button disabled) {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+```
+
+### Multiline Auto-grow Textarea
+
+```css
+ch-edit[multiline] {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px;
+  min-block-size: 80px;
+  max-block-size: 300px;
+  overflow-y: auto;
+}
+
+ch-edit[multiline]:focus-within {
+  border-color: #2563eb;
+  outline: 2px solid rgba(37, 99, 235, 0.2);
+  outline-offset: 1px;
+}
+```
+
+## Anti-patterns
+
+### Setting `display: none` to hide the component
+
+Avoid `display: none` on `ch-edit` because it breaks the internal grid layout when the element becomes visible again. Use the `hidden` attribute or `visibility: hidden` instead.
+
+```css
+/* Avoid */
+ch-edit {
+  display: none;
+}
+
+/* Prefer */
+ch-edit[hidden] {
+  visibility: hidden;
+  position: absolute;
+}
+```
+
+### Overriding internal element styles with `!important`
+
+The component uses shadow DOM, so external selectors cannot reach internal elements. Using `!important` on the host to force inherited styles can conflict with auto-fill detection and internal grid layouts. Use CSS custom properties and `::part()` selectors instead.
+
+```css
+/* Avoid */
+ch-edit {
+  background-color: white !important;
+}
+
+/* Prefer */
+ch-edit {
+  --ch-edit-auto-fill-background-color: white;
+}
+```
+
+### Using placeholder as a label
+
+Never rely on `--ch-placeholder-color` and the `placeholder` property as a substitute for a visible `<label>`. Placeholders disappear when the user types and are not reliably announced by all screen readers.
+
+```html
+<!-- Avoid -->
+<ch-edit placeholder="Email address"></ch-edit>
+
+<!-- Prefer -->
+<label for="email">Email address</label>
+<ch-edit id="email" placeholder="e.g. user@example.com"></ch-edit>
+```
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-edit__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-edit::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.
+
+---
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).

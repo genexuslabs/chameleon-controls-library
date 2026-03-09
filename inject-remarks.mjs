@@ -252,19 +252,23 @@ function extractStylingDocs(componentDir, readmeFilePath) {
   const layoutText = layoutMatch ? layoutMatch[1].trim() : "";
 
   // Extract manually-authored enrichment sections to preserve across rebuilds
-  const preservedSections = ["Styling Recipes", "Anti-patterns", "Do's and Don'ts"];
+  const preservedSections = ["Sizing Behavior", "Styling Recipes", "Anti-patterns", "Do's and Don'ts"];
   const preservedTexts = [];
   for (const sectionName of preservedSections) {
     const escapedName = sectionName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const sectionRegex = new RegExp(`\\n(## ${escapedName}\\n[\\s\\S]*?)(?=\\n## (?!#)|$)`);
     const sectionMatch = existingStyling.match(sectionRegex);
     if (sectionMatch) {
-      preservedTexts.push({ name: sectionName, text: sectionMatch[1].trim() });
+      // Strip ALL footer links from the section text to avoid accumulation
+      const text = sectionMatch[1].trim()
+        .replace(/(\n\n---\n\nFor more details on shadow parts best practices[^\n]+)+$/g, "")
+        .trimEnd();
+      preservedTexts.push({ name: sectionName, text });
     }
   }
 
-  // Extract footer link to general guide
-  const footerMatch = existingStyling.match(/(\n---\n\nFor more details on shadow parts best practices[^\n]+)/);
+  // Extract footer link to general guide (added once at the end)
+  const footerMatch = existingStyling.match(/(---\n\nFor more details on shadow parts best practices[^\n]+)/);
   const footerText = footerMatch ? footerMatch[1].trim() : "";
 
   // Only generate styling.md if there's at least one source of content
@@ -279,10 +283,19 @@ function extractStylingDocs(componentDir, readmeFilePath) {
   // Collect sections for TOC
   const sectionsForTOC = [];
 
+  // Pre-compute which preserved sections exist for ordering decisions
+  const hasSizingBehavior = preservedTexts.some(ps => ps.name === "Sizing Behavior");
+
   let shadowPartsText = "";
   if (shadowPartsSection) {
     shadowPartsText = shadowPartsSection.text.trim();
+    // Insert "Sizing Behavior" before "Shadow Parts" in TOC when it exists
+    if (hasSizingBehavior) {
+      sectionsForTOC.push({ level: 2, text: "Sizing Behavior" });
+    }
     sectionsForTOC.push({ level: 2, text: "Shadow Parts" });
+  } else if (hasSizingBehavior) {
+    sectionsForTOC.push({ level: 2, text: "Sizing Behavior" });
   }
 
   let cssPropsText = "";
@@ -304,9 +317,11 @@ function extractStylingDocs(componentDir, readmeFilePath) {
     }
   }
 
-  // Add preserved sections to TOC
+  // Add remaining preserved sections to TOC (Sizing Behavior already handled above)
   for (const ps of preservedTexts) {
-    sectionsForTOC.push({ level: 2, text: ps.name });
+    if (ps.name !== "Sizing Behavior") {
+      sectionsForTOC.push({ level: 2, text: ps.name });
+    }
   }
 
   // Generate TOC for styling.md
@@ -317,6 +332,12 @@ function extractStylingDocs(componentDir, readmeFilePath) {
     tocLines.push(`${indent}- [${entry.text}](#${anchor})`);
   }
   stylingParts.push(tocLines.join("\n"));
+
+  // Add "Sizing Behavior" before Shadow Parts (it's a pre-sections warning)
+  const sizingSection = preservedTexts.find(ps => ps.name === "Sizing Behavior");
+  if (sizingSection) {
+    stylingParts.push(sizingSection.text);
+  }
 
   // Add sections
   if (shadowPartsText) {
@@ -331,8 +352,9 @@ function extractStylingDocs(componentDir, readmeFilePath) {
     stylingParts.push(layoutText);
   }
 
-  // Add preserved manually-authored sections
+  // Add remaining preserved manually-authored sections (excluding Sizing Behavior already added)
   for (const ps of preservedTexts) {
+    if (ps.name === "Sizing Behavior") continue;
     stylingParts.push(ps.text);
   }
 

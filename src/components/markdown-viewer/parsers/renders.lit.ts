@@ -2,6 +2,7 @@ import { html, nothing, type TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { AlignType, Table } from "mdast";
 import { getLinkDefinition, setLinkDefinition } from "./link-resolver";
+import { getInlineHtmlContent } from "./inline-html-utils";
 import type { rawHTMLToJSX } from "./raw-html-to-jsx.lit";
 import type {
   ElementsWithoutCustomRender,
@@ -374,6 +375,29 @@ export const markdownViewerRenderDictionary = {
   }, // TODO: Implement spread  // TODO: Check if code can be inside this tag
 
   paragraph: async (element, metadata, functions) => {
+    if (metadata.rawHTML) {
+      // When rawHTML is active and all phrasing children are plain text or
+      // inline html nodes, concatenate them and render as a single raw HTML
+      // block. Processing each inline fragment individually breaks the
+      // structure: a lone "<ul>" becomes an empty element and its text content
+      // ends up as a sibling instead of being inside the list item.
+      const inlineContent = getInlineHtmlContent(element);
+
+      if (inlineContent !== null) {
+        if (!HTMLToJSX) {
+          HTMLToJSX = (await import("./raw-html-to-jsx.lit")).rawHTMLToJSX;
+        }
+
+        const classes = functions.getAdditionalClasses(element);
+
+        return html`<p class=${classes}>${HTMLToJSX(
+          inlineContent,
+          metadata.allowDangerousHtml,
+          metadata.showIndicator && functions.isLastNestedChild(element)
+        )}</p>`;
+      }
+    }
+
     const content = await functions.renderChildren(
       element,
       metadata,

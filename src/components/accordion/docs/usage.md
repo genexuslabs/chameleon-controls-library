@@ -188,6 +188,7 @@ accordion.model = [
 
 ### Don't
 
+- Don't place a `<button>` or other interactive element inside the header slot — each accordion header is already rendered as a `<button>` internally, so nesting another `<button>` produces invalid HTML and breaks accessibility. Use `<span>`, `<div>`, images, or plain text for custom header content.
 - Don't set complex model/items data via HTML attributes — use JavaScript property assignment instead.
 - Don't manipulate the component's internal Shadow DOM elements directly.
 - Don't use `innerHTML` to set component content when properties or slots are available.

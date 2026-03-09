@@ -214,6 +214,7 @@ When the trigger is an icon-only button, use `actionElementAccessibleName` to pr
 
 ### Don't
 
+- Don't place a `<button>` inside the `"action"` slot — when using the default internal trigger (`actionElement` is `undefined`), the component already renders a `<button>`. Nesting another `<button>` produces invalid HTML and breaks accessibility. Use a `<span>`, an image, or plain text instead.
 - Don't put interactive elements (links, buttons, inputs) inside the tooltip -- use `ch-popover` for interactive overlays.
 - Don't rely on tooltips for essential information -- they are invisible on touch devices and to users who cannot hover.
 - Don't attach a tooltip to a disabled element -- disabled elements cannot receive focus, making the tooltip inaccessible via keyboard.

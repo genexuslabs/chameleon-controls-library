@@ -246,6 +246,7 @@ menu.addEventListener("buttonClick", (event) => {
 
 ### Don't
 
+- Don't place a `<button>` inside the default slot — the trigger is already rendered as a `<button>` internally, so nesting another `<button>` produces invalid HTML and breaks accessibility. Use a `<span>`, `<div>`, or plain text instead.
 - Don't set complex model/items data via HTML attributes — use JavaScript property assignment instead.
 - Don't manipulate the component's internal Shadow DOM elements directly.
 - Don't use `innerHTML` to set component content when properties or slots are available.

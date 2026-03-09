@@ -2,11 +2,24 @@
 
 ## Table of Contents
 
+- [Sizing Behavior](#sizing-behavior)
 - [Basic Usage](#basic-usage)
 - [Multiple Selection](#multiple-selection)
 - [Inline Editing](#inline-editing)
 - [List with Checkbox Selection](#list-with-checkbox-selection)
 - [Do's and Don'ts](#dos-and-donts)
+
+> **Sizing behavior:** `ch-action-list-render` uses `contain: size`, which means the component does **not** contribute to its parent's intrinsic size. The parent must establish its own size through layout — for example, by being a grid or flex item, or by having an explicit `block-size`. If the parent has no size, the component will be invisible.
+>
+> The recommended approach is to place the component inside a grid or flex container that already has a defined size:
+>
+> ```css
+> /* Recommended: parent establishes its own size via layout */
+> .my-layout {
+>   display: grid;
+>   grid-template-rows: auto 1fr; /* action-list goes in the 1fr row */
+> }
+> ```
 
 ## Basic Usage
 

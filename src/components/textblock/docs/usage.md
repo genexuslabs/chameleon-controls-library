@@ -2,10 +2,23 @@
 
 ## Table of Contents
 
+- [Sizing Behavior](#sizing-behavior)
 - [Basic Usage](#basic-usage)
 - [HTML Content with Slot](#html-content-with-slot)
 - [Overflow Tooltip](#overflow-tooltip)
 - [Do's and Don'ts](#dos-and-donts)
+
+> **Sizing behavior:** `ch-textblock` uses `contain: size` when `autoGrow = false` (the default), which means it does **not** contribute to its parent's intrinsic size. The parent must establish its own size through layout. If the parent has no size, the component will be invisible.
+>
+> Set `autoGrow` to `true` to let the component size to its content, or place the component inside a grid or flex container that already has a defined size:
+>
+> ```css
+> /* Recommended: parent establishes its own size via layout */
+> .my-layout {
+>   display: grid;
+>   grid-template-rows: auto 1fr; /* component goes in the 1fr row */
+> }
+> ```
 
 ## Basic Usage
 

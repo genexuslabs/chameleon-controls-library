@@ -2,6 +2,7 @@
 
 ## Table of Contents
 
+- [Sizing Behavior](#sizing-behavior)
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: With records and inverse loading](#case-1-with-records-and-inverse-loading)
   - [Case 2: With records and data provider (bottom loading)](#case-2-with-records-and-data-provider-bottom-loading)
@@ -10,6 +11,20 @@
 - [Styling Recipes](#styling-recipes)
 - [Anti-patterns](#anti-patterns)
 - [Do's and Don'ts](#dos-and-donts)
+
+## Sizing Behavior
+
+> **Sizing behavior:** `ch-smart-grid` uses `contain: strict` when `autoGrow = false` (the default), which means it does **not** contribute to its parent's intrinsic size. The parent must establish its own size through layout. If the parent has no size, the component will be invisible.
+>
+> Set `autoGrow` to `true` to let the component size to its content, or place the component inside a grid or flex container that already has a defined size:
+>
+> ```css
+> /* Recommended: parent establishes its own size via layout */
+> .my-layout {
+>   display: grid;
+>   grid-template-rows: auto 1fr; /* component goes in the 1fr row */
+> }
+> ```
 
 ## Shadow DOM Layout
 

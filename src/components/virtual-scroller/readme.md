@@ -11,7 +11,7 @@
 - [Properties](#properties)
 - [Events](#events)
 - [Methods](#methods)
-  - [`addItems`](#additems)
+  - [`addItems`](#additemsposition-start--end-items-smartgridmodel--promisevoid)
 - [Slots](#slots)
 - [Dependencies](#dependencies)
   - [Used by](#used-by)

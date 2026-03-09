@@ -11,7 +11,7 @@
 - [Properties](#properties)
 - [Events](#events)
 - [Methods](#methods)
-  - [`scan`](#scan)
+  - [`scan`](#scanimagefile-file--promisestring)
 - [Styling](./docs/styling.md)
 
 <!-- Auto Generated Below -->

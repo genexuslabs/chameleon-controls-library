@@ -5,7 +5,7 @@
 - [Properties](#properties)
 - [Events](#events)
 - [Methods](#methods)
-  - [`setFocus`](#setfocus)
+  - [`setFocus`](#setfocus--promisevoid)
 - [Dependencies](#dependencies)
   - [Used by](#used-by)
   - [Graph](#graph)

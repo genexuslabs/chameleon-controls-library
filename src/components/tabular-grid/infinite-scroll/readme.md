@@ -6,7 +6,7 @@
 - [Properties](#properties)
 - [Events](#events)
 - [Methods](#methods)
-  - [`complete`](#complete)
+  - [`complete`](#complete--promisevoid)
 
 <!-- Auto Generated Below -->
 

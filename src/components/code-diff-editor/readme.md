@@ -10,7 +10,7 @@
 - [Configuration Required](#configuration-required)
 - [Properties](#properties)
 - [Methods](#methods)
-  - [`updateOptions`](#updateoptions)
+  - [`updateOptions`](#updateoptionsoptions-codediffeditoroptions--promisevoid)
 
 <!-- Auto Generated Below -->
 

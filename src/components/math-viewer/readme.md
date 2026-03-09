@@ -7,6 +7,7 @@
 - [Use when](#use-when)
 - [Do not use when](#do-not-use-when)
 - [Accessibility](#accessibility)
+- [Usage](./docs/usage.md)
 - [Configuration Required](#configuration-required)
 - [Properties](#properties)
 - [Styling](./docs/styling.md)

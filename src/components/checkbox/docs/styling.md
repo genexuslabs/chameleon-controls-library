@@ -7,6 +7,9 @@
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: With caption](#case-1-with-caption)
   - [Case 2: Without caption (no start image)](#case-2-without-caption-no-start-image)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -61,3 +64,140 @@
   | </div>
 </ch-checkbox>
 ```
+
+## Styling Recipes
+
+### Custom Checkbox Appearance
+
+Replace the default checkbox look with a rounded, colored variant.
+
+```css
+ch-checkbox {
+  --ch-checkbox__container-size: 22px;
+  --ch-checkbox__option-size: 65%;
+  color: #333;
+}
+
+ch-checkbox::part(input) {
+  border: 2px solid #ccc;
+  border-radius: 4px;
+}
+
+ch-checkbox::part(input checked) {
+  border-color: #0078d4;
+  background-color: #0078d4;
+}
+
+ch-checkbox::part(option checked) {
+  background-color: #fff;
+}
+```
+
+### Focus Ring
+
+Add a visible focus ring for keyboard navigation.
+
+```css
+ch-checkbox::part(input):focus-visible {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+}
+```
+
+### Label Styling
+
+Customize the label text when the checkbox is in different states.
+
+```css
+ch-checkbox::part(label) {
+  font-size: 14px;
+  color: #333;
+  gap: 8px;
+}
+
+ch-checkbox::part(label checked) {
+  color: #0078d4;
+  font-weight: 600;
+}
+
+ch-checkbox::part(label disabled) {
+  color: #999;
+}
+```
+
+### Indeterminate State
+
+Provide a distinct look for the indeterminate (mixed) state.
+
+```css
+ch-checkbox::part(input indeterminate) {
+  border-color: #0078d4;
+  background-color: #0078d4;
+}
+
+ch-checkbox::part(option indeterminate) {
+  background-color: #fff;
+}
+```
+
+## Anti-patterns
+
+### 1. Using attribute selectors instead of state parts
+
+```css
+/* INCORRECT - attribute selectors do not reliably reflect internal state */
+ch-checkbox[value="true"]::part(option) {
+  background-color: green;
+}
+
+/* CORRECT - use state parts */
+ch-checkbox::part(option checked) {
+  background-color: green;
+}
+```
+
+### 2. Using combinators after `::part()`
+
+```css
+/* INCORRECT - combinators after ::part() are not supported */
+ch-checkbox::part(container) > .option {
+  background: blue;
+}
+
+/* CORRECT - target the part directly */
+ch-checkbox::part(option checked) {
+  background: blue;
+}
+```
+
+### 3. Using structural pseudo-classes on parts
+
+```css
+/* INCORRECT - structural pseudo-classes are silently ignored */
+ch-checkbox::part(input):first-child {
+  border-color: red;
+}
+
+/* CORRECT - target the part directly, optionally with state parts */
+ch-checkbox::part(input) {
+  border-color: red;
+}
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-checkbox__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-checkbox::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

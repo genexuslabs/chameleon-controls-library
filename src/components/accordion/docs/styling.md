@@ -6,6 +6,9 @@
 - [CSS Custom Properties](#css-custom-properties)
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Default (items from model)](#case-1-default-items-from-model)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -55,3 +58,125 @@
   | </div>
 </ch-accordion-render>
 ```
+
+## Styling Recipes
+
+### Animated Expand/Collapse
+
+Enable smooth expand and collapse transitions using CSS grid animation.
+
+```css
+ch-accordion-render {
+  --ch-accordion-expand-collapse-duration: 250ms;
+  --ch-accordion-expand-collapse-timing-function: ease-in-out;
+}
+```
+
+### Custom Chevron
+
+Replace the default chevron icon and adjust its size.
+
+```css
+ch-accordion-render {
+  --ch-accordion__header-background-image: url("data:image/svg+xml,...");
+  --ch-accordion__chevron-size: 24px;
+  --ch-accordion__chevron-image-size: 80%;
+  --ch-accordion__chevron-color: #0078d4;
+}
+```
+
+### Bordered Panels
+
+Add borders between accordion panels for visual separation.
+
+```css
+ch-accordion-render::part(panel) {
+  border-block-end: 1px solid #e0e0e0;
+}
+
+ch-accordion-render::part(header) {
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+ch-accordion-render::part(section expanded) {
+  padding: 8px 16px 16px;
+}
+```
+
+### Focus Ring
+
+Add a visible focus indicator for keyboard navigation.
+
+```css
+ch-accordion-render::part(header):focus-visible {
+  outline: 2px solid #0078d4;
+  outline-offset: -2px;
+}
+```
+
+## Anti-patterns
+
+### 1. Using attribute selectors instead of state parts
+
+```css
+/* INCORRECT - attribute selectors do not reflect internal shadow state */
+ch-accordion-render[expanded]::part(header) {
+  color: blue;
+}
+
+/* CORRECT - use state parts */
+ch-accordion-render::part(header expanded) {
+  color: blue;
+}
+```
+
+### 2. Using combinators after `::part()`
+
+```css
+/* INCORRECT - combinators after ::part() are not supported */
+ch-accordion-render::part(panel) > section {
+  padding: 10px;
+}
+
+/* CORRECT - target the part directly */
+ch-accordion-render::part(section expanded) {
+  padding: 10px;
+}
+```
+
+### 3. Animating with display or visibility instead of grid rows
+
+```css
+/* INCORRECT - abrupt show/hide without animation */
+ch-accordion-render::part(section) {
+  display: none;
+}
+ch-accordion-render::part(section expanded) {
+  display: block;
+}
+
+/* CORRECT - use the built-in CSS custom properties for smooth animation */
+ch-accordion-render {
+  --ch-accordion-expand-collapse-duration: 200ms;
+  --ch-accordion-expand-collapse-timing-function: ease;
+}
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-accordion__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-accordion::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

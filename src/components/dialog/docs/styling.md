@@ -7,6 +7,9 @@
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Full dialog (header + footer + resizable)](#case-1-full-dialog-header-footer-resizable)
   - [Case 2: Minimal dialog (no header, no footer, not resizable)](#case-2-minimal-dialog-no-header-no-footer-not-resizable)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -94,3 +97,171 @@
   | </dialog>
 </ch-dialog>
 ```
+
+## Styling Recipes
+
+### Card-style Dialog
+
+A dialog with rounded corners, shadow, and a distinct header.
+
+```css
+ch-dialog {
+  --ch-dialog-inline-size: 500px;
+}
+
+ch-dialog::part(dialog) {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+ch-dialog::part(header) {
+  padding: 16px 24px;
+  background-color: #0078d4;
+  color: white;
+}
+
+ch-dialog::part(caption) {
+  color: white;
+  font-size: 16px;
+}
+
+ch-dialog::part(close-button) {
+  color: white;
+}
+
+ch-dialog::part(content) {
+  padding: 24px;
+}
+
+ch-dialog::part(footer) {
+  padding: 16px 24px;
+  background-color: #fafafa;
+}
+```
+
+### Resizable Dialog with Size Constraints
+
+Constrain a resizable dialog within reasonable bounds.
+
+```css
+ch-dialog {
+  --ch-dialog-inline-size: 600px;
+  --ch-dialog-block-size: 400px;
+  --ch-dialog-min-inline-size: 300px;
+  --ch-dialog-min-block-size: 200px;
+  --ch-dialog-max-inline-size: 90vw;
+  --ch-dialog-max-block-size: 80vh;
+  --ch-dialog-resize-threshold: 6px;
+}
+```
+
+### Full-width Footer Buttons
+
+Stretch footer buttons to fill the footer area.
+
+```css
+ch-dialog::part(footer) {
+  display: flex;
+  gap: 8px;
+  padding: 16px 20px;
+}
+
+/* Buttons inside the footer slot must be styled from outside */
+ch-dialog [slot="footer"] button {
+  flex: 1;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+```
+
+### Backdrop Styling
+
+Style the modal backdrop via the host element (since the host acts as the backdrop container in modal mode).
+
+```css
+ch-dialog {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+```
+
+## Anti-patterns
+
+### 1. Using `display: none` to hide the dialog
+
+```css
+/* INCORRECT - breaks the native <dialog> show/close lifecycle */
+ch-dialog {
+  display: none;
+}
+
+/* CORRECT - use the show property to control visibility */
+```
+
+```js
+dialog.show = false;
+```
+
+### 2. Using combinators after `::part()`
+
+```css
+/* INCORRECT - combinators after ::part() are not supported */
+ch-dialog::part(header) > h2 {
+  color: blue;
+}
+
+/* CORRECT - target the part directly */
+ch-dialog::part(caption) {
+  color: blue;
+}
+```
+
+### 3. Styling the backdrop with `::backdrop` from outside
+
+```css
+/* INCORRECT - the ::backdrop pseudo-element lives inside the shadow DOM
+   and cannot be styled from outside */
+ch-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* CORRECT - style the host element background for modal dialogs */
+ch-dialog {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+```
+
+### 4. Setting position on the dialog part
+
+```css
+/* INCORRECT - the dialog uses position: fixed internally;
+   overriding it will break positioning and drag */
+ch-dialog::part(dialog) {
+  position: absolute;
+}
+
+/* CORRECT - use custom properties to control position */
+ch-dialog {
+  --ch-dialog-block-start: 100px;
+  --ch-dialog-inline-start: 200px;
+}
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-dialog__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-dialog::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

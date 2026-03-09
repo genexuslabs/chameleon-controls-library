@@ -6,6 +6,9 @@
 - [CSS Custom Properties](#css-custom-properties)
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Default (items from model)](#case-1-default-items-from-model)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -47,3 +50,141 @@
   | </div>
 </ch-radio-group-render>
 ```
+
+## Styling Recipes
+
+### Custom Radio Appearance
+
+Style the radio buttons with a branded color scheme.
+
+```css
+ch-radio-group-render {
+  --ch-radio-group__radio-container-size: 22px;
+  --ch-radio-group__radio-option-size: 55%;
+  color: #333;
+}
+
+ch-radio-group-render::part(radio__container) {
+  border: 2px solid #ccc;
+}
+
+ch-radio-group-render::part(radio__container checked) {
+  border-color: #0078d4;
+}
+
+ch-radio-group-render::part(radio__option checked) {
+  background-color: #0078d4;
+}
+```
+
+### Focus Ring
+
+Add a visible focus ring when navigating with the keyboard.
+
+```css
+ch-radio-group-render::part(radio__input):focus-visible {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+  border-radius: 50%;
+  opacity: 1;
+}
+```
+
+### Horizontal Spacing
+
+Control the gap between items when using horizontal layout.
+
+```css
+ch-radio-group-render {
+  gap: 16px;
+}
+
+ch-radio-group-render::part(radio-item) {
+  gap: 8px;
+}
+```
+
+### Card-style Radio Items
+
+Make each radio item look like a selectable card.
+
+```css
+ch-radio-group-render::part(radio-item) {
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  gap: 10px;
+}
+
+ch-radio-group-render::part(radio-item checked) {
+  border-color: #0078d4;
+  background-color: #f0f7ff;
+}
+
+ch-radio-group-render::part(radio-item):hover {
+  border-color: #999;
+}
+```
+
+## Anti-patterns
+
+### 1. Using structural pseudo-classes to target specific items
+
+```css
+/* INCORRECT - structural pseudo-classes are silently ignored on parts */
+ch-radio-group-render::part(radio-item):first-child {
+  margin-top: 0;
+}
+
+/* CORRECT - target all items uniformly, or use state parts for conditional styling */
+ch-radio-group-render::part(radio-item) {
+  margin-top: 0;
+}
+```
+
+### 2. Using attribute selectors instead of state parts
+
+```css
+/* INCORRECT - attribute selectors do not work inside ::part() */
+ch-radio-group-render::part(radio__container[checked]) {
+  border-color: blue;
+}
+
+/* CORRECT - use state parts */
+ch-radio-group-render::part(radio__container checked) {
+  border-color: blue;
+}
+```
+
+### 3. Trying to style the invisible input as a visible element
+
+```css
+/* INCORRECT - the radio__input must remain invisible; style radio__option instead */
+ch-radio-group-render::part(radio__input) {
+  opacity: 1;
+  appearance: auto;
+}
+
+/* CORRECT - style the decorative option part for visual changes */
+ch-radio-group-render::part(radio__option checked) {
+  background-color: blue;
+}
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-radio-group__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-radio-group::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

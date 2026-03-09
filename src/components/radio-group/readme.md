@@ -8,6 +8,7 @@
 - [Do not use when](#do-not-use-when)
 - [Slots](#slots)
 - [Accessibility](#accessibility)
+- [Usage](./docs/usage.md)
 - [Properties](#properties)
 - [Events](#events)
 - [Dependencies](#dependencies)

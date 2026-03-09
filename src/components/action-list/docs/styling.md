@@ -6,7 +6,9 @@
 - [CSS Custom Properties](#css-custom-properties)
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Default (items from model)](#case-1-default-items-from-model)
-  - [Additional items inside ch-action-list-item](#additional-items-inside-ch-action-list-item)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -118,27 +120,126 @@
 </ch-action-list-render>
 ```
 
-## Additional items inside ch-action-list-item
+## Styling Recipes
 
+### Selectable List with Hover Effects
+
+A polished list with hover and selection states.
+
+```css
+ch-action-list-render::part(item__action) {
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 150ms ease;
+}
+
+ch-action-list-render::part(item__action):hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+ch-action-list-render::part(item__action selected) {
+  background-color: #0078d4;
+  color: #fff;
+}
 ```
-<!-- Additional item: image type -->
-<div part="item__additional-item">
-  <div part="image"></div>
-</div>
 
-<!-- Additional item: text type -->
-<div part="item__additional-item">
-  <span part="text">Value</span>
-</div>
+### Checkbox List Styling
 
-<!-- Additional item: action type -->
-<div part="item__additional-item">
-  <button part="action [action--fix | action--modify | action--remove | action--custom] [fixed | not-fixed] [disabled]"></button>
-</div>
+Style the checkbox items within the list.
 
-<!-- Confirm/cancel buttons (when action triggers confirmation) -->
-<div part="item__additional-item-confirm">
-  <button part="action--accept"></button>
-  <button part="action--cancel"></button>
-</div>
+```css
+ch-action-list-render::part(item__checkbox) {
+  accent-color: #0078d4;
+  inline-size: 16px;
+  block-size: 16px;
+}
+
+ch-action-list-render::part(item__action) {
+  gap: 8px;
+  padding: 6px 12px;
+}
 ```
+
+### Grouped List with Expandable Sections
+
+Style group headers and their expandable containers.
+
+```css
+ch-action-list-render {
+  --ch-action-list-group__expandable-button-size: 14px;
+}
+
+ch-action-list-render::part(group__action) {
+  font-weight: 600;
+  font-size: 0.8em;
+  letter-spacing: 0.05em;
+  padding: 10px 12px 4px;
+  color: #888;
+}
+
+ch-action-list-render::part(group__expandable expanded) {
+  padding-block-end: 8px;
+}
+```
+
+## Anti-patterns
+
+### 1. Using attribute selectors instead of state parts
+
+```css
+/* INCORRECT - attribute selectors do not reliably reflect internal state */
+ch-action-list-render[selection="single"]::part(item__action) {
+  cursor: pointer;
+}
+
+/* CORRECT - use state parts to differentiate selected/not-selected */
+ch-action-list-render::part(item__action selected) {
+  background-color: #e8f0fe;
+}
+```
+
+### 2. Using combinators after `::part()`
+
+```css
+/* INCORRECT - combinators after ::part() are not supported */
+ch-action-list-render::part(item__action) > span {
+  color: red;
+}
+
+/* CORRECT - target the part directly */
+ch-action-list-render::part(item__caption) {
+  color: red;
+}
+```
+
+### 3. Using structural pseudo-classes on parts
+
+```css
+/* INCORRECT - structural pseudo-classes are silently ignored */
+ch-action-list-render::part(item__action):first-child {
+  border-top: none;
+}
+
+/* CORRECT - target the part directly, optionally with state parts */
+ch-action-list-render::part(item__action) {
+  border-top: none;
+}
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-action-list__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-action-list::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

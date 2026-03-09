@@ -6,6 +6,9 @@
 - [CSS Custom Properties](#css-custom-properties)
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Default](#case-1-default)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -117,3 +120,149 @@
   | </ch-tree-view>
 </ch-tree-view-render>
 ```
+
+## Styling Recipes
+
+### File Explorer Tree
+
+A tree styled like a file explorer with indentation lines.
+
+```css
+ch-tree-view-render {
+  --ch-tree-view-item-gap: 4px;
+  --ch-tree-view-item__image-size: 18px;
+  --ch-tree-view-item__expandable-button-size: 16px;
+  --ch-tree-view-item-custom-padding-inline-start: 8px;
+}
+
+ch-tree-view-render::part(item__header) {
+  padding-block: 2px;
+  border-radius: 4px;
+}
+
+ch-tree-view-render::part(item__header):hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+ch-tree-view-render::part(item__header selected) {
+  background-color: #0078d4;
+  color: white;
+}
+
+ch-tree-view-render::part(item__line) {
+  border-color: #ccc;
+}
+```
+
+### Checkbox Tree Styling
+
+Style checkboxes within a tree for multi-selection scenarios.
+
+```css
+ch-tree-view-render {
+  --ch-tree-view-item__checkbox-size: 16px;
+  --ch-tree-view-item-gap: 6px;
+}
+
+ch-tree-view-render::part(item__checkbox-input) {
+  border: 2px solid #999;
+  border-radius: 3px;
+}
+
+ch-tree-view-render::part(item__checkbox-input checked) {
+  border-color: #0078d4;
+  background-color: #0078d4;
+}
+
+ch-tree-view-render::part(item__checkbox-option checked) {
+  background-color: white;
+}
+
+ch-tree-view-render::part(item__checkbox-input indeterminate) {
+  border-color: #0078d4;
+  background-color: #0078d4;
+}
+```
+
+### Connection Lines
+
+Style the relationship lines between tree nodes.
+
+```css
+ch-tree-view-render {
+  --ch-tree-view-item__line--inset-inline-start: 4px;
+  --ch-tree-view-item__line--inset-inline-end: 8px;
+}
+
+ch-tree-view-render::part(item__line) {
+  border-color: #ddd;
+  border-width: 1px;
+}
+
+ch-tree-view-render::part(item__line last-line) {
+  border-bottom-left-radius: 6px;
+}
+```
+
+## Anti-patterns
+
+### 1. Using attribute selectors instead of state parts
+
+```css
+/* INCORRECT - attribute selectors do not reliably reflect internal state */
+ch-tree-view-render[show-lines="all"]::part(item__line) {
+  border-color: blue;
+}
+
+/* CORRECT - use state parts */
+ch-tree-view-render::part(item__line) {
+  border-color: blue;
+}
+```
+
+### 2. Using combinators after `::part()`
+
+```css
+/* INCORRECT - combinators after ::part() are not supported */
+ch-tree-view-render::part(item__header) > div {
+  color: red;
+}
+
+/* CORRECT - target the part directly */
+ch-tree-view-render::part(item__action) {
+  color: red;
+}
+```
+
+### 3. Setting `contain` or `overflow` on the host
+
+```css
+/* INCORRECT - overriding containment breaks tree layout and drag-and-drop */
+ch-tree-view-render {
+  contain: layout;
+  overflow: hidden;
+}
+
+/* CORRECT - the component already sets contain: size and overflow: auto */
+ch-tree-view-render {
+  /* No containment override needed */
+}
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-tree-view__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-tree-view::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

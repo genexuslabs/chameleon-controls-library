@@ -247,9 +247,25 @@ function extractStylingDocs(componentDir, readmeFilePath) {
     ? fs.readFileSync(stylingPath, "utf8")
     : "";
 
-  // Extract existing layout section from styling.md (everything from "## Shadow DOM Layout" onwards)
-  const layoutMatch = existingStyling.match(/\n(## Shadow DOM Layout\n[\s\S]*)$/);
+  // Extract existing layout section from styling.md (## Shadow DOM Layout and its Case sub-sections)
+  const layoutMatch = existingStyling.match(/\n(## Shadow DOM Layout\n[\s\S]*?)(?=\n## (?!Case )|$)/);
   const layoutText = layoutMatch ? layoutMatch[1].trim() : "";
+
+  // Extract manually-authored enrichment sections to preserve across rebuilds
+  const preservedSections = ["Styling Recipes", "Anti-patterns", "Do's and Don'ts"];
+  const preservedTexts = [];
+  for (const sectionName of preservedSections) {
+    const escapedName = sectionName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const sectionRegex = new RegExp(`\\n(## ${escapedName}\\n[\\s\\S]*?)(?=\\n## (?!#)|$)`);
+    const sectionMatch = existingStyling.match(sectionRegex);
+    if (sectionMatch) {
+      preservedTexts.push({ name: sectionName, text: sectionMatch[1].trim() });
+    }
+  }
+
+  // Extract footer link to general guide
+  const footerMatch = existingStyling.match(/(\n---\n\nFor more details on shadow parts best practices[^\n]+)/);
+  const footerText = footerMatch ? footerMatch[1].trim() : "";
 
   // Only generate styling.md if there's at least one source of content
   if (!shadowPartsSection && !cssPropsSection && !layoutText) {
@@ -288,6 +304,11 @@ function extractStylingDocs(componentDir, readmeFilePath) {
     }
   }
 
+  // Add preserved sections to TOC
+  for (const ps of preservedTexts) {
+    sectionsForTOC.push({ level: 2, text: ps.name });
+  }
+
   // Generate TOC for styling.md
   const tocLines = ["## Table of Contents", ""];
   for (const entry of sectionsForTOC) {
@@ -308,6 +329,16 @@ function extractStylingDocs(componentDir, readmeFilePath) {
 
   if (layoutText) {
     stylingParts.push(layoutText);
+  }
+
+  // Add preserved manually-authored sections
+  for (const ps of preservedTexts) {
+    stylingParts.push(ps.text);
+  }
+
+  // Add preserved footer link
+  if (footerText) {
+    stylingParts.push(footerText);
   }
 
   const stylingContent = stylingParts.join("\n\n") + "\n";
@@ -356,8 +387,27 @@ function insertTOCIntoReadme(readmeFilePath, hasStyling) {
   const toc = generateTOC(content);
   if (!toc) return;
 
-  // Add Styling link to TOC if styling.md was generated
+  // Add Usage link to TOC if usage.md exists for this component
   let tocContent = toc;
+  const componentDir = path.dirname(readmeFilePath);
+  const usagePath = path.join(componentDir, "docs", "usage.md");
+  if (fs.existsSync(usagePath)) {
+    // Insert after Accessibility line, or append before Styling
+    const accessibilityIdx = tocContent.indexOf("- [Accessibility]");
+    if (accessibilityIdx !== -1) {
+      const lineEnd = tocContent.indexOf("\n", accessibilityIdx);
+      if (lineEnd !== -1) {
+        tocContent = tocContent.slice(0, lineEnd) + "\n- [Usage](./docs/usage.md)" + tocContent.slice(lineEnd);
+      } else {
+        tocContent += "\n- [Usage](./docs/usage.md)";
+      }
+    } else {
+      // No Accessibility heading found - just append
+      tocContent += "\n- [Usage](./docs/usage.md)";
+    }
+  }
+
+  // Add Styling link to TOC if styling.md was generated
   if (hasStyling) {
     tocContent += `\n- [Styling](./docs/styling.md)`;
   }
@@ -448,7 +498,9 @@ function processComponentsRecursively(dir, relativePath = "") {
           }
 
           // Step 3: Insert TOC into readme.md
-          insertTOCIntoReadme(readmePath, hasStyling);
+          // Also check if a styling.md exists even without auto-generated content
+          const stylingExists = hasStyling || fs.existsSync(path.join(entryPath, "docs", "styling.md"));
+          insertTOCIntoReadme(readmePath, stylingExists);
           console.log(`  ✓ ${displayPath}: TOC inserted`);
 
         } catch (error) {

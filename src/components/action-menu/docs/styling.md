@@ -7,6 +7,9 @@
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Expanded with menu items](#case-1-expanded-with-menu-items)
   - [Case 2: Collapsed](#case-2-collapsed)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -91,3 +94,125 @@
   | </button>
 </ch-action-menu-render>
 ```
+
+## Styling Recipes
+
+### Context Menu Appearance
+
+A floating context menu with rounded corners and shadow.
+
+```css
+ch-action-menu-render {
+  --ch-action-menu-separation-y: 4px;
+  --ch-action-menu-item__image-size: 16px;
+}
+
+ch-action-menu-render::part(window) {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 4px;
+  min-inline-size: 180px;
+}
+
+ch-action-menu-render::part(button) {
+  padding: 6px 32px 6px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+ch-action-menu-render::part(button):hover {
+  background-color: #f0f0f0;
+}
+
+ch-action-menu-render::part(separator) {
+  margin-block: 4px;
+}
+```
+
+### Keyboard Shortcut Labels
+
+Style the shortcut text that appears at the end of menu items.
+
+```css
+ch-action-menu-render::part(shortcut) {
+  color: #888;
+  font-size: 0.85em;
+  margin-inline-start: auto;
+  padding-inline-start: 24px;
+}
+```
+
+### Disabled Menu Items
+
+Visually differentiate disabled items.
+
+```css
+ch-action-menu-render::part(button disabled) {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+```
+
+## Anti-patterns
+
+### 1. Using attribute selectors instead of state parts
+
+```css
+/* INCORRECT - attribute selectors do not reliably reflect internal state */
+ch-action-menu-render[expanded]::part(window) {
+  display: block;
+}
+
+/* CORRECT - use state parts */
+ch-action-menu-render::part(expandable-button expanded) {
+  border-color: blue;
+}
+```
+
+### 2. Using combinators after `::part()`
+
+```css
+/* INCORRECT - combinators after ::part() are not supported */
+ch-action-menu-render::part(window) > button {
+  color: red;
+}
+
+/* CORRECT - target the part directly */
+ch-action-menu-render::part(button) {
+  color: red;
+}
+```
+
+### 3. Using structural pseudo-classes on parts
+
+```css
+/* INCORRECT - structural pseudo-classes are silently ignored */
+ch-action-menu-render::part(button):first-child {
+  border-top: none;
+}
+
+/* CORRECT - target the part directly, optionally with state parts */
+ch-action-menu-render::part(button) {
+  border-top: none;
+}
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-action-menu__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-action-menu::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

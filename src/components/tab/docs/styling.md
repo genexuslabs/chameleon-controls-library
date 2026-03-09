@@ -7,6 +7,9 @@
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Full layout (tab list visible, with close buttons)](#case-1-full-layout-tab-list-visible-with-close-buttons)
   - [Case 2: Tab button hidden (panels only)](#case-2-tab-button-hidden-panels-only)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -106,3 +109,140 @@
   | </div>
 </ch-tab-render>
 ```
+
+## Styling Recipes
+
+### Underline Tab Indicator
+
+Add a bottom border indicator for the selected tab.
+
+```css
+ch-tab-render::part(tab) {
+  padding: 8px 16px;
+  border-block-end: 2px solid transparent;
+  transition: border-color 150ms ease;
+}
+
+ch-tab-render::part(tab selected) {
+  border-block-end-color: #0078d4;
+  color: #0078d4;
+}
+```
+
+### Pill-Shaped Tabs
+
+Create rounded, pill-style tab buttons.
+
+```css
+ch-tab-render::part(tab) {
+  padding: 6px 16px;
+  border-radius: 9999px;
+  margin: 4px;
+  background: transparent;
+  transition: background-color 150ms ease;
+}
+
+ch-tab-render::part(tab selected) {
+  background-color: #0078d4;
+  color: #fff;
+}
+```
+
+### Vertical Tab Styling
+
+Style tabs when using an inline (vertical) tab list position.
+
+```css
+ch-tab-render::part(tab) {
+  padding: 10px 16px;
+  border-inline-start: 3px solid transparent;
+  text-align: start;
+}
+
+ch-tab-render::part(tab selected) {
+  border-inline-start-color: #0078d4;
+  background-color: #f5f5f5;
+}
+```
+
+### Focus Ring
+
+Add a visible focus ring for keyboard navigation.
+
+```css
+ch-tab-render::part(tab):focus-visible {
+  outline: 2px solid #0078d4;
+  outline-offset: -2px;
+}
+```
+
+### Tab List Background
+
+Style the tab list container to create a toolbar appearance.
+
+```css
+ch-tab-render::part(tab-list) {
+  background-color: #f5f5f5;
+  padding: 4px;
+  gap: 2px;
+}
+```
+
+## Anti-patterns
+
+### 1. Using attribute selectors instead of state parts
+
+```css
+/* INCORRECT - attribute selectors do not reliably reflect internal state */
+ch-tab-render [aria-selected="true"]::part(tab) {
+  color: blue;
+}
+
+/* CORRECT - use state parts */
+ch-tab-render::part(tab selected) {
+  color: blue;
+}
+```
+
+### 2. Using combinators after `::part()`
+
+```css
+/* INCORRECT - combinators after ::part() are not supported */
+ch-tab-render::part(tab) > .caption {
+  font-weight: bold;
+}
+
+/* CORRECT - target the caption part directly */
+ch-tab-render::part(tab-caption selected) {
+  font-weight: bold;
+}
+```
+
+### 3. Hiding panels with display: none instead of using the component API
+
+```css
+/* INCORRECT - breaks the component's internal panel management */
+ch-tab-render::part(tab-panel) {
+  display: none;
+}
+
+/* CORRECT - let the component manage panel visibility via selectedId */
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-tab__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-tab::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

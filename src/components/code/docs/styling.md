@@ -6,6 +6,9 @@
 - [CSS Custom Properties](#css-custom-properties)
 - [Shadow DOM Layout](#shadow-dom-layout)
   - [Case 1: Default](#case-1-default)
+- [Styling Recipes](#styling-recipes)
+- [Anti-patterns](#anti-patterns)
+- [Do's and Don'ts](#dos-and-donts)
 
 ## Shadow Parts
 
@@ -72,3 +75,72 @@
   | </code>
 </ch-code>
 ```
+
+## Styling Recipes
+
+### Code Block with Line Background
+
+```css
+ch-code {
+  --ch-code__keyword: #c678dd;
+  --ch-code__string: #98c379;
+  --ch-code__comment: #5c6370;
+
+  background-color: #282c34;
+  color: #abb2bf;
+  padding: 16px;
+  border-radius: 6px;
+  font-family: "Fira Code", "Cascadia Code", monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+```
+
+## Anti-patterns
+
+### 1. Using CSS custom properties on Monaco-based editors
+
+```css
+/* INCORRECT - Monaco editors do not use ch-code CSS custom properties */
+ch-code-editor {
+  --ch-code__keyword: blue;
+}
+
+/* CORRECT - use the theme property for Monaco editors */
+```
+
+```html
+<ch-code-editor theme="vs-dark"></ch-code-editor>
+```
+
+### 2. Not setting a height on Monaco editors
+
+```css
+/* INCORRECT - Monaco editors need explicit dimensions */
+ch-code-editor {
+  /* no height set */
+}
+
+/* CORRECT - always set explicit height */
+ch-code-editor {
+  height: 400px;
+}
+```
+
+For more details on shadow parts best practices, see the [CSS Shadow Parts Guide](../../../docs/css-shadow-parts-guide.md).
+
+## Do's and Don'ts
+
+### Do
+
+- Prefer CSS custom properties (e.g., `--ch-code__*`) over `::part()` for simple theming.
+- Use class selectors on the host (e.g., `.my-code::part(...)`) instead of tag names.
+- Use state part intersections (e.g., `::part(element state)`) for conditional styling.
+- Test styling changes across all component states (hover, focus, disabled, etc.).
+
+### Don't
+
+- Don't chain `::part()` selectors — use `exportparts` if needed.
+- Don't use combinators (` `, `>`, `+`, `~`) after `::part()`.
+- Don't use structural pseudo-classes (`:first-child`, `:nth-child()`, etc.) with `::part()`.
+- Don't override internal CSS custom properties that are not documented.

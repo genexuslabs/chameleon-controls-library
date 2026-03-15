@@ -1,7 +1,7 @@
-import ChCheckbox from "../../../checkbox/checkbox.lit";
+import "../../../checkbox/checkbox.lit";
+import type ChCheckbox from "../../../checkbox/checkbox.lit";
 import type { ComponentProperty } from "../../typings/playground-editor";
 
-ChCheckbox.define();
 
 export const chCheckboxProperties: ComponentProperty<ChCheckbox> = {
   accessibleName: {

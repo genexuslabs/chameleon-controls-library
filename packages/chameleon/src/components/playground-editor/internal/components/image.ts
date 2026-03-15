@@ -1,7 +1,7 @@
-import ChImage from "../../../image/image.lit";
+import "../../../image/image.lit";
+import type ChImage from "../../../image/image.lit";
 import type { ComponentProperty } from "../../typings/playground-editor";
 
-ChImage.define();
 
 export const chImageProperties: ComponentProperty<ChImage> = {
   containerRef: {

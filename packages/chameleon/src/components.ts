@@ -1,5 +1,6 @@
 // Types used by properties, events and methods
 import type { TemplateResult, LitElement } from "lit";
+import type { BreadCrumbItemModel, BreadCrumbModel, BreadCrumbHyperlinkClickEvent } from "./components/breadcrumb/types.ts";
 import type { LayoutSplitterModel, LayoutSplitterItemAddResult, LayoutSplitterLeafModel, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types.ts";
 import type { NavigationListItemModel, NavigationListSharedState, NavigationListModel, NavigationListHyperlinkClickEvent } from "./components/navigation-list/types.ts";
 import type { ComponentRenderModel, ComponentRenderTemplateItemNode } from "./components/playground-editor/typings/component-render.ts";
@@ -11,9 +12,10 @@ import type { ShowcaseApiProperties } from "./components/showcase/showcase-api/t
 import type { TabularGridSortDirection, TabularGridModel } from "./components/tabular-grid/types.ts";
 import type { ThemeModel, ChThemeLoadedEvent } from "./components/theme/theme-types.ts";
 import type { ItemLink } from "./typings/hyperlinks.ts";
-import type { GetImagePathCallback, ImageRender, GxImageMultiState } from "./typings/multi-state-images.ts";
+import type { GxImageMultiState, ImageRender, GetImagePathCallback } from "./typings/multi-state-images.ts";
 
 export type { TemplateResult, LitElement };
+export type { BreadCrumbItemModel, BreadCrumbModel, BreadCrumbHyperlinkClickEvent };
 export type { LayoutSplitterModel, LayoutSplitterItemAddResult, LayoutSplitterLeafModel, LayoutSplitterItemRemoveResult };
 export type { NavigationListItemModel, NavigationListSharedState, NavigationListModel, NavigationListHyperlinkClickEvent };
 export type { ComponentRenderModel, ComponentRenderTemplateItemNode };
@@ -25,9 +27,12 @@ export type { ShowcaseApiProperties };
 export type { TabularGridSortDirection, TabularGridModel };
 export type { ThemeModel, ChThemeLoadedEvent };
 export type { ItemLink };
-export type { GetImagePathCallback, ImageRender, GxImageMultiState };
+export type { GxImageMultiState, ImageRender, GetImagePathCallback };
 
 // Component class types
+import type { ChBeautifulMermaid as ChBeautifulMermaidElement } from "./components/beautiful-mermaid/beautiful-mermaid.lit.ts";
+import type { ChBreadCrumbRender as ChBreadCrumbRenderElement } from "./components/breadcrumb/breadcrumb-render.lit.ts";
+import type { ChBreadCrumbItem as ChBreadCrumbItemElement } from "./components/breadcrumb/internal/breadcrumb-item/breadcrumb-item.lit.ts";
 import type { ChCheckbox as ChCheckboxElement } from "./components/checkbox/checkbox.lit.ts";
 import type { ChCode as ChCodeElement } from "./components/code/code.lit.ts";
 import type { ChImage as ChImageElement } from "./components/image/image.lit.ts";
@@ -58,6 +63,9 @@ import type { ChTheme as ChThemeElement } from "./components/theme/theme.lit.ts"
  * library.
  */
 export interface ComponentBaseClasses {
+  "ch-beautiful-mermaid": ChBeautifulMermaidElement;
+  "ch-breadcrumb-render": ChBreadCrumbRenderElement;
+  "ch-breadcrumb-item": ChBreadCrumbItemElement;
   "ch-checkbox": ChCheckboxElement;
   "ch-code": ChCodeElement;
   "ch-image": ChImageElement;
@@ -89,6 +97,9 @@ export interface ComponentBaseClasses {
  */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ComponentProperties {
+  export type ChBeautifulMermaid = Pick<ChBeautifulMermaidElement, "value">;
+  export type ChBreadCrumbRender = Pick<ChBreadCrumbRenderElement, "getImagePathCallback" | "selectedLink" | "selectedLinkIndicator" | "model" | "separator" | "accessibleName">;
+  export type ChBreadCrumbItem = Pick<ChBreadCrumbItemElement, "caption" | "disabled" | "accessibleName" | "link" | "model" | "selected" | "selectedLinkIndicator" | "startImgSrc" | "startImgType" | "getImagePathCallback">;
   export type ChCheckbox = Pick<ChCheckboxElement, "accessibleName" | "caption" | "checked" | "disabled" | "getImagePathCallback" | "indeterminate" | "name" | "readonly" | "startImgSrc" | "startImgType" | "value">;
   export type ChCode = Pick<ChCodeElement, "language" | "lastNestedChildClass" | "showIndicator" | "value">;
   export type ChImage = Pick<ChImageElement, "containerRef" | "disabled" | "getImagePathCallback" | "src" | "styles" | "type">;
@@ -121,6 +132,120 @@ export namespace ComponentProperties {
  */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ComponentPropertiesSolidJS {
+  export type ChBeautifulMermaid = {
+    /**
+     * Specifies the Mermaid diagram definition to be rendered.
+     */
+    "prop:value"?:  string | undefined;
+  };
+
+  export type ChBreadCrumbRender = {
+    /**
+     * This property specifies a callback that is executed when the path for an
+     * startImgSrc needs to be resolved.
+     */
+    "prop:getImagePathCallback"?: 
+      | ((item: BreadCrumbItemModel) => GxImageMultiState | undefined)
+      | undefined;
+
+    /**
+     * Specifies the current selected hyperlink.
+     */
+    "prop:selectedLink"?:  {
+      id?: string;
+      link: ItemLink;
+    };
+
+    /**
+     * Specifies if the selected item indicator is displayed (only work for hyperlink)
+     */
+    "prop:selectedLinkIndicator"?:  boolean;
+
+    /**
+     * Specifies the items of the control.
+     */
+    "prop:model"?:  BreadCrumbModel | undefined;
+
+    /**
+     * 
+     */
+    "prop:separator"?:  string | undefined;
+
+    /**
+     * Specifies a short string, typically 1 to 3 words, that authors associate
+     * with an element to provide users of assistive technologies with a label
+     * for the element.
+     */
+    "prop:accessibleName"?: 
+      | string
+      | undefined;
+  };
+
+  export type ChBreadCrumbItem = {
+    /**
+     * Specifies the caption of the control
+     */
+    "prop:caption"?:  string | undefined;
+
+    /**
+     * This attribute lets you specify if the element is disabled.
+     * If disabled, it will not fire any user interaction related event
+     * (for example, click event).
+     */
+    "prop:disabled"?:  boolean | undefined;
+
+    /**
+     * Specifies a short string, typically 1 to 3 words, that authors associate
+     * with an element to provide users of assistive technologies with a label
+     * for the element.
+     */
+    "prop:accessibleName"?: 
+      | string
+      | undefined;
+
+    /**
+     * 
+     */
+    "prop:link"?:  ItemLink | undefined;
+
+    /**
+     * Specifies the UI model of the control
+     */
+    "prop:model"?:  BreadCrumbItemModel;
+
+    /**
+     * Specifies if the hyperlink is selected. Only applies when the `link`
+     * property is defined.
+     */
+    "prop:selected"?:  boolean;
+
+    /**
+     * Specifies if the selected item indicator is displayed when the item is
+     * selected. Only applies when the `link` property is defined.
+     */
+    "prop:selectedLinkIndicator"?:  boolean;
+
+    /**
+     * Specifies the src of the start image.
+     */
+    "prop:startImgSrc"?:  string | undefined;
+
+    /**
+     * Specifies how the start image will be rendered.
+     */
+    "prop:startImgType"?: 
+      | Exclude<ImageRender, "img">
+      | undefined;
+
+    /**
+     * This property specifies a callback that is executed when the path for an
+     * startImgSrc needs to be resolved.
+     */
+    "prop:getImagePathCallback"?: 
+      | ((imageSrc: BreadCrumbItemModel) => GxImageMultiState | undefined)
+      | undefined;
+  };
+
   export type ChCheckbox = {
     /**
      * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -1113,6 +1238,20 @@ export namespace ComponentPropertiesSolidJS {
  */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ComponentEvents {
+  export type ChBreadCrumbRender = {
+    /**
+     * Fired when an button is clicked.
+     * This event can be prevented.
+     */
+    buttonClick?: (event: HTMLChBreadCrumbRenderElementButtonClickEvent) => void;
+
+    /**
+     * Fired when an hyperlink is clicked.
+     * This event can be prevented.
+     */
+    hyperlinkClick?: (event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent) => void;
+  };
+
   export type ChCheckbox = {
     /**
      * The `input` event is emitted when a change to the element's checked state
@@ -1198,6 +1337,24 @@ export namespace ComponentEvents {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace LocalJSX {
+  export type ChBeautifulMermaid = ComponentProperties.ChBeautifulMermaid;
+
+  export type ChBreadCrumbRender = ComponentProperties.ChBreadCrumbRender & {
+    /**
+     * Fired when an button is clicked.
+     * This event can be prevented.
+     */
+    onButtonClick?: (event: HTMLChBreadCrumbRenderElementButtonClickEvent) => void;
+
+    /**
+     * Fired when an hyperlink is clicked.
+     * This event can be prevented.
+     */
+    onHyperlinkClick?: (event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent) => void;
+  };
+
+  export type ChBreadCrumbItem = ComponentProperties.ChBreadCrumbItem;
+
   export type ChCheckbox = ComponentProperties.ChCheckbox & {
     /**
      * The `input` event is emitted when a change to the element's checked state
@@ -1310,6 +1467,30 @@ declare namespace LocalJSX {
   };
   
   interface IntrinsicElements {
+    /**
+     * @status developer-preview
+     */
+    "ch-beautiful-mermaid": ChBeautifulMermaid;
+    
+    /**
+     * @status experimental
+     *
+     * This component needs to be hydrated to properly work. If not hydrated, the
+     * component visibility will be hidden.
+     *
+     * @fires `buttonClick` Fired when an button is clicked.
+     *   This event can be prevented.
+     * @fires `hyperlinkClick` Fired when an hyperlink is clicked.
+     *   This event can be prevented.
+     */
+    
+    "ch-breadcrumb-render": ChBreadCrumbRender;
+    
+    /**
+     * @status experimental
+     */
+    "ch-breadcrumb-item": ChBreadCrumbItem;
+    
     /**
      * @status developer-preview
      *
@@ -1547,6 +1728,24 @@ export type { LocalJSX as JSX };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace SolidJsJSX {
+  export type ChBeautifulMermaid = ComponentPropertiesSolidJS.ChBeautifulMermaid;
+
+  export type ChBreadCrumbRender = ComponentPropertiesSolidJS.ChBreadCrumbRender & {
+    /**
+     * Fired when an button is clicked.
+     * This event can be prevented.
+     */
+    "on:buttonClick"?: (event: HTMLChBreadCrumbRenderElementButtonClickEvent) => void;
+
+    /**
+     * Fired when an hyperlink is clicked.
+     * This event can be prevented.
+     */
+    "on:hyperlinkClick"?: (event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent) => void;
+  };
+
+  export type ChBreadCrumbItem = ComponentPropertiesSolidJS.ChBreadCrumbItem;
+
   export type ChCheckbox = ComponentPropertiesSolidJS.ChCheckbox & {
     /**
      * The `input` event is emitted when a change to the element's checked state
@@ -1659,6 +1858,30 @@ declare namespace SolidJsJSX {
   };
   
   interface IntrinsicElements {
+    /**
+     * @status developer-preview
+     */
+    "ch-beautiful-mermaid": ChBeautifulMermaid;
+    
+    /**
+     * @status experimental
+     *
+     * This component needs to be hydrated to properly work. If not hydrated, the
+     * component visibility will be hidden.
+     *
+     * @fires `buttonClick` Fired when an button is clicked.
+     *   This event can be prevented.
+     * @fires `hyperlinkClick` Fired when an hyperlink is clicked.
+     *   This event can be prevented.
+     */
+    
+    "ch-breadcrumb-render": ChBreadCrumbRender;
+    
+    /**
+     * @status experimental
+     */
+    "ch-breadcrumb-item": ChBreadCrumbItem;
+    
     /**
      * @status developer-preview
      *

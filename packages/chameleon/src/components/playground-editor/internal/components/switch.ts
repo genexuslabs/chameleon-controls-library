@@ -1,7 +1,7 @@
-import ChSwitch from "../../../switch/switch.lit";
+import "../../../switch/switch.lit";
+import type ChSwitch from "../../../switch/switch.lit";
 import type { ComponentProperty } from "../../typings/playground-editor";
 
-ChSwitch.define();
 
 export const chSwitchProperties: ComponentProperty<ChSwitch> = {
   accessibleName: {

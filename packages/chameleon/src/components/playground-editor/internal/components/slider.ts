@@ -1,7 +1,7 @@
-import ChSlider from "../../../slider/slider.lit";
+import "../../../slider/slider.lit";
+import type ChSlider from "../../../slider/slider.lit";
 import type { ComponentProperty } from "../../typings/playground-editor";
 
-ChSlider.define();
 
 export const chSliderProperties: ComponentProperty<ChSlider> = {
   accessibleName: {

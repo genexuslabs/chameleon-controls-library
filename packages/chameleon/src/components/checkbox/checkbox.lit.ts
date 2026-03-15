@@ -398,3 +398,79 @@ declare global {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChCheckboxElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChCheckboxElement;
+  }
+
+  /** Type of the `ch-checkbox`'s `input` event. */
+  // prettier-ignore
+  type HTMLChCheckboxElementInputEvent = HTMLChCheckboxElementCustomEvent<
+    HTMLChCheckboxElementEventMap["input"]
+  >;
+
+  interface HTMLChCheckboxElementEventMap {
+    input: boolean;
+  }
+
+  interface HTMLChCheckboxElementEventTypes {
+    input: HTMLChCheckboxElementInputEvent;
+  }
+
+  /**
+   * @status developer-preview
+   *
+   * @csspart container - The container that serves as a wrapper for the `input` and the `option` parts.
+   * @csspart input - The input element that implements the interactions for the component.
+   * @csspart label - The label that is rendered when the `caption` property is not empty.
+   *
+   * @csspart checked - Present in the `input`, `label` and `container` parts when the control is checked and not indeterminate (`checked === true` and `indeterminate !== true`).
+   * @csspart disabled - Present in the `input`, `label` and `container` parts when the control is disabled (`disabled === true`).
+   * @csspart indeterminate - Present in the `input`, `label` and `container` parts when the control is indeterminate (`indeterminate === true`).
+   * @csspart unchecked - Present in the `input`, `label` and `container` parts when the control is unchecked and not indeterminate (`checked === false` and `indeterminate !== true`).
+  
+   * @cssprop [--ch-checkbox__container-size = min(1em, 20px)] - Specifies the size for the container of the `input` and `option` elements.
+   *
+   * @cssprop [--ch-checkbox__checked-image = url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")] - Specifies the image of the checkbox when is checked.
+   *
+   * @cssprop [--ch-checkbox__option-indeterminate-image = url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><rect width='8' height='8'/></svg>")] - Specifies the image of the checkbox when is indeterminate.
+   *
+   * @cssprop [--ch-checkbox__option-image-size = 50%] - Specifies the image size of the `option` element.
+   *
+   * @cssprop [--ch-checkbox__image-size = #{$default-decorative-image-size}] - Specifies the box size that contains the start image of the control.
+   * 
+   * @cssprop [--ch-checkbox__background-image-size = 100%] - Specifies the size of the start image of the control.
+   *
+   * @fires input The `input` event is emitted when a change to the element's checked state
+   *   is committed by the user.
+   *   
+   *   It contains the new checked state of the control.
+   */
+  // prettier-ignore
+  interface HTMLChCheckboxElement extends ChCheckbox {
+    // Extend the ChCheckbox class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChCheckboxElementEventTypes>(type: K, listener: (this: HTMLChCheckboxElement, ev: HTMLChCheckboxElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChCheckboxElementEventTypes>(type: K, listener: (this: HTMLChCheckboxElement, ev: HTMLChCheckboxElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-checkbox": HTMLChCheckboxElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-checkbox": HTMLChCheckboxElement;
+  }
+}
+

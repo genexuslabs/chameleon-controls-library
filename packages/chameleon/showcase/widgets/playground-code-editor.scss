@@ -1,0 +1,128 @@
+:host {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  block-size: 100%;
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+/* - - - - - Editor panel - - - - - */
+
+.editor-panel {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--showcase-editor-bg, #111827);
+  border-inline-end: 1px solid var(--showcase-border-color, #374151);
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--showcase-tabs-bg, #1e1e1e);
+  border-block-end: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+  padding-inline-end: 8px;
+}
+
+.toolbar-btn {
+  all: unset;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  color: var(--showcase-tab-color, #9ca3af);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f9fafb;
+  }
+}
+
+/* - - - - - Scroll container (textarea + ch-code overlay) - - - - - */
+
+.editor-scroll-container {
+  position: relative;
+  overflow: hidden;
+  font-family: "Fira Code", "Cascadia Code", Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+/* ch-code acts as the syntax-highlighted background layer. */
+ch-code.code-highlight {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Ensure ch-code uses the same monospace metrics. */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.code-textarea {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: transparent;
+  caret-color: #f9fafb;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: auto;
+  white-space: pre;
+  tab-size: 2;
+  z-index: 1;
+}
+
+/* - - - - - Import info - - - - - */
+
+.import-info {
+  font-size: 12px;
+  color: var(--showcase-tab-color, #9ca3af);
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-block-start: 1px solid rgba(255, 255, 255, 0.06);
+
+  summary {
+    cursor: pointer;
+    font-weight: 500;
+    user-select: none;
+  }
+
+  ul {
+    margin: 6px 0 0;
+    padding-inline-start: 18px;
+    line-height: 1.8;
+  }
+
+  code {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: inherit;
+  }
+}
+
+/* - - - - - Preview iframe - - - - - */
+
+.preview-iframe {
+  block-size: 100%;
+  border: none;
+  background: #fff;
+}

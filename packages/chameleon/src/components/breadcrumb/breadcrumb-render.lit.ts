@@ -1,11 +1,11 @@
-import { html, nothing } from "lit";
-import { property } from "lit/decorators/property.js";
-import { repeat } from "lit/directives/repeat.js";
-import type { ItemLink } from "../../typings/hyperlinks";
 import {
   Component,
   KasstorElement
 } from "@genexus/kasstor-core/decorators/component.js";
+import { html, nothing } from "lit";
+import { property } from "lit/decorators/property.js";
+import { repeat } from "lit/directives/repeat.js";
+import type { ItemLink } from "../../typings/hyperlinks";
 
 import {
   Event,
@@ -115,7 +115,7 @@ export class ChBreadCrumbRender extends KasstorElement {
   @property({ attribute: "accessible-name" }) accessibleName:
     | string
     | undefined;
-  @Observe("accessibleName", { waitUntilFirstUpdate: false })
+  @Observe("accessibleName")
   accessibleNameChanged() {
     if (this.accessibleName) {
       this.setAttribute("aria-label", this.accessibleName);
@@ -265,3 +265,69 @@ declare global {
     "ch-breadcrumb-render": ChBreadCrumbRender;
   }
 }
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChBreadCrumbRenderElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChBreadCrumbRenderElement;
+  }
+
+  /** Type of the `ch-breadcrumb-render`'s `buttonClick` event. */
+  // prettier-ignore
+  type HTMLChBreadCrumbRenderElementButtonClickEvent = HTMLChBreadCrumbRenderElementCustomEvent<
+    HTMLChBreadCrumbRenderElementEventMap["buttonClick"]
+  >;
+
+  /** Type of the `ch-breadcrumb-render`'s `hyperlinkClick` event. */
+  // prettier-ignore
+  type HTMLChBreadCrumbRenderElementHyperlinkClickEvent = HTMLChBreadCrumbRenderElementCustomEvent<
+    HTMLChBreadCrumbRenderElementEventMap["hyperlinkClick"]
+  >;
+
+  interface HTMLChBreadCrumbRenderElementEventMap {
+    buttonClick: BreadCrumbItemModel;
+    hyperlinkClick: BreadCrumbHyperlinkClickEvent;
+  }
+
+  interface HTMLChBreadCrumbRenderElementEventTypes {
+    buttonClick: HTMLChBreadCrumbRenderElementButtonClickEvent;
+    hyperlinkClick: HTMLChBreadCrumbRenderElementHyperlinkClickEvent;
+  }
+
+  /**
+   * @status experimental
+   *
+   * This component needs to be hydrated to properly work. If not hydrated, the
+   * component visibility will be hidden.
+   *
+   * @fires buttonClick Fired when an button is clicked.
+   *   This event can be prevented.
+   * @fires hyperlinkClick Fired when an hyperlink is clicked.
+   *   This event can be prevented.
+   */
+  // prettier-ignore
+  interface HTMLChBreadCrumbRenderElement extends ChBreadCrumbRender {
+    // Extend the ChBreadCrumbRender class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChBreadCrumbRenderElementEventTypes>(type: K, listener: (this: HTMLChBreadCrumbRenderElement, ev: HTMLChBreadCrumbRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChBreadCrumbRenderElementEventTypes>(type: K, listener: (this: HTMLChBreadCrumbRenderElement, ev: HTMLChBreadCrumbRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-breadcrumb-render": HTMLChBreadCrumbRenderElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-breadcrumb-render": HTMLChBreadCrumbRenderElement;
+  }
+}
+

@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  padding: 32px 40px;
+  max-inline-size: 900px;
+}
+
+.page-header {
+  margin-block-end: 24px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--showcase-heading-color, #111827);
+}
+
+.tag-name {
+  font-size: 14px;
+  color: var(--showcase-text-muted-color, #6b7280);
+  font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+}
+
+.sub-nav {
+  display: flex;
+  gap: 4px;
+  border-block-end: 1px solid var(--showcase-border-color, #e5e7eb);
+  margin-block-end: 32px;
+  padding-block-end: 0;
+}
+
+.sub-nav-item {
+  all: unset;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  color: var(--showcase-nav-link-color, #6b7280);
+  border-block-end: 2px solid transparent;
+  margin-block-end: -1px;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: var(--showcase-nav-link-hover-color, #111827);
+  }
+}
+
+.sub-nav-item--active {
+  color: var(--showcase-accent-color, #2563eb);
+  border-block-end-color: var(--showcase-accent-color, #2563eb);
+}
+
+.section-content {
+  min-block-size: 200px;
+}

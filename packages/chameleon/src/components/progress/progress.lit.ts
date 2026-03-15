@@ -362,3 +362,42 @@ declare global {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChProgressElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChProgressElement;
+  }
+
+  /**
+   * The ch-progress is an element that displays the progress status for tasks
+   * that take a long time.
+   *
+   * It implements all accessibility behaviors for determinate and indeterminate
+   * progress. It also supports referencing a region to describe its progress.
+   *
+   * @status experimental
+   */// prettier-ignore
+  interface HTMLChProgressElement extends ChProgress {
+    // Extend the ChProgress class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-progress": HTMLChProgressElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-progress": HTMLChProgressElement;
+  }
+}
+

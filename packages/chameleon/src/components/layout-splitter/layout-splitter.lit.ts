@@ -41,6 +41,7 @@ import {
   updateComponentsAndDragBar
 } from "./utils.js";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import styles from "./layout-splitter.scss?inline";
 
 type Group = LayoutSplitterGroupModel;
@@ -532,6 +533,43 @@ declare global {
 }
 
 // ######### Auto generated bellow #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChLayoutSplitterElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChLayoutSplitterElement;
+  }
+
+  /**
+   * This component allows us to design a layout composed by columns and rows.
+   *  - Columns and rows can have relative (`fr`) or absolute (`px`) size.
+   *  - The line that separates two columns or two rows will always have a drag-bar to resize the layout.
+   *
+   * @csspart bar - The bar that divides two columns or two rows
+   */// prettier-ignore
+  interface HTMLChLayoutSplitterElement extends ChLayoutSplitter {
+    // Extend the ChLayoutSplitter class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-layout-splitter": HTMLChLayoutSplitterElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-layout-splitter": HTMLChLayoutSplitterElement;
+  }
+}
+
+
+// ######### Auto generated below #########
 
 declare global {
   // prettier-ignore

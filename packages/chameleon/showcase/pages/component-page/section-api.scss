@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 32px 0 16px;
+  color: var(--showcase-heading-color, #111827);
+
+  &:first-of-type {
+    margin-block-start: 0;
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-block-end: 24px;
+}
+
+.api-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th,
+  td {
+    text-align: start;
+    padding: 10px 12px;
+    border-block-end: 1px solid var(--showcase-border-color, #e5e7eb);
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--showcase-heading-color, #111827);
+    background: var(--showcase-table-header-bg, #f9fafb);
+    white-space: nowrap;
+  }
+
+  td {
+    color: var(--showcase-text-color, #374151);
+    vertical-align: top;
+  }
+
+  code {
+    font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas,
+      monospace;
+    font-size: 12.5px;
+    background: var(--showcase-code-bg, #f3f4f6);
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}

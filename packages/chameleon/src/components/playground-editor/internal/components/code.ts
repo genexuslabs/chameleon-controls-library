@@ -1,7 +1,6 @@
-import ChCode from "../../../code/code.lit";
+import "../../../code/code.lit";
+import type ChCode from "../../../code/code.lit";
 import type { ComponentProperty } from "../../typings/playground-editor";
-
-ChCode.define();
 
 export const chCodeProperties: ComponentProperty<ChCode> = {
   language: {

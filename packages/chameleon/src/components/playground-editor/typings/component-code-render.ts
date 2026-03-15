@@ -3,5 +3,5 @@ export type ComponentCodeRenderLanguages = Record<
   string
 >;
 
-export type ComponentCodeRenderLanguage = "Angular" | "React" | "StencilJS";
+export type ComponentCodeRenderLanguage = "Angular" | "React" | "Lit";
 

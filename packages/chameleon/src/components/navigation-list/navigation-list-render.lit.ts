@@ -42,6 +42,7 @@ import {
 // Side-effect to define the navigation list item
 import ChNavigationListItem from "./internal/navigation-list-item/navigation-list-item.lit";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import styles from "./navigation-list-render.scss?inline";
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -241,7 +242,6 @@ export class ChNavigationListRender extends KasstorElement {
       "showCaptionOnCollapse",
       "tooltipDelay"
     ],
-    { waitUntilFirstUpdate: false }
   )
   protected sharedStateChanged() {
     this.sharedState = {
@@ -488,6 +488,72 @@ declare global {
 }
 
 // ######### Auto generated bellow #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChNavigationListRenderElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChNavigationListRenderElement;
+  }
+
+  /** Type of the `ch-navigation-list-render`'s `buttonClick` event. */
+  // prettier-ignore
+  type HTMLChNavigationListRenderElementButtonClickEvent = HTMLChNavigationListRenderElementCustomEvent<
+    HTMLChNavigationListRenderElementEventMap["buttonClick"]
+  >;
+
+  /** Type of the `ch-navigation-list-render`'s `hyperlinkClick` event. */
+  // prettier-ignore
+  type HTMLChNavigationListRenderElementHyperlinkClickEvent = HTMLChNavigationListRenderElementCustomEvent<
+    HTMLChNavigationListRenderElementEventMap["hyperlinkClick"]
+  >;
+
+  interface HTMLChNavigationListRenderElementEventMap {
+    buttonClick: NavigationListItemModel;
+    hyperlinkClick: NavigationListHyperlinkClickEvent;
+  }
+
+  interface HTMLChNavigationListRenderElementEventTypes {
+    buttonClick: HTMLChNavigationListRenderElementButtonClickEvent;
+    hyperlinkClick: HTMLChNavigationListRenderElementHyperlinkClickEvent;
+  }
+
+  /**
+   * @status experimental
+   *
+   * This component needs to be hydrated to properly work. If not hydrated, the
+   * component visibility will be hidden.
+   *
+   * @fires buttonClick Fired when an button is clicked.
+   *   This event can be prevented.
+   * @fires hyperlinkClick Fired when an hyperlink is clicked.
+   *   This event can be prevented.
+   */
+  // prettier-ignore
+  interface HTMLChNavigationListRenderElement extends ChNavigationListRender {
+    // Extend the ChNavigationListRender class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChNavigationListRenderElementEventTypes>(type: K, listener: (this: HTMLChNavigationListRenderElement, ev: HTMLChNavigationListRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChNavigationListRenderElementEventTypes>(type: K, listener: (this: HTMLChNavigationListRenderElement, ev: HTMLChNavigationListRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-navigation-list-render": HTMLChNavigationListRenderElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-navigation-list-render": HTMLChNavigationListRenderElement;
+  }
+}
+
+
+// ######### Auto generated below #########
 
 declare global {
   // prettier-ignore

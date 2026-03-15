@@ -1,0 +1,182 @@
+:host {
+  display: block;
+}
+
+/* - - - - - Mode 1: Property editor layout - - - - - */
+
+.mode1-layout {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 24px;
+  padding: 24px 40px;
+}
+
+.editor-section {
+  border: 1px solid var(--showcase-border-color, #e5e7eb);
+  border-radius: 8px;
+  overflow: hidden;
+  min-block-size: 300px;
+}
+
+ch-playground-editor {
+  block-size: 100%;
+}
+
+/* - - - - - Code preview panel (below property editor) - - - - - */
+
+.code-preview-section {
+  border: 1px solid var(--showcase-border-color, #e5e7eb);
+  border-radius: 8px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.code-preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-block-end: 1px solid var(--showcase-border-color, #e5e7eb);
+  background: var(--showcase-card-bg, #fafafa);
+}
+
+.code-preview-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--showcase-heading-color, #111827);
+}
+
+.framework-select {
+  font-size: 13px;
+  border: 1px solid var(--showcase-border-color, #e5e7eb);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: #fff;
+  cursor: pointer;
+  color: var(--showcase-text-color, #374151);
+}
+
+ch-code.generated-code {
+  min-block-size: 200px;
+  max-block-size: 400px;
+}
+
+/* - - - - - Mode 1 action bar - - - - - */
+
+.mode1-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  all: unset;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--showcase-border-color, #e5e7eb);
+  color: var(--showcase-text-color, #374151);
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--showcase-card-bg, #fafafa);
+  }
+
+  &--primary {
+    background: var(--showcase-accent-color, #2563eb);
+    border-color: transparent;
+    color: #ffffff;
+
+    &:hover {
+      background: var(--showcase-accent-hover-color, #1d4ed8);
+    }
+  }
+}
+
+/* - - - - - Transition dialog - - - - - */
+
+.transition-dialog {
+  border: 1px solid var(--showcase-border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: 28px;
+  max-inline-size: 420px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+
+  h3 {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--showcase-heading-color, #111827);
+  }
+
+  p {
+    margin: 0 0 20px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--showcase-text-muted-color, #6b7280);
+  }
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.35);
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.dialog-btn {
+  all: unset;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--showcase-border-color, #e5e7eb);
+
+  &--primary {
+    background: var(--showcase-accent-color, #2563eb);
+    border-color: transparent;
+    color: #ffffff;
+
+    &:hover {
+      background: var(--showcase-accent-hover-color, #1d4ed8);
+    }
+  }
+
+  &--secondary:hover {
+    background: var(--showcase-card-bg, #fafafa);
+  }
+}
+
+/* - - - - - Mode 2: Code editor layout - - - - - */
+
+.mode2-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  block-size: calc(100vh - 120px);
+  min-block-size: 500px;
+}
+
+.mode2-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-block-end: 1px solid var(--showcase-border-color, #e5e7eb);
+}
+
+.mode-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--showcase-heading-color, #111827);
+}
+
+.code-editor {
+  min-block-size: 0;
+}

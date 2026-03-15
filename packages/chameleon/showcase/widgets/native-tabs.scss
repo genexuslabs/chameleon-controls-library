@@ -1,0 +1,86 @@
+:host {
+  display: block;
+}
+
+.tab-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  background: var(--showcase-tabs-bg, #1e1e1e);
+  padding: 4px 4px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.tab {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  background: var(--showcase-tab-bg, #2d2d2d);
+  color: var(--showcase-tab-color, #9ca3af);
+  white-space: nowrap;
+  transition: background 0.1s, color 0.1s;
+
+  &:hover {
+    background: var(--showcase-tab-hover-bg, #3a3a3a);
+    color: var(--showcase-tab-hover-color, #d1d5db);
+  }
+
+  &--active {
+    background: var(--showcase-tab-active-bg, #111827);
+    color: var(--showcase-tab-active-color, #f9fafb);
+  }
+}
+
+.tab-name {
+  pointer-events: none;
+}
+
+.tab-close {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 16px;
+  block-size: 16px;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.tab-add {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: 4px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--showcase-tab-color, #9ca3af);
+  align-self: center;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--showcase-tab-hover-color, #d1d5db);
+  }
+}

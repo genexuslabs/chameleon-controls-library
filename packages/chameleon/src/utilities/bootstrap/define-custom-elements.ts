@@ -88,7 +88,6 @@ function register(tagName: ChameleonPublicControlsTagName): Promise<void> {
 
     lazyLoadFunction
       .then(component => {
-        component.default.define();
         lazyLoadedElements.add(tagName);
         resolve();
       })

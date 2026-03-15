@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  border-inline-end: 1px solid var(--showcase-border-color, #e5e7eb);
+  overflow-y: auto;
+  padding-block: 16px;
+}
+
+/* ch-sidebar uses display: grid with grid-template-rows: 1fr max-content.
+   Without an explicit block-size, the 1fr row collapses to zero.
+   Setting block-size: 100% makes it fill the allocated space from the parent. */
+ch-sidebar {
+  block-size: 100%;
+  box-sizing: border-box;
+}

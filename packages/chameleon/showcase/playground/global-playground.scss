@@ -1,0 +1,44 @@
+:host {
+  display: block;
+  block-size: 100%;
+}
+
+.global-playground-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  block-size: 100%;
+  min-block-size: 0;
+}
+
+/* - - - - - Component selector sidebar - - - - - */
+
+.component-selector {
+  border-inline-end: 1px solid var(--showcase-border-color, #e5e7eb);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.selector-header {
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--showcase-text-muted-color, #6b7280);
+  border-block-end: 1px solid var(--showcase-border-color, #e5e7eb);
+}
+
+.selector-nav {
+  flex: 1;
+  min-block-size: 0;
+  overflow-y: auto;
+  block-size: 100%;
+}
+
+/* - - - - - Main playground area - - - - - */
+
+.playground-main {
+  overflow-y: auto;
+  min-inline-size: 0;
+}

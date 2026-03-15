@@ -1,38 +1,33 @@
 <!doctype html>
-<html class="light hydrated" lang="en">
+<html lang="en" class="light hydrated">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chameleon CSR</title>
+    <title>Chameleon</title>
     <meta
       name="description"
-      content="A set of utilities to build and test Lit applications and libraries"
+      content="Chameleon Controls Library - A Web Components design system"
     />
 
     <style>
+      html,
       body {
-        grid-template-rows: 300px 1fr;
-        padding: 8px;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+
+      /* Prevent FOUC - hide until showcase is defined */
+      ch-showcase:not(:defined) {
+        display: none;
       }
     </style>
   </head>
 
   <body>
-    <textarea class="input"></textarea>
-    <ch-beautiful-mermaid></ch-beautiful-mermaid>
+    <ch-showcase></ch-showcase>
     <script type="module" src="./showcase/showcase.lit.ts"></script>
-
-    <script>
-      const textareaRef = document.querySelector("textarea");
-      const beautifulMermaidRef = document.querySelector(
-        "ch-beautiful-mermaid"
-      );
-
-      textareaRef.addEventListener("input", () => {
-        beautifulMermaidRef.value = textareaRef.value;
-      });
-    </script>
   </body>
 </html>
-

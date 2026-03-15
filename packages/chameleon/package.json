@@ -16,7 +16,7 @@
     "dist/"
   ],
   "scripts": {
-    "start": "vite --config vite.config-serve.ts",
+    "start": "vite --config vite.config-serve.ts --open",
     "build": "concurrently 'bun build:dev:browser' 'bun build:dev:node' 'bun build:prod:browser' 'bun build:prod:node' 'bun build:minified' 'bun build.types'",
     "build:dev": "concurrently 'bun build:dev:browser' 'bun build:dev:node'",
     "build:dev:browser": "vite build --mode browser-development",

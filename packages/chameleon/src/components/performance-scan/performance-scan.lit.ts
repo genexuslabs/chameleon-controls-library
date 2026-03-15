@@ -111,3 +111,37 @@ declare global {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChPerformanceScanElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChPerformanceScanElement;
+  }
+
+  /**
+   * A component to visualize re-renders on Lit components.
+   * @status experimental
+   */// prettier-ignore
+  interface HTMLChPerformanceScanElement extends ChPerformanceScan {
+    // Extend the ChPerformanceScan class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-performance-scan": HTMLChPerformanceScanElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-performance-scan": HTMLChPerformanceScanElement;
+  }
+}
+

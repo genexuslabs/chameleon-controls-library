@@ -6,6 +6,7 @@ import {
   Event,
   type EventEmitter
 } from "@genexus/kasstor-core/decorators/event.js";
+import { watch } from "@genexus/kasstor-signals/directives/watch.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
@@ -15,6 +16,7 @@ import type { LayoutSplitterModel } from "../../src/components/layout-splitter/t
 import "./native-tabs.lit";
 import type { NativeTab } from "./native-tabs.lit";
 
+import { codeTheme } from "../core/code-theme-signal";
 import { buildImportMapScript } from "../core/import-map";
 
 import styles from "./playground-code-editor.scss?inline";
@@ -121,6 +123,7 @@ document.body.append(document.createElement('my-app'));
     const active = this.#getActiveTab();
     if (!active) return;
     active.code = textarea.value;
+    this.requestUpdate();
     this.#schedulePreviewRebuild();
     this.codeChange.emit([...this.#tabs]);
   };
@@ -137,6 +140,7 @@ document.body.append(document.createElement('my-app'));
       textarea.setSelectionRange(newPos, newPos);
       const active = this.#getActiveTab();
       if (active) active.code = textarea.value;
+      this.requestUpdate();
       this.#schedulePreviewRebuild();
     } else if (event.key === "Enter") {
       event.preventDefault();
@@ -154,6 +158,7 @@ document.body.append(document.createElement('my-app'));
       textarea.setSelectionRange(newPos, newPos);
       const active = this.#getActiveTab();
       if (active) active.code = textarea.value;
+      this.requestUpdate();
       this.#schedulePreviewRebuild();
     }
   };
@@ -287,6 +292,7 @@ ${mainCode}
           <ch-code
             class="code-highlight"
             language="typescript"
+            theme=${watch(codeTheme)}
             .value=${activeTab?.code ?? ""}
           ></ch-code>
           <textarea

@@ -62,8 +62,10 @@ ch-code.code-highlight {
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  /* Ensure ch-code uses the same monospace metrics. */
-  font-family: inherit;
+  padding: 16px;
+  box-sizing: border-box;
+  /* Ensure ch-code uses the same monospace metrics as the textarea. */
+  --ch-code-font-family: inherit;
   font-size: inherit;
   line-height: inherit;
 }

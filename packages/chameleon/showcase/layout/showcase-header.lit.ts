@@ -2,8 +2,11 @@ import {
   Component,
   KasstorElement
 } from "@genexus/kasstor-core/decorators/component.js";
+import { watch } from "@genexus/kasstor-signals/directives/watch.js";
 import { html } from "lit";
 
+import "../../src/components/switch/switch.lit";
+import { isCodeThemeDark, toggleCodeTheme } from "../core/code-theme-signal";
 import { navigate } from "../core/router-integration";
 
 import styles from "./showcase-header.scss?inline";
@@ -25,6 +28,10 @@ export class ShowcaseHeader extends KasstorElement {
       event.preventDefault();
       navigate(href);
     }
+  };
+
+  #handleThemeToggle = () => {
+    toggleCodeTheme();
   };
 
   override render() {
@@ -61,6 +68,16 @@ export class ShowcaseHeader extends KasstorElement {
             @click=${this.#handleNavClick}
             >Playground</a
           >
+
+          <ch-switch
+            class="theme-switch"
+            part="theme-switch"
+            .checked=${watch(isCodeThemeDark)}
+            checked-caption="Dark"
+            un-checked-caption="Light"
+            accessible-name="Toggle code theme"
+            @input=${this.#handleThemeToggle}
+          ></ch-switch>
         </nav>
       </header>
     `;

@@ -2,6 +2,7 @@ import {
   Component,
   KasstorElement
 } from "@genexus/kasstor-core/decorators/component.js";
+import { watch } from "@genexus/kasstor-signals/directives/watch.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
@@ -26,6 +27,8 @@ import {
   writeStateToHash,
   type PlaygroundState
 } from "../core/url-state";
+
+import { codeTheme } from "../core/code-theme-signal";
 
 import styles from "./playground.scss?inline";
 
@@ -245,6 +248,7 @@ export class ShowcasePlayground extends KasstorElement {
           <ch-code
             class="generated-code"
             language="typescript"
+            theme=${watch(codeTheme)}
             .value=${generatedCode}
           ></ch-code>
         </div>

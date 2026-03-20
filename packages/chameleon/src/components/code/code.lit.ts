@@ -8,26 +8,30 @@ import { property } from "lit/decorators/property.js";
 
 import { IS_SERVER } from "../../development-flags";
 import { SCROLLABLE_CLASS } from "../../utilities/reserved-names/common";
-import { DEFAULT_CODE_LANGUAGE } from "./constants";
+import { DEFAULT_CODE_LANGUAGE, DEFAULT_CODE_THEME } from "./constants";
 import { getHast } from "./internal/get-hast";
 import { getHastInServer } from "./internal/get-hast-server";
 import { highlighter } from "./internal/highlighter";
 import { languageImplementationMapping } from "./internal/language-implementation-mapping";
 import { renderHast } from "./internal/render-hast";
+import { themeImplementationMapping } from "./internal/theme-implementation-mapping";
 
 import styles from "./code.scss?inline";
 
 // This is a side-effect that only occurs in the server. We auto-load all
-// languages, since Lit doesn't support at the moment async rendering so we
-// can't lazy load code languages. This trick auto load all code languages
-// as a side-effect when someone imports the ChCode class, so when anyone uses
-// the ChCode class in the server, all languages are preloaded as a side effect
+// languages and themes, since Lit doesn't support at the moment async rendering
+// so we can't lazy load them. This trick auto loads all code languages and
+// themes as a side-effect when someone imports the ChCode class, so when anyone
+// uses the ChCode class in the server, all languages and themes are preloaded
 if (IS_SERVER) {
-  await Promise.allSettled(
-    [...Object.values(languageImplementationMapping)].map(language =>
+  await Promise.allSettled([
+    ...Object.values(languageImplementationMapping).map(language =>
       highlighter.loadLanguage(language())
+    ),
+    ...Object.values(themeImplementationMapping).map(theme =>
+      highlighter.loadTheme(theme())
     )
-  );
+  ]);
 }
 
 /**
@@ -65,6 +69,13 @@ export class ChCode extends KasstorElement {
   showIndicator: boolean = false;
 
   /**
+   * Specifies the Shiki theme to use for syntax highlighting.
+   * Supports all bundled Shiki themes (e.g., `"github-dark"`, `"nord"`,
+   * `"dracula"`) plus `"chameleon-theme-dark"` and `"chameleon-theme-light"`.
+   */
+  @property({ reflect: true }) theme: string = DEFAULT_CODE_THEME;
+
+  /**
    * Specifies the code string to highlight.
    */
   @property() value: string | undefined;
@@ -93,7 +104,11 @@ export class ChCode extends KasstorElement {
     if (this.value && !this.#hastTree) {
       // Sync render for the server
       if (IS_SERVER) {
-        this.#hastTree = getHastInServer(this.value, this.language!);
+        this.#hastTree = getHastInServer(
+          this.value,
+          this.language!,
+          this.theme ?? DEFAULT_CODE_THEME
+        );
       }
       // The component was not rendered in the server and it is the first time
       // that it will rendered any content, so we must add a placeholder to
@@ -134,15 +149,27 @@ export class ChCode extends KasstorElement {
     // we wait until the HAST has been computed. This is the only async
     // function that Lit awaits before rendering the component
     if (!this.wasServerSideRendered) {
-      if (changedProperties.has("value") || changedProperties.has("language")) {
-        const { language, value } = this;
+      if (
+        changedProperties.has("value") ||
+        changedProperties.has("language") ||
+        changedProperties.has("theme")
+      ) {
+        const { language, value, theme } = this;
 
         if (value) {
-          getHast(value, language ?? DEFAULT_CODE_LANGUAGE).then(hast => {
+          getHast(
+            value,
+            language ?? DEFAULT_CODE_LANGUAGE,
+            theme ?? DEFAULT_CODE_THEME
+          ).then(hast => {
             // Since the getHast is async because it needs to lazy load the
-            // language, we have to ensure this Hast result is for the current
-            // value and language, and not for any other old computation
-            if (this.value === value && this.language === language) {
+            // language and theme, we have to ensure this Hast result is for the
+            // current value, language and theme, and not for any old computation
+            if (
+              this.value === value &&
+              this.language === language &&
+              this.theme === theme
+            ) {
               this.#hastTree = hast;
               this.requestUpdate();
             }
@@ -161,7 +188,8 @@ export class ChCode extends KasstorElement {
       // Do we have to cancel the previous await or handle it somehow?
       this.#hastTree = await getHast(
         this.value!,
-        this.language ?? DEFAULT_CODE_LANGUAGE
+        this.language ?? DEFAULT_CODE_LANGUAGE,
+        this.theme ?? DEFAULT_CODE_THEME
       );
     }
 

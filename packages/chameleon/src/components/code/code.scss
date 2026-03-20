@@ -297,17 +297,18 @@
    */
   --ch-code__variable-language: currentColor;
 
-  --shiki-foreground: #eeeeee;
-  --shiki-background: #333333;
-  --shiki-token-constant: #660000;
-  --shiki-token-string: #770000;
-  --shiki-token-comment: #880000;
-  --shiki-token-keyword: #990000;
-  --shiki-token-parameter: #aa0000;
-  --shiki-token-function: #bb0000;
-  --shiki-token-string-expression: #cc0000;
-  --shiki-token-punctuation: #dd0000;
-  --shiki-token-link: #ee0000;
+  // Shiki CSS variables theme defaults (Dark — VS Code Dark+)
+  --shiki-foreground: #d4d4d4;
+  --shiki-background: #1e1e1e;
+  --shiki-token-constant: #569cd6;
+  --shiki-token-string: #ce9178;
+  --shiki-token-comment: #6a9955;
+  --shiki-token-keyword: #c586c0;
+  --shiki-token-parameter: #9cdcfe;
+  --shiki-token-function: #dcdcaa;
+  --shiki-token-string-expression: #ce9178;
+  --shiki-token-punctuation: #d4d4d4;
+  --shiki-token-link: #569cd6;
 
   --ch-code-indicator-color: currentColor;
   --ch-code-inline-size: 1.125ch;
@@ -316,13 +317,29 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  font-family: monospace;
+  font-family: var(--ch-code-font-family, monospace);
   white-space: pre;
   overflow: auto;
 }
 
+// Shiki CSS variables theme defaults (Light — VS Code Light+)
+:host([theme="chameleon-theme-light"]) {
+  --shiki-foreground: #000000;
+  --shiki-background: #ffffff;
+  --shiki-token-constant: #0070c1;
+  --shiki-token-string: #a31515;
+  --shiki-token-comment: #008000;
+  --shiki-token-keyword: #af00db;
+  --shiki-token-parameter: #001080;
+  --shiki-token-function: #795e26;
+  --shiki-token-string-expression: #a31515;
+  --shiki-token-punctuation: #000000;
+  --shiki-token-link: #0000ff;
+}
+
 .pre {
   display: contents;
+  font: inherit;
 }
 
 code {

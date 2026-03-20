@@ -1,9 +1,9 @@
 import { createShikiInternal } from "shiki/core";
 import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
-import { codeDefaultTheme } from "./default-theme";
+import { chameleonCssTheme } from "./default-theme";
 
 export const highlighter = await createShikiInternal({
-  themes: [codeDefaultTheme],
+  themes: [chameleonCssTheme],
 
   engine: createJavaScriptRegexEngine({
     cache: new Map(),

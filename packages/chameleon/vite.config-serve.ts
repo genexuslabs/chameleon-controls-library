@@ -1,5 +1,4 @@
 import { kasstor } from "@genexus/vite-plugin-kasstor";
-import { mercury } from "@genexus/vite-plugin-mercury";
 import {
   defaultMinifyOptions,
   DefaultOptions,
@@ -19,17 +18,11 @@ export default defineConfig({
     emptyOutDir: true
   },
 
-  oxc: {
-    target: "es2021"
-  },
+  // oxc: {
+  //   target: "es2021"
+  // },
 
   plugins: [
-    mercury({
-      cssPreload: {
-        "components/edit": true
-      }
-    }),
-
     kasstor({
       hmr: { component: true }
     }),

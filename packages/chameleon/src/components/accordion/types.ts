@@ -1,4 +1,4 @@
-import { ImageRender } from "../../common/types";
+import type { ImageRender } from "../../typings/multi-state-images";
 
 export type AccordionModel = AccordionItemModel[];
 

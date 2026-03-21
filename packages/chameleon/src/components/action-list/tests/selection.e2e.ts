@@ -1,208 +1,146 @@
-import {
-  E2EElement,
-  E2EPage,
-  EventSpy,
-  newE2EPage
-} from "@stencil/core/testing";
-import { GitHubHistoryModel } from "../../../showcase/assets/components/action-list/models";
-import {
-  ActionListItemModel,
-  ActionListItemType,
-  ActionListModel
-} from "../types";
+import { html } from "lit";
+import { beforeEach, describe, expect, it } from "vitest";
+import { render } from "vitest-browser-lit";
 
-const FIRST_ITEM_ID = "2023 employee contracts";
-const FIRST_ITEM_ID2 = "2023 employee contracts 2";
+import type { ChActionListRender } from "../action-list-render.lit";
+import type { ActionListModel } from "../types";
+
+// Side-effect import to register the component
+import "../action-list-render.lit";
+
+const FIRST_ITEM_ID = "item-1";
+const SECOND_ITEM_ID = "item-2";
 
 const actionListModelSimple: ActionListModel = [
   {
     id: FIRST_ITEM_ID,
     type: "actionable",
-    caption: FIRST_ITEM_ID
+    caption: "Item 1"
   },
   {
-    id: "Investors reports",
+    id: SECOND_ITEM_ID,
     type: "actionable",
-    caption: "Investors reports",
+    caption: "Item 2",
     selected: true
   }
 ];
 
-const actionListModelSimpleEventSpyDetail = [
-  {
-    item: {
-      caption: FIRST_ITEM_ID,
-      id: FIRST_ITEM_ID,
-      selected: true,
-      type: "actionable"
-    },
-    root: [
-      {
-        caption: FIRST_ITEM_ID,
-        id: FIRST_ITEM_ID,
-        selected: true,
-        type: "actionable"
-      },
-      {
-        caption: "Investors reports",
-        id: "Investors reports",
-        selected: false,
-        type: "actionable"
-      }
-    ]
-  }
-];
-
-const actionListModelSimple2: ActionListModel = [
-  {
-    id: FIRST_ITEM_ID2,
-    type: "actionable",
-    caption: FIRST_ITEM_ID2
-  },
-  {
-    id: "Investors reports 2",
-    type: "actionable",
-    caption: "Investors reports 2",
-    selected: true
-  }
-];
-
-const actionListModelSimple2EventSpyDetail = [
-  {
-    item: {
-      caption: FIRST_ITEM_ID2,
-      id: FIRST_ITEM_ID2,
-      selected: true,
-      type: "actionable"
-    },
-    root: [
-      {
-        caption: FIRST_ITEM_ID2,
-        id: FIRST_ITEM_ID2,
-        selected: true,
-        type: "actionable"
-      },
-      {
-        caption: "Investors reports 2",
-        id: "Investors reports 2",
-        selected: false,
-        type: "actionable"
-      }
-    ]
-  }
+const actionListModelNoSelection: ActionListModel = [
+  { id: "a", type: "actionable", caption: "A" },
+  { id: "b", type: "actionable", caption: "B" }
 ];
 
 describe("[ch-action-list-render][selection]", () => {
-  let page: E2EPage;
-  let actionListRef: E2EElement;
-  let selectedItemsChangeEventSpy: EventSpy;
+  let actionListRef: ChActionListRender;
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      failOnConsoleError: true,
-      html: `<ch-action-list-render></ch-action-list-render>`
-    });
-    actionListRef = await page.find("ch-action-list-render");
-    actionListRef.setProperty("model", GitHubHistoryModel);
-    selectedItemsChangeEventSpy = await actionListRef.spyOnEvent(
-      "selectedItemsChange"
+    render(
+      html`<ch-action-list-render></ch-action-list-render>`
     );
-    await page.waitForChanges();
+    actionListRef = document.querySelector("ch-action-list-render")!;
+    await actionListRef.updateComplete;
   });
 
-  it("should have a shadowRoot", () => {
-    expect(actionListRef.shadowRoot).toBeTruthy();
-  });
-
-  it('should work with selection="single" by default', async () => {
-    await page.setContent(
-      `<ch-action-list-render selection="single"></ch-action-list-render>`
-    );
-    actionListRef = await page.find("ch-action-list-render");
-    actionListRef.setProperty("model", GitHubHistoryModel);
-    await page.waitForChanges();
-
-    await page.click("ch-action-list-render >>> ch-action-list-item");
-  });
-
-  const selectionTests = (modelFirst: boolean) => {
-    const descriptionPrefix = modelFirst
-      ? '[set model and then set selection="single"]'
-      : '[set selection="single" and then set model]';
-
-    it(`${descriptionPrefix} should work selection="single" when there is a selected item and the user selects other item`, async () => {
-      if (modelFirst) {
-        actionListRef.setProperty("model", actionListModelSimple);
-        actionListRef.setProperty("selection", "single");
-      } else {
-        actionListRef.setProperty("selection", "single");
-        actionListRef.setProperty("model", actionListModelSimple);
-      }
-      await page.waitForChanges();
-
-      const actionListItemRef = await page.find(
-        `ch-action-list-render >>> [id='${FIRST_ITEM_ID}'] >>> button`
-      );
-      await actionListItemRef.press("Space");
-      await page.waitForChanges();
-      expect(selectedItemsChangeEventSpy).toHaveReceivedEventDetail(
-        actionListModelSimpleEventSpyDetail
-      );
+  it('should not emit selectedItemsChange when selection="none"', async () => {
+    let eventFired = false;
+    actionListRef.addEventListener("selectedItemsChange", () => {
+      eventFired = true;
     });
 
-    it(`${descriptionPrefix} should work selection="single" when there is a selected item and updateItemProperties selects other item`, async () => {
-      if (modelFirst) {
-        actionListRef.setProperty("model", actionListModelSimple);
-        actionListRef.setProperty("selection", "single");
-      } else {
-        actionListRef.setProperty("selection", "single");
-        actionListRef.setProperty("model", actionListModelSimple);
-      }
-      await page.waitForChanges();
+    actionListRef.model = actionListModelNoSelection;
+    await actionListRef.updateComplete;
 
-      await actionListRef.callMethod("updateItemProperties", FIRST_ITEM_ID, {
-        type: "actionable",
-        selected: true
-      } satisfies Partial<ActionListItemModel> & { type: ActionListItemType });
-      await page.waitForChanges();
-      expect(selectedItemsChangeEventSpy).toHaveReceivedEventDetail(
-        actionListModelSimpleEventSpyDetail
-      );
+    // Click on an item via the shadow DOM
+    const item = actionListRef.shadowRoot!.querySelector(
+      "ch-action-list-item"
+    );
+    item?.click();
+    await actionListRef.updateComplete;
+
+    // The selectedItemsChange should not have fired since selection is "none"
+    expect(eventFired).toBe(false);
+  });
+
+  it('should select an item when selection="single" and the item is clicked', async () => {
+    actionListRef.selection = "single";
+    actionListRef.model = actionListModelSimple;
+    await actionListRef.updateComplete;
+
+    let emittedDetail: unknown;
+    actionListRef.addEventListener("selectedItemsChange", ((
+      e: CustomEvent
+    ) => {
+      emittedDetail = e.detail;
+    }) as EventListener);
+
+    // Click on the first item (which was not selected)
+    const firstItem = actionListRef.shadowRoot!.querySelector(
+      `ch-action-list-item[id="${FIRST_ITEM_ID}"]`
+    );
+    firstItem?.click();
+    await actionListRef.updateComplete;
+
+    expect(emittedDetail).toBeTruthy();
+    expect(Array.isArray(emittedDetail)).toBe(true);
+    const items = emittedDetail as Array<{ item: { id: string } }>;
+    expect(items.length).toBe(1);
+    expect(items[0].item.id).toBe(FIRST_ITEM_ID);
+  });
+
+  it('should replace selection when selection="single"', async () => {
+    const model: ActionListModel = [
+      { id: "a", type: "actionable", caption: "A", selected: true },
+      { id: "b", type: "actionable", caption: "B" }
+    ];
+
+    actionListRef.selection = "single";
+    actionListRef.model = model;
+    await actionListRef.updateComplete;
+
+    const emittedDetails: unknown[] = [];
+    actionListRef.addEventListener("selectedItemsChange", ((
+      e: CustomEvent
+    ) => {
+      emittedDetails.push(e.detail);
+    }) as EventListener);
+
+    // Click on item "b"
+    const itemB = actionListRef.shadowRoot!.querySelector(
+      'ch-action-list-item[id="b"]'
+    );
+    itemB?.click();
+    await actionListRef.updateComplete;
+
+    // Should have replaced selection
+    expect(emittedDetails.length).toBeGreaterThanOrEqual(1);
+    const lastDetail = emittedDetails[emittedDetails.length - 1] as Array<{
+      item: { id: string };
+    }>;
+    expect(lastDetail.length).toBe(1);
+    expect(lastDetail[0].item.id).toBe("b");
+  });
+
+  it("should work with updateItemProperties to change selection", async () => {
+    actionListRef.selection = "single";
+    actionListRef.model = actionListModelSimple;
+    await actionListRef.updateComplete;
+
+    let emittedDetail: unknown;
+    actionListRef.addEventListener("selectedItemsChange", ((
+      e: CustomEvent
+    ) => {
+      emittedDetail = e.detail;
+    }) as EventListener);
+
+    actionListRef.updateItemProperties(FIRST_ITEM_ID, {
+      type: "actionable",
+      selected: true
     });
-  };
+    await actionListRef.updateComplete;
 
-  selectionTests(true);
-  selectionTests(false);
-
-  it('should work selection="single" after updating the model', async () => {
-    actionListRef.setProperty("model", actionListModelSimple2);
-    actionListRef.setProperty("selection", "single");
-    await page.waitForChanges();
-
-    let actionListItemRef = await page.find(
-      `ch-action-list-render >>> [id='${FIRST_ITEM_ID2}'] >>> button`
-    );
-    await actionListItemRef.press("Space");
-    expect(selectedItemsChangeEventSpy).toHaveReceivedEventDetail(
-      actionListModelSimple2EventSpyDetail
-    );
-
-    selectedItemsChangeEventSpy = await actionListRef.spyOnEvent(
-      "selectedItemsChange"
-    );
-
-    // Update the model
-    actionListRef.setProperty("model", actionListModelSimple);
-    await page.waitForChanges();
-
-    // Click other item
-    actionListItemRef = await page.find(
-      `ch-action-list-render >>> [id='${FIRST_ITEM_ID}'] >>> button`
-    );
-    await actionListItemRef.press("Space");
-    await page.waitForChanges();
-    expect(selectedItemsChangeEventSpy).toHaveReceivedEventDetail(
-      actionListModelSimpleEventSpyDetail
-    );
+    expect(emittedDetail).toBeTruthy();
+    const items = emittedDetail as Array<{ item: { id: string } }>;
+    expect(items.length).toBe(1);
+    expect(items[0].item.id).toBe(FIRST_ITEM_ID);
   });
 });

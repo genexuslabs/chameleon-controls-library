@@ -1,5 +1,6 @@
-import { GxImageMultiState, ImageRender, ItemLink } from "../../common/types";
-import { ChPopoverAlign } from "../popover/types";
+import type { GxImageMultiState, ImageRender } from "../../typings/multi-state-images";
+import type { ItemLink } from "../../typings/hyperlinks";
+import type { ChPopoverAlign } from "../popover/types";
 
 export type ActionMenuModel = ActionMenuItemModel[];
 

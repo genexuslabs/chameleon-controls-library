@@ -1,4 +1,4 @@
-@import "../../../../common/_base";
+@use "../../../../utilities/scss/base" as *;
 
 // Must be placed after the ":where(a, button)"
 @include button-reset();

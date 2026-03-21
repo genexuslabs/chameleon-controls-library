@@ -12,6 +12,64 @@ import { testBasicInterfaceChecks } from "../implementation/basic-interface-chec
 disableAccessibilityReports();
 
 export const testConfiguration = {
+  "ch-accordion-render": {
+    interface: {
+      disabled: false,
+      expandableButtonPosition: "end",
+      getImagePathCallback: undefined,
+      model: undefined,
+      singleItemExpanded: false
+    }
+  },
+
+  "ch-action-group-render": {
+    interface: {
+      disabled: false,
+      getImagePathCallback: undefined,
+      gxImageConstructor: undefined,
+      gxSettings: undefined,
+      itemsOverflowBehavior: "responsive-collapse",
+      model: undefined,
+      moreActionsAccessibleName: "Show more actions",
+      moreActionsBlockAlign: "outside-end",
+      moreActionsCaption: undefined,
+      moreActionsInlineAlign: "inside-start",
+      useGxRender: false
+    }
+  },
+
+  "ch-action-menu-render": {
+    interface: {
+      buttonAccessibleName: undefined,
+      blockAlign: "outside-end",
+      disabled: false,
+      expanded: false,
+      getImagePathCallback: undefined,
+      gxImageConstructor: undefined,
+      gxSettings: undefined,
+      inlineAlign: "center",
+      model: undefined,
+      positionTry: "none",
+      useGxRender: false
+    }
+  },
+
+  "ch-action-list-render": {
+    interface: {
+      checkbox: false,
+      checked: false,
+      disabled: false,
+      editableItems: true,
+      fixItemCallback: undefined,
+      getImagePathCallback: undefined,
+      model: [],
+      modifyItemCaptionCallback: undefined,
+      renderItem: undefined,
+      removeItemCallback: undefined,
+      selection: "none"
+    }
+  },
+
   "ch-checkbox": {
     interface: {
       accessibleName: undefined,
@@ -25,6 +83,30 @@ export const testConfiguration = {
       startImgSrc: undefined,
       startImgType: "background",
       value: "on"
+    },
+    options: {
+      shadow: {
+        delegatesFocus: true,
+        formAssociated: true
+      }
+    }
+  },
+
+  "ch-combo-box-render": {
+    interface: {
+      accessibleName: undefined,
+      disabled: false,
+      getImagePathCallback: undefined,
+      hostParts: undefined,
+      model: [],
+      multiple: false,
+      name: undefined,
+      popoverInlineAlign: "inside-start",
+      readonly: false,
+      resizable: false,
+      suggest: false,
+      suggestDebounce: 250,
+      value: undefined
     },
     options: {
       shadow: {
@@ -110,6 +192,32 @@ export const testConfiguration = {
       selectedLinkIndicator: false,
       showCaptionOnCollapse: "inline",
       tooltipDelay: 100
+    }
+  },
+
+  "ch-math-viewer": {
+    interface: {
+      displayMode: "block",
+      value: undefined
+    }
+  },
+
+  "ch-popover": {
+    interface: {
+      actionById: false,
+      actionElement: undefined,
+      allowDrag: "no",
+      blockAlign: "center",
+      blockSizeMatch: "content",
+      closeOnClickOutside: false,
+      firstLayer: true,
+      inlineAlign: "center",
+      inlineSizeMatch: "content",
+      mode: "auto",
+      overflowBehavior: "overflow",
+      positionTry: "none",
+      resizable: false,
+      show: false
     }
   },
 
@@ -217,6 +325,18 @@ export const testConfiguration = {
     }
   },
 
+  "ch-status": {
+    interface: {
+      accessibleName: undefined,
+      loadingRegionRef: undefined
+    },
+    options: {
+      shadow: {
+        formAssociated: true
+      }
+    }
+  },
+
   "ch-switch": {
     interface: {
       accessibleName: undefined,
@@ -233,6 +353,28 @@ export const testConfiguration = {
         delegatesFocus: true,
         formAssociated: true
       }
+    }
+  },
+
+  "ch-tab-render": {
+    interface: {
+      accessibleName: undefined,
+      closeButton: false,
+      closeButtonAccessibleName: "Close",
+      contain: "none",
+      disabled: false,
+      dragOutside: false,
+      expanded: true,
+      getImagePathCallback: undefined,
+      model: undefined,
+      overflow: "visible",
+      selectedId: undefined,
+      showCaptions: true,
+      showTabListEnd: false,
+      showTabListStart: false,
+      sortable: false,
+      tabButtonHidden: false,
+      tabListPosition: "block-start"
     }
   },
 

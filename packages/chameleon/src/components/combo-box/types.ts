@@ -1,9 +1,9 @@
-import {
+import type {
   GxImageMultiState,
   GxImageMultiStateEnd,
   GxImageMultiStateStart,
   ImageRender
-} from "../../common/types";
+} from "../../typings/multi-state-images";
 
 export type ComboBoxModel = ComboBoxItemModel[];
 

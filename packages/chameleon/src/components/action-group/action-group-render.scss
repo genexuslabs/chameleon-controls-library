@@ -1,4 +1,4 @@
-@import "../../common/_base";
+@use "../../utilities/scss/base" as *;
 
 @include box-sizing();
 

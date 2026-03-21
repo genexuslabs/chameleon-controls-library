@@ -1,5 +1,5 @@
-@import "../../../../common/base";
-@import "../../../../common/icons";
+@use "../../../../utilities/scss/base" as *;
+@use "../../../../utilities/scss/icons" as *;
 
 @include button-reset();
 @include box-sizing();

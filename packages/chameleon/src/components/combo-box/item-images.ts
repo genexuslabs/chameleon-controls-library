@@ -1,8 +1,8 @@
-import {
+import type {
   GxImageMultiStateEnd,
   GxImageMultiStateStart
-} from "../../common/types";
-import { updateDirectionInImageCustomVar } from "../../common/utils";
+} from "../../typings/multi-state-images";
+import { updateDirectionInImageCustomVar } from "../../utilities/multi-state-icons";
 import {
   ComboBoxImagePathCallback,
   ComboBoxItemGroup,

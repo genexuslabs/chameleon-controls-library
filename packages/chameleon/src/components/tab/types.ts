@@ -1,8 +1,5 @@
-import {
-  CssContainProperty,
-  CssOverflowProperty,
-  ImageRender
-} from "../../common/types";
+import type { CssContainProperty, CssOverflowProperty } from "../../typings/css-properties";
+import type { ImageRender } from "../../typings/multi-state-images";
 
 export type TabListPosition =
   | "block-start"

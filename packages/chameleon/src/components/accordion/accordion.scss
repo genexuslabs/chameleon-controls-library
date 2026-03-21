@@ -1,5 +1,5 @@
-@import "../../common/base";
-@import "../../common/icons";
+@use "../../utilities/scss/base" as *;
+@use "../../utilities/scss/icons" as *;
 
 @include button-reset();
 @include box-sizing();
@@ -39,20 +39,6 @@
    * @default linear
    */
   --ch-accordion-expand-collapse-timing-function: linear;
-
-  /**
-   * @prop --ch-accordion__header-image-size:
-   * Specifies the box size that contains the start image of the header.
-   * @default #{$default-decorative-image-size}
-   */
-  --ch-accordion__header-image-size: #{$default-decorative-image-size};
-
-  /**
-   * @prop --ch-accordion__header-background-image-size:
-   * Specifies the size of the start image of the header.
-   * @default 100%
-   */
-  --ch-accordion__header-background-image-size: 100%;
 
   /**
    * @prop --ch-accordion__header-background-image:
@@ -119,53 +105,6 @@
       transform: rotate(-180deg); // TODO: Add support for RTL
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - -
-//                 Images
-// - - - - - - - - - - - - - - - - - - - -
-.header {
-  --ch-accordion-header-start-img: var(--ch-start-img--base);
-
-  &.start-img--hover:hover {
-    --ch-accordion-header-start-img: var(--ch-start-img--hover);
-  }
-
-  &.start-img--active:active {
-    --ch-accordion-header-start-img: var(--ch-start-img--active);
-  }
-
-  &.start-img--focus:focus {
-    --ch-accordion-header-start-img: var(--ch-start-img--focus);
-  }
-
-  &.start-img--disabled.ch-disabled {
-    --ch-accordion-header-start-img: var(--ch-start-img--disabled);
-  }
-}
-
-.pseudo-img--start::before {
-  content: "";
-  display: block;
-  inline-size: var(--ch-accordion__header-image-size);
-  block-size: var(--ch-accordion__header-image-size);
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-accordion__header-image-size);
-}
-
-// Background
-.start-img-type--background::before {
-  background: no-repeat center /
-    var(--ch-accordion__header-background-image-size)
-    var(--ch-accordion-header-start-img);
-}
-
-// Mask
-.start-img-type--mask::before {
-  -webkit-mask: no-repeat center /
-    var(--ch-accordion__header-background-image-size)
-    var(--ch-accordion-header-start-img);
-  background-color: currentColor;
 }
 
 section {

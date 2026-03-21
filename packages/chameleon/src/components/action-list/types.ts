@@ -1,5 +1,5 @@
-import { GxImageMultiState, ImageRender } from "../../common/types";
-// import { ChActionListRender } from "./action-list-render";
+import type { GxImageMultiState, ImageRender } from "../../typings/multi-state-images";
+// import { ChActionListRender } from "./action-list-render.lit";
 
 export type ActionListModel = ActionListItemModel[];
 

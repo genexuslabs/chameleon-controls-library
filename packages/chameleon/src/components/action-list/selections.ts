@@ -1,5 +1,5 @@
-import { ChActionListRender } from "./action-list-render";
-import { ActionListItemModelExtended, ActionListModel } from "./types";
+import type { ChActionListRender } from "./action-list-render.lit";
+import type { ActionListItemModelExtended, ActionListModel } from "./types";
 import { getActionListItemOrGroupInfo } from "./utils";
 
 export const setActionListSelectedItems = (

@@ -1,5 +1,5 @@
-import { KEY_CODES } from "../../../common/reserved-names";
-import {
+import { KEY_CODES } from "../../../utilities/reserved-names/key-codes";
+import type {
   ActionMenuItemActionableModel,
   ActionMenuKeyboardActionResult
 } from "../types";

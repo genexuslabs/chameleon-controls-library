@@ -8,6 +8,9 @@ export type ChameleonControlsTagName = FilterKeys<
 
 export type ChameleonPublicControlsTagName = Exclude<
   ChameleonControlsTagName,
+  | "ch-action-list-group"
+  | "ch-action-list-item"
+  | "ch-action-menu"
   | "ch-component-render"
   | "ch-navigation-list-item"
   | "ch-performance-scan-item"

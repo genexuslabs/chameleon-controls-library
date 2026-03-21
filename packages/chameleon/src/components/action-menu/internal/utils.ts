@@ -1,10 +1,10 @@
-import {
+import type {
   ActionMenuInfoInEvent,
   ActionMenuItemActionableModel,
   ActionMenuItemModel
 } from "../types";
-import { ChameleonControlsTagName } from "../../../common/types";
-import { focusComposedPath } from "../../common/helpers";
+import type { ChameleonControlsTagName } from "../../../typings/chameleon-components";
+import { focusComposedPath } from "../../../utilities/focus-composed-path";
 
 export const WINDOW_ID = "window";
 export const ACTION_MENU_RENDER_TAG_NAME =

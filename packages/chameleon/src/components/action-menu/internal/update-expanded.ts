@@ -1,4 +1,4 @@
-import { ActionMenuItemActionableModel, ActionMenuModel } from "../types";
+import type { ActionMenuItemActionableModel, ActionMenuModel } from "../types";
 import { getActionMenuItemMetadata } from "./parse-model";
 import { actionMenuItemIsActionable } from "./utils";
 

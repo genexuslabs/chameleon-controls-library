@@ -271,24 +271,26 @@ function updateMembers<T extends HostAttributeMember>(
   );
 
   // Find the difference between the last and current state. The last state
-  // will be used to store the styles that no longer are rendered. The current
-  // state will be used to store the styles that must be added or update in the
-  // render
-  [...previousRenderedStyles].forEach(([previousValue, key]) => {
-    const currentStyle = currentRenderedStyles.get(key);
+  // will be used to store the members that no longer are rendered. The current
+  // state will be used to store the members that must be added or updated in
+  // the render
+  [...previousRenderedStyles].forEach(([key, previousValue]) => {
+    const currentValue = currentRenderedStyles.get(key);
 
-    // Same value. Nothing to do
-    if (currentStyle && previousValue === previousValue) {
+    // Same value. Nothing to do — remove from both maps so neither is
+    // added nor removed
+    if (currentValue && previousValue === currentValue) {
       previousRenderedStyles.delete(key);
       currentRenderedStyles.delete(key);
     }
-    // Different value. Update the value by keeping the key in the
-    // currentRenderedStyles variable
-    else if (currentStyle) {
-      previousRenderedStyles.delete(key);
-    }
+    // Different value. Keep both entries: the old one in
+    // previousRenderedStyles will be removed and the new one in
+    // currentRenderedStyles will be added
   });
 
-  addMemberDictionary[type](elementRef, currentRenderedStyles);
+  // Remove old members first, then add new ones. This order is critical for
+  // events: addEventListener is a no-op for duplicate handler references, so
+  // if we add first and then remove, we'd end up with zero listeners
   removeMemberDictionary[type](elementRef, previousRenderedStyles);
+  addMemberDictionary[type](elementRef, currentRenderedStyles);
 }

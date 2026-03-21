@@ -1,5 +1,5 @@
-import { MODEL_METADATA } from "../../../common/reserved-names";
-import {
+import { MODEL_METADATA } from "../../../utilities/reserved-names/common";
+import type {
   ActionMenuItemActionableModel,
   ActionMenuItemModel,
   ActionMenuItemModelMetadata,

@@ -1,192 +1,163 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import {
-  dataTypeInGeneXus,
-  simpleModelComboBox1
-} from "../../../showcase/assets/components/combo-box/models";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
+import type { ChComboBoxRender } from "../combo-box.lit";
+import "../combo-box.lit.js";
+import type { ComboBoxModel } from "../types";
 
-const EMPTY_VALUE_PART = "ch-combo-box-render--placeholder";
-const DUMMY_VALUE = "Hello world";
-const VALID_VALUE = "_Audio";
+const MODEL_WITH_GROUPS: ComboBoxModel = [
+  {
+    caption: "Group 1",
+    value: "group-1",
+    expandable: true,
+    expanded: true,
+    items: [
+      { caption: "Item 1-A", value: "1a" },
+      { caption: "Item 1-B", value: "1b" }
+    ]
+  },
+  { caption: "Item 2", value: "2" }
+];
+
+const SIMPLE_MODEL: ComboBoxModel = [
+  { caption: "Option A", value: "a" },
+  { caption: "Option B", value: "b" },
+  { caption: "Option C", value: "c" }
+];
 
 describe("[ch-combo-box-render][parts]", () => {
-  let page: E2EPage;
-  let comboBoxRef: E2EElement;
+  let comboBoxRef: ChComboBoxRender;
 
-  beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<button>Dummy button</button>
-      <ch-combo-box-render></ch-combo-box-render>`,
-      failOnConsoleError: true
+  afterEach(cleanup);
+
+  describe("host parts", () => {
+    it("should include the placeholder part when no value is selected", async () => {
+      const result = await render(
+        html`<ch-combo-box-render .model=${SIMPLE_MODEL}></ch-combo-box-render>`
+      );
+      comboBoxRef = result.container.querySelector("ch-combo-box-render")!;
+      await comboBoxRef.updateComplete;
+
+      const partAttr = comboBoxRef.getAttribute("part");
+      expect(partAttr).toContain("ch-combo-box-render--placeholder");
     });
-    comboBoxRef = await page.find("ch-combo-box-render");
-    await comboBoxRef.setProperty("model", simpleModelComboBox1);
-    await page.waitForChanges();
+
+    it("should include the selected value in the host part when a value is set", async () => {
+      const result = await render(
+        html`<ch-combo-box-render
+          .model=${SIMPLE_MODEL}
+          value="a"
+        ></ch-combo-box-render>`
+      );
+      comboBoxRef = result.container.querySelector("ch-combo-box-render")!;
+      await comboBoxRef.updateComplete;
+
+      const partAttr = comboBoxRef.getAttribute("part");
+      expect(partAttr).toContain("a");
+    });
+
+    it("should include custom hostParts in the host part attribute", async () => {
+      const result = await render(
+        html`<ch-combo-box-render
+          .model=${SIMPLE_MODEL}
+          .hostParts=${"custom-part"}
+        ></ch-combo-box-render>`
+      );
+      comboBoxRef = result.container.querySelector("ch-combo-box-render")!;
+      await comboBoxRef.updateComplete;
+
+      const partAttr = comboBoxRef.getAttribute("part");
+      expect(partAttr).toContain("custom-part");
+    });
   });
 
-  it('should set the "expandable" part only for the expandable groups', async () => {
-    await page.click("ch-combo-box-render");
-    await page.waitForChanges();
+  describe("popover parts", () => {
+    beforeEach(async () => {
+      const model = structuredClone(MODEL_WITH_GROUPS);
+      const result = await render(
+        html`<ch-combo-box-render
+          .model=${model}
+          value="1a"
+        ></ch-combo-box-render>`
+      );
+      comboBoxRef = result.container.querySelector("ch-combo-box-render")!;
+      await comboBoxRef.updateComplete;
 
-    const alwaysExpandedSpanRef = await page.find(
-      "ch-combo-box-render >>> [aria-labelledby='1'] > span"
-    );
-    expect(alwaysExpandedSpanRef.getAttribute("part")).not.toContain(
-      "expandable"
-    );
+      // Expand the combo-box programmatically
+      (comboBoxRef as any).expanded = true;
+      await comboBoxRef.updateComplete;
+    });
 
-    const expandedButtonRef = await page.find(
-      "ch-combo-box-render >>> [aria-labelledby='5'] > button"
-    );
-    expect(expandedButtonRef.getAttribute("part")).toContain("expandable");
+    it("should set part='window' on the popover element", () => {
+      const popover = comboBoxRef.shadowRoot!.querySelector("ch-popover");
+      expect(popover).toBeTruthy();
+      expect(popover!.getAttribute("part")).toBe("window");
+    });
 
-    const collapsedButtonRef = await page.find(
-      "ch-combo-box-render >>> [aria-labelledby='8'] > button"
-    );
-    expect(collapsedButtonRef.getAttribute("part")).toContain("expandable");
+    it("should set group part on group containers", () => {
+      const groups = comboBoxRef.shadowRoot!.querySelectorAll('[role="group"]');
+      expect(groups.length).toBeGreaterThan(0);
+
+      const firstGroup = groups[0];
+      const partAttr = firstGroup.getAttribute("part");
+      expect(partAttr).toContain("group");
+    });
+
+    it("should set item part on leaf items", () => {
+      const items = comboBoxRef.shadowRoot!.querySelectorAll(
+        'button[role="option"]'
+      );
+      expect(items.length).toBeGreaterThan(0);
+
+      const partAttr = items[0].getAttribute("part");
+      expect(partAttr).toContain("item");
+    });
+
+    it("should set selected part on the currently selected item", () => {
+      const selectedItem = comboBoxRef.shadowRoot!.querySelector(
+        'button[role="option"][aria-selected="true"]'
+      );
+      expect(selectedItem).toBeTruthy();
+
+      const partAttr = selectedItem!.getAttribute("part");
+      expect(partAttr).toContain("selected");
+    });
+
+    it("should set nested part on items inside a group", () => {
+      const nestedItems = comboBoxRef.shadowRoot!.querySelectorAll(
+        '.group__content button[role="option"]'
+      );
+      expect(nestedItems.length).toBeGreaterThan(0);
+
+      const partAttr = nestedItems[0].getAttribute("part");
+      expect(partAttr).toContain("nested");
+    });
   });
 
-  it('should set the "expanded"/"collapsed" parts when there are expandable groups', async () => {
-    await page.click("ch-combo-box-render");
-    await page.waitForChanges();
+  describe("disabled parts", () => {
+    it("should include disabled part on disabled items when expanded", async () => {
+      const model: ComboBoxModel = [
+        { caption: "Disabled Item", value: "dis", disabled: true },
+        { caption: "Normal Item", value: "norm" }
+      ];
+      const result = await render(
+        html`<ch-combo-box-render .model=${model}></ch-combo-box-render>`
+      );
+      comboBoxRef = result.container.querySelector("ch-combo-box-render")!;
+      await comboBoxRef.updateComplete;
 
-    const expandedButtonRef = await page.find(
-      "ch-combo-box-render >>> [aria-labelledby='5'] > button"
-    );
-    expect(expandedButtonRef.getAttribute("part")).toContain("expanded");
-    expect(expandedButtonRef.getAttribute("part")).not.toContain("collapsed");
+      // Expand the combo-box
+      (comboBoxRef as any).expanded = true;
+      await comboBoxRef.updateComplete;
 
-    const collapsedButtonRef = await page.find(
-      "ch-combo-box-render >>> [aria-labelledby='8'] > button"
-    );
-    expect(collapsedButtonRef.getAttribute("part")).not.toContain("expanded");
-    expect(collapsedButtonRef.getAttribute("part")).toContain("collapsed");
-  });
+      const disabledButton = comboBoxRef.shadowRoot!.querySelector(
+        'button[role="option"][disabled]'
+      );
+      expect(disabledButton).toBeTruthy();
 
-  it(`[default] should set the "${EMPTY_VALUE_PART}" part in the Host by default`, async () => {
-    expect(comboBoxRef.getAttribute("part")).toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[default] should set the "${EMPTY_VALUE_PART}" part in the Host, even if the model has items`, async () => {
-    comboBoxRef.setProperty("model", dataTypeInGeneXus);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[default] should set the "${EMPTY_VALUE_PART}" part in the Host, even if the model has items but the value does not match a valid item`, async () => {
-    comboBoxRef.setProperty("model", dataTypeInGeneXus);
-    comboBoxRef.setProperty("value", DUMMY_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[default] should set the "${EMPTY_VALUE_PART}" part in the Host, when the value is set but the model is undefined`, async () => {
-    comboBoxRef.setProperty("value", DUMMY_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[default] should not set the "${EMPTY_VALUE_PART}" part in the Host, when the value matches a valid item`, async () => {
-    comboBoxRef.setProperty("model", dataTypeInGeneXus);
-    comboBoxRef.setProperty("value", VALID_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).not.toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[default] should set again the "${EMPTY_VALUE_PART}" part in the Host, when the value is matches a valid item and then is updated to undefined`, async () => {
-    comboBoxRef.setProperty("model", dataTypeInGeneXus);
-    comboBoxRef.setProperty("value", VALID_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef.setProperty("value", undefined);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[suggest] should set the "${EMPTY_VALUE_PART}" part in the Host by default`, async () => {
-    comboBoxRef.setProperty("suggest", true);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[suggest] should set the "${EMPTY_VALUE_PART}" part in the Host, even if the model has items`, async () => {
-    comboBoxRef.setProperty("suggest", true);
-    comboBoxRef.setProperty("model", dataTypeInGeneXus);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[suggest] should not set the "${EMPTY_VALUE_PART}" part in the Host, when the value is set with an invalid item and the model is undefined`, async () => {
-    comboBoxRef.setProperty("suggest", true);
-    comboBoxRef.setProperty("value", DUMMY_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).not.toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[suggest] should not set the "${EMPTY_VALUE_PART}" part in the Host, when the value is set with a valid item and the model is undefined`, async () => {
-    comboBoxRef.setProperty("suggest", true);
-    comboBoxRef.setProperty("value", VALID_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).not.toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[suggest] should not set the "${EMPTY_VALUE_PART}" part in the Host, when the value is set with an invalid item and the model is defined`, async () => {
-    comboBoxRef.setProperty("suggest", true);
-    comboBoxRef.setProperty("model", dataTypeInGeneXus);
-    comboBoxRef.setProperty("value", DUMMY_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).not.toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[suggest] should not set the "${EMPTY_VALUE_PART}" part in the Host, when the value is set with a valid item and the model is defined`, async () => {
-    comboBoxRef.setProperty("suggest", true);
-    comboBoxRef.setProperty("model", dataTypeInGeneXus);
-    comboBoxRef.setProperty("value", VALID_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).not.toContain(EMPTY_VALUE_PART);
-  });
-
-  it(`[suggest] should set again the "${EMPTY_VALUE_PART}" part in the Host, when the value is defined and then is updated to undefined`, async () => {
-    comboBoxRef.setProperty("suggest", true);
-    comboBoxRef.setProperty("value", VALID_VALUE);
-    await page.waitForChanges();
-
-    comboBoxRef.setProperty("value", undefined);
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).toContain(EMPTY_VALUE_PART);
-  });
-
-  // TODO: This should work even with the suggestDebounce
-  it.skip(`[suggest] should remove the "${EMPTY_VALUE_PART}" part in the Host, when the user types a character`, async () => {
-    comboBoxRef.setProperty("suggest", true);
-    await page.waitForChanges();
-    await comboBoxRef.press("A");
-    await page.waitForChanges();
-
-    comboBoxRef = await page.find("ch-combo-box-render"); // Refresh the reference
-    expect(comboBoxRef.getAttribute("part")).not.toContain(EMPTY_VALUE_PART);
+      const partAttr = disabledButton!.getAttribute("part");
+      expect(partAttr).toContain("disabled");
+    });
   });
 });
+

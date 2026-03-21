@@ -1,4 +1,4 @@
-import { ChameleonControlsTagName } from "../../common/types";
+import type { ChameleonControlsTagName } from "../../typings/chameleon-components";
 import { getComboBoxItemUIModel } from "./renders";
 import {
   ComboBoxItemGroup,

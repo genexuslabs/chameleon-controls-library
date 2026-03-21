@@ -1,4 +1,4 @@
-@import "../../common/base";
+@use "../../utilities/scss/base" as *;
 
 @include button-reset();
 @include box-sizing();

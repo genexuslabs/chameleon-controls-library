@@ -1,4 +1,4 @@
-import {
+import type {
   ActionListItemActionable,
   ActionListItemGroup,
   ActionListItemModelExtended,
@@ -6,6 +6,10 @@ import {
   ActionListItemModelExtendedRoot,
   ActionListModel
 } from "./types";
+
+// Type imports from Lit components
+import type { ChActionListItem } from "./internal/action-list-item/action-list-item.lit";
+import type { ChActionListGroup } from "./internal/action-list-group/action-list-group.lit";
 
 // Tags
 export const ACTION_LIST_ITEM_TAG = "ch-action-list-item";
@@ -20,7 +24,7 @@ export const ACTION_LIST_GROUP_SELECTOR = (id: string) =>
 
 export const getActionListOrGroupItemFromEvent = (
   event: KeyboardEvent | PointerEvent
-): HTMLChActionListItemElement | HTMLChActionListGroupElement | undefined => {
+): ChActionListItem | ChActionListGroup | undefined => {
   event.stopPropagation();
 
   return event.composedPath().find(el => {
@@ -29,7 +33,7 @@ export const getActionListOrGroupItemFromEvent = (
     return (
       tagName === ACTION_LIST_ITEM_TAG || tagName === ACTION_LIST_GROUP_TAG
     );
-  }) as HTMLChActionListItemElement | HTMLChActionListGroupElement | undefined;
+  }) as ChActionListItem | ChActionListGroup | undefined;
 };
 
 export const getActionListOrGroupItemIndex = (
@@ -49,6 +53,6 @@ export const getActionListItemOrGroupInfo = (
   itemId: string,
   flattenedModel: Map<string, ActionListItemModelExtended>
 ) =>
-  flattenedModel.get(itemId).item as
+  flattenedModel.get(itemId)!.item as
     | ActionListItemActionable
     | ActionListItemGroup;

@@ -1,7 +1,7 @@
-import { KEY_CODES } from "../../common/reserved-names";
-import { ChameleonControlsTagName } from "../../common/types";
-import { focusComposedPath, mouseEventModifierKey } from "../common/helpers";
-import {
+import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
+import type { ChameleonControlsTagName } from "../../typings/chameleon-components";
+import { focusComposedPath, mouseEventModifierKey } from "../../utilities/focus-composed-path";
+import type {
   ActionListItemActionable,
   ActionListItemGroup,
   ActionListItemModelExtended,
@@ -15,6 +15,7 @@ import {
   getActionListOrGroupItemFromEvent,
   getActionListOrGroupItemIndex
 } from "./utils";
+import type { ChActionListRender } from "./action-list-render.lit";
 
 const EDIT_KEY = KEY_CODES.F2;
 const ACTION_LIST_ITEM_TAG_NAME =
@@ -23,24 +24,24 @@ const ACTION_LIST_ITEM_TAG_NAME =
 const isActionListItem = (element: HTMLElement) =>
   element.tagName.toLowerCase() === ACTION_LIST_ITEM_TAG_NAME;
 
-const getFocusedActionListItem = (): HTMLChActionListItemElement | undefined =>
-  focusComposedPath().find(isActionListItem) as HTMLChActionListItemElement;
+const getFocusedActionListItem = (): ChActionListItem | undefined =>
+  focusComposedPath().find(isActionListItem) as ChActionListItem | undefined;
 
 const focusItemById = (
   itemInfo: ActionListItemActionable | ActionListItemGroup,
-  actionListRef: HTMLChActionListRenderElement,
+  actionListRef: ChActionListRender,
   event: KeyboardEvent
 ) => {
-  const itemRef = actionListRef.shadowRoot.querySelector(
+  const itemRef = actionListRef.shadowRoot!.querySelector(
     itemInfo.type === "actionable"
       ? ACTION_LIST_ITEM_SELECTOR(itemInfo.id)
       : ACTION_LIST_GROUP_SELECTOR(itemInfo.id)
-  ) as HTMLChActionListItemElement | HTMLChActionListGroupElement;
+  ) as ChActionListItem | ChActionListGroup;
 
   const ctrlKeyIsPressed = mouseEventModifierKey(event);
 
   if (itemInfo.type === "group") {
-    (itemRef as HTMLChActionListGroupElement).setFocus();
+    (itemRef as ChActionListGroup).setFocus();
 
     // Trigger item selection when the ctrl key is not pressed
     if (!ctrlKeyIsPressed) {
@@ -73,7 +74,7 @@ const focusNextItemFirstLevel = (
   startIndex: number,
   items: ActionListModel,
   currentFocusedId: string,
-  actionListRef: HTMLChActionListRenderElement,
+  actionListRef: ChActionListRender,
   event: KeyboardEvent,
   increment: 1 | -1 // Determine the ARROW/focus direction
 ) => {
@@ -134,7 +135,7 @@ const focusNextItemFirstLevel = (
 function focusNextItemSecondLevel(
   startIndex: number,
   items: ActionListItemActionable[],
-  actionListRef: HTMLChActionListRenderElement,
+  actionListRef: ChActionListRender,
   event: KeyboardEvent,
   increment: 1 | -1
 ): boolean {
@@ -156,7 +157,7 @@ function focusNextItemSecondLevel(
 
 const keyboardDictionary = {
   [KEY_CODES.ARROW_UP]: (
-    actionListRef: HTMLChActionListRenderElement,
+    actionListRef: ChActionListRender,
     flattenedModel: Map<string, ActionListItemModelExtended>,
     event: KeyboardEvent
   ) => {
@@ -227,7 +228,7 @@ const keyboardDictionary = {
   },
 
   [KEY_CODES.ARROW_DOWN]: (
-    actionListRef: HTMLChActionListRenderElement,
+    actionListRef: ChActionListRender,
     flattenedModel: Map<string, ActionListItemModelExtended>,
     event: KeyboardEvent
   ) => {
@@ -292,7 +293,7 @@ const keyboardDictionary = {
     }
   },
 
-  [EDIT_KEY]: (actionListRef, _, event) => {
+  [EDIT_KEY]: (actionListRef: ChActionListRender, _: unknown, event: KeyboardEvent) => {
     const actionListItem = getFocusedActionListItem();
 
     // TODO: Add support to edit items even if editable === undefined. This case
@@ -312,7 +313,7 @@ const keyboardDictionary = {
   }
 } satisfies {
   [key: string]: (
-    actionListRef: HTMLChActionListRenderElement,
+    actionListRef: ChActionListRender,
     flattenedModel: Map<string, ActionListItemModelExtended>,
     event: KeyboardEvent
   ) => void;
@@ -320,7 +321,7 @@ const keyboardDictionary = {
 
 export const actionListKeyboardNavigation =
   (
-    actionListRef: HTMLChActionListRenderElement,
+    actionListRef: ChActionListRender,
     flattenedModel: Map<string, ActionListItemModelExtended>
   ) =>
   (event: KeyboardEvent) => {
@@ -330,3 +331,7 @@ export const actionListKeyboardNavigation =
       keyboardEventHandler(actionListRef, flattenedModel, event);
     }
   };
+
+// Type references for internal components used in keyboard navigation
+type ChActionListItem = import("./internal/action-list-item/action-list-item.lit").ChActionListItem;
+type ChActionListGroup = import("./internal/action-list-group/action-list-group.lit").ChActionListGroup;

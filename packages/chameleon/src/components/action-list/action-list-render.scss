@@ -1,0 +1,55 @@
+@import "../../common/base";
+@import "../../common/icons";
+
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-action-list-item__image-size:
+   * Specifies the box size that contains the images for the additional images.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-action-list-item__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-action-list-item__background-image-size:
+   * Specifies the image size of the additional images.
+   * @default 100%
+   */
+  --ch-action-list-item__background-image-size: 100%;
+
+  /**
+   * @prop --ch-action-list-group__expandable-button-size:
+   * Specifies the box size that contains the expandable button image.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-action-list-group__expandable-button-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-action-list-group__expandable-button-image-size:
+   * Specifies the image size of the expandable button.
+   * @default 100%
+   */
+  --ch-action-list-group__expandable-button-image-size: 100%;
+
+  --ch-action-list-item__additional-item-fixed-image: #{$unpin-outlined};
+  --ch-action-list-item__additional-item-not-fixed-image: #{$pin-outlined};
+  --ch-action-list-item__additional-item-remove-image: #{$remove};
+  --ch-action-list-item__additional-item-modify-image: #{$edit};
+  --ch-action-list-item__additional-item-confirm-image: #{$confirm-icon};
+  --ch-action-list-item__additional-item-cancel-image: #{$close-icon};
+
+  --ch-action-list-item__action-color: currentColor;
+
+  display: grid;
+  grid-auto-rows: max-content;
+  block-size: 100%;
+  overflow: auto;
+  contain: size;
+}
+
+.separator {
+  display: grid;
+  block-size: 1px;
+  background-color: currentColor;
+}

@@ -6,7 +6,6 @@
   display: flex;
   align-items: stretch;
   gap: 2px;
-  background: var(--showcase-tabs-bg, #1e1e1e);
   padding: 4px 4px 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -17,18 +16,22 @@
 }
 
 .tab {
-  all: unset;
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
   font-size: 13px;
+  font-family: inherit;
   cursor: pointer;
+  user-select: none;
   border-radius: 4px 4px 0 0;
   background: var(--showcase-tab-bg, #2d2d2d);
   color: var(--showcase-tab-color, #9ca3af);
   white-space: nowrap;
-  transition: background 0.1s, color 0.1s;
+  transition:
+    background 0.1s,
+    color 0.1s;
+  outline-offset: -2px;
 
   &:hover {
     background: var(--showcase-tab-hover-bg, #3a3a3a);
@@ -84,3 +87,4 @@
     color: var(--showcase-tab-hover-color, #d1d5db);
   }
 }
+

@@ -67,6 +67,11 @@ export function buildNavigationModel(): NavigationListModel {
       caption: "Getting Started",
       link: { url: "/getting-started" }
     },
+    {
+      id: "json-render",
+      caption: "ch-json-render",
+      link: { url: "/json-render" }
+    },
     ...CATEGORIES.map(category => ({
       id: `category-${category.caption.toLowerCase()}`,
       caption: category.caption,

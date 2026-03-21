@@ -19,6 +19,7 @@ import "./pages/home/showcase-home.lit";
 import "./pages/getting-started/showcase-getting-started.lit";
 import "./pages/component-page/component-page.lit";
 import "./playground/global-playground.lit";
+import "./pages/json-render/json-render-showcase.lit";
 
 // Section components
 import "./pages/component-page/section-overview.lit";
@@ -121,6 +122,11 @@ function buildRouterModel(): RouterModel {
     playground: {
       render: () =>
         html`<showcase-global-playground></showcase-global-playground>`
+    },
+
+    // json-render examples
+    "json-render": {
+      render: () => html`<showcase-json-render></showcase-json-render>`
     },
 
     // Component pages

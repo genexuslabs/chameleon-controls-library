@@ -1,9 +1,12 @@
 // Types used by properties, events and methods
+import type { Spec, StateStore, ComputedFunction, StateModel } from "@json-render/core";
 import type { TemplateResult, LitElement } from "lit";
 import type { BreadCrumbItemModel, BreadCrumbModel, BreadCrumbHyperlinkClickEvent } from "./components/breadcrumb/types.ts";
+import type { ComponentRegistry, ComponentRenderer } from "./components/json-render/types.js";
 import type { LayoutSplitterModel, LayoutSplitterItemAddResult, LayoutSplitterLeafModel, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types.ts";
 import type { NavigationListItemModel, NavigationListSharedState, NavigationListModel, NavigationListHyperlinkClickEvent } from "./components/navigation-list/types.ts";
-import type { ComponentRenderModel, ComponentRenderTemplateItemNode } from "./components/playground-editor/typings/component-render.ts";
+import type { ComponentRenderModel } from "./components/playground-editor/typings/component-render.ts";
+import type { PlaygroundJsonRenderModel } from "./components/playground-editor/typings/playground-json-render-model.ts";
 import type { ErrorCorrectionLevel } from "./components/qr/types.ts";
 import type { RadioGroupModel } from "./components/radio-group/types.ts";
 import type { RouterModel } from "./components/router/types.ts";
@@ -14,11 +17,14 @@ import type { ThemeModel, ChThemeLoadedEvent } from "./components/theme/theme-ty
 import type { ItemLink } from "./typings/hyperlinks.ts";
 import type { GxImageMultiState, ImageRender, GetImagePathCallback } from "./typings/multi-state-images.ts";
 
+export type { Spec, StateStore, ComputedFunction, StateModel };
 export type { TemplateResult, LitElement };
 export type { BreadCrumbItemModel, BreadCrumbModel, BreadCrumbHyperlinkClickEvent };
+export type { ComponentRegistry, ComponentRenderer };
 export type { LayoutSplitterModel, LayoutSplitterItemAddResult, LayoutSplitterLeafModel, LayoutSplitterItemRemoveResult };
 export type { NavigationListItemModel, NavigationListSharedState, NavigationListModel, NavigationListHyperlinkClickEvent };
-export type { ComponentRenderModel, ComponentRenderTemplateItemNode };
+export type { ComponentRenderModel };
+export type { PlaygroundJsonRenderModel };
 export type { ErrorCorrectionLevel };
 export type { RadioGroupModel };
 export type { RouterModel };
@@ -36,6 +42,7 @@ import type { ChBreadCrumbItem as ChBreadCrumbItemElement } from "./components/b
 import type { ChCheckbox as ChCheckboxElement } from "./components/checkbox/checkbox.lit.ts";
 import type { ChCode as ChCodeElement } from "./components/code/code.lit.ts";
 import type { ChImage as ChImageElement } from "./components/image/image.lit.ts";
+import type { ChJsonRender as ChJsonRenderElement } from "./components/json-render/json-render.lit.ts";
 import type { ChLayoutSplitter as ChLayoutSplitterElement } from "./components/layout-splitter/layout-splitter.lit.ts";
 import type { ChNavigationListItem as ChNavigationListItemElement } from "./components/navigation-list/internal/navigation-list-item/navigation-list-item.lit.ts";
 import type { ChNavigationListRender as ChNavigationListRenderElement } from "./components/navigation-list/navigation-list-render.lit.ts";
@@ -69,6 +76,7 @@ export interface ComponentBaseClasses {
   "ch-checkbox": ChCheckboxElement;
   "ch-code": ChCodeElement;
   "ch-image": ChImageElement;
+  "ch-json-render": ChJsonRenderElement;
   "ch-layout-splitter": ChLayoutSplitterElement;
   "ch-navigation-list-item": ChNavigationListItemElement;
   "ch-navigation-list-render": ChNavigationListRenderElement;
@@ -101,15 +109,16 @@ export namespace ComponentProperties {
   export type ChBreadCrumbRender = Pick<ChBreadCrumbRenderElement, "getImagePathCallback" | "selectedLink" | "selectedLinkIndicator" | "model" | "separator" | "accessibleName">;
   export type ChBreadCrumbItem = Pick<ChBreadCrumbItemElement, "caption" | "disabled" | "accessibleName" | "link" | "model" | "selected" | "selectedLinkIndicator" | "startImgSrc" | "startImgType" | "getImagePathCallback">;
   export type ChCheckbox = Pick<ChCheckboxElement, "accessibleName" | "caption" | "checked" | "disabled" | "getImagePathCallback" | "indeterminate" | "name" | "readonly" | "startImgSrc" | "startImgType" | "value">;
-  export type ChCode = Pick<ChCodeElement, "language" | "lastNestedChildClass" | "showIndicator" | "value">;
+  export type ChCode = Pick<ChCodeElement, "language" | "lastNestedChildClass" | "showIndicator" | "theme" | "value">;
   export type ChImage = Pick<ChImageElement, "containerRef" | "disabled" | "getImagePathCallback" | "src" | "styles" | "type">;
+  export type ChJsonRender = Pick<ChJsonRenderElement, "spec" | "registry" | "store" | "functions" | "loading" | "fallback" | "styleSheet" | "onAction">;
   export type ChLayoutSplitter = Pick<ChLayoutSplitterElement, "barAccessibleName" | "dragBarDisabled" | "incrementWithKeyboard" | "model">;
   export type ChNavigationListItem = Pick<ChNavigationListItemElement, "caption" | "disabled" | "expandable" | "expanded" | "exportparts" | "level" | "link" | "model" | "selected" | "sharedState" | "startImgSrc" | "startImgType">;
   export type ChNavigationListRender = Pick<ChNavigationListRenderElement, "autoGrow" | "expandableButton" | "expandableButtonPosition" | "getImagePathCallback" | "expanded" | "expandSelectedLink" | "model" | "renderItem" | "selectedLink" | "selectedLinkIndicator" | "showCaptionOnCollapse" | "tooltipDelay">;
   export type ChPerformanceScanItem = Pick<ChPerformanceScanItemElement, "anchorRef" | "anchorTagName" | "renderCount">;
   export type ChPerformanceScan = Pick<ChPerformanceScanElement, "showFps">;
   export type ChComponentRender = Pick<ChComponentRenderElement, "model">;
-  export type ChPlaygroundEditor = Pick<ChPlaygroundEditorElement, "componentModel" | "componentName" | "selectedItem">;
+  export type ChPlaygroundEditor = Pick<ChPlaygroundEditorElement, "componentModel" | "componentName">;
   export type ChProgress = Pick<ChProgressElement, "accessibleName" | "accessibleValueText" | "indeterminate" | "max" | "min" | "name" | "renderType" | "loadingRegionRef" | "value">;
   export type ChQr = Pick<ChQrElement, "accessibleName" | "background" | "errorCorrectionLevel" | "fill" | "radius" | "size" | "value">;
   export type ChRadioGroupRender = Pick<ChRadioGroupRenderElement, "direction" | "disabled" | "model" | "name" | "value">;
@@ -349,6 +358,13 @@ export namespace ComponentPropertiesSolidJS {
     "prop:showIndicator"?:  boolean;
 
     /**
+     * Specifies the Shiki theme to use for syntax highlighting.
+     * Supports all bundled Shiki themes (e.g., `"github-dark"`, `"nord"`,
+     * `"dracula"`) plus `"chameleon-theme-dark"` and `"chameleon-theme-light"`.
+     */
+    "prop:theme"?:  string;
+
+    /**
      * Specifies the code string to highlight.
      */
     "prop:value"?:  string | undefined;
@@ -394,6 +410,61 @@ export namespace ComponentPropertiesSolidJS {
      */
     "prop:type"?: 
       | Exclude<ImageRender, "img">
+      | undefined;
+  };
+
+  export type ChJsonRender = {
+    /**
+     * The JSON spec describing the UI tree to render.
+     */
+    "prop:spec"?:  Spec | null;
+
+    /**
+     * Registry mapping element type names to renderer functions.
+     */
+    "prop:registry"?:  ComponentRegistry;
+
+    /**
+     * External state store (controlled mode).
+     * When absent, an internal store seeded from `spec.state` is used.
+     */
+    "prop:store"?:  StateStore | undefined;
+
+    /**
+     * Named functions available for `$computed` prop expressions.
+     */
+    "prop:functions"?:  Record<string, ComputedFunction>;
+
+    /**
+     * When true, each renderer receives `loading: true` (e.g. during streaming).
+     */
+    "prop:loading"?: any;
+
+    /**
+     * Fallback renderer used when an element type is not in the registry.
+     * Useful for showing a skeleton while the registry is being built.
+     */
+    "prop:fallback"?:  ComponentRenderer | undefined;
+
+    /**
+     * Optional CSS string adopted into the component's shadow root.
+     * Use this to style elements rendered by the registry, which live inside
+     * the shadow DOM and cannot be styled from outside.
+     */
+    "prop:styleSheet"?:  string;
+
+    /**
+     * Handler for custom (non-built-in) actions.
+     * Receives the action name, resolved params, a setState helper, and a
+     * getState snapshot function.
+     */
+    "prop:onAction"?: 
+      | ((
+          name: string,
+          params?: Record<string, unknown>,
+          setState?: (path: string, value: unknown) => void,
+          getState?: () => StateModel
+        ) => void | Promise<void>)
       | undefined;
   };
 
@@ -617,23 +688,17 @@ export namespace ComponentPropertiesSolidJS {
 
   export type ChPlaygroundEditor = {
     /**
-     * 
+     * Explicit model for the playground. Takes priority over `componentName`.
      */
     "prop:componentModel"?: 
-      | ComponentRenderModel
+      | PlaygroundJsonRenderModel
       | undefined;
 
     /**
-     * 
+     * Chameleon component tag name (e.g. "ch-checkbox"). Used to look up the
+     * model from `playgroundEditorModels` when `componentModel` is not set.
      */
     "prop:componentName"?:  string | undefined;
-
-    /**
-     * 
-     */
-    "prop:selectedItem"?: 
-      | ComponentRenderTemplateItemNode
-      | undefined;
   };
 
   export type ChProgress = {
@@ -1369,6 +1434,8 @@ declare namespace LocalJSX {
 
   export type ChImage = ComponentProperties.ChImage;
 
+  export type ChJsonRender = ComponentProperties.ChJsonRender;
+
   export type ChLayoutSplitter = ComponentProperties.ChLayoutSplitter;
 
   export type ChNavigationListItem = ComponentProperties.ChNavigationListItem;
@@ -1538,6 +1605,9 @@ declare namespace LocalJSX {
      * active or disabled) of a parent element.
      */
     "ch-image": ChImage;
+    
+    
+    "ch-json-render": ChJsonRender;
     
     /**
      * This component allows us to design a layout composed by columns and rows.
@@ -1760,6 +1830,8 @@ declare namespace SolidJsJSX {
 
   export type ChImage = ComponentPropertiesSolidJS.ChImage;
 
+  export type ChJsonRender = ComponentPropertiesSolidJS.ChJsonRender;
+
   export type ChLayoutSplitter = ComponentPropertiesSolidJS.ChLayoutSplitter;
 
   export type ChNavigationListItem = ComponentPropertiesSolidJS.ChNavigationListItem;
@@ -1929,6 +2001,9 @@ declare namespace SolidJsJSX {
      * active or disabled) of a parent element.
      */
     "ch-image": ChImage;
+    
+    
+    "ch-json-render": ChJsonRender;
     
     /**
      * This component allows us to design a layout composed by columns and rows.

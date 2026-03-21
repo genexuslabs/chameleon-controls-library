@@ -60,12 +60,19 @@ export class ShowcaseNativeTabs extends KasstorElement {
           this.tabs,
           tab => tab.id,
           tab => html`
-            <button
+            <div
               class="tab ${tab.id === this.activeTab ? "tab--active" : ""}"
               part="tab ${tab.id === this.activeTab ? "tab-active" : ""}"
               role="tab"
+              tabindex="0"
               aria-selected=${tab.id === this.activeTab ? "true" : "false"}
               @click=${() => this.#handleTabClick(tab.id)}
+              @keydown=${(e: KeyboardEvent) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  this.#handleTabClick(tab.id);
+                }
+              }}
             >
               <span class="tab-name">${tab.name}</span>
               ${this.tabs.length > 1
@@ -80,7 +87,7 @@ export class ShowcaseNativeTabs extends KasstorElement {
                     ×
                   </button>`
                 : ""}
-            </button>
+            </div>
           `
         )}
 

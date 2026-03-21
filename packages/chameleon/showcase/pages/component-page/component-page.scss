@@ -1,7 +1,6 @@
 :host {
   display: block;
   padding: 32px 40px;
-  max-inline-size: 900px;
 }
 
 .page-header {
@@ -38,7 +37,9 @@
   color: var(--showcase-nav-link-color, #6b7280);
   border-block-end: 2px solid transparent;
   margin-block-end: -1px;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 
   &:hover {
     color: var(--showcase-nav-link-hover-color, #111827);
@@ -53,3 +54,4 @@
 .section-content {
   min-block-size: 200px;
 }
+

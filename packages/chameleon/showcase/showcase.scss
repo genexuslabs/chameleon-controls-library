@@ -12,7 +12,7 @@
 
 .docs-layout {
   display: grid;
-  grid-template-columns: 280px 1fr 240px;
+  grid-template-columns: 240px 1fr 200px;
   flex: 1;
   min-block-size: 0;
 }
@@ -35,3 +35,4 @@
   block-size: calc(100vh - 60px);
   overflow-y: auto;
 }
+

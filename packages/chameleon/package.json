@@ -34,6 +34,7 @@
   },
   "license": "MIT",
   "peerDependencies": {
+    "@json-render/core": "^0.14.0",
     "@genexus/kasstor-core": "^0.2.0",
     "@genexus/kasstor-signals": "^0.2.0",
     "@genexus/kasstor-webkit": "^0.2.1",

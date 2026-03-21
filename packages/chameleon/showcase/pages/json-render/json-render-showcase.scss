@@ -1,0 +1,89 @@
+:host {
+  display: block;
+  padding: 32px 40px;
+  max-inline-size: 960px;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--showcase-heading-color, #111827);
+}
+
+.page-subtitle {
+  font-size: 16px;
+  color: var(--showcase-text-color, #374151);
+  margin: 0 0 40px;
+  line-height: 1.6;
+}
+
+/* ---------- Demo section ---------- */
+
+.demo-section {
+  margin-block-end: 48px;
+}
+
+.demo-section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--showcase-heading-color, #111827);
+}
+
+.demo-section p {
+  font-size: 14px;
+  color: var(--showcase-text-color, #6b7280);
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+
+/* Side-by-side preview + spec */
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (width < 700px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.preview-box {
+  background: var(--showcase-preview-bg, #f9fafb);
+  border: 1px solid var(--showcase-border, #e5e7eb);
+  border-radius: 10px;
+  padding: 20px;
+  min-block-size: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preview-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--showcase-text-muted, #9ca3af);
+  margin-block-end: 8px;
+}
+
+.spec-box {
+  background: var(--showcase-code-bg, #f3f4f6);
+  border-radius: 10px;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.spec-box pre {
+  margin: 0;
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--showcase-code-color, #1f2937);
+  white-space: pre-wrap;
+}

@@ -6,8 +6,8 @@ import { watch } from "@genexus/kasstor-signals/directives/watch.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
-import type { ComponentRenderModel } from "../../src/components/playground-editor/typings/component-render";
 import { playgroundEditorModels } from "../../src/components/playground-editor/models";
+import type { PlaygroundJsonRenderModel } from "../../src/components/playground-editor/typings/playground-json-render-model";
 
 // Import playground-editor (Mode 1)
 import "../../src/components/playground-editor/playground-editor.lit";
@@ -46,11 +46,11 @@ export class ShowcasePlayground extends KasstorElement {
   @property({ attribute: "component-name" }) componentName: string | undefined;
 
   /**
-   * An explicit ComponentRenderModel to use for Mode 1. Overrides the
+   * An explicit PlaygroundJsonRenderModel to use for Mode 1. Overrides the
    * built-in playgroundEditorModels lookup.
    */
   @property({ attribute: false }) componentModel:
-    | ComponentRenderModel
+    | PlaygroundJsonRenderModel
     | undefined;
 
   // - - - Internal state - - -
@@ -71,14 +71,18 @@ export class ShowcasePlayground extends KasstorElement {
 
   override disconnectedCallback() {
     super.disconnectedCallback();
-    if (this.#hashTimer !== null) clearTimeout(this.#hashTimer);
+    if (this.#hashTimer !== null) {
+      clearTimeout(this.#hashTimer);
+    }
   }
 
   // - - - URL state - - -
 
   async #restoreFromHash() {
     const saved = await readStateFromHash();
-    if (!saved) return;
+    if (!saved) {
+      return;
+    }
     this.#mode = saved.mode;
     if (saved.mode === 2 && saved.tabs) {
       this.#mode2Tabs = saved.tabs.map((t, i) => ({
@@ -93,7 +97,9 @@ export class ShowcasePlayground extends KasstorElement {
   }
 
   #scheduleHashUpdate() {
-    if (this.#hashTimer !== null) clearTimeout(this.#hashTimer);
+    if (this.#hashTimer !== null) {
+      clearTimeout(this.#hashTimer);
+    }
     this.#hashTimer = setTimeout(() => {
       this.#writeHash();
     }, 1000);
@@ -116,9 +122,13 @@ export class ShowcasePlayground extends KasstorElement {
 
   // - - - Model helpers - - -
 
-  #getModel(): ComponentRenderModel | undefined {
-    if (this.componentModel) return this.componentModel;
-    if (!this.componentName) return undefined;
+  #getModel(): PlaygroundJsonRenderModel | undefined {
+    if (this.componentModel) {
+      return this.componentModel;
+    }
+    if (!this.componentName) {
+      return undefined;
+    }
     return playgroundEditorModels[
       this.componentName as keyof typeof playgroundEditorModels
     ];
@@ -134,8 +144,16 @@ export class ShowcasePlayground extends KasstorElement {
 
   #getGeneratedCode(): string {
     const model = this.#getModel();
-    if (!model) return "";
+    if (!model) {
+      return "";
+    }
     return generateCode(model, this.#codeFramework, "complete");
+  }
+
+  #getEditor():
+    | import("../../src/components/playground-editor/playground-editor.lit").ChPlaygroundEditor
+    | null {
+    return this.shadowRoot?.querySelector("ch-playground-editor") ?? null;
   }
 
   // - - - Mode 1 → 2 transition - - -
@@ -168,10 +186,12 @@ export class ShowcasePlayground extends KasstorElement {
     const id0 = "tab-0";
 
     if (model) {
+      // Read the current state snapshot so the generated code reflects user edits
+      const stateSnapshot = this.#getEditor()?.currentStateSnapshot;
       tabs.push({
         id: id0,
         name: "main.ts",
-        code: toLitComplete(model)
+        code: toLitComplete(model, stateSnapshot)
       });
       if (model.customCss) {
         tabs.push({ id: "tab-1", name: "styles.css", code: model.customCss });
@@ -248,7 +268,7 @@ export class ShowcasePlayground extends KasstorElement {
           <ch-code
             class="generated-code"
             language="typescript"
-            theme=${watch(codeTheme)}
+            .theme=${watch(codeTheme)}
             .value=${generatedCode}
           ></ch-code>
         </div>
@@ -322,3 +342,4 @@ declare global {
     "showcase-playground": ShowcasePlayground;
   }
 }
+

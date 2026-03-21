@@ -7,8 +7,14 @@ import { property } from "lit/decorators/property.js";
 
 import {
   getComponentDefinition,
-  getComponentDisplayName
+  getComponentDisplayName,
+  getComponentSlug
 } from "../../core/component-registry";
+import {
+  componentExamples,
+  chameleonExamplesRegistry
+} from "../../core/examples-registry";
+import "../../../src/components/json-render/json-render.lit";
 
 import styles from "./section-overview.scss?inline";
 
@@ -18,6 +24,39 @@ import styles from "./section-overview.scss?inline";
 })
 export class ShowcaseSectionOverview extends KasstorElement {
   @property({ attribute: "component-name" }) componentName: string | undefined;
+
+  #renderExamples(componentName: string) {
+    const examples = componentExamples[componentName] ?? [];
+    if (examples.length === 0) {
+      return html`<p>Code examples will be added in a future update.</p>`;
+    }
+    const playgroundUrl = `/components/${getComponentSlug(componentName)}/playground`;
+    return html`
+      ${examples.map(
+        ex => html`
+          <div class="example-card">
+            <h3 class="example-title">${ex.title}</h3>
+            ${ex.description
+              ? html`<p class="example-desc">${ex.description}</p>`
+              : nothing}
+            <div class="example-preview">
+              <ch-json-render
+                .spec=${ex.spec}
+                .registry=${chameleonExamplesRegistry}
+              ></ch-json-render>
+            </div>
+            <ch-code
+              language=${ex.language ?? "html"}
+              .value=${ex.code}
+            ></ch-code>
+          </div>
+        `
+      )}
+      <p class="example-playground-link">
+        <a href=${playgroundUrl} class="example-link">Try in Playground →</a>
+      </p>
+    `;
+  }
 
   override render() {
     if (!this.componentName) {
@@ -37,7 +76,7 @@ export class ShowcaseSectionOverview extends KasstorElement {
         <p>Documentation coming soon.</p>
 
         <h2 id="examples">Examples</h2>
-        <p>Code examples will be added in a future update.</p>
+        ${this.#renderExamples(this.componentName)}
       </section>
     `;
   }

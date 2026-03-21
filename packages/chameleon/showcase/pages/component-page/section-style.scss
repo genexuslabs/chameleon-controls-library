@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 32px 0 12px;
+  color: var(--showcase-heading-color, #111827);
+
+  &:first-of-type {
+    margin-block-start: 0;
+  }
+}
+
+p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--showcase-text-color, #374151);
+  margin: 0 0 16px;
+}
+
+code {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  background: var(--showcase-code-bg, #f3f4f6);
+  padding: 2px 6px;
+  border-radius: 3px;
+}

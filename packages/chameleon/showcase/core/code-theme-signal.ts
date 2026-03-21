@@ -2,7 +2,7 @@ import { computed, signal } from "@genexus/kasstor-signals/core.js";
 
 const STORAGE_KEY = "chameleon-showcase-code-theme";
 
-function getInitialTheme(): string {
+function getInitialTheme() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === "chameleon-theme-dark" || stored === "chameleon-theme-light") {
     return stored;
@@ -38,3 +38,4 @@ export function toggleCodeTheme() {
   codeTheme(next);
   localStorage.setItem(STORAGE_KEY, next);
 }
+

@@ -44,7 +44,9 @@
   font-weight: 600;
   padding: 10px 24px;
   border-radius: 8px;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 
 .cta-primary {
@@ -91,3 +93,4 @@
     margin: 0;
   }
 }
+

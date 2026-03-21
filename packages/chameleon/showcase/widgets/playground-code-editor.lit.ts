@@ -7,7 +7,7 @@ import {
   type EventEmitter
 } from "@genexus/kasstor-core/decorators/event.js";
 import { watch } from "@genexus/kasstor-signals/directives/watch.js";
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { property } from "lit/decorators/property.js";
 
 import "../../src/components/code/code.lit";
@@ -96,7 +96,9 @@ document.body.append(document.createElement('my-app'));
 
   #handleTabClose = (event: CustomEvent<string>) => {
     const id = event.detail;
-    if (this.#tabs.length <= 1) return; // Minimum 1 tab
+    if (this.#tabs.length <= 1) {
+      return;
+    } // Minimum 1 tab
     const idx = this.#tabs.findIndex(t => t.id === id);
     this.#tabs = this.#tabs.filter(t => t.id !== id);
     // Move active tab if needed
@@ -121,7 +123,9 @@ document.body.append(document.createElement('my-app'));
   #handleCodeInput = (event: Event) => {
     const textarea = event.target as HTMLTextAreaElement;
     const active = this.#getActiveTab();
-    if (!active) return;
+    if (!active) {
+      return;
+    }
     active.code = textarea.value;
     this.requestUpdate();
     this.#schedulePreviewRebuild();
@@ -139,7 +143,9 @@ document.body.append(document.createElement('my-app'));
       const newPos = selectionStart + 2;
       textarea.setSelectionRange(newPos, newPos);
       const active = this.#getActiveTab();
-      if (active) active.code = textarea.value;
+      if (active) {
+        active.code = textarea.value;
+      }
       this.requestUpdate();
       this.#schedulePreviewRebuild();
     } else if (event.key === "Enter") {
@@ -157,7 +163,9 @@ document.body.append(document.createElement('my-app'));
       const newPos = selectionStart + insertion.length;
       textarea.setSelectionRange(newPos, newPos);
       const active = this.#getActiveTab();
-      if (active) active.code = textarea.value;
+      if (active) {
+        active.code = textarea.value;
+      }
       this.requestUpdate();
       this.#schedulePreviewRebuild();
     }
@@ -168,7 +176,9 @@ document.body.append(document.createElement('my-app'));
   #handleScroll = (event: Event) => {
     const textarea = event.target as HTMLTextAreaElement;
     const host = this.shadowRoot?.querySelector(".editor-scroll-container");
-    if (!host) return;
+    if (!host) {
+      return;
+    }
     const codeEl = host.querySelector("ch-code");
     if (codeEl) {
       (codeEl as HTMLElement).scrollTop = textarea.scrollTop;
@@ -180,7 +190,9 @@ document.body.append(document.createElement('my-app'));
 
   #handleDownload = () => {
     const active = this.#getActiveTab();
-    if (!active) return;
+    if (!active) {
+      return;
+    }
     const blob = new Blob([active.code], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -205,7 +217,9 @@ document.body.append(document.createElement('my-app'));
     const iframe = this.shadowRoot?.querySelector(
       ".preview-iframe"
     ) as HTMLIFrameElement | null;
-    if (!iframe) return;
+    if (!iframe) {
+      return;
+    }
 
     // Build blob URL entries for secondary tabs (non-main files)
     const [mainTab, ...secondaryTabs] = this.#tabs;
@@ -232,7 +246,7 @@ document.body.append(document.createElement('my-app'));
 <head>
   <meta charset="UTF-8" />
   <style>
-    html, body { margin: 0; padding: 16px; font-family: system-ui, sans-serif; background: #fff; }
+    html, body { display: grid; min-block-size: 100dvh; margin: 0; }
   </style>
   <script type="importmap">
 ${importMapJson}
@@ -292,7 +306,7 @@ ${mainCode}
           <ch-code
             class="code-highlight"
             language="typescript"
-            theme=${watch(codeTheme)}
+            .theme=${watch(codeTheme)}
             .value=${activeTab?.code ?? ""}
           ></ch-code>
           <textarea
@@ -311,8 +325,14 @@ ${mainCode}
         <details class="import-info" part="import-info">
           <summary>Supported imports</summary>
           <ul>
-            <li><code>lit</code>, <code>lit/decorators.js</code>, <code>lit/directives/*</code></li>
-            <li><code>chameleon/checkbox</code>, <code>chameleon/switch</code>, <code>chameleon/slider</code>, <code>chameleon/edit</code>, …</li>
+            <li>
+              <code>lit</code>, <code>lit/decorators.js</code>,
+              <code>lit/directives/*</code>
+            </li>
+            <li>
+              <code>chameleon/checkbox</code>, <code>chameleon/switch</code>,
+              <code>chameleon/slider</code>, <code>chameleon/edit</code>, …
+            </li>
             <li><code>./filename.ts</code> — other open tabs</li>
           </ul>
         </details>
@@ -345,3 +365,4 @@ declare global {
     "showcase-playground-code-editor": ShowcasePlaygroundCodeEditor;
   }
 }
+

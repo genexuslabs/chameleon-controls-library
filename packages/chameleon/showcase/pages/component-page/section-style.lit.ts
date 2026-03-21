@@ -5,7 +5,10 @@ import {
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
+import styles from "./section-style.scss?inline";
+
 @Component({
+  styles,
   tag: "showcase-section-style"
 })
 export class ShowcaseSectionStyle extends KasstorElement {

@@ -5,6 +5,7 @@ import type {
   ComponentRenderTemplateItem,
   ComponentRenderTemplateItemNode
 } from "../../src/components/playground-editor/typings/component-render";
+import type { PlaygroundJsonRenderModel } from "../../src/components/playground-editor/typings/playground-json-render-model";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //                       Shared helpers
@@ -51,7 +52,261 @@ function eventToReactProp(event: string): string {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//                   Template rendering
+//          Spec-based helpers (PlaygroundJsonRenderModel)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+type SpecStateEntry = { key: string; value: unknown };
+
+/**
+ * Returns { tag, bindStateProps } extracted from the root element of the spec.
+ * bindStateProps maps prop names to state keys (e.g. { checked: "checked" }).
+ */
+function extractSpecRoot(model: PlaygroundJsonRenderModel): {
+  tag: string;
+  bindStateProps: Record<string, string>;
+} {
+  const rootElement = model.spec.elements[model.spec.root];
+  const tag = rootElement?.type ?? "div";
+  const bindStateProps: Record<string, string> = {};
+
+  for (const [propName, propValue] of Object.entries(
+    rootElement?.props ?? {}
+  )) {
+    if (
+      propValue !== null &&
+      typeof propValue === "object" &&
+      "$bindState" in propValue
+    ) {
+      // $bindState value is "/key" — strip the leading slash to get the key
+      const path = (propValue as { $bindState: string }).$bindState;
+      bindStateProps[propName] = path.replace(/^\//, "");
+    }
+  }
+
+  return { tag, bindStateProps };
+}
+
+/** Returns state entries for a PlaygroundJsonRenderModel, optionally merging a snapshot. */
+function specStateEntries(
+  model: PlaygroundJsonRenderModel,
+  stateSnapshot?: Record<string, unknown>
+): SpecStateEntry[] {
+  const baseState = model.spec.state ?? {};
+  return Object.keys(baseState).map(key => ({
+    key,
+    value: stateSnapshot && key in stateSnapshot ? stateSnapshot[key] : baseState[key]
+  }));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//             Spec-based code generation (Lit)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function specToLitComplete(
+  model: PlaygroundJsonRenderModel,
+  stateSnapshot?: Record<string, unknown>
+): string {
+  const entries = specStateEntries(model, stateSnapshot);
+  const { tag, bindStateProps } = extractSpecRoot(model);
+  const eventMap = model.codegenHints?.events ?? {};
+
+  // @state() declarations
+  const stateDecls = entries
+    .map(({ key, value }) => `  @state() ${key} = ${literalValue(value)};`)
+    .join("\n");
+
+  // Private event handler methods
+  const handlerDecls: string[] = [];
+  for (const [eventName, stateKey] of Object.entries(eventMap)) {
+    const entry = entries.find(e => e.key === stateKey);
+    if (entry) {
+      handlerDecls.push(
+        `  #on${eventName.charAt(0).toUpperCase() + eventName.slice(1)} = (event: CustomEvent) => {\n    this.${stateKey} = event.detail as typeof this.${stateKey};\n  };`
+      );
+    }
+  }
+
+  // Template attribute lines
+  const attrLines: string[] = [];
+  for (const [propName, stateKey] of Object.entries(bindStateProps)) {
+    attrLines.push(`.${propName}=\${this.${stateKey}}`);
+  }
+  for (const [eventName] of Object.entries(eventMap)) {
+    attrLines.push(`@${eventName}=\${this.#on${eventName.charAt(0).toUpperCase() + eventName.slice(1)}}`);
+  }
+
+  const attrStr =
+    attrLines.length === 0
+      ? ""
+      : "\n" + attrLines.map(a => indent(a, 8)).join("\n") + "\n      ";
+
+  const templateBody = `      <${tag}${attrStr}></${tag}>`;
+
+  const imports = [
+    `import { LitElement, html } from 'lit';`,
+    `import { customElement, state } from 'lit/decorators.js';`,
+    `// Import Chameleon component`,
+    `import '@genexus/chameleon-controls-library/${tag}';`
+  ].join("\n");
+
+  const classParts: string[] = [];
+  if (stateDecls) classParts.push(stateDecls);
+  if (handlerDecls.length) classParts.push(handlerDecls.join("\n\n"));
+  classParts.push(
+    `  override render() {\n    return html\`\n${templateBody}\n    \`;\n  }`
+  );
+
+  return `${imports}
+
+@customElement('my-app')
+export class MyApp extends LitElement {
+${classParts.join("\n\n")}
+}
+`;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//            Spec-based code generation (React)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function specToReactComplete(
+  model: PlaygroundJsonRenderModel,
+  stateSnapshot?: Record<string, unknown>
+): string {
+  const entries = specStateEntries(model, stateSnapshot);
+  const { tag, bindStateProps } = extractSpecRoot(model);
+  const eventMap = model.codegenHints?.events ?? {};
+
+  // useState declarations
+  const stateDecls = entries
+    .map(({ key, value }) => {
+      const setter = "set" + key.charAt(0).toUpperCase() + key.slice(1);
+      return `  const [${key}, ${setter}] = useState(${literalValue(value)});`;
+    })
+    .join("\n");
+
+  // Handler functions
+  const handlerDecls: string[] = [];
+  for (const [eventName, stateKey] of Object.entries(eventMap)) {
+    const entry = entries.find(e => e.key === stateKey);
+    if (entry) {
+      const setter = "set" + stateKey.charAt(0).toUpperCase() + stateKey.slice(1);
+      const handlerName = "on" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
+      handlerDecls.push(
+        `  const ${handlerName} = (event: CustomEvent) => {\n    ${setter}(event.detail as typeof ${stateKey});\n  };`
+      );
+    }
+  }
+
+  // Template attribute lines
+  const attrLines: string[] = [];
+  for (const [propName, stateKey] of Object.entries(bindStateProps)) {
+    attrLines.push(`${propName}={${stateKey}}`);
+  }
+  for (const [eventName] of Object.entries(eventMap)) {
+    const handlerName = "on" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
+    attrLines.push(`${eventToReactProp(eventName)}={${handlerName}}`);
+  }
+
+  const attrStr =
+    attrLines.length === 0
+      ? ""
+      : "\n" + attrLines.map(a => indent(a, 6)).join("\n") + "\n    ";
+
+  const templateBody = `    <${tag}${attrStr}/>`;
+
+  const hasStates = entries.length > 0;
+  const imports = [
+    hasStates ? `import { useState } from 'react';` : `import React from 'react';`,
+    `// Import Chameleon component`,
+    `import '@genexus/chameleon-controls-library/${tag}';`
+  ].join("\n");
+
+  const bodyParts: string[] = [];
+  if (stateDecls) bodyParts.push(stateDecls);
+  if (handlerDecls.length) bodyParts.push(handlerDecls.join("\n\n"));
+
+  return `${imports}
+
+export function App() {
+${bodyParts.join("\n\n")}
+
+  return (
+${templateBody}
+  );
+}
+`;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//           Spec-based code generation (Angular)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+function specToAngularComplete(
+  model: PlaygroundJsonRenderModel,
+  stateSnapshot?: Record<string, unknown>
+): string {
+  const entries = specStateEntries(model, stateSnapshot);
+  const { tag, bindStateProps } = extractSpecRoot(model);
+  const eventMap = model.codegenHints?.events ?? {};
+
+  // Class property declarations
+  const propDecls = entries
+    .map(({ key, value }) => `  ${key} = ${literalValue(value)};`)
+    .join("\n");
+
+  // Method declarations
+  const methodDecls: string[] = [];
+  for (const [eventName, stateKey] of Object.entries(eventMap)) {
+    const entry = entries.find(e => e.key === stateKey);
+    if (entry) {
+      const methodName = "on" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
+      methodDecls.push(
+        `  ${methodName}(event: CustomEvent) {\n    this.${stateKey} = event.detail as typeof this.${stateKey};\n  }`
+      );
+    }
+  }
+
+  // Template attribute lines
+  const attrLines: string[] = [];
+  for (const [propName, stateKey] of Object.entries(bindStateProps)) {
+    attrLines.push(`[${propName}]="${stateKey}"`);
+  }
+  for (const [eventName] of Object.entries(eventMap)) {
+    const methodName = "on" + eventName.charAt(0).toUpperCase() + eventName.slice(1);
+    attrLines.push(`(${eventName})="${methodName}($event)"`);
+  }
+
+  const attrStr =
+    attrLines.length === 0
+      ? ""
+      : "\n" + attrLines.map(a => indent(a, 6)).join("\n") + "\n    ";
+
+  const templateBody = `    <${tag}${attrStr}></${tag}>`;
+
+  const classParts: string[] = [];
+  if (propDecls) classParts.push(propDecls);
+  if (methodDecls.length) classParts.push(methodDecls.join("\n\n"));
+
+  return `import { Component } from '@angular/core';
+// Import Chameleon component
+import '@genexus/chameleon-controls-library/${tag}';
+
+@Component({
+  selector: 'app-root',
+  template: \`
+${templateBody}
+  \`,
+  standalone: true
+})
+export class AppComponent {
+${classParts.join("\n\n")}
+}
+`;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//                   Template rendering (legacy ComponentRenderModel)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 interface RenderContext {
@@ -160,7 +415,7 @@ function renderTemplateItems(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//                     State helpers
+//                     State helpers (legacy)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 /** Returns all states referenced in the template (property values matching state keys). */
@@ -192,18 +447,8 @@ function getReferencedStates(
   return Array.from(referenced);
 }
 
-/** Returns the first-level template nodes (used to collect event handler info). */
-function collectNodes(template: ComponentRenderTemplate): ComponentRenderTemplateItemNode[] {
-  const items = Array.isArray(template) ? template : [template];
-  const nodes: ComponentRenderTemplateItemNode[] = [];
-  for (const item of items) {
-    if (typeof item !== "string") nodes.push(item);
-  }
-  return nodes;
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//                    Lit code generation
+//                    Lit code generation (legacy)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 function toLitTemplate(model: ComponentRenderModel): string {
@@ -219,10 +464,16 @@ export function toLitReduced(model: ComponentRenderModel): string {
   return `html\`\n${toLitTemplate(model)}\n      \``;
 }
 
-export function toLitComplete(model: ComponentRenderModel): string {
+export function toLitComplete(
+  model: ComponentRenderModel | PlaygroundJsonRenderModel,
+  stateSnapshot?: Record<string, unknown>
+): string {
+  if ("spec" in model) {
+    return specToLitComplete(model, stateSnapshot);
+  }
+
   const states = model.states ?? {};
   const stateNames = getReferencedStates(model.template, model.states);
-  const nodes = collectNodes(model.template);
   const templateTag = typeof model.template === "string"
     ? model.template
     : Array.isArray(model.template)
@@ -285,10 +536,17 @@ ${classParts.join("\n\n")}
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//                   React code generation
+//                   React code generation (legacy)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export function toReactComplete(model: ComponentRenderModel): string {
+export function toReactComplete(
+  model: ComponentRenderModel | PlaygroundJsonRenderModel,
+  stateSnapshot?: Record<string, unknown>
+): string {
+  if ("spec" in model) {
+    return specToReactComplete(model, stateSnapshot);
+  }
+
   const states = model.states ?? {};
   const stateNames = getReferencedStates(model.template, model.states);
   const templateTag = typeof model.template === "string"
@@ -363,10 +621,17 @@ export function toReactReduced(model: ComponentRenderModel): string {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//                 Angular code generation
+//                 Angular code generation (legacy)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-export function toAngularComplete(model: ComponentRenderModel): string {
+export function toAngularComplete(
+  model: ComponentRenderModel | PlaygroundJsonRenderModel,
+  stateSnapshot?: Record<string, unknown>
+): string {
+  if ("spec" in model) {
+    return specToAngularComplete(model, stateSnapshot);
+  }
+
   const states = model.states ?? {};
   const stateNames = getReferencedStates(model.template, model.states);
   const templateTag = typeof model.template === "string"
@@ -444,16 +709,23 @@ export type Framework = "Lit" | "React" | "Angular";
 export type CodeView = "reduced" | "complete";
 
 export function generateCode(
-  model: ComponentRenderModel,
+  model: ComponentRenderModel | PlaygroundJsonRenderModel,
   framework: Framework,
-  view: CodeView
+  view: CodeView,
+  stateSnapshot?: Record<string, unknown>
 ): string {
   if (framework === "Lit") {
-    return view === "reduced" ? toLitReduced(model) : toLitComplete(model);
+    return view === "reduced" && !("spec" in model)
+      ? toLitReduced(model as ComponentRenderModel)
+      : toLitComplete(model, stateSnapshot);
   }
   if (framework === "React") {
-    return view === "reduced" ? toReactReduced(model) : toReactComplete(model);
+    return view === "reduced" && !("spec" in model)
+      ? toReactReduced(model as ComponentRenderModel)
+      : toReactComplete(model, stateSnapshot);
   }
   // Angular
-  return view === "reduced" ? toAngularReduced(model) : toAngularComplete(model);
+  return view === "reduced" && !("spec" in model)
+    ? toAngularReduced(model as ComponentRenderModel)
+    : toAngularComplete(model, stateSnapshot);
 }

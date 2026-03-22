@@ -1,10 +1,7 @@
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { IS_SERVER } from "../../../../development-flags";
 import type { ItemLink } from "../../../../typings/hyperlinks";
 
@@ -20,22 +17,18 @@ import { DISABLED_CLASS } from "../../../../utilities/reserved-names/common";
 
 import { BREADCRUMB_ITEM_PARTS_DICTIONARY } from "../../../../utilities/reserved-names/parts/breadcrumb";
 
-import type {
-  GxImageMultiState,
-  ImageRender
-} from "../../../../typings/multi-state-images";
+import type { GxImageMultiState, ImageRender } from "../../../../typings/multi-state-images";
 
 import type ChBreadCrumbRender from "../../breadcrumb-render.lit";
 
 import { getControlRegisterProperty } from "../../../../utilities/register-properties/registry-properties";
-
 
 // In the server we need to preload the ch-image just in case to properly
 // render it, because Lit doesn't support async rendering in the server.
 // In the client we can lazy load the ch-image, since not all ch-checkbox will
 // use an icon
 if (IS_SERVER) {
-  (await import("../../../image/image.lit"));
+  await import("../../../image/image.lit");
 }
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: ChBreadCrumbRender["getImagePathCallback"];
@@ -65,9 +58,7 @@ export class ChBreadCrumbItem extends KasstorElement {
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
 
   /**
    *
@@ -99,9 +90,7 @@ export class ChBreadCrumbItem extends KasstorElement {
   /**
    * Specifies how the start image will be rendered.
    */
-  @property(BREADCRUMB_NO_ATTRIBUTE) startImgType:
-    | Exclude<ImageRender, "img">
-    | undefined;
+  @property(BREADCRUMB_NO_ATTRIBUTE) startImgType: Exclude<ImageRender, "img"> | undefined;
 
   /**
    * This property specifies a callback that is executed when the path for an
@@ -130,8 +119,7 @@ export class ChBreadCrumbItem extends KasstorElement {
     this.startImgSrc
       ? html`<ch-image
           .disabled=${this.disabled}
-          .getImagePathCallback=${this.getImagePathCallback ??
-          GET_IMAGE_PATH_CALLBACK_REGISTRY}
+          .getImagePathCallback=${this.getImagePathCallback ?? GET_IMAGE_PATH_CALLBACK_REGISTRY}
           .src=${this.model}
           .type=${this.startImgType ?? nothing}
         ></ch-image>`
@@ -205,14 +193,6 @@ export class ChBreadCrumbItem extends KasstorElement {
   }
 }
 
-export default ChBreadCrumbItem;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-breadcrumb-item": ChBreadCrumbItem;
-  }
-}
-
 // ######### Auto generated below #########
 
 declare global {
@@ -224,7 +204,7 @@ declare global {
 
   /**
    * @status experimental
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChBreadCrumbItemElement extends ChBreadCrumbItem {
     // Extend the ChBreadCrumbItem class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

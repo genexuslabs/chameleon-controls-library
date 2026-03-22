@@ -1,7 +1,4 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import type { Root as HRoot } from "hast";
 import { html, type PropertyValues } from "lit";
 import { property } from "lit/decorators/property.js";
@@ -28,9 +25,7 @@ if (IS_SERVER) {
     ...Object.values(languageImplementationMapping).map(language =>
       highlighter.loadLanguage(language())
     ),
-    ...Object.values(themeImplementationMapping).map(theme =>
-      highlighter.loadTheme(theme())
-    )
+    ...Object.values(themeImplementationMapping).map(theme => highlighter.loadTheme(theme()))
   ]);
 }
 
@@ -157,23 +152,17 @@ export class ChCode extends KasstorElement {
         const { language, value, theme } = this;
 
         if (value) {
-          getHast(
-            value,
-            language ?? DEFAULT_CODE_LANGUAGE,
-            theme ?? DEFAULT_CODE_THEME
-          ).then(hast => {
-            // Since the getHast is async because it needs to lazy load the
-            // language and theme, we have to ensure this Hast result is for the
-            // current value, language and theme, and not for any old computation
-            if (
-              this.value === value &&
-              this.language === language &&
-              this.theme === theme
-            ) {
-              this.#hastTree = hast;
-              this.requestUpdate();
+          getHast(value, language ?? DEFAULT_CODE_LANGUAGE, theme ?? DEFAULT_CODE_THEME).then(
+            hast => {
+              // Since the getHast is async because it needs to lazy load the
+              // language and theme, we have to ensure this Hast result is for the
+              // current value, language and theme, and not for any old computation
+              if (this.value === value && this.language === language && this.theme === theme) {
+                this.#hastTree = hast;
+                this.requestUpdate();
+              }
             }
-          });
+          );
         }
       }
     }
@@ -201,9 +190,7 @@ export class ChCode extends KasstorElement {
     //   this.showIndicator && this.#lastNestedChildIsRoot;
 
     return html`<pre class="pre">
-        <code part="code">${this.#hastTree
-      ? renderHast(this.#hastTree)
-      : undefined}</code>
+        <code part="code">${this.#hastTree ? renderHast(this.#hastTree) : undefined}</code>
       </pre>`;
 
     // <Host
@@ -222,51 +209,6 @@ export class ChCode extends KasstorElement {
     //     {this.JSXCodeBlock}
     //   </code>
     // </Host>
-  }
-}
-
-export default ChCode;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-code": ChCode;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChCodeElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChCodeElement;
-  }
-
-  /**
-   * A control to highlight code blocks.
-   * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/syntax-tree/hast) using [Shiki](https://shiki.matsu.io). After that, it implements a reactivity layer by implementing its own render for the hast.
-   *
-   * - It also supports all programming languages from [Shiki.js](https://shiki.matsu.io).
-   *
-   * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
-   */ // prettier-ignore
-  interface HTMLChCodeElement extends ChCode {
-    // Extend the ChCode class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-code": HTMLChCodeElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-code": HTMLChCodeElement;
   }
 }
 

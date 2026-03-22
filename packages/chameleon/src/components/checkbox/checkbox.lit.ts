@@ -1,19 +1,10 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
 import { IS_SERVER } from "../../development-flags";
-import type {
-  GetImagePathCallback,
-  ImageRender
-} from "../../typings/multi-state-images";
+import type { GetImagePathCallback, ImageRender } from "../../typings/multi-state-images";
 import { getElementInternalsLabel } from "../../utilities/analysis/get-element-internals-label";
 import { CHECKBOX_PARTS_DICTIONARY } from "../../utilities/reserved-names/parts/checkbox";
 
@@ -42,9 +33,7 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
     ? CHECKBOX_PARTS_DICTIONARY.CHECKED
     : CHECKBOX_PARTS_DICTIONARY.UNCHECKED;
 
-  return disabled
-    ? `${CHECKBOX_PARTS_DICTIONARY.DISABLED} ${checkedValue}`
-    : checkedValue;
+  return disabled ? `${CHECKBOX_PARTS_DICTIONARY.DISABLED} ${checkedValue}` : checkedValue;
 };
 
 /**
@@ -98,9 +87,7 @@ export class ChCheckbox extends KasstorElement {
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
 
   /**
    * Specifies the label of the checkbox.
@@ -133,9 +120,7 @@ export class ChCheckbox extends KasstorElement {
    * This property specifies a callback that is executed when the path for an
    * startImgSrc needs to be resolved.
    */
-  @property({ attribute: false }) getImagePathCallback:
-    | GetImagePathCallback
-    | undefined;
+  @property({ attribute: false }) getImagePathCallback: GetImagePathCallback | undefined;
 
   /**
    * `true` if the control's value is indeterminate.
@@ -166,10 +151,8 @@ export class ChCheckbox extends KasstorElement {
   /**
    * Specifies the source of the start image.
    */
-  @property({ attribute: "start-img-type" }) startImgType: Exclude<
-    ImageRender,
-    "img"
-  > = "background";
+  @property({ attribute: "start-img-type" }) startImgType: Exclude<ImageRender, "img"> =
+    "background";
 
   /**
    * The value of the control.
@@ -227,8 +210,7 @@ export class ChCheckbox extends KasstorElement {
       part="${CHECKBOX_PARTS_DICTIONARY.CONTAINER} ${additionalParts}"
     >
       <input
-        aria-label=${this.#accessibleNameFromExternalLabel ??
-        (this.accessibleName || nothing)}
+        aria-label=${this.#accessibleNameFromExternalLabel ?? (this.accessibleName || nothing)}
         aria-disabled=${!this.disabled && this.readonly ? "false" : nothing}
         class=${canAddListeners ? "input actionable" : "input"}
         part="${CHECKBOX_PARTS_DICTIONARY.INPUT} ${additionalParts}"
@@ -242,8 +224,7 @@ export class ChCheckbox extends KasstorElement {
       />
     </div>`;
 
-  #setFormValue = () =>
-    this.#internals.setFormValue(this.checked ? this.value : null);
+  #setFormValue = () => this.#internals.setFormValue(this.checked ? this.value : null);
 
   protected override firstWillUpdate(): void {
     if (IS_SERVER) {
@@ -270,11 +251,7 @@ export class ChCheckbox extends KasstorElement {
   override render() {
     const checkedState = this.#getCheckedValue();
 
-    const additionalParts = PARTS(
-      this.checked,
-      this.indeterminate,
-      this.disabled
-    );
+    const additionalParts = PARTS(this.checked, this.indeterminate, this.disabled);
 
     const canAddListeners = !this.disabled && !this.readonly;
     const hasStartImage = !!this.startImgSrc;
@@ -292,11 +269,7 @@ export class ChCheckbox extends KasstorElement {
           class=${canAddListeners ? "label actionable" : "label"}
           part="${CHECKBOX_PARTS_DICTIONARY.LABEL} ${additionalParts}"
         >
-          ${this.#renderOptionContainer(
-            canAddListeners,
-            checkedState,
-            additionalParts
-          )}
+          ${this.#renderOptionContainer(canAddListeners, checkedState, additionalParts)}
           ${hasStartImage
             ? html`<ch-image
                 .disabled=${this.disabled}
@@ -307,97 +280,9 @@ export class ChCheckbox extends KasstorElement {
             : nothing}
           ${this.caption}
         </label>`
-      : this.#renderOptionContainer(
-          canAddListeners,
-          checkedState,
-          additionalParts
-        );
+      : this.#renderOptionContainer(canAddListeners, checkedState, additionalParts);
   }
 }
-
-export default ChCheckbox;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-checkbox": ChCheckbox;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChCheckboxElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChCheckboxElement;
-  }
-
-  /** Type of the `ch-checkbox`'s `input` event. */
-  // prettier-ignore
-  type HTMLChCheckboxElementInputEvent = HTMLChCheckboxElementCustomEvent<
-    HTMLChCheckboxElementEventMap["input"]
-  >;
-
-  interface HTMLChCheckboxElementEventMap {
-    input: boolean;
-  }
-
-  interface HTMLChCheckboxElementEventTypes {
-    input: HTMLChCheckboxElementInputEvent;
-  }
-
-  /**
-   * @status developer-preview
-   *
-   * @csspart container - The container that serves as a wrapper for the `input` and the `option` parts.
-   * @csspart input - The input element that implements the interactions for the component.
-   * @csspart label - The label that is rendered when the `caption` property is not empty.
-   *
-   * @csspart checked - Present in the `input`, `label` and `container` parts when the control is checked and not indeterminate (`checked === true` and `indeterminate !== true`).
-   * @csspart disabled - Present in the `input`, `label` and `container` parts when the control is disabled (`disabled === true`).
-   * @csspart indeterminate - Present in the `input`, `label` and `container` parts when the control is indeterminate (`indeterminate === true`).
-   * @csspart unchecked - Present in the `input`, `label` and `container` parts when the control is unchecked and not indeterminate (`checked === false` and `indeterminate !== true`).
-  
-   * @cssprop [--ch-checkbox__container-size = min(1em, 20px)] - Specifies the size for the container of the `input` and `option` elements.
-   *
-   * @cssprop [--ch-checkbox__checked-image = url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")] - Specifies the image of the checkbox when is checked.
-   *
-   * @cssprop [--ch-checkbox__option-indeterminate-image = url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><rect width='8' height='8'/></svg>")] - Specifies the image of the checkbox when is indeterminate.
-   *
-   * @cssprop [--ch-checkbox__option-image-size = 50%] - Specifies the image size of the `option` element.
-   *
-   * @cssprop [--ch-checkbox__image-size = #{$default-decorative-image-size}] - Specifies the box size that contains the start image of the control.
-   * 
-   * @cssprop [--ch-checkbox__background-image-size = 100%] - Specifies the size of the start image of the control.
-   *
-   * @fires input The `input` event is emitted when a change to the element's checked state
-   *   is committed by the user.
-   *   
-   *   It contains the new checked state of the control.
-   */
-  // prettier-ignore
-  interface HTMLChCheckboxElement extends ChCheckbox {
-    // Extend the ChCheckbox class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof HTMLChCheckboxElementEventTypes>(type: K, listener: (this: HTMLChCheckboxElement, ev: HTMLChCheckboxElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof HTMLChCheckboxElementEventTypes>(type: K, listener: (this: HTMLChCheckboxElement, ev: HTMLChCheckboxElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-checkbox": HTMLChCheckboxElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-checkbox": HTMLChCheckboxElement;
-  }
-}
-
 
 // ######### Auto generated below #########
 

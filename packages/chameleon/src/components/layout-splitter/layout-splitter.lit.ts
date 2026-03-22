@@ -1,7 +1,4 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
@@ -53,8 +50,7 @@ const STICKY_BLOCK_END_PROP = "inset-block-end";
 const STICKY_INLINE_START_PROP = "inset-inline-start";
 const STICKY_INLINE_END_PROP = "inset-inline-end";
 
-const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
-  `group direction--${direction}`;
+const DIRECTION_CLASS = (direction: LayoutSplitterDirection) => `group direction--${direction}`;
 
 const TEMPLATE_STYLE = (
   items: Item[],
@@ -62,11 +58,7 @@ const TEMPLATE_STYLE = (
   fixedSizesSum: number,
   sticky?: LayoutSplitterSticky
 ) => ({
-  [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
-    items,
-    itemsInfo,
-    items.length - 1
-  ),
+  [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(items, itemsInfo, items.length - 1),
   [FIXED_SIZES_SUM_CUSTOM_VAR]: `${fixedSizesSum}px`,
   [STICKY_BLOCK_START_PROP]: sticky?.blockStart,
   [STICKY_BLOCK_END_PROP]: sticky?.blockEnd,
@@ -113,8 +105,7 @@ export class ChLayoutSplitter extends KasstorElement {
    * This attribute lets you specify the label for the drag bar.
    * Important for accessibility.
    */
-  @property({ attribute: "bar-accessible-name" }) barAccessibleName: string =
-    "Resize";
+  @property({ attribute: "bar-accessible-name" }) barAccessibleName: string = "Resize";
 
   /**
    * This attribute lets you specify if the resize operation is disabled in all
@@ -225,10 +216,7 @@ export class ChLayoutSplitter extends KasstorElement {
 
   #handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();
-    this.#newMousePosition = getMousePosition(
-      event,
-      this.#mouseDownInfo.direction
-    );
+    this.#newMousePosition = getMousePosition(event, this.#mouseDownInfo.direction);
 
     this.#mouseDownInfo.mouseEvent = event;
 
@@ -287,9 +275,7 @@ export class ChLayoutSplitter extends KasstorElement {
     this.#mouseDownInfo = {
       container: dragBarContainer,
       containerSize:
-        direction === "columns"
-          ? dragBarContainer.clientWidth
-          : dragBarContainer.clientHeight,
+        direction === "columns" ? dragBarContainer.clientWidth : dragBarContainer.clientHeight,
       direction: direction,
       dragBar: dragBar,
       fixedSizesSumRoot: this.#fixedSizesSumRoot,
@@ -312,12 +298,7 @@ export class ChLayoutSplitter extends KasstorElement {
 
       this.#dragRAF ??= new SyncWithRAF();
 
-      this.#initializeDragBarValuesForResizeProcessing(
-        direction,
-        index,
-        layoutItems,
-        event
-      );
+      this.#initializeDragBarValuesForResizeProcessing(direction, index, layoutItems, event);
 
       // Set mouse cursor in the document
       addCursorInDocument(direction === "columns" ? "ew-resize" : "ns-resize");
@@ -344,12 +325,8 @@ export class ChLayoutSplitter extends KasstorElement {
     (direction: LayoutSplitterDirection, index: number, layoutItems: Item[]) =>
     (event: KeyboardEvent) => {
       if (
-        (direction === "rows" &&
-          event.code !== ARROW_UP &&
-          event.code !== ARROW_DOWN) ||
-        (direction === "columns" &&
-          event.code !== ARROW_LEFT &&
-          event.code !== ARROW_RIGHT)
+        (direction === "rows" && event.code !== ARROW_UP && event.code !== ARROW_DOWN) ||
+        (direction === "columns" && event.code !== ARROW_LEFT && event.code !== ARROW_RIGHT)
       ) {
         return;
       }
@@ -357,20 +334,12 @@ export class ChLayoutSplitter extends KasstorElement {
       // Prevent scroll
       event.preventDefault();
 
-      this.#initializeDragBarValuesForResizeProcessing(
-        direction,
-        index,
-        layoutItems,
-        event
-      );
+      this.#initializeDragBarValuesForResizeProcessing(direction, index, layoutItems, event);
 
-      const positiveIncrement =
-        event.code === ARROW_RIGHT || event.code === ARROW_DOWN;
+      const positiveIncrement = event.code === ARROW_RIGHT || event.code === ARROW_DOWN;
 
       this.#handleBarDragRAF(
-        positiveIncrement
-          ? this.incrementWithKeyboard
-          : -this.incrementWithKeyboard
+        positiveIncrement ? this.incrementWithKeyboard : -this.incrementWithKeyboard
       );
     };
 
@@ -430,9 +399,7 @@ export class ChLayoutSplitter extends KasstorElement {
           aria-controls=${getAriaControls(layoutItems, index)}
           aria-disabled=${this.dragBarDisabled ? "true" : nothing}
           aria-label=${this.barAccessibleName}
-          aria-orientation=${direction === "columns"
-            ? "vertical"
-            : "horizontal"}
+          aria-orientation=${direction === "columns" ? "vertical" : "horizontal"}
           aria-valuetext=${
             // TODO: Add aria-valuenow
             itemUIModel.actualSize
@@ -443,9 +410,7 @@ export class ChLayoutSplitter extends KasstorElement {
           part=${item.dragBar?.part
             ? `${LAYOUT_SPLITTER_PARTS_DICTIONARY.BAR} ${item.dragBar.part}`
             : LAYOUT_SPLITTER_PARTS_DICTIONARY.BAR}
-          style=${item.dragBar?.size
-            ? `--size: ${item.dragBar.size}px`
-            : nothing}
+          style=${item.dragBar?.size ? `--size: ${item.dragBar.size}px` : nothing}
           @keyDown=${!this.dragBarDisabled
             ? this.#handleResize(direction, index, layoutItems)
             : nothing}
@@ -470,10 +435,7 @@ export class ChLayoutSplitter extends KasstorElement {
     this.#itemsInfo.clear();
 
     if (layout?.items?.length > 0) {
-      this.#fixedSizesSumRoot = fixAndUpdateLayoutModel(
-        layout,
-        this.#itemsInfo
-      );
+      this.#fixedSizesSumRoot = fixAndUpdateLayoutModel(layout, this.#itemsInfo);
     }
   };
 
@@ -506,68 +468,15 @@ export class ChLayoutSplitter extends KasstorElement {
       html`<div
         class=${DIRECTION_CLASS(layoutModel.direction)}
         style=${styleMap(
-          TEMPLATE_STYLE(
-            layoutModel.items,
-            this.#itemsInfo,
-            this.#fixedSizesSumRoot
-          )
+          TEMPLATE_STYLE(layoutModel.items, this.#itemsInfo, this.#fixedSizesSumRoot)
         )}
       >
-        ${this.#renderItems(
-          layoutModel.direction,
-          layoutModel.items,
-          layoutModel.items.length - 1
-        )}
+        ${this.#renderItems(layoutModel.direction, layoutModel.items, layoutModel.items.length - 1)}
       </div>`
       // </Host>
     );
   }
 }
-
-export default ChLayoutSplitter;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-layout-splitter": ChLayoutSplitter;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChLayoutSplitterElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChLayoutSplitterElement;
-  }
-
-  /**
-   * This component allows us to design a layout composed by columns and rows.
-   *  - Columns and rows can have relative (`fr`) or absolute (`px`) size.
-   *  - The line that separates two columns or two rows will always have a drag-bar to resize the layout.
-   *
-   * @csspart bar - The bar that divides two columns or two rows
-   */// prettier-ignore
-  interface HTMLChLayoutSplitterElement extends ChLayoutSplitter {
-    // Extend the ChLayoutSplitter class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-layout-splitter": HTMLChLayoutSplitterElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-layout-splitter": HTMLChLayoutSplitterElement;
-  }
-}
-
 
 // ######### Auto generated below #########
 
@@ -584,7 +493,7 @@ declare global {
    *  - The line that separates two columns or two rows will always have a drag-bar to resize the layout.
    *
    * @csspart bar - The bar that divides two columns or two rows
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChLayoutSplitterElement extends ChLayoutSplitter {
     // Extend the ChLayoutSplitter class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

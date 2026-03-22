@@ -1,11 +1,5 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -22,9 +16,7 @@ const PARTS = (checked: boolean, disabled: boolean) => {
     ? RADIO_ITEM_PARTS_DICTIONARY.CHECKED
     : RADIO_ITEM_PARTS_DICTIONARY.UNCHECKED;
 
-  return disabled
-    ? `${RADIO_ITEM_PARTS_DICTIONARY.DISABLED} ${checkedValue}`
-    : checkedValue;
+  return disabled ? `${RADIO_ITEM_PARTS_DICTIONARY.DISABLED} ${checkedValue}` : checkedValue;
 };
 
 /**
@@ -53,8 +45,7 @@ export class ChRadioGroupRender extends KasstorElement {
   /**
    * Specifies the direction of the items.
    */
-  @property({ reflect: true }) direction: "horizontal" | "vertical" =
-    "horizontal";
+  @property({ reflect: true }) direction: "horizontal" | "vertical" = "horizontal";
 
   /**
    * This attribute lets you specify if the radio-group is disabled.
@@ -150,88 +141,11 @@ export class ChRadioGroupRender extends KasstorElement {
 
     this.setAttribute("role", "radiogroup");
 
-    // Set form value
-    this.#internals.setFormValue(this.value ?? "");
-
     // TODO: Find the way to support label in the ch-radio-group-render
   }
 
   override render() {
-    return this.model == null
-      ? nothing
-      : repeat(this.model, item => item.value, this.#itemRender);
-  }
-}
-
-export default ChRadioGroupRender;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-radio-group-render": ChRadioGroupRender;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChRadioGroupRenderElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChRadioGroupRenderElement;
-  }
-
-  /** Type of the `ch-radio-group-render`'s `change` event. */
-  // prettier-ignore
-  type HTMLChRadioGroupRenderElementChangeEvent = HTMLChRadioGroupRenderElementCustomEvent<
-    HTMLChRadioGroupRenderElementEventMap["change"]
-  >;
-
-  interface HTMLChRadioGroupRenderElementEventMap {
-    change: string;
-  }
-
-  interface HTMLChRadioGroupRenderElementEventTypes {
-    change: HTMLChRadioGroupRenderElementChangeEvent;
-  }
-
-  /**
-   * The radio group control is used to render a short list of mutually exclusive options.
-   *
-   * It contains radio items to allow users to select one option from the list of options.
-   *
-   * @part radio__item - The radio item element.
-   * @part radio__container - The container that serves as a wrapper for the `input` and the `option` parts.
-   * @part radio__input - The invisible input element that implements the interactions for the component. This part must be kept "invisible".
-   * @part radio__option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.
-   * @part radio__label - The label that is rendered when the `caption` property is not empty.
-   *
-   * @part checked - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is checked (`checked` === `true`).
-   * @part disabled - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is disabled (`disabled` === `true`).
-   * @part unchecked - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is not checked (`checked` !== `true`).
-   *
-   * @fires change Fired when the selected item change. It contains the information about the
-   *   new selected value.
-   */
-  // prettier-ignore
-  interface HTMLChRadioGroupRenderElement extends ChRadioGroupRender {
-    // Extend the ChRadioGroupRender class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof HTMLChRadioGroupRenderElementEventTypes>(type: K, listener: (this: HTMLChRadioGroupRenderElement, ev: HTMLChRadioGroupRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof HTMLChRadioGroupRenderElementEventTypes>(type: K, listener: (this: HTMLChRadioGroupRenderElement, ev: HTMLChRadioGroupRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-radio-group-render": HTMLChRadioGroupRenderElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-radio-group-render": HTMLChRadioGroupRenderElement;
+    return this.model == null ? nothing : repeat(this.model, item => item.value, this.#itemRender);
   }
 }
 

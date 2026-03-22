@@ -1,11 +1,5 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
@@ -60,16 +54,12 @@ export class ChSwitch extends KasstorElement {
    * with an element to provide users of assistive technologies with a label
    * for the element.asd123
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
 
   /**
    * Caption displayed when the switch is 'on'
    */
-  @property({ attribute: "checked-caption" }) checkedCaption:
-    | string
-    | undefined;
+  @property({ attribute: "checked-caption" }) checkedCaption: string | undefined;
 
   /**
    * `true` if the `ch-switch` is checked.
@@ -108,9 +98,7 @@ export class ChSwitch extends KasstorElement {
   /**
    * Caption displayed when the switch is 'off'
    */
-  @property({ attribute: "un-checked-caption" }) unCheckedCaption:
-    | string
-    | undefined;
+  @property({ attribute: "un-checked-caption" }) unCheckedCaption: string | undefined;
 
   /**
    * The value of the control.
@@ -156,8 +144,7 @@ export class ChSwitch extends KasstorElement {
     }
   };
 
-  #setFormValue = () =>
-    this.#internals.setFormValue(this.checked ? this.value : null);
+  #setFormValue = () => this.#internals.setFormValue(this.checked ? this.value : null);
 
   override connectedCallback() {
     super.connectedCallback();
@@ -208,20 +195,13 @@ export class ChSwitch extends KasstorElement {
         // TODO: Add a unit test for this, since it is always required
         checked ? "true" : "false"
       }
-      aria-label=${this.#accessibleNameFromExternalLabel ??
-      (this.accessibleName || nothing)}
+      aria-label=${this.#accessibleNameFromExternalLabel ?? (this.accessibleName || nothing)}
       aria-readonly=${readonly ? "true" : nothing}
       class="switch"
       ?disabled=${disabled}
     >
-      <div
-        class="track"
-        part="${SWITCH_PARTS_DICTIONARY.TRACK} ${additionalParts}"
-      >
-        <div
-          class="thumb"
-          part="${SWITCH_PARTS_DICTIONARY.THUMB} ${additionalParts}"
-        ></div>
+      <div class="track" part="${SWITCH_PARTS_DICTIONARY.TRACK} ${additionalParts}">
+        <div class="thumb" part="${SWITCH_PARTS_DICTIONARY.THUMB} ${additionalParts}"></div>
       </div>
 
       ${caption
@@ -233,80 +213,6 @@ export class ChSwitch extends KasstorElement {
           >`
         : nothing}
     </button>`;
-  }
-}
-
-export default ChSwitch;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-switch": ChSwitch;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChSwitchElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChSwitchElement;
-  }
-
-  /** Type of the `ch-switch`'s `input` event. */
-  // prettier-ignore
-  type HTMLChSwitchElementInputEvent = HTMLChSwitchElementCustomEvent<
-    HTMLChSwitchElementEventMap["input"]
-  >;
-
-  interface HTMLChSwitchElementEventMap {
-    input: boolean;
-  }
-
-  interface HTMLChSwitchElementEventTypes {
-    input: HTMLChSwitchElementInputEvent;
-  }
-
-  /**
-   * @status experimental
-   *
-   * A switch/toggle control that enables you to select between options.
-   *
-   * @part track - The track of the switch element.
-   * @part thumb - The thumb of the switch element.
-   * @part caption - The caption (checked or unchecked) of the switch element.
-   *
-   * @part checked - Present in the `track`, `thumb` and `caption` parts when the control is checked (`checked` === `true`).
-   * @part disabled - Present in the `track`, `thumb` and `caption` parts when the control is disabled (`disabled` === `true`).
-   * @part unchecked - Present in the `track`, `thumb` and `caption` parts when the control is unchecked (`checked` === `false`).
-   *
-   * @fires input The `input` event is emitted when a change to the element's checked state
-   *   is committed by the user.
-   *
-   *   It contains the new checked state of the control.
-   *
-   *   This event is preventable.
-   */
-  // prettier-ignore
-  interface HTMLChSwitchElement extends ChSwitch {
-    // Extend the ChSwitch class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof HTMLChSwitchElementEventTypes>(type: K, listener: (this: HTMLChSwitchElement, ev: HTMLChSwitchElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof HTMLChSwitchElementEventTypes>(type: K, listener: (this: HTMLChSwitchElement, ev: HTMLChSwitchElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-switch": HTMLChSwitchElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-switch": HTMLChSwitchElement;
   }
 }
 
@@ -348,9 +254,9 @@ declare global {
    *
    * @fires input The `input` event is emitted when a change to the element's checked state
    *   is committed by the user.
-   *   
+   *
    *   It contains the new checked state of the control.
-   *   
+   *
    *   This event is preventable.
    */
   // prettier-ignore

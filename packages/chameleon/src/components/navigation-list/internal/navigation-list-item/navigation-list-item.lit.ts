@@ -1,7 +1,4 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators/property.js";
 
@@ -17,14 +14,8 @@ import {
   NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
 } from "../../../../utilities/reserved-names/parts/navigation-list";
 import type ChNavigationListRender from "../../navigation-list-render.lit";
-import type {
-  NavigationListItemModel,
-  NavigationListSharedState
-} from "../../types";
-import {
-  NAVIGATION_LIST_INITIAL_LEVEL,
-  NAVIGATION_LIST_NO_ATTRIBUTE
-} from "../../utils";
+import type { NavigationListItemModel, NavigationListSharedState } from "../../types";
+import { NAVIGATION_LIST_INITIAL_LEVEL, NAVIGATION_LIST_NO_ATTRIBUTE } from "../../utils";
 import { getNavigationListItemLevelPart } from "./utils";
 
 import styles from "./navigation-list-item.scss?inline";
@@ -76,14 +67,12 @@ export class ChNavigationListItem extends KasstorElement {
    * Otherwise, setting this attribute on the client would provoke FOUC and/or
    * visual flickering.
    */
-  @property({ reflect: true }) exportparts: string =
-    NAVIGATION_LIST_ITEM_EXPORT_PARTS;
+  @property({ reflect: true }) exportparts: string = NAVIGATION_LIST_ITEM_EXPORT_PARTS;
 
   /**
    * Specifies at which level of the navigation list is rendered the control.
    */
-  @property(NAVIGATION_LIST_NO_ATTRIBUTE) level: number =
-    NAVIGATION_LIST_INITIAL_LEVEL;
+  @property(NAVIGATION_LIST_NO_ATTRIBUTE) level: number = NAVIGATION_LIST_INITIAL_LEVEL;
 
   /**
    *
@@ -112,13 +101,10 @@ export class ChNavigationListItem extends KasstorElement {
   /**
    * Specifies how the start image will be rendered.
    */
-  @property(NAVIGATION_LIST_NO_ATTRIBUTE) startImgType:
-    | Exclude<ImageRender, "img">
-    | undefined;
+  @property(NAVIGATION_LIST_NO_ATTRIBUTE) startImgType: Exclude<ImageRender, "img"> | undefined;
 
   #renderCaption = (navigationListCollapsed: boolean, levelParts: string) => {
-    return navigationListCollapsed &&
-      this.sharedState.showCaptionOnCollapse === "tooltip"
+    return navigationListCollapsed && this.sharedState.showCaptionOnCollapse === "tooltip"
       ? html`<ch-tooltip
           .actionElement=${
             // We can't use this because in not a focusable element. Non
@@ -139,8 +125,7 @@ export class ChNavigationListItem extends KasstorElement {
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
 
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
-              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-                !this.selected,
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
 
               [levelParts]: true
             },
@@ -158,8 +143,7 @@ export class ChNavigationListItem extends KasstorElement {
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
 
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-              !this.selected,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
 
             [levelParts]: true
           })}
@@ -211,11 +195,9 @@ export class ChNavigationListItem extends KasstorElement {
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.LINK]: true,
 
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: !!this.selected,
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-              !this.selected,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
 
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
-              hasExpandableButton,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]: hasExpandableButton,
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.START]:
               hasExpandableButton && expandableButtonPosition === "start",
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.END]:
@@ -236,8 +218,7 @@ export class ChNavigationListItem extends KasstorElement {
             (!disabled && this.link.target) || nothing
           }
         >
-          ${this.#renderImage()}
-          ${this.#renderCaption(navigationListCollapsed, levelParts)}
+          ${this.#renderImage()} ${this.#renderCaption(navigationListCollapsed, levelParts)}
         </a>`
       : html`<button
           class=${tokenMap(classes)}
@@ -246,8 +227,7 @@ export class ChNavigationListItem extends KasstorElement {
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BUTTON]: true,
 
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
-              hasExpandableButton,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]: hasExpandableButton,
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.START]:
               hasExpandableButton && expandableButtonPosition === "start",
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.END]:
@@ -261,8 +241,7 @@ export class ChNavigationListItem extends KasstorElement {
           ?disabled=${disabled}
           type="button"
         >
-          ${this.#renderImage()}
-          ${this.#renderCaption(navigationListCollapsed, levelParts)}
+          ${this.#renderImage()} ${this.#renderCaption(navigationListCollapsed, levelParts)}
         </button>`;
   };
 
@@ -289,8 +268,7 @@ export class ChNavigationListItem extends KasstorElement {
   override render() {
     const levelPart = `level-${this.level}` as const;
     const evenLevel = this.level % 2 === 0;
-    const evenLevelParts =
-      `${getNavigationListItemLevelPart(evenLevel)} ${levelPart}` as const;
+    const evenLevelParts = `${getNavigationListItemLevelPart(evenLevel)} ${levelPart}` as const;
 
     const { sharedState } = this;
 
@@ -325,8 +303,7 @@ export class ChNavigationListItem extends KasstorElement {
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.GROUP]: true,
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-              !this.selected,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
 
             // Don't add the even-level/odd-level parts on the initial level to
             // ensure the alignment works properly
@@ -344,48 +321,6 @@ export class ChNavigationListItem extends KasstorElement {
   }
 }
 
-export default ChNavigationListItem;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-navigation-list-item": ChNavigationListItem;
-  }
-}
-
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChNavigationListItemElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChNavigationListItemElement;
-  }
-
-  /**
-   * @status experimental
-   */// prettier-ignore
-  interface HTMLChNavigationListItemElement extends ChNavigationListItem {
-    // Extend the ChNavigationListItem class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-navigation-list-item": HTMLChNavigationListItemElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-navigation-list-item": HTMLChNavigationListItemElement;
-  }
-}
-
-
 // ######### Auto generated below #########
 
 declare global {
@@ -397,7 +332,7 @@ declare global {
 
   /**
    * @status experimental
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChNavigationListItemElement extends ChNavigationListItem {
     // Extend the ChNavigationListItem class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

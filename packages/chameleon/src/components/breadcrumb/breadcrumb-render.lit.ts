@@ -1,24 +1,14 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { ItemLink } from "../../typings/hyperlinks";
 
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 
 import { BREADCRUMB_NO_ATTRIBUTE } from "../breadcrumb/utils";
 import styles from "./breadcrumb-render.scss?inline";
-import type {
-  BreadCrumbHyperlinkClickEvent,
-  BreadCrumbItemModel,
-  BreadCrumbModel
-} from "./types";
+import type { BreadCrumbHyperlinkClickEvent, BreadCrumbItemModel, BreadCrumbModel } from "./types";
 
 import type { ChameleonControlsTagName } from "../../typings/chameleon-components";
 import type { GxImageMultiState } from "../../typings/multi-state-images";
@@ -36,7 +26,6 @@ import { adoptCommonThemes } from "../../utilities/theme.js";
 
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 
-
 // TODO: FOR LIT USE A CONTEXT to share the getImagePathCallback implementation!
 
 // TODO: For some reason, this module import is different when an external
@@ -49,10 +38,7 @@ const registerDefaultGetImagePathCallback = () =>
     DEFAULT_BREADCRUMB_GET_IMAGE_PATH_CALLBACK
   );
 
-const isSelectedLink = (
-  item: BreadCrumbItemModel,
-  breadCrumbState: ChBreadCrumbRender
-) =>
+const isSelectedLink = (item: BreadCrumbItemModel, breadCrumbState: ChBreadCrumbRender) =>
   !!item.link &&
   !!breadCrumbState.selectedLink?.link?.url &&
   breadCrumbState.selectedLink.link.url === item.link.url &&
@@ -112,9 +98,7 @@ export class ChBreadCrumbRender extends KasstorElement {
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
   @Observe("accessibleName")
   accessibleNameChanged() {
     if (this.accessibleName) {
@@ -150,15 +134,10 @@ export class ChBreadCrumbRender extends KasstorElement {
       return;
     }
 
-    const breadCrumbItem = composedPath[
-      itemActionIndex + 2
-    ] as ChBreadCrumbItem;
+    const breadCrumbItem = composedPath[itemActionIndex + 2] as ChBreadCrumbItem;
 
     // Get the breadcrumb item of the event
-    if (
-      !breadCrumbItem ||
-      breadCrumbItem.tagName?.toLowerCase() !== BREADCRUMB_ITEM
-    ) {
+    if (!breadCrumbItem || breadCrumbItem.tagName?.toLowerCase() !== BREADCRUMB_ITEM) {
       return;
     }
     const itemUIModel = breadCrumbItem.model;
@@ -184,12 +163,7 @@ export class ChBreadCrumbRender extends KasstorElement {
 
   #initializeComponentFromProperties = () => {
     // If the getImagePathCallback was not previously registered
-    if (
-      !getControlRegisterProperty(
-        "getImagePathCallback",
-        "ch-breadcrumb-render"
-      )
-    ) {
+    if (!getControlRegisterProperty("getImagePathCallback", "ch-breadcrumb-render")) {
       registerDefaultGetImagePathCallback();
     }
   };
@@ -241,9 +215,7 @@ export class ChBreadCrumbRender extends KasstorElement {
         </ch-breadcrumb-item>
 
         ${!(index === model.length - 1)
-          ? html`<span class="separator" aria-hidden="true"
-              >${this.separator}</span
-            >`
+          ? html`<span class="separator" aria-hidden="true">${this.separator}</span>`
           : nothing}
       `
     );
@@ -255,14 +227,6 @@ export class ChBreadCrumbRender extends KasstorElement {
       : html`<ol>
           ${this.#renderModel(this.model)}
         </ol>`;
-  }
-}
-
-export default ChBreadCrumbRender;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-breadcrumb-render": ChBreadCrumbRender;
   }
 }
 

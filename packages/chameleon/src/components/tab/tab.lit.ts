@@ -11,8 +11,8 @@ import { html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
 import { classMap } from "lit/directives/class-map.js";
+import { createRef, ref, type Ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
-import { ref, createRef, type Ref } from "lit/directives/ref.js";
 
 import { IS_SERVER } from "../../development-flags";
 import type {
@@ -20,10 +20,7 @@ import type {
   CssOverflowProperty
 } from "../../typings/css-properties";
 import type { GetImagePathCallback } from "../../typings/multi-state-images";
-import {
-  insertIntoIndex,
-  removeIndex
-} from "../../utilities/array";
+import { insertIntoIndex, removeIndex } from "../../utilities/array";
 import {
   focusComposedPath,
   MouseEventButton,
@@ -33,9 +30,7 @@ import { inBetween } from "../../utilities/in-between";
 import { tokenMap } from "../../utilities/mapping/token-map";
 import { SCROLLABLE_CLASS } from "../../utilities/reserved-names/common";
 import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
-import {
-  TAB_PARTS_DICTIONARY
-} from "../../utilities/reserved-names/reserved-names";
+import { TAB_PARTS_DICTIONARY } from "../../utilities/reserved-names/reserved-names";
 import { isRTL } from "../../utilities/rtl-watcher";
 import { SyncWithRAF } from "../../utilities/sync-with-frames";
 import { adoptCommonThemes } from "../../utilities/theme.js";
@@ -338,7 +333,6 @@ const NO_ATTRIBUTE = { attribute: false };
  * @slot {item.id} - Named slot for each tab panel's content, projected when the tab has been rendered at least once.
  */
 @Component({
-  shadow: true,
   styles,
   tag: "ch-tab-render"
 })
@@ -556,15 +550,15 @@ export class ChTabRender extends KasstorElement implements DraggableView {
   /**
    * `true` to show the captions of the items.
    */
-  @property({ type: Boolean, attribute: "show-captions" }) showCaptions:
-    boolean = true;
+  @property({ type: Boolean, attribute: "show-captions" })
+  showCaptions: boolean = true;
 
   /**
    * `true` to render a slot named "tab-list-end" to project content at the
    * end position of the tab-list ("after" the tab buttons).
    */
-  @property({ type: Boolean, attribute: "show-tab-list-end" }) showTabListEnd:
-    boolean = false;
+  @property({ type: Boolean, attribute: "show-tab-list-end" })
+  showTabListEnd: boolean = false;
 
   /**
    * `true` to render a slot named "tab-list-start" to project content at the
@@ -583,14 +577,14 @@ export class ChTabRender extends KasstorElement implements DraggableView {
   /**
    * `true` to not render the tab buttons of the control.
    */
-  @property({ type: Boolean, attribute: "tab-button-hidden" }) tabButtonHidden:
-    boolean = false;
+  @property({ type: Boolean, attribute: "tab-button-hidden" })
+  tabButtonHidden: boolean = false;
 
   /**
    * Specifies the position of the tab list of the `ch-tab-render`.
    */
-  @property({ attribute: "tab-list-position" }) tabListPosition:
-    TabListPosition = DEFAULT_TAB_LIST_POSITION;
+  @property({ attribute: "tab-list-position" })
+  tabListPosition: TabListPosition = DEFAULT_TAB_LIST_POSITION;
 
   /**
    * Fired when an item of the main group is double clicked.
@@ -799,10 +793,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     // Initialize the button position
     setButtonInitialPosition(this, buttonSizes.xStart, buttonSizes.yStart);
 
-    setButtonSize(
-      this,
-      blockDirection ? buttonRect.width : buttonRect.height
-    );
+    setButtonSize(this, blockDirection ? buttonRect.width : buttonRect.height);
 
     // Update mouse offset to correctly place the dragged element preview
     setMouseOffset(
@@ -911,16 +902,8 @@ export class ChTabRender extends KasstorElement implements DraggableView {
         // Check mouse limits if drag outside is enabled
         if (this.dragOutside && mouseLimits) {
           const draggedButtonIsInsideTheTabList =
-            inBetween(
-              mouseLimits.xStart,
-              mousePositionX,
-              mouseLimits.xEnd
-            ) &&
-            inBetween(
-              mouseLimits.yStart,
-              mousePositionY,
-              mouseLimits.yEnd
-            );
+            inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
+            inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
 
           // Emit the itemDragStart event the first time the button is out of
           // the mouse bounds (`mouseBoundingLimits`)
@@ -1326,25 +1309,26 @@ export class ChTabRender extends KasstorElement implements DraggableView {
   #renderTabPages = (
     blockDirection: boolean,
     startDirection: boolean
-  ): TemplateResult => html`<div
-    class=${classMap({
-      "panel-container": true,
-      "panel-container--collapsed": !this.expanded
-    })}
-    part=${tokenMap({
-      [TAB_PARTS_DICTIONARY.PANEL_CONTAINER]: true,
-      [this.tabListPosition]: true,
-      [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
-      [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
-      [TAB_PARTS_DICTIONARY.START]: startDirection,
-      [TAB_PARTS_DICTIONARY.END]: !startDirection
-    })}
-    ${ref(this.#tabPageRef)}
-  >
-    ${[...this.#renderedPages.values()].map(item =>
-      this.#renderTabPanel(item)
-    )}
-  </div>`;
+  ): TemplateResult =>
+    html`<div
+      class=${classMap({
+        "panel-container": true,
+        "panel-container--collapsed": !this.expanded
+      })}
+      part=${tokenMap({
+        [TAB_PARTS_DICTIONARY.PANEL_CONTAINER]: true,
+        [this.tabListPosition]: true,
+        [TAB_PARTS_DICTIONARY.BLOCK]: blockDirection,
+        [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
+        [TAB_PARTS_DICTIONARY.START]: startDirection,
+        [TAB_PARTS_DICTIONARY.END]: !startDirection
+      })}
+      ${ref(this.#tabPageRef)}
+    >
+      ${[...this.#renderedPages.values()].map(item =>
+        this.#renderTabPanel(item)
+      )}
+    </div>`;
 
   #renderTabPanel = (item: TabItemModel): TemplateResult => {
     // TODO: Avoid this check as much as possible
@@ -1396,9 +1380,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     </div>`;
   };
 
-  #renderDragPreview = (
-    draggedElement: TabItemModel
-  ): TemplateResult => {
+  #renderDragPreview = (draggedElement: TabItemModel): TemplateResult => {
     const blockDirection = isBlockDirection(this.tabListPosition);
     const startDirection = isStartDirection(this.tabListPosition);
     const selected = draggedElement.id === this.selectedId;
@@ -1491,24 +1473,16 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     }
 
     return html`${!this.tabButtonHidden
-        ? html`${this.showTabListStart
-              ? this.#renderTabListPosition(
-                  "start",
-                  blockDirection,
-                  startDirection
-                )
-              : nothing}
-            ${this.#renderTabList(thereAreShiftedElementsInPreview)}
-            ${this.showTabListEnd
-              ? this.#renderTabListPosition(
-                  "end",
-                  blockDirection,
-                  startDirection
-                )
-              : nothing}`
-        : nothing}
-      ${this.#renderTabPages(blockDirection, startDirection)}
-      ${draggedIndex !== -1 ? this.#renderDragPreview(draggedElement) : nothing}`;
+      ? html`${this.showTabListStart
+          ? this.#renderTabListPosition("start", blockDirection, startDirection)
+          : nothing}
+        ${this.#renderTabList(thereAreShiftedElementsInPreview)}
+        ${this.showTabListEnd
+          ? this.#renderTabListPosition("end", blockDirection, startDirection)
+          : nothing}`
+      : nothing}
+    ${this.#renderTabPages(blockDirection, startDirection)}
+    ${draggedIndex !== -1 ? this.#renderDragPreview(draggedElement) : nothing}`;
   }
 }
 
@@ -1517,3 +1491,4 @@ declare global {
     "ch-tab-render": ChTabRender;
   }
 }
+

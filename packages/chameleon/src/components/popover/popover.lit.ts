@@ -15,8 +15,8 @@ import { createRef, ref, type Ref } from "lit/directives/ref.js";
 import { forceCSSMinMax } from "../../utilities/force-css-min-max";
 import { getAllShadowRootAncestors } from "../../utilities/get-all-shadow-root-ancestors";
 import { Host } from "../../utilities/host/host";
-import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
 import { SCROLLABLE_CLASS } from "../../utilities/reserved-names/common";
+import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
 import {
   isRTL,
   subscribeToRTLChanges,
@@ -65,8 +65,7 @@ const POPOVER_MAX_INLINE_SIZE = "--ch-popover-max-inline-size";
 const POPOVER_FORCED_MAX_BLOCK_SIZE = "--ch-popover-forced-max-block-size";
 const POPOVER_FORCED_MAX_INLINE_SIZE = "--ch-popover-forced-max-inline-size";
 
-const POPOVER_BORDER_BLOCK_START_SIZE =
-  "--ch-popover-border-block-start-width";
+const POPOVER_BORDER_BLOCK_START_SIZE = "--ch-popover-border-block-start-width";
 const POPOVER_BORDER_BLOCK_END_SIZE = "--ch-popover-border-block-end-width";
 const POPOVER_BORDER_INLINE_START_SIZE =
   "--ch-popover-border-inline-start-width";
@@ -169,7 +168,6 @@ let autoId = 0;
  * @slot - Default slot. The main content of the popover.
  */
 @Component({
-  shadow: true,
   styles,
   tag: "ch-popover"
 })
@@ -236,11 +234,7 @@ export class ChPopover extends KasstorElement {
       if (direction === "start") {
         this.#draggedDistanceYForResize -= currentDraggedDistanceY;
 
-        setProperty(
-          this,
-          POPOVER_DRAGGED_Y,
-          this.#draggedDistanceYForResize
-        );
+        setProperty(this, POPOVER_DRAGGED_Y, this.#draggedDistanceYForResize);
       }
 
       setProperty(this, POPOVER_BLOCK_SIZE, newRestrictedBlockSize);
@@ -277,11 +271,7 @@ export class ChPopover extends KasstorElement {
       if (direction === "start") {
         this.#draggedDistanceXForResize -= currentDraggedDistanceX;
 
-        setProperty(
-          this,
-          POPOVER_DRAGGED_X,
-          this.#draggedDistanceXForResize
-        );
+        setProperty(this, POPOVER_DRAGGED_X, this.#draggedDistanceXForResize);
       }
 
       setProperty(this, POPOVER_INLINE_SIZE, newRestrictedInlineSize);
@@ -704,9 +694,7 @@ export class ChPopover extends KasstorElement {
 
     this.#resizeObserver ??= new ResizeObserver(
       (entries: ResizeObserverEntry[]) => {
-        const popoverWasResized = entries.find(
-          entry => entry.target === this
-        );
+        const popoverWasResized = entries.find(entry => entry.target === this);
 
         // If the popover size is changed, update the alignment in the same
         // frame to avoid any flickering. This optimization avoids an extra
@@ -1443,43 +1431,35 @@ export class ChPopover extends KasstorElement {
               class="edge__block-start"
               @mousedown=${this.#handleEdgeResize("block-start")}
             ></div>
-            <!-- Top -->
             <div
               class="edge__inline-end"
               @mousedown=${this.#handleEdgeResize("inline-end")}
             ></div>
-            <!-- Right -->
             <div
               class="edge__block-end"
               @mousedown=${this.#handleEdgeResize("block-end")}
             ></div>
-            <!-- Bottom -->
             <div
               class="edge__inline-start"
               @mousedown=${this.#handleEdgeResize("inline-start")}
             ></div>
-            <!-- Left -->
 
             <div
               class="corner__block-start-inline-start"
               @mousedown=${this.#handleEdgeResize("block-start-inline-start")}
             ></div>
-            <!-- Top Left -->
             <div
               class="corner__block-start-inline-end"
               @mousedown=${this.#handleEdgeResize("block-start-inline-end")}
             ></div>
-            <!-- Top Right -->
             <div
               class="corner__block-end-inline-start"
               @mousedown=${this.#handleEdgeResize("block-end-inline-start")}
             ></div>
-            <!-- Bottom Left -->
             <div
               class="corner__block-end-inline-end"
               @mousedown=${this.#handleEdgeResize("block-end-inline-end")}
             ></div>
-            <!-- Bottom Right -->
 
             <div class="resize-layer" ${ref(this.#resizeLayerRef)}></div>`
         : nothing}`;
@@ -1491,3 +1471,4 @@ declare global {
     "ch-popover": ChPopover;
   }
 }
+

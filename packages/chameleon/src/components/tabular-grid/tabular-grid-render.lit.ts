@@ -1,15 +1,9 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { html } from "lit";
 import { property } from "lit/decorators/property.js";
 import { repeat } from "lit/directives/repeat.js";
 
-import {
-  TABULAR_GRID_BOOLEAN_TYPE_PROP,
-  TABULAR_GRID_NO_ATTRIBUTE
-} from "./constants";
+import { TABULAR_GRID_BOOLEAN_TYPE_PROP, TABULAR_GRID_NO_ATTRIBUTE } from "./constants";
 import type {
   TabularGridColumnItemModel,
   TabularGridColumnsModel,
@@ -25,8 +19,7 @@ import styles from "./tabular-grid-render.scss?inline";
 
 const isSingleLevelModel = (
   columnsModel: TabularGridColumnsModel
-): columnsModel is TabularGridColumnsSingleLevelModel =>
-  !Array.isArray(columnsModel[0]);
+): columnsModel is TabularGridColumnsSingleLevelModel => !Array.isArray(columnsModel[0]);
 
 @Component({
   tag: "ch-tabular-grid-render",
@@ -117,46 +110,6 @@ export class ChTabularGridRender extends KasstorElement {
     </div>`;
   }
 }
-
-export default ChTabularGridRender;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-tabular-grid-render": ChTabularGridRender;
-  }
-}
-
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChTabularGridRenderElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChTabularGridRenderElement;
-  }
-
-  // prettier-ignore
-  interface HTMLChTabularGridRenderElement extends ChTabularGridRender {
-    // Extend the ChTabularGridRender class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-tabular-grid-render": HTMLChTabularGridRenderElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-tabular-grid-render": HTMLChTabularGridRenderElement;
-  }
-}
-
 
 // ######### Auto generated below #########
 

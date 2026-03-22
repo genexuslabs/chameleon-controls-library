@@ -1,11 +1,5 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
@@ -152,8 +146,7 @@ export class ChSidebar extends KasstorElement {
   }
 
   override render() {
-    return html`${this.showExpandButton &&
-      this.expandButtonPosition === "before"
+    return html`${this.showExpandButton && this.expandButtonPosition === "before"
         ? this.#renderExpandButton()
         : nothing}
 
@@ -164,65 +157,6 @@ export class ChSidebar extends KasstorElement {
         : nothing}`;
   }
 }
-
-export default ChSidebar;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-sidebar": ChSidebar;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChSidebarElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChSidebarElement;
-  }
-
-  /** Type of the `ch-sidebar`'s `expandedChange` event. */
-  // prettier-ignore
-  type HTMLChSidebarElementExpandedChangeEvent = HTMLChSidebarElementCustomEvent<
-    HTMLChSidebarElementEventMap["expandedChange"]
-  >;
-
-  interface HTMLChSidebarElementEventMap {
-    expandedChange: boolean;
-  }
-
-  interface HTMLChSidebarElementEventTypes {
-    expandedChange: HTMLChSidebarElementExpandedChangeEvent;
-  }
-
-  /**
-   * @fires expandedChange Emitted when thea element is clicked or the space key is pressed and
-   *   released.
-   */
-  // prettier-ignore
-  interface HTMLChSidebarElement extends ChSidebar {
-    // Extend the ChSidebar class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof HTMLChSidebarElementEventTypes>(type: K, listener: (this: HTMLChSidebarElement, ev: HTMLChSidebarElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof HTMLChSidebarElementEventTypes>(type: K, listener: (this: HTMLChSidebarElement, ev: HTMLChSidebarElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-sidebar": HTMLChSidebarElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-sidebar": HTMLChSidebarElement;
-  }
-}
-
 
 // ######### Auto generated below #########
 

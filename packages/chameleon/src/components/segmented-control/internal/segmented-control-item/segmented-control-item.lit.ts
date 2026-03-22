@@ -1,7 +1,4 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -94,9 +91,7 @@ export class ChSegmentedControlItem extends KasstorElement {
   // @Event() selectedChange: EventEmitter<string>;
 
   #parts = () =>
-    `action${
-      this.disabled ? ` ${SEGMENTED_CONTROL_PARTS_DICTIONARY.DISABLED}` : ""
-    } ${
+    `action${this.disabled ? ` ${SEGMENTED_CONTROL_PARTS_DICTIONARY.DISABLED}` : ""} ${
       this.selected
         ? SEGMENTED_CONTROL_PARTS_DICTIONARY.SELECTED
         : SEGMENTED_CONTROL_PARTS_DICTIONARY.UNSELECTED
@@ -124,10 +119,8 @@ export class ChSegmentedControlItem extends KasstorElement {
       aria-selected=${this.selected ? "true" : nothing}
       class=${hasImages
         ? classMap({
-            [`start-img-type--${this.startImgType ?? "background"} img--start`]:
-              hasStartImg,
-            [`end-img-type--${this.endImgType ?? "background"} img--end`]:
-              hasEndImg
+            [`start-img-type--${this.startImgType ?? "background"} img--start`]: hasStartImg,
+            [`end-img-type--${this.endImgType ?? "background"} img--end`]: hasEndImg
           })
         : nothing}
       part=${this.#parts()}
@@ -145,51 +138,6 @@ export class ChSegmentedControlItem extends KasstorElement {
   }
 }
 
-export default ChSegmentedControlItem;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-segmented-control-item": ChSegmentedControlItem;
-  }
-}
-
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChSegmentedControlItemElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChSegmentedControlItemElement;
-  }
-
-  /**
-   * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
-   * This control represents and item of the ch-segmented-control-render
-   *
-   * @part selected - ...
-   */// prettier-ignore
-  interface HTMLChSegmentedControlItemElement extends ChSegmentedControlItem {
-    // Extend the ChSegmentedControlItem class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-segmented-control-item": HTMLChSegmentedControlItemElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-segmented-control-item": HTMLChSegmentedControlItemElement;
-  }
-}
-
-
 // ######### Auto generated below #########
 
 declare global {
@@ -204,7 +152,7 @@ declare global {
    * This control represents and item of the ch-segmented-control-render
    *
    * @part selected - ...
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChSegmentedControlItemElement extends ChSegmentedControlItem {
     // Extend the ChSegmentedControlItem class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

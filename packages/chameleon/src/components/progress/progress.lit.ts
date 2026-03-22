@@ -1,7 +1,4 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -10,11 +7,7 @@ import { analyzeLabelExistence } from "../../utilities/analysis/accessibility";
 import { getElementInternalsLabel } from "../../utilities/analysis/get-element-internals-label";
 import { forceCSSMinMax } from "../../utilities/force-css-min-max";
 import { Host } from "../../utilities/host/host";
-import {
-  PROGRESS_MAX_VALUE,
-  PROGRESS_MIN_VALUE,
-  PROGRESS_VALUE
-} from "./constants";
+import { PROGRESS_MAX_VALUE, PROGRESS_MIN_VALUE, PROGRESS_VALUE } from "./constants";
 
 import styles from "./progress.scss?inline";
 
@@ -58,9 +51,7 @@ export class ChProgress extends KasstorElement {
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
 
   /**
    * Assistive technologies often present the `value` as a percentage. If this
@@ -70,9 +61,7 @@ export class ChProgress extends KasstorElement {
    * @example
    * accessibleValueText = `Downloading ${PROGRESS_VALUE} MB of ${PROGRESS_MAX_VALUE} MB`
    */
-  @property({ attribute: "accessible-value-text" }) accessibleValueText:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-value-text" }) accessibleValueText: string | undefined;
 
   /**
    * Specifies whether the progress is indeterminate or not. In other words, it
@@ -111,8 +100,7 @@ export class ChProgress extends KasstorElement {
    *    default slot. Besides that, all specified properties are still used to
    *    implement the control's accessibility.
    */
-  @property({ attribute: "render-type" }) renderType: "custom" | string =
-    "custom";
+  @property({ attribute: "render-type" }) renderType: "custom" | string = "custom";
 
   /**
    * If the control is describing the loading progress of a particular region
@@ -137,10 +125,7 @@ export class ChProgress extends KasstorElement {
    */
   @property({ attribute: false }) loadingRegionRef: HTMLElement | undefined;
   @Observe("loadingRegionRef")
-  protected regionLoadingRefChanged(
-    _: unknown,
-    oldValue: HTMLElement | undefined
-  ) {
+  protected regionLoadingRefChanged(_: unknown, oldValue: HTMLElement | undefined) {
     this.#removeAriaBusyAndAriaDescribedByInRegion(oldValue);
   }
 
@@ -161,40 +146,29 @@ export class ChProgress extends KasstorElement {
    * the current value is lesser than the max value.
    */
   #isInProgress = () =>
-    this.indeterminate ||
-    forceCSSMinMax(this.value, this.min, this.max) < this.#getMaxValue();
+    this.indeterminate || forceCSSMinMax(this.value, this.min, this.max) < this.#getMaxValue();
 
   #regionHasAriaDescribedByWithProgressId = () =>
-    (this.loadingRegionRef!.getAttribute(ARIA_DESCRIBED_BY) ?? "").includes(
-      this.#getControlId()
-    );
+    (this.loadingRegionRef!.getAttribute(ARIA_DESCRIBED_BY) ?? "").includes(this.#getControlId());
 
   #setAriaBusyAndAriaDescribedByInRegion = () => {
-    if (
-      !this.loadingRegionRef ||
-      this.#regionHasAriaDescribedByWithProgressId()
-    ) {
+    if (!this.loadingRegionRef || this.#regionHasAriaDescribedByWithProgressId()) {
       return;
     }
 
     const controlId = this.#getControlId();
-    const ariaDescribedByValue =
-      this.loadingRegionRef.getAttribute(ARIA_DESCRIBED_BY) ?? "";
+    const ariaDescribedByValue = this.loadingRegionRef.getAttribute(ARIA_DESCRIBED_BY) ?? "";
 
     this.loadingRegionRef.setAttribute(ARIA_BUSY, "true");
     this.loadingRegionRef.setAttribute(
       ARIA_DESCRIBED_BY,
       // Checks if the ariaDescribedBy has a value and appends the ID if
       // necessary
-      ariaDescribedByValue === ""
-        ? controlId
-        : `${ariaDescribedByValue},${controlId}`
+      ariaDescribedByValue === "" ? controlId : `${ariaDescribedByValue},${controlId}`
     );
   };
 
-  #removeAriaBusyAndAriaDescribedByInRegion = (
-    regionLoadingRef: HTMLElement | undefined
-  ) => {
+  #removeAriaBusyAndAriaDescribedByInRegion = (regionLoadingRef: HTMLElement | undefined) => {
     if (!regionLoadingRef) {
       return;
     }
@@ -269,14 +243,11 @@ export class ChProgress extends KasstorElement {
   override render() {
     // TODO: Add a unit test for checking that the progress still works when
     // passing an invalid renderType. It should default to the custom render.
-    const progressRender =
-      this.#renderDictionary[this.renderType as "custom"] ?? customRender;
+    const progressRender = this.#renderDictionary[this.renderType as "custom"] ?? customRender;
 
     const actualMinValue =
       // aria-valuemin is 0 by default
-      this.indeterminate || this.min === DEFAULT_MIN_VALUE
-        ? undefined
-        : `${this.min}`;
+      this.indeterminate || this.min === DEFAULT_MIN_VALUE ? undefined : `${this.min}`;
 
     const actualValue = this.indeterminate
       ? undefined
@@ -284,8 +255,7 @@ export class ChProgress extends KasstorElement {
 
     const actualMaxValue =
       // aria-valuemax is 100 by default
-      this.indeterminate ||
-      (this.max === DEFAULT_MAX_VALUE && this.min <= this.max)
+      this.indeterminate || (this.max === DEFAULT_MAX_VALUE && this.min <= this.max)
         ? undefined
         : `${this.#getMaxValue()}`;
 
@@ -300,14 +270,8 @@ export class ChProgress extends KasstorElement {
           this.indeterminate || !this.accessibleValueText
             ? undefined
             : this.accessibleValueText
-                .replace(
-                  PROGRESS_MIN_VALUE,
-                  actualMinValue ?? `${DEFAULT_MIN_VALUE}`
-                )
-                .replace(
-                  PROGRESS_MAX_VALUE,
-                  actualMaxValue ?? `${DEFAULT_MAX_VALUE}`
-                )
+                .replace(PROGRESS_MIN_VALUE, actualMinValue ?? `${DEFAULT_MIN_VALUE}`)
+                .replace(PROGRESS_MAX_VALUE, actualMaxValue ?? `${DEFAULT_MAX_VALUE}`)
                 .replace(PROGRESS_VALUE, actualValue!)
       }
     });
@@ -315,53 +279,6 @@ export class ChProgress extends KasstorElement {
     return progressRender();
   }
 }
-
-export default ChProgress;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-progress": ChProgress;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChProgressElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChProgressElement;
-  }
-
-  /**
-   * The ch-progress is an element that displays the progress status for tasks
-   * that take a long time.
-   *
-   * It implements all accessibility behaviors for determinate and indeterminate
-   * progress. It also supports referencing a region to describe its progress.
-   *
-   * @status experimental
-   */// prettier-ignore
-  interface HTMLChProgressElement extends ChProgress {
-    // Extend the ChProgress class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-progress": HTMLChProgressElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-progress": HTMLChProgressElement;
-  }
-}
-
 
 // ######### Auto generated below #########
 
@@ -380,7 +297,7 @@ declare global {
    * progress. It also supports referencing a region to describe its progress.
    *
    * @status experimental
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChProgressElement extends ChProgress {
     // Extend the ChProgress class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

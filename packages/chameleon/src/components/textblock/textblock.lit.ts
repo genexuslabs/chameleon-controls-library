@@ -1,7 +1,4 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { html } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
@@ -113,8 +110,7 @@ export class ChTextBlock extends KasstorElement {
     const contentRef = this.#contentRef.value!;
 
     const currentContentHeight = contentRef.scrollHeight;
-    const currentLineHeight =
-      this.#lineMeasuringRef.value!.getBoundingClientRect().height;
+    const currentLineHeight = this.#lineMeasuringRef.value!.getBoundingClientRect().height;
 
     // Nothing has change
     if (
@@ -142,29 +138,17 @@ export class ChTextBlock extends KasstorElement {
 
     // Calculate the total lines displayed by the control, even if they
     // overflow the content
-    const currentTotalLines = Math.max(
-      Math.trunc(currentContentHeight / currentLineHeight),
-      1
-    );
+    const currentTotalLines = Math.max(Math.trunc(currentContentHeight / currentLineHeight), 1);
 
     // Update the line-height value even if the displayed lines didn't change
-    contentRef.style.setProperty(
-      LINE_HEIGHT_CUSTOM_VAR,
-      `${currentLineHeight}px`
-    );
+    contentRef.style.setProperty(LINE_HEIGHT_CUSTOM_VAR, `${currentLineHeight}px`);
 
     if (this.format === "HTML") {
-      contentRef.style.setProperty(
-        AVAILABLE_SIZE_CUSTOM_VAR,
-        `${this.#availableHeight}px`
-      );
+      contentRef.style.setProperty(AVAILABLE_SIZE_CUSTOM_VAR, `${this.#availableHeight}px`);
     }
 
     // Nothing has change
-    if (
-      this.#displayedLines === currentDisplayedLines &&
-      this.#totalLines === currentTotalLines
-    ) {
+    if (this.#displayedLines === currentDisplayedLines && this.#totalLines === currentTotalLines) {
       return;
     }
 
@@ -172,10 +156,7 @@ export class ChTextBlock extends KasstorElement {
     this.#displayedLines = currentDisplayedLines;
     this.#totalLines = currentTotalLines;
 
-    contentRef.style.setProperty(
-      DISPLAYED_LINES_CUSTOM_VAR,
-      `${currentDisplayedLines}`
-    );
+    contentRef.style.setProperty(DISPLAYED_LINES_CUSTOM_VAR, `${currentDisplayedLines}`);
   };
 
   #setResizeObserverIfNecessary = () => {
@@ -189,8 +170,7 @@ export class ChTextBlock extends KasstorElement {
       const textBlockEntry = entries.find(el => el.target === this);
 
       if (textBlockEntry) {
-        this.#currentAvailableHeight =
-          textBlockEntry.contentBoxSize[0].blockSize;
+        this.#currentAvailableHeight = textBlockEntry.contentBoxSize[0].blockSize;
       }
 
       this.#syncWithRAF!.perform(this.#calculateDisplayedLines);
@@ -217,8 +197,7 @@ export class ChTextBlock extends KasstorElement {
     this.#displayedLines = -1;
   };
 
-  #autoGrowRender = () =>
-    this.format === "text" ? this.caption : html`<slot></slot>`;
+  #autoGrowRender = () => (this.format === "text" ? this.caption : html`<slot></slot>`);
 
   #noAutoGrowRender = () =>
     html`<div class="line-measure" ${ref(this.#lineMeasuringRef)}>
@@ -265,48 +244,6 @@ export class ChTextBlock extends KasstorElement {
   }
 }
 
-export default ChTextBlock;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-textblock": ChTextBlock;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChTextBlockElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChTextBlockElement;
-  }
-
-  /**
-   * @status developer-preview
-   *
-   * @slot - The slot for the HTML content.
-   */ // prettier-ignore
-  interface HTMLChTextBlockElement extends ChTextBlock {
-    // Extend the ChTextBlock class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-textblock": HTMLChTextBlockElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-textblock": HTMLChTextBlockElement;
-  }
-}
-
 // ######### Auto generated below #########
 
 declare global {
@@ -320,7 +257,7 @@ declare global {
    * @status developer-preview
    *
    * @slot - The slot for the HTML content.
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChTextBlockElement extends ChTextBlock {
     // Extend the ChTextBlock class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

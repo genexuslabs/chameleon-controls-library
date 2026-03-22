@@ -2,13 +2,14 @@ import {
   Component,
   KasstorElement
 } from "@genexus/kasstor-core/decorators/component.js";
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { property } from "lit/decorators/property.js";
 import { keyed } from "lit/directives/keyed.js";
 import QrCreator from "qr-creator";
 
 import type { ErrorCorrectionLevel } from "./types";
 
-import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { IS_SERVER } from "../../development-flags";
 import styles from "./qr.scss?inline";
 
 /**
@@ -80,11 +81,10 @@ export class ChQr extends KasstorElement {
       ? this.setAttribute("aria-label", this.accessibleName)
       : this.removeAttribute("aria-label");
 
-  override connectedCallback(): void {
-    super.connectedCallback();
-
-    this.setAttribute("role", "img");
-    this.#conditionalSetAriaLabel();
+  override firstWillUpdate() {
+    if (!IS_SERVER) {
+      this.setAttribute("role", "img");
+    }
   }
 
   override updated() {
@@ -116,46 +116,6 @@ export class ChQr extends KasstorElement {
   }
 }
 
-export default ChQr;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-qr": ChQr;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChQrElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChQrElement;
-  }
-
-  /**
-   * @status developer-preview
-   */ // prettier-ignore
-  interface HTMLChQrElement extends ChQr {
-    // Extend the ChQr class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-qr": HTMLChQrElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-qr": HTMLChQrElement;
-  }
-}
-
 // ######### Auto generated below #########
 
 declare global {
@@ -167,7 +127,7 @@ declare global {
 
   /**
    * @status developer-preview
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChQrElement extends ChQr {
     // Extend the ChQr class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

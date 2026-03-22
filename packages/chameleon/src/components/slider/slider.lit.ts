@@ -1,11 +1,5 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -56,9 +50,7 @@ export class ChSlider extends KasstorElement {
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
 
   /**
    * This attribute allows you specify if the element is disabled.
@@ -165,25 +157,17 @@ export class ChSlider extends KasstorElement {
   };
 
   #getActualValue = (maxValue?: number) =>
-    Math.min(
-      Math.max(this.minValue, this.value),
-      maxValue ?? this.#computeMaxValue()
-    );
+    Math.min(Math.max(this.minValue, this.value), maxValue ?? this.#computeMaxValue());
 
   #computeMaxValue = () => Math.max(this.minValue, this.maxValue);
 
-  #getValuePercentage = (
-    minValue: number,
-    value: number,
-    maxValue: number
-  ): number => {
+  #getValuePercentage = (minValue: number, value: number, maxValue: number): number => {
     const selectedValue = (value - minValue) / (maxValue - minValue);
 
     return selectedValue * 100;
   };
 
-  #updateFormValue = () =>
-    this.#internals.setFormValue(this.#getActualValue().toString());
+  #updateFormValue = () => this.#internals.setFormValue(this.#getActualValue().toString());
 
   protected override firstWillUpdate() {
     if (IS_SERVER) {
@@ -227,8 +211,7 @@ export class ChSlider extends KasstorElement {
           // TODO: Add a unit test for this with SSR. We have to use a property
           // binding instead of an attribute one, because Lit wouldn't properly
           // hydrate this attribute when the ch-slider is SSRed
-          this.#accessibleNameFromExternalLabel ??
-          (this.accessibleName || nothing)
+          this.#accessibleNameFromExternalLabel ?? (this.accessibleName || nothing)
         }
         class="slider"
         .disabled=${this.disabled}
@@ -241,11 +224,7 @@ export class ChSlider extends KasstorElement {
         @input=${!this.disabled ? this.#handleInput : null}
       />
 
-      <div
-        class="track"
-        part=${`track${this.disabled ? " disabled" : ""}`}
-        aria-hidden="true"
-      >
+      <div class="track" part=${`track${this.disabled ? " disabled" : ""}`} aria-hidden="true">
         <div
           class="track__selected"
           part=${`track__selected${this.disabled ? " disabled" : ""}`}
@@ -266,78 +245,6 @@ export class ChSlider extends KasstorElement {
     </div>`;
   }
 }
-
-export default ChSlider;
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChSliderElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChSliderElement;
-  }
-
-  /** Type of the `ch-slider`'s `change` event. */
-  // prettier-ignore
-  type HTMLChSliderElementChangeEvent = HTMLChSliderElementCustomEvent<
-    HTMLChSliderElementEventMap["change"]
-  >;
-
-  /** Type of the `ch-slider`'s `input` event. */
-  // prettier-ignore
-  type HTMLChSliderElementInputEvent = HTMLChSliderElementCustomEvent<
-    HTMLChSliderElementEventMap["input"]
-  >;
-
-  interface HTMLChSliderElementEventMap {
-    change: number;
-    input: number;
-  }
-
-  interface HTMLChSliderElementEventTypes {
-    change: HTMLChSliderElementChangeEvent;
-    input: HTMLChSliderElementInputEvent;
-  }
-
-  /**
-   * The slider control is a input where the user selects a value from within a given range.
-   *
-   * @part track - The track of the slider element.
-   * @part thumb - The thumb of the slider element.
-   *
-   * @part track__selected - Represents the portion of the track that is selected, that is, the portion of the track that starts at the min value and goes to the current value.
-   * @part track__unselected - Represents the portion of the track that is not selected, that is, the portion of the track that starts at the current value and goes to the max value.
-   *
-   * @part disabled - Present in all parts when the control is disabled (`disabled` === `true`).
-   *
-   * @fires change The `change` event is emitted when a change to the element's value is
-   *   committed by the user.
-   * @fires input The `input` event is fired synchronously when the value is changed.
-   */
-  // prettier-ignore
-  interface HTMLChSliderElement extends ChSlider {
-    // Extend the ChSlider class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof HTMLChSliderElementEventTypes>(type: K, listener: (this: HTMLChSliderElement, ev: HTMLChSliderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof HTMLChSliderElementEventTypes>(type: K, listener: (this: HTMLChSliderElement, ev: HTMLChSliderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-slider": HTMLChSliderElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-slider": HTMLChSliderElement;
-  }
-}
-
 
 // ######### Auto generated below #########
 

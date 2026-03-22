@@ -18,8 +18,8 @@ import type {
 import { Host } from "../../utilities/host/host";
 import { tokenMap } from "../../utilities/mapping/token-map";
 import { createResolvedImagePathCallback } from "../../utilities/register-properties/image-path-registry";
-import { ACCORDION_PARTS_DICTIONARY } from "../../utilities/reserved-names/reserved-names";
 import { DISABLED_CLASS } from "../../utilities/reserved-names/common";
+import { ACCORDION_PARTS_DICTIONARY } from "../../utilities/reserved-names/reserved-names";
 import type {
   AccordionItemExpandedChangeEvent,
   AccordionItemModel,
@@ -90,7 +90,6 @@ const ELEMENTS_TO_PREVENT_EXPAND_COLLAPSE = ["input", "textarea"];
  * @cssprop [--ch-accordion__header-background-image = #{$expandable-icon}] - Specifies the background image used for the expandable chevron in the header.
  */
 @Component({
-  shadow: true,
   styles,
   tag: "ch-accordion-render"
 })
@@ -351,13 +350,11 @@ export class ChAccordionRender extends KasstorElement {
   };
 
   #computeGridTemplateRows = () =>
-    this.model!
-      .map(item =>
-        item.expanded
-          ? item.expandedSize ?? "max-content"
-          : this.#getCollapsedSizeForUnit(item.expandedSize)
-      )
-      .join(" ");
+    this.model!.map(item =>
+      item.expanded
+        ? (item.expandedSize ?? "max-content")
+        : this.#getCollapsedSizeForUnit(item.expandedSize)
+    ).join(" ");
 
   #getCollapsedSizeForUnit = (expandedSize: AccordionItemModelExpandedSize) =>
     expandedSize && expandedSize.includes("fr") ? "0fr" : "max-content";
@@ -377,12 +374,13 @@ export class ChAccordionRender extends KasstorElement {
     // TODO: Add support to prevent expand/collapse when pressing the space
     // key on an input/textarea
     Host(this, {
-      style: this.model != null
-        ? {
-            "--ch-accordion-grid-template-rows":
-              this.#computeGridTemplateRows()
-          }
-        : undefined,
+      style:
+        this.model != null
+          ? {
+              "--ch-accordion-grid-template-rows":
+                this.#computeGridTemplateRows()
+            }
+          : undefined,
       events: { click: this.#handleHeaderToggle }
     });
 

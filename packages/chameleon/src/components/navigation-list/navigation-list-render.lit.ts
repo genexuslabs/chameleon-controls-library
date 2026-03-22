@@ -1,11 +1,5 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
@@ -64,18 +58,14 @@ const registerDefaultGetImagePathCallback = () =>
     DEFAULT_NAVIGATION_LIST_GET_IMAGE_PATH_CALLBACK
   );
 
-const isSelectedLink = (
-  item: NavigationListItemModel,
-  sharedState: NavigationListSharedState
-) =>
+const isSelectedLink = (item: NavigationListItemModel, sharedState: NavigationListSharedState) =>
   !!item.link &&
   !!sharedState.selectedLink?.link?.url &&
   sharedState.selectedLink.link.url === item.link.url &&
   sharedState.selectedLink.id === item.id;
 
 let autoId = 0;
-const NAVIGATION_LIST_ITEM =
-  "ch-navigation-list-item" satisfies ChameleonControlsTagName;
+const NAVIGATION_LIST_ITEM = "ch-navigation-list-item" satisfies ChameleonControlsTagName;
 
 /**
  * @status experimental
@@ -126,9 +116,8 @@ export class ChNavigationListRender extends KasstorElement {
    *  - `"decorative"`: Only a decorative icon is rendered to display the state
    *     of the item.
    */
-  @property({ attribute: "expandable-button" }) expandableButton:
-    | "decorative"
-    | "no" = "decorative";
+  @property({ attribute: "expandable-button" }) expandableButton: "decorative" | "no" =
+    "decorative";
 
   /**
    * Specifies the position of the expandable button in reference of the action
@@ -162,9 +151,7 @@ export class ChNavigationListRender extends KasstorElement {
   /**
    * Specifies the items of the control.
    */
-  @property(NAVIGATION_LIST_NO_ATTRIBUTE) model:
-    | NavigationListModel
-    | undefined;
+  @property(NAVIGATION_LIST_NO_ATTRIBUTE) model: NavigationListModel | undefined;
   @Observe("model")
   protected modelChanged() {
     if (this.#mustExpandNewSelectedLink()) {
@@ -216,8 +203,7 @@ export class ChNavigationListRender extends KasstorElement {
   /**
    * Specifies the delay (in ms) for the tooltip to be displayed.
    */
-  @property({ type: Number, attribute: "tooltip-delay" }) tooltipDelay: number =
-    100;
+  @property({ type: Number, attribute: "tooltip-delay" }) tooltipDelay: number = 100;
 
   /**
    * Fired when an button is clicked.
@@ -232,17 +218,15 @@ export class ChNavigationListRender extends KasstorElement {
   @Event()
   protected hyperlinkClick!: EventEmitter<NavigationListHyperlinkClickEvent>;
 
-  @Observe(
-    [
-      "expanded",
-      "expandableButton",
-      "expandableButtonPosition",
-      "getImagePathCallback",
-      "selectedLinkIndicator",
-      "showCaptionOnCollapse",
-      "tooltipDelay"
-    ],
-  )
+  @Observe([
+    "expanded",
+    "expandableButton",
+    "expandableButtonPosition",
+    "getImagePathCallback",
+    "selectedLinkIndicator",
+    "showCaptionOnCollapse",
+    "tooltipDelay"
+  ])
   protected sharedStateChanged() {
     this.sharedState = {
       expandableButton: this.expandableButton,
@@ -267,9 +251,7 @@ export class ChNavigationListRender extends KasstorElement {
       }
 
       if (itemUIModel.items != null) {
-        const selectedLinkIsChild = this.#expandNewSelectedLink(
-          itemUIModel.items
-        );
+        const selectedLinkIsChild = this.#expandNewSelectedLink(itemUIModel.items);
 
         if (selectedLinkIsChild) {
           itemUIModel.expanded = true;
@@ -296,15 +278,10 @@ export class ChNavigationListRender extends KasstorElement {
       return;
     }
 
-    const navigationListItem = composedPath[
-      itemActionIndex + 2
-    ] as ChNavigationListItem;
+    const navigationListItem = composedPath[itemActionIndex + 2] as ChNavigationListItem;
 
     // Get the navigation list item of the event
-    if (
-      !navigationListItem ||
-      navigationListItem.tagName?.toLowerCase() !== NAVIGATION_LIST_ITEM
-    ) {
+    if (!navigationListItem || navigationListItem.tagName?.toLowerCase() !== NAVIGATION_LIST_ITEM) {
       return;
     }
     const itemUIModel = navigationListItem.model;
@@ -410,12 +387,7 @@ export class ChNavigationListRender extends KasstorElement {
     }
 
     // If the getImagePathCallback was not previously registered
-    if (
-      !getControlRegisterProperty(
-        "getImagePathCallback",
-        "ch-navigation-list-render"
-      )
-    ) {
+    if (!getControlRegisterProperty("getImagePathCallback", "ch-navigation-list-render")) {
       registerDefaultGetImagePathCallback();
     }
 
@@ -434,8 +406,7 @@ export class ChNavigationListRender extends KasstorElement {
         // the component won't update its expanded value until the second
         // re-render, because the first render MUST BE done with the initial
         // interface value to avoid hydration mismatches
-        const hydrationMismatch =
-          this.wasServerSideRendered && this.expanded !== expanded;
+        const hydrationMismatch = this.wasServerSideRendered && this.expanded !== expanded;
 
         if (hydrationMismatch) {
           this.#shouldReRenderAfterFirstRender = true;
@@ -478,80 +449,6 @@ export class ChNavigationListRender extends KasstorElement {
       : this.#renderModel(this.model, NAVIGATION_LIST_INITIAL_LEVEL);
   }
 }
-
-export default ChNavigationListRender;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-navigation-list-render": ChNavigationListRender;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChNavigationListRenderElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChNavigationListRenderElement;
-  }
-
-  /** Type of the `ch-navigation-list-render`'s `buttonClick` event. */
-  // prettier-ignore
-  type HTMLChNavigationListRenderElementButtonClickEvent = HTMLChNavigationListRenderElementCustomEvent<
-    HTMLChNavigationListRenderElementEventMap["buttonClick"]
-  >;
-
-  /** Type of the `ch-navigation-list-render`'s `hyperlinkClick` event. */
-  // prettier-ignore
-  type HTMLChNavigationListRenderElementHyperlinkClickEvent = HTMLChNavigationListRenderElementCustomEvent<
-    HTMLChNavigationListRenderElementEventMap["hyperlinkClick"]
-  >;
-
-  interface HTMLChNavigationListRenderElementEventMap {
-    buttonClick: NavigationListItemModel;
-    hyperlinkClick: NavigationListHyperlinkClickEvent;
-  }
-
-  interface HTMLChNavigationListRenderElementEventTypes {
-    buttonClick: HTMLChNavigationListRenderElementButtonClickEvent;
-    hyperlinkClick: HTMLChNavigationListRenderElementHyperlinkClickEvent;
-  }
-
-  /**
-   * @status experimental
-   *
-   * This component needs to be hydrated to properly work. If not hydrated, the
-   * component visibility will be hidden.
-   *
-   * @fires buttonClick Fired when an button is clicked.
-   *   This event can be prevented.
-   * @fires hyperlinkClick Fired when an hyperlink is clicked.
-   *   This event can be prevented.
-   */
-  // prettier-ignore
-  interface HTMLChNavigationListRenderElement extends ChNavigationListRender {
-    // Extend the ChNavigationListRender class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof HTMLChNavigationListRenderElementEventTypes>(type: K, listener: (this: HTMLChNavigationListRenderElement, ev: HTMLChNavigationListRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof HTMLChNavigationListRenderElementEventTypes>(type: K, listener: (this: HTMLChNavigationListRenderElement, ev: HTMLChNavigationListRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-navigation-list-render": HTMLChNavigationListRenderElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-navigation-list-render": HTMLChNavigationListRenderElement;
-  }
-}
-
 
 // ######### Auto generated below #########
 

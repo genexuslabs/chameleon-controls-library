@@ -1,7 +1,4 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { property } from "lit/decorators/property.js";
 
@@ -60,16 +57,13 @@ export class ChImage extends KasstorElement {
   /**
    * Specifies if the icon is disabled.
    */
-  @property({ type: Boolean, reflect: true }) disabled: boolean | undefined =
-    false;
+  @property({ type: Boolean, reflect: true }) disabled: boolean | undefined = false;
 
   /**
    * This property specifies a callback that is executed when the path the
    * image needs to be resolved.
    */
-  @property({ attribute: false }) getImagePathCallback:
-    | GetImagePathCallback
-    | undefined;
+  @property({ attribute: false }) getImagePathCallback: GetImagePathCallback | undefined;
 
   /**
    * Specifies the src for the image.
@@ -77,8 +71,7 @@ export class ChImage extends KasstorElement {
   @property({ attribute: false }) src: string | unknown | undefined;
   @Observe("src")
   protected srcChanged(newSrc: string | unknown | undefined) {
-    const getImagePathCallback =
-      this.getImagePathCallback ?? GET_IMAGE_PATH_CALLBACK_REGISTRY;
+    const getImagePathCallback = this.getImagePathCallback ?? GET_IMAGE_PATH_CALLBACK_REGISTRY;
 
     if (!getImagePathCallback) {
       this.#image = undefined;
@@ -92,17 +85,13 @@ export class ChImage extends KasstorElement {
     }
 
     this.#image = newSrc
-      ? (updateDirectionInImageCustomVar(
-          image,
-          "start"
-        ) as GxImageMultiStateStart)
+      ? (updateDirectionInImageCustomVar(image, "start") as GxImageMultiStateStart)
       : undefined;
 
     // TODO: We should support contacting these styles.
     // TODO: Add unit tests for this
     if (IS_SERVER && this.#image) {
-      this.styles =
-        "--ch-start-img--base: " + this.#image.styles["--ch-start-img--base"];
+      this.styles = "--ch-start-img--base: " + this.#image.styles["--ch-start-img--base"];
     }
   }
 
@@ -118,9 +107,8 @@ export class ChImage extends KasstorElement {
   /**
    * Specifies how the image will be rendered.
    */
-  @property({ attribute: "type", reflect: true }) type:
-    | Exclude<ImageRender, "img">
-    | undefined = "background";
+  @property({ attribute: "type", reflect: true }) type: Exclude<ImageRender, "img"> | undefined =
+    "background";
 
   #initializeComponentFromProperties = () => {
     // Initialize default getImagePathCallback
@@ -173,48 +161,6 @@ export class ChImage extends KasstorElement {
   }
 }
 
-export default ChImage;
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-image": ChImage;
-  }
-}
-
-// ######### Auto generated bellow #########
-
-declare global {
-  // prettier-ignore
-  interface HTMLChImageElementCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChImageElement;
-  }
-
-  /**
-   * A control to display multiple images, depending on the state (focus, hover,
-   * active or disabled) of a parent element.
-   */// prettier-ignore
-  interface HTMLChImageElement extends ChImage {
-    // Extend the ChImage class redefining the event listener methods to improve type safety when using them
-    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
-    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-    
-    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
-    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-  }
-
-  interface IntrinsicElements {
-    "ch-image": HTMLChImageElement;
-  }
-
-  interface HTMLElementTagNameMap {
-    "ch-image": HTMLChImageElement;
-  }
-}
-
-
 // ######### Auto generated below #########
 
 declare global {
@@ -227,7 +173,7 @@ declare global {
   /**
    * A control to display multiple images, depending on the state (focus, hover,
    * active or disabled) of a parent element.
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChImageElement extends ChImage {
     // Extend the ChImage class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

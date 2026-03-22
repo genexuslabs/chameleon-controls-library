@@ -15,13 +15,11 @@ import type {
 // import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
 import { IS_SERVER } from "../../development-flags";
-import {
-  ACTION_MENU_ITEM_EXPORT_PARTS
-} from "../../utilities/reserved-names/reserved-names";
+import { Host } from "../../utilities/host/host";
+import { ACTION_MENU_ITEM_EXPORT_PARTS } from "../../utilities/reserved-names/reserved-names";
 import { SyncWithRAF } from "../../utilities/sync-with-frames";
 import type { ActionMenuImagePathCallback } from "../action-menu/types";
 import type { ChPopoverAlign } from "../popover/types";
-import { Host } from "../../utilities/host/host";
 import { MARKER_CLASS_SELECTOR, renderItems } from "./renders";
 
 import styles from "./action-group-render.scss?inline";
@@ -71,7 +69,6 @@ const INTERSECTION_OPTIONS: IntersectionObserverInit = { threshold: 1 };
  * @slot {name} - Named slots matching each item of `type: "slot"` in the model. These slots allow projecting custom content for individual action items and are forwarded into the overflow menu when the item collapses.
  */
 @Component({
-  shadow: true,
   styles,
   tag: "ch-action-group-render"
 })
@@ -206,10 +203,10 @@ export class ChActionGroupRender extends KasstorElement {
 
   #removeOrInitializeMarkersVisibility = () => {
     this.#displayedMarkers = this.#isResponsiveCollapse
-      ? this.model?.map((_, index) => ({
+      ? (this.model?.map((_, index) => ({
           id: index.toString(),
           displayed: true
-        })) ?? []
+        })) ?? [])
       : undefined;
   };
 
@@ -253,9 +250,9 @@ export class ChActionGroupRender extends KasstorElement {
     }, INTERSECTION_OPTIONS);
 
     // Observe the actions
-    this.shadowRoot!
-      .querySelectorAll(MARKER_CLASS_SELECTOR)
-      .forEach(action => this.#responsiveActionsWatcher!.observe(action));
+    this.shadowRoot!.querySelectorAll(MARKER_CLASS_SELECTOR).forEach(action =>
+      this.#responsiveActionsWatcher!.observe(action)
+    );
   };
 
   /**
@@ -273,8 +270,7 @@ export class ChActionGroupRender extends KasstorElement {
     }
     // There are hidden items
     else {
-      this.collapsedItems =
-        this.model!.length - firstItemIndexThatIsNotVisible;
+      this.collapsedItems = this.model!.length - firstItemIndexThatIsNotVisible;
     }
   };
 
@@ -320,31 +316,31 @@ export class ChActionGroupRender extends KasstorElement {
     Host(this, {});
 
     return html`${this.#isResponsiveCollapse && this.collapsedItems !== 0
-        ? html`<ch-action-menu-render
-            role="listitem"
-            exportparts=${ACTION_MENU_ITEM_EXPORT_PARTS}
-            .blockAlign=${this.moreActionsBlockAlign}
-            .buttonAccessibleName=${this.moreActionsAccessibleName}
-            .disabled=${this.disabled}
-            .getImagePathCallback=${this.getImagePathCallback}
-            .inlineAlign=${this.moreActionsInlineAlign}
-            .model=${this.#collapsedModel}
-          >
-            ${this.moreActionsCaption}
-            ${this.#collapsedModel.map(item =>
-              item.type === "slot"
-                ? html`<slot slot=${item.id} name=${item.id}></slot>`
-                : nothing
-            )}
-          </ch-action-menu-render>`
-        : nothing}
-      ${renderItems(
-        this.model,
-        this.#isResponsiveCollapse,
-        this.#displayedMarkers,
-        this.disabled,
-        this.getImagePathCallback
-      )}`;
+      ? html`<ch-action-menu-render
+          role="listitem"
+          exportparts=${ACTION_MENU_ITEM_EXPORT_PARTS}
+          .blockAlign=${this.moreActionsBlockAlign}
+          .buttonAccessibleName=${this.moreActionsAccessibleName}
+          .disabled=${this.disabled}
+          .getImagePathCallback=${this.getImagePathCallback}
+          .inlineAlign=${this.moreActionsInlineAlign}
+          .model=${this.#collapsedModel}
+        >
+          ${this.moreActionsCaption}
+          ${this.#collapsedModel.map(item =>
+            item.type === "slot"
+              ? html`<slot slot=${item.id} name=${item.id}></slot>`
+              : nothing
+          )}
+        </ch-action-menu-render>`
+      : nothing}
+    ${renderItems(
+      this.model,
+      this.#isResponsiveCollapse,
+      this.#displayedMarkers,
+      this.disabled,
+      this.getImagePathCallback
+    )}`;
   }
 }
 
@@ -353,3 +349,4 @@ declare global {
     "ch-action-group-render": ChActionGroupRender;
   }
 }
+

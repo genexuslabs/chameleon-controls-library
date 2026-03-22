@@ -124,3 +124,15 @@ section {
 .sub-section {
   display: grid;
 }
+
+ch-image {
+  --ch-image-size: var(
+    --ch-accordion__header-image-size,
+    #{$default-decorative-image-size}
+  );
+  --ch-image-background-size: var(
+    --ch-accordion__header-background-image-size,
+    #{$default-decorative-image-background-size}
+  );
+}
+

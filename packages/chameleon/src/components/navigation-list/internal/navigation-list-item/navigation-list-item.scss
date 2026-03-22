@@ -110,9 +110,13 @@
 }
 
 ch-image {
-  --ch-image-size: var(--ch-navigation-list-item__image-size);
+  --ch-image-size: var(
+    --ch-navigation-list-item__image-size,
+    #{$default-decorative-image-size}
+  );
   --ch-image-background-size: var(
-    --ch-navigation-list-item__background-image-size
+    --ch-navigation-list-item__background-image-size,
+    #{$default-decorative-image-background-size}
   );
 }
 

@@ -15,24 +15,13 @@ import { IS_SERVER } from "../../development-flags";
 import { Host } from "../../utilities/host/host";
 import { tokenMap } from "../../utilities/mapping/token-map";
 import { createResolvedImagePathCallback } from "../../utilities/register-properties/image-path-registry";
+import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
 import {
   ACTION_MENU_ITEM_PARTS_DICTIONARY,
   ACTION_MENU_PARTS_DICTIONARY
 } from "../../utilities/reserved-names/reserved-names";
-import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
 import type { ChPopover } from "../popover/popover.lit";
 import type { ChPopoverAlign } from "../popover/types";
-import type {
-  ActionMenuExpandedChangeEvent,
-  ActionMenuHyperlinkClickEvent,
-  ActionMenuImagePathCallback,
-  ActionMenuItemActionableModel,
-  ActionMenuItemTypeMapping,
-  ActionMenuItemTypeSeparator,
-  ActionMenuItemTypeSlot,
-  ActionMenuKeyboardActionResult,
-  ActionMenuModel
-} from "./types";
 import { actionMenuKeyEventsDictionary } from "./internal/keyboard-actions";
 import { parseSubModel } from "./internal/parse-model";
 import {
@@ -48,6 +37,17 @@ import {
   getActionMenuInfoInEvent,
   WINDOW_ID
 } from "./internal/utils";
+import type {
+  ActionMenuExpandedChangeEvent,
+  ActionMenuHyperlinkClickEvent,
+  ActionMenuImagePathCallback,
+  ActionMenuItemActionableModel,
+  ActionMenuItemTypeMapping,
+  ActionMenuItemTypeSeparator,
+  ActionMenuItemTypeSlot,
+  ActionMenuKeyboardActionResult,
+  ActionMenuModel
+} from "./types";
 
 // Side-effect imports to define the internal sub-components
 import "./internal/action-menu/action-menu.lit";
@@ -109,7 +109,6 @@ if (IS_SERVER) {
  * @slot {name} - Named slots matching each item of `type: "slot"` in the model. Use them to inject custom content at specific positions in the menu.
  */
 @Component({
-  shadow: true, // Necessary to avoid focus capture
   styles,
   tag: "ch-action-menu-render"
 })
@@ -306,9 +305,7 @@ export class ChActionMenuRender extends KasstorElement {
 
     if (actionMenuInfo === ACTION_MENU_RENDER_TAG_NAME) {
       if (type === "click") {
-        return this.expanded
-          ? this.#closeActionMenu()
-          : this.#openActionMenu();
+        return this.expanded ? this.#closeActionMenu() : this.#openActionMenu();
       }
 
       return;
@@ -521,7 +518,7 @@ export class ChActionMenuRender extends KasstorElement {
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
         })}
         ?disabled=${this.disabled}
-        popoverTarget=${WINDOW_ID}
+        popovertarget=${WINDOW_ID}
         type="button"
         ${ref(this.#actionRef)}
       >
@@ -545,7 +542,9 @@ export class ChActionMenuRender extends KasstorElement {
             @mouseout=${this.#handleActionMenuItemMouseOut}
             ${ref(this.#popoverRef)}
           >
-            ${this.model !== undefined ? this.#renderItems(this.model) : nothing}
+            ${this.model !== undefined
+              ? this.#renderItems(this.model)
+              : nothing}
           </ch-popover>`
         : nothing}`;
   }
@@ -560,3 +559,4 @@ declare global {
     "ch-action-menu-render": ChActionMenuRender;
   }
 }
+

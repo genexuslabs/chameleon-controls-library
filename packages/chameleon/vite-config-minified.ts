@@ -17,7 +17,12 @@ import optimizeInlinesPlugin from "./optimize-inlines";
 // @ts-expect-error wrong type. TODO: This is a WA to use the default exported function
 const minifyHTML: typeof pkgMinifyHTML = pkgMinifyHTML.default;
 
-const OUT_DIR = "dist/minified/browser";
+import {
+  MINIFIED_ENTRIES,
+  MINIFIED_OUTPUT_DIR
+} from "./src/testing/bundle-size/entries";
+
+const OUT_DIR = MINIFIED_OUTPUT_DIR;
 
 // Original logger
 const logger = createLogger();
@@ -76,7 +81,8 @@ export const minifiedConfiguration: UserConfig = {
     },
 
     rollupOptions: {
-      input: "./src/index.ts",
+      preserveEntrySignatures: "strict" as const,
+      input: MINIFIED_ENTRIES.map(entry => entry.path),
 
       output: {
         chunkFileNames: "[name].[hash].js",
@@ -87,7 +93,7 @@ export const minifiedConfiguration: UserConfig = {
       },
 
       external: [
-        ...Object.keys(packageJson.dependencies).map(
+        ...Object.keys(packageJson.dependencies ?? {}).map(
           dependency => new RegExp(`^${dependency}`)
         ),
         /^tslib/,

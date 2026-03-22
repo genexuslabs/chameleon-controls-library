@@ -13,6 +13,7 @@ import { repeat } from "lit/directives/repeat.js";
 import { RADIO_ITEM_PARTS_DICTIONARY } from "../../utilities/reserved-names/parts/radio-group";
 import type { RadioGroupItemModel, RadioGroupModel } from "./types";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { IS_SERVER } from "../../development-flags";
 import styles from "./radio-group-render.scss?inline";
 
@@ -233,7 +234,6 @@ declare global {
     "ch-radio-group-render": HTMLChRadioGroupRenderElement;
   }
 }
-
 
 // ######### Auto generated below #########
 

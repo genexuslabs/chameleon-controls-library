@@ -4,6 +4,10 @@
 @include button-reset();
 
 :host {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  block-size: 100%;
+  box-sizing: border-box;
 }
-

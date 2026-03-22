@@ -1,6 +1,116 @@
 export const librarySummary = [
   {
     access: "public",
+    tagName: "ch-accordion-render",
+    className: "ChAccordionRender",
+    description:
+      "The `ch-accordion-render` component displays a vertical stack of collapsible panels, each with a clickable header that toggles the visibility of its associated content section.",
+    fullClassJSDoc:
+      "/**\n * The `ch-accordion-render` component displays a vertical stack of collapsible panels, each with a clickable header that toggles the visibility of its associated content section.\n *\n * @remarks\n * ## Features\n *  - Expand or collapse panels on demand to organize lengthy content into space-efficient sections.\n *  - Single-item mode (`singleItemExpanded`) ensures only one panel is open at a time, automatically closing the others.\n *  - Configurable expandable button position (`start` or `end`) in each panel header.\n *  - Per-item images in the header via `startImgSrc` and a customizable image-path callback.\n *  - Disabled state at the control level or per individual item.\n *  - Custom header content through named slots.\n *\n * ## Use when\n *  - Organizing lengthy content into logically grouped, collapsible sections (FAQs, settings pages, form groups).\n *  - Reducing cognitive load by showing one section at a time.\n *  - Reducing page length when users are unlikely to need all sections simultaneously (FAQs, settings).\n *  - Space-constrained UIs where vertical scrolling is undesirable and content can be consumed independently.\n *\n * ## Do not use when\n *  - Users need to compare content side-by-side -- the accordion pattern inherently hides inactive sections.\n *  - Users are likely to read all sections — use plain headings and scrollable content instead.\n *  - Content sections are interdependent and must be compared side by side — the back-and-forth is too costly.\n *  - Sequential step-by-step processes where hiding steps creates confusion — prefer a stepper/wizard.\n *  - Nesting accordions within accordions — double-nested collapsed panels disorient users.\n *\n * ## Accessibility\n *  - Each header is a `<button>` with `aria-expanded` and `aria-controls` linking to its section.\n *  - Sections are labelled via `aria-labelledby` pointing back to the header button, or via explicit `aria-label` when provided.\n *  - Supports the disclosure pattern: toggling a header expands or collapses its associated section.\n *\n * @status experimental\n *\n * @csspart header - The clickable `<button>` element that toggles the collapsible section. Present on every item.\n * @csspart panel - The outer container that wraps the `header` and the `section` of each item.\n * @csspart section - The collapsible `<section>` element that contains the item's body content.\n *\n * @csspart disabled - Present in the `header`, `panel`, and `section` parts when the item is disabled.\n * @csspart expanded - Present in the `header`, `panel`, and `section` parts when the item is expanded.\n * @csspart collapsed - Present in the `header`, `panel`, and `section` parts when the item is collapsed.\n *\n * @slot {item.headerSlotId} - Named slot projected inside the `header` button for custom header content. Rendered when the item defines a `headerSlotId`.\n * @slot {item.id} - Named slot projected inside the `section` for each item's collapsible body content.\n *\n * @cssprop [--ch-accordion__chevron-size = #{$default-decorative-image-size}] - Specifies the box size of the chevron.\n * @cssprop [--ch-accordion__chevron-image-size = 100%] - Specifies the image size of the chevron.\n * @cssprop [--ch-accordion__chevron-color = currentColor] - Specifies the color of the chevron.\n * @cssprop [--ch-accordion-expand-collapse-duration = 0ms] - Specifies duration of the expand and collapse animation.\n * @cssprop [--ch-accordion-expand-collapse-timing-function = linear] - Specifies timing function of the expand and collapse animation.\n * @cssprop [--ch-accordion__header-background-image = #{$expandable-icon}] - Specifies the background image used for the expandable chevron in the header.\n */",
+    srcPath: "./components/accordion/accordion-render.lit.ts",
+    developmentStatus: "experimental",
+    mode: "open",
+    shadow: true,
+    properties: [
+      {
+        name: "disabled",
+        attribute: "disabled",
+        type: " boolean",
+        default: "false",
+        description:
+          "This attribute lets you specify if all accordions are disabled.\nIf disabled, accordions will not fire any user interaction related event\n(for example, `expandedChange` event)."
+      },
+      {
+        name: "expandableButtonPosition",
+        attribute: "expandable-button-position",
+        type: ' "start" | "end"',
+        default: '"end"',
+        description:
+          'Specifies the position of the expandable button (chevron) in the header\nof the panels. `"start"` places the chevron at the inline-start edge of\nthe header, while `"end"` places it at the inline-end edge.'
+      },
+      {
+        name: "getImagePathCallback",
+        attribute: false,
+        type: "\n    | GetImagePathCallback\n    | undefined",
+        default: "undefined",
+        description:
+          "This property specifies a callback that is executed when the path for an\n`startImgSrc` needs to be resolved. The resolution follows a fallback\nchain: per-instance callback → global registry signal → `undefined`."
+      },
+      {
+        name: "model",
+        attribute: false,
+        type: " AccordionModel | undefined",
+        default: "undefined",
+        description:
+          "Specifies the items of the control. Each entry is an\n`AccordionItemModel` with at least `id`, `caption`, and `expanded`.\nThe component mutates `item.expanded` directly on these model objects\nwhen the user toggles a panel."
+      },
+      {
+        name: "singleItemExpanded",
+        attribute: "single-item-expanded",
+        type: " boolean",
+        default: "false",
+        description:
+          "If `true` only one item will be expanded at the same time."
+      }
+    ],
+    events: [
+      {
+        name: "expandedChange",
+        detailType: "AccordionItemExpandedChangeEvent",
+        description:
+          "Fired when an item is expanded or collapsed. The payload is\n`{ id: string; expanded: boolean }`. In `singleItemExpanded` mode,\nmultiple events fire: one for each auto-collapsed item (with\n`expanded: false`) followed by one for the newly expanded item."
+      }
+    ],
+    slots: [
+      {
+        name: "{item.headerSlotId}",
+        description:
+          "Named slot projected inside the `header` button for custom header content. Rendered when the item defines a `headerSlotId`."
+      },
+      {
+        name: "{item.id}",
+        description:
+          "Named slot projected inside the `section` for each item's collapsible body content."
+      }
+    ],
+    cssVariables: [
+      {
+        name: "--ch-accordion__chevron-size = #{$default-decorative-image-size}",
+        description: "Specifies the box size of the chevron."
+      },
+      {
+        name: "--ch-accordion__chevron-image-size = 100%",
+        description: "Specifies the image size of the chevron."
+      },
+      {
+        name: "--ch-accordion__chevron-color = currentColor",
+        description: "Specifies the color of the chevron."
+      },
+      {
+        name: "--ch-accordion-expand-collapse-duration = 0ms",
+        description: "Specifies duration of the expand and collapse animation."
+      },
+      {
+        name: "--ch-accordion-expand-collapse-timing-function = linear",
+        description:
+          "Specifies timing function of the expand and collapse animation."
+      },
+      {
+        name: "--ch-accordion__header-background-image = #{$expandable-icon}",
+        description:
+          "Specifies the background image used for the expandable chevron in the header."
+      }
+    ],
+    propertyImportTypes: {
+      "./typings/multi-state-images.ts": ["GetImagePathCallback"],
+      "./components/accordion/types.ts": ["AccordionModel"]
+    },
+    eventImportTypes: {
+      "./components/accordion/types.ts": ["AccordionItemExpandedChangeEvent"]
+    }
+  },
+  {
+    access: "public",
     tagName: "ch-beautiful-mermaid",
     className: "ChBeautifulMermaid",
     description: "",
@@ -373,6 +483,15 @@ export const librarySummary = [
           "Specifies if an indicator is displayed in the last element rendered.\nUseful for streaming scenarios where a loading indicator is needed."
       },
       {
+        name: "theme",
+        attribute: "theme",
+        type: " string",
+        default: "DEFAULT_CODE_THEME",
+        description:
+          'Specifies the Shiki theme to use for syntax highlighting.\nSupports all bundled Shiki themes (e.g., `"github-dark"`, `"nord"`,\n`"dracula"`) plus `"chameleon-theme-dark"` and `"chameleon-theme-light"`.',
+        reflect: true
+      },
+      {
         name: "value",
         attribute: "value",
         type: " string | undefined",
@@ -445,6 +564,94 @@ export const librarySummary = [
     ],
     propertyImportTypes: {
       "./typings/multi-state-images.ts": ["GetImagePathCallback", "ImageRender"]
+    }
+  },
+  {
+    access: "public",
+    tagName: "ch-json-render",
+    className: "ChJsonRender",
+    description: "",
+    fullClassJSDoc: "",
+    srcPath: "./components/json-render/json-render.lit.ts",
+    developmentStatus: "to-be-defined",
+    mode: "open",
+    shadow: true,
+    properties: [
+      {
+        name: "spec",
+        attribute: false,
+        type: " Spec | null",
+        default: "null",
+        description: "The JSON spec describing the UI tree to render."
+      },
+      {
+        name: "registry",
+        attribute: false,
+        type: " ComponentRegistry",
+        default: "{}",
+        description:
+          "Registry mapping element type names to renderer functions."
+      },
+      {
+        name: "store",
+        attribute: false,
+        type: " StateStore | undefined",
+        default: "undefined",
+        description:
+          "External state store (controlled mode).\nWhen absent, an internal store seeded from `spec.state` is used."
+      },
+      {
+        name: "functions",
+        attribute: false,
+        type: " Record<string, ComputedFunction>",
+        default: "{}",
+        description:
+          "Named functions available for `$computed` prop expressions."
+      },
+      {
+        name: "loading",
+        attribute: "loading",
+        type: "any",
+        default: "false",
+        description:
+          "When true, each renderer receives `loading: true` (e.g. during streaming)."
+      },
+      {
+        name: "fallback",
+        attribute: false,
+        type: " ComponentRenderer | undefined",
+        default: "undefined",
+        description:
+          "Fallback renderer used when an element type is not in the registry.\nUseful for showing a skeleton while the registry is being built."
+      },
+      {
+        name: "styleSheet",
+        attribute: false,
+        type: " string",
+        default: '""',
+        description:
+          "Optional CSS string adopted into the component's shadow root.\nUse this to style elements rendered by the registry, which live inside\nthe shadow DOM and cannot be styled from outside."
+      },
+      {
+        name: "onAction",
+        attribute: false,
+        type: "\n    | ((\n        name: string,\n        params?: Record<string, unknown>,\n        setState?: (path: string, value: unknown) => void,\n        getState?: () => StateModel\n      ) => void | Promise<void>)\n    | undefined",
+        default: "undefined",
+        description:
+          "Handler for custom (non-built-in) actions.\nReceives the action name, resolved params, a setState helper, and a\ngetState snapshot function."
+      }
+    ],
+    propertyImportTypes: {
+      "@json-render/core": [
+        "Spec",
+        "StateStore",
+        "ComputedFunction",
+        "StateModel"
+      ],
+      "./components/json-render/types.js": [
+        "ComponentRegistry",
+        "ComponentRenderer"
+      ]
     }
   },
   {
@@ -907,27 +1114,23 @@ export const librarySummary = [
       {
         name: "componentModel",
         attribute: false,
-        type: "\n    | ComponentRenderModel\n    | undefined",
-        default: "undefined"
+        type: "\n    | PlaygroundJsonRenderModel\n    | undefined",
+        default: "undefined",
+        description:
+          "Explicit model for the playground. Takes priority over `componentName`."
       },
       {
         name: "componentName",
         attribute: "componentname",
         type: " string | undefined",
-        default: "undefined"
-      },
-      {
-        name: "selectedItem",
-        attribute: false,
-        type: "\n    | ComponentRenderTemplateItemNode\n    | undefined",
-        default: "undefined"
+        default: "undefined",
+        description:
+          'Chameleon component tag name (e.g. "ch-checkbox"). Used to look up the\nmodel from `playgroundEditorModels` when `componentModel` is not set.'
       }
     ],
     propertyImportTypes: {
-      "./components/playground-editor/typings/component-render.ts": [
-        "ComponentRenderModel",
-        "ComponentRenderTemplateItemNode"
-      ]
+      "./components/playground-editor/typings/playground-json-render-model.ts":
+        ["PlaygroundJsonRenderModel"]
     }
   },
   {

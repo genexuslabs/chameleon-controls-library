@@ -1,6 +1,7 @@
 import type { ChameleonPublicControlsTagName } from "../../typings/chameleon-components";
 import type { ThemeModel } from "../theme/theme-types";
-import type { ComponentRenderModel } from "./typings/component-render";
+import type { PlaygroundJsonRenderModel } from "./typings/playground-json-render-model";
+import { chameleonRegistry } from "./chameleon-registry";
 
 const MERCURY_BUNDLES: ThemeModel = [
   {
@@ -12,101 +13,188 @@ const MERCURY_BUNDLES: ThemeModel = [
 export const playgroundEditorModels = {
   "ch-checkbox": {
     bundles: MERCURY_BUNDLES,
-    events: {
-      updateChecked: states => (event: CustomEvent<unknown>) => {
-        states.checked.value = event.detail;
-      }
-    },
-    states: {
-      checked: {
-        type: "boolean",
-        value: false
-      }
-    },
-    template: {
-      tag: "ch-checkbox",
-      class: "checkbox",
-      properties: {},
-      events: {
-        input: { eventHandlerName: "updateChecked" }
+    registry: chameleonRegistry,
+    codegenHints: { events: { input: "checked" } },
+    spec: {
+      root: "root",
+      state: {
+        accessibleName: "",
+        caption: "",
+        checked: false,
+        disabled: false,
+        indeterminate: false,
+        name: "",
+        readonly: false,
+        startImgSrc: "",
+        startImgType: "background",
+        value: "on"
+      },
+      elements: {
+        root: {
+          type: "ch-checkbox",
+          props: {
+            accessibleName: { $bindState: "/accessibleName" },
+            caption: { $bindState: "/caption" },
+            checked: { $bindState: "/checked" },
+            disabled: { $bindState: "/disabled" },
+            indeterminate: { $bindState: "/indeterminate" },
+            name: { $bindState: "/name" },
+            readonly: { $bindState: "/readonly" },
+            startImgSrc: { $bindState: "/startImgSrc" },
+            startImgType: { $bindState: "/startImgType" },
+            value: { $bindState: "/value" }
+          }
+        }
       }
     }
   },
+
   "ch-code": {
     bundles: MERCURY_BUNDLES,
-    template: {
-      tag: "ch-code",
-      class: "code",
-      properties: {}
+    registry: chameleonRegistry,
+    stateTypes: {
+      value: { type: "string-multiline" as const }
+    },
+    spec: {
+      root: "root",
+      state: {
+        language: "txt",
+        showIndicator: false,
+        value: ""
+      },
+      elements: {
+        root: {
+          type: "ch-code",
+          props: {
+            language: { $bindState: "/language" },
+            showIndicator: { $bindState: "/showIndicator" },
+            value: { $bindState: "/value" }
+          }
+        }
+      }
     }
   },
+
   "ch-image": {
     bundles: MERCURY_BUNDLES,
-    template: {
-      tag: "ch-image",
-      properties: {}
+    registry: chameleonRegistry,
+    spec: {
+      root: "root",
+      state: {
+        disabled: false,
+        src: "",
+        type: "background"
+      },
+      elements: {
+        root: {
+          type: "ch-image",
+          props: {
+            disabled: { $bindState: "/disabled" },
+            src: { $bindState: "/src" },
+            type: { $bindState: "/type" }
+          }
+        }
+      }
     }
   },
+
   "ch-radio-group-render": {
     bundles: MERCURY_BUNDLES,
-    template: {
-      tag: "ch-radio-group-render",
-      class: "radio-group",
-      properties: {}
+    registry: chameleonRegistry,
+    spec: {
+      root: "root",
+      state: {},
+      elements: {
+        root: {
+          type: "ch-radio-group-render",
+          props: {}
+        }
+      }
     }
   },
+
   "ch-segmented-control-render": {
     bundles: MERCURY_BUNDLES,
-    template: {
-      tag: "ch-segmented-control-render",
-      properties: {}
+    registry: chameleonRegistry,
+    spec: {
+      root: "root",
+      state: {},
+      elements: {
+        root: {
+          type: "ch-segmented-control-render",
+          props: {}
+        }
+      }
     }
   },
+
   "ch-slider": {
     bundles: MERCURY_BUNDLES,
-    events: {
-      updateValue: states => (event: CustomEvent<unknown>) => {
-        states.value.value = event.detail;
-      }
-    },
-    states: {
-      value: {
-        type: "number",
+    registry: chameleonRegistry,
+    codegenHints: { events: { input: "value" } },
+    spec: {
+      root: "root",
+      state: {
+        accessibleName: "",
+        disabled: false,
+        maxValue: 5,
+        minValue: 0,
+        name: "",
+        showValue: false,
+        step: 1,
         value: 0
-      }
-    },
-    template: {
-      tag: "ch-slider",
-      class: "slider",
-      properties: {},
-      events: {
-        input: { eventHandlerName: "updateValue" }
+      },
+      elements: {
+        root: {
+          type: "ch-slider",
+          props: {
+            accessibleName: { $bindState: "/accessibleName" },
+            disabled: { $bindState: "/disabled" },
+            maxValue: { $bindState: "/maxValue" },
+            minValue: { $bindState: "/minValue" },
+            name: { $bindState: "/name" },
+            showValue: { $bindState: "/showValue" },
+            step: { $bindState: "/step" },
+            value: { $bindState: "/value" }
+          }
+        }
       }
     }
   },
+
   "ch-switch": {
     bundles: MERCURY_BUNDLES,
-    events: {
-      updateChecked: states => (event: CustomEvent<unknown>) => {
-        states.checked.value = event.detail;
-      }
-    },
-    states: {
-      checked: {
-        type: "boolean",
-        value: false
-      }
-    },
-    template: {
-      tag: "ch-switch",
-      class: "switch-small",
-      properties: {},
-      events: {
-        input: { eventHandlerName: "updateChecked" }
+    registry: chameleonRegistry,
+    codegenHints: { events: { input: "checked" } },
+    spec: {
+      root: "root",
+      state: {
+        accessibleName: "",
+        checked: false,
+        checkedCaption: "",
+        disabled: false,
+        name: "",
+        readonly: false,
+        unCheckedCaption: "",
+        value: "on"
+      },
+      elements: {
+        root: {
+          type: "ch-switch",
+          props: {
+            accessibleName: { $bindState: "/accessibleName" },
+            checked: { $bindState: "/checked" },
+            checkedCaption: { $bindState: "/checkedCaption" },
+            disabled: { $bindState: "/disabled" },
+            name: { $bindState: "/name" },
+            readonly: { $bindState: "/readonly" },
+            unCheckedCaption: { $bindState: "/unCheckedCaption" },
+            value: { $bindState: "/value" }
+          }
+        }
       }
     }
   }
 } as const satisfies {
-  [key in ChameleonPublicControlsTagName]?: ComponentRenderModel;
+  [key in ChameleonPublicControlsTagName]?: PlaygroundJsonRenderModel;
 };
-

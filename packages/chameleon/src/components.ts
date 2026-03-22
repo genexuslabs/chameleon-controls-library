@@ -1,10 +1,36 @@
 // Types used by properties, events and methods
-import type { Spec, StateStore, ComputedFunction, StateModel } from "@json-render/core";
-import type { TemplateResult, LitElement } from "lit";
-import type { BreadCrumbItemModel, BreadCrumbModel, BreadCrumbHyperlinkClickEvent } from "./components/breadcrumb/types.ts";
-import type { ComponentRegistry, ComponentRenderer } from "./components/json-render/types.js";
-import type { LayoutSplitterModel, LayoutSplitterItemAddResult, LayoutSplitterLeafModel, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types.ts";
-import type { NavigationListItemModel, NavigationListSharedState, NavigationListModel, NavigationListHyperlinkClickEvent } from "./components/navigation-list/types.ts";
+import type {
+  ComputedFunction,
+  Spec,
+  StateModel,
+  StateStore
+} from "@json-render/core";
+import type { LitElement, TemplateResult } from "lit";
+import type {
+  AccordionItemExpandedChangeEvent,
+  AccordionModel
+} from "./components/accordion/types.ts";
+import type {
+  BreadCrumbHyperlinkClickEvent,
+  BreadCrumbItemModel,
+  BreadCrumbModel
+} from "./components/breadcrumb/types.ts";
+import type {
+  ComponentRegistry,
+  ComponentRenderer
+} from "./components/json-render/types.js";
+import type {
+  LayoutSplitterItemAddResult,
+  LayoutSplitterItemRemoveResult,
+  LayoutSplitterLeafModel,
+  LayoutSplitterModel
+} from "./components/layout-splitter/types.ts";
+import type {
+  NavigationListHyperlinkClickEvent,
+  NavigationListItemModel,
+  NavigationListModel,
+  NavigationListSharedState
+} from "./components/navigation-list/types.ts";
 import type { ComponentRenderModel } from "./components/playground-editor/typings/component-render.ts";
 import type { PlaygroundJsonRenderModel } from "./components/playground-editor/typings/playground-json-render-model.ts";
 import type { ErrorCorrectionLevel } from "./components/qr/types.ts";
@@ -12,30 +38,62 @@ import type { RadioGroupModel } from "./components/radio-group/types.ts";
 import type { RouterModel } from "./components/router/types.ts";
 import type { SegmentedControlModel } from "./components/segmented-control/types.ts";
 import type { ShowcaseApiProperties } from "./components/showcase/showcase-api/types.ts";
-import type { TabularGridSortDirection, TabularGridModel } from "./components/tabular-grid/types.ts";
-import type { ThemeModel, ChThemeLoadedEvent } from "./components/theme/theme-types.ts";
+import type {
+  TabularGridModel,
+  TabularGridSortDirection
+} from "./components/tabular-grid/types.ts";
+import type {
+  ChThemeLoadedEvent,
+  ThemeModel
+} from "./components/theme/theme-types.ts";
 import type { ItemLink } from "./typings/hyperlinks.ts";
-import type { GxImageMultiState, ImageRender, GetImagePathCallback } from "./typings/multi-state-images.ts";
+import type {
+  GetImagePathCallback,
+  GxImageMultiState,
+  ImageRender
+} from "./typings/multi-state-images.ts";
 
-export type { Spec, StateStore, ComputedFunction, StateModel };
-export type { TemplateResult, LitElement };
-export type { BreadCrumbItemModel, BreadCrumbModel, BreadCrumbHyperlinkClickEvent };
-export type { ComponentRegistry, ComponentRenderer };
-export type { LayoutSplitterModel, LayoutSplitterItemAddResult, LayoutSplitterLeafModel, LayoutSplitterItemRemoveResult };
-export type { NavigationListItemModel, NavigationListSharedState, NavigationListModel, NavigationListHyperlinkClickEvent };
-export type { ComponentRenderModel };
-export type { PlaygroundJsonRenderModel };
-export type { ErrorCorrectionLevel };
-export type { RadioGroupModel };
-export type { RouterModel };
-export type { SegmentedControlModel };
-export type { ShowcaseApiProperties };
-export type { TabularGridSortDirection, TabularGridModel };
-export type { ThemeModel, ChThemeLoadedEvent };
-export type { ItemLink };
-export type { GxImageMultiState, ImageRender, GetImagePathCallback };
+export type {
+  AccordionItemExpandedChangeEvent,
+  AccordionModel,
+  BreadCrumbHyperlinkClickEvent,
+  BreadCrumbItemModel,
+  BreadCrumbModel,
+  ChThemeLoadedEvent,
+  ComponentRegistry,
+  ComponentRenderer,
+  ComponentRenderModel,
+  ComputedFunction,
+  ErrorCorrectionLevel,
+  GetImagePathCallback,
+  GxImageMultiState,
+  ImageRender,
+  ItemLink,
+  LayoutSplitterItemAddResult,
+  LayoutSplitterItemRemoveResult,
+  LayoutSplitterLeafModel,
+  LayoutSplitterModel,
+  LitElement,
+  NavigationListHyperlinkClickEvent,
+  NavigationListItemModel,
+  NavigationListModel,
+  NavigationListSharedState,
+  PlaygroundJsonRenderModel,
+  RadioGroupModel,
+  RouterModel,
+  SegmentedControlModel,
+  ShowcaseApiProperties,
+  Spec,
+  StateModel,
+  StateStore,
+  TabularGridModel,
+  TabularGridSortDirection,
+  TemplateResult,
+  ThemeModel
+};
 
 // Component class types
+import type { ChAccordionRender as ChAccordionRenderElement } from "./components/accordion/accordion.lit.js";
 import type { ChBeautifulMermaid as ChBeautifulMermaidElement } from "./components/beautiful-mermaid/beautiful-mermaid.lit.ts";
 import type { ChBreadCrumbRender as ChBreadCrumbRenderElement } from "./components/breadcrumb/breadcrumb-render.lit.ts";
 import type { ChBreadCrumbItem as ChBreadCrumbItemElement } from "./components/breadcrumb/internal/breadcrumb-item/breadcrumb-item.lit.ts";
@@ -70,6 +128,7 @@ import type { ChTheme as ChThemeElement } from "./components/theme/theme.lit.ts"
  * library.
  */
 export interface ComponentBaseClasses {
+  "ch-accordion-render": ChAccordionRenderElement;
   "ch-beautiful-mermaid": ChBeautifulMermaidElement;
   "ch-breadcrumb-render": ChBreadCrumbRenderElement;
   "ch-breadcrumb-item": ChBreadCrumbItemElement;
@@ -105,34 +164,231 @@ export interface ComponentBaseClasses {
  */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ComponentProperties {
+  export type ChAccordionRender = Pick<
+    ChAccordionRenderElement,
+    | "disabled"
+    | "expandableButtonPosition"
+    | "getImagePathCallback"
+    | "model"
+    | "singleItemExpanded"
+  >;
   export type ChBeautifulMermaid = Pick<ChBeautifulMermaidElement, "value">;
-  export type ChBreadCrumbRender = Pick<ChBreadCrumbRenderElement, "getImagePathCallback" | "selectedLink" | "selectedLinkIndicator" | "model" | "separator" | "accessibleName">;
-  export type ChBreadCrumbItem = Pick<ChBreadCrumbItemElement, "caption" | "disabled" | "accessibleName" | "link" | "model" | "selected" | "selectedLinkIndicator" | "startImgSrc" | "startImgType" | "getImagePathCallback">;
-  export type ChCheckbox = Pick<ChCheckboxElement, "accessibleName" | "caption" | "checked" | "disabled" | "getImagePathCallback" | "indeterminate" | "name" | "readonly" | "startImgSrc" | "startImgType" | "value">;
-  export type ChCode = Pick<ChCodeElement, "language" | "lastNestedChildClass" | "showIndicator" | "theme" | "value">;
-  export type ChImage = Pick<ChImageElement, "containerRef" | "disabled" | "getImagePathCallback" | "src" | "styles" | "type">;
-  export type ChJsonRender = Pick<ChJsonRenderElement, "spec" | "registry" | "store" | "functions" | "loading" | "fallback" | "styleSheet" | "onAction">;
-  export type ChLayoutSplitter = Pick<ChLayoutSplitterElement, "barAccessibleName" | "dragBarDisabled" | "incrementWithKeyboard" | "model">;
-  export type ChNavigationListItem = Pick<ChNavigationListItemElement, "caption" | "disabled" | "expandable" | "expanded" | "exportparts" | "level" | "link" | "model" | "selected" | "sharedState" | "startImgSrc" | "startImgType">;
-  export type ChNavigationListRender = Pick<ChNavigationListRenderElement, "autoGrow" | "expandableButton" | "expandableButtonPosition" | "getImagePathCallback" | "expanded" | "expandSelectedLink" | "model" | "renderItem" | "selectedLink" | "selectedLinkIndicator" | "showCaptionOnCollapse" | "tooltipDelay">;
-  export type ChPerformanceScanItem = Pick<ChPerformanceScanItemElement, "anchorRef" | "anchorTagName" | "renderCount">;
+  export type ChBreadCrumbRender = Pick<
+    ChBreadCrumbRenderElement,
+    | "getImagePathCallback"
+    | "selectedLink"
+    | "selectedLinkIndicator"
+    | "model"
+    | "separator"
+    | "accessibleName"
+  >;
+  export type ChBreadCrumbItem = Pick<
+    ChBreadCrumbItemElement,
+    | "caption"
+    | "disabled"
+    | "accessibleName"
+    | "link"
+    | "model"
+    | "selected"
+    | "selectedLinkIndicator"
+    | "startImgSrc"
+    | "startImgType"
+    | "getImagePathCallback"
+  >;
+  export type ChCheckbox = Pick<
+    ChCheckboxElement,
+    | "accessibleName"
+    | "caption"
+    | "checked"
+    | "disabled"
+    | "getImagePathCallback"
+    | "indeterminate"
+    | "name"
+    | "readonly"
+    | "startImgSrc"
+    | "startImgType"
+    | "value"
+  >;
+  export type ChCode = Pick<
+    ChCodeElement,
+    "language" | "lastNestedChildClass" | "showIndicator" | "theme" | "value"
+  >;
+  export type ChImage = Pick<
+    ChImageElement,
+    | "containerRef"
+    | "disabled"
+    | "getImagePathCallback"
+    | "src"
+    | "styles"
+    | "type"
+  >;
+  export type ChJsonRender = Pick<
+    ChJsonRenderElement,
+    | "spec"
+    | "registry"
+    | "store"
+    | "functions"
+    | "loading"
+    | "fallback"
+    | "styleSheet"
+    | "onAction"
+  >;
+  export type ChLayoutSplitter = Pick<
+    ChLayoutSplitterElement,
+    "barAccessibleName" | "dragBarDisabled" | "incrementWithKeyboard" | "model"
+  >;
+  export type ChNavigationListItem = Pick<
+    ChNavigationListItemElement,
+    | "caption"
+    | "disabled"
+    | "expandable"
+    | "expanded"
+    | "exportparts"
+    | "level"
+    | "link"
+    | "model"
+    | "selected"
+    | "sharedState"
+    | "startImgSrc"
+    | "startImgType"
+  >;
+  export type ChNavigationListRender = Pick<
+    ChNavigationListRenderElement,
+    | "autoGrow"
+    | "expandableButton"
+    | "expandableButtonPosition"
+    | "getImagePathCallback"
+    | "expanded"
+    | "expandSelectedLink"
+    | "model"
+    | "renderItem"
+    | "selectedLink"
+    | "selectedLinkIndicator"
+    | "showCaptionOnCollapse"
+    | "tooltipDelay"
+  >;
+  export type ChPerformanceScanItem = Pick<
+    ChPerformanceScanItemElement,
+    "anchorRef" | "anchorTagName" | "renderCount"
+  >;
   export type ChPerformanceScan = Pick<ChPerformanceScanElement, "showFps">;
   export type ChComponentRender = Pick<ChComponentRenderElement, "model">;
-  export type ChPlaygroundEditor = Pick<ChPlaygroundEditorElement, "componentModel" | "componentName">;
-  export type ChProgress = Pick<ChProgressElement, "accessibleName" | "accessibleValueText" | "indeterminate" | "max" | "min" | "name" | "renderType" | "loadingRegionRef" | "value">;
-  export type ChQr = Pick<ChQrElement, "accessibleName" | "background" | "errorCorrectionLevel" | "fill" | "radius" | "size" | "value">;
-  export type ChRadioGroupRender = Pick<ChRadioGroupRenderElement, "direction" | "disabled" | "model" | "name" | "value">;
+  export type ChPlaygroundEditor = Pick<
+    ChPlaygroundEditorElement,
+    "componentModel" | "componentName"
+  >;
+  export type ChProgress = Pick<
+    ChProgressElement,
+    | "accessibleName"
+    | "accessibleValueText"
+    | "indeterminate"
+    | "max"
+    | "min"
+    | "name"
+    | "renderType"
+    | "loadingRegionRef"
+    | "value"
+  >;
+  export type ChQr = Pick<
+    ChQrElement,
+    | "accessibleName"
+    | "background"
+    | "errorCorrectionLevel"
+    | "fill"
+    | "radius"
+    | "size"
+    | "value"
+  >;
+  export type ChRadioGroupRender = Pick<
+    ChRadioGroupRenderElement,
+    "direction" | "disabled" | "model" | "name" | "value"
+  >;
   export type ChRouter = Pick<ChRouterElement, "model" | "pathname">;
-  export type ChSegmentedControlItem = Pick<ChSegmentedControlItemElement, "accessibleName" | "between" | "caption" | "disabled" | "endImgSrc" | "endImgType" | "first" | "last" | "selected" | "startImgSrc" | "startImgType">;
-  export type ChSegmentedControlRender = Pick<ChSegmentedControlRenderElement, "exportParts" | "itemCssClass" | "model" | "selectedId">;
+  export type ChSegmentedControlItem = Pick<
+    ChSegmentedControlItemElement,
+    | "accessibleName"
+    | "between"
+    | "caption"
+    | "disabled"
+    | "endImgSrc"
+    | "endImgType"
+    | "first"
+    | "last"
+    | "selected"
+    | "startImgSrc"
+    | "startImgType"
+  >;
+  export type ChSegmentedControlRender = Pick<
+    ChSegmentedControlRenderElement,
+    "exportParts" | "itemCssClass" | "model" | "selectedId"
+  >;
   export type ChShowcaseApi = Pick<ChShowcaseApiElement, "properties">;
-  export type ChSidebar = Pick<ChSidebarElement, "expandButtonCollapseAccessibleName" | "expandButtonExpandAccessibleName" | "expandButtonCollapseCaption" | "expandButtonExpandCaption" | "expandButtonPosition" | "expanded" | "showExpandButton">;
-  export type ChSlider = Pick<ChSliderElement, "accessibleName" | "disabled" | "maxValue" | "minValue" | "name" | "showValue" | "step" | "value">;
-  export type ChSwitch = Pick<ChSwitchElement, "accessibleName" | "checkedCaption" | "checked" | "disabled" | "name" | "readonly" | "unCheckedCaption" | "value">;
-  export type ChTabularGridColumn = Pick<ChTabularGridColumnElement, "accessibleName" | "caption" | "colSpan" | "colStart" | "parts" | "resizable" | "rowSpan" | "size" | "styles" | "sortable" | "sortDirection">;
-  export type ChTabularGridRender = Pick<ChTabularGridRenderElement, "columnHideable" | "columnResizable" | "columnSortable" | "model">;
-  export type ChTextBlock = Pick<ChTextBlockElement, "autoGrow" | "caption" | "characterToMeasureLineHeight" | "format" | "showTooltipOnOverflow">;
-  export type ChTheme = Pick<ChThemeElement, "attachStyleSheets" | "avoidFlashOfUnstyledContent" | "hidden" | "model" | "timeout">;
+  export type ChSidebar = Pick<
+    ChSidebarElement,
+    | "expandButtonCollapseAccessibleName"
+    | "expandButtonExpandAccessibleName"
+    | "expandButtonCollapseCaption"
+    | "expandButtonExpandCaption"
+    | "expandButtonPosition"
+    | "expanded"
+    | "showExpandButton"
+  >;
+  export type ChSlider = Pick<
+    ChSliderElement,
+    | "accessibleName"
+    | "disabled"
+    | "maxValue"
+    | "minValue"
+    | "name"
+    | "showValue"
+    | "step"
+    | "value"
+  >;
+  export type ChSwitch = Pick<
+    ChSwitchElement,
+    | "accessibleName"
+    | "checkedCaption"
+    | "checked"
+    | "disabled"
+    | "name"
+    | "readonly"
+    | "unCheckedCaption"
+    | "value"
+  >;
+  export type ChTabularGridColumn = Pick<
+    ChTabularGridColumnElement,
+    | "accessibleName"
+    | "caption"
+    | "colSpan"
+    | "colStart"
+    | "parts"
+    | "resizable"
+    | "rowSpan"
+    | "size"
+    | "styles"
+    | "sortable"
+    | "sortDirection"
+  >;
+  export type ChTabularGridRender = Pick<
+    ChTabularGridRenderElement,
+    "columnHideable" | "columnResizable" | "columnSortable" | "model"
+  >;
+  export type ChTextBlock = Pick<
+    ChTextBlockElement,
+    | "autoGrow"
+    | "caption"
+    | "characterToMeasureLineHeight"
+    | "format"
+    | "showTooltipOnOverflow"
+  >;
+  export type ChTheme = Pick<
+    ChThemeElement,
+    | "attachStyleSheets"
+    | "avoidFlashOfUnstyledContent"
+    | "hidden"
+    | "model"
+    | "timeout"
+  >;
 }
 
 /**
@@ -141,11 +397,47 @@ export namespace ComponentProperties {
  */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ComponentPropertiesSolidJS {
+  export type ChAccordionRender = {
+    /**
+     * This attribute lets you specify if all accordions are disabled.
+     * If disabled, accordions will not fire any user interaction related event
+     * (for example, `expandedChange` event).
+     */
+    "prop:disabled"?: boolean;
+
+    /**
+     * Specifies the position of the expandable button (chevron) in the header
+     * of the panels. `"start"` places the chevron at the inline-start edge of
+     * the header, while `"end"` places it at the inline-end edge.
+     */
+    "prop:expandableButtonPosition"?: "start" | "end";
+
+    /**
+     * This property specifies a callback that is executed when the path for an
+     * `startImgSrc` needs to be resolved. The resolution follows a fallback
+     * chain: per-instance callback → global registry signal → `undefined`.
+     */
+    "prop:getImagePathCallback"?: GetImagePathCallback | undefined;
+
+    /**
+     * Specifies the items of the control. Each entry is an
+     * `AccordionItemModel` with at least `id`, `caption`, and `expanded`.
+     * The component mutates `item.expanded` directly on these model objects
+     * when the user toggles a panel.
+     */
+    "prop:model"?: AccordionModel | undefined;
+
+    /**
+     * If `true` only one item will be expanded at the same time.
+     */
+    "prop:singleItemExpanded"?: boolean;
+  };
+
   export type ChBeautifulMermaid = {
     /**
      * Specifies the Mermaid diagram definition to be rendered.
      */
-    "prop:value"?:  string | undefined;
+    "prop:value"?: string | undefined;
   };
 
   export type ChBreadCrumbRender = {
@@ -153,14 +445,14 @@ export namespace ComponentPropertiesSolidJS {
      * This property specifies a callback that is executed when the path for an
      * startImgSrc needs to be resolved.
      */
-    "prop:getImagePathCallback"?: 
+    "prop:getImagePathCallback"?:
       | ((item: BreadCrumbItemModel) => GxImageMultiState | undefined)
       | undefined;
 
     /**
      * Specifies the current selected hyperlink.
      */
-    "prop:selectedLink"?:  {
+    "prop:selectedLink"?: {
       id?: string;
       link: ItemLink;
     };
@@ -168,89 +460,83 @@ export namespace ComponentPropertiesSolidJS {
     /**
      * Specifies if the selected item indicator is displayed (only work for hyperlink)
      */
-    "prop:selectedLinkIndicator"?:  boolean;
+    "prop:selectedLinkIndicator"?: boolean;
 
     /**
      * Specifies the items of the control.
      */
-    "prop:model"?:  BreadCrumbModel | undefined;
+    "prop:model"?: BreadCrumbModel | undefined;
 
     /**
-     * 
+     *
      */
-    "prop:separator"?:  string | undefined;
+    "prop:separator"?: string | undefined;
 
     /**
      * Specifies a short string, typically 1 to 3 words, that authors associate
      * with an element to provide users of assistive technologies with a label
      * for the element.
      */
-    "prop:accessibleName"?: 
-      | string
-      | undefined;
+    "prop:accessibleName"?: string | undefined;
   };
 
   export type ChBreadCrumbItem = {
     /**
      * Specifies the caption of the control
      */
-    "prop:caption"?:  string | undefined;
+    "prop:caption"?: string | undefined;
 
     /**
      * This attribute lets you specify if the element is disabled.
      * If disabled, it will not fire any user interaction related event
      * (for example, click event).
      */
-    "prop:disabled"?:  boolean | undefined;
+    "prop:disabled"?: boolean | undefined;
 
     /**
      * Specifies a short string, typically 1 to 3 words, that authors associate
      * with an element to provide users of assistive technologies with a label
      * for the element.
      */
-    "prop:accessibleName"?: 
-      | string
-      | undefined;
+    "prop:accessibleName"?: string | undefined;
 
     /**
-     * 
+     *
      */
-    "prop:link"?:  ItemLink | undefined;
+    "prop:link"?: ItemLink | undefined;
 
     /**
      * Specifies the UI model of the control
      */
-    "prop:model"?:  BreadCrumbItemModel;
+    "prop:model"?: BreadCrumbItemModel;
 
     /**
      * Specifies if the hyperlink is selected. Only applies when the `link`
      * property is defined.
      */
-    "prop:selected"?:  boolean;
+    "prop:selected"?: boolean;
 
     /**
      * Specifies if the selected item indicator is displayed when the item is
      * selected. Only applies when the `link` property is defined.
      */
-    "prop:selectedLinkIndicator"?:  boolean;
+    "prop:selectedLinkIndicator"?: boolean;
 
     /**
      * Specifies the src of the start image.
      */
-    "prop:startImgSrc"?:  string | undefined;
+    "prop:startImgSrc"?: string | undefined;
 
     /**
      * Specifies how the start image will be rendered.
      */
-    "prop:startImgType"?: 
-      | Exclude<ImageRender, "img">
-      | undefined;
+    "prop:startImgType"?: Exclude<ImageRender, "img"> | undefined;
 
     /**
      * This property specifies a callback that is executed when the path for an
      * startImgSrc needs to be resolved.
      */
-    "prop:getImagePathCallback"?: 
+    "prop:getImagePathCallback"?:
       | ((imageSrc: BreadCrumbItemModel) => GxImageMultiState | undefined)
       | undefined;
   };
@@ -261,113 +547,106 @@ export namespace ComponentPropertiesSolidJS {
      * with an element to provide users of assistive technologies with a label
      * for the element.
      */
-    "prop:accessibleName"?: 
-      | string
-      | undefined;
+    "prop:accessibleName"?: string | undefined;
 
     /**
      * Specifies the label of the checkbox.
      */
-    "prop:caption"?:  string | undefined;
+    "prop:caption"?: string | undefined;
 
     /**
      * `true` if the `ch-switch` is checked.
-     * 
+     *
      * If checked:
      *   - The `value` property will be available in the parent `<form>` if the
      *     `name` attribute is set.
      *   - The `checkedCaption` will be used to display the current caption.
-     * 
+     *
      * If not checked:
      *   - The `value` property won't be available in the parent `<form>`, even
      *     if the `name` attribute is set.
      *   - The `unCheckedCaption` will be used to display the current caption.
      */
-    "prop:checked"?:  boolean;
+    "prop:checked"?: boolean;
 
     /**
      * This attribute lets you specify if the element is disabled.
      * If disabled, it will not fire any user interaction related event
      * (for example, click event).
      */
-    "prop:disabled"?:  boolean;
+    "prop:disabled"?: boolean;
 
     /**
      * This property specifies a callback that is executed when the path for an
      * startImgSrc needs to be resolved.
      */
-    "prop:getImagePathCallback"?: 
-      | GetImagePathCallback
-      | undefined;
+    "prop:getImagePathCallback"?: GetImagePathCallback | undefined;
 
     /**
      * `true` if the control's value is indeterminate.
-     * 
+     *
      * This property is purely a visual change. It has no impact on whether the
      * checkbox's is used in a form submission. That is decided by the
      * `checked` property, regardless of the `indeterminate` state.
      */
-    "prop:indeterminate"?:  boolean;
+    "prop:indeterminate"?: boolean;
 
     /**
      * Specifies the `name` of the component when used in a form.
      */
-    "prop:name"?:  string | undefined;
+    "prop:name"?: string | undefined;
 
     /**
      * This attribute indicates that the user cannot modify the value of the control.
      * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
      * attribute for `input` elements.
      */
-    "prop:readonly"?:  boolean;
+    "prop:readonly"?: boolean;
 
     /**
      * Specifies the source of the start image.
      */
-    "prop:startImgSrc"?:  string | undefined;
+    "prop:startImgSrc"?: string | undefined;
 
     /**
      * Specifies the source of the start image.
      */
-    "prop:startImgType"?:  Exclude<
-      ImageRender,
-      "img"
-    >;
+    "prop:startImgType"?: Exclude<ImageRender, "img">;
 
     /**
      * The value of the control.
      */
-    "prop:value"?:  string;
+    "prop:value"?: string;
   };
 
   export type ChCode = {
     /**
      * Specifies the code language to highlight.
      */
-    "prop:language"?:  string | undefined;
+    "prop:language"?: string | undefined;
 
     /**
-     * 
+     *
      */
-    "prop:lastNestedChildClass"?:  string;
+    "prop:lastNestedChildClass"?: string;
 
     /**
      * Specifies if an indicator is displayed in the last element rendered.
      * Useful for streaming scenarios where a loading indicator is needed.
      */
-    "prop:showIndicator"?:  boolean;
+    "prop:showIndicator"?: boolean;
 
     /**
      * Specifies the Shiki theme to use for syntax highlighting.
      * Supports all bundled Shiki themes (e.g., `"github-dark"`, `"nord"`,
      * `"dracula"`) plus `"chameleon-theme-dark"` and `"chameleon-theme-light"`.
      */
-    "prop:theme"?:  string;
+    "prop:theme"?: string;
 
     /**
      * Specifies the code string to highlight.
      */
-    "prop:value"?:  string | undefined;
+    "prop:value"?: string | undefined;
   };
 
   export type ChImage = {
@@ -376,64 +655,60 @@ export namespace ComponentPropertiesSolidJS {
      * the icon. The reference must be an ancestor of the control.
      * If not specified, the direct parent reference will be used.
      */
-    "prop:containerRef"?:  HTMLElement | undefined;
+    "prop:containerRef"?: HTMLElement | undefined;
 
     /**
      * Specifies if the icon is disabled.
      */
-    "prop:disabled"?:  boolean | undefined;
+    "prop:disabled"?: boolean | undefined;
 
     /**
      * This property specifies a callback that is executed when the path the
      * image needs to be resolved.
      */
-    "prop:getImagePathCallback"?: 
-      | GetImagePathCallback
-      | undefined;
+    "prop:getImagePathCallback"?: GetImagePathCallback | undefined;
 
     /**
      * Specifies the src for the image.
      */
-    "prop:src"?:  string | unknown | undefined;
+    "prop:src"?: string | unknown | undefined;
 
     /**
      * Specifies an accessor for the attribute style of the ch-image. This
      * accessor is useful for SSR scenarios were the Host access is limited
      * (since Lit does not provide the Host declarative component).
-     * 
+     *
      * Without this accessor, the initial load in SSR scenarios would flicker.
      */
-    "prop:styles"?:  string | undefined;
+    "prop:styles"?: string | undefined;
 
     /**
      * Specifies how the image will be rendered.
      */
-    "prop:type"?: 
-      | Exclude<ImageRender, "img">
-      | undefined;
+    "prop:type"?: Exclude<ImageRender, "img"> | undefined;
   };
 
   export type ChJsonRender = {
     /**
      * The JSON spec describing the UI tree to render.
      */
-    "prop:spec"?:  Spec | null;
+    "prop:spec"?: Spec | null;
 
     /**
      * Registry mapping element type names to renderer functions.
      */
-    "prop:registry"?:  ComponentRegistry;
+    "prop:registry"?: ComponentRegistry;
 
     /**
      * External state store (controlled mode).
      * When absent, an internal store seeded from `spec.state` is used.
      */
-    "prop:store"?:  StateStore | undefined;
+    "prop:store"?: StateStore | undefined;
 
     /**
      * Named functions available for `$computed` prop expressions.
      */
-    "prop:functions"?:  Record<string, ComputedFunction>;
+    "prop:functions"?: Record<string, ComputedFunction>;
 
     /**
      * When true, each renderer receives `loading: true` (e.g. during streaming).
@@ -444,21 +719,21 @@ export namespace ComponentPropertiesSolidJS {
      * Fallback renderer used when an element type is not in the registry.
      * Useful for showing a skeleton while the registry is being built.
      */
-    "prop:fallback"?:  ComponentRenderer | undefined;
+    "prop:fallback"?: ComponentRenderer | undefined;
 
     /**
      * Optional CSS string adopted into the component's shadow root.
      * Use this to style elements rendered by the registry, which live inside
      * the shadow DOM and cannot be styled from outside.
      */
-    "prop:styleSheet"?:  string;
+    "prop:styleSheet"?: string;
 
     /**
      * Handler for custom (non-built-in) actions.
      * Receives the action name, resolved params, a setState helper, and a
      * getState snapshot function.
      */
-    "prop:onAction"?: 
+    "prop:onAction"?:
       | ((
           name: string,
           params?: Record<string, unknown>,
@@ -473,49 +748,49 @@ export namespace ComponentPropertiesSolidJS {
      * This attribute lets you specify the label for the drag bar.
      * Important for accessibility.
      */
-    "prop:barAccessibleName"?:  string;
+    "prop:barAccessibleName"?: string;
 
     /**
      * This attribute lets you specify if the resize operation is disabled in all
      * drag bars. If `true`, the drag bars are disabled.
      */
-    "prop:dragBarDisabled"?:  boolean;
+    "prop:dragBarDisabled"?: boolean;
 
     /**
      * Specifies the resizing increment (in pixel) that is applied when using the
      * keyboard to resize a drag bar.
      */
-    "prop:incrementWithKeyboard"?:  number;
+    "prop:incrementWithKeyboard"?: number;
 
     /**
      * Specifies the list of component that are displayed. Each component will be
      * separated via a drag bar.
      */
-    "prop:model"?:  LayoutSplitterModel;
+    "prop:model"?: LayoutSplitterModel;
   };
 
   export type ChNavigationListItem = {
     /**
      * Specifies the caption of the control
      */
-    "prop:caption"?:  string | undefined;
+    "prop:caption"?: string | undefined;
 
     /**
      * This attribute lets you specify if the element is disabled.
      * If disabled, it will not fire any user interaction related event
      * (for example, click event).
      */
-    "prop:disabled"?:  boolean | undefined;
+    "prop:disabled"?: boolean | undefined;
 
     /**
      * Specifies if the control contains sub items.
      */
-    "prop:expandable"?:  boolean;
+    "prop:expandable"?: boolean;
 
     /**
      * Specifies if the control is expanded or collapsed.
      */
-    "prop:expanded"?:  boolean | undefined;
+    "prop:expanded"?: boolean | undefined;
 
     /**
      * This property works the same as the exportparts attribute. It is defined
@@ -524,45 +799,43 @@ export namespace ComponentPropertiesSolidJS {
      * Otherwise, setting this attribute on the client would provoke FOUC and/or
      * visual flickering.
      */
-    "prop:exportparts"?:  string;
+    "prop:exportparts"?: string;
 
     /**
      * Specifies at which level of the navigation list is rendered the control.
      */
-    "prop:level"?:  number;
+    "prop:level"?: number;
 
     /**
-     * 
+     *
      */
-    "prop:link"?:  ItemLink | undefined;
+    "prop:link"?: ItemLink | undefined;
 
     /**
      * Specifies the UI model of the control
      */
-    "prop:model"?:  NavigationListItemModel;
+    "prop:model"?: NavigationListItemModel;
 
     /**
      * Specifies if the hyperlink is selected. Only applies when the `link`
      * property is defined.
      */
-    "prop:selected"?:  boolean;
+    "prop:selected"?: boolean;
 
     /**
-     * 
+     *
      */
-    "prop:sharedState"?:  NavigationListSharedState;
+    "prop:sharedState"?: NavigationListSharedState;
 
     /**
      * Specifies the src of the start image.
      */
-    "prop:startImgSrc"?:  string | undefined;
+    "prop:startImgSrc"?: string | undefined;
 
     /**
      * Specifies how the start image will be rendered.
      */
-    "prop:startImgType"?: 
-      | Exclude<ImageRender, "img">
-      | undefined;
+    "prop:startImgType"?: Exclude<ImageRender, "img"> | undefined;
   };
 
   export type ChNavigationListRender = {
@@ -570,7 +843,7 @@ export namespace ComponentPropertiesSolidJS {
      * If `false` the overflowing content of the control will be clipped to the
      * borders of its container.
      */
-    "prop:autoGrow"?:  boolean;
+    "prop:autoGrow"?: boolean;
 
     /**
      * Specifies what kind of expandable button is displayed in the items by
@@ -578,9 +851,7 @@ export namespace ComponentPropertiesSolidJS {
      *  - `"decorative"`: Only a decorative icon is rendered to display the state
      *     of the item.
      */
-    "prop:expandableButton"?: 
-      | "decorative"
-      | "no";
+    "prop:expandableButton"?: "decorative" | "no";
 
     /**
      * Specifies the position of the expandable button in reference of the action
@@ -588,38 +859,36 @@ export namespace ComponentPropertiesSolidJS {
      *  - `"start"`: Expandable button is placed before the action element.
      *  - `"end"`: Expandable button is placed after the action element.
      */
-    "prop:expandableButtonPosition"?:  "start" | "end";
+    "prop:expandableButtonPosition"?: "start" | "end";
 
     /**
      * This property specifies a callback that is executed when the path for an
      * startImgSrc needs to be resolved.
      */
-    "prop:getImagePathCallback"?: 
+    "prop:getImagePathCallback"?:
       | ((item: NavigationListItemModel) => GxImageMultiState | undefined)
       | undefined;
 
     /**
      * Specifies if the control is expanded or collapsed.
      */
-    "prop:expanded"?:  boolean;
+    "prop:expanded"?: boolean;
 
     /**
      * `true` to expand the path to the selected link when the `selectedLink`
      * property is updated.
      */
-    "prop:expandSelectedLink"?:  boolean;
+    "prop:expandSelectedLink"?: boolean;
 
     /**
      * Specifies the items of the control.
      */
-    "prop:model"?: 
-      | NavigationListModel
-      | undefined;
+    "prop:model"?: NavigationListModel | undefined;
 
     /**
      * Specifies the items of the control.
      */
-    "prop:renderItem"?: 
+    "prop:renderItem"?:
       | ((
           item: NavigationListItemModel,
           navigationListSharedState: NavigationListSharedState,
@@ -630,7 +899,7 @@ export namespace ComponentPropertiesSolidJS {
     /**
      * Specifies the current selected hyperlink.
      */
-    "prop:selectedLink"?:  {
+    "prop:selectedLink"?: {
       id?: string;
       link: ItemLink;
     };
@@ -638,67 +907,63 @@ export namespace ComponentPropertiesSolidJS {
     /**
      * Specifies if the selected item indicator is displayed (only work for hyperlink)
      */
-    "prop:selectedLinkIndicator"?:  boolean;
+    "prop:selectedLinkIndicator"?: boolean;
 
     /**
      * Specifies how the caption of the items will be displayed when the control
      * is collapsed
      */
-    "prop:showCaptionOnCollapse"?: 
-      | "inline"
-      | "tooltip";
+    "prop:showCaptionOnCollapse"?: "inline" | "tooltip";
 
     /**
      * Specifies the delay (in ms) for the tooltip to be displayed.
      */
-    "prop:tooltipDelay"?:  number;
+    "prop:tooltipDelay"?: number;
   };
 
   export type ChPerformanceScanItem = {
     /**
      * Specifies a reference for the scanned element.
      */
-    "prop:anchorRef"?:  LitElement;
+    "prop:anchorRef"?: LitElement;
 
     /**
      * Specifies the tagName of the scanned element.
      */
-    "prop:anchorTagName"?:  string;
+    "prop:anchorTagName"?: string;
 
     /**
      * Specifies how many times the scanned element has rendered in a buffer of
      * time.
      */
-    "prop:renderCount"?:  number;
+    "prop:renderCount"?: number;
   };
 
   export type ChPerformanceScan = {
     /**
      * `true` to show the FPS
      */
-    "prop:showFps"?:  boolean;
+    "prop:showFps"?: boolean;
   };
 
   export type ChComponentRender = {
     /**
      * Specifies the component render.
      */
-    "prop:model"?:  ComponentRenderModel;
+    "prop:model"?: ComponentRenderModel;
   };
 
   export type ChPlaygroundEditor = {
     /**
      * Explicit model for the playground. Takes priority over `componentName`.
      */
-    "prop:componentModel"?: 
-      | PlaygroundJsonRenderModel
-      | undefined;
+    "prop:componentModel"?: PlaygroundJsonRenderModel | undefined;
 
     /**
      * Chameleon component tag name (e.g. "ch-checkbox"). Used to look up the
      * model from `playgroundEditorModels` when `componentModel` is not set.
      */
-    "prop:componentName"?:  string | undefined;
+    "prop:componentName"?: string | undefined;
   };
 
   export type ChProgress = {
@@ -707,48 +972,44 @@ export namespace ComponentPropertiesSolidJS {
      * with an element to provide users of assistive technologies with a label
      * for the element.
      */
-    "prop:accessibleName"?: 
-      | string
-      | undefined;
+    "prop:accessibleName"?: string | undefined;
 
     /**
      * Assistive technologies often present the `value` as a percentage. If this
      * would not be accurate use this property to make the progress bar value
      * understandable.
      */
-    "prop:accessibleValueText"?: 
-      | string
-      | undefined;
+    "prop:accessibleValueText"?: string | undefined;
 
     /**
      * Specifies whether the progress is indeterminate or not. In other words, it
      * indicates that an activity is ongoing with no indication of how long it is
      * expected to take.
-     * 
+     *
      * If `true`, the `max`, `min` and `value` properties won't be taken into
      * account.
      */
-    "prop:indeterminate"?:  boolean;
+    "prop:indeterminate"?: boolean;
 
     /**
      * Specifies the maximum value of progress. In other words, how much work the
      * task indicated by the progress component requires.
-     * 
+     *
      * This property is not used if indeterminate === true.
      */
-    "prop:max"?:  number;
+    "prop:max"?: number;
 
     /**
      * Specifies the minimum value of progress.
-     * 
+     *
      * This property is not used if indeterminate === true.
      */
-    "prop:min"?:  number;
+    "prop:min"?: number;
 
     /**
      * Specifies the `name` of the component when used in a form.
      */
-    "prop:name"?:  string | undefined;
+    "prop:name"?: string | undefined;
 
     /**
      * This property specifies how the progress will be render.
@@ -757,7 +1018,7 @@ export namespace ComponentPropertiesSolidJS {
      *    default slot. Besides that, all specified properties are still used to
      *    implement the control's accessibility.
      */
-    "prop:renderType"?:  "custom" | string;
+    "prop:renderType"?: "custom" | string;
 
     /**
      * If the control is describing the loading progress of a particular region
@@ -765,30 +1026,30 @@ export namespace ComponentPropertiesSolidJS {
      * This will set the `aria-describedby` and `aria-busy` attributes on the
      * loading region to improve the accessibility while the control is in
      * progress.
-     * 
+     *
      * When the control detects that is no longer in progress (aka it is removed
      * from the DOM or value === maxValue with indeterminate === false), it will
      * remove the `aria-busy` attribute and update (or remove if necessary) the
      * `aria-describedby` attribute.
-     * 
+     *
      * If an ID is set prior to the control's first render, the control will use
      * this ID for the `aria-describedby`. Otherwise, the control will compute a
      * unique ID for this matter.
-     * 
+     *
      * **Important**: If you are using Shadow DOM, take into account that the
      * `loadingRegionRef` must be in the same Shadow Tree as this control.
      * Otherwise, the `aria-describedby` binding won't work, since the control ID
      * is not visible for the `loadingRegionRef`.
      */
-    "prop:loadingRegionRef"?:  HTMLElement | undefined;
+    "prop:loadingRegionRef"?: HTMLElement | undefined;
 
     /**
      * Specifies the current value of the component. In other words, how much of
      * the task that has been completed.
-     * 
+     *
      * This property is not used if indeterminate === true.
      */
-    "prop:value"?:  number;
+    "prop:value"?: number;
   };
 
   export type ChQr = {
@@ -797,15 +1058,13 @@ export namespace ComponentPropertiesSolidJS {
      * with an element to provide users of assistive technologies with a label
      * for the element.
      */
-    "prop:accessibleName"?: 
-      | string
-      | undefined;
+    "prop:accessibleName"?: string | undefined;
 
     /**
      * The background color of the render QR. If not specified, "transparent"
      * will be used.
      */
-    "prop:background"?:  string;
+    "prop:background"?: string;
 
     /**
      * The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR
@@ -813,69 +1072,69 @@ export namespace ComponentPropertiesSolidJS {
      * bigger but chances are also higher that it will be read without errors
      * later on. This value is by default High (H).
      */
-    "prop:errorCorrectionLevel"?:  ErrorCorrectionLevel;
+    "prop:errorCorrectionLevel"?: ErrorCorrectionLevel;
 
     /**
      * What color you want your QR code to be.
      */
-    "prop:fill"?:  string;
+    "prop:fill"?: string;
 
     /**
      * Defines how round the blocks should be. Numbers from 0 (squares) to 0.5
      * (maximum round) are supported.
      */
-    "prop:radius"?:  number;
+    "prop:radius"?: number;
 
     /**
      * The total size of the final QR code in pixels.
      */
-    "prop:size"?:  number;
+    "prop:size"?: number;
 
     /**
      * Any kind of text, also links, email addresses, any thing.
      */
-    "prop:value"?:  string | undefined;
+    "prop:value"?: string | undefined;
   };
 
   export type ChRadioGroupRender = {
     /**
      * Specifies the direction of the items.
      */
-    "prop:direction"?:  "horizontal" | "vertical";
+    "prop:direction"?: "horizontal" | "vertical";
 
     /**
      * This attribute lets you specify if the radio-group is disabled.
      * If disabled, it will not fire any user interaction related event
      * (for example, click event).
      */
-    "prop:disabled"?:  boolean;
+    "prop:disabled"?: boolean;
 
     /**
      * This property lets you define the items of the ch-radio-group-render control.
      */
-    "prop:model"?:  RadioGroupModel | undefined;
+    "prop:model"?: RadioGroupModel | undefined;
 
     /**
      * Specifies the `name` of the component when used in a form.
      */
-    "prop:name"?:  string | undefined;
+    "prop:name"?: string | undefined;
 
     /**
      * The value of the control.
      */
-    "prop:value"?:  string | undefined;
+    "prop:value"?: string | undefined;
   };
 
   export type ChRouter = {
     /**
-     * 
+     *
      */
-    "prop:model"?:  RouterModel | undefined;
+    "prop:model"?: RouterModel | undefined;
 
     /**
-     * 
+     *
      */
-    "prop:pathname"?:  string | undefined;
+    "prop:pathname"?: string | undefined;
   };
 
   export type ChSegmentedControlItem = {
@@ -884,60 +1143,60 @@ export namespace ComponentPropertiesSolidJS {
      * with an element to provide users of assistive technologies with a label
      * for the element.
      */
-    "prop:accessibleName"?:  string | undefined;
+    "prop:accessibleName"?: string | undefined;
 
     /**
      * `true` if the control is the not the first or last item in the
      * ch-segmented-control-render.
      */
-    "prop:between"?:  boolean;
+    "prop:between"?: boolean;
 
     /**
      * Specifies the caption that the control will display.
      */
-    "prop:caption"?:  string | undefined;
+    "prop:caption"?: string | undefined;
 
     /**
      * This attribute lets you specify if the element is disabled.
      * If disabled, it will not fire any user interaction related event
      * (for example, click event).
      */
-    "prop:disabled"?:  boolean | undefined;
+    "prop:disabled"?: boolean | undefined;
 
     /**
      * Specifies the src of the end image.
      */
-    "prop:endImgSrc"?:  string | undefined;
+    "prop:endImgSrc"?: string | undefined;
 
     /**
      * Specifies how the end image will be rendered.
      */
-    "prop:endImgType"?:  Exclude<ImageRender, "img"> | undefined;
+    "prop:endImgType"?: Exclude<ImageRender, "img"> | undefined;
 
     /**
      * `true` if the control is the first item in the ch-segmented-control-render.
      */
-    "prop:first"?:  boolean;
+    "prop:first"?: boolean;
 
     /**
      * `true` if the control is the last item in the ch-segmented-control-render.
      */
-    "prop:last"?:  boolean;
+    "prop:last"?: boolean;
 
     /**
      * Specifies if the control is selected.
      */
-    "prop:selected"?:  boolean | undefined;
+    "prop:selected"?: boolean | undefined;
 
     /**
      * Specifies the src of the start image.
      */
-    "prop:startImgSrc"?:  string | undefined;
+    "prop:startImgSrc"?: string | undefined;
 
     /**
      * Specifies how the start image will be rendered.
      */
-    "prop:startImgType"?:  Exclude<ImageRender, "img"> | undefined;
+    "prop:startImgType"?: Exclude<ImageRender, "img"> | undefined;
   };
 
   export type ChSegmentedControlRender = {
@@ -946,31 +1205,31 @@ export namespace ComponentPropertiesSolidJS {
      * segmented-control-item. This property is useful to override the exported
      * parts.
      */
-    "prop:exportParts"?:  string;
+    "prop:exportParts"?: string;
 
     /**
      * A CSS class to set as the `ch-segmented-control-item` element class.
      * This default class is used for the items that don't have an explicit class.
      */
-    "prop:itemCssClass"?:  string;
+    "prop:itemCssClass"?: string;
 
     /**
      * This property lets you define the items of the ch-segmented-control-render
      * control.
      */
-    "prop:model"?:  SegmentedControlModel | undefined;
+    "prop:model"?: SegmentedControlModel | undefined;
 
     /**
      * Specifies the ID of the selected item
      */
-    "prop:selectedId"?:  string | undefined;
+    "prop:selectedId"?: string | undefined;
   };
 
   export type ChShowcaseApi = {
     /**
      * Specifies the properties of the API.
      */
-    "prop:properties"?:  ShowcaseApiProperties | undefined;
+    "prop:properties"?: ShowcaseApiProperties | undefined;
   };
 
   export type ChSidebar = {
@@ -979,24 +1238,24 @@ export namespace ComponentPropertiesSolidJS {
      * with an element to provide users of assistive technologies with a label
      * for expand button when `expanded = true`.
      */
-    "prop:expandButtonCollapseAccessibleName"?:  string | undefined;
+    "prop:expandButtonCollapseAccessibleName"?: string | undefined;
 
     /**
      * Specifies a short string, typically 1 to 3 words, that authors associate
      * with an element to provide users of assistive technologies with a label
      * for expand button when `expanded = false`.
      */
-    "prop:expandButtonExpandAccessibleName"?:  string | undefined;
+    "prop:expandButtonExpandAccessibleName"?: string | undefined;
 
     /**
      * Specifies the caption of the expand button when `expanded = true`.
      */
-    "prop:expandButtonCollapseCaption"?:  string | undefined;
+    "prop:expandButtonCollapseCaption"?: string | undefined;
 
     /**
      * Specifies the caption of the expand button when `expanded = false`.
      */
-    "prop:expandButtonExpandCaption"?:  string | undefined;
+    "prop:expandButtonExpandCaption"?: string | undefined;
 
     /**
      * Specifies the position of the expand button relative to the content of the
@@ -1004,17 +1263,17 @@ export namespace ComponentPropertiesSolidJS {
      *  - `"before"`: The expand button is positioned before the content of the sidebar.
      *  - `"after"`: The expand button is positioned after the content of the sidebar.
      */
-    "prop:expandButtonPosition"?:  "before" | "after";
+    "prop:expandButtonPosition"?: "before" | "after";
 
     /**
      * Specifies whether the control is expanded or collapsed.
      */
-    "prop:expanded"?:  boolean;
+    "prop:expanded"?: boolean;
 
     /**
      * `true` to display a expandable button at the bottom of the control.
      */
-    "prop:showExpandButton"?:  boolean;
+    "prop:showExpandButton"?: boolean;
   };
 
   export type ChSlider = {
@@ -1023,52 +1282,50 @@ export namespace ComponentPropertiesSolidJS {
      * with an element to provide users of assistive technologies with a label
      * for the element.
      */
-    "prop:accessibleName"?: 
-      | string
-      | undefined;
+    "prop:accessibleName"?: string | undefined;
 
     /**
      * This attribute allows you specify if the element is disabled.
      * If disabled, it will not trigger any user interaction related event
      * (for example, click event).
      */
-    "prop:disabled"?:  boolean;
+    "prop:disabled"?: boolean;
 
     /**
      * This attribute lets you specify maximum value of the slider.
      */
-    "prop:maxValue"?:  number;
+    "prop:maxValue"?: number;
 
     /**
      * This attribute lets you specify minimum value of the slider.
      */
-    "prop:minValue"?:  number;
+    "prop:minValue"?: number;
 
     /**
      * Specifies the `name` of the component when used in a form.
      */
-    "prop:name"?:  string | undefined;
+    "prop:name"?: string | undefined;
 
     /**
      * This attribute lets you indicate whether the control should display a
      * bubble with the current value upon interaction.
      */
-    "prop:showValue"?:  boolean;
+    "prop:showValue"?: boolean;
 
     /**
      * This attribute lets you specify the step of the slider.
-     * 
+     *
      * This attribute is useful when the values of the slider can only take some
      * discrete values. For example, if valid values are `[10, 20, 30]` set the
      * `minValue` to `10`, the maxValue to `30`, and the step to `10`. If the
      * step is `0`, the any intermediate value is valid.
      */
-    "prop:step"?:  number;
+    "prop:step"?: number;
 
     /**
      * The value of the control.
      */
-    "prop:value"?:  number;
+    "prop:value"?: number;
   };
 
   export type ChSwitch = {
@@ -1077,188 +1334,180 @@ export namespace ComponentPropertiesSolidJS {
      * with an element to provide users of assistive technologies with a label
      * for the element.asd123
      */
-    "prop:accessibleName"?: 
-      | string
-      | undefined;
+    "prop:accessibleName"?: string | undefined;
 
     /**
      * Caption displayed when the switch is 'on'
      */
-    "prop:checkedCaption"?: 
-      | string
-      | undefined;
+    "prop:checkedCaption"?: string | undefined;
 
     /**
      * `true` if the `ch-switch` is checked.
-     * 
+     *
      * If checked:
      *   - The `value` property will be available in the parent `<form>` if the
      *     `name` attribute is set.
      *   - The `checkedCaption` will be used to display the current caption.
-     * 
+     *
      * If not checked:
      *   - The `value` property won't be available in the parent `<form>`, even
      *     if the `name` attribute is set.
      *   - The `unCheckedCaption` will be used to display the current caption.
      */
-    "prop:checked"?:  boolean;
+    "prop:checked"?: boolean;
 
     /**
      * This attribute lets you specify if the element is disabled.
      * If disabled, it will not fire any user interaction related event
      * (for example, click event).
      */
-    "prop:disabled"?:  boolean;
+    "prop:disabled"?: boolean;
 
     /**
      * Specifies the `name` of the component when used in a form.
      */
-    "prop:name"?:  string | undefined;
+    "prop:name"?: string | undefined;
 
     /**
      * This attribute indicates that the user cannot modify the value of the control.
      * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
      * attribute for `input` elements.
      */
-    "prop:readonly"?:  boolean;
+    "prop:readonly"?: boolean;
 
     /**
      * Caption displayed when the switch is 'off'
      */
-    "prop:unCheckedCaption"?: 
-      | string
-      | undefined;
+    "prop:unCheckedCaption"?: string | undefined;
 
     /**
      * The value of the control.
      */
-    "prop:value"?:  string;
+    "prop:value"?: string;
   };
 
   export type ChTabularGridColumn = {
     /**
      * ...
      */
-    "prop:accessibleName"?:  string | undefined;
+    "prop:accessibleName"?: string | undefined;
 
     /**
      * Specifies the caption of the column
      */
-    "prop:caption"?:  string | undefined;
+    "prop:caption"?: string | undefined;
 
     /**
      * Specifies the column span value of the column.
      */
-    "prop:colSpan"?:  number | undefined;
+    "prop:colSpan"?: number | undefined;
 
     /**
      * Specifies the start position of the column.
      */
-    "prop:colStart"?:  number | undefined;
+    "prop:colStart"?: number | undefined;
 
     /**
      * ...
      */
-    "prop:parts"?:  string | undefined;
+    "prop:parts"?: string | undefined;
 
     /**
      * ...
      */
-    "prop:resizable"?:  boolean | undefined;
+    "prop:resizable"?: boolean | undefined;
 
     /**
      * Specifies the row span value of the column.
      */
-    "prop:rowSpan"?:  number | undefined;
+    "prop:rowSpan"?: number | undefined;
 
     /**
      * ...
      */
-    "prop:size"?:  string | undefined;
+    "prop:size"?: string | undefined;
 
     /**
      * Specifies an accessor for the attribute style of the
      * `ch-tabular-grid-column`. This accessor is useful for SSR scenarios were
      * the Host access is limited (since Lit does not provide the Host
      * declarative component).
-     * 
+     *
      * Without this accessor, the initial load in SSR scenarios would flicker.
      */
-    "prop:styles"?:  string | undefined;
+    "prop:styles"?: string | undefined;
 
     /**
      * ...
      */
-    "prop:sortable"?:  boolean | undefined;
+    "prop:sortable"?: boolean | undefined;
 
     /**
      * Specifies if the column content is sorted.
      */
-    "prop:sortDirection"?: 
-      | TabularGridSortDirection
-      | undefined;
+    "prop:sortDirection"?: TabularGridSortDirection | undefined;
   };
 
   export type ChTabularGridRender = {
     /**
      * Determines if the columns can be hidden by the user
      */
-    "prop:columnHideable"?:  boolean;
+    "prop:columnHideable"?: boolean;
 
     /**
      * Determines if the columns can be resized by the user.
      */
-    "prop:columnResizable"?:  boolean;
+    "prop:columnResizable"?: boolean;
 
     /**
      * Determines if the columns can be sorted by the user.
      */
-    "prop:columnSortable"?:  boolean;
+    "prop:columnSortable"?: boolean;
 
     /**
      * Specifies the content of the tabular grid control.
      */
-    "prop:model"?:  TabularGridModel | undefined;
+    "prop:model"?: TabularGridModel | undefined;
   };
 
   export type ChTextBlock = {
     /**
      * This property defines if the control size will grow automatically, to
      * adjust to its content size.
-     * 
+     *
      * If `false` the overflowing content will be displayed with an ellipsis.
      * This ellipsis takes into account multiple lines.
      */
-    "prop:autoGrow"?:  boolean;
+    "prop:autoGrow"?: boolean;
 
     /**
      * Specifies the content to be displayed when the control has `format = text`.
      */
-    "prop:caption"?:  string | undefined;
+    "prop:caption"?: string | undefined;
 
     /**
      * Specifies the character used to measure the line height
      */
-    "prop:characterToMeasureLineHeight"?:  string;
+    "prop:characterToMeasureLineHeight"?: string;
 
     /**
      * It specifies the format that will have the textblock control.
-     * 
+     *
      *  - If `format` = `HTML`, the textblock control works as an HTML div and
      *    the innerHTML will be taken from the default slot.
-     * 
+     *
      *  - If `format` = `text`, the control works as a normal textblock control
      *    and it is affected by most of the defined properties.
      */
-    "prop:format"?:  "text" | "HTML";
+    "prop:format"?: "text" | "HTML";
 
     /**
      * `true` to display a tooltip when the caption overflows the size of the
      * container.
-     * 
+     *
      * Only works if `format = text` and `autoGrow = false`.
      */
-    "prop:showTooltipOnOverflow"?:  boolean;
+    "prop:showTooltipOnOverflow"?: boolean;
   };
 
   export type ChTheme = {
@@ -1267,13 +1516,13 @@ export namespace ComponentPropertiesSolidJS {
      * the ShadowRoot after loading.
      * The value can be overridden by the `attachStyleSheet` property of the model.
      */
-    "prop:attachStyleSheets"?:  boolean;
+    "prop:attachStyleSheets"?: boolean;
 
     /**
      * `true` to visually hide the contents of the root node while the control's
      * style is not loaded.
      */
-    "prop:avoidFlashOfUnstyledContent"?:  boolean;
+    "prop:avoidFlashOfUnstyledContent"?: boolean;
 
     /**
      * Specifies an accessor for the attribute `hidden` of the `ch-theme`. This
@@ -1281,15 +1530,15 @@ export namespace ComponentPropertiesSolidJS {
      * have access to is limited (since Lit does not provide the Host declarative
      * component), so we have to find a way to reflect the hidden property in the
      * `ch-theme` tag.
-     * 
+     *
      * Without this accessor, the initial load in SSR scenarios would flicker.
      */
-    "prop:hidden"?:  boolean;
+    "prop:hidden"?: boolean;
 
     /**
      * Specify themes to load
      */
-    "prop:model"?:  ThemeModel | undefined | null;
+    "prop:model"?: ThemeModel | undefined | null;
 
     /**
      * Specifies the time to wait for the requested theme to load.
@@ -1303,25 +1552,41 @@ export namespace ComponentPropertiesSolidJS {
  */
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace ComponentEvents {
+  export type ChAccordionRender = {
+    /**
+     * Fired when an item is expanded or collapsed. The payload is
+     * `{ id: string; expanded: boolean }`. In `singleItemExpanded` mode,
+     * multiple events fire: one for each auto-collapsed item (with
+     * `expanded: false`) followed by one for the newly expanded item.
+     */
+    expandedChange?: (
+      event: HTMLChAccordionRenderElementExpandedChangeEvent
+    ) => void;
+  };
+
   export type ChBreadCrumbRender = {
     /**
      * Fired when an button is clicked.
      * This event can be prevented.
      */
-    buttonClick?: (event: HTMLChBreadCrumbRenderElementButtonClickEvent) => void;
+    buttonClick?: (
+      event: HTMLChBreadCrumbRenderElementButtonClickEvent
+    ) => void;
 
     /**
      * Fired when an hyperlink is clicked.
      * This event can be prevented.
      */
-    hyperlinkClick?: (event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent) => void;
+    hyperlinkClick?: (
+      event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent
+    ) => void;
   };
 
   export type ChCheckbox = {
     /**
      * The `input` event is emitted when a change to the element's checked state
      * is committed by the user.
-     * 
+     *
      * It contains the new checked state of the control.
      */
     input?: (event: HTMLChCheckboxElementInputEvent) => void;
@@ -1332,18 +1597,22 @@ export namespace ComponentEvents {
      * Fired when an button is clicked.
      * This event can be prevented.
      */
-    buttonClick?: (event: HTMLChNavigationListRenderElementButtonClickEvent) => void;
+    buttonClick?: (
+      event: HTMLChNavigationListRenderElementButtonClickEvent
+    ) => void;
 
     /**
      * Fired when an hyperlink is clicked.
      * This event can be prevented.
      */
-    hyperlinkClick?: (event: HTMLChNavigationListRenderElementHyperlinkClickEvent) => void;
+    hyperlinkClick?: (
+      event: HTMLChNavigationListRenderElementHyperlinkClickEvent
+    ) => void;
   };
 
   export type ChComponentRender = {
     /**
-     * 
+     *
      */
     modelUpdate?: (event: HTMLChComponentRenderElementModelUpdateEvent) => void;
   };
@@ -1381,9 +1650,9 @@ export namespace ComponentEvents {
     /**
      * The `input` event is emitted when a change to the element's checked state
      * is committed by the user.
-     * 
+     *
      * It contains the new checked state of the control.
-     * 
+     *
      * This event is preventable.
      */
     input?: (event: HTMLChSwitchElementInputEvent) => void;
@@ -1402,6 +1671,18 @@ export namespace ComponentEvents {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace LocalJSX {
+  export type ChAccordionRender = ComponentProperties.ChAccordionRender & {
+    /**
+     * Fired when an item is expanded or collapsed. The payload is
+     * `{ id: string; expanded: boolean }`. In `singleItemExpanded` mode,
+     * multiple events fire: one for each auto-collapsed item (with
+     * `expanded: false`) followed by one for the newly expanded item.
+     */
+    onExpandedChange?: (
+      event: HTMLChAccordionRenderElementExpandedChangeEvent
+    ) => void;
+  };
+
   export type ChBeautifulMermaid = ComponentProperties.ChBeautifulMermaid;
 
   export type ChBreadCrumbRender = ComponentProperties.ChBreadCrumbRender & {
@@ -1409,13 +1690,17 @@ declare namespace LocalJSX {
      * Fired when an button is clicked.
      * This event can be prevented.
      */
-    onButtonClick?: (event: HTMLChBreadCrumbRenderElementButtonClickEvent) => void;
+    onButtonClick?: (
+      event: HTMLChBreadCrumbRenderElementButtonClickEvent
+    ) => void;
 
     /**
      * Fired when an hyperlink is clicked.
      * This event can be prevented.
      */
-    onHyperlinkClick?: (event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent) => void;
+    onHyperlinkClick?: (
+      event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent
+    ) => void;
   };
 
   export type ChBreadCrumbItem = ComponentProperties.ChBreadCrumbItem;
@@ -1424,7 +1709,7 @@ declare namespace LocalJSX {
     /**
      * The `input` event is emitted when a change to the element's checked state
      * is committed by the user.
-     * 
+     *
      * It contains the new checked state of the control.
      */
     onInput?: (event: HTMLChCheckboxElementInputEvent) => void;
@@ -1440,19 +1725,24 @@ declare namespace LocalJSX {
 
   export type ChNavigationListItem = ComponentProperties.ChNavigationListItem;
 
-  export type ChNavigationListRender = ComponentProperties.ChNavigationListRender & {
-    /**
-     * Fired when an button is clicked.
-     * This event can be prevented.
-     */
-    onButtonClick?: (event: HTMLChNavigationListRenderElementButtonClickEvent) => void;
+  export type ChNavigationListRender =
+    ComponentProperties.ChNavigationListRender & {
+      /**
+       * Fired when an button is clicked.
+       * This event can be prevented.
+       */
+      onButtonClick?: (
+        event: HTMLChNavigationListRenderElementButtonClickEvent
+      ) => void;
 
-    /**
-     * Fired when an hyperlink is clicked.
-     * This event can be prevented.
-     */
-    onHyperlinkClick?: (event: HTMLChNavigationListRenderElementHyperlinkClickEvent) => void;
-  };
+      /**
+       * Fired when an hyperlink is clicked.
+       * This event can be prevented.
+       */
+      onHyperlinkClick?: (
+        event: HTMLChNavigationListRenderElementHyperlinkClickEvent
+      ) => void;
+    };
 
   export type ChPerformanceScanItem = ComponentProperties.ChPerformanceScanItem;
 
@@ -1460,9 +1750,11 @@ declare namespace LocalJSX {
 
   export type ChComponentRender = ComponentProperties.ChComponentRender & {
     /**
-     * 
+     *
      */
-    onModelUpdate?: (event: HTMLChComponentRenderElementModelUpdateEvent) => void;
+    onModelUpdate?: (
+      event: HTMLChComponentRenderElementModelUpdateEvent
+    ) => void;
   };
 
   export type ChPlaygroundEditor = ComponentProperties.ChPlaygroundEditor;
@@ -1481,9 +1773,11 @@ declare namespace LocalJSX {
 
   export type ChRouter = ComponentProperties.ChRouter;
 
-  export type ChSegmentedControlItem = ComponentProperties.ChSegmentedControlItem;
+  export type ChSegmentedControlItem =
+    ComponentProperties.ChSegmentedControlItem;
 
-  export type ChSegmentedControlRender = ComponentProperties.ChSegmentedControlRender;
+  export type ChSegmentedControlRender =
+    ComponentProperties.ChSegmentedControlRender;
 
   export type ChShowcaseApi = ComponentProperties.ChShowcaseApi;
 
@@ -1512,9 +1806,9 @@ declare namespace LocalJSX {
     /**
      * The `input` event is emitted when a change to the element's checked state
      * is committed by the user.
-     * 
+     *
      * It contains the new checked state of the control.
-     * 
+     *
      * This event is preventable.
      */
     onInput?: (event: HTMLChSwitchElementInputEvent) => void;
@@ -1532,13 +1826,71 @@ declare namespace LocalJSX {
      */
     onThemeLoaded?: (event: HTMLChThemeElementThemeLoadedEvent) => void;
   };
-  
+
   interface IntrinsicElements {
+    /**
+     * The `ch-accordion-render` component displays a vertical stack of collapsible panels, each with a clickable header that toggles the visibility of its associated content section.
+     *
+     * @remarks
+     * ## Features
+     *  - Expand or collapse panels on demand to organize lengthy content into space-efficient sections.
+     *  - Single-item mode (`singleItemExpanded`) ensures only one panel is open at a time, automatically closing the others.
+     *  - Configurable expandable button position (`start` or `end`) in each panel header.
+     *  - Per-item images in the header via `startImgSrc` and a customizable image-path callback.
+     *  - Disabled state at the control level or per individual item.
+     *  - Custom header content through named slots.
+     *
+     * ## Use when
+     *  - Organizing lengthy content into logically grouped, collapsible sections (FAQs, settings pages, form groups).
+     *  - Reducing cognitive load by showing one section at a time.
+     *  - Reducing page length when users are unlikely to need all sections simultaneously (FAQs, settings).
+     *  - Space-constrained UIs where vertical scrolling is undesirable and content can be consumed independently.
+     *
+     * ## Do not use when
+     *  - Users need to compare content side-by-side -- the accordion pattern inherently hides inactive sections.
+     *  - Users are likely to read all sections — use plain headings and scrollable content instead.
+     *  - Content sections are interdependent and must be compared side by side — the back-and-forth is too costly.
+     *  - Sequential step-by-step processes where hiding steps creates confusion — prefer a stepper/wizard.
+     *  - Nesting accordions within accordions — double-nested collapsed panels disorient users.
+     *
+     * ## Accessibility
+     *  - Each header is a `<button>` with `aria-expanded` and `aria-controls` linking to its section.
+     *  - Sections are labelled via `aria-labelledby` pointing back to the header button, or via explicit `aria-label` when provided.
+     *  - Supports the disclosure pattern: toggling a header expands or collapses its associated section.
+     *
+     * @status experimental
+     *
+     * @csspart header - The clickable `<button>` element that toggles the collapsible section. Present on every item.
+     * @csspart panel - The outer container that wraps the `header` and the `section` of each item.
+     * @csspart section - The collapsible `<section>` element that contains the item's body content.
+     *
+     * @csspart disabled - Present in the `header`, `panel`, and `section` parts when the item is disabled.
+     * @csspart expanded - Present in the `header`, `panel`, and `section` parts when the item is expanded.
+     * @csspart collapsed - Present in the `header`, `panel`, and `section` parts when the item is collapsed.
+     *
+     * @slot {item.headerSlotId} - Named slot projected inside the `header` button for custom header content. Rendered when the item defines a `headerSlotId`.
+     * @slot {item.id} - Named slot projected inside the `section` for each item's collapsible body content.
+     *
+     * @cssprop [--ch-accordion__chevron-size = #{$default-decorative-image-size}] - Specifies the box size of the chevron.
+     * @cssprop [--ch-accordion__chevron-image-size = 100%] - Specifies the image size of the chevron.
+     * @cssprop [--ch-accordion__chevron-color = currentColor] - Specifies the color of the chevron.
+     * @cssprop [--ch-accordion-expand-collapse-duration = 0ms] - Specifies duration of the expand and collapse animation.
+     * @cssprop [--ch-accordion-expand-collapse-timing-function = linear] - Specifies timing function of the expand and collapse animation.
+     * @cssprop [--ch-accordion__header-background-image = #{$expandable-icon}] - Specifies the background image used for the expandable chevron in the header.
+     *
+     * @fires `expandedChange` Fired when an item is expanded or collapsed. The payload is
+     *   `{ id: string; expanded: boolean }`. In `singleItemExpanded` mode,
+     *   multiple events fire: one for each auto-collapsed item (with
+     *   `expanded: false`) followed by one for the newly expanded item.
+     */
+
+    "ch-accordion-render": ChAccordionRender;
+
     /**
      * @status developer-preview
      */
     "ch-beautiful-mermaid": ChBeautifulMermaid;
-    
+
     /**
      * @status experimental
      *
@@ -1550,14 +1902,14 @@ declare namespace LocalJSX {
      * @fires `hyperlinkClick` Fired when an hyperlink is clicked.
      *   This event can be prevented.
      */
-    
+
     "ch-breadcrumb-render": ChBreadCrumbRender;
-    
+
     /**
      * @status experimental
      */
     "ch-breadcrumb-item": ChBreadCrumbItem;
-    
+
     /**
      * @status developer-preview
      *
@@ -1587,9 +1939,9 @@ declare namespace LocalJSX {
      *   
      *   It contains the new checked state of the control.
      */
-    
+
     "ch-checkbox": ChCheckbox;
-    
+
     /**
      * A control to highlight code blocks.
      * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/syntax-tree/hast) using [Shiki](https://shiki.matsu.io). After that, it implements a reactivity layer by implementing its own render for the hast.
@@ -1599,16 +1951,15 @@ declare namespace LocalJSX {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     "ch-code": ChCode;
-    
+
     /**
      * A control to display multiple images, depending on the state (focus, hover,
      * active or disabled) of a parent element.
      */
     "ch-image": ChImage;
-    
-    
+
     "ch-json-render": ChJsonRender;
-    
+
     /**
      * This component allows us to design a layout composed by columns and rows.
      *  - Columns and rows can have relative (`fr`) or absolute (`px`) size.
@@ -1617,12 +1968,12 @@ declare namespace LocalJSX {
      * @csspart bar - The bar that divides two columns or two rows
      */
     "ch-layout-splitter": ChLayoutSplitter;
-    
+
     /**
      * @status experimental
      */
     "ch-navigation-list-item": ChNavigationListItem;
-    
+
     /**
      * @status experimental
      *
@@ -1634,31 +1985,30 @@ declare namespace LocalJSX {
      * @fires `hyperlinkClick` Fired when an hyperlink is clicked.
      *   This event can be prevented.
      */
-    
+
     "ch-navigation-list-render": ChNavigationListRender;
-    
+
     /**
      * @status experimental
      */
     "ch-performance-scan-item": ChPerformanceScanItem;
-    
+
     /**
      * A component to visualize re-renders on Lit components.
      * @status experimental
      */
     "ch-performance-scan": ChPerformanceScan;
-    
+
     /**
      * @fires modelUpdate
      *
      * @fires `modelUpdate` undefined
      */
-    
+
     "ch-component-render": ChComponentRender;
-    
-    
+
     "ch-playground-editor": ChPlaygroundEditor;
-    
+
     /**
      * The ch-progress is an element that displays the progress status for tasks
      * that take a long time.
@@ -1669,12 +2019,12 @@ declare namespace LocalJSX {
      * @status experimental
      */
     "ch-progress": ChProgress;
-    
+
     /**
      * @status developer-preview
      */
     "ch-qr": ChQr;
-    
+
     /**
      * The radio group control is used to render a short list of mutually exclusive options.
      *
@@ -1693,14 +2043,14 @@ declare namespace LocalJSX {
      * @fires `change` Fired when the selected item change. It contains the information about the
      *   new selected value.
      */
-    
+
     "ch-radio-group-render": ChRadioGroupRender;
-    
+
     /**
      * @status developer-preview
      */
     "ch-router": ChRouter;
-    
+
     /**
      * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
      * This control represents and item of the ch-segmented-control-render
@@ -1708,22 +2058,21 @@ declare namespace LocalJSX {
      * @part selected - ...
      */
     "ch-segmented-control-item": ChSegmentedControlItem;
-    
+
     /**
      * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
      */
     "ch-segmented-control-render": ChSegmentedControlRender;
-    
-    
+
     "ch-showcase-api": ChShowcaseApi;
-    
+
     /**
      * @fires `expandedChange` Emitted when thea element is clicked or the space key is pressed and
      *   released.
      */
-    
+
     "ch-sidebar": ChSidebar;
-    
+
     /**
      * The slider control is a input where the user selects a value from within a given range.
      *
@@ -1739,9 +2088,9 @@ declare namespace LocalJSX {
      *   committed by the user.
      * @fires `input` The `input` event is fired synchronously when the value is changed.
      */
-    
+
     "ch-slider": ChSlider;
-    
+
     /**
      * @status experimental
      *
@@ -1757,27 +2106,25 @@ declare namespace LocalJSX {
      *
      * @fires `input` The `input` event is emitted when a change to the element's checked state
      *   is committed by the user.
-     *   
+     *
      *   It contains the new checked state of the control.
-     *   
+     *
      *   This event is preventable.
      */
-    
+
     "ch-switch": ChSwitch;
-    
-    
+
     "ch-tabular-grid-column": ChTabularGridColumn;
-    
-    
+
     "ch-tabular-grid-render": ChTabularGridRender;
-    
+
     /**
      * @status developer-preview
      *
      * @slot - The slot for the HTML content.
      */
     "ch-textblock": ChTextBlock;
-    
+
     /**
      * It allows you to load a style sheet in a similar way to the
      * native LINK or STYLE tags, but assigning it a name so that
@@ -1786,11 +2133,11 @@ declare namespace LocalJSX {
      *
      * @fires `themeLoaded` Event emitted when the theme has successfully loaded
      */
-    
+
     "ch-theme": ChTheme;
   }
 }
-  
+
 export type { LocalJSX as JSX };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1798,21 +2145,40 @@ export type { LocalJSX as JSX };
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace SolidJsJSX {
-  export type ChBeautifulMermaid = ComponentPropertiesSolidJS.ChBeautifulMermaid;
+  export type ChAccordionRender =
+    ComponentPropertiesSolidJS.ChAccordionRender & {
+      /**
+       * Fired when an item is expanded or collapsed. The payload is
+       * `{ id: string; expanded: boolean }`. In `singleItemExpanded` mode,
+       * multiple events fire: one for each auto-collapsed item (with
+       * `expanded: false`) followed by one for the newly expanded item.
+       */
+      "on:expandedChange"?: (
+        event: HTMLChAccordionRenderElementExpandedChangeEvent
+      ) => void;
+    };
 
-  export type ChBreadCrumbRender = ComponentPropertiesSolidJS.ChBreadCrumbRender & {
-    /**
-     * Fired when an button is clicked.
-     * This event can be prevented.
-     */
-    "on:buttonClick"?: (event: HTMLChBreadCrumbRenderElementButtonClickEvent) => void;
+  export type ChBeautifulMermaid =
+    ComponentPropertiesSolidJS.ChBeautifulMermaid;
 
-    /**
-     * Fired when an hyperlink is clicked.
-     * This event can be prevented.
-     */
-    "on:hyperlinkClick"?: (event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent) => void;
-  };
+  export type ChBreadCrumbRender =
+    ComponentPropertiesSolidJS.ChBreadCrumbRender & {
+      /**
+       * Fired when an button is clicked.
+       * This event can be prevented.
+       */
+      "on:buttonClick"?: (
+        event: HTMLChBreadCrumbRenderElementButtonClickEvent
+      ) => void;
+
+      /**
+       * Fired when an hyperlink is clicked.
+       * This event can be prevented.
+       */
+      "on:hyperlinkClick"?: (
+        event: HTMLChBreadCrumbRenderElementHyperlinkClickEvent
+      ) => void;
+    };
 
   export type ChBreadCrumbItem = ComponentPropertiesSolidJS.ChBreadCrumbItem;
 
@@ -1820,7 +2186,7 @@ declare namespace SolidJsJSX {
     /**
      * The `input` event is emitted when a change to the element's checked state
      * is committed by the user.
-     * 
+     *
      * It contains the new checked state of the control.
      */
     "on:input"?: (event: HTMLChCheckboxElementInputEvent) => void;
@@ -1834,52 +2200,66 @@ declare namespace SolidJsJSX {
 
   export type ChLayoutSplitter = ComponentPropertiesSolidJS.ChLayoutSplitter;
 
-  export type ChNavigationListItem = ComponentPropertiesSolidJS.ChNavigationListItem;
+  export type ChNavigationListItem =
+    ComponentPropertiesSolidJS.ChNavigationListItem;
 
-  export type ChNavigationListRender = ComponentPropertiesSolidJS.ChNavigationListRender & {
-    /**
-     * Fired when an button is clicked.
-     * This event can be prevented.
-     */
-    "on:buttonClick"?: (event: HTMLChNavigationListRenderElementButtonClickEvent) => void;
+  export type ChNavigationListRender =
+    ComponentPropertiesSolidJS.ChNavigationListRender & {
+      /**
+       * Fired when an button is clicked.
+       * This event can be prevented.
+       */
+      "on:buttonClick"?: (
+        event: HTMLChNavigationListRenderElementButtonClickEvent
+      ) => void;
 
-    /**
-     * Fired when an hyperlink is clicked.
-     * This event can be prevented.
-     */
-    "on:hyperlinkClick"?: (event: HTMLChNavigationListRenderElementHyperlinkClickEvent) => void;
-  };
+      /**
+       * Fired when an hyperlink is clicked.
+       * This event can be prevented.
+       */
+      "on:hyperlinkClick"?: (
+        event: HTMLChNavigationListRenderElementHyperlinkClickEvent
+      ) => void;
+    };
 
-  export type ChPerformanceScanItem = ComponentPropertiesSolidJS.ChPerformanceScanItem;
+  export type ChPerformanceScanItem =
+    ComponentPropertiesSolidJS.ChPerformanceScanItem;
 
   export type ChPerformanceScan = ComponentPropertiesSolidJS.ChPerformanceScan;
 
-  export type ChComponentRender = ComponentPropertiesSolidJS.ChComponentRender & {
-    /**
-     * 
-     */
-    "on:modelUpdate"?: (event: HTMLChComponentRenderElementModelUpdateEvent) => void;
-  };
+  export type ChComponentRender =
+    ComponentPropertiesSolidJS.ChComponentRender & {
+      /**
+       *
+       */
+      "on:modelUpdate"?: (
+        event: HTMLChComponentRenderElementModelUpdateEvent
+      ) => void;
+    };
 
-  export type ChPlaygroundEditor = ComponentPropertiesSolidJS.ChPlaygroundEditor;
+  export type ChPlaygroundEditor =
+    ComponentPropertiesSolidJS.ChPlaygroundEditor;
 
   export type ChProgress = ComponentPropertiesSolidJS.ChProgress;
 
   export type ChQr = ComponentPropertiesSolidJS.ChQr;
 
-  export type ChRadioGroupRender = ComponentPropertiesSolidJS.ChRadioGroupRender & {
-    /**
-     * Fired when the selected item change. It contains the information about the
-     * new selected value.
-     */
-    "on:change"?: (event: HTMLChRadioGroupRenderElementChangeEvent) => void;
-  };
+  export type ChRadioGroupRender =
+    ComponentPropertiesSolidJS.ChRadioGroupRender & {
+      /**
+       * Fired when the selected item change. It contains the information about the
+       * new selected value.
+       */
+      "on:change"?: (event: HTMLChRadioGroupRenderElementChangeEvent) => void;
+    };
 
   export type ChRouter = ComponentPropertiesSolidJS.ChRouter;
 
-  export type ChSegmentedControlItem = ComponentPropertiesSolidJS.ChSegmentedControlItem;
+  export type ChSegmentedControlItem =
+    ComponentPropertiesSolidJS.ChSegmentedControlItem;
 
-  export type ChSegmentedControlRender = ComponentPropertiesSolidJS.ChSegmentedControlRender;
+  export type ChSegmentedControlRender =
+    ComponentPropertiesSolidJS.ChSegmentedControlRender;
 
   export type ChShowcaseApi = ComponentPropertiesSolidJS.ChShowcaseApi;
 
@@ -1888,7 +2268,9 @@ declare namespace SolidJsJSX {
      * Emitted when thea element is clicked or the space key is pressed and
      * released.
      */
-    "on:expandedChange"?: (event: HTMLChSidebarElementExpandedChangeEvent) => void;
+    "on:expandedChange"?: (
+      event: HTMLChSidebarElementExpandedChangeEvent
+    ) => void;
   };
 
   export type ChSlider = ComponentPropertiesSolidJS.ChSlider & {
@@ -1908,17 +2290,19 @@ declare namespace SolidJsJSX {
     /**
      * The `input` event is emitted when a change to the element's checked state
      * is committed by the user.
-     * 
+     *
      * It contains the new checked state of the control.
-     * 
+     *
      * This event is preventable.
      */
     "on:input"?: (event: HTMLChSwitchElementInputEvent) => void;
   };
 
-  export type ChTabularGridColumn = ComponentPropertiesSolidJS.ChTabularGridColumn;
+  export type ChTabularGridColumn =
+    ComponentPropertiesSolidJS.ChTabularGridColumn;
 
-  export type ChTabularGridRender = ComponentPropertiesSolidJS.ChTabularGridRender;
+  export type ChTabularGridRender =
+    ComponentPropertiesSolidJS.ChTabularGridRender;
 
   export type ChTextBlock = ComponentPropertiesSolidJS.ChTextBlock;
 
@@ -1928,13 +2312,71 @@ declare namespace SolidJsJSX {
      */
     "on:themeLoaded"?: (event: HTMLChThemeElementThemeLoadedEvent) => void;
   };
-  
+
   interface IntrinsicElements {
+    /**
+     * The `ch-accordion-render` component displays a vertical stack of collapsible panels, each with a clickable header that toggles the visibility of its associated content section.
+     *
+     * @remarks
+     * ## Features
+     *  - Expand or collapse panels on demand to organize lengthy content into space-efficient sections.
+     *  - Single-item mode (`singleItemExpanded`) ensures only one panel is open at a time, automatically closing the others.
+     *  - Configurable expandable button position (`start` or `end`) in each panel header.
+     *  - Per-item images in the header via `startImgSrc` and a customizable image-path callback.
+     *  - Disabled state at the control level or per individual item.
+     *  - Custom header content through named slots.
+     *
+     * ## Use when
+     *  - Organizing lengthy content into logically grouped, collapsible sections (FAQs, settings pages, form groups).
+     *  - Reducing cognitive load by showing one section at a time.
+     *  - Reducing page length when users are unlikely to need all sections simultaneously (FAQs, settings).
+     *  - Space-constrained UIs where vertical scrolling is undesirable and content can be consumed independently.
+     *
+     * ## Do not use when
+     *  - Users need to compare content side-by-side -- the accordion pattern inherently hides inactive sections.
+     *  - Users are likely to read all sections — use plain headings and scrollable content instead.
+     *  - Content sections are interdependent and must be compared side by side — the back-and-forth is too costly.
+     *  - Sequential step-by-step processes where hiding steps creates confusion — prefer a stepper/wizard.
+     *  - Nesting accordions within accordions — double-nested collapsed panels disorient users.
+     *
+     * ## Accessibility
+     *  - Each header is a `<button>` with `aria-expanded` and `aria-controls` linking to its section.
+     *  - Sections are labelled via `aria-labelledby` pointing back to the header button, or via explicit `aria-label` when provided.
+     *  - Supports the disclosure pattern: toggling a header expands or collapses its associated section.
+     *
+     * @status experimental
+     *
+     * @csspart header - The clickable `<button>` element that toggles the collapsible section. Present on every item.
+     * @csspart panel - The outer container that wraps the `header` and the `section` of each item.
+     * @csspart section - The collapsible `<section>` element that contains the item's body content.
+     *
+     * @csspart disabled - Present in the `header`, `panel`, and `section` parts when the item is disabled.
+     * @csspart expanded - Present in the `header`, `panel`, and `section` parts when the item is expanded.
+     * @csspart collapsed - Present in the `header`, `panel`, and `section` parts when the item is collapsed.
+     *
+     * @slot {item.headerSlotId} - Named slot projected inside the `header` button for custom header content. Rendered when the item defines a `headerSlotId`.
+     * @slot {item.id} - Named slot projected inside the `section` for each item's collapsible body content.
+     *
+     * @cssprop [--ch-accordion__chevron-size = #{$default-decorative-image-size}] - Specifies the box size of the chevron.
+     * @cssprop [--ch-accordion__chevron-image-size = 100%] - Specifies the image size of the chevron.
+     * @cssprop [--ch-accordion__chevron-color = currentColor] - Specifies the color of the chevron.
+     * @cssprop [--ch-accordion-expand-collapse-duration = 0ms] - Specifies duration of the expand and collapse animation.
+     * @cssprop [--ch-accordion-expand-collapse-timing-function = linear] - Specifies timing function of the expand and collapse animation.
+     * @cssprop [--ch-accordion__header-background-image = #{$expandable-icon}] - Specifies the background image used for the expandable chevron in the header.
+     *
+     * @fires `expandedChange` Fired when an item is expanded or collapsed. The payload is
+     *   `{ id: string; expanded: boolean }`. In `singleItemExpanded` mode,
+     *   multiple events fire: one for each auto-collapsed item (with
+     *   `expanded: false`) followed by one for the newly expanded item.
+     */
+
+    "ch-accordion-render": ChAccordionRender;
+
     /**
      * @status developer-preview
      */
     "ch-beautiful-mermaid": ChBeautifulMermaid;
-    
+
     /**
      * @status experimental
      *
@@ -1946,14 +2388,14 @@ declare namespace SolidJsJSX {
      * @fires `hyperlinkClick` Fired when an hyperlink is clicked.
      *   This event can be prevented.
      */
-    
+
     "ch-breadcrumb-render": ChBreadCrumbRender;
-    
+
     /**
      * @status experimental
      */
     "ch-breadcrumb-item": ChBreadCrumbItem;
-    
+
     /**
      * @status developer-preview
      *
@@ -1983,9 +2425,9 @@ declare namespace SolidJsJSX {
      *   
      *   It contains the new checked state of the control.
      */
-    
+
     "ch-checkbox": ChCheckbox;
-    
+
     /**
      * A control to highlight code blocks.
      * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/syntax-tree/hast) using [Shiki](https://shiki.matsu.io). After that, it implements a reactivity layer by implementing its own render for the hast.
@@ -1995,16 +2437,15 @@ declare namespace SolidJsJSX {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     "ch-code": ChCode;
-    
+
     /**
      * A control to display multiple images, depending on the state (focus, hover,
      * active or disabled) of a parent element.
      */
     "ch-image": ChImage;
-    
-    
+
     "ch-json-render": ChJsonRender;
-    
+
     /**
      * This component allows us to design a layout composed by columns and rows.
      *  - Columns and rows can have relative (`fr`) or absolute (`px`) size.
@@ -2013,12 +2454,12 @@ declare namespace SolidJsJSX {
      * @csspart bar - The bar that divides two columns or two rows
      */
     "ch-layout-splitter": ChLayoutSplitter;
-    
+
     /**
      * @status experimental
      */
     "ch-navigation-list-item": ChNavigationListItem;
-    
+
     /**
      * @status experimental
      *
@@ -2030,31 +2471,30 @@ declare namespace SolidJsJSX {
      * @fires `hyperlinkClick` Fired when an hyperlink is clicked.
      *   This event can be prevented.
      */
-    
+
     "ch-navigation-list-render": ChNavigationListRender;
-    
+
     /**
      * @status experimental
      */
     "ch-performance-scan-item": ChPerformanceScanItem;
-    
+
     /**
      * A component to visualize re-renders on Lit components.
      * @status experimental
      */
     "ch-performance-scan": ChPerformanceScan;
-    
+
     /**
      * @fires modelUpdate
      *
      * @fires `modelUpdate` undefined
      */
-    
+
     "ch-component-render": ChComponentRender;
-    
-    
+
     "ch-playground-editor": ChPlaygroundEditor;
-    
+
     /**
      * The ch-progress is an element that displays the progress status for tasks
      * that take a long time.
@@ -2065,12 +2505,12 @@ declare namespace SolidJsJSX {
      * @status experimental
      */
     "ch-progress": ChProgress;
-    
+
     /**
      * @status developer-preview
      */
     "ch-qr": ChQr;
-    
+
     /**
      * The radio group control is used to render a short list of mutually exclusive options.
      *
@@ -2089,14 +2529,14 @@ declare namespace SolidJsJSX {
      * @fires `change` Fired when the selected item change. It contains the information about the
      *   new selected value.
      */
-    
+
     "ch-radio-group-render": ChRadioGroupRender;
-    
+
     /**
      * @status developer-preview
      */
     "ch-router": ChRouter;
-    
+
     /**
      * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
      * This control represents and item of the ch-segmented-control-render
@@ -2104,22 +2544,21 @@ declare namespace SolidJsJSX {
      * @part selected - ...
      */
     "ch-segmented-control-item": ChSegmentedControlItem;
-    
+
     /**
      * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
      */
     "ch-segmented-control-render": ChSegmentedControlRender;
-    
-    
+
     "ch-showcase-api": ChShowcaseApi;
-    
+
     /**
      * @fires `expandedChange` Emitted when thea element is clicked or the space key is pressed and
      *   released.
      */
-    
+
     "ch-sidebar": ChSidebar;
-    
+
     /**
      * The slider control is a input where the user selects a value from within a given range.
      *
@@ -2135,9 +2574,9 @@ declare namespace SolidJsJSX {
      *   committed by the user.
      * @fires `input` The `input` event is fired synchronously when the value is changed.
      */
-    
+
     "ch-slider": ChSlider;
-    
+
     /**
      * @status experimental
      *
@@ -2153,27 +2592,25 @@ declare namespace SolidJsJSX {
      *
      * @fires `input` The `input` event is emitted when a change to the element's checked state
      *   is committed by the user.
-     *   
+     *
      *   It contains the new checked state of the control.
-     *   
+     *
      *   This event is preventable.
      */
-    
+
     "ch-switch": ChSwitch;
-    
-    
+
     "ch-tabular-grid-column": ChTabularGridColumn;
-    
-    
+
     "ch-tabular-grid-render": ChTabularGridRender;
-    
+
     /**
      * @status developer-preview
      *
      * @slot - The slot for the HTML content.
      */
     "ch-textblock": ChTextBlock;
-    
+
     /**
      * It allows you to load a style sheet in a similar way to the
      * native LINK or STYLE tags, but assigning it a name so that
@@ -2182,7 +2619,7 @@ declare namespace SolidJsJSX {
      *
      * @fires `themeLoaded` Event emitted when the theme has successfully loaded
      */
-    
+
     "ch-theme": ChTheme;
   }
 }
@@ -2224,3 +2661,4 @@ declare module "@stencil/core" {
     interface IntrinsicElements extends LocalJSX.IntrinsicElements {}
   }
 }
+

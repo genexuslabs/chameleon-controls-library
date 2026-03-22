@@ -1,7 +1,6 @@
 :host {
   display: grid;
   grid-template-rows: 300px max-content 1fr;
-  gap: 16px;
 }
 
 *,
@@ -10,8 +9,47 @@
   box-sizing: border-box;
 }
 
+/* ---- Property editor grid ---- */
+
 .property-editor {
   display: grid;
   grid-template-columns: max-content 1fr;
+  row-gap: 8px;
+  column-gap: 16px;
+  align-items: center;
+  padding: 16px 20px;
+  border-block-start: 1px solid var(--showcase-border-color, #e5e7eb);
 }
 
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--showcase-heading-color, #374151);
+  white-space: nowrap;
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+}
+
+.input {
+  padding: 5px 10px;
+  border: 1px solid var(--showcase-border-color, #d1d5db);
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--showcase-text-color, #374151);
+  background: #fff;
+  inline-size: 100%;
+  max-inline-size: 320px;
+  font-family: inherit;
+
+  &:focus {
+    outline: 2px solid var(--showcase-accent-color, #2563eb);
+    outline-offset: -1px;
+    border-color: transparent;
+  }
+}
+
+/* Give ch-switch a visible footprint even before Mercury loads */
+ch-switch.switch-small {
+  display: inline-block;
+  block-size: 1.5rem;
+  min-inline-size: 3rem;
+}

@@ -9,6 +9,7 @@ import { createRef, ref, type Ref } from "lit/directives/ref.js";
 
 import { SyncWithRAF } from "../../utilities/sync-with-frames";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import styles from "./textblock.scss?inline";
 
 const AVAILABLE_SIZE_CUSTOM_VAR = "--ch-textblock-available-size";
@@ -285,7 +286,7 @@ declare global {
    * @status developer-preview
    *
    * @slot - The slot for the HTML content.
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChTextBlockElement extends ChTextBlock {
     // Extend the ChTextBlock class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
@@ -305,7 +306,6 @@ declare global {
     "ch-textblock": HTMLChTextBlockElement;
   }
 }
-
 
 // ######### Auto generated below #########
 

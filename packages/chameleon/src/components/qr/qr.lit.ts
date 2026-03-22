@@ -8,6 +8,7 @@ import QrCreator from "qr-creator";
 
 import type { ErrorCorrectionLevel } from "./types";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import styles from "./qr.scss?inline";
 
 /**
@@ -134,7 +135,7 @@ declare global {
 
   /**
    * @status developer-preview
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChQrElement extends ChQr {
     // Extend the ChQr class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
@@ -154,7 +155,6 @@ declare global {
     "ch-qr": HTMLChQrElement;
   }
 }
-
 
 // ######### Auto generated below #########
 

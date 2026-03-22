@@ -8,6 +8,7 @@ import { property } from "lit/decorators/property.js";
 import { TABULAR_GRID_NO_ATTRIBUTE } from "../../constants";
 import type { TabularGridSortDirection } from "../../types";
 
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import styles from "./tabular-grid-column.scss?inline";
 
 const ariaSortAttribute = "aria-sort";
@@ -189,7 +190,6 @@ declare global {
     "ch-tabular-grid-column": HTMLChTabularGridColumnElement;
   }
 }
-
 
 // ######### Auto generated below #########
 

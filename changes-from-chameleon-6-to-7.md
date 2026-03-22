@@ -13,7 +13,6 @@
 - Reduced core bundle size (add comparison)
 
 - All external dependencies that components uses for their implementation are now marked as external. This further improves the possibilities to reduce the JS bundle size of the applications that uses Chameleon, as more code can be reused in the application, since the dependencies code can be shared outside of Chameleon. Example:
-
   - Chameleon uses [micromark](https://github.com/micromark/micromark) for parsing the markdown.
 
   - Prior to Chameleon 7, the micromark code was bundled directly into the `ch-markdown-viewer` component, so if you were using micromark in your application and the `ch-markdown-viewer` component, all the JavaScript of micromark was duplicated.
@@ -23,11 +22,9 @@
 - New way to distribute the code (browser development, browser production, node development and node production). `COMPLETE............`
 
 - New development warnings:
-
   - `COMPLETE............`
 
 - A new way to use custom elements:
-
   - Now you can import the custom elements you need for your application, instead of using the defineCustomElements function.
 
 - The accessibility checker is no longer part of the production code. In other words, you no longer need to disable it for distribution builds.
@@ -35,7 +32,6 @@
 - More unit tests!!! `COMPLETE............`
 
 - Improved support for RTL. (Now it works even if the `dir="rtl"` is not set directly into the `html` tag). `COMPLETE............`
-
   - `ch-navigation-list-render`
   - `ch-sidebar`
 
@@ -108,6 +104,15 @@
 - Feat: The `input` event now emits in its detail the new `checked` state of the switch.
 
 - Feat: The `input` event can now be prevented by calling `event.defaultPrevent()`.
+
+## Custom vars
+
+- The following custom vars can now be defined globally, as they no longer need to be overriden by setting them in the component that uses it:
+  - `--ch-accordion__header-image-size` (used by the ch-accordion-render)
+  - `--ch-accordion__header-background-image-size` (used by the ch-accordion-render)
+
+  - `--ch-navigation-list-item__image-size` (used by the ch-navigation-list-render)
+  - `--ch-navigation-list-item__background-image-size` (used by the ch-navigation-list-render)
 
 ## Breaking changes
 

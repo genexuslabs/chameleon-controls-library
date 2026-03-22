@@ -1,6 +1,8 @@
+import { createHash } from "crypto";
 import typescript from "@rollup/plugin-typescript";
 import browserslist from "browserslist";
 import { browserslistToTargets } from "lightningcss";
+import type { Plugin } from "rollup";
 import summary from "rollup-plugin-summary";
 import { createLogger, UserConfig } from "vite";
 
@@ -29,6 +31,70 @@ const logger = createLogger();
 const loggerInfo = logger.info;
 
 const packageJson = await import("./package.json");
+
+/**
+ * Rollup plugin that shortens external import paths in the final output.
+ *
+ * Stencil (v6) bundles don't have visible import paths — all dependencies are
+ * compiled into the runtime. Lit/Kasstor (v7) bundles keep external imports
+ * as-is (e.g., `@genexus/kasstor-core/decorators/component.js`). These long
+ * strings inflate the raw size unfairly in a comparison.
+ *
+ * This plugin replaces each unique import path with a short single-letter
+ * identifier (e.g., `"a"`, `"b"`, ...) so the measured size reflects only
+ * the component's own code, not the verbosity of its dependency specifiers.
+ *
+ * This is safe because minified bundles are only used for size measurement,
+ * never executed.
+ */
+function minifyExternalImportPaths(): Plugin {
+  return {
+    name: "minify-external-import-paths",
+
+    generateBundle(_options, bundle) {
+      // Build a global map so the same specifier gets the same chunk name
+      // across all entry files (matches real Rollup behavior).
+      const seen = new Map<string, string>();
+
+      const toChunkPath = (specifier: string): string => {
+        // Keep relative paths (internal chunks) — they already have hashed
+        // names produced by Rollup (e.g., `./lit-html.fkr2xVQZ.js`).
+        if (specifier.startsWith(".")) {
+          return specifier;
+        }
+
+        if (!seen.has(specifier)) {
+          const hash = createHash("sha256")
+            .update(specifier)
+            .digest("hex")
+            .slice(0, 8);
+          seen.set(specifier, `./chunk-${hash}.js`);
+        }
+
+        return seen.get(specifier)!;
+      };
+
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type !== "chunk") {
+          continue;
+        }
+
+        chunk.code = chunk.code
+          // `from "path"` — import/export ... from "specifier"
+          .replace(/\bfrom\s*"([^"]+)"/g, (_match, importPath: string) => {
+            return `from"${toChunkPath(importPath)}"`;
+          })
+          // Side-effect imports: `import "path"` (preceded by ; or start)
+          .replace(
+            /(^|;)\s*import\s*"([^"]+)"/gm,
+            (_match, prefix: string, importPath: string) => {
+              return `${prefix}import"${toChunkPath(importPath)}"`;
+            }
+          );
+      }
+    }
+  };
+}
 
 export const minifiedConfiguration: UserConfig = {
   // Custom Logger to avoid duplicating the chunk info
@@ -151,7 +217,11 @@ export const minifiedConfiguration: UserConfig = {
       // Different compress methods
       showGzippedSize: true,
       showBrotliSize: true
-    })
+    }),
+
+    // Shorten external import paths for fair size comparison with Chameleon 6.
+    // Must be last so it runs after terser and summary.
+    minifyExternalImportPaths()
   ]
 };
 

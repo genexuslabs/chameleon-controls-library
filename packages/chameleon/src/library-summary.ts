@@ -4,7 +4,7 @@ export const librarySummary = [
     tagName: "ch-beautiful-mermaid",
     className: "ChBeautifulMermaid",
     description: "",
-    fullClassJSDoc: "/**\n * @status developer-preview\n */",
+    fullClassJSDoc: "/**\r\n * @status developer-preview\r\n */",
     srcPath: "./components/beautiful-mermaid/beautiful-mermaid.lit.ts",
     developmentStatus: "developer-preview",
     mode: "open",
@@ -25,7 +25,7 @@ export const librarySummary = [
     className: "ChBreadCrumbRender",
     description: "",
     fullClassJSDoc:
-      "/**\n * @status experimental\n *\n * This component needs to be hydrated to properly work. If not hydrated, the\n * component visibility will be hidden.\n */",
+      "/**\r\n * @status experimental\r\n *\r\n * This component needs to be hydrated to properly work. If not hydrated, the\r\n * component visibility will be hidden.\r\n */",
     srcPath: "./components/breadcrumb/breadcrumb-render.lit.ts",
     developmentStatus: "to-be-defined",
     mode: "open",
@@ -34,16 +34,16 @@ export const librarySummary = [
       {
         name: "getImagePathCallback",
         attribute: "getimagepathcallback",
-        type: "\n    | ((item: BreadCrumbItemModel) => GxImageMultiState | undefined)\n    | undefined",
+        type: "\r\n    | ((item: BreadCrumbItemModel) => GxImageMultiState | undefined)\r\n    | undefined",
         default: "undefined",
         description:
-          "This property specifies a callback that is executed when the path for an\nstartImgSrc needs to be resolved."
+          "This property specifies a callback that is executed when the path for an\r\nstartImgSrc needs to be resolved."
       },
       {
         name: "selectedLink",
         attribute: "selectedlink",
-        type: " {\n    id?: string;\n    link: ItemLink;\n  }",
-        default: "{\n    link: { url: undefined }\n  }",
+        type: " {\r\n    id?: string;\r\n    link: ItemLink;\r\n  }",
+        default: "{\r\n    link: { url: undefined }\r\n  }",
         description: "Specifies the current selected hyperlink."
       },
       {
@@ -70,10 +70,10 @@ export const librarySummary = [
       {
         name: "accessibleName",
         attribute: "accessible-name",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor the element."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element."
       }
     ],
     events: [
@@ -81,13 +81,13 @@ export const librarySummary = [
         name: "buttonClick",
         detailType: "BreadCrumbItemModel",
         description:
-          "Fired when an button is clicked.\nThis event can be prevented."
+          "Fired when an button is clicked.\r\nThis event can be prevented."
       },
       {
         name: "hyperlinkClick",
         detailType: "BreadCrumbHyperlinkClickEvent",
         description:
-          "Fired when an hyperlink is clicked.\nThis event can be prevented."
+          "Fired when an hyperlink is clicked.\r\nThis event can be prevented."
       }
     ],
     propertyImportTypes: {
@@ -110,7 +110,7 @@ export const librarySummary = [
     tagName: "ch-breadcrumb-item",
     className: "ChBreadCrumbItem",
     description: "",
-    fullClassJSDoc: "/**\n * @status experimental\n */",
+    fullClassJSDoc: "/**\r\n * @status experimental\r\n */",
     srcPath:
       "./components/breadcrumb/internal/breadcrumb-item/breadcrumb-item.lit.ts",
     developmentStatus: "experimental",
@@ -130,15 +130,15 @@ export const librarySummary = [
         type: " boolean | undefined",
         default: "undefined",
         description:
-          "This attribute lets you specify if the element is disabled.\nIf disabled, it will not fire any user interaction related event\n(for example, click event)."
+          "This attribute lets you specify if the element is disabled.\r\nIf disabled, it will not fire any user interaction related event\r\n(for example, click event)."
       },
       {
         name: "accessibleName",
         attribute: "accessible-name",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor the element."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element."
       },
       {
         name: "link",
@@ -159,7 +159,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "Specifies if the hyperlink is selected. Only applies when the `link`\nproperty is defined."
+          "Specifies if the hyperlink is selected. Only applies when the `link`\r\nproperty is defined."
       },
       {
         name: "selectedLinkIndicator",
@@ -167,7 +167,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "Specifies if the selected item indicator is displayed when the item is\nselected. Only applies when the `link` property is defined."
+          "Specifies if the selected item indicator is displayed when the item is\r\nselected. Only applies when the `link` property is defined."
       },
       {
         name: "startImgSrc",
@@ -179,17 +179,17 @@ export const librarySummary = [
       {
         name: "startImgType",
         attribute: "startimgtype",
-        type: '\n    | Exclude<ImageRender, "img">\n    | undefined',
+        type: '\r\n    | Exclude<ImageRender, "img">\r\n    | undefined',
         default: "undefined",
         description: "Specifies how the start image will be rendered."
       },
       {
         name: "getImagePathCallback",
         attribute: "getimagepathcallback",
-        type: "\n    | ((imageSrc: BreadCrumbItemModel) => GxImageMultiState | undefined)\n    | undefined",
+        type: "\r\n    | ((imageSrc: BreadCrumbItemModel) => GxImageMultiState | undefined)\r\n    | undefined",
         default: "undefined",
         description:
-          "This property specifies a callback that is executed when the path for an\nstartImgSrc needs to be resolved."
+          "This property specifies a callback that is executed when the path for an\r\nstartImgSrc needs to be resolved."
       }
     ],
     propertyImportTypes: {
@@ -200,11 +200,388 @@ export const librarySummary = [
   },
   {
     access: "public",
+    tagName: "ch-chat",
+    className: "ChChat",
+    description:
+      "The `ch-chat` component delivers a full-featured conversational interface with virtual scrolling for efficient rendering of large message histories.",
+    fullClassJSDoc:
+      '/**\r\n * The `ch-chat` component delivers a full-featured conversational interface with virtual scrolling for efficient rendering of large message histories.\r\n *\r\n * @remarks\r\n * ## Features\r\n *  - Text messaging with file uploads and markdown rendering.\r\n *  - Real-time voice conversations via LiveKit integration.\r\n *  - Virtual scrolling for large message histories with configurable buffer size.\r\n *  - Auto-scrolling behavior configurable as `"at-scroll-end"` or `"never"`.\r\n *  - Fully customizable send-container layout with four slot positions.\r\n *  - Programmatic message management: add, update, and send messages via public methods.\r\n *  - Custom rendering of chat items through flexible render callbacks.\r\n *  - Stop-response button for cancelling assistant response generation.\r\n *\r\n * ## Use when\r\n *  - Building AI-powered chat or assistant interfaces.\r\n *  - Implementing conversational UIs with file attachment and voice support.\r\n *  - Building AI-powered conversational interfaces where the interaction model is back-and-forth dialogue.\r\n *  - The system needs to ask clarifying questions or produce streaming responses.\r\n *\r\n * ## Do not use when\r\n *  - Displaying a simple message list without interactivity — use `ch-smart-grid` instead.\r\n *  - A standard form would be faster and more precise for collecting structured data (e.g., address forms).\r\n *  - Displaying a simple non-interactive message list — prefer `ch-smart-grid` directly.\r\n *\r\n * ## Accessibility\r\n *  - Integrates with `ch-virtual-scroller` to maintain DOM structure suitable for assistive technology during virtual scrolling.\r\n *  - The send button and stop-response button carry accessible labels via the `translations` property.\r\n *  - New messages should be announced to screen readers via `aria-live="polite"` on the messages container.\r\n *  - All action buttons (send, stop-response) must have descriptive labels via the `translations` property.\r\n *  - Color and alignment alone must not be the only way to distinguish user messages from AI messages.\r\n *\r\n * @status experimental\r\n *\r\n * @part messages-container - The scrollable container that holds the chat messages.\r\n * @part send-container - The bottom area containing the input and action buttons.\r\n * @part send-container-before - Region before the send input within the send container. Rendered when `sendContainerLayout.sendContainerBefore` is defined.\r\n * @part send-container-after - Region after the send input within the send container. Rendered when `sendContainerLayout.sendContainerAfter` is defined.\r\n * @part send-input-before - Region before the text input inside the edit control. Rendered when `sendContainerLayout.sendInputBefore` is defined.\r\n * @part send-input-after - Region after the text input inside the edit control. Rendered when `sendContainerLayout.sendInputAfter` is defined.\r\n * @part send-button - The button that sends the current message.\r\n * @part stop-response-button - The button that stops the assistant\'s response generation. Rendered when `waitingResponse` is `true` and a `stopResponse` callback is provided.\r\n *\r\n * @slot empty-chat - Displayed when all records are loaded but there are no messages.\r\n * @slot loading-chat - Displayed while the chat is in the initial loading state.\r\n * @slot additional-content - Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state.\r\n */',
+    srcPath: "./components/chat/chat.lit.ts",
+    developmentStatus: "experimental",
+    mode: "open",
+    shadow: true,
+    properties: [
+      {
+        name: "autoScroll",
+        attribute: "auto-scroll",
+        type: '\r\n    | "never"\r\n    | "at-scroll-end"',
+        default: '"at-scroll-end"'
+      },
+      {
+        name: "callbacks",
+        attribute: false,
+        type: " ChatCallbacks | undefined",
+        default: "undefined"
+      },
+      {
+        name: "disabled",
+        attribute: "disabled",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "items",
+        attribute: false,
+        type: " ChatMessage[]",
+        default: "[]"
+      },
+      {
+        name: "liveMode",
+        attribute: "live-mode",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "liveModeConfiguration",
+        attribute: false,
+        type: " ChatLiveModeConfiguration | undefined",
+        default: "undefined"
+      },
+      {
+        name: "loadingState",
+        attribute: "loading-state",
+        type: " SmartGridDataState",
+        default: '"initial"'
+      },
+      {
+        name: "markdownTheme",
+        attribute: "markdown-theme",
+        type: " string | null",
+        default: '"ch-markdown-viewer"'
+      },
+      {
+        name: "newUserMessageAlignment",
+        attribute: "new-user-message-alignment",
+        type: ' "start" | "end"',
+        default: '"end"'
+      },
+      {
+        name: "newUserMessageScrollBehavior",
+        attribute: "new-user-message-scroll-behavior",
+        type: ' Exclude<ScrollBehavior, "auto">',
+        default: '"instant"'
+      },
+      {
+        name: "renderItem",
+        attribute: false,
+        type: "\r\n    | ChatMessageRenderByItem\r\n    | ChatMessageRenderBySections\r\n    | undefined",
+        default: "undefined"
+      },
+      {
+        name: "sendButtonDisabled",
+        attribute: "send-button-disabled",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "sendInputDisabled",
+        attribute: "send-input-disabled",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "showAdditionalContent",
+        attribute: "show-additional-content",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "sendContainerLayout",
+        attribute: false,
+        type: " ChatSendContainerLayout",
+        default: '{\r\n      sendContainerAfter: ["send-button"]\r\n    }'
+      },
+      {
+        name: "theme",
+        attribute: false,
+        type: " ThemeModel | undefined",
+        default: "undefined"
+      },
+      {
+        name: "translations",
+        attribute: false,
+        type: " ChatTranslations",
+        default:
+          '{\r\n    accessibleName: {\r\n      clearChat: "Clear chat",\r\n      copyMessageContent: "Copy message content",\r\n      downloadCodeButton: "Download code",\r\n      sendButton: "Send",\r\n      sendInput: "Message",\r\n      stopResponseButton: "Stop generating answer"\r\n    },\r\n    placeholder: {\r\n      sendInput: "Ask me a question..."\r\n    },\r\n    text: {\r\n      copyCodeButton: "Copy code",\r\n      copyMessageContent: "Copy",\r\n      processing: "Processing...",\r\n      sourceFiles: "Source files:"\r\n    }\r\n  }'
+      },
+      {
+        name: "virtualScrollerBufferSize",
+        attribute: "virtual-scroller-buffer-size",
+        type: " number",
+        default: "5"
+      },
+      {
+        name: "waitingResponse",
+        attribute: "waiting-response",
+        type: "\r\n    | boolean",
+        default: "false"
+      }
+    ],
+    events: [
+      {
+        name: "userMessageAdded",
+        detailType: 'ChatMessageByRole<"user">'
+      }
+    ],
+    methods: [
+      {
+        name: "addNewMessage",
+        paramTypes: [
+          {
+            name: "message",
+            type: "ChatMessage"
+          }
+        ],
+        returnType: "void"
+      },
+      {
+        name: "focusChatInput",
+        paramTypes: [],
+        returnType: "void"
+      },
+      {
+        name: "setChatInputMessage",
+        paramTypes: [
+          {
+            name: "text",
+            type: "string"
+          }
+        ],
+        returnType: "void"
+      },
+      {
+        name: "sendChatMessage",
+        paramTypes: [
+          {
+            name: "content",
+            type: "ChatMessageUser | undefined"
+          },
+          {
+            name: "files",
+            type: "File[]"
+          }
+        ],
+        returnType: "void"
+      },
+      {
+        name: "updateChatMessage",
+        paramTypes: [
+          {
+            name: "messageIndex",
+            type: "number"
+          },
+          {
+            name: "message",
+            type: 'ChatMessageByRoleNoId<"system" | "assistant">'
+          },
+          {
+            name: "mode",
+            type: '"concat" | "replace"'
+          }
+        ],
+        returnType: "void"
+      },
+      {
+        name: "updateLastMessage",
+        paramTypes: [
+          {
+            name: "message",
+            type: 'ChatMessageByRoleNoId<"system" | "assistant">'
+          },
+          {
+            name: "mode",
+            type: '"concat" | "replace"'
+          }
+        ],
+        returnType: "void"
+      }
+    ],
+    parts: [
+      {
+        name: "messages-container",
+        description: "The scrollable container that holds the chat messages."
+      },
+      {
+        name: "send-container",
+        description: "The bottom area containing the input and action buttons."
+      },
+      {
+        name: "send-container-before",
+        description:
+          "Region before the send input within the send container. Rendered when `sendContainerLayout.sendContainerBefore` is defined."
+      },
+      {
+        name: "send-container-after",
+        description:
+          "Region after the send input within the send container. Rendered when `sendContainerLayout.sendContainerAfter` is defined."
+      },
+      {
+        name: "send-input-before",
+        description:
+          "Region before the text input inside the edit control. Rendered when `sendContainerLayout.sendInputBefore` is defined."
+      },
+      {
+        name: "send-input-after",
+        description:
+          "Region after the text input inside the edit control. Rendered when `sendContainerLayout.sendInputAfter` is defined."
+      },
+      {
+        name: "send-button",
+        description: "The button that sends the current message."
+      },
+      {
+        name: "stop-response-button",
+        description:
+          "The button that stops the assistant's response generation. Rendered when `waitingResponse` is `true` and a `stopResponse` callback is provided."
+      }
+    ],
+    slots: [
+      {
+        name: "empty-chat",
+        description:
+          "Displayed when all records are loaded but there are no messages."
+      },
+      {
+        name: "loading-chat",
+        description: "Displayed while the chat is in the initial loading state."
+      },
+      {
+        name: "additional-content",
+        description:
+          "Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state."
+      }
+    ],
+    propertyImportTypes: {
+      "./components/chat/types.ts": [
+        "ChatCallbacks",
+        "ChatMessage",
+        "ChatLiveModeConfiguration",
+        "ChatMessageRenderByItem",
+        "ChatMessageRenderBySections",
+        "ChatSendContainerLayout"
+      ],
+      "./components/smart-grid/internal/infinite-scroll/types.ts": [
+        "SmartGridDataState"
+      ],
+      "./components/theme/theme-types.ts": ["ThemeModel"],
+      "./components/chat/translations.ts": ["ChatTranslations"]
+    },
+    eventImportTypes: {
+      "./components/chat/types.ts": ["ChatMessageByRole"]
+    },
+    methodImportTypes: {
+      "./components/chat/types.ts": [
+        "ChatMessage",
+        "ChatMessageUser",
+        "ChatMessageByRoleNoId"
+      ]
+    }
+  },
+  {
+    access: "public",
+    tagName: "ch-chat-render-lit",
+    className: "ChChatRenderLit",
+    description: "",
+    fullClassJSDoc: "",
+    srcPath: "./components/chat/internal/chat-render.lit.ts",
+    developmentStatus: "to-be-defined",
+    mode: "open",
+    shadow: false,
+    properties: [
+      {
+        name: "cellHasToReserveSpace",
+        attribute: false,
+        type: "\r\n    | Set<string>\r\n    | undefined",
+        default: "undefined",
+        description:
+          "Specifies a Set of cells that must render an additional div to correctly\r\nreserve space. This space is used to align the cell at the start scroll\r\nposition.\r\n\r\nEven if only one cell is aligned to the start of the scroll, all cells\r\nthat participated in this behavior must maintain the additional rendered\r\ndiv to avoid destroying the DOM and thus causing some side effects on\r\nelements whose state the chat can not control."
+      },
+      {
+        name: "cellIdAlignedWhenRendered",
+        attribute: false,
+        type: "\r\n    | string\r\n    | undefined",
+        default: "undefined"
+      },
+      {
+        name: "chatRef",
+        attribute: false,
+        type: " HTMLDivElement | undefined",
+        default: "undefined",
+        description: "Specifies the reference for the ch-chat parent."
+      },
+      {
+        name: "liveKitMessages",
+        attribute: false,
+        type: " ChatMessage[]",
+        default: "[]",
+        description:
+          "Specifies the live kit messages that are rendered when liveMode = true in\r\nthe `ch-chat`"
+      },
+      {
+        name: "newUserMessageAlignment",
+        attribute: "new-user-message-alignment",
+        type: ' "start" | "end"',
+        default: '"end"',
+        description:
+          'Specifies how the messages added by the user interaction will be aligned\r\nin the chat.\r\n\r\nIf `newUserMessageAlignment === "start"` the chat will reserve the\r\nnecessary space to visualize the message at the start of the content\r\nviewport if the content is not large enough.\r\nThis behavior is the same as the Monaco editor does for reserving space\r\nwhen visualizing the last lines positioned at the top of the editor.'
+      },
+      {
+        name: "newUserMessageScrollBehavior",
+        attribute: "new-user-message-scroll-behavior",
+        type: ' Exclude<\r\n    ScrollBehavior,\r\n    "auto"\r\n  >',
+        default: '"instant"',
+        description:
+          "Specifies how the chat will scroll to the position of the messages added\r\nby user interaction."
+      },
+      {
+        name: "renderItem",
+        attribute: false,
+        type: "\r\n    | ChatMessageRenderByItem\r\n    | ChatMessageRenderBySections",
+        default: "undefined",
+        description:
+          "This property allows us to implement custom rendering of chat items.\r\n\r\nThis works by providing a custom render of the cell content in two\r\npossible ways:\r\n  1. Replacing the render of the entire cell with a function of the\r\n  message model.\r\n\r\n  2. Replacing the render of specific parts of the message by providing an\r\n  object with the specific renders of the message sections (`codeBlock`,\r\n  `content`, `files` and/or `messageStructure`)."
+      },
+      {
+        name: "smartGridRef",
+        attribute: false,
+        type: " HTMLDivElement",
+        default: "undefined",
+        description:
+          "Specifies the reference for the smart grid parent.\r\n\r\nThis property is useful to avoid the cell from queering the ch-smart-grid\r\nref on the initial load."
+      },
+      {
+        name: "virtualItems",
+        attribute: false,
+        type: " ChatMessage[]",
+        default: "[]",
+        description: "Specifies the virtual items that the chat will display."
+      }
+    ],
+    propertyImportTypes: {
+      "./components/chat/types.ts": [
+        "ChatMessage",
+        "ChatMessageRenderByItem",
+        "ChatMessageRenderBySections"
+      ]
+    }
+  },
+  {
+    access: "public",
     tagName: "ch-checkbox",
     className: "ChCheckbox",
     description: "",
     fullClassJSDoc:
-      "/**\n * @status developer-preview\n *\n * @csspart container - The container that serves as a wrapper for the `input` and the `option` parts.\n * @csspart input - The input element that implements the interactions for the component.\n * @csspart label - The label that is rendered when the `caption` property is not empty.\n *\n * @csspart checked - Present in the `input`, `label` and `container` parts when the control is checked and not indeterminate (`checked === true` and `indeterminate !== true`).\n * @csspart disabled - Present in the `input`, `label` and `container` parts when the control is disabled (`disabled === true`).\n * @csspart indeterminate - Present in the `input`, `label` and `container` parts when the control is indeterminate (`indeterminate === true`).\n * @csspart unchecked - Present in the `input`, `label` and `container` parts when the control is unchecked and not indeterminate (`checked === false` and `indeterminate !== true`).\n\n * @cssprop [--ch-checkbox__container-size = min(1em, 20px)] - Specifies the size for the container of the `input` and `option` elements.\n *\n * @cssprop [--ch-checkbox__checked-image = url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>\")] - Specifies the image of the checkbox when is checked.\n *\n * @cssprop [--ch-checkbox__option-indeterminate-image = url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><rect width='8' height='8'/></svg>\")] - Specifies the image of the checkbox when is indeterminate.\n *\n * @cssprop [--ch-checkbox__option-image-size = 50%] - Specifies the image size of the `option` element.\n *\n * @cssprop [--ch-checkbox__image-size = #{$default-decorative-image-size}] - Specifies the box size that contains the start image of the control.\n * \n * @cssprop [--ch-checkbox__background-image-size = 100%] - Specifies the size of the start image of the control.\n */",
+      "/**\r\n * @status developer-preview\r\n *\r\n * @csspart container - The container that serves as a wrapper for the `input` and the `option` parts.\r\n * @csspart input - The input element that implements the interactions for the component.\r\n * @csspart label - The label that is rendered when the `caption` property is not empty.\r\n *\r\n * @csspart checked - Present in the `input`, `label` and `container` parts when the control is checked and not indeterminate (`checked === true` and `indeterminate !== true`).\r\n * @csspart disabled - Present in the `input`, `label` and `container` parts when the control is disabled (`disabled === true`).\r\n * @csspart indeterminate - Present in the `input`, `label` and `container` parts when the control is indeterminate (`indeterminate === true`).\r\n * @csspart unchecked - Present in the `input`, `label` and `container` parts when the control is unchecked and not indeterminate (`checked === false` and `indeterminate !== true`).\r\n\r\n * @cssprop [--ch-checkbox__container-size = min(1em, 20px)] - Specifies the size for the container of the `input` and `option` elements.\r\n *\r\n * @cssprop [--ch-checkbox__checked-image = url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>\")] - Specifies the image of the checkbox when is checked.\r\n *\r\n * @cssprop [--ch-checkbox__option-indeterminate-image = url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><rect width='8' height='8'/></svg>\")] - Specifies the image of the checkbox when is indeterminate.\r\n *\r\n * @cssprop [--ch-checkbox__option-image-size = 50%] - Specifies the image size of the `option` element.\r\n *\r\n * @cssprop [--ch-checkbox__image-size = #{$default-decorative-image-size}] - Specifies the box size that contains the start image of the control.\r\n * \r\n * @cssprop [--ch-checkbox__background-image-size = 100%] - Specifies the size of the start image of the control.\r\n */",
     srcPath: "./components/checkbox/checkbox.lit.ts",
     developmentStatus: "developer-preview",
     formAssociated: true,
@@ -214,10 +591,10 @@ export const librarySummary = [
       {
         name: "accessibleName",
         attribute: "accessible-name",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor the element."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element."
       },
       {
         name: "caption",
@@ -232,7 +609,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "`true` if the `ch-switch` is checked.\n\nIf checked:\n  - The `value` property will be available in the parent `<form>` if the\n    `name` attribute is set.\n  - The `checkedCaption` will be used to display the current caption.\n\nIf not checked:\n  - The `value` property won't be available in the parent `<form>`, even\n    if the `name` attribute is set.\n  - The `unCheckedCaption` will be used to display the current caption."
+          "`true` if the `ch-switch` is checked.\r\n\r\nIf checked:\r\n  - The `value` property will be available in the parent `<form>` if the\r\n    `name` attribute is set.\r\n  - The `checkedCaption` will be used to display the current caption.\r\n\r\nIf not checked:\r\n  - The `value` property won't be available in the parent `<form>`, even\r\n    if the `name` attribute is set.\r\n  - The `unCheckedCaption` will be used to display the current caption."
       },
       {
         name: "disabled",
@@ -240,16 +617,16 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This attribute lets you specify if the element is disabled.\nIf disabled, it will not fire any user interaction related event\n(for example, click event).",
+          "This attribute lets you specify if the element is disabled.\r\nIf disabled, it will not fire any user interaction related event\r\n(for example, click event).",
         reflect: true
       },
       {
         name: "getImagePathCallback",
         attribute: false,
-        type: "\n    | GetImagePathCallback\n    | undefined",
+        type: "\r\n    | GetImagePathCallback\r\n    | undefined",
         default: "undefined",
         description:
-          "This property specifies a callback that is executed when the path for an\nstartImgSrc needs to be resolved."
+          "This property specifies a callback that is executed when the path for an\r\nstartImgSrc needs to be resolved."
       },
       {
         name: "indeterminate",
@@ -257,7 +634,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "`true` if the control's value is indeterminate.\n\nThis property is purely a visual change. It has no impact on whether the\ncheckbox's is used in a form submission. That is decided by the\n`checked` property, regardless of the `indeterminate` state."
+          "`true` if the control's value is indeterminate.\r\n\r\nThis property is purely a visual change. It has no impact on whether the\r\ncheckbox's is used in a form submission. That is decided by the\r\n`checked` property, regardless of the `indeterminate` state."
       },
       {
         name: "name",
@@ -273,7 +650,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This attribute indicates that the user cannot modify the value of the control.\nSame as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)\nattribute for `input` elements."
+          "This attribute indicates that the user cannot modify the value of the control.\r\nSame as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)\r\nattribute for `input` elements."
       },
       {
         name: "startImgSrc",
@@ -285,7 +662,7 @@ export const librarySummary = [
       {
         name: "startImgType",
         attribute: "start-img-type",
-        type: ' Exclude<\n    ImageRender,\n    "img"\n  >',
+        type: ' Exclude<\r\n    ImageRender,\r\n    "img"\r\n  >',
         default: '"background"',
         description: "Specifies the source of the start image."
       },
@@ -302,7 +679,7 @@ export const librarySummary = [
         name: "input",
         detailType: "boolean",
         description:
-          "The `input` event is emitted when a change to the element's checked state\nis committed by the user.\n\nIt contains the new checked state of the control."
+          "The `input` event is emitted when a change to the element's checked state\r\nis committed by the user.\r\n\r\nIt contains the new checked state of the control."
       }
     ],
     cssVariables: [
@@ -343,9 +720,9 @@ export const librarySummary = [
     tagName: "ch-code",
     className: "ChCode",
     description:
-      "A control to highlight code blocks.\n- It supports code highlight by parsing the incoming code string to [hast](https://github.com/syntax-tree/hast) using [Shiki](https://shiki.matsu.io). After that, it implements a reactivity layer by implementing its own render for the hast.\n\n- It also supports all programming languages from [Shiki.js](https://shiki.matsu.io).\n\n- When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.",
+      "A control to highlight code blocks.\r\n- It supports code highlight by parsing the incoming code string to [hast](https://github.com/syntax-tree/hast) using [Shiki](https://shiki.matsu.io). After that, it implements a reactivity layer by implementing its own render for the hast.\r\n\r\n- It also supports all programming languages from [Shiki.js](https://shiki.matsu.io).\r\n\r\n- When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.",
     fullClassJSDoc:
-      "/**\n * A control to highlight code blocks.\n * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/syntax-tree/hast) using [Shiki](https://shiki.matsu.io). After that, it implements a reactivity layer by implementing its own render for the hast.\n *\n * - It also supports all programming languages from [Shiki.js](https://shiki.matsu.io).\n *\n * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.\n */",
+      "/**\r\n * A control to highlight code blocks.\r\n * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/syntax-tree/hast) using [Shiki](https://shiki.matsu.io). After that, it implements a reactivity layer by implementing its own render for the hast.\r\n *\r\n * - It also supports all programming languages from [Shiki.js](https://shiki.matsu.io).\r\n *\r\n * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.\r\n */",
     srcPath: "./components/code/code.lit.ts",
     developmentStatus: "to-be-defined",
     mode: "open",
@@ -370,7 +747,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "Specifies if an indicator is displayed in the last element rendered.\nUseful for streaming scenarios where a loading indicator is needed."
+          "Specifies if an indicator is displayed in the last element rendered.\r\nUseful for streaming scenarios where a loading indicator is needed."
       },
       {
         name: "value",
@@ -383,12 +760,246 @@ export const librarySummary = [
   },
   {
     access: "public",
+    tagName: "ch-edit",
+    className: "ChEdit",
+    description:
+      'A wrapper for the input and textarea elements. It additionally provides:\r\n - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.\r\n - An action button.\r\n - Useful style resets.\r\n - Support for picture formatting.\r\n - Support to auto grow the control when used with multiline (useful to\r\n   model chat inputs).\r\n - An image which can have multiple states.\r\n - Support for debouncing the input event.',
+    fullClassJSDoc:
+      '/**\r\n * A wrapper for the input and textarea elements. It additionally provides:\r\n *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.\r\n *  - An action button.\r\n *  - Useful style resets.\r\n *  - Support for picture formatting.\r\n *  - Support to auto grow the control when used with multiline (useful to\r\n *    model chat inputs).\r\n *  - An image which can have multiple states.\r\n *  - Support for debouncing the input event.\r\n *\r\n * @part date-placeholder - A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.\r\n *\r\n * @slot additional-content-before - The slot used for the additional content when `showAdditionalContentBefore === true`.\r\n * @slot additional-content-after - The slot used for the additional content when `showAdditionalContentAfter === true`.\r\n */',
+    srcPath: "./components/edit/edit.lit.ts",
+    developmentStatus: "to-be-defined",
+    formAssociated: true,
+    mode: "open",
+    shadow: true,
+    properties: [
+      {
+        name: "accessibleName",
+        attribute: "accessible-name",
+        type: " string",
+        default: "undefined"
+      },
+      {
+        name: "autocapitalize",
+        attribute: "autocapitalize",
+        type: " string",
+        default: "undefined"
+      },
+      {
+        name: "autocomplete",
+        attribute: "autocomplete",
+        type: '\r\n    | "on"\r\n    | "off"\r\n    | "current-password"\r\n    | "new-password"',
+        default: '"off"'
+      },
+      {
+        name: "autoFocus",
+        attribute: "auto-focus",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "autoGrow",
+        attribute: "auto-grow",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "debounce",
+        attribute: "debounce",
+        type: " number",
+        default: "0"
+      },
+      {
+        name: "disabled",
+        attribute: "disabled",
+        type: " boolean",
+        default: "false",
+        reflect: true
+      },
+      {
+        name: "getImagePathCallback",
+        attribute: false,
+        type: " (\r\n    imageSrc: string\r\n  ) => GxImageMultiState | undefined",
+        default: "undefined"
+      },
+      {
+        name: "hostParts",
+        attribute: "host-parts",
+        type: " string",
+        default: "undefined"
+      },
+      {
+        name: "maxLength",
+        attribute: "max-length",
+        type: "\r\n    | number\r\n    | undefined",
+        default: "undefined"
+      },
+      {
+        name: "mode",
+        attribute: "mode",
+        type: " EditInputMode | undefined",
+        default: "undefined"
+      },
+      {
+        name: "multiline",
+        attribute: "multiline",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "name",
+        attribute: "name",
+        type: " string",
+        default: "undefined",
+        reflect: true
+      },
+      {
+        name: "pattern",
+        attribute: "pattern",
+        type: " string",
+        default: "undefined"
+      },
+      {
+        name: "picture",
+        attribute: "picture",
+        type: " string",
+        default: "undefined"
+      },
+      {
+        name: "pictureCallback",
+        attribute: false,
+        type: " (\r\n    value: any,\r\n    picture: string\r\n  ) => string",
+        default: "undefined"
+      },
+      {
+        name: "placeholder",
+        attribute: "placeholder",
+        type: " string",
+        default: "undefined"
+      },
+      {
+        name: "preventEnterInInputEditorMode",
+        attribute: "prevent-enter-in-input-editor-mode",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "readonly",
+        attribute: "readonly",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "showAdditionalContentAfter",
+        attribute: "show-additional-content-after",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "showAdditionalContentBefore",
+        attribute: "show-additional-content-before",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "showPassword",
+        attribute: "show-password",
+        type: "\r\n    | boolean",
+        default: "false"
+      },
+      {
+        name: "showPasswordButton",
+        attribute: "show-password-button",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "spellcheck",
+        attribute: "spellcheck",
+        type: " boolean",
+        default: "false"
+      },
+      {
+        name: "startImgSrc",
+        attribute: "start-img-src",
+        type: " string",
+        default: "undefined"
+      },
+      {
+        name: "startImgType",
+        attribute: "start-img-type",
+        type: ' Exclude<\r\n    ImageRender,\r\n    "img"\r\n  >',
+        default: '"background"'
+      },
+      {
+        name: "translations",
+        attribute: false,
+        type: " EditTranslations",
+        default:
+          '{\r\n    accessibleName: {\r\n      clearSearchButton: "Clear search",\r\n      hidePasswordButton: "Hide password",\r\n      showPasswordButton: "Show password"\r\n    }\r\n  }'
+      },
+      {
+        name: "type",
+        attribute: "type",
+        type: " EditType",
+        default: '"text"'
+      },
+      {
+        name: "value",
+        attribute: "value",
+        type: " string",
+        default: "undefined"
+      }
+    ],
+    events: [
+      {
+        name: "change",
+        detailType: "void"
+      },
+      {
+        name: "input",
+        detailType: "string"
+      },
+      {
+        name: "passwordVisibilityChange",
+        detailType: "boolean"
+      }
+    ],
+    parts: [
+      {
+        name: "date-placeholder",
+        description:
+          'A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.'
+      }
+    ],
+    slots: [
+      {
+        name: "additional-content-before",
+        description:
+          "The slot used for the additional content when `showAdditionalContentBefore === true`."
+      },
+      {
+        name: "additional-content-after",
+        description:
+          "The slot used for the additional content when `showAdditionalContentAfter === true`."
+      }
+    ],
+    propertyImportTypes: {
+      "./typings/multi-state-images.ts": ["GxImageMultiState", "ImageRender"],
+      "./components/edit/types.ts": [
+        "EditInputMode",
+        "EditTranslations",
+        "EditType"
+      ]
+    }
+  },
+  {
+    access: "public",
     tagName: "ch-image",
     className: "ChImage",
     description:
-      "A control to display multiple images, depending on the state (focus, hover,\nactive or disabled) of a parent element.",
+      "A control to display multiple images, depending on the state (focus, hover,\r\nactive or disabled) of a parent element.",
     fullClassJSDoc:
-      "/**\n * A control to display multiple images, depending on the state (focus, hover,\n * active or disabled) of a parent element.\n */",
+      "/**\r\n * A control to display multiple images, depending on the state (focus, hover,\r\n * active or disabled) of a parent element.\r\n */",
     srcPath: "./components/image/image.lit.ts",
     developmentStatus: "to-be-defined",
     mode: "open",
@@ -400,7 +1011,7 @@ export const librarySummary = [
         type: " HTMLElement | undefined",
         default: "undefined",
         description:
-          "Specifies a reference for the container, in order to update the state of\nthe icon. The reference must be an ancestor of the control.\nIf not specified, the direct parent reference will be used."
+          "Specifies a reference for the container, in order to update the state of\r\nthe icon. The reference must be an ancestor of the control.\r\nIf not specified, the direct parent reference will be used."
       },
       {
         name: "disabled",
@@ -413,10 +1024,10 @@ export const librarySummary = [
       {
         name: "getImagePathCallback",
         attribute: false,
-        type: "\n    | GetImagePathCallback\n    | undefined",
+        type: "\r\n    | GetImagePathCallback\r\n    | undefined",
         default: "undefined",
         description:
-          "This property specifies a callback that is executed when the path the\nimage needs to be resolved."
+          "This property specifies a callback that is executed when the path the\r\nimage needs to be resolved."
       },
       {
         name: "src",
@@ -431,13 +1042,13 @@ export const librarySummary = [
         type: " string | undefined",
         default: "undefined",
         description:
-          "Specifies an accessor for the attribute style of the ch-image. This\naccessor is useful for SSR scenarios were the Host access is limited\n(since Lit does not provide the Host declarative component).\n\nWithout this accessor, the initial load in SSR scenarios would flicker.",
+          "Specifies an accessor for the attribute style of the ch-image. This\r\naccessor is useful for SSR scenarios were the Host access is limited\r\n(since Lit does not provide the Host declarative component).\r\n\r\nWithout this accessor, the initial load in SSR scenarios would flicker.",
         reflect: true
       },
       {
         name: "type",
         attribute: "type",
-        type: '\n    | Exclude<ImageRender, "img">\n    | undefined',
+        type: '\r\n    | Exclude<ImageRender, "img">\r\n    | undefined',
         default: '"background"',
         description: "Specifies how the image will be rendered.",
         reflect: true
@@ -452,9 +1063,9 @@ export const librarySummary = [
     tagName: "ch-layout-splitter",
     className: "ChLayoutSplitter",
     description:
-      "This component allows us to design a layout composed by columns and rows.\n - Columns and rows can have relative (`fr`) or absolute (`px`) size.\n - The line that separates two columns or two rows will always have a drag-bar to resize the layout.",
+      "This component allows us to design a layout composed by columns and rows.\r\n - Columns and rows can have relative (`fr`) or absolute (`px`) size.\r\n - The line that separates two columns or two rows will always have a drag-bar to resize the layout.",
     fullClassJSDoc:
-      "/**\n * This component allows us to design a layout composed by columns and rows.\n *  - Columns and rows can have relative (`fr`) or absolute (`px`) size.\n *  - The line that separates two columns or two rows will always have a drag-bar to resize the layout.\n *\n * @csspart bar - The bar that divides two columns or two rows\n */",
+      "/**\r\n * This component allows us to design a layout composed by columns and rows.\r\n *  - Columns and rows can have relative (`fr`) or absolute (`px`) size.\r\n *  - The line that separates two columns or two rows will always have a drag-bar to resize the layout.\r\n *\r\n * @csspart bar - The bar that divides two columns or two rows\r\n */",
     srcPath: "./components/layout-splitter/layout-splitter.lit.ts",
     developmentStatus: "to-be-defined",
     mode: "open",
@@ -466,7 +1077,7 @@ export const librarySummary = [
         type: " string",
         default: '"Resize"',
         description:
-          "This attribute lets you specify the label for the drag bar.\nImportant for accessibility."
+          "This attribute lets you specify the label for the drag bar.\r\nImportant for accessibility."
       },
       {
         name: "dragBarDisabled",
@@ -474,7 +1085,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This attribute lets you specify if the resize operation is disabled in all\ndrag bars. If `true`, the drag bars are disabled."
+          "This attribute lets you specify if the resize operation is disabled in all\r\ndrag bars. If `true`, the drag bars are disabled."
       },
       {
         name: "incrementWithKeyboard",
@@ -482,16 +1093,16 @@ export const librarySummary = [
         type: " number",
         default: "2",
         description:
-          "Specifies the resizing increment (in pixel) that is applied when using the\nkeyboard to resize a drag bar."
+          "Specifies the resizing increment (in pixel) that is applied when using the\r\nkeyboard to resize a drag bar."
       },
       {
         name: "model",
         attribute: false,
         type: " LayoutSplitterModel",
         default:
-          '{\n    id: "root",\n    direction: "columns",\n    items: []\n  }',
+          '{\r\n    id: "root",\r\n    direction: "columns",\r\n    items: []\r\n  }',
         description:
-          "Specifies the list of component that are displayed. Each component will be\nseparated via a drag bar."
+          "Specifies the list of component that are displayed. Each component will be\r\nseparated via a drag bar."
       }
     ],
     methods: [
@@ -538,7 +1149,7 @@ export const librarySummary = [
         ],
         returnType: "LayoutSplitterItemRemoveResult",
         description:
-          "Removes the item that is identified by the given ID.\nThe layout is rearranged depending on the state of the removed item."
+          "Removes the item that is identified by the given ID.\r\nThe layout is rearranged depending on the state of the removed item."
       }
     ],
     propertyImportTypes: {
@@ -554,10 +1165,47 @@ export const librarySummary = [
   },
   {
     access: "public",
+    tagName: "ch-markdown-viewer",
+    className: "ChMarkdownViewer",
+    description: "",
+    fullClassJSDoc: "",
+    srcPath: "./components/markdown-viewer/markdown-viewer.lit.ts",
+    developmentStatus: "to-be-defined",
+    mode: "open",
+    shadow: false,
+    properties: [
+      {
+        name: "value",
+        attribute: "value",
+        type: " string",
+        default: "undefined"
+      },
+      {
+        name: "showIndicator",
+        attribute: "showindicator",
+        type: " boolean",
+        default: "undefined"
+      },
+      {
+        name: "renderCode",
+        attribute: false,
+        type: " any",
+        default: "undefined"
+      },
+      {
+        name: "theme",
+        attribute: false,
+        type: " any",
+        default: "undefined"
+      }
+    ]
+  },
+  {
+    access: "public",
     tagName: "ch-navigation-list-item",
     className: "ChNavigationListItem",
     description: "",
-    fullClassJSDoc: "/**\n * @status experimental\n */",
+    fullClassJSDoc: "/**\r\n * @status experimental\r\n */",
     srcPath:
       "./components/navigation-list/internal/navigation-list-item/navigation-list-item.lit.ts",
     developmentStatus: "experimental",
@@ -577,7 +1225,7 @@ export const librarySummary = [
         type: " boolean | undefined",
         default: "undefined",
         description:
-          "This attribute lets you specify if the element is disabled.\nIf disabled, it will not fire any user interaction related event\n(for example, click event)."
+          "This attribute lets you specify if the element is disabled.\r\nIf disabled, it will not fire any user interaction related event\r\n(for example, click event)."
       },
       {
         name: "expandable",
@@ -601,7 +1249,7 @@ export const librarySummary = [
         type: " string",
         default: "NAVIGATION_LIST_ITEM_EXPORT_PARTS",
         description:
-          "This property works the same as the exportparts attribute. It is defined\nas a property just to reflect the default value, which avoids FOUC when\nthe `ch-navigation-list-render` component is Server Side Rendered.\nOtherwise, setting this attribute on the client would provoke FOUC and/or\nvisual flickering.",
+          "This property works the same as the exportparts attribute. It is defined\r\nas a property just to reflect the default value, which avoids FOUC when\r\nthe `ch-navigation-list-render` component is Server Side Rendered.\r\nOtherwise, setting this attribute on the client would provoke FOUC and/or\r\nvisual flickering.",
         reflect: true
       },
       {
@@ -631,7 +1279,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "Specifies if the hyperlink is selected. Only applies when the `link`\nproperty is defined."
+          "Specifies if the hyperlink is selected. Only applies when the `link`\r\nproperty is defined."
       },
       {
         name: "sharedState",
@@ -649,7 +1297,7 @@ export const librarySummary = [
       {
         name: "startImgType",
         attribute: "startimgtype",
-        type: '\n    | Exclude<ImageRender, "img">\n    | undefined',
+        type: '\r\n    | Exclude<ImageRender, "img">\r\n    | undefined',
         default: "undefined",
         description: "Specifies how the start image will be rendered."
       }
@@ -669,7 +1317,7 @@ export const librarySummary = [
     className: "ChNavigationListRender",
     description: "",
     fullClassJSDoc:
-      "/**\n * @status experimental\n *\n * This component needs to be hydrated to properly work. If not hydrated, the\n * component visibility will be hidden.\n */",
+      "/**\r\n * @status experimental\r\n *\r\n * This component needs to be hydrated to properly work. If not hydrated, the\r\n * component visibility will be hidden.\r\n */",
     srcPath: "./components/navigation-list/navigation-list-render.lit.ts",
     developmentStatus: "to-be-defined",
     mode: "open",
@@ -681,16 +1329,16 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "If `false` the overflowing content of the control will be clipped to the\nborders of its container.",
+          "If `false` the overflowing content of the control will be clipped to the\r\nborders of its container.",
         reflect: true
       },
       {
         name: "expandableButton",
         attribute: "expandable-button",
-        type: '\n    | "decorative"\n    | "no"',
+        type: '\r\n    | "decorative"\r\n    | "no"',
         default: '"decorative"',
         description:
-          'Specifies what kind of expandable button is displayed in the items by\ndefault.\n - `"decorative"`: Only a decorative icon is rendered to display the state\n    of the item.'
+          'Specifies what kind of expandable button is displayed in the items by\r\ndefault.\r\n - `"decorative"`: Only a decorative icon is rendered to display the state\r\n    of the item.'
       },
       {
         name: "expandableButtonPosition",
@@ -698,15 +1346,15 @@ export const librarySummary = [
         type: ' "start" | "end"',
         default: '"start"',
         description:
-          'Specifies the position of the expandable button in reference of the action\nelement of the items\n - `"start"`: Expandable button is placed before the action element.\n - `"end"`: Expandable button is placed after the action element.'
+          'Specifies the position of the expandable button in reference of the action\r\nelement of the items\r\n - `"start"`: Expandable button is placed before the action element.\r\n - `"end"`: Expandable button is placed after the action element.'
       },
       {
         name: "getImagePathCallback",
         attribute: "getimagepathcallback",
-        type: "\n    | ((item: NavigationListItemModel) => GxImageMultiState | undefined)\n    | undefined",
+        type: "\r\n    | ((item: NavigationListItemModel) => GxImageMultiState | undefined)\r\n    | undefined",
         default: "undefined",
         description:
-          "This property specifies a callback that is executed when the path for an\nstartImgSrc needs to be resolved."
+          "This property specifies a callback that is executed when the path for an\r\nstartImgSrc needs to be resolved."
       },
       {
         name: "expanded",
@@ -722,27 +1370,27 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "`true` to expand the path to the selected link when the `selectedLink`\nproperty is updated."
+          "`true` to expand the path to the selected link when the `selectedLink`\r\nproperty is updated."
       },
       {
         name: "model",
         attribute: "model",
-        type: "\n    | NavigationListModel\n    | undefined",
+        type: "\r\n    | NavigationListModel\r\n    | undefined",
         default: "undefined",
         description: "Specifies the items of the control."
       },
       {
         name: "renderItem",
         attribute: "renderitem",
-        type: "\n    | ((\n        item: NavigationListItemModel,\n        navigationListSharedState: NavigationListSharedState,\n        level: number\n      ) => TemplateResult)\n    | undefined",
+        type: "\r\n    | ((\r\n        item: NavigationListItemModel,\r\n        navigationListSharedState: NavigationListSharedState,\r\n        level: number\r\n      ) => TemplateResult)\r\n    | undefined",
         default: "undefined",
         description: "Specifies the items of the control."
       },
       {
         name: "selectedLink",
         attribute: "selectedlink",
-        type: " {\n    id?: string;\n    link: ItemLink;\n  }",
-        default: "{\n    link: { url: undefined }\n  }",
+        type: " {\r\n    id?: string;\r\n    link: ItemLink;\r\n  }",
+        default: "{\r\n    link: { url: undefined }\r\n  }",
         description: "Specifies the current selected hyperlink."
       },
       {
@@ -756,10 +1404,10 @@ export const librarySummary = [
       {
         name: "showCaptionOnCollapse",
         attribute: "show-caption-on-collapse",
-        type: '\n    | "inline"\n    | "tooltip"',
+        type: '\r\n    | "inline"\r\n    | "tooltip"',
         default: '"inline"',
         description:
-          "Specifies how the caption of the items will be displayed when the control\nis collapsed"
+          "Specifies how the caption of the items will be displayed when the control\r\nis collapsed"
       },
       {
         name: "tooltipDelay",
@@ -775,13 +1423,13 @@ export const librarySummary = [
         name: "buttonClick",
         detailType: "NavigationListItemModel",
         description:
-          "Fired when an button is clicked.\nThis event can be prevented."
+          "Fired when an button is clicked.\r\nThis event can be prevented."
       },
       {
         name: "hyperlinkClick",
         detailType: "NavigationListHyperlinkClickEvent",
         description:
-          "Fired when an hyperlink is clicked.\nThis event can be prevented."
+          "Fired when an hyperlink is clicked.\r\nThis event can be prevented."
       }
     ],
     propertyImportTypes: {
@@ -806,7 +1454,7 @@ export const librarySummary = [
     tagName: "ch-performance-scan-item",
     className: "ChPerformanceScanItem",
     description: "",
-    fullClassJSDoc: "/**\n * @status experimental\n */",
+    fullClassJSDoc: "/**\r\n * @status experimental\r\n */",
     srcPath:
       "./components/performance-scan/internals/performance-scan-item/performance-scan-item.lit.ts",
     developmentStatus: "experimental",
@@ -833,7 +1481,7 @@ export const librarySummary = [
         type: " number",
         default: "undefined",
         description:
-          "Specifies how many times the scanned element has rendered in a buffer of\ntime."
+          "Specifies how many times the scanned element has rendered in a buffer of\r\ntime."
       }
     ],
     propertyImportTypes: {
@@ -846,7 +1494,7 @@ export const librarySummary = [
     className: "ChPerformanceScan",
     description: "A component to visualize re-renders on Lit components.",
     fullClassJSDoc:
-      "/**\n * A component to visualize re-renders on Lit components.\n * @status experimental\n */",
+      "/**\r\n * A component to visualize re-renders on Lit components.\r\n * @status experimental\r\n */",
     srcPath: "./components/performance-scan/performance-scan.lit.ts",
     developmentStatus: "experimental",
     mode: "open",
@@ -866,7 +1514,7 @@ export const librarySummary = [
     tagName: "ch-component-render",
     className: "ChComponentRender",
     description: "",
-    fullClassJSDoc: "/**\n * @fires modelUpdate\n */",
+    fullClassJSDoc: "/**\r\n * @fires modelUpdate\r\n */",
     srcPath:
       "./components/playground-editor/internal/component-render/component-render.lit.ts",
     developmentStatus: "to-be-defined",
@@ -907,7 +1555,7 @@ export const librarySummary = [
       {
         name: "componentModel",
         attribute: false,
-        type: "\n    | ComponentRenderModel\n    | undefined",
+        type: "\r\n    | ComponentRenderModel\r\n    | undefined",
         default: "undefined"
       },
       {
@@ -919,7 +1567,7 @@ export const librarySummary = [
       {
         name: "selectedItem",
         attribute: false,
-        type: "\n    | ComponentRenderTemplateItemNode\n    | undefined",
+        type: "\r\n    | ComponentRenderTemplateItemNode\r\n    | undefined",
         default: "undefined"
       }
     ],
@@ -935,9 +1583,9 @@ export const librarySummary = [
     tagName: "ch-progress",
     className: "ChProgress",
     description:
-      "The ch-progress is an element that displays the progress status for tasks\nthat take a long time.\n\nIt implements all accessibility behaviors for determinate and indeterminate\nprogress. It also supports referencing a region to describe its progress.",
+      "The ch-progress is an element that displays the progress status for tasks\r\nthat take a long time.\r\n\r\nIt implements all accessibility behaviors for determinate and indeterminate\r\nprogress. It also supports referencing a region to describe its progress.",
     fullClassJSDoc:
-      "/**\n * The ch-progress is an element that displays the progress status for tasks\n * that take a long time.\n *\n * It implements all accessibility behaviors for determinate and indeterminate\n * progress. It also supports referencing a region to describe its progress.\n *\n * @status experimental\n */",
+      "/**\r\n * The ch-progress is an element that displays the progress status for tasks\r\n * that take a long time.\r\n *\r\n * It implements all accessibility behaviors for determinate and indeterminate\r\n * progress. It also supports referencing a region to describe its progress.\r\n *\r\n * @status experimental\r\n */",
     srcPath: "./components/progress/progress.lit.ts",
     developmentStatus: "experimental",
     formAssociated: true,
@@ -947,18 +1595,18 @@ export const librarySummary = [
       {
         name: "accessibleName",
         attribute: "accessible-name",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor the element."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element."
       },
       {
         name: "accessibleValueText",
         attribute: "accessible-value-text",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description:
-          "Assistive technologies often present the `value` as a percentage. If this\nwould not be accurate use this property to make the progress bar value\nunderstandable."
+          "Assistive technologies often present the `value` as a percentage. If this\r\nwould not be accurate use this property to make the progress bar value\r\nunderstandable."
       },
       {
         name: "indeterminate",
@@ -966,7 +1614,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "Specifies whether the progress is indeterminate or not. In other words, it\nindicates that an activity is ongoing with no indication of how long it is\nexpected to take.\n\nIf `true`, the `max`, `min` and `value` properties won't be taken into\naccount.",
+          "Specifies whether the progress is indeterminate or not. In other words, it\r\nindicates that an activity is ongoing with no indication of how long it is\r\nexpected to take.\r\n\r\nIf `true`, the `max`, `min` and `value` properties won't be taken into\r\naccount.",
         reflect: true
       },
       {
@@ -975,7 +1623,7 @@ export const librarySummary = [
         type: " number",
         default: "DEFAULT_MAX_VALUE",
         description:
-          "Specifies the maximum value of progress. In other words, how much work the\ntask indicated by the progress component requires.\n\nThis property is not used if indeterminate === true."
+          "Specifies the maximum value of progress. In other words, how much work the\r\ntask indicated by the progress component requires.\r\n\r\nThis property is not used if indeterminate === true."
       },
       {
         name: "min",
@@ -983,7 +1631,7 @@ export const librarySummary = [
         type: " number",
         default: "DEFAULT_MIN_VALUE",
         description:
-          "Specifies the minimum value of progress.\n\nThis property is not used if indeterminate === true."
+          "Specifies the minimum value of progress.\r\n\r\nThis property is not used if indeterminate === true."
       },
       {
         name: "name",
@@ -999,7 +1647,7 @@ export const librarySummary = [
         type: ' "custom" | string',
         default: '"custom"',
         description:
-          "This property specifies how the progress will be render.\n - `\"custom\"`: Useful for making custom renders of the progress. The\n   control doesn't render anything and only projects the content of the\n   default slot. Besides that, all specified properties are still used to\n   implement the control's accessibility."
+          "This property specifies how the progress will be render.\r\n - `\"custom\"`: Useful for making custom renders of the progress. The\r\n   control doesn't render anything and only projects the content of the\r\n   default slot. Besides that, all specified properties are still used to\r\n   implement the control's accessibility."
       },
       {
         name: "loadingRegionRef",
@@ -1007,7 +1655,7 @@ export const librarySummary = [
         type: " HTMLElement | undefined",
         default: "undefined",
         description:
-          "If the control is describing the loading progress of a particular region\nof a page, set this property with the reference of the loading region.\nThis will set the `aria-describedby` and `aria-busy` attributes on the\nloading region to improve the accessibility while the control is in\nprogress.\n\nWhen the control detects that is no longer in progress (aka it is removed\nfrom the DOM or value === maxValue with indeterminate === false), it will\nremove the `aria-busy` attribute and update (or remove if necessary) the\n`aria-describedby` attribute.\n\nIf an ID is set prior to the control's first render, the control will use\nthis ID for the `aria-describedby`. Otherwise, the control will compute a\nunique ID for this matter.\n\n**Important**: If you are using Shadow DOM, take into account that the\n`loadingRegionRef` must be in the same Shadow Tree as this control.\nOtherwise, the `aria-describedby` binding won't work, since the control ID\nis not visible for the `loadingRegionRef`."
+          "If the control is describing the loading progress of a particular region\r\nof a page, set this property with the reference of the loading region.\r\nThis will set the `aria-describedby` and `aria-busy` attributes on the\r\nloading region to improve the accessibility while the control is in\r\nprogress.\r\n\r\nWhen the control detects that is no longer in progress (aka it is removed\r\nfrom the DOM or value === maxValue with indeterminate === false), it will\r\nremove the `aria-busy` attribute and update (or remove if necessary) the\r\n`aria-describedby` attribute.\r\n\r\nIf an ID is set prior to the control's first render, the control will use\r\nthis ID for the `aria-describedby`. Otherwise, the control will compute a\r\nunique ID for this matter.\r\n\r\n**Important**: If you are using Shadow DOM, take into account that the\r\n`loadingRegionRef` must be in the same Shadow Tree as this control.\r\nOtherwise, the `aria-describedby` binding won't work, since the control ID\r\nis not visible for the `loadingRegionRef`."
       },
       {
         name: "value",
@@ -1015,7 +1663,7 @@ export const librarySummary = [
         type: " number",
         default: "DEFAULT_MIN_VALUE",
         description:
-          "Specifies the current value of the component. In other words, how much of\nthe task that has been completed.\n\nThis property is not used if indeterminate === true."
+          "Specifies the current value of the component. In other words, how much of\r\nthe task that has been completed.\r\n\r\nThis property is not used if indeterminate === true."
       }
     ]
   },
@@ -1024,7 +1672,7 @@ export const librarySummary = [
     tagName: "ch-qr",
     className: "ChQr",
     description: "",
-    fullClassJSDoc: "/**\n * @status developer-preview\n */",
+    fullClassJSDoc: "/**\r\n * @status developer-preview\r\n */",
     srcPath: "./components/qr/qr.lit.ts",
     developmentStatus: "developer-preview",
     mode: "open",
@@ -1033,10 +1681,10 @@ export const librarySummary = [
       {
         name: "accessibleName",
         attribute: "accessible-name",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor the element."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element."
       },
       {
         name: "background",
@@ -1044,7 +1692,7 @@ export const librarySummary = [
         type: " string",
         default: '"white"',
         description:
-          'The background color of the render QR. If not specified, "transparent"\nwill be used.'
+          'The background color of the render QR. If not specified, "transparent"\r\nwill be used.'
       },
       {
         name: "errorCorrectionLevel",
@@ -1052,7 +1700,7 @@ export const librarySummary = [
         type: " ErrorCorrectionLevel",
         default: '"High"',
         description:
-          "The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR\ncode for error correction respectively. So on one hand the code will get\nbigger but chances are also higher that it will be read without errors\nlater on. This value is by default High (H)."
+          "The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR\r\ncode for error correction respectively. So on one hand the code will get\r\nbigger but chances are also higher that it will be read without errors\r\nlater on. This value is by default High (H)."
       },
       {
         name: "fill",
@@ -1067,7 +1715,7 @@ export const librarySummary = [
         type: " number",
         default: "0",
         description:
-          "Defines how round the blocks should be. Numbers from 0 (squares) to 0.5\n(maximum round) are supported."
+          "Defines how round the blocks should be. Numbers from 0 (squares) to 0.5\r\n(maximum round) are supported."
       },
       {
         name: "size",
@@ -1093,9 +1741,9 @@ export const librarySummary = [
     tagName: "ch-radio-group-render",
     className: "ChRadioGroupRender",
     description:
-      "The radio group control is used to render a short list of mutually exclusive options.\n\nIt contains radio items to allow users to select one option from the list of options.",
+      "The radio group control is used to render a short list of mutually exclusive options.\r\n\r\nIt contains radio items to allow users to select one option from the list of options.",
     fullClassJSDoc:
-      '/**\n * The radio group control is used to render a short list of mutually exclusive options.\n *\n * It contains radio items to allow users to select one option from the list of options.\n *\n * @part radio__item - The radio item element.\n * @part radio__container - The container that serves as a wrapper for the `input` and the `option` parts.\n * @part radio__input - The invisible input element that implements the interactions for the component. This part must be kept "invisible".\n * @part radio__option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.\n * @part radio__label - The label that is rendered when the `caption` property is not empty.\n *\n * @part checked - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is checked (`checked` === `true`).\n * @part disabled - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is disabled (`disabled` === `true`).\n * @part unchecked - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is not checked (`checked` !== `true`).\n */',
+      '/**\r\n * The radio group control is used to render a short list of mutually exclusive options.\r\n *\r\n * It contains radio items to allow users to select one option from the list of options.\r\n *\r\n * @part radio__item - The radio item element.\r\n * @part radio__container - The container that serves as a wrapper for the `input` and the `option` parts.\r\n * @part radio__input - The invisible input element that implements the interactions for the component. This part must be kept "invisible".\r\n * @part radio__option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.\r\n * @part radio__label - The label that is rendered when the `caption` property is not empty.\r\n *\r\n * @part checked - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is checked (`checked` === `true`).\r\n * @part disabled - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is disabled (`disabled` === `true`).\r\n * @part unchecked - Present in the `radio__item`, `radio__option`, `radio__label` and `radio__container` parts when the control is not checked (`checked` !== `true`).\r\n */',
     srcPath: "./components/radio-group/radio-group-render.lit.ts",
     developmentStatus: "to-be-defined",
     formAssociated: true,
@@ -1116,7 +1764,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This attribute lets you specify if the radio-group is disabled.\nIf disabled, it will not fire any user interaction related event\n(for example, click event).",
+          "This attribute lets you specify if the radio-group is disabled.\r\nIf disabled, it will not fire any user interaction related event\r\n(for example, click event).",
         reflect: true
       },
       {
@@ -1148,7 +1796,7 @@ export const librarySummary = [
         name: "change",
         detailType: "string",
         description:
-          "Fired when the selected item change. It contains the information about the\nnew selected value."
+          "Fired when the selected item change. It contains the information about the\r\nnew selected value."
       }
     ],
     parts: [
@@ -1201,7 +1849,7 @@ export const librarySummary = [
     tagName: "ch-router",
     className: "ChRouter",
     description: "",
-    fullClassJSDoc: "/**\n * @status developer-preview\n */",
+    fullClassJSDoc: "/**\r\n * @status developer-preview\r\n */",
     srcPath: "./components/router/router.lit.ts",
     developmentStatus: "developer-preview",
     mode: "open",
@@ -1229,9 +1877,9 @@ export const librarySummary = [
     tagName: "ch-segmented-control-item",
     className: "ChSegmentedControlItem",
     description:
-      "Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.\nThis control represents and item of the ch-segmented-control-render",
+      "Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.\r\nThis control represents and item of the ch-segmented-control-render",
     fullClassJSDoc:
-      "/**\n * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.\n * This control represents and item of the ch-segmented-control-render\n *\n * @part selected - ...\n */",
+      "/**\r\n * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.\r\n * This control represents and item of the ch-segmented-control-render\r\n *\r\n * @part selected - ...\r\n */",
     srcPath:
       "./components/segmented-control/internal/segmented-control-item/segmented-control-item.lit.ts",
     developmentStatus: "to-be-defined",
@@ -1244,7 +1892,7 @@ export const librarySummary = [
         type: " string | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor the element."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element."
       },
       {
         name: "between",
@@ -1252,7 +1900,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "`true` if the control is the not the first or last item in the\nch-segmented-control-render."
+          "`true` if the control is the not the first or last item in the\r\nch-segmented-control-render."
       },
       {
         name: "caption",
@@ -1267,7 +1915,7 @@ export const librarySummary = [
         type: " boolean | undefined",
         default: "undefined",
         description:
-          "This attribute lets you specify if the element is disabled.\nIf disabled, it will not fire any user interaction related event\n(for example, click event)."
+          "This attribute lets you specify if the element is disabled.\r\nIf disabled, it will not fire any user interaction related event\r\n(for example, click event)."
       },
       {
         name: "endImgSrc",
@@ -1338,7 +1986,7 @@ export const librarySummary = [
     description:
       "Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.",
     fullClassJSDoc:
-      "/**\n * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.\n */",
+      "/**\r\n * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.\r\n */",
     srcPath: "./components/segmented-control/segmented-control-render.lit.ts",
     developmentStatus: "to-be-defined",
     mode: "open",
@@ -1350,7 +1998,7 @@ export const librarySummary = [
         type: " string",
         default: "SEGMENTED_CONTROL_EXPORT_PARTS",
         description:
-          "Specifies the parts that are exported by the internal\nsegmented-control-item. This property is useful to override the exported\nparts."
+          "Specifies the parts that are exported by the internal\r\nsegmented-control-item. This property is useful to override the exported\r\nparts."
       },
       {
         name: "itemCssClass",
@@ -1358,7 +2006,7 @@ export const librarySummary = [
         type: " string",
         default: '"segmented-control-item"',
         description:
-          "A CSS class to set as the `ch-segmented-control-item` element class.\nThis default class is used for the items that don't have an explicit class."
+          "A CSS class to set as the `ch-segmented-control-item` element class.\r\nThis default class is used for the items that don't have an explicit class."
       },
       {
         name: "model",
@@ -1366,7 +2014,7 @@ export const librarySummary = [
         type: " SegmentedControlModel | undefined",
         default: "undefined",
         description:
-          "This property lets you define the items of the ch-segmented-control-render\ncontrol."
+          "This property lets you define the items of the ch-segmented-control-render\r\ncontrol."
       },
       {
         name: "selectedId",
@@ -1420,7 +2068,7 @@ export const librarySummary = [
         type: " string | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor expand button when `expanded = true`."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor expand button when `expanded = true`."
       },
       {
         name: "expandButtonExpandAccessibleName",
@@ -1428,7 +2076,7 @@ export const librarySummary = [
         type: " string | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor expand button when `expanded = false`."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor expand button when `expanded = false`."
       },
       {
         name: "expandButtonCollapseCaption",
@@ -1452,7 +2100,7 @@ export const librarySummary = [
         type: ' "before" | "after"',
         default: '"after"',
         description:
-          'Specifies the position of the expand button relative to the content of the\nsidebar.\n - `"before"`: The expand button is positioned before the content of the sidebar.\n - `"after"`: The expand button is positioned after the content of the sidebar.',
+          'Specifies the position of the expand button relative to the content of the\r\nsidebar.\r\n - `"before"`: The expand button is positioned before the content of the sidebar.\r\n - `"after"`: The expand button is positioned after the content of the sidebar.',
         reflect: true
       },
       {
@@ -1477,7 +2125,7 @@ export const librarySummary = [
         name: "expandedChange",
         detailType: "boolean",
         description:
-          "Emitted when thea element is clicked or the space key is pressed and\nreleased."
+          "Emitted when thea element is clicked or the space key is pressed and\r\nreleased."
       }
     ]
   },
@@ -1488,7 +2136,7 @@ export const librarySummary = [
     description:
       "The slider control is a input where the user selects a value from within a given range.",
     fullClassJSDoc:
-      "/**\n * The slider control is a input where the user selects a value from within a given range.\n *\n * @part track - The track of the slider element.\n * @part thumb - The thumb of the slider element.\n *\n * @part track__selected - Represents the portion of the track that is selected, that is, the portion of the track that starts at the min value and goes to the current value.\n * @part track__unselected - Represents the portion of the track that is not selected, that is, the portion of the track that starts at the current value and goes to the max value.\n *\n * @part disabled - Present in all parts when the control is disabled (`disabled` === `true`).\n */",
+      "/**\r\n * The slider control is a input where the user selects a value from within a given range.\r\n *\r\n * @part track - The track of the slider element.\r\n * @part thumb - The thumb of the slider element.\r\n *\r\n * @part track__selected - Represents the portion of the track that is selected, that is, the portion of the track that starts at the min value and goes to the current value.\r\n * @part track__unselected - Represents the portion of the track that is not selected, that is, the portion of the track that starts at the current value and goes to the max value.\r\n *\r\n * @part disabled - Present in all parts when the control is disabled (`disabled` === `true`).\r\n */",
     srcPath: "./components/slider/slider.lit.ts",
     developmentStatus: "to-be-defined",
     formAssociated: true,
@@ -1498,10 +2146,10 @@ export const librarySummary = [
       {
         name: "accessibleName",
         attribute: "accessible-name",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor the element."
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element."
       },
       {
         name: "disabled",
@@ -1509,7 +2157,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This attribute allows you specify if the element is disabled.\nIf disabled, it will not trigger any user interaction related event\n(for example, click event).",
+          "This attribute allows you specify if the element is disabled.\r\nIf disabled, it will not trigger any user interaction related event\r\n(for example, click event).",
         reflect: true
       },
       {
@@ -1542,7 +2190,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This attribute lets you indicate whether the control should display a\nbubble with the current value upon interaction."
+          "This attribute lets you indicate whether the control should display a\r\nbubble with the current value upon interaction."
       },
       {
         name: "step",
@@ -1550,7 +2198,7 @@ export const librarySummary = [
         type: " number",
         default: "1",
         description:
-          "This attribute lets you specify the step of the slider.\n\nThis attribute is useful when the values of the slider can only take some\ndiscrete values. For example, if valid values are `[10, 20, 30]` set the\n`minValue` to `10`, the maxValue to `30`, and the step to `10`. If the\nstep is `0`, the any intermediate value is valid."
+          "This attribute lets you specify the step of the slider.\r\n\r\nThis attribute is useful when the values of the slider can only take some\r\ndiscrete values. For example, if valid values are `[10, 20, 30]` set the\r\n`minValue` to `10`, the maxValue to `30`, and the step to `10`. If the\r\nstep is `0`, the any intermediate value is valid."
       },
       {
         name: "value",
@@ -1565,7 +2213,7 @@ export const librarySummary = [
         name: "change",
         detailType: "number",
         description:
-          "The `change` event is emitted when a change to the element's value is\ncommitted by the user."
+          "The `change` event is emitted when a change to the element's value is\r\ncommitted by the user."
       },
       {
         name: "input",
@@ -1598,7 +2246,7 @@ export const librarySummary = [
           }
         ],
         returnType: "string",
-        description: "asdasd\n\nasdasd123123\nasd.1.23--"
+        description: "asdasd\r\n\r\nasdasd123123\r\nasd.1.23--"
       }
     ],
     parts: [
@@ -1629,11 +2277,159 @@ export const librarySummary = [
   },
   {
     access: "public",
+    tagName: "ch-smart-grid",
+    className: "ChSmartGrid",
+    description:
+      "The `ch-smart-grid` component is an accessible grid layout for data-driven applications that require infinite scrolling, virtual rendering, and dynamic content loading.",
+    fullClassJSDoc:
+      '/**\r\n * The `ch-smart-grid` component is an accessible grid layout for data-driven applications that require infinite scrolling, virtual rendering, and dynamic content loading.\r\n *\r\n * @remarks\r\n * ## Features\r\n *  - Infinite scrolling via `ch-infinite-scroll` integration with configurable thresholds.\r\n *  - Standard and inverse loading orders (newest items at the bottom or top).\r\n *  - Automatic scroll-position management to prevent layout shifts (CLS) during async content loads.\r\n *  - Anchor a specific cell at the top of the viewport with reserved space, similar to code editors (via `scrollEndContentToPosition`).\r\n *  - Auto-grow mode (`autoGrow`) to adjust size to content, or fixed size with scrollbars.\r\n *  - ARIA live-region support for accessible announcements.\r\n *  - Virtual-scroller integration for rendering only visible items.\r\n *\r\n * ## Use when\r\n *  - Building chat-like interfaces with inverse loading.\r\n *  - Displaying large, dynamically loaded data sets with virtual scrolling.\r\n *  - Infinite-scroll or paginated feeds with bottom-to-top inverse loading (e.g., chat, activity streams).\r\n *\r\n * ## Do not use when\r\n *  - Displaying static tabular data with columns and headers -- use `ch-tabular-grid` instead.\r\n *  - A fixed, non-scrollable list is sufficient -- prefer `ch-action-list-render`.\r\n *\r\n * ## Accessibility\r\n *  - The host element uses `aria-live="polite"` to announce content changes to assistive technologies.\r\n *  - `aria-busy` is set to `"true"` during `"initial"` and `"loading"` states, preventing premature announcements.\r\n *  - The `accessibleName` property maps to `aria-label` on the host.\r\n *\r\n * @status experimental\r\n *\r\n * @slot grid-initial-loading-placeholder - Placeholder content shown during the initial loading state before any data has been fetched.\r\n * @slot grid-content - Primary content slot for grid cells. Rendered when the grid has records and is not in the initial loading state.\r\n * @slot grid-content-empty - Fallback content displayed when the grid has finished loading but contains no records.\r\n */',
+    srcPath: "./components/smart-grid/smart-grid.lit.ts",
+    developmentStatus: "experimental",
+    mode: "open",
+    shadow: true,
+    properties: [
+      {
+        name: "accessibleName",
+        attribute: "accessible-name",
+        type: " string",
+        default: "undefined",
+        description:
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element."
+      },
+      {
+        name: "autoGrow",
+        attribute: "auto-grow",
+        type: " boolean",
+        default: "false",
+        description:
+          "When `true`, the control size grows automatically to fit its content\r\n(no scrollbars). When `false`, the control has a fixed size and\r\nshows scrollbars if the content overflows.\r\n\r\nWhen `false`, the `ch-scrollable` class is applied to the host,\r\nenabling `contain: strict` and `overflow: auto`.\r\n\r\nInteracts with `inverseLoading`: when both `autoGrow` and\r\n`inverseLoading` are `true`, the CLS-avoidance opacity class is\r\nremoved after the first render instead of waiting for the\r\nvirtual-scroller load event."
+      },
+      {
+        name: "autoScroll",
+        attribute: "auto-scroll",
+        type: ' "never" | "at-scroll-end"',
+        default: '"at-scroll-end"',
+        description:
+          'Specifies how the scroll position will be adjusted when the content size\r\nchanges when using `inverseLoading = true`.\r\n  - "at-scroll-end": If the scroll is positioned at the end of the content,\r\n  the chat will maintain the scroll at the end while the content size\r\n  changes.\r\n\r\n - "never": The scroll position won\'t be adjusted when the content size\r\n  changes.'
+      },
+      {
+        name: "dataProvider",
+        attribute: "data-provider",
+        type: " boolean",
+        default: "false",
+        description:
+          "`true` if the control has an external data provider and therefore must\r\nimplement infinite scrolling to load data progressively.\r\nWhen `true`, a `ch-infinite-scroll` element is rendered at the top\r\n(if `inverseLoading`) or bottom of the grid content."
+      },
+      {
+        name: "inverseLoading",
+        attribute: "inverse-loading",
+        type: " boolean",
+        default: "false",
+        description:
+          'When set to `true`, the grid items will be loaded in inverse order, with\r\nthe first element at the bottom and the "Loading" message (infinite-scroll)\r\nat the top.'
+      },
+      {
+        name: "itemsCount",
+        attribute: "items-count",
+        type: " number",
+        default: "undefined",
+        description:
+          "The current number of items (rows/cells) in the grid.\r\nThis is a required property used to trigger re-renders whenever the\r\ndata set changes. When `itemsCount` is `0`, the `grid-content-empty`\r\nslot is rendered instead of `grid-content`.\r\n\r\nIf not specified, grid empty and loading placeholders may not work\r\ncorrectly."
+      },
+      {
+        name: "loadingState",
+        attribute: "loading-state",
+        type: " SmartGridDataState",
+        default: '"initial"',
+        description:
+          'Specifies the loading state of the grid:\r\n - `"initial"`: First load; shows the `grid-initial-loading-placeholder`\r\n   slot.\r\n - `"loading"`: Data is being fetched (infinite scroll triggered). The\r\n   `ch-infinite-scroll` component shows its loading indicator.\r\n - `"loaded"`: Data fetch is complete. Normal content is rendered.\r\n\r\nThis property is mutable: the component sets it to `"loading"` when\r\nthe infinite-scroll threshold is reached.'
+      },
+      {
+        name: "threshold",
+        attribute: "threshold",
+        type: " string",
+        default: '"10px"',
+        description:
+          "The threshold distance from the bottom of the content to call the\r\n`infinite` output event when scrolled. The threshold value can be either a\r\npercent, or in pixels. For example, use the value of `10%` for the\r\n`infinite` output event to get called when the user has scrolled 10% from\r\nthe bottom of the page. Use the value `100px` when the scroll is within\r\n100 pixels from the bottom of the page."
+      }
+    ],
+    events: [
+      {
+        name: "infiniteThresholdReached",
+        detailType: "void",
+        description:
+          'Emitted every time the infinite-scroll threshold is reached.\r\nThe host should respond by fetching the next page of data and updating\r\n`loadingState` back to `"loaded"` when done.\r\n\r\nDoes not bubble (`bubbles: false`). Not cancelable. Payload is `void`.\r\nBefore emitting, the component automatically sets `loadingState` to\r\n`"loading"`.'
+      }
+    ],
+    methods: [
+      {
+        name: "scrollEndContentToPosition",
+        paramTypes: [
+          {
+            name: "cellId",
+            type: "string"
+          },
+          {
+            name: "options",
+            type: '{ position: "start" | "end"; behavior?: ScrollBehavior }'
+          }
+        ],
+        returnType: "void",
+        description:
+          'Scrolls the grid so that the cell identified by `cellId` is aligned at\r\nthe `"start"` or `"end"` of the viewport.\r\n\r\nWhen `position === "start"`, the component reserves extra space after\r\nthe last cell (similar to how the Monaco editor reserves space for the\r\nlast lines) to keep the anchor cell visible at the top even when there\r\nis not enough content below it.\r\n\r\nThe reserved space is automatically recalculated as cells are added or\r\nremoved. Call `removeScrollEndContentReference()` to clear the anchor.'
+      },
+      {
+        name: "removeScrollEndContentReference",
+        paramTypes: [],
+        returnType: "void",
+        description:
+          'Removes the cell reference that is aligned at the start of the viewport.\r\n\r\nIn other words, removes the reserved space that is used to aligned\r\n`scrollEndContentToPosition(cellId, { position: "start" })`'
+      },
+      {
+        name: "handleVirtualItemsChanged",
+        paramTypes: [
+          {
+            name: "event",
+            type: "ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>"
+          }
+        ],
+        returnType: "void"
+      }
+    ],
+    slots: [
+      {
+        name: "grid-initial-loading-placeholder",
+        description:
+          "Placeholder content shown during the initial loading state before any data has been fetched."
+      },
+      {
+        name: "grid-content",
+        description:
+          "Primary content slot for grid cells. Rendered when the grid has records and is not in the initial loading state."
+      },
+      {
+        name: "grid-content-empty",
+        description:
+          "Fallback content displayed when the grid has finished loading but contains no records."
+      }
+    ],
+    propertyImportTypes: {
+      "./components/smart-grid/internal/infinite-scroll/types.ts": [
+        "SmartGridDataState"
+      ]
+    },
+    methodImportTypes: {
+      "./components.ts": ["ChVirtualScrollerCustomEvent"],
+      "./components/virtual-scroller/types.ts": ["VirtualScrollVirtualItems"]
+    }
+  },
+  {
+    access: "public",
     tagName: "ch-switch",
     className: "ChSwitch",
     description: "",
     fullClassJSDoc:
-      "/**\n * @status experimental\n *\n * A switch/toggle control that enables you to select between options.\n *\n * @part track - The track of the switch element.\n * @part thumb - The thumb of the switch element.\n * @part caption - The caption (checked or unchecked) of the switch element.\n *\n * @part checked - Present in the `track`, `thumb` and `caption` parts when the control is checked (`checked` === `true`).\n * @part disabled - Present in the `track`, `thumb` and `caption` parts when the control is disabled (`disabled` === `true`).\n * @part unchecked - Present in the `track`, `thumb` and `caption` parts when the control is unchecked (`checked` === `false`).\n */",
+      "/**\r\n * @status experimental\r\n *\r\n * A switch/toggle control that enables you to select between options.\r\n *\r\n * @part track - The track of the switch element.\r\n * @part thumb - The thumb of the switch element.\r\n * @part caption - The caption (checked or unchecked) of the switch element.\r\n *\r\n * @part checked - Present in the `track`, `thumb` and `caption` parts when the control is checked (`checked` === `true`).\r\n * @part disabled - Present in the `track`, `thumb` and `caption` parts when the control is disabled (`disabled` === `true`).\r\n * @part unchecked - Present in the `track`, `thumb` and `caption` parts when the control is unchecked (`checked` === `false`).\r\n */",
     srcPath: "./components/switch/switch.lit.ts",
     developmentStatus: "to-be-defined",
     formAssociated: true,
@@ -1643,15 +2439,15 @@ export const librarySummary = [
       {
         name: "accessibleName",
         attribute: "accessible-name",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description:
-          "Specifies a short string, typically 1 to 3 words, that authors associate\nwith an element to provide users of assistive technologies with a label\nfor the element.asd123"
+          "Specifies a short string, typically 1 to 3 words, that authors associate\r\nwith an element to provide users of assistive technologies with a label\r\nfor the element.asd123"
       },
       {
         name: "checkedCaption",
         attribute: "checked-caption",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description: "Caption displayed when the switch is 'on'"
       },
@@ -1661,7 +2457,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "`true` if the `ch-switch` is checked.\n\nIf checked:\n  - The `value` property will be available in the parent `<form>` if the\n    `name` attribute is set.\n  - The `checkedCaption` will be used to display the current caption.\n\nIf not checked:\n  - The `value` property won't be available in the parent `<form>`, even\n    if the `name` attribute is set.\n  - The `unCheckedCaption` will be used to display the current caption."
+          "`true` if the `ch-switch` is checked.\r\n\r\nIf checked:\r\n  - The `value` property will be available in the parent `<form>` if the\r\n    `name` attribute is set.\r\n  - The `checkedCaption` will be used to display the current caption.\r\n\r\nIf not checked:\r\n  - The `value` property won't be available in the parent `<form>`, even\r\n    if the `name` attribute is set.\r\n  - The `unCheckedCaption` will be used to display the current caption."
       },
       {
         name: "disabled",
@@ -1669,7 +2465,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This attribute lets you specify if the element is disabled.\nIf disabled, it will not fire any user interaction related event\n(for example, click event).",
+          "This attribute lets you specify if the element is disabled.\r\nIf disabled, it will not fire any user interaction related event\r\n(for example, click event).",
         reflect: true
       },
       {
@@ -1686,12 +2482,12 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This attribute indicates that the user cannot modify the value of the control.\nSame as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)\nattribute for `input` elements."
+          "This attribute indicates that the user cannot modify the value of the control.\r\nSame as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)\r\nattribute for `input` elements."
       },
       {
         name: "unCheckedCaption",
         attribute: "un-checked-caption",
-        type: "\n    | string\n    | undefined",
+        type: "\r\n    | string\r\n    | undefined",
         default: "undefined",
         description: "Caption displayed when the switch is 'off'"
       },
@@ -1708,7 +2504,7 @@ export const librarySummary = [
         name: "input",
         detailType: "boolean",
         description:
-          "The `input` event is emitted when a change to the element's checked state\nis committed by the user.\n\nIt contains the new checked state of the control.\n\nThis event is preventable."
+          "The `input` event is emitted when a change to the element's checked state\r\nis committed by the user.\r\n\r\nIt contains the new checked state of the control.\r\n\r\nThis event is preventable."
       }
     ],
     parts: [
@@ -1815,7 +2611,7 @@ export const librarySummary = [
         type: " string | undefined",
         default: "undefined",
         description:
-          "Specifies an accessor for the attribute style of the\n`ch-tabular-grid-column`. This accessor is useful for SSR scenarios were\nthe Host access is limited (since Lit does not provide the Host\ndeclarative component).\n\nWithout this accessor, the initial load in SSR scenarios would flicker.",
+          "Specifies an accessor for the attribute style of the\r\n`ch-tabular-grid-column`. This accessor is useful for SSR scenarios were\r\nthe Host access is limited (since Lit does not provide the Host\r\ndeclarative component).\r\n\r\nWithout this accessor, the initial load in SSR scenarios would flicker.",
         reflect: true
       },
       {
@@ -1828,7 +2624,7 @@ export const librarySummary = [
       {
         name: "sortDirection",
         attribute: "aria-sort",
-        type: "\n    | TabularGridSortDirection\n    | undefined",
+        type: "\r\n    | TabularGridSortDirection\r\n    | undefined",
         default: "undefined",
         description: "Specifies if the column content is sorted."
       }
@@ -1887,7 +2683,7 @@ export const librarySummary = [
     className: "ChTextBlock",
     description: "",
     fullClassJSDoc:
-      "/**\n * @status developer-preview\n *\n * @slot - The slot for the HTML content.\n */",
+      "/**\r\n * @status developer-preview\r\n *\r\n * @slot - The slot for the HTML content.\r\n */",
     srcPath: "./components/textblock/textblock.lit.ts",
     developmentStatus: "developer-preview",
     mode: "open",
@@ -1899,7 +2695,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "This property defines if the control size will grow automatically, to\nadjust to its content size.\n\nIf `false` the overflowing content will be displayed with an ellipsis.\nThis ellipsis takes into account multiple lines."
+          "This property defines if the control size will grow automatically, to\r\nadjust to its content size.\r\n\r\nIf `false` the overflowing content will be displayed with an ellipsis.\r\nThis ellipsis takes into account multiple lines."
       },
       {
         name: "caption",
@@ -1922,7 +2718,7 @@ export const librarySummary = [
         type: ' "text" | "HTML"',
         default: '"text"',
         description:
-          "It specifies the format that will have the textblock control.\n\n - If `format` = `HTML`, the textblock control works as an HTML div and\n   the innerHTML will be taken from the default slot.\n\n - If `format` = `text`, the control works as a normal textblock control\n   and it is affected by most of the defined properties."
+          "It specifies the format that will have the textblock control.\r\n\r\n - If `format` = `HTML`, the textblock control works as an HTML div and\r\n   the innerHTML will be taken from the default slot.\r\n\r\n - If `format` = `text`, the control works as a normal textblock control\r\n   and it is affected by most of the defined properties."
       },
       {
         name: "showTooltipOnOverflow",
@@ -1930,7 +2726,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "`true` to display a tooltip when the caption overflows the size of the\ncontainer.\n\nOnly works if `format = text` and `autoGrow = false`."
+          "`true` to display a tooltip when the caption overflows the size of the\r\ncontainer.\r\n\r\nOnly works if `format = text` and `autoGrow = false`."
       }
     ],
     slots: [
@@ -1944,9 +2740,9 @@ export const librarySummary = [
     tagName: "ch-theme",
     className: "ChTheme",
     description:
-      "It allows you to load a style sheet in a similar way to the\nnative LINK or STYLE tags, but assigning it a name so that\nit can be reused in different contexts,\neither in the Document or in a Shadow-Root.",
+      "It allows you to load a style sheet in a similar way to the\r\nnative LINK or STYLE tags, but assigning it a name so that\r\nit can be reused in different contexts,\r\neither in the Document or in a Shadow-Root.",
     fullClassJSDoc:
-      "/**\n * It allows you to load a style sheet in a similar way to the\n * native LINK or STYLE tags, but assigning it a name so that\n * it can be reused in different contexts,\n * either in the Document or in a Shadow-Root.\n */",
+      "/**\r\n * It allows you to load a style sheet in a similar way to the\r\n * native LINK or STYLE tags, but assigning it a name so that\r\n * it can be reused in different contexts,\r\n * either in the Document or in a Shadow-Root.\r\n */",
     srcPath: "./components/theme/theme.lit.ts",
     developmentStatus: "to-be-defined",
     mode: "open",
@@ -1958,7 +2754,7 @@ export const librarySummary = [
         type: " boolean",
         default: "true",
         description:
-          "Indicates whether the theme should be attached to the Document or\nthe ShadowRoot after loading.\nThe value can be overridden by the `attachStyleSheet` property of the model."
+          "Indicates whether the theme should be attached to the Document or\r\nthe ShadowRoot after loading.\r\nThe value can be overridden by the `attachStyleSheet` property of the model."
       },
       {
         name: "avoidFlashOfUnstyledContent",
@@ -1966,7 +2762,7 @@ export const librarySummary = [
         type: " boolean",
         default: "true",
         description:
-          "`true` to visually hide the contents of the root node while the control's\nstyle is not loaded."
+          "`true` to visually hide the contents of the root node while the control's\r\nstyle is not loaded."
       },
       {
         name: "hidden",
@@ -1974,7 +2770,7 @@ export const librarySummary = [
         type: " boolean",
         default: "false",
         description:
-          "Specifies an accessor for the attribute `hidden` of the `ch-theme`. This\naccessor is useful for SSR scenarios were the DOM is shimmed and we don't\nhave access to is limited (since Lit does not provide the Host declarative\ncomponent), so we have to find a way to reflect the hidden property in the\n`ch-theme` tag.\n\nWithout this accessor, the initial load in SSR scenarios would flicker.",
+          "Specifies an accessor for the attribute `hidden` of the `ch-theme`. This\r\naccessor is useful for SSR scenarios were the DOM is shimmed and we don't\r\nhave access to is limited (since Lit does not provide the Host declarative\r\ncomponent), so we have to find a way to reflect the hidden property in the\r\n`ch-theme` tag.\r\n\r\nWithout this accessor, the initial load in SSR scenarios would flicker.",
         reflect: true
       },
       {
@@ -2005,6 +2801,115 @@ export const librarySummary = [
     },
     eventImportTypes: {
       "./components/theme/theme-types.ts": ["ChThemeLoadedEvent"]
+    }
+  },
+  {
+    access: "public",
+    tagName: "ch-virtual-scroller",
+    className: "ChVirtualScroller",
+    description:
+      "The `ch-virtual-scroller` component provides efficient virtual scrolling for large lists of items within a `ch-smart-grid`, keeping only visible items plus a configurable buffer in the DOM.",
+    fullClassJSDoc:
+      '/**\r\n * The `ch-virtual-scroller` component provides efficient virtual scrolling for large lists of items within a `ch-smart-grid`, keeping only visible items plus a configurable buffer in the DOM.\r\n *\r\n * @remarks\r\n * ## Features\r\n *  - `"virtual-scroll"` mode: removes items outside the viewport from the DOM, using CSS pseudo-element spacers (`::before` / `::after`) to maintain scroll height. Lowest memory footprint.\r\n *  - `"lazy-render"` mode: lazily renders items as they scroll into view, but keeps them in the DOM once rendered. Avoids re-rendering costs at the expense of higher memory usage.\r\n *  - Configurable buffer amount (`bufferAmount`) for items rendered above and below the viewport.\r\n *  - Inverse loading support (`inverseLoading`) for chat-style interfaces where the newest items are at the bottom and the scroll starts at the end.\r\n *  - Automatic re-rendering on scroll and resize events via `requestAnimationFrame`-synced updates.\r\n *  - Emits `virtualItemsChanged` whenever the visible slice changes, enabling the parent to render only the required cells.\r\n *  - Hides content with `opacity: 0` until the initial viewport cells are fully loaded, then fires `virtualScrollerDidLoad`.\r\n *\r\n * ## Use when\r\n *  - Rendering hundreds or thousands of items inside a `ch-smart-grid`.\r\n *  - Building chat interfaces that need efficient inverse-loaded virtual scrolling.\r\n *\r\n * ## Do not use when\r\n *  - The list has fewer than ~100 items — the overhead of virtual scrolling is not justified.\r\n *  - Used outside of `ch-smart-grid` — this component is designed to work exclusively with `ch-smart-grid`.\r\n *\r\n * ## Accessibility\r\n *  - This component is structural and does not render visible interactive content. Accessibility semantics are handled by the parent `ch-smart-grid` and its cells.\r\n *\r\n * ```\r\n *   <ch-smart-grid>\r\n *     #shadow-root (open)\r\n *     |  <slot name="grid-content"></slot>\r\n *     <ch-virtual-scroller slot="grid-content">\r\n *       <ch-smart-grid-cell>...</ch-smart-grid-cell>\r\n *       <ch-smart-grid-cell>...</ch-smart-grid-cell>\r\n *       ...\r\n *     </ch-virtual-scroller>\r\n *   </ch-smart-grid>\r\n * ```\r\n *\r\n * @status experimental\r\n *\r\n * @slot - Default slot. The slot for `ch-smart-grid-cell` elements representing the items to be virtually scrolled.\r\n *\r\n */',
+    srcPath: "./components/virtual-scroller/virtual-scroller.lit.ts",
+    developmentStatus: "experimental",
+    mode: "open",
+    shadow: true,
+    properties: [
+      {
+        name: "bufferAmount",
+        attribute: "buffer-amount",
+        type: " number",
+        default: "5",
+        description:
+          "The number of extra elements to render above and below the current\r\ncontainer's viewport. A higher value reduces the chance of blank areas\r\nduring fast scrolling but increases DOM size.\r\n\r\nThe new value is used on the next scroll or resize update."
+      },
+      {
+        name: "initialRenderViewportItems",
+        attribute: "initial-render-viewport-items",
+        type: " number",
+        default: "10",
+        description:
+          "Specifies an estimated count of items that fit in the viewport for the\r\ninitial render. Combined with `bufferAmount`, this determines how many\r\nitems are rendered before the first scroll event. A value that is too\r\nlow may cause visible blank space on initial load; a value that is too\r\nhigh increases initial DOM size.\r\n\r\nDefaults to `10`. Init-only — only used during the first render cycle."
+      },
+      {
+        name: "inverseLoading",
+        attribute: "inverse-loading",
+        type: " boolean",
+        default: "false",
+        description:
+          'When set to `true`, the grid items will be loaded in inverse order, with\r\nthe scroll positioned at the bottom on the initial load.\r\n\r\nIf `mode="virtual-scroll"`, only the items at the start of the viewport\r\nthat are not visible will be removed from the DOM. The items at the end of\r\nthe viewport that are not visible will remain rendered to avoid flickering\r\nissues.'
+      },
+      {
+        name: "items",
+        attribute: false,
+        type: " SmartGridModel | undefined",
+        default: "undefined",
+        description:
+          "The array of items to be rendered in the `ch-smart-grid`. Each item must\r\nhave a unique `id` property used internally for virtual size tracking.\r\n\r\nWhen a new array reference is assigned, the virtual scroller resets its\r\ninternal state (indexes, virtual sizes) and performs a fresh initial\r\nrender. For incremental additions, prefer the `addItems()` method to\r\navoid a full reset.\r\n\r\nSetting to `undefined` or an empty array emits an empty\r\n`virtualItemsChanged` event."
+      },
+      {
+        name: "itemsCount",
+        attribute: "items-count",
+        type: " number",
+        default: "undefined",
+        description:
+          "The total number of elements in the `items` array. Set this property when\r\nyou mutate the existing array (e.g., push/splice) without assigning a new\r\nreference, so the virtual scroller knows the length has changed.\r\n\r\nIf `items` is reassigned as a new array reference, this property is not\r\nneeded since the `@Watch` on `items` will handle the reset."
+      },
+      {
+        name: "mode",
+        attribute: "mode",
+        type: ' "virtual-scroll" | "lazy-render"',
+        default: '"virtual-scroll"',
+        description:
+          'Specifies how the control will behave.\r\n  - "virtual-scroll": Only the items at the start of the viewport that are\r\n  not visible will be removed from the DOM. The items at the end of the\r\n  viewport that are not visible will remain rendered to avoid flickering\r\n  issues.\r\n\r\n  - "lazy-render": It behaves similarly to "virtual-scroll" on the initial\r\n  load, but when the user scrolls and new items are rendered, those items\r\n  that are outside of the viewport won\'t be removed from the DOM.'
+      }
+    ],
+    events: [
+      {
+        name: "virtualItemsChanged",
+        detailType: "VirtualScrollVirtualItems",
+        description:
+          "Emitted when the slice of visible items changes due to scrolling, resizing,\r\nor programmatic updates. The payload includes `startIndex`, `endIndex`,\r\n`totalItems`, and the `virtualItems` sub-array that should be rendered.\r\n\r\nThis event is the primary mechanism for the parent `ch-smart-grid` to know\r\nwhich cells to render."
+      },
+      {
+        name: "virtualScrollerDidLoad",
+        detailType: "void",
+        description:
+          "Fired once when all cells in the initial viewport have been rendered and\r\nare visible. After this event, the scroller removes `opacity: 0` and\r\nstarts listening for scroll/resize events. This event has no payload."
+      }
+    ],
+    methods: [
+      {
+        name: "addItems",
+        paramTypes: [
+          {
+            name: "position",
+            type: '"start" | "end"'
+          },
+          {
+            name: "items",
+            type: "SmartGridModel"
+          }
+        ],
+        returnType: "void",
+        description:
+          'Adds items to the beginning or end of the `items` array without resetting\r\nthe virtual scroller\'s internal indexes. This is the preferred way to\r\nappend or prepend items to the collection (e.g., infinite scroll or\r\nchat message loading). When `position` is `"start"`, internal start/end\r\nindexes are shifted by the number of added items to keep the viewport\r\nstable.\r\n\r\nAfter mutation, the scroller triggers a scroll handler update to\r\nrecalculate visible items.'
+      }
+    ],
+    slots: [
+      {
+        name: "- Default slot. The slot for `ch-smart-grid-cell` elements representing the items to be virtually scrolled."
+      }
+    ],
+    propertyImportTypes: {
+      "./components/smart-grid/types.ts": ["SmartGridModel"]
+    },
+    eventImportTypes: {
+      "./components/virtual-scroller/types.ts": ["VirtualScrollVirtualItems"]
+    },
+    methodImportTypes: {
+      "./components/smart-grid/types.ts": ["SmartGridModel"]
     }
   }
 ] as const satisfies LibraryComponents;

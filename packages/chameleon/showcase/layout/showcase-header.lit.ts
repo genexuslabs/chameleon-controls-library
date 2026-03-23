@@ -41,6 +41,13 @@ export class ShowcaseHeader extends KasstorElement {
 
         <nav class="nav" part="nav">
           <a
+            href="/chat"
+            class="nav-link"
+            part="nav-link"
+            @click=${this.#handleNavClick}
+            >Chat</a
+          >
+          <a
             href="/getting-started"
             class="nav-link"
             part="nav-link"

@@ -17,6 +17,8 @@ import "./layout/showcase-toc.lit";
 // Page components
 import "./pages/home/showcase-home.lit";
 import "./pages/getting-started/showcase-getting-started.lit";
+import "./pages/chat/showcase-chat.lit";
+import "./pages/chat/showcase-chat2.lit";
 import "./pages/component-page/component-page.lit";
 import "./playground/global-playground.lit";
 
@@ -109,6 +111,13 @@ function buildRouterModel(): RouterModel {
     // Home page (default route)
     "": {
       render: () => html`<showcase-home></showcase-home>`
+    },
+
+    // Chat
+    "chat": {
+      render: () =>
+        /* html`<showcase-chat></showcase-chat>` */
+      html`<showcase-chat2></showcase-chat2>`
     },
 
     // Getting started

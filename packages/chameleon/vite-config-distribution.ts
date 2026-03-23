@@ -1,7 +1,9 @@
 import typescript from "@rollup/plugin-typescript";
 import browserslist from "browserslist";
+import { readFileSync } from "fs";
 import { browserslistToTargets } from "lightningcss";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 import summary from "rollup-plugin-summary";
 import { createLogger, PluginOption, UserConfig } from "vite";
 
@@ -19,7 +21,18 @@ import pkgMinifyHTML from "rollup-plugin-minify-html-literals";
 // @ts-expect-error wrong type. TODO: This is a WA to use the default exported function
 const minifyHTML: typeof pkgMinifyHTML = pkgMinifyHTML.default;
 
-const packageJson = await import("./package.json");
+const __dirname = typeof __filename !== 'undefined' ? dirname(__filename) : dirname(fileURLToPath(import.meta.url));
+const packageJsonPath = resolve(__dirname, "package.json");
+let packageJson: any = { peerDependencies: {} };
+try {
+  packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+  if (!packageJson.peerDependencies) {
+    packageJson.peerDependencies = {};
+  }
+} catch (error) {
+  console.warn('Warning: Could not read package.json, using empty peerDependencies');
+  packageJson = { peerDependencies: {} };
+}
 
 // Original logger
 const logger = createLogger();

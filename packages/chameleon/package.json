@@ -62,6 +62,15 @@
       "development": "./dist/browser/development/index.js",
       "default": "./dist/browser/production/index.js"
     },
+    "./components/chat.js": {
+      "node": {
+        "development": "./dist/node/development/components/chat/chat.lit.js",
+        "default": "./dist/node/production/components/chat/chat.lit.js"
+      },
+      "types": "./dist/browser/development/components/chat/chat.lit.d.ts",
+      "development": "./dist/browser/development/components/chat/chat.lit.js",
+      "default": "./dist/browser/production/components/chat/chat.lit.js"
+    },
     "./components/checkbox.js": {
       "node": {
         "development": "./dist/node/development/components/checkbox/checkbox.lit.js",

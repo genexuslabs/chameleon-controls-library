@@ -23,7 +23,9 @@
     "docs": "cd packages/chameleon/ && bun docs",
     "bench.build": "cd packages/benchmarks/ && bun build:ch-7",
     "bench.run": "cd packages/benchmarks/ && bun bench",
-    "bench": "bun bench.build && bun bench.run"
+    "bench": "bun bench.build && bun bench.run",
+    "compare-sizes": "cd packages/benchmarks/ && bun compare-sizes",
+    "compare-sizes:quick": "cd packages/benchmarks/ && bun compare-sizes:quick"
   },
   "dependencies": {
     "@genexus/mercury": "^1.2.0"
@@ -32,6 +34,7 @@
     "@eslint/js": "~9.39.1",
     "@jackolope/ts-lit-plugin": "^3.1.6",
     "@rollup/plugin-typescript": "~12.3.0",
+    "@types/compression": "^1.8.1",
     "@types/node": "~22.15.17",
     "@typescript-eslint/eslint-plugin": "~8.48.0",
     "@typescript-eslint/parser": "~8.48.0",
@@ -42,12 +45,13 @@
     "@vitest/ui": "~4.0.14",
     "ajv": "~8.17.1",
     "browserslist": "~4.28.0",
+    "compression": "^1.8.1",
     "concurrently": "~9.1.2",
     "eslint": "~9.39.1",
     "globals": "~16.5.0",
     "husky": "~9.1.7",
-    "lint-staged": "~16.2.7",
     "lightningcss": "~1.30.2",
+    "lint-staged": "~16.2.7",
     "minify-html-literals": "~1.3.5",
     "playwright": "~1.57.0",
     "prettier": "~3.7.1",

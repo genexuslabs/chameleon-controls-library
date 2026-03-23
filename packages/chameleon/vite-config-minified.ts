@@ -7,6 +7,7 @@ import { updateDevelopmentFlags } from "./update-development-flags";
 
 import { defaultMinifyOptions, minifyHTMLLiterals as minifyLiterals } from "minify-html-literals";
 import pkgMinifyHTML from "rollup-plugin-minify-html-literals";
+import { optimizeDictionaryAccessesPlugin } from "./optimize-dictionary-accesses";
 import optimizeInlinesPlugin from "./optimize-inlines";
 
 // @ts-expect-error wrong type. TODO: This is a WA to use the default exported function
@@ -180,6 +181,8 @@ export const minifiedConfiguration: UserConfig = {
       outDir: OUT_DIR,
       transformers: {}
     }),
+
+    optimizeDictionaryAccessesPlugin(),
 
     minifyHTML({
       minifyHTMLLiterals: (source, options) =>

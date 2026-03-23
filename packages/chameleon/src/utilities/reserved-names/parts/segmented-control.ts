@@ -1,5 +1,6 @@
 import { joinParts } from "../join-parts";
 
+/* #INLINE# */
 export const SEGMENTED_CONTROL_PARTS_DICTIONARY = {
   ACTION: "action",
   DISABLED: "disabled",

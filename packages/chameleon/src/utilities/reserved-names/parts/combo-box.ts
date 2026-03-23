@@ -1,5 +1,6 @@
 import { joinParts } from "../join-parts";
 
+/* #INLINE# */
 export const COMBO_BOX_PARTS_DICTIONARY = {
   EXPANDABLE: "expandable",
   GROUP: "group",

@@ -9,6 +9,7 @@ import {
 } from "minify-html-literals";
 import { resolve } from "path";
 import pkgMinifyHTML from "rollup-plugin-minify-html-literals";
+import { optimizeDictionaryAccessesPlugin } from "../chameleon/optimize-dictionary-accesses";
 import { optimizeInlinesPlugin } from "../chameleon/optimize-inlines";
 
 // @ts-expect-error wrong type. TODO: This is a WA to use the default exported function
@@ -98,6 +99,9 @@ export default defineConfig(({ mode }) => {
         outDir: config.outDir,
         noCheck: true
       }),
+
+      // Optimize dictionary property accesses in CH7 builds (pre-Terser)
+      isCh7 && optimizeDictionaryAccessesPlugin(),
 
       minifyHTML({
         minifyHTMLLiterals: (source, options) =>

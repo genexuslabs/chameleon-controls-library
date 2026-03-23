@@ -1,5 +1,6 @@
 import { joinParts } from "../join-parts";
 
+/* #INLINE# */
 export const LAYOUT_SPLITTER_PARTS_DICTIONARY = {
   BAR: "bar"
 

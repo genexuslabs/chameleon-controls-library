@@ -1,5 +1,6 @@
 import { joinParts } from "../join-parts";
 
+/* #INLINE# */
 export const ACTION_MENU_ITEM_PARTS_DICTIONARY = {
   CONTENT: "content",
   SHORTCUT: "shortcut",
@@ -16,6 +17,7 @@ export const ACTION_MENU_ITEM_PARTS_DICTIONARY = {
   DISABLED: "disabled" // ACTION
 } as const;
 
+/* #INLINE# */
 export const ACTION_MENU_PARTS_DICTIONARY = {
   EXPANDABLE_BUTTON: "expandable-button"
 };

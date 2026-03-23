@@ -1,5 +1,6 @@
 import { joinParts } from "../join-parts";
 
+/* #INLINE# */
 export const SWITCH_PARTS_DICTIONARY = {
   TRACK: "track",
   THUMB: "thumb",

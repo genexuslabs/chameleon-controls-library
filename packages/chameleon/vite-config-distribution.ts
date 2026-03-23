@@ -14,6 +14,7 @@ import {
   minifyHTMLLiterals as minifyLiterals
 } from "minify-html-literals";
 import pkgMinifyHTML from "rollup-plugin-minify-html-literals";
+import { optimizeDictionaryAccessesPlugin } from "./optimize-dictionary-accesses";
 // import { createMinifyProtectedTransformer } from "./rollup-plugin-minify-protected-methods";
 
 // @ts-expect-error wrong type. TODO: This is a WA to use the default exported function
@@ -160,6 +161,8 @@ export const defineDistributionConfiguration = (
             }
           })
       }) as PluginOption,
+
+      optimizeDictionaryAccessesPlugin(),
 
       // Optimize inline expressions after Terser minification
       isProduction && (optimizeInlinesPlugin() as PluginOption),

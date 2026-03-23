@@ -1,5 +1,6 @@
 import { joinParts } from "../join-parts";
 
+/* #INLINE# */
 export const ACCORDION_PARTS_DICTIONARY = {
   HEADER: "header",
   PANEL: "panel",

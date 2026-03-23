@@ -2,6 +2,7 @@ import { joinParts } from "../join-parts";
 
 const RADIO_ITEM_PARTS_PREFIX = "radio__";
 
+/* #INLINE# */
 export const RADIO_ITEM_PARTS_DICTIONARY = {
   RADIO_ITEM: "radio-item",
   CONTAINER: `${RADIO_ITEM_PARTS_PREFIX}container`,

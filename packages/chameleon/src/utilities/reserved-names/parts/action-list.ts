@@ -5,6 +5,7 @@ import {
   CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY
 } from "./checkbox";
 
+/* #INLINE# */
 export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {
   ACTION: "item__action",
   ADDITIONAL_ITEM: "item__additional-item",
@@ -70,6 +71,7 @@ export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {
 
 export const ACTION_LIST_ITEM_EXPORT_PARTS = joinParts(ACTION_LIST_ITEM_PARTS_DICTIONARY);
 
+/* #INLINE# */
 export const ACTION_LIST_GROUP_PARTS_DICTIONARY = {
   ACTION: "group__action",
   CAPTION: "group__caption",
@@ -91,6 +93,7 @@ export const ACTION_LIST_GROUP_PARTS_DICTIONARY = {
 
 export const ACTION_LIST_GROUP_EXPORT_PARTS = joinParts(ACTION_LIST_GROUP_PARTS_DICTIONARY);
 
+/* #INLINE# */
 export const ACTION_LIST_PARTS_DICTIONARY = {
   GROUP: "group",
   ITEM: "item"

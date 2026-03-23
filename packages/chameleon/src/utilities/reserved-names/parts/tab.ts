@@ -1,5 +1,6 @@
 import { joinParts } from "../join-parts";
 
+/* #INLINE# */
 export const TAB_PARTS_DICTIONARY = {
   TAB: "tab",
   TAB_CAPTION: "tab-caption",

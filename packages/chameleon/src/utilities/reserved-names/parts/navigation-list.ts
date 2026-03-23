@@ -1,5 +1,6 @@
 import { joinParts } from "../join-parts";
 
+/* #INLINE# */
 export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
   ACTION: "item__action",
   BUTTON: "item__button",

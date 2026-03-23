@@ -1,8 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+
 :host {
   display: block;
   border-inline-start: 1px solid var(--showcase-border-color, #e5e7eb);
-  padding: 24px 16px;
-  overflow-y: auto;
+  padding-inline: 24px;
+  padding-block: 16px;
 }
 
 .toc-title {
@@ -47,3 +51,4 @@
   color: var(--showcase-toc-active-color, #2563eb);
   font-weight: 500;
 }
+

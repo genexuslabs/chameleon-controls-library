@@ -1,8 +1,6 @@
 :host {
   display: block;
   border-inline-end: 1px solid var(--showcase-border-color, #e5e7eb);
-  overflow-y: auto;
-  padding-block: 16px;
 }
 
 /* ch-sidebar uses display: grid with grid-template-rows: 1fr max-content.
@@ -44,7 +42,9 @@ ch-navigation-list-render::part(item__link) {
   padding-block: 5px;
   padding-inline-end: 12px;
   border-radius: 6px;
-  transition: color 0.15s, background-color 0.15s;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
 }
 
 ch-navigation-list-render::part(item__link):hover {
@@ -70,3 +70,4 @@ ch-navigation-list-render::part(indicator) {
 ch-navigation-list-render::part(item__caption) {
   line-height: 1.5;
 }
+

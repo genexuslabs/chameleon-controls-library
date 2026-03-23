@@ -11,12 +11,16 @@
     />
 
     <style>
-      html,
       body {
+        display: grid;
+        grid-template-rows: 1fr;
         margin: 0;
         padding: 0;
-        height: 100%;
-        font-family: system-ui, -apple-system, sans-serif;
+        min-block-size: 100dvh;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
       }
 
       /* Prevent FOUC - hide until showcase is defined */
@@ -31,3 +35,4 @@
     <script type="module" src="./showcase/showcase.lit.ts"></script>
   </body>
 </html>
+

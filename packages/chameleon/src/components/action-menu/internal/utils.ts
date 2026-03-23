@@ -1,17 +1,15 @@
+import type { ChameleonControlsTagName } from "../../../typings/chameleon-components";
+import { focusComposedPath } from "../../../utilities/focus-composed-path";
 import type {
   ActionMenuInfoInEvent,
   ActionMenuItemActionableModel,
   ActionMenuItemModel
 } from "../types";
-import type { ChameleonControlsTagName } from "../../../typings/chameleon-components";
-import { focusComposedPath } from "../../../utilities/focus-composed-path";
 
-export const WINDOW_ID = "window";
 export const ACTION_MENU_RENDER_TAG_NAME =
   "ch-action-menu-render" satisfies ChameleonControlsTagName;
 
-export const ACTION_MENU_TAG_NAME =
-  "ch-action-menu" satisfies ChameleonControlsTagName;
+export const ACTION_MENU_TAG_NAME = "ch-action-menu" satisfies ChameleonControlsTagName;
 
 export const ACTION_MENU_SLOT_TAG_NAME = "slot";
 
@@ -23,17 +21,13 @@ export const actionMenuItemIsActionable = (
 ): itemUIModel is ActionMenuItemActionableModel =>
   !itemUIModel.type || itemUIModel.type === "actionable";
 
-export const actionMenuItemActionableIsExpandable = (
-  itemUIModel: ActionMenuItemActionableModel
-) => itemUIModel.items !== undefined;
+export const actionMenuItemActionableIsExpandable = (itemUIModel: ActionMenuItemActionableModel) =>
+  itemUIModel.items !== undefined;
 
-export const actionMenuItemIsHyperlink = (
-  itemUIModel: ActionMenuItemActionableModel
-) => !!itemUIModel.link?.url;
+export const actionMenuItemIsHyperlink = (itemUIModel: ActionMenuItemActionableModel) =>
+  !!itemUIModel.link?.url;
 
-export const getShadowRootOfEvent = (
-  event: KeyboardEvent | MouseEvent | PointerEvent
-) => {
+export const getShadowRootOfEvent = (event: KeyboardEvent | MouseEvent | PointerEvent) => {
   const composedPath = event.composedPath();
   const buttonIndex = composedPath.findIndex(el => {
     const tagName = ((el as HTMLElement).tagName ?? "").toLowerCase();
@@ -65,10 +59,7 @@ export const getActionMenuInfoInEvent = (
   const parentTagName = shadowRoot.host.tagName.toLowerCase();
 
   // The button does not belong to a ch-action-menu or ch-action-menu-render element
-  if (
-    parentTagName !== ACTION_MENU_TAG_NAME &&
-    parentTagName !== ACTION_MENU_RENDER_TAG_NAME
-  ) {
+  if (parentTagName !== ACTION_MENU_TAG_NAME && parentTagName !== ACTION_MENU_RENDER_TAG_NAME) {
     return undefined;
   }
   event.stopPropagation();
@@ -83,45 +74,32 @@ export const getActionMenuInfoInEvent = (
 
 export const focusFirstActionMenuItem = (
   actionMenuRef: HTMLChPopoverElement | HTMLChActionMenuElement
-) =>
-  (
-    actionMenuRef.querySelector(FIRST_ACTION_MENU) as HTMLChActionMenuElement
-  )?.focus();
+) => (actionMenuRef.querySelector(FIRST_ACTION_MENU) as HTMLChActionMenuElement)?.focus();
 
 export const focusActionMenuLastItem = (
   actionMenuRef: HTMLChPopoverElement | HTMLChActionMenuElement
-) =>
-  (
-    actionMenuRef.querySelector(LAST_ACTION_MENU) as HTMLChActionMenuElement
-  )?.focus();
+) => (actionMenuRef.querySelector(LAST_ACTION_MENU) as HTMLChActionMenuElement)?.focus();
 
 const getSiblingType = (
   nextSibling: Element
-):
-  | typeof ACTION_MENU_TAG_NAME
-  | typeof ACTION_MENU_SLOT_TAG_NAME
-  | undefined => {
+): typeof ACTION_MENU_TAG_NAME | typeof ACTION_MENU_SLOT_TAG_NAME | undefined => {
   const tagName = (nextSibling as HTMLElement).tagName?.toLowerCase();
 
   if (tagName === ACTION_MENU_TAG_NAME) {
     return ACTION_MENU_TAG_NAME;
   }
 
-  return tagName === ACTION_MENU_SLOT_TAG_NAME
-    ? ACTION_MENU_SLOT_TAG_NAME
-    : undefined;
+  return tagName === ACTION_MENU_SLOT_TAG_NAME ? ACTION_MENU_SLOT_TAG_NAME : undefined;
 };
 
-const findPreviousSibling = (element: Element) =>
-  element.previousElementSibling;
+const findPreviousSibling = (element: Element) => element.previousElementSibling;
 const findNextSibling = (element: Element) => element.nextElementSibling;
 
 export const focusNextElement = (
   actionMenuInfo: ActionMenuInfoInEvent,
   findMode: "previous" | "next"
 ) => {
-  const findFunction =
-    findMode === "previous" ? findPreviousSibling : findNextSibling;
+  const findFunction = findMode === "previous" ? findPreviousSibling : findNextSibling;
 
   let nextSibling = findFunction(actionMenuInfo.ref);
 
@@ -144,6 +122,6 @@ export const focusNextElement = (
   }
 };
 
-export const actionMenuElementIsFocused = (
-  actionMenuRef: HTMLChActionMenuElement
-) => actionMenuRef === focusComposedPath()[1];
+export const actionMenuElementIsFocused = (actionMenuRef: HTMLChActionMenuElement) =>
+  actionMenuRef === focusComposedPath()[1];
+

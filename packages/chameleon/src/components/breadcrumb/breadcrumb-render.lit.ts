@@ -13,7 +13,7 @@ import type { BreadCrumbHyperlinkClickEvent, BreadCrumbItemModel, BreadCrumbMode
 import type { ChameleonControlsTagName } from "../../typings/chameleon-components";
 import type { GxImageMultiState } from "../../typings/multi-state-images";
 
-import ChBreadCrumbItem from "./internal/breadcrumb-item/breadcrumb-item.lit";
+import { ChBreadCrumbItem } from "./internal/breadcrumb-item/breadcrumb-item.lit";
 
 import { DEFAULT_BREADCRUMB_GET_IMAGE_PATH_CALLBACK } from "../../utilities/constants/breadcrumb";
 

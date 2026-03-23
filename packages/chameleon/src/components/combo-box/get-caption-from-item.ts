@@ -1,4 +1,4 @@
-import { ComboBoxItemModel } from "./types";
+import type { ComboBoxItemModel } from "./types";
 
-export const getCaptionFromItem = (item: ComboBoxItemModel) =>
-  item.caption ?? item.value;
+export const getCaptionFromItem = (item: ComboBoxItemModel) => item.caption ?? item.value;
+

@@ -3,7 +3,7 @@ import type {
   GxImageMultiStateStart
 } from "../../typings/multi-state-images";
 import { updateDirectionInImageCustomVar } from "../../utilities/multi-state-icons";
-import {
+import type {
   ComboBoxImagePathCallback,
   ComboBoxItemGroup,
   ComboBoxItemImagesModel,
@@ -65,11 +65,7 @@ const setComboBoxImagesForMap = (
 
     // Recursive phase
     if (itemUIModel.items != null) {
-      setComboBoxImagesForMap(
-        itemUIModel.items,
-        getImagePathCallback,
-        itemImages
-      );
+      setComboBoxImagesForMap(itemUIModel.items, getImagePathCallback, itemImages);
     }
   }
 };
@@ -86,3 +82,4 @@ export const getComboBoxImages = (
 
   return itemImages;
 };
+

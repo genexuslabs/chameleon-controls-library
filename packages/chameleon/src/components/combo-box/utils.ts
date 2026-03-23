@@ -1,6 +1,6 @@
 import type { ChameleonControlsTagName } from "../../typings/chameleon-components";
 import { getComboBoxItemUIModel } from "./renders";
-import {
+import type {
   ComboBoxItemGroup,
   ComboBoxItemModel,
   ComboBoxItemModelExtended,
@@ -81,9 +81,7 @@ export const popoverWasClicked = (event: Event) => {
     }
     // The ch-popover tag does not exists in the path. There is no need to
     // check the rest of the path
-    if (
-      elementName === ("ch-combo-box-render" satisfies ChameleonControlsTagName)
-    ) {
+    if (elementName === ("ch-combo-box-render" satisfies ChameleonControlsTagName)) {
       return false;
     }
   }
@@ -150,10 +148,7 @@ export const comboBoxActiveDescendantIsRendered = (
     }
     if (
       firstLevelItem.items != null &&
-      checkIfSecondLevelModelContainsActiveDescendant(
-        activeDescendant,
-        firstLevelItem.items
-      )
+      checkIfSecondLevelModelContainsActiveDescendant(activeDescendant, firstLevelItem.items)
     ) {
       return true;
     }
@@ -161,3 +156,4 @@ export const comboBoxActiveDescendantIsRendered = (
 
   return false;
 };
+

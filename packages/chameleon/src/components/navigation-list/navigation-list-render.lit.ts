@@ -34,7 +34,7 @@ import {
 } from "./utils";
 
 // Side-effect to define the navigation list item
-import ChNavigationListItem from "./internal/navigation-list-item/navigation-list-item.lit";
+import { ChNavigationListItem } from "./internal/navigation-list-item/navigation-list-item.lit";
 
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import styles from "./navigation-list-render.scss?inline";

@@ -1,8 +1,8 @@
 import { html, nothing, type TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
-import { COMBO_BOX_PARTS_DICTIONARY } from "../../utilities/reserved-names/reserved-names";
 import { tokenMap } from "../../utilities/mapping/token-map";
+import { COMBO_BOX_PARTS_DICTIONARY } from "../../utilities/reserved-names/parts/combo-box";
 import { getCaptionFromItem } from "./get-caption-from-item";
 import type {
   ComboBoxItemGroup,
@@ -13,32 +13,21 @@ import type {
 
 const INDEX_SEPARATOR = "__";
 
-const getComboBoxElementIndex = (
-  parentIndex: string,
-  index: number,
-  insideAGroup: boolean
-) => (insideAGroup ? `${parentIndex}${INDEX_SEPARATOR}${index}` : `${index}`);
+const getComboBoxElementIndex = (parentIndex: string, index: number, insideAGroup: boolean) =>
+  insideAGroup ? `${parentIndex}${INDEX_SEPARATOR}${index}` : `${index}`;
 
-export const getComboBoxItemUIModel = (
-  index: string,
-  model: ComboBoxModel
-): ComboBoxItemModel => {
+export const getComboBoxItemUIModel = (index: string, model: ComboBoxModel): ComboBoxItemModel => {
   const indexes = index.split(INDEX_SEPARATOR);
   const itemFirstLevel = model[Number(indexes[0])];
 
-  if (
-    indexes.length === 2 &&
-    (itemFirstLevel as ComboBoxItemGroup).items != null
-  ) {
+  if (indexes.length === 2 && (itemFirstLevel as ComboBoxItemGroup).items != null) {
     return (itemFirstLevel as ComboBoxItemGroup).items[Number(indexes[1])];
   }
   return itemFirstLevel;
 };
 
 // TODO: Add a unit test for these cases
-export const getComboBoxItemImageStyle = (
-  images: ComboBoxItemImagesModel | undefined
-) => {
+export const getComboBoxItemImageStyle = (images: ComboBoxItemImagesModel | undefined) => {
   if (!images) {
     return undefined;
   }
@@ -63,10 +52,7 @@ export const customComboBoxItemRender =
     itemImages: Map<string, ComboBoxItemImagesModel>,
     parentIndex: string
   ) =>
-  (
-    item: ComboBoxItemModel,
-    index: number
-  ): TemplateResult | typeof nothing => {
+  (item: ComboBoxItemModel, index: number): TemplateResult | typeof nothing => {
     if (
       checkToDisplayValue &&
       // !this.#isModelAlreadyFiltered() &&
@@ -76,21 +62,15 @@ export const customComboBoxItemRender =
     }
 
     const images: ComboBoxItemImagesModel | undefined =
-      !!item.startImgSrc || !!item.endImgSrc
-        ? itemImages.get(item.value)
-        : undefined;
+      !!item.startImgSrc || !!item.endImgSrc ? itemImages.get(item.value) : undefined;
     const hasStartImg = !!images?.start;
     const hasEndImg = !!images?.end;
 
     const startImgClasses = hasStartImg
-      ? `img--start start-img-type--${item.startImgType ?? "background"} ${
-          images.start.classes
-        }`
+      ? `img--start start-img-type--${item.startImgType ?? "background"} ${images.start.classes}`
       : undefined;
     const endImgClasses = hasEndImg
-      ? `img--end end-img-type--${item.endImgType ?? "background"} ${
-          images.end.classes
-        }`
+      ? `img--end end-img-type--${item.endImgType ?? "background"} ${images.end.classes}`
       : undefined;
 
     // This variable inherits the disabled state from group parents. Useful
@@ -99,22 +79,14 @@ export const customComboBoxItemRender =
     const itemGroup = item as ComboBoxItemGroup;
     const isActiveDescendant = item.value === activeDescendantValue?.value;
 
-    const itemIndex = getComboBoxElementIndex(
-      parentIndex,
-      index,
-      insideAGroup
-    );
+    const itemIndex = getComboBoxElementIndex(parentIndex, index, insideAGroup);
 
     return itemGroup.items != null
       ? html`<div
           role="group"
           class="group"
-          aria-controls=${itemGroup.expandable
-            ? `${index}__content`
-            : nothing}
-          aria-expanded=${itemGroup.expandable
-            ? (!!itemGroup.expanded).toString()
-            : nothing}
+          aria-controls=${itemGroup.expandable ? `${index}__content` : nothing}
+          aria-expanded=${itemGroup.expandable ? (!!itemGroup.expanded).toString() : nothing}
           aria-labelledby=${index.toString()}
           part=${tokenMap({
             [item.value]: true,
@@ -176,12 +148,11 @@ export const customComboBoxItemRender =
             id=${itemGroup.expandable ? `${index}__content` : nothing}
             class=${classMap({
               group__content: true,
-              "group__content--collapsed":
-                itemGroup.expandable && !itemGroup.expanded
+              "group__content--collapsed": itemGroup.expandable && !itemGroup.expanded
             })}
             part=${`${COMBO_BOX_PARTS_DICTIONARY.GROUP_CONTENT} ${item.value}`}
           >
-            ${(!itemGroup.expandable || itemGroup.expanded)
+            ${!itemGroup.expandable || itemGroup.expanded
               ? itemGroup.items.map(
                   customComboBoxItemRender(
                     true,
@@ -226,15 +197,10 @@ export const customComboBoxItemRender =
         </button>`;
   };
 
-export const nativeItemRender = (
-  item: ComboBoxItemModel,
-  selectedValue: string
-): TemplateResult =>
+export const nativeItemRender = (item: ComboBoxItemModel, selectedValue: string): TemplateResult =>
   (item as ComboBoxItemGroup).items != null
     ? html`<optgroup label=${item.caption ?? item.value}>
-        ${(item as ComboBoxItemGroup).items.map(item =>
-          nativeItemRender(item, selectedValue)
-        )}
+        ${(item as ComboBoxItemGroup).items.map(item => nativeItemRender(item, selectedValue))}
       </optgroup>`
     : html`<option
         value=${item.value}
@@ -243,3 +209,4 @@ export const nativeItemRender = (
       >
         ${item.caption ?? item.value}
       </option>`;
+

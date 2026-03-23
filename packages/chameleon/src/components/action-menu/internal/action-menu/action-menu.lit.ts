@@ -1,32 +1,26 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { watch } from "@genexus/kasstor-signals/directives/watch.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 import { classMap } from "lit/directives/class-map.js";
 import { createRef, ref, type Ref } from "lit/directives/ref.js";
-import { watch } from "@genexus/kasstor-signals/directives/watch.js";
-import type { ReadonlySignal } from "@genexus/kasstor-signals/core.js";
 
 import { IS_SERVER } from "../../../../development-flags";
+import type { ItemLink } from "../../../../typings/hyperlinks";
+import type { GetImagePathCallback, ImageRender } from "../../../../typings/multi-state-images";
+import { tokenMap } from "../../../../utilities/mapping/token-map";
+import { DISABLED_CLASS } from "../../../../utilities/reserved-names/common";
 import {
   ACTION_MENU_ITEM_EXPORT_PARTS,
   ACTION_MENU_ITEM_PARTS_DICTIONARY
-} from "../../../../utilities/reserved-names/reserved-names";
-import { DISABLED_CLASS } from "../../../../utilities/reserved-names/common";
-import type {
-  GetImagePathCallback,
-  ImageRender
-} from "../../../../typings/multi-state-images";
-import type { ItemLink } from "../../../../typings/hyperlinks";
-import { tokenMap } from "../../../../utilities/mapping/token-map";
+} from "../../../../utilities/reserved-names/parts/action-menu";
 import type { ChPopoverAlign } from "../../../popover/types";
 import type { ActionMenuItemActionableModel } from "../../types";
 import { getActionMenuItemMetadata } from "../parse-model";
 import { focusFirstActionMenuItem } from "../utils";
 
+import type { KasstorSignal } from "@genexus/kasstor-signals";
 import styles from "./action-menu.scss?inline";
 
 // In the server we need to preload the ch-popover and ch-image just in case
@@ -98,8 +92,7 @@ export class ChActionMenu extends KasstorElement {
   /**
    * Specifies how the end image will be rendered.
    */
-  @property({ attribute: false }) endImgType: Exclude<ImageRender, "img"> =
-    "background";
+  @property({ attribute: false }) endImgType: Exclude<ImageRender, "img"> = "background";
 
   /**
    * Specifies whether the item contains a subtree. `true` if the item has a
@@ -152,18 +145,13 @@ export class ChActionMenu extends KasstorElement {
    * Specifies an alternative position to try when the popover overflows the
    * window.
    */
-  @property({ attribute: false }) positionTry!:
-    | "flip-block"
-    | "flip-inline"
-    | "none";
+  @property({ attribute: false }) positionTry!: "flip-block" | "flip-inline" | "none";
 
   /**
    * Computed signal from the render component that resolves the image path
    * callback. Received as a normal class member, NOT a reactive property.
    */
-  resolvedImagePathCallback:
-    | ReadonlySignal<GetImagePathCallback | undefined>
-    | undefined;
+  resolvedImagePathCallback: KasstorSignal<GetImagePathCallback | undefined> | undefined;
 
   /**
    * Specifies the shortcut caption that the control will display.
@@ -178,8 +166,7 @@ export class ChActionMenu extends KasstorElement {
   /**
    * Specifies how the start image will be rendered.
    */
-  @property({ attribute: false }) startImgType: Exclude<ImageRender, "img"> =
-    "background";
+  @property({ attribute: false }) startImgType: Exclude<ImageRender, "img"> = "background";
 
   #itemContent = () => html`
     <span
@@ -226,17 +213,13 @@ export class ChActionMenu extends KasstorElement {
             [ACTION_LINK_EXPANDABLE]: expandable,
             [ACTION_LINK]: !expandable,
             [ACTION_MENU_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-            [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]:
-              expandable && !!this.expanded,
-            [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]:
-              expandable && !this.expanded,
+            [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]: expandable && !!this.expanded,
+            [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]: expandable && !this.expanded,
             [this.parts!]: hasParts
           })}
           href=${!this.disabled && this.link.url ? this.link.url : nothing}
           rel=${!this.disabled && this.link.rel ? this.link.rel : nothing}
-          target=${!this.disabled && this.link.target
-            ? this.link.target
-            : nothing}
+          target=${!this.disabled && this.link.target ? this.link.target : nothing}
           ${ref(this.#mainActionRef)}
         >
           ${hasStartImage
@@ -260,7 +243,7 @@ export class ChActionMenu extends KasstorElement {
             : nothing}
         </a>`
       : html`<button
-          popoverTarget=${WINDOW_ID}
+          popovertarget=${WINDOW_ID}
           aria-controls=${expandable ? WINDOW_ID : nothing}
           aria-expanded=${expandable ? (!!this.expanded).toString() : nothing}
           aria-haspopup=${expandable ? "true" : nothing}
@@ -272,10 +255,8 @@ export class ChActionMenu extends KasstorElement {
             [ACTION_BUTTON_EXPANDABLE]: expandable,
             [ACTION_BUTTON]: !expandable,
             [ACTION_MENU_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-            [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]:
-              expandable && !!this.expanded,
-            [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]:
-              expandable && !this.expanded,
+            [ACTION_MENU_ITEM_PARTS_DICTIONARY.EXPANDED]: expandable && !!this.expanded,
+            [ACTION_MENU_ITEM_PARTS_DICTIONARY.COLLAPSED]: expandable && !this.expanded,
             [this.parts!]: hasParts
           })}
           ?disabled=${this.disabled}
@@ -330,9 +311,7 @@ export class ChActionMenu extends KasstorElement {
     // TODO: Test this with multiple parts
 
     const customParts = parts
-      ? `${ACTION_MENU_ITEM_EXPORT_PARTS},${parts
-          .split(SEPARATE_BY_SPACE_REGEX)
-          .join(",")}`
+      ? `${ACTION_MENU_ITEM_EXPORT_PARTS},${parts.split(SEPARATE_BY_SPACE_REGEX).join(",")}`
       : ACTION_MENU_ITEM_EXPORT_PARTS;
 
     this.setAttribute("exportparts", customParts);
@@ -367,12 +346,3 @@ export class ChActionMenu extends KasstorElement {
   }
 }
 
-declare global {
-  // Backward-compatible type alias used by internal utilities
-  // (keyboard-actions.ts, utils.ts) that reference the old Stencil name
-  type HTMLChActionMenuElement = ChActionMenu;
-
-  interface HTMLElementTagNameMap {
-    "ch-action-menu": ChActionMenu;
-  }
-}

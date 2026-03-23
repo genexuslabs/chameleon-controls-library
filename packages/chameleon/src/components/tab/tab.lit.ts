@@ -1,11 +1,5 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators/property.js";
@@ -15,10 +9,7 @@ import { createRef, ref, type Ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 import { IS_SERVER } from "../../development-flags";
-import type {
-  CssContainProperty,
-  CssOverflowProperty
-} from "../../typings/css-properties";
+import type { CssContainProperty, CssOverflowProperty } from "../../typings/css-properties";
 import type { GetImagePathCallback } from "../../typings/multi-state-images";
 import { insertIntoIndex, removeIndex } from "../../utilities/array";
 import {
@@ -30,7 +21,7 @@ import { inBetween } from "../../utilities/in-between";
 import { tokenMap } from "../../utilities/mapping/token-map";
 import { SCROLLABLE_CLASS } from "../../utilities/reserved-names/common";
 import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
-import { TAB_PARTS_DICTIONARY } from "../../utilities/reserved-names/reserved-names";
+import { TAB_PARTS_DICTIONARY } from "../../utilities/reserved-names/parts/tab";
 import { isRTL } from "../../utilities/rtl-watcher";
 import { SyncWithRAF } from "../../utilities/sync-with-frames";
 import { adoptCommonThemes } from "../../utilities/theme.js";
@@ -130,11 +121,7 @@ const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
 
-const setButtonInitialPosition = (
-  element: HTMLElement,
-  positionX: number,
-  positionY: number
-) => {
+const setButtonInitialPosition = (element: HTMLElement, positionX: number, positionY: number) => {
   setProperty(element, BUTTON_POSITION_X, positionX);
   setProperty(element, BUTTON_POSITION_Y, positionY);
 };
@@ -143,11 +130,7 @@ const setButtonSize = (element: HTMLElement, size: number) => {
   setProperty(element, BUTTON_SIZE, size);
 };
 
-const setMousePosition = (
-  element: HTMLElement,
-  positionX: number,
-  positionY: number
-) => {
+const setMousePosition = (element: HTMLElement, positionX: number, positionY: number) => {
   setProperty(element, MOUSE_POSITION_X, positionX);
   setProperty(element, MOUSE_POSITION_Y, positionY);
 };
@@ -179,33 +162,20 @@ const getTabListSizesAndSetPosition = (
   };
 
   if (blockDirection) {
-    setTabListStartEndPosition(
-      hostRef,
-      tabListSizes.xStart,
-      tabListSizes.xEnd - buttonRect.width
-    );
+    setTabListStartEndPosition(hostRef, tabListSizes.xStart, tabListSizes.xEnd - buttonRect.width);
   } else {
-    setTabListStartEndPosition(
-      hostRef,
-      tabListSizes.yStart,
-      tabListSizes.yEnd - buttonRect.height
-    );
+    setTabListStartEndPosition(hostRef, tabListSizes.yStart, tabListSizes.yEnd - buttonRect.height);
   }
 
   return tabListSizes;
 };
 
-const setMouseOffset = (
-  element: HTMLElement,
-  offsetX: number,
-  offsetY: number
-) => {
+const setMouseOffset = (element: HTMLElement, offsetX: number, offsetY: number) => {
   setProperty(element, MOUSE_OFFSET_X, offsetX);
   setProperty(element, MOUSE_OFFSET_Y, offsetY);
 };
 
-const addGrabbingStyle = () =>
-  document.body.style.setProperty("cursor", "grabbing");
+const addGrabbingStyle = () => document.body.style.setProperty("cursor", "grabbing");
 const removeGrabbingStyle = () => document.body.style.removeProperty("cursor");
 
 const getNextEnabledButtonCaption = (
@@ -375,48 +345,28 @@ export class ChTabRender extends KasstorElement implements DraggableView {
       if (blockDirection) {
         return;
       }
-      focusNextOrPreviousCaption(
-        false,
-        this.#tabListRef.value!,
-        focusedButton,
-        ev
-      );
+      focusNextOrPreviousCaption(false, this.#tabListRef.value!, focusedButton, ev);
     },
 
     [KEY_CODES.ARROW_RIGHT]: (blockDirection, ev, focusedButton) => {
       if (!blockDirection) {
         return;
       }
-      focusNextOrPreviousCaption(
-        !isRTL(),
-        this.#tabListRef.value!,
-        focusedButton,
-        ev
-      );
+      focusNextOrPreviousCaption(!isRTL(), this.#tabListRef.value!, focusedButton, ev);
     },
 
     [KEY_CODES.ARROW_DOWN]: (blockDirection, ev, focusedButton) => {
       if (blockDirection) {
         return;
       }
-      focusNextOrPreviousCaption(
-        true,
-        this.#tabListRef.value!,
-        focusedButton,
-        ev
-      );
+      focusNextOrPreviousCaption(true, this.#tabListRef.value!, focusedButton, ev);
     },
 
     [KEY_CODES.ARROW_LEFT]: (blockDirection, ev, focusedButton) => {
       if (!blockDirection) {
         return;
       }
-      focusNextOrPreviousCaption(
-        isRTL(),
-        this.#tabListRef.value!,
-        focusedButton,
-        ev
-      );
+      focusNextOrPreviousCaption(isRTL(), this.#tabListRef.value!, focusedButton, ev);
     },
 
     [KEY_CODES.HOME]: (_, ev) =>
@@ -450,15 +400,12 @@ export class ChTabRender extends KasstorElement implements DraggableView {
    * for the element. This value is applied as the accessible name of the
    * `role="tablist"` element.
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
 
   /**
    * `true` to display a close button for the items.
    */
-  @property({ type: Boolean, attribute: "close-button" }) closeButton: boolean =
-    false;
+  @property({ type: Boolean, attribute: "close-button" }) closeButton: boolean = false;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -492,8 +439,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
    *
    * This property lets you specify if this behavior is enabled.
    */
-  @property({ type: Boolean, attribute: "drag-outside" }) dragOutside: boolean =
-    false;
+  @property({ type: Boolean, attribute: "drag-outside" }) dragOutside: boolean = false;
 
   /**
    * `true` if the tab panel container is visible. When `false`, only the
@@ -505,9 +451,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
    * This property specifies a callback that is executed when the path for an
    * startImgSrc needs to be resolved.
    */
-  @property(NO_ATTRIBUTE) getImagePathCallback:
-    | GetImagePathCallback
-    | undefined;
+  @property(NO_ATTRIBUTE) getImagePathCallback: GetImagePathCallback | undefined;
 
   /**
    * Specifies the items of the tab control. Tab panels use lazy rendering:
@@ -525,9 +469,8 @@ export class ChTabRender extends KasstorElement implements DraggableView {
    * when content does not fit in the item's padding box (overflows) in the
    * horizontal and/or vertical direction.
    */
-  @property() overflow:
-    | CssOverflowProperty
-    | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
+  @property() overflow: CssOverflowProperty | `${CssOverflowProperty} ${CssOverflowProperty}` =
+    "visible";
 
   /**
    * Specifies the selected item of the widgets array.
@@ -538,9 +481,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     if (!this.selectedId) {
       return;
     }
-    const newSelectedTabItem = this.model?.find(
-      item => item.id === this.selectedId
-    );
+    const newSelectedTabItem = this.model?.find(item => item.id === this.selectedId);
 
     if (newSelectedTabItem) {
       this.#renderedPages.set(this.selectedId, newSelectedTabItem);
@@ -705,9 +646,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     // The selected id must be added to the rendered pages, even if it was not
     // marked as "wasRendered" in the UI Model
     if (this.selectedId && items !== undefined) {
-      const newSelectedTabItem = this.model?.find(
-        item => item.id === this.selectedId
-      );
+      const newSelectedTabItem = this.model?.find(item => item.id === this.selectedId);
 
       if (newSelectedTabItem) {
         this.#renderedPages.set(this.selectedId, newSelectedTabItem);
@@ -746,9 +685,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
       getItemSize as (item: Element) => number
     );
 
-    const buttonRect = (
-      event.target as HTMLButtonElement
-    ).getBoundingClientRect();
+    const buttonRect = (event.target as HTMLButtonElement).getBoundingClientRect();
 
     // Tab List information
     const tabListSizes = getTabListSizesAndSetPosition(
@@ -782,9 +719,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     }
 
     // Store initial mouse position
-    this.#initialMousePosition = blockDirection
-      ? mousePositionX
-      : mousePositionY;
+    this.#initialMousePosition = blockDirection ? mousePositionX : mousePositionY;
 
     // - - - - - - - - - - - DOM write operations - - - - - - - - - - -
     // Initialize mouse position to avoid initial flickering
@@ -796,11 +731,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     setButtonSize(this, blockDirection ? buttonRect.width : buttonRect.height);
 
     // Update mouse offset to correctly place the dragged element preview
-    setMouseOffset(
-      this,
-      mouseDistanceToButtonLeftEdge,
-      mouseDistanceToButtonTopEdge
-    );
+    setMouseOffset(this, mouseDistanceToButtonLeftEdge, mouseDistanceToButtonTopEdge);
 
     addGrabbingStyle();
 
@@ -832,8 +763,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     removeGrabbingStyle();
 
     const anItemWasReordered =
-      !this.hasCrossedBoundaries &&
-      this.draggedElementNewIndex !== this.draggedElementIndex;
+      !this.hasCrossedBoundaries && this.draggedElementNewIndex !== this.draggedElementIndex;
 
     // Move the item to the new position
     if (anItemWasReordered) {
@@ -933,9 +863,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
         const hasMovedToTheEnd = this.#initialMousePosition < mousePosition;
 
         // Distance traveled from the initial mouse position
-        let distanceTraveled = Math.abs(
-          this.#initialMousePosition - mousePosition
-        );
+        let distanceTraveled = Math.abs(this.#initialMousePosition - mousePosition);
 
         let newIndex = this.draggedElementIndex;
 
@@ -952,10 +880,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
         } else {
           // While it is not the first item and the distance traveled is greater
           // than half the size of the previous item
-          while (
-            newIndex > 0 &&
-            distanceTraveled - this.#itemSizes![newIndex - 1] / 2 > 0
-          ) {
+          while (newIndex > 0 && distanceTraveled - this.#itemSizes![newIndex - 1] / 2 > 0) {
             distanceTraveled -= this.#itemSizes![newIndex - 1];
             newIndex--;
           }
@@ -990,8 +915,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     event.stopPropagation();
     const composedPath = event.composedPath();
     const buttonRef = composedPath.find(
-      eventTarget =>
-        (eventTarget as HTMLElement).tagName?.toLowerCase() === "button"
+      eventTarget => (eventTarget as HTMLElement).tagName?.toLowerCase() === "button"
     ) as HTMLButtonElement | undefined;
 
     // Check the click event is performed on a button element
@@ -1076,11 +1000,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
       "." + TAB_BUTTON_CLASS
     ) as HTMLButtonElement;
 
-    keyEventHandler(
-      isBlockDirection(this.tabListPosition),
-      event,
-      currentFocusedCaption
-    );
+    keyEventHandler(isBlockDirection(this.tabListPosition), event, currentFocusedCaption);
   };
 
   #getEnabledItems = (): number => {
@@ -1090,10 +1010,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     while (itemsEnabled < 2 && itemIndex < this.model!.length) {
       const itemUIModel = this.model![itemIndex];
 
-      if (
-        itemUIModel.disabled === false ||
-        (!this.disabled && itemUIModel.disabled !== true)
-      ) {
+      if (itemUIModel.disabled === false || (!this.disabled && itemUIModel.disabled !== true)) {
         itemsEnabled++;
       }
 
@@ -1188,28 +1105,14 @@ export class ChTabRender extends KasstorElement implements DraggableView {
         [TAB_PARTS_DICTIONARY.END]: !startDirection
       })}
       @auxclick=${atLeastOneItemIsEnabled ? this.#handleClose : nothing}
-      @click=${atLeastOneItemIsEnabled
-        ? this.#handleSelectedItemChange
-        : nothing}
-      @dragstart=${this.sortable && atLeastOneItemIsEnabled
-        ? this.#handleDragStart
-        : nothing}
-      @keydown=${this.model!.length >= 2 && enabledItems >= 2
-        ? this.#handleTabFocus
-        : nothing}
-      @mousedown=${atLeastOneItemIsEnabled
-        ? this.#preventMouseDownOnScroll
-        : nothing}
+      @click=${atLeastOneItemIsEnabled ? this.#handleSelectedItemChange : nothing}
+      @dragstart=${this.sortable && atLeastOneItemIsEnabled ? this.#handleDragStart : nothing}
+      @keydown=${this.model!.length >= 2 && enabledItems >= 2 ? this.#handleTabFocus : nothing}
+      @mousedown=${atLeastOneItemIsEnabled ? this.#preventMouseDownOnScroll : nothing}
       ${ref(this.#tabListRef)}
     >
       ${this.model!.map((item, index) =>
-        this.#renderTabButton(
-          item,
-          index,
-          thereAreShiftedElements,
-          blockDirection,
-          startDirection
-        )
+        this.#renderTabButton(item, index, thereAreShiftedElements, blockDirection, startDirection)
       )}
     </div>`;
   };
@@ -1232,9 +1135,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
       id=${item.id}
       role="tab"
       aria-controls=${PANEL_ID(item.id)}
-      aria-label=${item.accessibleName ??
-      (!this.showCaptions ? item.name : nothing) ??
-      nothing}
+      aria-label=${item.accessibleName ?? (!this.showCaptions ? item.name : nothing) ?? nothing}
       aria-selected=${selected.toString()}
       class=${classMap({
         [TAB_BUTTON_CLASS]: true,
@@ -1243,9 +1144,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
         selected: selected,
         "dragged-element": this.draggedElementIndex === index,
         "dragged-element--outside":
-          this.draggedElementIndex === index &&
-          this.hasCrossedBoundaries &&
-          this.model!.length > 1,
+          this.draggedElementIndex === index && this.hasCrossedBoundaries && this.model!.length > 1,
         "shifted-element": this.draggedElementIndex !== -1,
         "shifted-element--start":
           thereAreShiftedElements &&
@@ -1306,10 +1205,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     </button>`;
   };
 
-  #renderTabPages = (
-    blockDirection: boolean,
-    startDirection: boolean
-  ): TemplateResult =>
+  #renderTabPages = (blockDirection: boolean, startDirection: boolean): TemplateResult =>
     html`<div
       class=${classMap({
         "panel-container": true,
@@ -1325,9 +1221,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
       })}
       ${ref(this.#tabPageRef)}
     >
-      ${[...this.#renderedPages.values()].map(item =>
-        this.#renderTabPanel(item)
-      )}
+      ${[...this.#renderedPages.values()].map(item => this.#renderTabPanel(item))}
     </div>`;
 
   #renderTabPanel = (item: TabItemModel): TemplateResult => {
@@ -1341,8 +1235,7 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     const selected = item.id === this.selectedId;
 
     const hasContain = contain !== "none";
-    const hasOverflow =
-      overflow !== "visible" && overflow !== "visible visible";
+    const hasOverflow = overflow !== "visible" && overflow !== "visible visible";
 
     return html`<div
       id=${PANEL_ID(item.id)}
@@ -1394,10 +1287,8 @@ export class ChTabRender extends KasstorElement implements DraggableView {
         "no-captions": !this.showCaptions,
         selected: selected,
         [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
-        [DRAG_PREVIEW_INSIDE_INLINE]:
-          !this.hasCrossedBoundaries && !blockDirection,
-        [DRAG_PREVIEW_INSIDE_BLOCK]:
-          !this.hasCrossedBoundaries && blockDirection
+        [DRAG_PREVIEW_INSIDE_INLINE]: !this.hasCrossedBoundaries && !blockDirection,
+        [DRAG_PREVIEW_INSIDE_BLOCK]: !this.hasCrossedBoundaries && blockDirection
       })}
       part=${tokenMap({
         [draggedElement.id]: true,
@@ -1408,10 +1299,8 @@ export class ChTabRender extends KasstorElement implements DraggableView {
         [TAB_PARTS_DICTIONARY.INLINE]: !blockDirection,
         [TAB_PARTS_DICTIONARY.START]: startDirection,
         [TAB_PARTS_DICTIONARY.END]: !startDirection,
-        [TAB_PARTS_DICTIONARY.DRAGGING_OUT_OF_TAB_LIST]:
-          this.hasCrossedBoundaries,
-        [TAB_PARTS_DICTIONARY.DRAGGING_OVER_TAB_LIST]:
-          !this.hasCrossedBoundaries,
+        [TAB_PARTS_DICTIONARY.DRAGGING_OUT_OF_TAB_LIST]: this.hasCrossedBoundaries,
+        [TAB_PARTS_DICTIONARY.DRAGGING_OVER_TAB_LIST]: !this.hasCrossedBoundaries,
         [TAB_PARTS_DICTIONARY.CLOSABLE]: closeButton,
         [TAB_PARTS_DICTIONARY.NOT_CLOSABLE]: !closeButton,
         [TAB_PARTS_DICTIONARY.SELECTED]: selected,
@@ -1483,12 +1372,6 @@ export class ChTabRender extends KasstorElement implements DraggableView {
       : nothing}
     ${this.#renderTabPages(blockDirection, startDirection)}
     ${draggedIndex !== -1 ? this.#renderDragPreview(draggedElement) : nothing}`;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-tab-render": ChTabRender;
   }
 }
 

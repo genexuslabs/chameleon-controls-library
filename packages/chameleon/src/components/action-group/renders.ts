@@ -1,20 +1,14 @@
 import { html, nothing, type TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map.js";
-import type {
-  ActionGroupDisplayedMarkers,
-  ActionGroupItemModel
-} from "./types";
-import { actionMenuItemIsActionable } from "../action-menu/internal/utils";
-import type {
-  ActionMenuImagePathCallback,
-  ActionMenuModel
-} from "../action-menu/types";
+import { tokenMap } from "../../utilities/mapping/token-map";
+import { ACTION_GROUP_PARTS_DICTIONARY } from "../../utilities/reserved-names/parts/action-group";
 import {
-  ACTION_GROUP_PARTS_DICTIONARY,
   ACTION_MENU_ITEM_EXPORT_PARTS,
   ACTION_MENU_ITEM_PARTS_DICTIONARY
-} from "../../utilities/reserved-names/reserved-names";
-import { tokenMap } from "../../utilities/mapping/token-map";
+} from "../../utilities/reserved-names/parts/action-menu";
+import { actionMenuItemIsActionable } from "../action-menu/internal/utils";
+import type { ActionMenuImagePathCallback, ActionMenuModel } from "../action-menu/types";
+import type { ActionGroupDisplayedMarkers, ActionGroupItemModel } from "./types";
 
 export const MARKER_CLASS = "marker";
 export const MARKER_HIDDEN_CLASS = `${MARKER_CLASS}--hidden`;
@@ -100,3 +94,4 @@ export const renderItems = (
       getImagePathCallback
     )
   ) as TemplateResult[];
+

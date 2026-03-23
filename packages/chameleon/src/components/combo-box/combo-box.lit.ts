@@ -1,13 +1,7 @@
-import { TypeAhead } from "@genexus/kasstor-webkit";
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { TypeAhead } from "@genexus/kasstor-webkit";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
@@ -16,8 +10,7 @@ import { createRef, ref, type Ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 import { DEV_MODE, IS_SERVER } from "../../development-flags";
-import type { GxImageMultiState } from "../../typings/multi-state-images";
-import type { GxImageMultiStateStart } from "../../typings/multi-state-images";
+import type { GxImageMultiState, GxImageMultiStateStart } from "../../typings/multi-state-images";
 import { analyzeLabelExistence } from "../../utilities/analysis/accessibility";
 import { getElementInternalsLabel } from "../../utilities/analysis/get-element-internals-label";
 import { focusComposedPath } from "../../utilities/focus-composed-path";
@@ -25,21 +18,17 @@ import { Host } from "../../utilities/host/host";
 import { isMobileDevice } from "../../utilities/is-mobile-device";
 import { tokenMap } from "../../utilities/mapping/token-map";
 import { createResolvedImagePathCallback } from "../../utilities/register-properties/image-path-registry";
+import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
 import {
   COMBO_BOX_HOST_PARTS,
   COMBO_BOX_PARTS_DICTIONARY
-} from "../../utilities/reserved-names/reserved-names";
-import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
+} from "../../utilities/reserved-names/parts/combo-box";
 
 import type { ChPopoverAlign, PopoverClosedInfo } from "../popover/types";
 import { getCaptionFromItem } from "./get-caption-from-item";
 import { filterSubModel } from "./helpers";
 import { computeComboBoxItemImage, getComboBoxImages } from "./item-images";
-import {
-  COMBO_BOX_NO_ACTIVE_ITEM,
-  findNextSelectedIndex,
-  findSelectedIndex
-} from "./navigation";
+import { COMBO_BOX_NO_ACTIVE_ITEM, findNextSelectedIndex, findSelectedIndex } from "./navigation";
 import { customComboBoxItemRender, nativeItemRender } from "./renders";
 import type {
   ComboBoxImagePathCallback,
@@ -74,8 +63,7 @@ const DEFAULT_GET_IMAGE_PATH_CALLBACK = (
   itemUIModel: ComboBoxItemModel,
   iconDirection: "start" | "end"
 ): GxImageMultiState => ({
-  base:
-    iconDirection === "start" ? itemUIModel.startImgSrc : itemUIModel.endImgSrc
+  base: iconDirection === "start" ? itemUIModel.startImgSrc : itemUIModel.endImgSrc
 });
 
 // Keys
@@ -201,9 +189,7 @@ export class ChComboBoxRender extends KasstorElement {
    * Using `watch()` in the template causes pin-point updates to only the
    * `<ch-image>` bindings when the registry changes.
    */
-  #resolvedImagePathCallback = createResolvedImagePathCallback(
-    () => this.getImagePathCallback
-  );
+  #resolvedImagePathCallback = createResolvedImagePathCallback(() => this.getImagePathCallback);
 
   // TODO: This should only be defined when suggest = false, so we free up some
   // memory
@@ -231,13 +217,7 @@ export class ChComboBoxRender extends KasstorElement {
       // TODO: Avoid the code duplication
       const nextSelectedIndex =
         currentSelectedIndex === COMBO_BOX_NO_ACTIVE_ITEM
-          ? findNextSelectedIndex(
-              this.model,
-              NEGATIVE_INDEX,
-              1,
-              false,
-              this.#displayedValues
-            )
+          ? findNextSelectedIndex(this.model, NEGATIVE_INDEX, 1, false, this.#displayedValues)
           : findNextSelectedIndex(
               this.model,
               currentSelectedIndex,
@@ -296,10 +276,7 @@ export class ChComboBoxRender extends KasstorElement {
     }
 
     // The new selected value is either in the first level or in the group
-    const newSelectedValue = getComboBoxItemFromIndex(
-      nextSelectedIndex,
-      this.model
-    );
+    const newSelectedValue = getComboBoxItemFromIndex(nextSelectedIndex, this.model);
 
     if (this.activeDescendant !== newSelectedValue) {
       this.activeDescendant = newSelectedValue;
@@ -408,21 +385,16 @@ export class ChComboBoxRender extends KasstorElement {
   #keyEventsWithFiltersDictionary: {
     [key in KeyDownWithFiltersEvents]: (event: KeyboardEvent) => void;
   } = {
-    ArrowUp: (event: KeyboardEvent) =>
-      this.#keyEventsNoFiltersDictionary.ArrowUp(event),
+    ArrowUp: (event: KeyboardEvent) => this.#keyEventsNoFiltersDictionary.ArrowUp(event),
 
-    ArrowDown: (event: KeyboardEvent) =>
-      this.#keyEventsNoFiltersDictionary.ArrowDown(event),
+    ArrowDown: (event: KeyboardEvent) => this.#keyEventsNoFiltersDictionary.ArrowDown(event),
 
-    Enter: (event: KeyboardEvent) =>
-      this.#checkAndEmitValueChangeWithFilters(event),
+    Enter: (event: KeyboardEvent) => this.#checkAndEmitValueChangeWithFilters(event),
 
     // Same as the Enter handler
-    NumpadEnter: (event: KeyboardEvent) =>
-      this.#checkAndEmitValueChangeWithFilters(event),
+    NumpadEnter: (event: KeyboardEvent) => this.#checkAndEmitValueChangeWithFilters(event),
 
-    Tab: (event: KeyboardEvent) =>
-      this.#checkAndEmitValueChangeWithFilters(event)
+    Tab: (event: KeyboardEvent) => this.#checkAndEmitValueChangeWithFilters(event)
   };
 
   /**
@@ -437,10 +409,7 @@ export class ChComboBoxRender extends KasstorElement {
   protected activeDescendantChanged() {
     // TODO: Add a e2e test for this
     if (this.activeDescendant !== undefined) {
-      const selectedIndex = findSelectedIndex(
-        this.#valueToItemInfo,
-        this.activeDescendant
-      );
+      const selectedIndex = findSelectedIndex(this.#valueToItemInfo, this.activeDescendant);
 
       // Ensure the group parent is expanded if the activeDescendant is in a subgroup
       if (selectedIndex !== null && typeof selectedIndex !== "number") {
@@ -476,9 +445,7 @@ export class ChComboBoxRender extends KasstorElement {
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -491,9 +458,7 @@ export class ChComboBoxRender extends KasstorElement {
    * This property specifies a callback that is executed when the path for an
    * imgSrc needs to be resolved.
    */
-  @property({ attribute: false }) getImagePathCallback:
-    | ComboBoxImagePathCallback
-    | undefined;
+  @property({ attribute: false }) getImagePathCallback: ComboBoxImagePathCallback | undefined;
 
   /**
    * Specifies a set of parts to use in the Host element (`ch-combo-box-render`).
@@ -510,11 +475,7 @@ export class ChComboBoxRender extends KasstorElement {
   @Observe("model")
   protected modelChanged(newModel: ComboBoxModel) {
     this.#findLargestValue(this.model);
-    mapValuesToItemInfo(
-      newModel,
-      this.#valueToItemInfo,
-      this.#captionToItemInfo
-    );
+    mapValuesToItemInfo(newModel, this.#valueToItemInfo, this.#captionToItemInfo);
 
     // TODO: Add a unit test for this
     // The model can change when the combo-box is expanded by having server
@@ -674,10 +635,7 @@ export class ChComboBoxRender extends KasstorElement {
     DEFAULT_GET_IMAGE_PATH_CALLBACK;
 
   #setComboBoxIcons = () => {
-    this.#itemImages = getComboBoxImages(
-      this.model,
-      this.#getActualImagePathCallback()
-    );
+    this.#itemImages = getComboBoxImages(this.model, this.#getActualImagePathCallback());
   };
 
   #scheduleFilterProcessing = () => {
@@ -720,8 +678,7 @@ export class ChComboBoxRender extends KasstorElement {
   };
 
   #getCurrentItemMapping = (): ComboBoxItemModelExtended | undefined =>
-    this.#captionToItemInfo.get(this.value) ??
-    this.#valueToItemInfo.get(this.value);
+    this.#captionToItemInfo.get(this.value) ?? this.#valueToItemInfo.get(this.value);
 
   #checkAndEmitValueChangeWithNoFilter = () => {
     const activeDescendant = this.activeDescendant;
@@ -732,7 +689,7 @@ export class ChComboBoxRender extends KasstorElement {
       clearTimeout(this.#queuedInputValueUpdate);
 
       this.value = this.suggest
-        ? activeDescendant.caption ?? activeDescendant.value
+        ? (activeDescendant.caption ?? activeDescendant.value)
         : activeDescendant.value;
 
       // Emit event
@@ -808,9 +765,7 @@ export class ChComboBoxRender extends KasstorElement {
     event.preventDefault();
 
     this.value = this.#selectRef.value?.value;
-    this.activeDescendant = this.#valueToItemInfo.get(
-      this.activeDescendant.value
-    )?.item;
+    this.activeDescendant = this.#valueToItemInfo.get(this.activeDescendant.value)?.item;
 
     // Emit event
     this.input.emit(this.value);
@@ -837,12 +792,7 @@ export class ChComboBoxRender extends KasstorElement {
     // applying type-ahead search
     if (!keyboardHandler) {
       const performTypeAhead =
-        this.expanded &&
-        key.length === 1 &&
-        key !== " " &&
-        !altKey &&
-        !ctrlKey &&
-        !metaKey;
+        this.expanded && key.length === 1 && key !== " " && !altKey && !ctrlKey && !metaKey;
 
       // TODO: Add e2e tests for the type-ahead feature
       if (performTypeAhead) {
@@ -865,9 +815,7 @@ export class ChComboBoxRender extends KasstorElement {
     }
   };
 
-  #handlePopoverClose = (
-    event: CustomEvent<PopoverClosedInfo>
-  ) => {
+  #handlePopoverClose = (event: CustomEvent<PopoverClosedInfo>) => {
     event.stopPropagation();
 
     // The focus must return to the Host when the popover is closed using the
@@ -883,10 +831,7 @@ export class ChComboBoxRender extends KasstorElement {
     // escape key or by clicking again the combo-box. Don't return the focus if
     // the popover was closed because it is no longer visible, because it will
     // provoke a layout shift
-    if (
-      event.detail.reason !== "popover-no-longer-visible" &&
-      focusComposedPath().includes(this)
-    ) {
+    if (event.detail.reason !== "popover-no-longer-visible" && focusComposedPath().includes(this)) {
       this.#shouldFocusTheComboBox = true;
     }
 
@@ -939,10 +884,7 @@ export class ChComboBoxRender extends KasstorElement {
 
     // TODO: Add a unit test for this case (clicking on the popover should not
     // close the popover)
-    if (
-      clickWasPerformedInALabel ||
-      (this.expanded && popoverWasClicked(event))
-    ) {
+    if (clickWasPerformedInALabel || (this.expanded && popoverWasClicked(event))) {
       return;
     }
     event.stopPropagation();
@@ -989,9 +931,7 @@ export class ChComboBoxRender extends KasstorElement {
 
   #isModelAlreadyFiltered = () => this.suggestOptions.alreadyProcessed === true;
   #shouldRenderActiveItemIcon = () =>
-    !this.suggest ||
-    !this.expanded ||
-    this.suggestOptions.renderActiveItemIconOnExpand;
+    !this.suggest || !this.expanded || this.suggestOptions.renderActiveItemIconOnExpand;
 
   #setValueInForm = (value: string) => {
     // TODO: Add a unit test for this case
@@ -1029,11 +969,7 @@ export class ChComboBoxRender extends KasstorElement {
     super.connectedCallback();
 
     this.#findLargestValue(this.model);
-    mapValuesToItemInfo(
-      this.model,
-      this.#valueToItemInfo,
-      this.#captionToItemInfo
-    );
+    mapValuesToItemInfo(this.model, this.#valueToItemInfo, this.#captionToItemInfo);
 
     // Accessibility
     this.#setValueInForm(this.value);
@@ -1061,9 +997,9 @@ export class ChComboBoxRender extends KasstorElement {
 
   override updated() {
     if (this.expanded) {
-      const selectedElement = this.shadowRoot.querySelector(
-        SELECTED_ITEM_SELECTOR
-      ) as HTMLElement | undefined;
+      const selectedElement = this.shadowRoot.querySelector(SELECTED_ITEM_SELECTOR) as
+        | HTMLElement
+        | undefined;
 
       // Don't use focus, use scrollIntoView to avoid focus stealing and race
       // conditions
@@ -1115,9 +1051,7 @@ export class ChComboBoxRender extends KasstorElement {
 
     // TODO: Add unit tests for this feature.
     const currentValueMapping = selectedItemInfo?.value;
-    const inputValue = filtersAreApplied
-      ? this.value
-      : selectedItemInfo?.caption;
+    const inputValue = filtersAreApplied ? this.value : selectedItemInfo?.caption;
 
     Host(this, {
       class: {
@@ -1140,45 +1074,32 @@ export class ChComboBoxRender extends KasstorElement {
         })
       },
       events: {
-        keydown:
-          !mobileDevice &&
-          comboBoxIsInteractive &&
-          this.#handleExpandedChangeWithKeyBoard,
+        keydown: !mobileDevice && comboBoxIsInteractive && this.#handleExpandedChangeWithKeyBoard,
         click:
-          comboBoxIsInteractive &&
-          (!filtersAreApplied || !this.expanded) &&
-          this.#displayPopover
+          comboBoxIsInteractive && (!filtersAreApplied || !this.expanded) && this.#displayPopover
       }
     });
 
     if (mobileDevice) {
       return html`<select
-        aria-label=${this.#accessibleNameFromExternalLabel ??
-        this.accessibleName ??
-        nothing}
+        aria-label=${this.#accessibleNameFromExternalLabel ?? this.accessibleName ?? nothing}
         ?disabled=${this.disabled}
         @change=${!this.disabled ? this.#handleSelectChange : nothing}
         ${ref(this.#selectRef)}
       >
         ${!this.activeDescendant
-          ? html`<option disabled selected value="">
-              ${this.placeholder}
-            </option>`
+          ? html`<option disabled selected value="">${this.placeholder}</option>`
           : nothing}
         ${this.model.map(item => nativeItemRender(item, this.value))}
       </select>`;
     }
 
     return html`
-      <span class="invisible-text">
-        ${this.#largestValue || this.placeholder}
-      </span>
+      <span class="invisible-text"> ${this.#largestValue || this.placeholder} </span>
 
       <div
         role="combobox"
-        aria-label=${this.#accessibleNameFromExternalLabel ??
-        this.accessibleName ??
-        nothing}
+        aria-label=${this.#accessibleNameFromExternalLabel ?? this.accessibleName ?? nothing}
         tabindex=${disableTextSelection ? "0" : nothing}
         class=${classMap({
           "input-container": true,
@@ -1254,3 +1175,4 @@ declare global {
     "ch-combo-box-render": ChComboBoxRender;
   }
 }
+

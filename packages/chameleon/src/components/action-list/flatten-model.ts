@@ -1,4 +1,4 @@
-import {
+import type {
   ActionListItemActionable,
   ActionListItemGroup,
   ActionListItemModelExtended,
@@ -55,3 +55,4 @@ export const flattenActionListUIModel = (
 
   sortModel(model);
 };
+

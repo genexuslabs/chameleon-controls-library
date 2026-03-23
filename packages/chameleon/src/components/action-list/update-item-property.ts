@@ -1,4 +1,4 @@
-import {
+import type {
   ActionListItemModel,
   ActionListItemModelExtended,
   ActionListItemType,
@@ -47,3 +47,4 @@ export const updateItemProperty = (
 
   return getParentArray(itemUIModel);
 };
+

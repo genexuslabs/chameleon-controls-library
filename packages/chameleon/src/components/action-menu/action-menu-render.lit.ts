@@ -1,11 +1,5 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
@@ -19,7 +13,7 @@ import { KEY_CODES } from "../../utilities/reserved-names/key-codes";
 import {
   ACTION_MENU_ITEM_PARTS_DICTIONARY,
   ACTION_MENU_PARTS_DICTIONARY
-} from "../../utilities/reserved-names/reserved-names";
+} from "../../utilities/reserved-names/parts/action-menu";
 import type { ChPopover } from "../popover/popover.lit";
 import type { ChPopoverAlign } from "../popover/types";
 import { actionMenuKeyEventsDictionary } from "./internal/keyboard-actions";
@@ -123,9 +117,7 @@ export class ChActionMenuRender extends KasstorElement {
    * Using `watch()` in the template causes pin-point updates to only the
    * `<ch-image>` bindings when the registry changes.
    */
-  #resolvedImagePathCallback = createResolvedImagePathCallback(
-    () => this.getImagePathCallback
-  );
+  #resolvedImagePathCallback = createResolvedImagePathCallback(() => this.getImagePathCallback);
 
   /**
    * This attribute lets you specify the label for the first expandable button.
@@ -169,16 +161,12 @@ export class ChActionMenuRender extends KasstorElement {
    * This property specifies a callback that is executed when the path for an
    * startImgSrc or endImgSrc (of an item) needs to be resolved.
    */
-  @property({ attribute: false }) getImagePathCallback:
-    | ActionMenuImagePathCallback
-    | undefined;
+  @property({ attribute: false }) getImagePathCallback: ActionMenuImagePathCallback | undefined;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
-  @property({ attribute: false }) gxImageConstructor:
-    | ((name: string) => any)
-    | undefined;
+  @property({ attribute: false }) gxImageConstructor: ((name: string) => any) | undefined;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -261,9 +249,7 @@ export class ChActionMenuRender extends KasstorElement {
       .startImgSrc=${itemUIModel.startImgSrc}
       .startImgType=${itemUIModel.startImgType}
     >
-      ${expandable && itemUIModel.expanded
-        ? this.#renderItems(itemUIModel.items)
-        : nothing}
+      ${expandable && itemUIModel.expanded ? this.#renderItems(itemUIModel.items) : nothing}
     </ch-action-menu>`;
   };
 
@@ -293,10 +279,7 @@ export class ChActionMenuRender extends KasstorElement {
           )
     );
 
-  #processEvent = (
-    event: MouseEvent | PointerEvent,
-    type: "click" | "mouseover" | "mouseout"
-  ) => {
+  #processEvent = (event: MouseEvent | PointerEvent, type: "click" | "mouseover" | "mouseout") => {
     const actionMenuInfo = getActionMenuInfoInEvent(event);
 
     if (actionMenuInfo === undefined) {
@@ -374,14 +357,11 @@ export class ChActionMenuRender extends KasstorElement {
     this.requestUpdate();
   };
 
-  #handleActionMenuItemClick = (event: PointerEvent) =>
-    this.#processEvent(event, "click");
+  #handleActionMenuItemClick = (event: PointerEvent) => this.#processEvent(event, "click");
 
-  #handleActionMenuItemMouseOver = (event: MouseEvent) =>
-    this.#processEvent(event, "mouseover");
+  #handleActionMenuItemMouseOver = (event: MouseEvent) => this.#processEvent(event, "mouseover");
 
-  #handleActionMenuItemMouseOut = (event: MouseEvent) =>
-    this.#processEvent(event, "mouseout");
+  #handleActionMenuItemMouseOut = (event: MouseEvent) => this.#processEvent(event, "mouseout");
 
   #handleActionMenuKeyDown = (event: KeyboardEvent) => {
     if (
@@ -463,11 +443,7 @@ export class ChActionMenuRender extends KasstorElement {
 
   #removeCloseOnClickOutside = () => {
     document.removeEventListener("click", this.#closeOnClickOutside, true);
-    document.removeEventListener(
-      "keydown",
-      this.#closeOnClickOutsideKeyboard,
-      true
-    );
+    document.removeEventListener("keydown", this.#closeOnClickOutsideKeyboard, true);
   };
 
   #addMetadataToItems = () => {
@@ -542,9 +518,7 @@ export class ChActionMenuRender extends KasstorElement {
             @mouseout=${this.#handleActionMenuItemMouseOut}
             ${ref(this.#popoverRef)}
           >
-            ${this.model !== undefined
-              ? this.#renderItems(this.model)
-              : nothing}
+            ${this.model !== undefined ? this.#renderItems(this.model) : nothing}
           </ch-popover>`
         : nothing}`;
   }

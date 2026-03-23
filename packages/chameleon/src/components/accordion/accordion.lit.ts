@@ -1,25 +1,16 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
 import { IS_SERVER } from "../../development-flags";
-import type {
-  GetImagePathCallback,
-  ImageRender
-} from "../../typings/multi-state-images";
+import type { GetImagePathCallback, ImageRender } from "../../typings/multi-state-images";
 import { Host } from "../../utilities/host/host";
 import { tokenMap } from "../../utilities/mapping/token-map";
 import { createResolvedImagePathCallback } from "../../utilities/register-properties/image-path-registry";
 import { DISABLED_CLASS } from "../../utilities/reserved-names/common";
-import { ACCORDION_PARTS_DICTIONARY } from "../../utilities/reserved-names/reserved-names";
+import { ACCORDION_PARTS_DICTIONARY } from "../../utilities/reserved-names/parts/accordion";
 import type {
   AccordionItemExpandedChangeEvent,
   AccordionItemModel,
@@ -111,9 +102,7 @@ export class ChAccordionRender extends KasstorElement {
    * Using `watch()` in the template causes pin-point updates to only the
    * `<ch-image>` bindings when the registry changes.
    */
-  #resolvedImagePathCallback = createResolvedImagePathCallback(
-    () => this.getImagePathCallback
-  );
+  #resolvedImagePathCallback = createResolvedImagePathCallback(() => this.getImagePathCallback);
 
   /**
    * This attribute lets you specify if all accordions are disabled.
@@ -135,9 +124,7 @@ export class ChAccordionRender extends KasstorElement {
    * `startImgSrc` needs to be resolved. The resolution follows a fallback
    * chain: per-instance callback → global registry signal → `undefined`.
    */
-  @property({ attribute: false }) getImagePathCallback:
-    | GetImagePathCallback
-    | undefined;
+  @property({ attribute: false }) getImagePathCallback: GetImagePathCallback | undefined;
 
   /**
    * Specifies the items of the control. Each entry is an
@@ -207,17 +194,11 @@ export class ChAccordionRender extends KasstorElement {
     this.#updateExpandedOnItem(itemUIModel, newExpandedValue);
   };
 
-  #updateExpandedOnItem = (
-    itemUIModel: AccordionItemModel,
-    newExpandedValue: boolean
-  ) => {
+  #updateExpandedOnItem = (itemUIModel: AccordionItemModel, newExpandedValue: boolean) => {
     // Collapse all opened items and emit expandedChange
     if (this.singleItemExpanded && this.#expandedItems.size > 0) {
       this.model!.forEach(itemUIModelToCollapse => {
-        if (
-          itemUIModelToCollapse.expanded &&
-          itemUIModelToCollapse.id !== itemUIModel.id
-        ) {
+        if (itemUIModelToCollapse.expanded && itemUIModelToCollapse.id !== itemUIModel.id) {
           itemUIModelToCollapse.expanded = false;
 
           this.expandedChange.emit({
@@ -271,10 +252,8 @@ export class ChAccordionRender extends KasstorElement {
         class=${tokenMap({
           header: true,
           [`header--expand-button-${this.expandableButtonPosition}`]: true,
-          [`header--expand-button-${this.expandableButtonPosition}-collapsed`]:
-            !item.expanded,
-          [`header--expand-button-${this.expandableButtonPosition}-expanded`]:
-            item.expanded,
+          [`header--expand-button-${this.expandableButtonPosition}-collapsed`]: !item.expanded,
+          [`header--expand-button-${this.expandableButtonPosition}-expanded`]: item.expanded,
           [DISABLED_CLASS]: isDisabled
         })}
         part=${tokenMap({
@@ -296,9 +275,7 @@ export class ChAccordionRender extends KasstorElement {
               .type=${item.startImgType as Exclude<ImageRender, "img">}
             ></ch-image>`
           : nothing}
-        ${item.headerSlotId
-          ? html`<slot name=${item.headerSlotId}></slot>`
-          : item.caption}
+        ${item.headerSlotId ? html`<slot name=${item.headerSlotId}></slot>` : item.caption}
       </button>
 
       <section
@@ -325,9 +302,7 @@ export class ChAccordionRender extends KasstorElement {
     </div>`;
   };
 
-  #closeAllExpandedItemsExceptForTheLast = (
-    emitExpandedChangeEvent: boolean
-  ) => {
+  #closeAllExpandedItemsExceptForTheLast = (emitExpandedChangeEvent: boolean) => {
     if (!this.singleItemExpanded || this.#expandedItems.size <= 1) {
       return;
     }
@@ -359,17 +334,6 @@ export class ChAccordionRender extends KasstorElement {
   #getCollapsedSizeForUnit = (expandedSize: AccordionItemModelExpandedSize) =>
     expandedSize && expandedSize.includes("fr") ? "0fr" : "max-content";
 
-  protected override firstWillUpdate(): void {
-    this.model?.forEach(item => {
-      if (item.expanded) {
-        this.#expandedItems.add(item.id);
-        this.#renderedItems.add(item.id);
-      }
-    });
-
-    this.#closeAllExpandedItemsExceptForTheLast(false);
-  }
-
   override render() {
     // TODO: Add support to prevent expand/collapse when pressing the space
     // key on an input/textarea
@@ -377,22 +341,13 @@ export class ChAccordionRender extends KasstorElement {
       style:
         this.model != null
           ? {
-              "--ch-accordion-grid-template-rows":
-                this.#computeGridTemplateRows()
+              "--ch-accordion-grid-template-rows": this.#computeGridTemplateRows()
             }
           : undefined,
       events: { click: this.#handleHeaderToggle }
     });
 
-    return this.model == null
-      ? nothing
-      : html`${this.model.map(this.#renderItem)}`;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-accordion-render": ChAccordionRender;
+    return this.model == null ? nothing : html`${this.model.map(this.#renderItem)}`;
   }
 }
 

@@ -1,4 +1,4 @@
-import {
+import type {
   ComboBoxItemGroup,
   ComboBoxItemModel,
   ComboBoxItemModelExtended,
@@ -8,8 +8,7 @@ import {
 
 export const COMBO_BOX_NO_ACTIVE_ITEM: null = null;
 
-const isValidIndex = (array: any, index: number) =>
-  0 <= index && index < array.length;
+const isValidIndex = (array: any, index: number) => 0 <= index && index < array.length;
 
 export const findSelectedIndex = (
   valueToItemInfo: Map<string, ComboBoxItemModelExtended>,
@@ -19,10 +18,7 @@ export const findSelectedIndex = (
     return COMBO_BOX_NO_ACTIVE_ITEM;
   }
 
-  return (
-    valueToItemInfo.get(activeDescendant.value)?.index ??
-    COMBO_BOX_NO_ACTIVE_ITEM
-  );
+  return valueToItemInfo.get(activeDescendant.value)?.index ?? COMBO_BOX_NO_ACTIVE_ITEM;
 };
 
 export const findNextSelectedIndex = (
@@ -36,20 +32,17 @@ export const findNextSelectedIndex = (
     return COMBO_BOX_NO_ACTIVE_ITEM;
   }
 
-  const firstLevelIndex =
-    typeof currentIndex === "number" ? currentIndex : currentIndex[0];
+  const firstLevelIndex = typeof currentIndex === "number" ? currentIndex : currentIndex[0];
 
   if (typeof currentIndex !== "number") {
     let secondLevelIndex = currentIndex[1] + increment; // Start from the first valid index
-    const firstLevelItemItems = (model[firstLevelIndex] as ComboBoxItemGroup)
-      .items;
+    const firstLevelItemItems = (model[firstLevelIndex] as ComboBoxItemGroup).items;
 
     // Search in the nested level skipping disabled and not rendered items
     while (
       isValidIndex(firstLevelItemItems, secondLevelIndex) &&
       (firstLevelItemItems[secondLevelIndex].disabled ||
-        (hasFilters &&
-          !displayedValues.has(firstLevelItemItems[secondLevelIndex])))
+        (hasFilters && !displayedValues.has(firstLevelItemItems[secondLevelIndex])))
     ) {
       secondLevelIndex += increment;
     }
@@ -98,3 +91,4 @@ export const findNextSelectedIndex = (
 
   return nextFirstLevelIndex;
 };
+

@@ -1,18 +1,28 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
-import { ref, createRef, type Ref } from "lit/directives/ref.js";
+import { createRef, ref, type Ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
+import type {
+  GxImageMultiState,
+  GxImageMultiStateStart
+} from "../../../../typings/multi-state-images";
+import { tokenMap } from "../../../../utilities/mapping/token-map";
+import { updateDirectionInImageCustomVar } from "../../../../utilities/multi-state-icons";
+import { getControlRegisterProperty } from "../../../../utilities/register-properties/registry-properties";
+import { KEY_CODES } from "../../../../utilities/reserved-names/key-codes";
+import {
+  ACTION_LIST_ITEM_EXPORT_PARTS,
+  ACTION_LIST_ITEM_PARTS_DICTIONARY,
+  ACTION_LIST_PARTS_DICTIONARY,
+  imageTypeDictionary,
+  startPseudoImageTypeDictionary
+} from "../../../../utilities/reserved-names/parts/action-list";
+import type { ActionListTranslations } from "../../translations";
 import type {
   ActionListImagePathCallback,
   ActionListItemAdditionalAction,
@@ -24,34 +34,17 @@ import type {
   ActionListItemAdditionalItemActionType,
   ActionListItemAdditionalModel
 } from "../../types";
-import {
-  ACTION_LIST_ITEM_EXPORT_PARTS,
-  ACTION_LIST_ITEM_PARTS_DICTIONARY,
-  ACTION_LIST_PARTS_DICTIONARY,
-  imageTypeDictionary,
-  startPseudoImageTypeDictionary
-} from "../../../../utilities/reserved-names/reserved-names";
-import { KEY_CODES } from "../../../../utilities/reserved-names/key-codes";
+import { computeActionTypeBlocks } from "./compute-editing-sections";
+import { computeExportParts } from "./compute-exportparts";
 import type {
   ActionListCaptionChangeEventDetail,
   ActionListFixedChangeEventDetail,
   ActionListItemActionTypeBlockInfo
 } from "./types";
-import { tokenMap } from "../../../../utilities/mapping/token-map";
-import { updateDirectionInImageCustomVar } from "../../../../utilities/multi-state-icons";
-import { computeExportParts } from "./compute-exportparts";
-import { computeActionTypeBlocks } from "./compute-editing-sections";
-import type { ActionListTranslations } from "../../translations";
-import type {
-  GxImageMultiState,
-  GxImageMultiStateStart
-} from "../../../../typings/multi-state-images";
-import { getControlRegisterProperty } from "../../../../utilities/register-properties/registry-properties";
 
 import styles from "./action-list-item.scss?inline";
 
-const DEFAULT_GET_IMAGE_PATH_CALLBACK: ActionListImagePathCallback = () =>
-  undefined;
+const DEFAULT_GET_IMAGE_PATH_CALLBACK: ActionListImagePathCallback = () => undefined;
 
 const ACTION_TYPE_PARTS = {
   fix: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_FIX,
@@ -70,8 +63,7 @@ const ACTION_TYPE_PARTS = {
 })
 export class ChActionListItem extends KasstorElement {
   #additionalItemListenerDictionary = {
-    fix: () =>
-      this.fixedChange.emit({ itemId: this.id, value: !this.fixed }),
+    fix: () => this.fixedChange.emit({ itemId: this.id, value: !this.fixed }),
     remove: () => {
       if (!this.editing) {
         this.deleting = true;
@@ -84,9 +76,7 @@ export class ChActionListItem extends KasstorElement {
       }
     }
   } satisfies {
-    [key in ActionListItemAdditionalItemActionType["type"]]: (
-      ...args: any[]
-    ) => any;
+    [key in ActionListItemAdditionalItemActionType["type"]]: (...args: any[]) => any;
   };
 
   #confirmActionsDictionary = {
@@ -294,11 +284,7 @@ export class ChActionListItem extends KasstorElement {
       const inputEl = this.#inputRef.value as HTMLInputElement | undefined;
       const newCaption = inputEl?.value ?? "";
 
-      if (
-        commitEdition &&
-        newCaption.trim() !== "" &&
-        this.caption !== newCaption
-      ) {
+      if (commitEdition && newCaption.trim() !== "" && this.caption !== newCaption) {
         this.captionChange.emit({
           itemId: this.id,
           newCaption: newCaption
@@ -322,16 +308,12 @@ export class ChActionListItem extends KasstorElement {
     this.#removeEditMode(true, commitEdition)();
   };
 
-  #renderAdditionalItems = (
-    additionalItems: ActionListItemAdditionalItem[]
-  ): TemplateResult[] =>
+  #renderAdditionalItems = (additionalItems: ActionListItemAdditionalItem[]): TemplateResult[] =>
     additionalItems.map(item =>
       (item as ActionListItemAdditionalCustom).jsx
         ? (item as ActionListItemAdditionalCustom).jsx()
         : this.#renderAdditionalItem(
-            item as
-              | ActionListItemAdditionalBase
-              | ActionListItemAdditionalAction
+            item as ActionListItemAdditionalBase | ActionListItemAdditionalAction
           )
     );
 
@@ -344,9 +326,7 @@ export class ChActionListItem extends KasstorElement {
     const pseudoImageStartClass = hasPseudoImage
       ? startPseudoImageTypeDictionary[item.imgType ?? "background"]
       : null;
-    const computedPseudoImage = hasPseudoImage
-      ? this.#getComputedImage(additionalAction)
-      : null;
+    const computedPseudoImage = hasPseudoImage ? this.#getComputedImage(additionalAction) : null;
 
     const imageTemplate =
       hasImage && item.imgType === "img"
@@ -379,8 +359,7 @@ export class ChActionListItem extends KasstorElement {
           [computedPseudoImage?.classes ?? ""]:
             hasPseudoImage && actionTypeIsCustom && !!computedPseudoImage,
           "show-on-mouse-hover":
-            (actionTypeIsFix && !this.fixed) ||
-            (!actionTypeIsFix && (action as any).showOnHover),
+            (actionTypeIsFix && !this.fixed) || (!actionTypeIsFix && (action as any).showOnHover),
           [action.type]: true,
           fixed: actionTypeIsFix && !!this.fixed,
           "not-fixed": actionTypeIsFix && !this.fixed
@@ -389,15 +368,11 @@ export class ChActionListItem extends KasstorElement {
           [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
           [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ACTION]: true,
           [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-          [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
-            this.selectable && this.selected,
-          [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-            this.selectable && !this.selected,
+          [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selectable && this.selected,
+          [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: this.selectable && !this.selected,
           [ACTION_TYPE_PARTS[action.type] satisfies string]: true,
-          [ACTION_LIST_ITEM_PARTS_DICTIONARY.FIXED]:
-            actionTypeIsFix && !!this.fixed,
-          [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_FIXED]:
-            actionTypeIsFix && !this.fixed,
+          [ACTION_LIST_ITEM_PARTS_DICTIONARY.FIXED]: actionTypeIsFix && !!this.fixed,
+          [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_FIXED]: actionTypeIsFix && !this.fixed,
           [item.part ?? ""]: !!item.part
         })}
         style=${hasPseudoImage && actionTypeIsCustom && computedPseudoImage
@@ -414,8 +389,7 @@ export class ChActionListItem extends KasstorElement {
             )
           : nothing}
       >
-        ${actionTypeIsCustom ? imageTemplate : nothing}
-        ${item.caption ? item.caption : nothing}
+        ${actionTypeIsCustom ? imageTemplate : nothing} ${item.caption ? item.caption : nothing}
       </button>`;
     }
 
@@ -430,10 +404,8 @@ export class ChActionListItem extends KasstorElement {
         part=${tokenMap({
           [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
           [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_TEXT]: true,
-          [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
-            this.selectable && this.selected,
-          [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-            this.selectable && !this.selected,
+          [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selectable && this.selected,
+          [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: this.selectable && !this.selected,
           [item.part ?? ""]: !!item.part
         })}
         style=${hasPseudoImage && computedPseudoImage
@@ -456,10 +428,8 @@ export class ChActionListItem extends KasstorElement {
         part=${tokenMap({
           [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
           [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE]: true,
-          [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
-            this.selectable && this.selected,
-          [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-            this.selectable && !this.selected,
+          [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selectable && this.selected,
+          [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: this.selectable && !this.selected,
           [item.part ?? ""]: !!item.part
         })}
         style=${hasPseudoImage && computedPseudoImage
@@ -477,10 +447,7 @@ export class ChActionListItem extends KasstorElement {
   };
 
   #handleAdditionalItemClick =
-    (
-      type: ActionListItemAdditionalItemActionType["type"],
-      callback?: (id: string) => void
-    ) =>
+    (type: ActionListItemAdditionalItemActionType["type"], callback?: (id: string) => void) =>
     (event: MouseEvent) => {
       event.stopPropagation();
 
@@ -489,10 +456,7 @@ export class ChActionListItem extends KasstorElement {
       } else {
         this.#additionalItemListenerDictionary[
           // Only "custom" type has callbacks
-          type as Exclude<
-            ActionListItemAdditionalItemActionType["type"],
-            "custom"
-          >
+          type as Exclude<ActionListItemAdditionalItemActionType["type"], "custom">
         ]();
       }
     };
@@ -505,27 +469,16 @@ export class ChActionListItem extends KasstorElement {
 
       // Additional parts
       if (parts.size > 0) {
-        exportParts = `${ACTION_LIST_ITEM_EXPORT_PARTS},${Array.from(
-          parts
-        ).join(",")}`;
+        exportParts = `${ACTION_LIST_ITEM_EXPORT_PARTS},${Array.from(parts).join(",")}`;
       }
     }
 
-    this.setAttribute(
-      "exportparts",
-      exportParts ?? ACTION_LIST_ITEM_EXPORT_PARTS
-    );
+    this.setAttribute("exportparts", exportParts ?? ACTION_LIST_ITEM_EXPORT_PARTS);
   };
 
   #setActionTypeBlocks = () => {
-    this.#deletingSections = computeActionTypeBlocks(
-      "remove",
-      this.additionalInfo
-    );
-    this.#editingSections = computeActionTypeBlocks(
-      "modify",
-      this.additionalInfo
-    );
+    this.#deletingSections = computeActionTypeBlocks("remove", this.additionalInfo);
+    this.#editingSections = computeActionTypeBlocks("modify", this.additionalInfo);
   };
 
   #renderAdditionalInfo = (
@@ -540,22 +493,15 @@ export class ChActionListItem extends KasstorElement {
     const zoneNameWithPrefix = `item__${zoneName}` as const;
 
     let actionTypeSection:
-      | Exclude<
-          ActionListItemAdditionalItemActionType["type"],
-          "fix" | "custom"
-        >
+      | Exclude<ActionListItemAdditionalItemActionType["type"], "fix" | "custom">
       | undefined;
-    let actionTypeAligns:
-      | ActionListItemActionTypeBlockInfo["align"]
-      | undefined = undefined;
+    let actionTypeAligns: ActionListItemActionTypeBlockInfo["align"] | undefined = undefined;
 
     // Editing
     if (
       this.editing &&
       this.#editingSections !== undefined &&
-      this.#editingSections.some(
-        editingSection => editingSection.section === zoneName
-      )
+      this.#editingSections.some(editingSection => editingSection.section === zoneName)
     ) {
       actionTypeSection = "modify";
       actionTypeAligns = this.#editingSections.find(
@@ -566,9 +512,7 @@ export class ChActionListItem extends KasstorElement {
     else if (
       this.deleting &&
       this.#deletingSections !== undefined &&
-      this.#deletingSections.some(
-        deletingSection => deletingSection.section === zoneName
-      )
+      this.#deletingSections.some(deletingSection => deletingSection.section === zoneName)
     ) {
       actionTypeSection = "remove";
       actionTypeAligns = this.#deletingSections.find(
@@ -576,10 +520,7 @@ export class ChActionListItem extends KasstorElement {
       )!.align;
     }
 
-    return html`<div
-      class="align-container ${zoneName}"
-      part=${zoneNameWithPrefix}
-    >
+    return html`<div class="align-container ${zoneName}" part=${zoneNameWithPrefix}>
       ${additionalModel.start
         ? html`<div
             class=${stretch ? "align-start valign-start" : "align-start"}
@@ -614,10 +555,7 @@ export class ChActionListItem extends KasstorElement {
   };
 
   #renderConfirmCancelButtons = (
-    action: Exclude<
-      ActionListItemAdditionalItemActionType["type"],
-      "fix" | "custom"
-    >
+    action: Exclude<ActionListItemAdditionalItemActionType["type"], "fix" | "custom">
   ): TemplateResult => html`
     <button
       aria-label=${this.#confirmActionsDictionary[action]()}
@@ -627,10 +565,8 @@ export class ChActionListItem extends KasstorElement {
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM_CONFIRM]: true,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_ACCEPT]: true,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-        [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
-          this.selectable && this.selected,
-        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-          this.selectable && !this.selected
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selectable && this.selected,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: this.selectable && !this.selected
       })}
       ?disabled=${this.disabled}
       type="button"
@@ -644,10 +580,8 @@ export class ChActionListItem extends KasstorElement {
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM_CONFIRM]: true,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_CANCEL]: true,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-        [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
-          this.selectable && this.selected,
-        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-          this.selectable && !this.selected
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selectable && this.selected,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: this.selectable && !this.selected
       })}
       ?disabled=${this.disabled}
       type="button"
@@ -656,8 +590,7 @@ export class ChActionListItem extends KasstorElement {
   `;
 
   #acceptAction =
-    (action: ActionListItemAdditionalItemActionType["type"]) =>
-    (event: PointerEvent) => {
+    (action: ActionListItemAdditionalItemActionType["type"]) => (event: PointerEvent) => {
       event.stopPropagation();
 
       if (action === "modify") {
@@ -685,20 +618,12 @@ export class ChActionListItem extends KasstorElement {
     // fallback to registry
     const getImagePathCallback: ActionListImagePathCallback =
       this.getImagePathCallback ??
-      getControlRegisterProperty(
-        "getImagePathCallback",
-        "ch-action-list-render"
-      ) ??
+      getControlRegisterProperty("getImagePathCallback", "ch-action-list-render") ??
       DEFAULT_GET_IMAGE_PATH_CALLBACK;
 
     const img = getImagePathCallback(additionalItem);
 
-    return img
-      ? (updateDirectionInImageCustomVar(
-          img,
-          "start"
-        ) as GxImageMultiStateStart)
-      : null;
+    return img ? (updateDirectionInImageCustomVar(img, "start") as GxImageMultiStateStart) : null;
   };
 
   protected override firstWillUpdate(): void {
@@ -724,8 +649,7 @@ export class ChActionListItem extends KasstorElement {
 
     const stretchStart = hasAdditionalInfo && additionalInfo!["stretch-start"];
     const blockStart = hasAdditionalInfo && additionalInfo!["block-start"];
-    const inlineCaption =
-      hasAdditionalInfo && additionalInfo!["inline-caption"];
+    const inlineCaption = hasAdditionalInfo && additionalInfo!["inline-caption"];
     const blockEnd = hasAdditionalInfo && additionalInfo!["block-end"];
     const stretchEnd = hasAdditionalInfo && additionalInfo!["stretch-end"];
 
@@ -737,14 +661,11 @@ export class ChActionListItem extends KasstorElement {
       part=${tokenMap({
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED]: this.nested,
-        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED_EXPANDABLE]:
-          this.nestedExpandable,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED_EXPANDABLE]: this.nestedExpandable,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTABLE]: this.selectable,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTABLE]: !this.selectable,
-        [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
-          this.selectable && this.selected,
-        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
-          this.selectable && !this.selected,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selectable && this.selected,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: this.selectable && !this.selected,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
       })}
       type="button"
@@ -769,15 +690,11 @@ export class ChActionListItem extends KasstorElement {
                 : ACTION_LIST_ITEM_PARTS_DICTIONARY.EDIT_CAPTION}
               ?disabled=${this.disabled}
               .value=${this.caption}
-              @keydown=${!this.disabled
-                ? this.#checkIfShouldRemoveEditMode
-                : nothing}
+              @keydown=${!this.disabled ? this.#checkIfShouldRemoveEditMode : nothing}
               ${ref(this.#inputRef)}
             ></ch-edit>`
           : this.caption
-            ? html`<span part=${ACTION_LIST_ITEM_PARTS_DICTIONARY.CAPTION}
-                >${this.caption}</span
-              >`
+            ? html`<span part=${ACTION_LIST_ITEM_PARTS_DICTIONARY.CAPTION}>${this.caption}</span>`
             : nothing}
         ${inlineCaption
           ? html`${inlineCaption.start
@@ -804,3 +721,4 @@ declare global {
     "ch-action-list-item": ChActionListItem;
   }
 }
+

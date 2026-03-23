@@ -1,4 +1,4 @@
-import {
+import type {
   ActionListItemAdditionalAction,
   ActionListItemAdditionalInformation,
   ActionListItemAdditionalInformationSection,
@@ -6,7 +6,7 @@ import {
   ActionListItemAdditionalItemActionType,
   ActionListItemAdditionalModel
 } from "../../types";
-import { ActionListItemActionTypeBlockInfo } from "./types";
+import type { ActionListItemActionTypeBlockInfo } from "./types";
 
 const BLOCKS_TO_CHECK: (keyof ActionListItemAdditionalInformation)[] = [
   "block-start",
@@ -73,15 +73,10 @@ export const computeActionTypeBlocks = (
     return undefined;
   }
 
-  let editingBlocks: ActionListItemActionTypeBlockInfo[] | undefined =
-    undefined;
+  let editingBlocks: ActionListItemActionTypeBlockInfo[] | undefined = undefined;
 
   BLOCKS_TO_CHECK.forEach(block => {
-    const editingBlock = isActionTypeBlock(
-      action,
-      block,
-      additionalInfo[block]
-    );
+    const editingBlock = isActionTypeBlock(action, block, additionalInfo[block]);
 
     if (editingBlock) {
       editingBlocks ??= [];
@@ -91,3 +86,4 @@ export const computeActionTypeBlocks = (
 
   return editingBlocks;
 };
+

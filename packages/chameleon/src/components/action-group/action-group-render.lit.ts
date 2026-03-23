@@ -1,22 +1,15 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
 
-import type {
-  ActionGroupDisplayedMarkers,
-  ActionGroupModel,
-  ItemsOverflowBehavior
-} from "./types";
+import type { ActionGroupDisplayedMarkers, ActionGroupModel, ItemsOverflowBehavior } from "./types";
 // import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
 import { IS_SERVER } from "../../development-flags";
 import { Host } from "../../utilities/host/host";
-import { ACTION_MENU_ITEM_EXPORT_PARTS } from "../../utilities/reserved-names/reserved-names";
+import { ACTION_MENU_ITEM_EXPORT_PARTS } from "../../utilities/reserved-names/parts/action-menu";
 import { SyncWithRAF } from "../../utilities/sync-with-frames";
 import type { ActionMenuImagePathCallback } from "../action-menu/types";
 import type { ChPopoverAlign } from "../popover/types";
@@ -103,16 +96,12 @@ export class ChActionGroupRender extends KasstorElement {
    * This property specifies a callback that is executed when the path for an
    * startImgSrc or endImgSrc (of an item) needs to be resolved.
    */
-  @property({ attribute: false }) getImagePathCallback:
-    | ActionMenuImagePathCallback
-    | undefined;
+  @property({ attribute: false }) getImagePathCallback: ActionMenuImagePathCallback | undefined;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
-  @property({ attribute: false }) gxImageConstructor:
-    | ((name: string) => any)
-    | undefined;
+  @property({ attribute: false }) gxImageConstructor: ((name: string) => any) | undefined;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -134,8 +123,7 @@ export class ChActionGroupRender extends KasstorElement {
   @Observe("itemsOverflowBehavior")
   protected itemsOverflowBehaviorChanged() {
     this.#shouldCheckResponsiveCollapseWatcher = true;
-    this.#isResponsiveCollapse =
-      this.itemsOverflowBehavior === "responsive-collapse";
+    this.#isResponsiveCollapse = this.itemsOverflowBehavior === "responsive-collapse";
 
     this.#disconnectActionsObserver();
     this.#removeOrInitializeMarkersVisibility();
@@ -214,9 +202,7 @@ export class ChActionGroupRender extends KasstorElement {
     this.#collapsedModel = [];
 
     if (this.model && this.collapsedItems > 0) {
-      this.#collapsedModel = this.model.slice(
-        this.model.length - this.collapsedItems
-      );
+      this.#collapsedModel = this.model.slice(this.model.length - this.collapsedItems);
     }
   };
 
@@ -289,8 +275,7 @@ export class ChActionGroupRender extends KasstorElement {
     this.setAttribute("role", "list");
 
     this.collapsedItems = 0;
-    this.#isResponsiveCollapse =
-      this.itemsOverflowBehavior === "responsive-collapse";
+    this.#isResponsiveCollapse = this.itemsOverflowBehavior === "responsive-collapse";
 
     this.#removeOrInitializeMarkersVisibility();
     this.#setModels();
@@ -328,9 +313,7 @@ export class ChActionGroupRender extends KasstorElement {
         >
           ${this.moreActionsCaption}
           ${this.#collapsedModel.map(item =>
-            item.type === "slot"
-              ? html`<slot slot=${item.id} name=${item.id}></slot>`
-              : nothing
+            item.type === "slot" ? html`<slot slot=${item.id} name=${item.id}></slot>` : nothing
           )}
         </ch-action-menu-render>`
       : nothing}

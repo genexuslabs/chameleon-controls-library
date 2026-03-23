@@ -1,4 +1,4 @@
-import {
+import type {
   ActionListItemAdditionalBase,
   ActionListItemAdditionalCustom,
   ActionListItemAdditionalInformation,
@@ -41,9 +41,7 @@ const addPartForAdditionalModel = (
   }
 };
 
-export const computeExportParts = (
-  additionalInfo: ActionListItemAdditionalInformation
-) => {
+export const computeExportParts = (additionalInfo: ActionListItemAdditionalInformation) => {
   const parts: Set<string> = new Set();
 
   addPartForAdditionalModel(additionalInfo["block-start"], parts);
@@ -54,3 +52,4 @@ export const computeExportParts = (
 
   return parts;
 };
+

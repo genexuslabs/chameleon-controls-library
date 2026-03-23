@@ -1,15 +1,11 @@
-import {
-  ComboBoxSuggestInfo,
-  ComboBoxSuggestOptions,
+import type {
   ComboBoxItemGroup,
-  ComboBoxItemModel
+  ComboBoxItemModel,
+  ComboBoxSuggestInfo,
+  ComboBoxSuggestOptions
 } from "./types";
 
-const filterWithCase = (
-  stringToFilter: string,
-  filter: string,
-  matchCase?: boolean
-) =>
+const filterWithCase = (stringToFilter: string, filter: string, matchCase?: boolean) =>
   matchCase
     ? stringToFilter.includes(filter)
     : stringToFilter.toLowerCase().includes(filter.toLowerCase());
@@ -23,21 +19,11 @@ const filterWithString = (
     ? stringToFilter.match(filter) !== null
     : filterWithCase(stringToFilter, filter, filterOptions?.matchCase);
 
-const filterCaption = (
-  item: ComboBoxItemModel,
-  filterInfo: ComboBoxSuggestInfo
-) =>
+const filterCaption = (item: ComboBoxItemModel, filterInfo: ComboBoxSuggestInfo) =>
   !filterInfo.filter ||
-  filterWithString(
-    item.caption ?? item.value,
-    filterInfo.filter,
-    filterInfo.options
-  );
+  filterWithString(item.caption ?? item.value, filterInfo.filter, filterInfo.options);
 
-const computeFilter = (
-  item: ComboBoxItemModel,
-  filterInfo: ComboBoxSuggestInfo
-): boolean =>
+const computeFilter = (item: ComboBoxItemModel, filterInfo: ComboBoxSuggestInfo): boolean =>
   filterInfo.options?.hideMatchesAndShowNonMatches === true
     ? !filterCaption(item, filterInfo)
     : filterCaption(item, filterInfo);
@@ -54,11 +40,7 @@ export const filterSubModel = (
   if (itemSubGroup != null) {
     for (let index = 0; index < itemSubGroup.length; index++) {
       const itemLeaf = itemSubGroup[index];
-      const itemSatisfiesFilter = filterSubModel(
-        itemLeaf,
-        filterInfo,
-        displayedValues
-      );
+      const itemSatisfiesFilter = filterSubModel(itemLeaf, filterInfo, displayedValues);
 
       aSubItemIsRendered ||= itemSatisfiesFilter;
     }
@@ -75,3 +57,4 @@ export const filterSubModel = (
 
   return satisfiesFilter;
 };
+

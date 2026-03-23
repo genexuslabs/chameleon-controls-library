@@ -1,22 +1,16 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
-import {
-  Event,
-  type EventEmitter
-} from "@genexus/kasstor-core/decorators/event.js";
-import { html, nothing, type TemplateResult } from "lit";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
+import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
-import { ref, createRef, type Ref } from "lit/directives/ref.js";
+import { createRef, ref, type Ref } from "lit/directives/ref.js";
 
 import { tokenMap } from "../../../../utilities/mapping/token-map";
 import {
   ACTION_LIST_GROUP_EXPORT_PARTS,
   ACTION_LIST_GROUP_PARTS_DICTIONARY,
   ACTION_LIST_PARTS_DICTIONARY
-} from "../../../../utilities/reserved-names/reserved-names";
+} from "../../../../utilities/reserved-names/parts/action-list";
 
 import styles from "./action-list-group.scss?inline";
 
@@ -123,8 +117,7 @@ export class ChActionListGroup extends KasstorElement {
     }
   }
 
-  #getExpandedValue = (): boolean =>
-    this.expandable ? this.expanded ?? false : true;
+  #getExpandedValue = (): boolean => (this.expandable ? (this.expanded ?? false) : true);
 
   protected override firstWillUpdate(): void {
     // Static attributes
@@ -194,3 +187,4 @@ declare global {
     "ch-action-list-group": ChActionListGroup;
   }
 }
+

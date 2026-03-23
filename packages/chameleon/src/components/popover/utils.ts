@@ -1,4 +1,4 @@
-import { ChPopoverAlign, ChPopoverPositionTry } from "./types";
+import type { ChPopoverAlign, ChPopoverPositionTry } from "./types";
 
 const POPOVER_SEPARATION_X = "--ch-popover-separation-x";
 const POPOVER_SEPARATION_Y = "--ch-popover-separation-y";
@@ -23,23 +23,15 @@ const getOverflowingSize = (
   popoverSize: number,
   popoverRelativePosition: number
 ) => ({
-  start:
-    documentSize -
-    (popoverSize + actionStartPosition + popoverRelativePosition),
+  start: documentSize - (popoverSize + actionStartPosition + popoverRelativePosition),
   end: actionStartPosition + popoverRelativePosition
 });
 
-const contentOverflowsWindow = (overflowingSize: {
-  start: number;
-  end: number;
-}) => overflowingSize.start < 0 || overflowingSize.end < 0;
+const contentOverflowsWindow = (overflowingSize: { start: number; end: number }) =>
+  overflowingSize.start < 0 || overflowingSize.end < 0;
 
 const alignToImplementationMap: {
-  [key in ChPopoverAlign]: (
-    actionSize: number,
-    popoverSize: number,
-    separation: number
-  ) => number;
+  [key in ChPopoverAlign]: (actionSize: number, popoverSize: number, separation: number) => number;
 } = {
   "outside-start": (_, popoverSize, separation) => -popoverSize - separation,
 
@@ -48,14 +40,12 @@ const alignToImplementationMap: {
   center: (actionSize, popoverSize, separation) =>
     actionSize * 0.5 + separation - popoverSize * 0.5,
 
-  "inside-end": (actionSize, popoverSize, separation) =>
-    actionSize - (separation + popoverSize),
+  "inside-end": (actionSize, popoverSize, separation) => actionSize - (separation + popoverSize),
 
   "outside-end": (actionSize, _, separation) => actionSize + separation
 };
 
-export const fromPxToNumber = (pxValue: string) =>
-  Number(pxValue.replace("px", "").trim());
+export const fromPxToNumber = (pxValue: string) => Number(pxValue.replace("px", "").trim());
 
 const getAlignmentValue = (
   align: ChPopoverAlign,
@@ -97,9 +87,11 @@ const getAlignmentValue = (
 
   // Check the alignment with the opposite alignment
   const oppositeAlign = positionTryFlipMap[align];
-  const oppositePopoverRelativePosition: number = alignToImplementationMap[
-    oppositeAlign
-  ](actionSize, popoverSize, separation);
+  const oppositePopoverRelativePosition: number = alignToImplementationMap[oppositeAlign](
+    actionSize,
+    popoverSize,
+    separation
+  );
 
   const oppositeAlignmentOverflowingSize = getOverflowingSize(
     actionStartPosition,
@@ -174,3 +166,4 @@ export const setResponsiveAlignment = (
 
   return [inlineAlignmentValue, blockAlignmentValue];
 };
+

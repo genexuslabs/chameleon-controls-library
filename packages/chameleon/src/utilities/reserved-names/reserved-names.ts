@@ -1,227 +1,8 @@
-import type { ImageRender } from "../../typings/multi-state-images";
 import { joinParts } from "./join-parts";
 import {
   CHECKBOX_INSIDE_SHADOW_PARTS_DICTIONARY,
   CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY
 } from "./parts/checkbox";
-
-// - - - - - - - - - - - - - - - - - - - -
-//                 Images
-// - - - - - - - - - - - - - - - - - - - -
-const START_IMAGE = "pseudo-img--start";
-const END_IMAGE = "pseudo-img--end";
-const BACKGROUND_IMAGE_TYPE: ImageRender = "background";
-const MASK_IMAGE_TYPE: ImageRender = "mask";
-
-const START_IMAGE_TYPE_PREFIX = "start-img-type--";
-const END_IMAGE_TYPE_PREFIX = "end-img-type--";
-
-// For classes
-export const startPseudoImageTypeDictionary = {
-  background: `${START_IMAGE_TYPE_PREFIX}${BACKGROUND_IMAGE_TYPE} ${START_IMAGE}`,
-  mask: `${START_IMAGE_TYPE_PREFIX}${MASK_IMAGE_TYPE} ${START_IMAGE}`
-} as const satisfies { [key in Exclude<ImageRender, "img">]: string };
-
-// For classes
-export const endPseudoImageTypeDictionary = {
-  background: `${END_IMAGE_TYPE_PREFIX}${BACKGROUND_IMAGE_TYPE} ${END_IMAGE}`,
-  mask: `${END_IMAGE_TYPE_PREFIX}${MASK_IMAGE_TYPE} ${END_IMAGE}`
-} as const satisfies { [key in Exclude<ImageRender, "img">]: string };
-
-// For classes
-export const imageTypeDictionary = {
-  background: `img img-type--${BACKGROUND_IMAGE_TYPE}`,
-  mask: `img img-type--${MASK_IMAGE_TYPE}`
-} as const satisfies { [key in Exclude<ImageRender, "img">]: string };
-
-// - - - - - - - - - - - - - - - - - - - -
-//             Accordion Parts
-// - - - - - - - - - - - - - - - - - - - -
-export const ACCORDION_PARTS_DICTIONARY = {
-  HEADER: "header",
-  PANEL: "panel",
-  SECTION: "section",
-
-  DISABLED: "disabled", // HEADER, PANEL and SECTION
-  EXPANDED: "expanded", // HEADER, PANEL and SECTION
-  COLLAPSED: "collapsed" // HEADER, PANEL and SECTION
-} as const;
-
-export const ACCORDION_EXPORT_PARTS = joinParts(ACCORDION_PARTS_DICTIONARY);
-
-// - - - - - - - - - - - - - - - - - - - -
-//           Action Group Parts
-// - - - - - - - - - - - - - - - - - - - -
-export const ACTION_GROUP_PARTS_DICTIONARY = {
-  ACTIONS: "actions",
-  MORE_ACTIONS: "more-actions",
-  MORE_ACTIONS_BUTTON: "more-actions-button",
-  MORE_ACTIONS_WINDOW: "more-actions-window",
-
-  // - - - - - - - - States - - - - - - - -
-  VERTICAL: "vertical" // SEPARATOR (comes from dropdown dictionary)
-} as const;
-
-export const ACTION_GROUP_EXPORT_PARTS = joinParts(
-  ACTION_GROUP_PARTS_DICTIONARY
-);
-
-// - - - - - - - - - - - - - - - - - - - -
-//            Action List Parts
-// - - - - - - - - - - - - - - - - - - - -
-export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {
-  ACTION: "item__action",
-  ADDITIONAL_ITEM: "item__additional-item",
-  ADDITIONAL_ITEM_CONFIRM: "item__additional-item-confirm",
-  CAPTION: "item__caption",
-  CHECKBOX: "item__checkbox",
-  CHECKBOX_CONTAINER:
-    CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY.CONTAINER,
-  CHECKBOX_INPUT: CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY.INPUT,
-  CHECKBOX_OPTION: CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY.OPTION,
-  // EXPANDABLE_BUTTON: "item__expandable-button",
-  // GROUP: "item__group",
-
-  EDIT_CAPTION: "item__edit-caption",
-
-  ADDITIONAL_ACTION: "action", // ADDITIONAL_ITEM
-  ADDITIONAL_IMAGE: "image", // ADDITIONAL_ITEM
-  ADDITIONAL_TEXT: "text", // ADDITIONAL_ITEM
-
-  // - - - - - - - - States - - - - - - - -
-  ACTION_FIX: "action--fix", // ADDITIONAL_ACTION
-  ACTION_MODIFY: "action--modify", // ADDITIONAL_ACTION
-  ACTION_REMOVE: "action--remove", // ADDITIONAL_ACTION
-  ACTION_CUSTOM: "action--custom", // ADDITIONAL_ACTION
-
-  ACTION_ACCEPT: "action--accept", // ADDITIONAL_ITEM_CONFIRM
-  ACTION_CANCEL: "action--cancel", // ADDITIONAL_ITEM_CONFIRM
-
-  FIXED: "fixed", // ACTION_FIX
-  NOT_FIXED: "not-fixed", // ACTION_FIX
-
-  DISABLED: "disabled", // EXPANDABLE_BUTTON, CHECKBOX, ADDITIONAL_ACTION
-
-  NESTED: "nested", // ACTION
-  NESTED_EXPANDABLE: "nested-expandable", // ACTION
-
-  // EXPANDED: "expanded", // ACTION, EXPANDABLE_BUTTON, GROUP
-  // COLLAPSED: "collapsed", // ACTION, EXPANDABLE_BUTTON, GROUP
-
-  // EXPAND_BUTTON: "expand-button", // HEADER
-
-  // LAZY_LOADED: "lazy-loaded", // GROUP
-
-  // START_IMAGE: "start-img", // IMAGE
-  // END_IMAGE: "end-img", // IMAGE
-
-  // EDITING: "editing", // ACTION
-  // NOT_EDITING: "not-editing", // ACTION
-
-  SELECTABLE: "selectable", // ACTION
-  NOT_SELECTABLE: "not-selectable", // ACTION
-  SELECTED: "selected", // ACTION
-  NOT_SELECTED: "not-selected", // ACTION
-
-  EDITING: "editing", // ACTION
-  NOT_EDITING: "not-editing", // ACTION
-
-  CHECKED: CHECKBOX_INSIDE_SHADOW_PARTS_DICTIONARY.CHECKED, // CHECKBOX
-  UNCHECKED: CHECKBOX_INSIDE_SHADOW_PARTS_DICTIONARY.UNCHECKED, // CHECKBOX
-  INDETERMINATE: CHECKBOX_INSIDE_SHADOW_PARTS_DICTIONARY.INDETERMINATE // CHECKBOX
-
-  // DRAG_ENTER: "drag-enter" // HEADER
-} as const;
-
-export const ACTION_LIST_ITEM_EXPORT_PARTS = joinParts(
-  ACTION_LIST_ITEM_PARTS_DICTIONARY
-);
-
-export const ACTION_LIST_GROUP_PARTS_DICTIONARY = {
-  ACTION: "group__action",
-  CAPTION: "group__caption",
-  EXPANDABLE: "group__expandable",
-
-  // - - - - - - - - States - - - - - - - -
-  DISABLED: "disabled", // ACTION, CAPTION
-
-  EXPANDED: "expanded", // EXPANDABLE
-  COLLAPSED: "collapsed", // EXPANDABLE
-
-  LAZY_LOADED: "lazy-loaded", // EXPANDABLE
-
-  SELECTED: "selected", // HEADER
-  NOT_SELECTED: "not-selected" // HEADER
-
-  // DRAG_ENTER: "drag-enter" // HEADER
-} as const;
-
-export const ACTION_LIST_GROUP_EXPORT_PARTS = joinParts(
-  ACTION_LIST_GROUP_PARTS_DICTIONARY
-);
-
-export const ACTION_LIST_PARTS_DICTIONARY = {
-  GROUP: "group",
-  ITEM: "item"
-} as const;
-
-export const ACTION_LIST_EXPORT_PARTS = joinParts(
-  ACTION_LIST_GROUP_PARTS_DICTIONARY
-);
-
-// - - - - - - - - - - - - - - - - - - - -
-//            Action Menu Parts
-// - - - - - - - - - - - - - - - - - - - -
-export const ACTION_MENU_ITEM_PARTS_DICTIONARY = {
-  CONTENT: "content",
-  SHORTCUT: "shortcut",
-  ACTION: "action",
-  BUTTON: "button",
-  LINK: "link",
-  WINDOW: "window",
-  SEPARATOR: "separator",
-
-  // - - - - - - - - States - - - - - - - -
-  EXPANDABLE: "expandable", // ACTION
-  EXPANDED: "expanded", // ACTION
-  COLLAPSED: "collapsed", // ACTION
-  DISABLED: "disabled" // ACTION
-} as const;
-
-export const ACTION_MENU_PARTS_DICTIONARY = {
-  EXPANDABLE_BUTTON: "expandable-button"
-};
-
-export const ACTION_MENU_ITEM_EXPORT_PARTS = joinParts(
-  ACTION_MENU_ITEM_PARTS_DICTIONARY
-);
-export const ACTION_MENU_EXPORT_PARTS = joinParts(ACTION_MENU_PARTS_DICTIONARY);
-
-// - - - - - - - - - - - - - - - - - - - -
-//             Combo Box Parts
-// - - - - - - - - - - - - - - - - - - - -
-export const COMBO_BOX_PARTS_DICTIONARY = {
-  EXPANDABLE: "expandable",
-  GROUP: "group",
-  GROUP_HEADER: "group__header",
-  GROUP_HEADER_CAPTION: "group__header-caption",
-  GROUP_CONTENT: "group__content",
-  ITEM: "item",
-  SECTION: "section",
-  WINDOW: "window",
-
-  DISABLED: "disabled", // GROUP, EXPANDABLE
-  EXPANDED: "expanded", // GROUP_HEADER, EXPANDABLE
-  COLLAPSED: "collapsed", // GROUP_HEADER, EXPANDABLE
-  NESTED: "nested", // ITEM
-  SELECTED: "selected" // ITEM
-} as const;
-
-export const COMBO_BOX_EXPORT_PARTS = joinParts(COMBO_BOX_PARTS_DICTIONARY);
-
-export const COMBO_BOX_HOST_PARTS = {
-  PLACEHOLDER: "ch-combo-box-render--placeholder"
-} as const;
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Edit Parts
@@ -249,9 +30,7 @@ export const FLEXIBLE_LAYOUT_PARTS_DICTIONARY = {
   // - - - - - - - - States - - - - - - - -
 } as const;
 
-export const FLEXIBLE_LAYOUT_EXPORT_PARTS = joinParts(
-  FLEXIBLE_LAYOUT_PARTS_DICTIONARY
-);
+export const FLEXIBLE_LAYOUT_EXPORT_PARTS = joinParts(FLEXIBLE_LAYOUT_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
 //            Paginator Parts
@@ -279,40 +58,6 @@ export const PAGINATOR_PARTS_DICTIONARY = {
 } as const;
 
 // - - - - - - - - - - - - - - - - - - - -
-//                Tab Parts
-// - - - - - - - - - - - - - - - - - - - -
-export const TAB_PARTS_DICTIONARY = {
-  TAB: "tab",
-  TAB_CAPTION: "tab-caption",
-  CLOSE_BUTTON: "close-button",
-  LIST: "tab-list",
-  LIST_START: "tab-list-start",
-  LIST_END: "tab-list-end",
-  PANEL: "tab-panel",
-  PANEL_CONTAINER: "tab-panel-container",
-  IMAGE: "img",
-
-  // - - - - - - - - States - - - - - - - -
-  CLOSABLE: "closable", // TAB, TAB_CAPTION
-  NOT_CLOSABLE: "not-closable", // TAB, TAB_CAPTION
-  DISABLED: "disabled", // TAB, TAB_CAPTION, PANEL, CLOSE_BUTTON
-  DRAGGING: "dragging", // TAB, TAB_CAPTION, CLOSE_BUTTON, LIST
-  DRAGGING_OVER_TAB_LIST: "dragging-over-tab-list", // TAB, CLOSE_BUTTON, LIST
-  DRAGGING_OUT_OF_TAB_LIST: "dragging-out-of-tab-list", // TAB, CLOSE_BUTTON, LIST
-  EXPANDED: "expanded", // PANEL_CONTAINER
-  COLLAPSED: "collapsed", // PANEL_CONTAINER
-  SELECTED: "selected", // TAB, TAB_CAPTION, PANEL, CLOSE_BUTTON
-  NOT_SELECTED: "not-selected", // TAB, TAB_CAPTION, PANEL, CLOSE_BUTTON
-
-  BLOCK: "block", // TAB, TAB_CAPTION, CLOSE_BUTTON, LIST, LIST_START, LIST_END, PANEL, PANEL_CONTAINER
-  INLINE: "inline", // TAB, TAB_CAPTION, CLOSE_BUTTON, LIST, LIST_START, LIST_END, PANEL, PANEL_CONTAINER
-  START: "start", // TAB, TAB_CAPTION, CLOSE_BUTTON, LIST, LIST_START, LIST_END, PANEL, PANEL_CONTAINER
-  END: "end" // TAB, TAB_CAPTION, CLOSE_BUTTON, LIST, LIST_START, LIST_END, PANEL, PANEL_CONTAINER
-} as const;
-
-export const TAB_EXPORT_PARTS = joinParts(TAB_PARTS_DICTIONARY);
-
-// - - - - - - - - - - - - - - - - - - - -
 //         Tabular Grid view Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const TABULAR_GRID_PARTS_DICTIONARY = {
@@ -329,8 +74,7 @@ export const TABULAR_GRID_PARTS_DICTIONARY = {
 export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
   ACTION: "item__action",
   CHECKBOX: "item__checkbox",
-  CHECKBOX_CONTAINER:
-    CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY.CONTAINER,
+  CHECKBOX_CONTAINER: CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY.CONTAINER,
   CHECKBOX_INPUT: CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY.INPUT,
   CHECKBOX_OPTION: CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY.OPTION,
   DOWNLOADING: "item__downloading",
@@ -373,9 +117,7 @@ export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
   DRAG_ENTER: "drag-enter" // HEADER
 } as const;
 
-export const TREE_VIEW_ITEM_EXPORT_PARTS = joinParts(
-  TREE_VIEW_ITEM_PARTS_DICTIONARY
-);
+export const TREE_VIEW_ITEM_EXPORT_PARTS = joinParts(TREE_VIEW_ITEM_PARTS_DICTIONARY);
 
 export const TREE_VIEW_PARTS_DICTIONARY = {
   DRAG_PREVIEW: "drag-preview",
@@ -386,3 +128,4 @@ export const TREE_VIEW_PARTS_DICTIONARY = {
 } as const;
 
 export const TREE_VIEW_EXPORT_PARTS = joinParts(TREE_VIEW_PARTS_DICTIONARY);
+

@@ -1,7 +1,4 @@
-import {
-  Component,
-  KasstorElement
-} from "@genexus/kasstor-core/decorators/component.js";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { property } from "lit/decorators/property.js";
 import { keyed } from "lit/directives/keyed.js";
@@ -27,9 +24,7 @@ export class ChQr extends KasstorElement {
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  @property({ attribute: "accessible-name" }) accessibleName:
-    | string
-    | undefined;
+  @property({ attribute: "accessible-name" }) accessibleName: string | undefined;
   @Observe("accessibleName")
   protected accessibleNameChanged() {
     this.#conditionalSetAriaLabel();
@@ -96,8 +91,7 @@ export class ChQr extends KasstorElement {
       {
         text: this.value,
         radius: this.radius, // 0.0 to 0.5
-        ecLevel: (this.errorCorrectionLevel ||
-          "High")[0] as QrCreator.ErrorCorrectionLevel, // L, M, Q, H
+        ecLevel: (this.errorCorrectionLevel || "High")[0] as QrCreator.ErrorCorrectionLevel, // L, M, Q, H
         fill: this.#getColorValue(this.fill), // foreground color
         background: this.#getColorValue(this.background), // color or null for transparent
         size: this.size // in pixels

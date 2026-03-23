@@ -12,3 +12,61 @@ ch-sidebar {
   block-size: 100%;
   box-sizing: border-box;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - -
+//        Navigation list styling for the showcase
+// - - - - - - - - - - - - - - - - - - - - - - - - - -
+ch-navigation-list-render {
+  --ch-navigation-list-item-gap: 8px;
+  --ch-navigation-list-item-custom-padding-inline-start: 12px;
+  --ch-navigation-list-item__expandable-button-size: 16px;
+  --ch-navigation-list-item__expandable-button-image-size: 80%;
+  --ch-navigation-list-item-expand-collapse-duration: 150ms;
+  --ch-navigation-list-item-expand-collapse-timing-function: ease-out;
+}
+
+// Category headers (level-0 expandable items)
+ch-navigation-list-render::part(item__action level-0) {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--showcase-sidebar-category-color, #9ca3af);
+  padding-block: 8px;
+  margin-block-start: 8px;
+}
+
+// All nav links
+ch-navigation-list-render::part(item__link) {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--showcase-sidebar-link-color, #6b7280);
+  padding-block: 5px;
+  padding-inline-end: 12px;
+  border-radius: 6px;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+ch-navigation-list-render::part(item__link):hover {
+  color: var(--showcase-sidebar-link-hover-color, #111827);
+  background-color: var(--showcase-sidebar-link-hover-bg, #f3f4f6);
+}
+
+// Selected link
+ch-navigation-list-render::part(item__link selected) {
+  color: var(--showcase-sidebar-active-color, #2563eb);
+  font-weight: 500;
+  background-color: var(--showcase-sidebar-active-bg, #eff6ff);
+}
+
+// Selected indicator bar
+ch-navigation-list-render::part(indicator) {
+  inline-size: 3px;
+  border-radius: 0 3px 3px 0;
+  background-color: var(--showcase-sidebar-active-color, #2563eb);
+}
+
+// Caption text styling
+ch-navigation-list-render::part(item__caption) {
+  line-height: 1.5;
+}

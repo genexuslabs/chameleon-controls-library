@@ -351,3 +351,105 @@ export class ChAccordionRender extends KasstorElement {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChAccordionRenderElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChAccordionRenderElement;
+  }
+
+  /** Type of the `ch-accordion-render`'s `expandedChange` event. */
+  // prettier-ignore
+  type HTMLChAccordionRenderElementExpandedChangeEvent = HTMLChAccordionRenderElementCustomEvent<
+    HTMLChAccordionRenderElementEventMap["expandedChange"]
+  >;
+
+  interface HTMLChAccordionRenderElementEventMap {
+    expandedChange: AccordionItemExpandedChangeEvent;
+  }
+
+  interface HTMLChAccordionRenderElementEventTypes {
+    expandedChange: HTMLChAccordionRenderElementExpandedChangeEvent;
+  }
+
+  /**
+   * The `ch-accordion-render` component displays a vertical stack of collapsible panels, each with a clickable header that toggles the visibility of its associated content section.
+   *
+   * @remarks
+   * ## Features
+   *  - Expand or collapse panels on demand to organize lengthy content into space-efficient sections.
+   *  - Single-item mode (`singleItemExpanded`) ensures only one panel is open at a time, automatically closing the others.
+   *  - Configurable expandable button position (`start` or `end`) in each panel header.
+   *  - Per-item images in the header via `startImgSrc` and a customizable image-path callback.
+   *  - Disabled state at the control level or per individual item.
+   *  - Custom header content through named slots.
+   *
+   * ## Use when
+   *  - Organizing lengthy content into logically grouped, collapsible sections (FAQs, settings pages, form groups).
+   *  - Reducing cognitive load by showing one section at a time.
+   *  - Reducing page length when users are unlikely to need all sections simultaneously (FAQs, settings).
+   *  - Space-constrained UIs where vertical scrolling is undesirable and content can be consumed independently.
+   *
+   * ## Do not use when
+   *  - Users need to compare content side-by-side -- the accordion pattern inherently hides inactive sections.
+   *  - Users are likely to read all sections — use plain headings and scrollable content instead.
+   *  - Content sections are interdependent and must be compared side by side — the back-and-forth is too costly.
+   *  - Sequential step-by-step processes where hiding steps creates confusion — prefer a stepper/wizard.
+   *  - Nesting accordions within accordions — double-nested collapsed panels disorient users.
+   *
+   * ## Accessibility
+   *  - Each header is a `<button>` with `aria-expanded` and `aria-controls` linking to its section.
+   *  - Sections are labelled via `aria-labelledby` pointing back to the header button, or via explicit `aria-label` when provided.
+   *  - Supports the disclosure pattern: toggling a header expands or collapses its associated section.
+   *
+   * @status experimental
+   *
+   * @csspart header - The clickable `<button>` element that toggles the collapsible section. Present on every item.
+   * @csspart panel - The outer container that wraps the `header` and the `section` of each item.
+   * @csspart section - The collapsible `<section>` element that contains the item's body content.
+   *
+   * @csspart disabled - Present in the `header`, `panel`, and `section` parts when the item is disabled.
+   * @csspart expanded - Present in the `header`, `panel`, and `section` parts when the item is expanded.
+   * @csspart collapsed - Present in the `header`, `panel`, and `section` parts when the item is collapsed.
+   *
+   * @slot {item.headerSlotId} - Named slot projected inside the `header` button for custom header content. Rendered when the item defines a `headerSlotId`.
+   * @slot {item.id} - Named slot projected inside the `section` for each item's collapsible body content.
+   *
+   * @cssprop [--ch-accordion__chevron-size = #{$default-decorative-image-size}] - Specifies the box size of the chevron.
+   * @cssprop [--ch-accordion__chevron-image-size = 100%] - Specifies the image size of the chevron.
+   * @cssprop [--ch-accordion__chevron-color = currentColor] - Specifies the color of the chevron.
+   * @cssprop [--ch-accordion-expand-collapse-duration = 0ms] - Specifies duration of the expand and collapse animation.
+   * @cssprop [--ch-accordion-expand-collapse-timing-function = linear] - Specifies timing function of the expand and collapse animation.
+   * @cssprop [--ch-accordion__header-background-image = #{$expandable-icon}] - Specifies the background image used for the expandable chevron in the header.
+   *
+   * @fires expandedChange Fired when an item is expanded or collapsed. The payload is
+   *   `{ id: string; expanded: boolean }`. In `singleItemExpanded` mode,
+   *   multiple events fire: one for each auto-collapsed item (with
+   *   `expanded: false`) followed by one for the newly expanded item.
+   */
+  // prettier-ignore
+  interface HTMLChAccordionRenderElement extends ChAccordionRender {
+    // Extend the ChAccordionRender class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChAccordionRenderElementEventTypes>(type: K, listener: (this: HTMLChAccordionRenderElement, ev: HTMLChAccordionRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChAccordionRenderElementEventTypes>(type: K, listener: (this: HTMLChAccordionRenderElement, ev: HTMLChAccordionRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-accordion-render": HTMLChAccordionRenderElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-accordion-render": HTMLChAccordionRenderElement;
+  }
+}
+

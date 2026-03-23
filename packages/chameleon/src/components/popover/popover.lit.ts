@@ -1472,3 +1472,123 @@ declare global {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChPopoverElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChPopoverElement;
+  }
+
+  /** Type of the `ch-popover`'s `popoverOpened` event. */
+  // prettier-ignore
+  type HTMLChPopoverElementPopoverOpenedEvent = HTMLChPopoverElementCustomEvent<
+    HTMLChPopoverElementEventMap["popoverOpened"]
+  >;
+
+  /** Type of the `ch-popover`'s `popoverClosed` event. */
+  // prettier-ignore
+  type HTMLChPopoverElementPopoverClosedEvent = HTMLChPopoverElementCustomEvent<
+    HTMLChPopoverElementEventMap["popoverClosed"]
+  >;
+
+  interface HTMLChPopoverElementEventMap {
+    popoverOpened: void;
+    popoverClosed: PopoverClosedInfo;
+  }
+
+  interface HTMLChPopoverElementEventTypes {
+    popoverOpened: HTMLChPopoverElementPopoverOpenedEvent;
+    popoverClosed: HTMLChPopoverElementPopoverClosedEvent;
+  }
+
+  /**
+   * The `ch-popover` component renders a positioned overlay container anchored to a reference element using the native Popover API and `position: fixed`.
+   *
+   * @remarks
+   * ## Features
+   *  - Configurable block and inline alignment (inside/outside/center) relative to the action element.
+   *  - Optional flip-block or flip-inline fallback when the popover would overflow the viewport.
+   *  - Automatic size-matching to the action element.
+   *  - Dragging from a dedicated header or the entire box.
+   *  - Edge and corner resizing.
+   *  - Responsive re-alignment on scroll and resize.
+   *  - Full RTL layout support.
+   *  - Closes on outside click or Escape.
+   *
+   * ## Use when
+   *  - You need precise, anchor-relative positioning for dropdowns, floating panels, or custom overlays.
+   *  - Contextual content that requires more space than a tooltip but less formality than a modal.
+   *  - The content includes interactive elements (links, buttons, form inputs, pickers).
+   *  - Feature spotlights, overflow menus, or positioned pickers near a trigger.
+   *
+   * ## Do not use when
+   *  - You need simple tooltip-style overlays with hover/focus triggers -- prefer `ch-tooltip` instead.
+   *  - You need modal or non-modal dialog boxes -- prefer `ch-dialog` instead.
+   *  - Critical content requiring user confirmation — prefer `ch-dialog`.
+   *  - Brief, non-interactive supplementary text — prefer `ch-tooltip`.
+   *  - Nested inside another popover — always an anti-pattern.
+   *
+   * ## Accessibility
+   *  - Does not impose a semantic role — consuming components are responsible for adding appropriate ARIA attributes (e.g. `role="dialog"`, `role="listbox"`).
+   *  - Keyboard: Escape closes the popover and returns focus to the action element.
+   *
+   * @status experimental
+   *
+   * @part header - A draggable header area rendered when `allowDrag === "header"`. Projects the "header" slot.
+   *
+   * @slot header - Content projected into the header area. Rendered when `allowDrag === "header"`.
+   * @slot - Default slot. The main content of the popover.
+   *
+   * @fires popoverOpened Emitted when the popover is opened by an user interaction.
+   *   
+   *   This event can be prevented (`preventDefault()`), interrupting the
+   *   ch-popover's opening.
+   * @fires popoverClosed Emitted when the popover is closed by an user interaction.
+   *   
+   *   This event can be prevented (`preventDefault()`), interrupting the
+   *   `ch-popover`'s closing.
+   *   
+   *   The `reason` property of the event provides more information about
+   *   the cause of the closing:
+   *    - `"click-outside"`: The popover is being closed because the user clicked
+   *      outside the popover when using `closeOnClickOutside === true` and
+   *      `mode === "manual"`.
+   *   
+   *    - `"escape-key"`: The popover is being closed because the user pressed the
+   *      "Escape" key when using `closeOnClickOutside === true` and
+   *      `mode === "manual"`.
+   *   
+   *    - `"popover-no-longer-visible"`: The popover is being closed because it
+   *      is no longer visible.
+   *   
+   *    - `"toggle"`: The popover is being closed by the native toggle behavior
+   *      of popover. It can be produced by the user clicking the `actionElement`,
+   *      pressing the "Enter" or "Space" keys on the `actionElement`, pressing
+   *      the "Escape" key or other. Used when `mode === "auto"`.
+   */
+  // prettier-ignore
+  interface HTMLChPopoverElement extends ChPopover {
+    // Extend the ChPopover class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChPopoverElementEventTypes>(type: K, listener: (this: HTMLChPopoverElement, ev: HTMLChPopoverElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChPopoverElementEventTypes>(type: K, listener: (this: HTMLChPopoverElement, ev: HTMLChPopoverElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-popover": HTMLChPopoverElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-popover": HTMLChPopoverElement;
+  }
+}
+

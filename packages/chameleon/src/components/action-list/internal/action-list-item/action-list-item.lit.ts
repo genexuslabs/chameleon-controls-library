@@ -722,3 +722,82 @@ declare global {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChActionListItemElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionListItemElement;
+  }
+
+  /** Type of the `ch-action-list-item`'s `captionChange` event. */
+  // prettier-ignore
+  type HTMLChActionListItemElementCaptionChangeEvent = HTMLChActionListItemElementCustomEvent<
+    HTMLChActionListItemElementEventMap["captionChange"]
+  >;
+
+  /** Type of the `ch-action-list-item`'s `fixedChange` event. */
+  // prettier-ignore
+  type HTMLChActionListItemElementFixedChangeEvent = HTMLChActionListItemElementCustomEvent<
+    HTMLChActionListItemElementEventMap["fixedChange"]
+  >;
+
+  /** Type of the `ch-action-list-item`'s `remove` event. */
+  // prettier-ignore
+  type HTMLChActionListItemElementRemoveEvent = HTMLChActionListItemElementCustomEvent<
+    HTMLChActionListItemElementEventMap["remove"]
+  >;
+
+  /** Type of the `ch-action-list-item`'s `itemDragEnd` event. */
+  // prettier-ignore
+  type HTMLChActionListItemElementItemDragEndEvent = HTMLChActionListItemElementCustomEvent<
+    HTMLChActionListItemElementEventMap["itemDragEnd"]
+  >;
+
+  interface HTMLChActionListItemElementEventMap {
+    captionChange: ActionListCaptionChangeEventDetail;
+    fixedChange: ActionListFixedChangeEventDetail;
+    remove: string;
+    itemDragEnd: void;
+  }
+
+  interface HTMLChActionListItemElementEventTypes {
+    captionChange: HTMLChActionListItemElementCaptionChangeEvent;
+    fixedChange: HTMLChActionListItemElementFixedChangeEvent;
+    remove: HTMLChActionListItemElementRemoveEvent;
+    itemDragEnd: HTMLChActionListItemElementItemDragEndEvent;
+  }
+
+  /**
+   * @status experimental
+   *
+   * @fires captionChange Fired when the fixed value of the control is changed.
+   * @fires fixedChange Fired when the control is asking to modify its caption
+   * @fires remove Fired when the remove button was clicked in the control.
+   * @fires itemDragEnd Fired when the item is no longer being dragged.
+   */
+  // prettier-ignore
+  interface HTMLChActionListItemElement extends ChActionListItem {
+    // Extend the ChActionListItem class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChActionListItemElementEventTypes>(type: K, listener: (this: HTMLChActionListItemElement, ev: HTMLChActionListItemElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChActionListItemElementEventTypes>(type: K, listener: (this: HTMLChActionListItemElement, ev: HTMLChActionListItemElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-action-list-item": HTMLChActionListItemElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-action-list-item": HTMLChActionListItemElement;
+  }
+}
+

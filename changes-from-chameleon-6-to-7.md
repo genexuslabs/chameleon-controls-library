@@ -143,6 +143,10 @@
   | `ch-tree` and `ch-tree-item` | Use the `ch-tree-view-render` |
   | `ch-window` | Use the `ch-popover` |
 
+## ch-action-menu-render
+
+- Removed the following properties as they were only used by old GeneXus versions: `gxImageConstructor`, `gxSettings`, and `useGxRender`.
+
 ### ch-checkbox
 
 - Removed `highligtable` property. `ADD EXPLANATION...... (include the removal of the click event)`.

@@ -1176,3 +1176,134 @@ declare global {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChComboBoxRenderElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChComboBoxRenderElement;
+  }
+
+  /** Type of the `ch-combo-box-render`'s `input` event. */
+  // prettier-ignore
+  type HTMLChComboBoxRenderElementInputEvent = HTMLChComboBoxRenderElementCustomEvent<
+    HTMLChComboBoxRenderElementEventMap["input"]
+  >;
+
+  /** Type of the `ch-combo-box-render`'s `change` event. */
+  // prettier-ignore
+  type HTMLChComboBoxRenderElementChangeEvent = HTMLChComboBoxRenderElementCustomEvent<
+    HTMLChComboBoxRenderElementEventMap["change"]
+  >;
+
+  interface HTMLChComboBoxRenderElementEventMap {
+    input: string;
+    change: string;
+  }
+
+  interface HTMLChComboBoxRenderElementEventTypes {
+    input: HTMLChComboBoxRenderElementInputEvent;
+    change: HTMLChComboBoxRenderElementChangeEvent;
+  }
+
+  /**
+   * The `ch-combo-box-render` component is a feature-rich combo box that combines an input field with a popover-based dropdown list for selecting values.
+   *
+   * @remarks
+   * ## Features
+   *  - Flat lists and expandable item groups.
+   *  - Suggest (autocomplete) mode with strict matching, debounced input, and server-side filtering.
+   *  - Full keyboard navigation: Arrow keys, Home, End, Enter, Tab, and type-ahead search.
+   *  - Multiple selection support.
+   *  - Item images with multi-state support.
+   *  - Automatic min-width sizing based on the largest option.
+   *  - Lazy rendering of items only when the popup is displayed.
+   *  - Native `select` fallback on mobile devices.
+   *
+   * ## Use when
+   *  - A dropdown selection from a list of options is needed.
+   *  - A searchable or autocomplete input is required.
+   *  - Options should be organized into groups.
+   *  - The list has more than 7 options and space is constrained.
+   *  - A searchable or filterable input improves discoverability of items.
+   *  - Options are organized into named groups.
+   *
+   * ## Do not use when
+   *  - A simple binary choice is needed — prefer `ch-checkbox` or `ch-switch` instead.
+   *  - All options should be visible at once — prefer `ch-radio-group-render` instead.
+   *  - There are 2–3 options — prefer `ch-radio-group-render` (always visible, no extra click required).
+   *  - The selection has immediate side effects — clearly communicate what will happen on change.
+   *  - Navigation links are needed — never use a combo box to navigate between pages.
+   *
+   * ## Accessibility
+   *  - Form-associated via `ElementInternals` — participates in native form validation and submission.
+   *  - Delegates focus into the shadow DOM (`delegatesFocus: true`).
+   *  - Implements the WAI-ARIA `combobox` pattern: the input has `role="combobox"` with `aria-expanded`, `aria-controls`, and `aria-haspopup` attributes.
+   *  - The popup list has `role="listbox"`.
+   *  - Keyboard navigation:
+   *    - **Arrow Up / Arrow Down**: Navigate through items in the dropdown. If the dropdown is closed, opens it.
+   *    - **Home / End**: Jump to the first or last item (non-suggest mode).
+   *    - **Enter / NumpadEnter**: Toggle the dropdown open/closed; in suggest mode, confirms the current selection.
+   *    - **Space**: Opens the dropdown (non-suggest mode only).
+   *    - **Tab**: Closes the dropdown and confirms the selection.
+   *    - **Type-ahead**: In non-suggest mode, typing characters while the dropdown is open performs incremental search to jump to matching items.
+   *  - Resolves its accessible name from an external `<label>` element or the `accessibleName` property.
+   *  - On mobile devices, falls back to a native `<select>` element for optimal touch interaction and OS-level accessibility.
+   *
+   * @status experimental
+   *
+   * @part window - The popover element that contains the dropdown list of items.
+   * @part expandable - Applied to group headers that can be expanded or collapsed.
+   * @part group - Applied to each item group container.
+   * @part group__header - The header element of an item group.
+   * @part group__header-caption - The caption text inside a group header.
+   * @part group__content - The container that wraps the child items of a group.
+   * @part item - Applied to each selectable leaf item in the list.
+   * @part section - Applied to section containers in the dropdown.
+   * @part disabled - State part applied to disabled items, groups, group headers, and expandable headers.
+   * @part expanded - State part applied to expanded group headers and expandable buttons.
+   * @part collapsed - State part applied to collapsed group headers and expandable buttons.
+   * @part nested - State part applied to items that are nested inside a group.
+   * @part selected - State part applied to the currently selected item.
+   * @part ch-combo-box-render--placeholder - Present on the host when no item is selected and the placeholder text is displayed.
+   *
+   * @fires input The `input` event is emitted when a change to the element's value is
+   *   committed by the user.
+   *   
+   *   When `suggest === true`, this event is debounced by the `suggestDebounce`
+   *   value (default 250 ms). When `suggest === false`, debouncing does not
+   *   apply and the event is emitted immediately on value change.
+   * @fires change The `change` event is emitted when a change to the element's value is
+   *   committed by the user.
+   *    - In normal mode (suggest = false), it is emitted after each input event.
+   *   
+   *    - In suggest mode (suggest = true), it is emitted after the popover is closed
+   *   and a new value is committed by the user.
+   *   
+   *   This event is NOT debounced by the `suggestDebounce` value.
+   */
+  // prettier-ignore
+  interface HTMLChComboBoxRenderElement extends ChComboBoxRender {
+    // Extend the ChComboBoxRender class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChComboBoxRenderElementEventTypes>(type: K, listener: (this: HTMLChComboBoxRenderElement, ev: HTMLChComboBoxRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChComboBoxRenderElementEventTypes>(type: K, listener: (this: HTMLChComboBoxRenderElement, ev: HTMLChComboBoxRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-combo-box-render": HTMLChComboBoxRenderElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-combo-box-render": HTMLChComboBoxRenderElement;
+  }
+}
+

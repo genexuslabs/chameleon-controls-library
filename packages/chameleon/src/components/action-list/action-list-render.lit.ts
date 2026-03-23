@@ -897,3 +897,108 @@ declare global {
     "ch-action-list-render": ChActionListRender;
   }
 }
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChActionListRenderElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionListRenderElement;
+  }
+
+  /** Type of the `ch-action-list-render`'s `selectedItemsChange` event. */
+  // prettier-ignore
+  type HTMLChActionListRenderElementSelectedItemsChangeEvent = HTMLChActionListRenderElementCustomEvent<
+    HTMLChActionListRenderElementEventMap["selectedItemsChange"]
+  >;
+
+  /** Type of the `ch-action-list-render`'s `itemClick` event. */
+  // prettier-ignore
+  type HTMLChActionListRenderElementItemClickEvent = HTMLChActionListRenderElementCustomEvent<
+    HTMLChActionListRenderElementEventMap["itemClick"]
+  >;
+
+  interface HTMLChActionListRenderElementEventMap {
+    selectedItemsChange: ActionListItemModelExtended[];
+    itemClick: ActionListItemModelExtended;
+  }
+
+  interface HTMLChActionListRenderElementEventTypes {
+    selectedItemsChange: HTMLChActionListRenderElementSelectedItemsChangeEvent;
+    itemClick: HTMLChActionListRenderElementItemClickEvent;
+  }
+
+  /**
+   * The `ch-action-list-render` component renders an interactive list of actionable items driven by a declarative model.
+   *
+   * @remarks
+   * ## Features
+   *  - Single and multiple selection with modifier-key multi-select.
+   *  - In-place caption editing with optimistic UI updates.
+   *  - Item pinning (fixed) and sorting.
+   *  - Grouping with expandable/collapsible sections.
+   *  - Programmatic add/remove operations.
+   *  - Three item types: `actionable`, `group`, and `separator`.
+   *  - Keyboard navigation.
+   *
+   * ## Use when
+   *  - You need a rich, data-driven list with selection semantics (e.g., panel lists, filterable sidebars, or reorderable collections).
+   *  - Command palettes, selection panels, or item management lists where users can pick, pin, edit, or remove items.
+   *
+   * ## Do not use when
+   *  - You need a simple static list without selection or editing -- use a plain HTML list instead.
+   *  - Navigation is the primary purpose -- prefer `ch-navigation-list-render`.
+   *  - The list is hierarchical -- prefer `ch-tree-view-render`.
+   *
+   * ## Accessibility
+   *  - The host element has `role="list"` with `aria-multiselectable` when `selection` is `"multiple"`.
+   *  - Separator items have `role="separator"` and `aria-hidden="true"`.
+   *  - Supports keyboard navigation: arrow keys move focus between items, Enter/Space selects, and modifier-click enables multi-select.
+   *
+   * @status experimental
+   *
+   * @part separator - A horizontal divider rendered between items when the model contains an item of `type: "separator"`.
+   *
+   * @part item__action - The clickable row element for each actionable item.
+   * @part item__caption - The text caption inside an actionable item.
+   * @part item__checkbox - The checkbox element rendered when `checkbox` is `true`.
+   *
+   * @part group__action - The clickable header row for a group item.
+   * @part group__caption - The text caption inside a group header.
+   * @part group__expandable - The expandable/collapsible container for a group's children.
+   *
+   * @part disabled - Present in the `item__action`, `item__caption`, `group__action`, and `group__caption` parts when the item is disabled.
+   * @part expanded - Present in the `group__expandable` part when the group is expanded.
+   * @part collapsed - Present in the `group__expandable` part when the group is collapsed.
+   * @part selected - Present in the `item__action` and `group__action` parts when the item is selected.
+   * @part not-selected - Present in the `item__action` and `group__action` parts when the item is not selected.
+   *
+   * @fires selectedItemsChange Fired when the selected items change and `selection !== "none"`
+   * @fires itemClick Fired when an item is clicked and `selection === "none"`.
+   *   Applies for items that have `type === "actionable"` or
+   *   (`type === "group"` and `expandable === true`)
+   */
+  // prettier-ignore
+  interface HTMLChActionListRenderElement extends ChActionListRender {
+    // Extend the ChActionListRender class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChActionListRenderElementEventTypes>(type: K, listener: (this: HTMLChActionListRenderElement, ev: HTMLChActionListRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChActionListRenderElementEventTypes>(type: K, listener: (this: HTMLChActionListRenderElement, ev: HTMLChActionListRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-action-list-render": HTMLChActionListRenderElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-action-list-render": HTMLChActionListRenderElement;
+  }
+}
+

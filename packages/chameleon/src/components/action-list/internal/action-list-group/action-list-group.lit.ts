@@ -188,3 +188,55 @@ declare global {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChActionListGroupElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionListGroupElement;
+  }
+
+  /** Type of the `ch-action-list-group`'s `loadLazyContent` event. */
+  // prettier-ignore
+  type HTMLChActionListGroupElementLoadLazyContentEvent = HTMLChActionListGroupElementCustomEvent<
+    HTMLChActionListGroupElementEventMap["loadLazyContent"]
+  >;
+
+  interface HTMLChActionListGroupElementEventMap {
+    loadLazyContent: string;
+  }
+
+  interface HTMLChActionListGroupElementEventTypes {
+    loadLazyContent: HTMLChActionListGroupElementLoadLazyContentEvent;
+  }
+
+  /**
+   * @status experimental
+   *
+   * @fires loadLazyContent Fired when the lazy control is expanded an its content must be loaded.
+   */
+  // prettier-ignore
+  interface HTMLChActionListGroupElement extends ChActionListGroup {
+    // Extend the ChActionListGroup class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChActionListGroupElementEventTypes>(type: K, listener: (this: HTMLChActionListGroupElement, ev: HTMLChActionListGroupElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChActionListGroupElementEventTypes>(type: K, listener: (this: HTMLChActionListGroupElement, ev: HTMLChActionListGroupElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-action-list-group": HTMLChActionListGroupElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-action-list-group": HTMLChActionListGroupElement;
+  }
+}
+

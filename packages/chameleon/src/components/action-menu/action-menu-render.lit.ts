@@ -28,8 +28,7 @@ import {
   actionMenuItemActionableIsExpandable,
   actionMenuItemIsActionable,
   actionMenuItemIsHyperlink,
-  getActionMenuInfoInEvent,
-  WINDOW_ID
+  getActionMenuInfoInEvent
 } from "./internal/utils";
 import type {
   ActionMenuExpandedChangeEvent,
@@ -164,16 +163,6 @@ export class ChActionMenuRender extends KasstorElement {
   @property({ attribute: false }) getImagePathCallback: ActionMenuImagePathCallback | undefined;
 
   /**
-   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
-   */
-  @property({ attribute: false }) gxImageConstructor: ((name: string) => any) | undefined;
-
-  /**
-   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
-   */
-  @property({ attribute: false }) gxSettings: any;
-
-  /**
    * Specifies the inline alignment of the dropdown section that is placed
    * relative to the expandable button. Valid values are `"inside-start"`,
    * `"center"`, `"inside-end"`, `"outside-start"`, and `"outside-end"`.
@@ -196,12 +185,6 @@ export class ChActionMenuRender extends KasstorElement {
    */
   @property({ attribute: "position-try" })
   positionTry: "flip-block" | "flip-inline" | "none" = "none";
-
-  /**
-   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
-   */
-  @property({ type: Boolean, attribute: "use-gx-render" })
-  useGxRender: boolean = false;
 
   /**
    * Fired when a button is clicked.
@@ -452,17 +435,6 @@ export class ChActionMenuRender extends KasstorElement {
     }
   };
 
-  override connectedCallback(): void {
-    super.connectedCallback();
-
-    // TODO: Check if this code should be in the constructor
-    this.#addMetadataToItems();
-
-    if (this.expanded) {
-      this.#addCloseOnClickOutside();
-    }
-  }
-
   override disconnectedCallback(): void {
     this.#removeCloseOnClickOutside();
     super.disconnectedCallback();
@@ -483,7 +455,7 @@ export class ChActionMenuRender extends KasstorElement {
     });
 
     return html`<button
-        aria-controls=${WINDOW_ID}
+        aria-controls=${ACTION_MENU_ITEM_PARTS_DICTIONARY.WINDOW}
         aria-expanded=${this.expanded ? "true" : "false"}
         aria-haspopup="true"
         aria-label=${this.buttonAccessibleName || nothing}
@@ -494,7 +466,7 @@ export class ChActionMenuRender extends KasstorElement {
           [ACTION_MENU_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
         })}
         ?disabled=${this.disabled}
-        popovertarget=${WINDOW_ID}
+        popovertarget=${ACTION_MENU_ITEM_PARTS_DICTIONARY.WINDOW}
         type="button"
         ${ref(this.#actionRef)}
       >
@@ -504,7 +476,7 @@ export class ChActionMenuRender extends KasstorElement {
       ${this.expanded && this.model
         ? html`<ch-popover
             role="list"
-            id=${WINDOW_ID}
+            id=${ACTION_MENU_ITEM_PARTS_DICTIONARY.WINDOW}
             part=${ACTION_MENU_ITEM_PARTS_DICTIONARY.WINDOW}
             ?actionById=${true}
             .actionElement=${this.#actionRef.value as HTMLButtonElement}
@@ -531,6 +503,131 @@ declare global {
 
   interface HTMLElementTagNameMap {
     "ch-action-menu-render": ChActionMenuRender;
+  }
+}
+
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChActionMenuRenderElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionMenuRenderElement;
+  }
+
+  /** Type of the `ch-action-menu-render`'s `buttonClick` event. */
+  // prettier-ignore
+  type HTMLChActionMenuRenderElementButtonClickEvent = HTMLChActionMenuRenderElementCustomEvent<
+    HTMLChActionMenuRenderElementEventMap["buttonClick"]
+  >;
+
+  /** Type of the `ch-action-menu-render`'s `expandedChange` event. */
+  // prettier-ignore
+  type HTMLChActionMenuRenderElementExpandedChangeEvent = HTMLChActionMenuRenderElementCustomEvent<
+    HTMLChActionMenuRenderElementEventMap["expandedChange"]
+  >;
+
+  /** Type of the `ch-action-menu-render`'s `expandedItemChange` event. */
+  // prettier-ignore
+  type HTMLChActionMenuRenderElementExpandedItemChangeEvent = HTMLChActionMenuRenderElementCustomEvent<
+    HTMLChActionMenuRenderElementEventMap["expandedItemChange"]
+  >;
+
+  /** Type of the `ch-action-menu-render`'s `hyperlinkClick` event. */
+  // prettier-ignore
+  type HTMLChActionMenuRenderElementHyperlinkClickEvent = HTMLChActionMenuRenderElementCustomEvent<
+    HTMLChActionMenuRenderElementEventMap["hyperlinkClick"]
+  >;
+
+  interface HTMLChActionMenuRenderElementEventMap {
+    buttonClick: ActionMenuItemActionableModel;
+    expandedChange: boolean;
+    expandedItemChange: ActionMenuExpandedChangeEvent;
+    hyperlinkClick: ActionMenuHyperlinkClickEvent;
+  }
+
+  interface HTMLChActionMenuRenderElementEventTypes {
+    buttonClick: HTMLChActionMenuRenderElementButtonClickEvent;
+    expandedChange: HTMLChActionMenuRenderElementExpandedChangeEvent;
+    expandedItemChange: HTMLChActionMenuRenderElementExpandedItemChangeEvent;
+    hyperlinkClick: HTMLChActionMenuRenderElementHyperlinkClickEvent;
+  }
+
+  /**
+   * The `ch-action-menu-render` component renders a dropdown menu triggered by an expandable button, supporting deeply nested sub-menus and full keyboard accessibility.
+   *
+   * @remarks
+   * ## Features
+   *  - Deeply nested sub-menus with mouse hover expand/collapse.
+   *  - Keyboard navigation (arrow keys, Escape, Enter).
+   *  - Menu items can be buttons, hyperlinks, separators, or custom slots.
+   *  - Positioned using `ch-popover`; auto-closes on outside click or Escape.
+   *  - Internal expansion state management -- host only supplies data and reacts to events.
+   *
+   * ## Use when
+   *  - You need a multi-level dropdown menu with full keyboard accessibility (e.g., application menus, context menus, toolbar overflow menus).
+   *  - Space is constrained and 3 or more item-level actions must be accessible (e.g., Edit, Rename, Delete in a table row).
+   *  - Contextual actions that are secondary and do not need to be always visible.
+   *
+   * ## Do not use when
+   *  - You need a flat list of selectable items without nesting -- prefer `ch-action-list-render` instead.
+   *  - Fewer than 3 actions are available — show them as visible inline icon buttons (fewer clicks, more discoverable).
+   *  - Selection input is needed — never use `role="menu"` semantics for a value selector; prefer `ch-combo-box-render`.
+   *  - Actions should always be immediately visible and prominent — put them inline.
+   *
+   * ## Accessibility
+   *  - The expandable button has `aria-expanded`, `aria-haspopup="true"`, `aria-controls`, and a configurable `aria-label` (`buttonAccessibleName`).
+   *  - The popup window has `role="list"`.
+   *  - Keyboard support: Enter/Space activates the focused item, ArrowUp/ArrowDown navigate within a menu level, ArrowRight opens a sub-menu, ArrowLeft closes it, and Escape closes the menu returning focus to the trigger button.
+   *
+   * @status experimental
+   *
+   * @part expandable-button - The top-level button that toggles the dropdown. Also receives the `expanded`, `collapsed`, and `disabled` state parts.
+   * @part window - The popover container that holds the dropdown menu items.
+   * @part action - The clickable row element for each menu item.
+   * @part button - A `<button>`-type action row. Receives `expandable`, `expanded`, `collapsed`, and `disabled` state parts.
+   * @part link - An `<a>`-type action row.
+   * @part content - The content area inside each action row (caption + optional icon).
+   * @part shortcut - The keyboard shortcut label rendered at the end of an action row.
+   * @part separator - A horizontal divider rendered for items of `type: "separator"`.
+   *
+   * @part expandable - Present in the `button` part when the item has sub-items.
+   * @part expanded - Present in the `button` part when the item's sub-menu is open.
+   * @part collapsed - Present in the `button` part when the item's sub-menu is closed.
+   * @part disabled - Present in the `button` part when the item is disabled.
+   *
+   * @slot - Default slot projected inside the expandable button. Use it to provide the button label or icon.
+   * @slot {name} - Named slots matching each item of `type: "slot"` in the model. Use them to inject custom content at specific positions in the menu.
+   *
+   * @fires buttonClick Fired when a button is clicked.
+   *   This event can be prevented.
+   * @fires expandedChange Fired when the visibility of the main dropdown is changed.
+   * @fires expandedItemChange Fired when the visibility of a dropdown item is changed.
+   * @fires hyperlinkClick Fired when an hyperlink is clicked.
+   *   This event can be prevented, but the dropdown will be closed in any case
+   *   (prevented or not).
+   */
+  // prettier-ignore
+  interface HTMLChActionMenuRenderElement extends ChActionMenuRender {
+    // Extend the ChActionMenuRender class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChActionMenuRenderElementEventTypes>(type: K, listener: (this: HTMLChActionMenuRenderElement, ev: HTMLChActionMenuRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChActionMenuRenderElementEventTypes>(type: K, listener: (this: HTMLChActionMenuRenderElement, ev: HTMLChActionMenuRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-action-menu-render": HTMLChActionMenuRenderElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-action-menu-render": HTMLChActionMenuRenderElement;
   }
 }
 

@@ -152,7 +152,7 @@ declare global {
    * This control represents and item of the ch-segmented-control-render
    *
    * @part selected - ...
-   */ // prettier-ignore
+   */// prettier-ignore
   interface HTMLChSegmentedControlItemElement extends ChSegmentedControlItem {
     // Extend the ChSegmentedControlItem class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

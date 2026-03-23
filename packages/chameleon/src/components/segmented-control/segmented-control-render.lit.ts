@@ -99,7 +99,7 @@ declare global {
 
   /**
    * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
-   */ // prettier-ignore
+   */// prettier-ignore
   interface HTMLChSegmentedControlRenderElement extends ChSegmentedControlRender {
     // Extend the ChSegmentedControlRender class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

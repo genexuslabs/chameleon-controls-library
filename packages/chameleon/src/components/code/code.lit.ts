@@ -228,7 +228,7 @@ declare global {
    * - It also supports all programming languages from [Shiki.js](https://shiki.matsu.io).
    *
    * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
-   */ // prettier-ignore
+   */// prettier-ignore
   interface HTMLChCodeElement extends ChCode {
     // Extend the ChCode class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

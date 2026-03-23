@@ -493,7 +493,7 @@ declare global {
    *  - The line that separates two columns or two rows will always have a drag-bar to resize the layout.
    *
    * @csspart bar - The bar that divides two columns or two rows
-   */ // prettier-ignore
+   */// prettier-ignore
   interface HTMLChLayoutSplitterElement extends ChLayoutSplitter {
     // Extend the ChLayoutSplitter class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

@@ -333,3 +333,65 @@ declare global {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChActionGroupRenderElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionGroupRenderElement;
+  }
+
+  /**
+   * The `ch-action-group-render` component displays a horizontal group of actionable items that adapts to the available space by collapsing overflowing items into a "more actions" dropdown menu.
+   *
+   * @remarks
+   * ## Features
+   *  - Three overflow strategies: horizontal scroll, multiline wrap, or responsive collapse into a dropdown.
+   *  - Responsive-collapse mode uses `IntersectionObserver` to detect hidden items in real time.
+   *  - Overflow dropdown powered by `ch-action-menu-render`.
+   *  - Supports custom slot content that is forwarded into the overflow menu when collapsed.
+   *
+   * ## Use when
+   *  - You have a dynamic set of toolbar-style actions that must remain usable at every viewport width.
+   *  - Building command bars or toolbars that need graceful degradation on smaller screens.
+   *  - Toolbars or command bars with a variable number of actions that must adapt to available space.
+   *
+   * ## Do not use when
+   *  - The actions do not need responsive overflow handling -- prefer a plain list or `ch-action-menu-render` instead.
+   *  - All actions should always be visible — use individual buttons or `ch-action-list-render` instead.
+   *
+   * ## Accessibility
+   *  - The host element has `role="list"`, and the overflow menu item has `role="listitem"`.
+   *  - The "more actions" button carries a configurable `aria-label` (`moreActionsAccessibleName`).
+   *  - The component delegates click, keyboard, and expanded-change events to
+   *    its embedded `ch-action-menu-render` for the overflow dropdown.
+   *
+   * @part separator - A horizontal divider rendered for items of `type: "separator"`. Also receives the item's `id` and custom `parts` if defined.
+   * @part vertical - Present on `separator` items.
+   *
+   * @status experimental
+   *
+   * @slot {name} - Named slots matching each item of `type: "slot"` in the model. These slots allow projecting custom content for individual action items and are forwarded into the overflow menu when the item collapses.
+   */// prettier-ignore
+  interface HTMLChActionGroupRenderElement extends ChActionGroupRender {
+    // Extend the ChActionGroupRender class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-action-group-render": HTMLChActionGroupRenderElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-action-group-render": HTMLChActionGroupRenderElement;
+  }
+}
+

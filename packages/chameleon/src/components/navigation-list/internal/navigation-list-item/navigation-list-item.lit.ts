@@ -332,7 +332,7 @@ declare global {
 
   /**
    * @status experimental
-   */ // prettier-ignore
+   */// prettier-ignore
   interface HTMLChNavigationListItemElement extends ChNavigationListItem {
     // Extend the ChNavigationListItem class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

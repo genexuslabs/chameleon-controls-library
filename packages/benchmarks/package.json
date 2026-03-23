@@ -11,10 +11,19 @@
     "preview:ch-6": "vite preview --port 8076 --outDir ./dist-chameleon-6",
     "preview:ch-7-no-signals": "vite preview --port 8077 --outDir ./dist-chameleon-7-no-signals",
     "preview:ch-7": "vite preview --port 8078 --outDir ./dist-chameleon-7",
-    "bench": "tach --config=config.json --json-file ./resultados_benchmark.json"
+    "bench": "tach --config=config.json --json-file ./resultados_benchmark.json",
+    "build:bundle-size-ch6": "vite build --mode=bundle-size-ch6",
+    "build:bundle-size-ch7": "vite build --mode=bundle-size-ch7",
+    "build:bundle-size-ch7-dynamic": "vite build --mode=bundle-size-ch7-dynamic",
+    "compare-sizes": "bun run scripts/compare-bundle-sizes.ts",
+    "compare-sizes:quick": "bun run scripts/compare-bundle-sizes.ts --skip-ch6",
+    "preview:bundle-size-ch6": "vite preview --port 4180 --outDir ./dist-bundle-size-ch6",
+    "preview:bundle-size-ch7": "vite preview --port 4181 --outDir ./dist-bundle-size-ch7",
+    "preview:bundle-size-ch7-dynamic": "vite preview --port 4182 --outDir ./dist-bundle-size-ch7-dynamic"
   },
   "license": "MIT",
   "dependencies": {
+    "@genexus/chameleon-controls-library": "6.33.1",
     "@genexus/chameleon-controls-library-lit": "*"
   },
   "devDependencies": {

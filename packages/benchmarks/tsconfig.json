@@ -13,7 +13,6 @@
     "isolatedModules": true,
     "noEmit": false,
     "outDir": "dist/",
-    "sourceMap": true,
 
     // Linting
     "allowUnreachableCode": false,

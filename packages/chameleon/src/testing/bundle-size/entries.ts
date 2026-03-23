@@ -37,10 +37,10 @@ export const COMPONENT_ENTRIES = [
     outputName: "checkbox.lit.js",
     path: "src/components/checkbox/checkbox.lit.ts"
   },
-  {
-    outputName: "code.lit.js",
-    path: "src/components/code/code.lit.ts"
-  },
+  // {
+  //   outputName: "code.lit.js",
+  //   path: "src/components/code/code.lit.ts"
+  // },
   {
     outputName: "combo-box.lit.js",
     path: "src/components/combo-box/combo-box.lit.ts"
@@ -124,14 +124,6 @@ export const COMPONENT_ENTRIES = [
 // - - - - - - - - - - - - - - - - - - - -
 export const UTILITY_ENTRIES = [
   {
-    outputName: "define-custom-elements.js",
-    path: "src/utilities/bootstrap/define-custom-elements.ts"
-  },
-  {
-    outputName: "web-components-path.js",
-    path: "src/utilities/bootstrap/web-components-path.ts"
-  },
-  {
     outputName: "host.js",
     path: "src/utilities/host/host.ts"
   },
@@ -147,3 +139,4 @@ export const MINIFIED_ENTRIES = [
 ] as const satisfies readonly { path: string; outputName: string }[];
 
 export type EntryOutputName = (typeof MINIFIED_ENTRIES)[number]["outputName"];
+

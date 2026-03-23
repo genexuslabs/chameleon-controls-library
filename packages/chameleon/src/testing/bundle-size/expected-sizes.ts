@@ -1,7 +1,8 @@
 import type { EntryOutputName } from "./entries";
 
 /**
- * Exact bundle sizes (in bytes) for each minified entry point.
+ * Exact bundle sizes (in bytes) for each minified entry point, shared
+ * dependencies, and total application cost.
  *
  * These values are **exact measurements** — the test fails when a file's size
  * changes by even a single byte. This guarantees that every bundle-size change
@@ -11,47 +12,59 @@ import type { EntryOutputName } from "./entries";
  * then run the bundle-size tests. The error messages print the actual sizes
  * so you can paste them here.
  *
- * Note: these sizes include all local dependencies (helpers, SCSS, etc.)
- * bundled and minified by Vite/Terser. External dependencies (lit,
- * kasstor-core, etc.) are excluded. External import paths are replaced with
- * realistic Rollup-style chunk references (`./chunk-XXXXXXXX.js`) to ensure
- * a fair comparison with Chameleon 6 (where Stencil inlines all imports).
+ * The build simulates a real consumer application: an HTML entry point
+ * dynamically imports every component, Rollup bundles everything (zero
+ * externals), and code-splits shared code.
+ *
+ * Entry chunks contain component code + deps unique to that component (e.g.,
+ * KaTeX stays in math-viewer, qr-creator in qr). Framework deps shared by
+ * many components (lit, kasstor, tslib) and internal utilities are forced to
+ * shared chunks via `manualChunks`.
  */
-export const EXPECTED_SIZES: Record<
-  EntryOutputName,
-  { raw: number; gzipped: number }
-> = {
-  // - - - - - - - - - - Components - - - - - - - - - -
-  "accordion.lit.js": { raw: 6523, gzipped: 2666 },
-  "action-group-render.lit.js": { raw: 5577, gzipped: 2405 },
-  "action-list-render.lit.js": { raw: 29555, gzipped: 8768 },
-  "action-menu-render.lit.js": { raw: 14408, gzipped: 4462 },
-  "breadcrumb-render.lit.js": { raw: 6274, gzipped: 2593 },
-  "checkbox.lit.js": { raw: 4632, gzipped: 2204 },
-  "code.lit.js": { raw: 26864, gzipped: 6171 },
-  "combo-box.lit.js": { raw: 20956, gzipped: 6844 },
-  "image.lit.js": { raw: 3033, gzipped: 1370 },
-  "json-render.lit.js": { raw: 4112, gzipped: 2019 },
-  "layout-splitter.lit.js": { raw: 10676, gzipped: 4477 },
-  "math-viewer.lit.js": { raw: 280177, gzipped: 80249 },
-  "navigation-list-render.lit.js": { raw: 14127, gzipped: 4577 },
-  "popover.lit.js": { raw: 19707, gzipped: 5523 },
-  "progress.lit.js": { raw: 3283, gzipped: 1620 },
-  "qr.lit.js": { raw: 13709, gzipped: 5960 },
-  "radio-group-render.lit.js": { raw: 3345, gzipped: 1823 },
-  "router.lit.js": { raw: 990, gzipped: 815 },
-  "segmented-control-render.lit.js": { raw: 4348, gzipped: 1943 },
-  "sidebar.lit.js": { raw: 3891, gzipped: 1783 },
-  "slider.lit.js": { raw: 4884, gzipped: 2036 },
-  "status.lit.js": { raw: 1728, gzipped: 1101 },
-  "switch.lit.js": { raw: 4232, gzipped: 1954 },
-  "tab.lit.js": { raw: 19847, gzipped: 6259 },
-  "textblock.lit.js": { raw: 3614, gzipped: 1782 },
-  "theme.lit.js": { raw: 3069, gzipped: 1550 },
 
-  // - - - - - - - - - - Utilities - - - - - - - - - -
-  "define-custom-elements.js": { raw: 1218, gzipped: 1023 },
-  "web-components-path.js": { raw: 5413, gzipped: 2004 },
-  "host.js": { raw: 1369, gzipped: 853 },
-  "image-path-registry.js": { raw: 218, gzipped: 486 }
+export interface BundleSizeExpectations {
+  entries: Record<EntryOutputName, { raw: number; gzipped: number }>;
+  sharedTotal: { raw: number; gzipped: number };
+  appTotal: { raw: number; gzipped: number };
+}
+
+export const EXPECTED_SIZES: BundleSizeExpectations = {
+  entries: {
+    // - - - - - - - - - - Components - - - - - - - - - -
+    "accordion.lit.js": { raw: 7370, gzipped: 3110 },
+    "action-group-render.lit.js": { raw: 6167, gzipped: 2679 },
+    "action-list-render.lit.js": { raw: 28791, gzipped: 8443 },
+    "action-menu-render.lit.js": { raw: 13906, gzipped: 4224 },
+    "breadcrumb-render.lit.js": { raw: 5514, gzipped: 2270 },
+    "checkbox.lit.js": { raw: 4392, gzipped: 2102 },
+    "combo-box.lit.js": { raw: 20248, gzipped: 6515 },
+    "image.lit.js": { raw: 2917, gzipped: 1310 },
+    "json-render.lit.js": { raw: 77040, gzipped: 21108 },
+    "layout-splitter.lit.js": { raw: 10120, gzipped: 4263 },
+    "math-viewer.lit.js": { raw: 279422, gzipped: 79977 },
+    "navigation-list-render.lit.js": { raw: 13624, gzipped: 4372 },
+    "popover.lit.js": { raw: 18990, gzipped: 5204 },
+    "progress.lit.js": { raw: 2875, gzipped: 1458 },
+    "qr.lit.js": { raw: 13342, gzipped: 5832 },
+    "radio-group-render.lit.js": { raw: 2853, gzipped: 1610 },
+    "router.lit.js": { raw: 899, gzipped: 768 },
+    "segmented-control-render.lit.js": { raw: 3738, gzipped: 1695 },
+    "sidebar.lit.js": { raw: 3760, gzipped: 1721 },
+    "slider.lit.js": { raw: 4445, gzipped: 1865 },
+    "status.lit.js": { raw: 1391, gzipped: 979 },
+    "switch.lit.js": { raw: 3882, gzipped: 1801 },
+    "tab.lit.js": { raw: 19066, gzipped: 5918 },
+    "textblock.lit.js": { raw: 3351, gzipped: 1665 },
+    "theme.lit.js": { raw: 2644, gzipped: 1389 },
+
+    // - - - - - - - - - - Utilities - - - - - - - - - -
+    "host.js": { raw: 1369, gzipped: 853 },
+    "image-path-registry.js": { raw: 256, gzipped: 514 }
+  },
+
+  // Total size of all shared chunks (lit, kasstor, tslib, internal utilities)
+  sharedTotal: { raw: 42249, gzipped: 18126 },
+
+  // Sum of all files = real download cost when loading every component
+  appTotal: { raw: 594621, gzipped: 191771 }
 };

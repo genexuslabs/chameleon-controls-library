@@ -81,3 +81,7 @@ $RECYCLE.BIN/
 Thumbs.db
 UserInterfaceState.xcuserstate
 .astro
+.claude/skills/ui-ux-developer
+worktrees/
+dist-bundle-size-*
+packages/chameleon/src/components.ts

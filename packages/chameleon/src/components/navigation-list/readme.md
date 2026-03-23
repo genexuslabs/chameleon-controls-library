@@ -17,7 +17,7 @@ borders of its container.</p>
 
 ---
 
-### `expandableButton: "decorative" | "no"`
+### `expandableButton:  "decorative" | "no"`
 
 <p>Specifies what kind of expandable button is displayed in the items by
 default.</p>
@@ -79,7 +79,7 @@ property is updated.</p>
 
 ---
 
-### `model: NavigationListModel | undefined`
+### `model:  NavigationListModel | undefined`
 
 <p>Specifies the items of the control.</p>
 

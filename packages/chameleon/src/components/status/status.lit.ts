@@ -174,3 +174,62 @@ declare global {
     "ch-status": ChStatus;
   }
 }
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChStatusElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChStatusElement;
+  }
+
+  /**
+   * The `ch-status` component provides a lightweight loading indicator that communicates an ongoing process to both visual users and assistive technologies.
+   *
+   * @remarks
+   * ## Features
+   *  - Sets `role="status"` and `aria-live="polite"` for non-interrupting screen reader announcements.
+   *  - Automatic `aria-busy` and `aria-describedby` management on a referenced loading region.
+   *  - Cleans up ARIA attributes when removed from the DOM.
+   *  - Designed for use inside buttons, overlays, table cells, and any region needing a simple "busy" signal.
+   *
+   * ## Use when
+   *  - You need an indeterminate loading state without numeric progress (e.g., a spinner on a button).
+   *  - A region of the page is loading and no progress percentage is available (spinner pattern).
+   *  - An operation is running in the background and the user should be aware without being interrupted.
+   *
+   * ## Do not use when
+   *  - You have tasks with measurable progress -- prefer `ch-progress` instead.
+   *  - Actual progress percentage is known — prefer `ch-progress` with determinate mode instead.
+   *
+   * ## Accessibility
+   *  - `role="status"` is set on the host in `connectedCallback`, which carries an implicit `aria-live="polite"` and `aria-atomic="true"` semantic. An explicit `aria-live="polite"` is also set for maximum compatibility.
+   *  - Resolves its accessible name from the `accessibleName` property.
+   *  - `aria-busy` and `aria-describedby` are set on the `loadingRegionRef` element while the status is rendered, and cleaned up on disconnect.
+   *  - No keyboard interaction — the component is a passive indicator, not an interactive control.
+   *
+   * @status experimental
+   *
+   * @slot - Default slot. Use it to project custom visual content such as a spinner icon or loading text. Content changes trigger polite `aria-live` announcements to assistive technologies.
+   */// prettier-ignore
+  interface HTMLChStatusElement extends ChStatus {
+    // Extend the ChStatus class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-status": HTMLChStatusElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-status": HTMLChStatusElement;
+  }
+}
+

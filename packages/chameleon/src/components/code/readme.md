@@ -48,6 +48,18 @@ Useful for streaming scenarios where a loading indicator is needed.</p>
 
 ---
 
+### `theme:  string`
+
+<p>Specifies the Shiki theme to use for syntax highlighting.
+Supports all bundled Shiki themes (e.g., <code>&quot;github-dark&quot;</code>, <code>&quot;nord&quot;</code>,
+<code>&quot;dracula&quot;</code>) plus <code>&quot;chameleon-theme-dark&quot;</code> and <code>&quot;chameleon-theme-light&quot;</code>.</p>
+
+**Attribute**: <code>theme</code>
+
+**Default**: <code>DEFAULT_CODE_THEME</code>
+
+---
+
 ### `value:  string | undefined`
 
 <p>Specifies the code string to highlight.</p>

@@ -1,61 +1,102 @@
-# ch-action-list-group
+# `ch-action-list-group`
 
-## Table of Contents
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `caption:  string | undefined`
 
-- [Properties](#properties)
-- [Events](#events)
-- [Methods](#methods)
-  - [`setFocus`](#setfocus--promisevoid)
-- [Dependencies](#dependencies)
-  - [Used by](#used-by)
-  - [Graph](#graph)
+<p>This attributes specifies the caption of the control</p>
 
-<!-- Auto Generated Below -->
+**Default**: <code>undefined</code>
 
-## Properties
+---
 
-| Property                 | Attribute                  | Description                                                                                                                                              | Type      | Default     |
-| ------------------------ | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `caption`                | `caption`                  | This attributes specifies the caption of the control                                                                                                     | `string`  | `undefined` |
-| `disabled`               | `disabled`                 | This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event). | `boolean` | `false`     |
-| `downloading`            | `downloading`              | This attribute lets you specify when items are being lazy loaded in the control.                                                                         | `boolean` | `false`     |
-| `expandable`             | `expandable`               | If the item has a sub-tree, this attribute determines if the subtree is displayed.                                                                       | `boolean` | `undefined` |
-| `expanded`               | `expanded`                 | If the item has a sub-tree, this attribute determines if the subtree is displayed.                                                                       | `boolean` | `undefined` |
-| `lazyLoad`               | `lazy-load`                | Determine if the items are lazy loaded when opening the first time the control.                                                                          | `boolean` | `false`     |
-| `metadata`               | `metadata`                 | This attribute represents additional info for the control that is included when dragging the item.                                                       | `string`  | `undefined` |
-| `parts`                  | `parts`                    | Specifies a set of parts to use in every DOM element of the control.                                                                                     | `string`  | `undefined` |
-| `selected`               | `selected`                 | This attribute lets you specify if the item is selected                                                                                                  | `boolean` | `false`     |
-| `showDownloadingSpinner` | `show-downloading-spinner` | `true` to show the downloading spinner when lazy loading the sub items of the control.                                                                   | `boolean` | `true`      |
+### `disabled:  boolean`
 
-## Events
+<p>This attribute lets you specify if the element is disabled.
+If disabled, it will not fire any user interaction related event
+(for example, click event).</p>
 
-| Event             | Description                                                            | Type                  |
-| ----------------- | ---------------------------------------------------------------------- | --------------------- |
-| `loadLazyContent` | Fired when the lazy control is expanded an its content must be loaded. | `CustomEvent<string>` |
+**Attribute**: <code>disabled</code>
 
-## Methods
+**Default**: <code>false</code>
 
-### `setFocus() => Promise<void>`
+---
 
-Set the focus in the control if `expandable === true`.
+### `expandable:  boolean | undefined`
 
-#### Returns
+<p>If the item has a sub-tree, this attribute determines if the subtree is
+displayed.</p>
 
-Type: `Promise<void>`
+**Default**: <code>undefined</code>
 
-## Dependencies
+---
 
-### Used by
+### `expanded:  boolean | undefined`
 
- - [ch-action-list-render](../..)
+<p>If the item has a sub-tree, this attribute determines if the subtree is
+displayed.</p>
 
-### Graph
-```mermaid
-graph TD;
-  ch-action-list-render --> ch-action-list-group
-  style ch-action-list-group fill:#f9f,stroke:#333,stroke-width:4px
-```
+**Default**: <code>undefined</code>
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+### `metadata:  string | undefined`
+
+<p>This attribute represents additional info for the control that is included
+when dragging the item.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `parts:  string | undefined`
+
+<p>Specifies a set of parts to use in every DOM element of the control.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `selected:  boolean`
+
+<p>This attribute lets you specify if the item is selected</p>
+
+**Default**: <code>false</code>
+
+---
+
+### `showDownloadingSpinner:  boolean`
+
+<p><code>true</code> to show the downloading spinner when lazy loading the sub items of
+the control.</p>
+
+**Attribute**: <code>show-downloading-spinner</code>
+
+**Default**: <code>true</code>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Events
+  </summary>
+  
+### `loadLazyContent: string`
+
+<p>Fired when the lazy control is expanded an its content must be loaded.</p>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Methods
+  </summary>
+  
+### `setFocus: () => void`
+
+<p>Set the focus in the control if <code>expandable === true</code>.</p>
+</details>

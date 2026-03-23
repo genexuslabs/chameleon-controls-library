@@ -1,6 +1,6 @@
 import { html } from "lit";
 import "../../../switch/switch.lit";
-import type ChSwitch from "../../../switch/switch.lit";
+import type { ChSwitch } from "../../../switch/switch.lit";
 import type {
   ComponentRenderStates,
   ComponentRenderTemplateItemNode

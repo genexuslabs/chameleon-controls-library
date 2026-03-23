@@ -1,106 +1,267 @@
-# ch-popover
+# `ch-popover`
 
-## Table of Contents
+<p>The <code>ch-popover</code> component renders a positioned overlay container anchored to a reference element using the native Popover API and <code>position: fixed</code>.</p>
 
-- [Overview](#overview)
-- [Features](#features)
-- [Use when](#use-when)
-- [Do not use when](#do-not-use-when)
-- [Accessibility](#accessibility)
-- [Usage](./docs/usage.md)
-- [Properties](#properties)
-- [Events](#events)
-- [Slots](#slots)
-- [Dependencies](#dependencies)
-  - [Used by](#used-by)
-  - [Graph](#graph)
-- [Styling](./docs/styling.md)
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `actionById:  boolean`
 
-<!-- Auto Generated Below -->
+<p><code>true</code> if the <code>actionElement</code> binds the ch-popover using an external ID.
+If so, the <code>popoverTargetElement</code> property won't be configured in the
+action element.</p>
 
-## Overview
+**Attribute**: <code>actionbyid</code>
 
-The `ch-popover` component renders a positioned overlay container anchored to a reference element using the native Popover API and `position: fixed`.
+**Default**: <code>false</code>
 
-## Features
- - Configurable block and inline alignment (inside/outside/center) relative to the action element.
- - Optional flip-block or flip-inline fallback when the popover would overflow the viewport.
- - Automatic size-matching to the action element.
- - Dragging from a dedicated header or the entire box.
- - Edge and corner resizing.
- - Responsive re-alignment on scroll and resize.
- - Full RTL layout support.
- - Closes on outside click or Escape.
+---
 
-## Use when
- - You need precise, anchor-relative positioning for dropdowns, floating panels, or custom overlays.
- - Contextual content that requires more space than a tooltip but less formality than a modal.
- - The content includes interactive elements (links, buttons, form inputs, pickers).
- - Feature spotlights, overflow menus, or positioned pickers near a trigger.
+### `actionElement:  PopoverActionElement`
 
-## Do not use when
- - You need simple tooltip-style overlays with hover/focus triggers -- prefer `ch-tooltip` instead.
- - You need modal or non-modal dialog boxes -- prefer `ch-dialog` instead.
- - Critical content requiring user confirmation — prefer `ch-dialog`.
- - Brief, non-interactive supplementary text — prefer `ch-tooltip`.
- - Nested inside another popover — always an anti-pattern.
+<p>Specifies a reference of the action that controls the popover control.</p>
 
-## Accessibility
- - Does not impose a semantic role — consuming components are responsible for adding appropriate ARIA attributes (e.g. `role="dialog"`, `role="listbox"`).
- - Keyboard: Escape closes the popover and returns focus to the action element.
+**Attribute**: <code>actionelement</code>
 
-## Properties
+**Default**: <code>undefined</code>
 
-| Property              | Attribute                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Type                                                                             | Default      |
-| --------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- | ------------ |
-| `actionById`          | `action-by-id`           | `true` if the `actionElement` binds the ch-popover using an external ID. If so, the `popoverTargetElement` property won't be configured in the action element.                                                                                                                                                                                                                                                                                                                             | `boolean`                                                                        | `false`      |
-| `actionElement`       | --                       | Specifies a reference of the action that controls the popover control.                                                                                                                                                                                                                                                                                                                                                                                                                     | `HTMLButtonElement \| HTMLInputElement`                                          | `undefined`  |
-| `allowDrag`           | `allow-drag`             | Specifies the drag behavior of the popover. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.                                                                                                                                                                                                                                                                                                                                    | `"box" \| "header" \| "no"`                                                      | `"no"`       |
-| `blockAlign`          | `block-align`            | Specifies the block alignment of the popover relative to its action element. Valid values: `"outside-start"`, `"inside-start"`, `"center"`, `"inside-end"`, `"outside-end"`.                                                                                                                                                                                                                                                                                                               | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"center"`   |
-| `blockSizeMatch`      | `block-size-match`       | Specifies how the popover adapts its block size.  - "content": The block size of the control will be determined by its    content block size.  - "action-element": The block size of the control will match the block    size of the `actionElement`.  - "action-element-as-minimum": The minimum block size of the control    will match the block size of the `actionElement`.  If the control is resized at runtime, only the "action-element-as-minimum" value will still work.        | `"action-element" \| "action-element-as-minimum" \| "content"`                   | `"content"`  |
-| `closeOnClickOutside` | `close-on-click-outside` | This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode. With this, the popover will close if the click is triggered on any other element than the popover and the `actionElement`. It will also close if the "Escape" key is pressed.                                                              | `boolean`                                                                        | `false`      |
-| `firstLayer`          | `first-layer`            | `true` if the popover is not stacked inside another top layer (e.g., not nested within another popover). When `true`, a CSS class is temporarily applied to prevent initial positioning flickering while the popover calculates its alignment.                                                                                                                                                                                                                                             | `boolean`                                                                        | `true`       |
-| `inlineAlign`         | `inline-align`           | Specifies the inline alignment of the popover relative to its action element. Valid values: `"outside-start"`, `"inside-start"`, `"center"`, `"inside-end"`, `"outside-end"`.                                                                                                                                                                                                                                                                                                              | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"center"`   |
-| `inlineSizeMatch`     | `inline-size-match`      | Specifies how the popover adapts its inline size.  - "content": The inline size of the control will be determined by its    content inline size.  - "action-element": The inline size of the control will match the inline    size of the `actionElement`.  - "action-element-as-minimum": The minimum inline size of the control    will match the inline size of the `actionElement`.  If the control is resized at runtime, only the "action-element-as-minimum" value will still work. | `"action-element" \| "action-element-as-minimum" \| "content"`                   | `"content"`  |
-| `mode`                | `popover`                | Popovers that have the `"auto"` state can be "light dismissed" by selecting outside the popover area, and generally only allow one popover to be displayed on-screen at a time. By contrast, `"manual"` popovers must always be explicitly hidden, but allow for use cases such as nested popovers in menus.                                                                                                                                                                               | `"auto" \| "manual"`                                                             | `"auto"`     |
-| `overflowBehavior`    | `overflow-behavior`      | Specifies how the popover behaves when the content overflows the window size.   - "overflow": The control won't implement any behavior if the content overflows.   - "add-scroll": The control will place a scroll if the content overflows.                                                                                                                                                                                                                                               | `"add-scroll" \| "overflow"`                                                     | `"overflow"` |
-| `positionTry`         | `position-try`           | Specifies an alternative position to try when the control overflows the window.                                                                                                                                                                                                                                                                                                                                                                                                            | `"flip-block" \| "flip-inline" \| "none"`                                        | `"none"`     |
-| `resizable`           | `resizable`              | Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.                                                                                                                                                                                                                                                                                                                                                            | `boolean`                                                                        | `false`      |
-| `show`                | `show`                   | Specifies whether the popover is hidden or visible.                                                                                                                                                                                                                                                                                                                                                                                                                                        | `boolean`                                                                        | `false`      |
+---
 
-## Events
+### `allowDrag:  "box" | "header" | "no"`
 
-| Event           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Type                                                                                                   |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `popoverClosed` | Emitted when the popover is closed by an user interaction.  This event can be prevented (`preventDefault()`), interrupting the `ch-popover`'s closing.  The `reason` property of the event provides more information about the cause of the closing:  - `"click-outside"`: The popover is being closed because the user clicked    outside the popover when using `closeOnClickOutside === true` and    `mode === "manual"`.   - `"escape-key"`: The popover is being closed because the user pressed the    "Escape" key when using `closeOnClickOutside === true` and    `mode === "manual"`.   - `"popover-no-longer-visible"`: The popover is being closed because it    is no longer visible.   - `"toggle"`: The popover is being closed by the native toggle behavior    of popover. It can be produced by the user clicking the `actionElement`,    pressing the "Enter" or "Space" keys on the `actionElement`, pressing    the "Escape" key or other. Used when `mode === "auto"`. | `CustomEvent<{ reason: "click-outside" \| "escape-key" \| "popover-no-longer-visible" \| "toggle"; }>` |
-| `popoverOpened` | Emitted when the popover is opened by an user interaction.  This event can be prevented (`preventDefault()`), interrupting the ch-popover's opening.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `CustomEvent<any>`                                                                                     |
+<p>Specifies the drag behavior of the popover.
+If <code>allowDrag === &quot;header&quot;</code>, a slot with the <code>&quot;header&quot;</code> name will be
+available to place the header content.</p>
 
-## Slots
+**Attribute**: <code>allow-drag</code>
 
-| Slot       | Description                                                                     |
-| ---------- | ------------------------------------------------------------------------------- |
-|            | Default slot. The main content of the popover.                                  |
-| `"header"` | Content projected into the header area. Rendered when `allowDrag === "header"`. |
+**Default**: <code>"no"</code>
 
-## Dependencies
+---
 
-### Used by
+### `blockAlign:  ChPopoverAlign`
 
- - [ch-action-menu](../action-menu/internal/action-menu)
- - [ch-action-menu-render](../action-menu)
- - [ch-combo-box-render](../combo-box)
- - [ch-tooltip](../tooltip)
+<p>Specifies the block alignment of the popover relative to its action
+element. Valid values: <code>&quot;outside-start&quot;</code>, <code>&quot;inside-start&quot;</code>, <code>&quot;center&quot;</code>,
+<code>&quot;inside-end&quot;</code>, <code>&quot;outside-end&quot;</code>.</p>
 
-### Graph
-```mermaid
-graph TD;
-  ch-action-menu --> ch-popover
-  ch-action-menu-render --> ch-popover
-  ch-combo-box-render --> ch-popover
-  ch-tooltip --> ch-popover
-  style ch-popover fill:#f9f,stroke:#333,stroke-width:4px
-```
+**Attribute**: <code>block-align</code>
 
-----------------------------------------------
+**Default**: <code>"center"</code>
 
-*Built with [StencilJS](https://stenciljs.com/)*
+---
+
+### `blockSizeMatch:  ChPopoverSizeMatch`
+
+<p>Specifies how the popover adapts its block size.</p>
+<ul>
+<li>&quot;content&quot;: The block size of the control will be determined by its
+content block size.</li>
+<li>&quot;action-element&quot;: The block size of the control will match the block
+size of the <code>actionElement</code>.</li>
+<li>&quot;action-element-as-minimum&quot;: The minimum block size of the control
+will match the block size of the <code>actionElement</code>.</li>
+</ul>
+<p>If the control is resized at runtime, only the &quot;action-element-as-minimum&quot;
+value will still work.</p>
+
+**Attribute**: <code>block-size-match</code>
+
+**Default**: <code>"content"</code>
+
+---
+
+### `closeOnClickOutside:  boolean`
+
+<p>This property only applies for <code>&quot;manual&quot;</code> mode. In native popovers, when
+using <code>&quot;manual&quot;</code> mode the popover doesn't close when clicking outside the
+control. This property allows to close the popover when clicking outside
+in <code>&quot;manual&quot;</code> mode.
+With this, the popover will close if the click is triggered on any other
+element than the popover and the <code>actionElement</code>. It will also close if
+the &quot;Escape&quot; key is pressed.</p>
+
+**Attribute**: <code>close-on-click-outside</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `firstLayer:  boolean`
+
+<p><code>true</code> if the popover is not stacked inside another top layer (e.g., not
+nested within another popover). When <code>true</code>, a CSS class is temporarily
+applied to prevent initial positioning flickering while the popover
+calculates its alignment.</p>
+
+**Attribute**: <code>first-layer</code>
+
+**Default**: <code>true</code>
+
+---
+
+### `inlineAlign:  ChPopoverAlign`
+
+<p>Specifies the inline alignment of the popover relative to its action
+element. Valid values: <code>&quot;outside-start&quot;</code>, <code>&quot;inside-start&quot;</code>, <code>&quot;center&quot;</code>,
+<code>&quot;inside-end&quot;</code>, <code>&quot;outside-end&quot;</code>.</p>
+
+**Attribute**: <code>inline-align</code>
+
+**Default**: <code>"center"</code>
+
+---
+
+### `inlineSizeMatch:  ChPopoverSizeMatch`
+
+<p>Specifies how the popover adapts its inline size.</p>
+<ul>
+<li>&quot;content&quot;: The inline size of the control will be determined by its
+content inline size.</li>
+<li>&quot;action-element&quot;: The inline size of the control will match the inline
+size of the <code>actionElement</code>.</li>
+<li>&quot;action-element-as-minimum&quot;: The minimum inline size of the control
+will match the inline size of the <code>actionElement</code>.</li>
+</ul>
+<p>If the control is resized at runtime, only the &quot;action-element-as-minimum&quot;
+value will still work.</p>
+
+**Attribute**: <code>inline-size-match</code>
+
+**Default**: <code>"content"</code>
+
+---
+
+### `mode:  "auto" | "manual"`
+
+<p>Popovers that have the <code>&quot;auto&quot;</code> state can be &quot;light dismissed&quot; by
+selecting outside the popover area, and generally only allow one popover
+to be displayed on-screen at a time. By contrast, <code>&quot;manual&quot;</code> popovers must
+always be explicitly hidden, but allow for use cases such as nested
+popovers in menus.</p>
+
+**Attribute**: <code>popover</code>
+
+**Default**: <code>"auto"</code>
+
+---
+
+### `overflowBehavior:  "overflow" | "add-scroll"`
+
+<p>Specifies how the popover behaves when the content overflows the window
+size.</p>
+<ul>
+<li>&quot;overflow&quot;: The control won't implement any behavior if the content overflows.</li>
+<li>&quot;add-scroll&quot;: The control will place a scroll if the content overflows.</li>
+</ul>
+
+**Attribute**: <code>overflow-behavior</code>
+
+**Default**: <code>"overflow"</code>
+
+---
+
+### `positionTry:  "flip-block" | "flip-inline" | "none"`
+
+<p>Specifies an alternative position to try when the control overflows the
+window.</p>
+
+**Attribute**: <code>position-try</code>
+
+**Default**: <code>"none"</code>
+
+---
+
+### `resizable:  boolean`
+
+<p>Specifies whether the control can be resized. If <code>true</code> the control can be
+resized at runtime by dragging the edges or corners.</p>
+
+**Attribute**: <code>resizable</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `show:  boolean`
+
+<p>Specifies whether the popover is hidden or visible.</p>
+
+**Attribute**: <code>show</code>
+
+**Default**: <code>false</code>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Events
+  </summary>
+  
+### `popoverOpened: void`
+
+<p>Emitted when the popover is opened by an user interaction.</p>
+<p>This event can be prevented (<code>preventDefault()</code>), interrupting the
+ch-popover's opening.</p>
+
+---
+
+### `popoverClosed: PopoverClosedInfo`
+
+<p>Emitted when the popover is closed by an user interaction.</p>
+<p>This event can be prevented (<code>preventDefault()</code>), interrupting the
+<code>ch-popover</code>'s closing.</p>
+<p>The <code>reason</code> property of the event provides more information about
+the cause of the closing:</p>
+<ul>
+<li>
+<p><code>&quot;click-outside&quot;</code>: The popover is being closed because the user clicked
+outside the popover when using <code>closeOnClickOutside === true</code> and
+<code>mode === &quot;manual&quot;</code>.</p>
+</li>
+<li>
+<p><code>&quot;escape-key&quot;</code>: The popover is being closed because the user pressed the
+&quot;Escape&quot; key when using <code>closeOnClickOutside === true</code> and
+<code>mode === &quot;manual&quot;</code>.</p>
+</li>
+<li>
+<p><code>&quot;popover-no-longer-visible&quot;</code>: The popover is being closed because it
+is no longer visible.</p>
+</li>
+<li>
+<p><code>&quot;toggle&quot;</code>: The popover is being closed by the native toggle behavior
+of popover. It can be produced by the user clicking the <code>actionElement</code>,
+pressing the &quot;Enter&quot; or &quot;Space&quot; keys on the <code>actionElement</code>, pressing
+the &quot;Escape&quot; key or other. Used when <code>mode === &quot;auto&quot;</code>.</p>
+</li>
+</ul>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Slots
+  </summary>
+  
+### `header`
+
+<p>Content projected into the header area. Rendered when <code>allowDrag === &quot;header&quot;</code>.</p>
+
+---
+
+### `- Default slot. The main content of the popover.`
+</details>
+
+<details open>
+  <summary>
+  
+  ## CSS Parts
+  </summary>
+  
+### `header`
+
+<p>A draggable header area rendered when <code>allowDrag === &quot;header&quot;</code>. Projects the &quot;header&quot; slot.</p>
+</details>

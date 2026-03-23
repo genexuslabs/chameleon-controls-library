@@ -6,7 +6,7 @@
   ## Properties
   </summary>
   
-### `accessibleName: string | undefined`
+### `accessibleName:  string | undefined`
 
 <p>Specifies a short string, typically 1 to 3 words, that authors associate
 with an element to provide users of assistive technologies with a label
@@ -18,7 +18,7 @@ for the element.asd123</p>
 
 ---
 
-### `checkedCaption: string | undefined`
+### `checkedCaption:  string | undefined`
 
 <p>Caption displayed when the switch is 'on'</p>
 
@@ -84,7 +84,7 @@ attribute for <code>input</code> elements.</p>
 
 ---
 
-### `unCheckedCaption: string | undefined`
+### `unCheckedCaption:  string | undefined`
 
 <p>Caption displayed when the switch is 'off'</p>
 

@@ -6,7 +6,7 @@
   ## Properties
   </summary>
   
-### `accessibleName: string | undefined`
+### `accessibleName:  string | undefined`
 
 <p>Specifies a short string, typically 1 to 3 words, that authors associate
 with an element to provide users of assistive technologies with a label

@@ -1,169 +1,274 @@
-# ch-action-list-render
+# `ch-action-list-render`
 
-## Table of Contents
+<p>The <code>ch-action-list-render</code> component renders an interactive list of actionable items driven by a declarative model.</p>
 
-- [Overview](#overview)
-- [Features](#features)
-- [Use when](#use-when)
-- [Do not use when](#do-not-use-when)
-- [Accessibility](#accessibility)
-- [Usage](./docs/usage.md)
-- [Properties](#properties)
-- [Events](#events)
-- [Methods](#methods)
-  - [`addItem`](#additemiteminfo-actionlistitemmodel-groupparentid-string--promisevoid)
-  - [`getItemsInfo`](#getitemsinfoitemsid-string--promiseactionlistitemmodelextended)
-  - [`removeItem`](#removeitemitemid-string--promisevoid)
-  - [`updateItemProperties`](#updateitempropertiesitemid-string-properties-partialactionlistitemmodel---type-actionlistitemtype---promisevoid)
-- [Dependencies](#dependencies)
-  - [Used by](#used-by)
-  - [Depends on](#depends-on)
-  - [Graph](#graph)
-- [Styling](./docs/styling.md)
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `checkbox:  boolean`
 
-<!-- Auto Generated Below -->
+<p>Set this attribute if you want display a checkbox in all items by default.</p>
 
-## Overview
+**Attribute**: <code>checkbox</code>
 
-The `ch-action-list-render` component renders an interactive list of actionable items driven by a declarative model.
+**Default**: <code>false</code>
 
-## Features
- - Single and multiple selection with modifier-key multi-select.
- - In-place caption editing with optimistic UI updates.
- - Item pinning (fixed) and sorting.
- - Grouping with expandable/collapsible sections.
- - Programmatic add/remove operations.
- - Three item types: `actionable`, `group`, and `separator`.
- - Keyboard navigation.
+---
 
-## Use when
- - You need a rich, data-driven list with selection semantics (e.g., panel lists, filterable sidebars, or reorderable collections).
- - Command palettes, selection panels, or item management lists where users can pick, pin, edit, or remove items.
+### `checked:  boolean`
 
-## Do not use when
- - You need a simple static list without selection or editing -- use a plain HTML list instead.
- - Navigation is the primary purpose — prefer `ch-navigation-list-render`.
- - The list is hierarchical — prefer `ch-tree-view-render`.
+<p>Set this attribute if you want the checkbox to be checked in all items by
+default.
+Only works if <code>checkbox = true</code></p>
 
-## Accessibility
- - The host element has `role="list"` with `aria-multiselectable` when `selection` is `"multiple"`.
- - Separator items have `role="separator"` and `aria-hidden="true"`.
- - Supports keyboard navigation: arrow keys move focus between items, Enter/Space selects, and modifier-click enables multi-select.
+**Attribute**: <code>checked</code>
 
-## Properties
+**Default**: <code>false</code>
 
-| Property                    | Attribute        | Description                                                                                                                                                                                                                                                                                                            | Type                                                                                                                                                   | Default                         |
-| --------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
-| `checkbox`                  | `checkbox`       | Set this attribute if you want display a checkbox in all items by default.                                                                                                                                                                                                                                             | `boolean`                                                                                                                                              | `false`                         |
-| `checked`                   | `checked`        | Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`                                                                                                                                                                                                     | `boolean`                                                                                                                                              | `false`                         |
-| `disabled`                  | `disabled`       | This attribute lets you specify if all items are disabled. If disabled, action list items will not fire any user interaction related event (for example, `selectedItemsChange` event).                                                                                                                                 | `boolean`                                                                                                                                              | `false`                         |
-| `editableItems`             | `editable-items` | This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place. Note: the default value is `true`, so items are editable unless explicitly disabled.                                                                                     | `boolean`                                                                                                                                              | `DEFAULT_EDITABLE_ITEMS_VALUE`  |
-| `fixItemCallback`           | --               | Callback that is executed when and item requests to be fixed/unfixed. If the callback is not defined, the item will be fixed/unfixed without further confirmation.                                                                                                                                                     | `(itemInfo: ActionListItemActionable, newFixedValue: boolean) => Promise<boolean>`                                                                     | `undefined`                     |
-| `getImagePathCallback`      | --               | This property specifies a callback that is executed when the path for an imgSrc needs to be resolved.                                                                                                                                                                                                                  | `(additionalItem: ActionListItemAdditionalBase) => GxImageMultiState`                                                                                  | `undefined`                     |
-| `model`                     | --               | This property lets you define the model of the control. The model is an array of `ActionListItemModel` objects. Each item has a `type` (`"actionable"`, `"group"`, or `"separator"`), an `id`, a `caption`, and optional properties such as `selected`, `disabled`, `fixed`, `order`, and nested `items` (for groups). | `ActionListItemModel[]`                                                                                                                                | `[]`                            |
-| `modifyItemCaptionCallback` | --               | Callback that is executed when a item request to modify its caption.                                                                                                                                                                                                                                                   | `(actionListItemId: string, newCaption: string) => Promise<void>`                                                                                      | `undefined`                     |
-| `removeItemCallback`        | --               | Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.                                                                                                                                                                 | `(itemInfo: ActionListItemActionable) => Promise<boolean>`                                                                                             | `undefined`                     |
-| `renderItem`                | --               | This property allows us to implement custom rendering of action-list items.                                                                                                                                                                                                                                            | `(itemModel: ActionListItemModel, actionListRenderState: ChActionListRender, disabled?: boolean, nested?: boolean, nestedExpandable?: boolean) => any` | `defaultRenderItem`             |
-| `selection`                 | `selection`      | Specifies the type of selection implemented by the control.  - `"none"`: No selection; item clicks fire the `itemClick` event.  - `"single"`: Only one item can be selected at a time.  - `"multiple"`: Multiple items can be selected using modifier-key clicks.                                                      | `"multiple" \| "none" \| "single"`                                                                                                                     | `"none"`                        |
-| `sortItemsCallback`         | --               | Callback that is executed when the action-list model is changed to order its items.                                                                                                                                                                                                                                    | `(subModel: ActionListModel) => void`                                                                                                                  | `defaultSortItemsCallback`      |
-| `translations`              | --               | Specifies the literals required for the control.                                                                                                                                                                                                                                                                       | `{ confirmDelete: string; cancelDelete: string; confirmModify: string; cancelModify: string; }`                                                        | `actionListDefaultTranslations` |
+---
 
-## Events
+### `disabled:  boolean`
 
-| Event                 | Description                                                                                                                                                     | Type                                                                                                                                    |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `itemClick`           | Fired when an item is clicked and `selection === "none"`. Applies for items that have `type === "actionable"` or (`type === "group"` and `expandable === true`) | `CustomEvent<{ parentItem: ActionListItemGroup; item: ActionListItemModel; } \| { root: ActionListModel; item: ActionListItemModel; }>` |
-| `selectedItemsChange` | Fired when the selected items change and `selection !== "none"`                                                                                                 | `CustomEvent<ActionListItemModelExtended[]>`                                                                                            |
+<p>This attribute lets you specify if all items are disabled.
+If disabled, action list items will not fire any user interaction related
+event (for example, <code>selectedItemsChange</code> event).</p>
 
-## Methods
+**Attribute**: <code>disabled</code>
 
-### `addItem(itemInfo: ActionListItemModel, groupParentId?: string) => Promise<void>`
+**Default**: <code>false</code>
 
-Adds an item in the control.
+---
 
-If the item already exists, the operation is canceled.
+### `editableItems:  boolean`
 
-If the `groupParentId` property is specified the item is added in the
-group determined by `groupParentId`. It only works if the item to add
-has `type === "actionable"`
+<p>This attribute lets you specify if the edit operation is enabled in all
+items by default. If <code>true</code>, the items can edit its caption in place.
+Note: the default value is <code>true</code>, so items are editable unless
+explicitly disabled.</p>
 
-#### Parameters
+**Attribute**: <code>editable-items</code>
 
-| Name            | Type                                                                         | Description |
-| --------------- | ---------------------------------------------------------------------------- | ----------- |
-| `itemInfo`      | `ActionListItemActionable \| ActionListItemGroup \| ActionListItemSeparator` |             |
-| `groupParentId` | `string`                                                                     |             |
+**Default**: <code>DEFAULT_EDITABLE_ITEMS_VALUE</code>
 
-#### Returns
+---
 
-Type: `Promise<void>`
+### `fixItemCallback: ((itemInfo: ActionListItemActionable, newFixedValue: boolean) => Promise<boolean>) | undefined`
 
-### `getItemsInfo(itemsId: string[]) => Promise<ActionListItemModelExtended[]>`
+<p>Callback that is executed when and item requests to be fixed/unfixed.
+If the callback is not defined, the item will be fixed/unfixed without
+further confirmation.</p>
 
-Given a list of ids, it returns an array of the items that exists in the
-given list.
+**Default**: <code>undefined</code>
 
-#### Parameters
+---
 
-| Name      | Type       | Description |
-| --------- | ---------- | ----------- |
-| `itemsId` | `string[]` |             |
+### `getImagePathCallback: ActionListImagePathCallback | undefined`
 
-#### Returns
+<p>This property specifies a callback that is executed when the path for an
+imgSrc needs to be resolved.</p>
 
-Type: `Promise<ActionListItemModelExtended[]>`
+**Default**: <code>undefined</code>
 
-### `removeItem(itemId: string) => Promise<void>`
+---
 
-Remove the item and all its descendants from the control.
+### `model:  ActionListModel`
 
-#### Parameters
+<p>This property lets you define the model of the control. The model is an
+array of <code>ActionListItemModel</code> objects. Each item has a <code>type</code>
+(<code>&quot;actionable&quot;</code>, <code>&quot;group&quot;</code>, or <code>&quot;separator&quot;</code>), an <code>id</code>, a <code>caption</code>,
+and optional properties such as <code>selected</code>, <code>disabled</code>, <code>fixed</code>, <code>order</code>,
+and nested <code>items</code> (for groups).</p>
 
-| Name     | Type     | Description |
-| -------- | -------- | ----------- |
-| `itemId` | `string` |             |
+**Default**: <code>[]</code>
 
-#### Returns
+---
 
-Type: `Promise<void>`
+### `modifyItemCaptionCallback: ((actionListItemId: string, newCaption: string) => Promise<void>) | undefined`
 
-### `updateItemProperties(itemId: string, properties: Partial<ActionListItemModel> & { type: ActionListItemType; }) => Promise<void>`
+<p>Callback that is executed when a item request to modify its caption.</p>
 
-Given an itemId and the properties to update, it updates the properties
-of the items in the list.
+**Default**: <code>undefined</code>
 
-#### Parameters
+---
 
-| Name         | Type                                                           | Description |
-| ------------ | -------------------------------------------------------------- | ----------- |
-| `itemId`     | `string`                                                       |             |
-| `properties` | `Partial<ActionListItemModel> & { type: ActionListItemType; }` |             |
+### `renderItem: ((itemModel: ActionListItemModel, actionListRenderState: ChActionListRender, disabled?: boolean, nested?: boolean, nestedExpandable?: boolean) => TemplateResult | typeof nothing) | undefined`
 
-#### Returns
+<p>This property allows us to implement custom rendering of action-list items.</p>
 
-Type: `Promise<void>`
+**Default**: <code>undefined</code>
 
-## Dependencies
+---
 
-### Used by
+### `removeItemCallback: ((itemInfo: ActionListItemActionable) => Promise<boolean>) | undefined`
 
- - [ch-test-flexible-layout](../test/test-flexible-layout)
+<p>Callback that is executed when and item requests to be removed.
+If the callback is not defined, the item will be removed without further
+confirmation.</p>
 
-### Depends on
+**Default**: <code>undefined</code>
 
-- [ch-action-list-item](./internal/action-list-item)
-- [ch-action-list-group](./internal/action-list-group)
+---
 
-### Graph
-```mermaid
-graph TD;
-  ch-action-list-render --> ch-action-list-item
-  ch-action-list-render --> ch-action-list-group
-  ch-action-list-item --> ch-edit
-  ch-test-flexible-layout --> ch-action-list-render
-  style ch-action-list-render fill:#f9f,stroke:#333,stroke-width:4px
-```
+### `selection:  "single" | "multiple" | "none"`
 
-----------------------------------------------
+<p>Specifies the type of selection implemented by the control.</p>
+<ul>
+<li><code>&quot;none&quot;</code>: No selection; item clicks fire the <code>itemClick</code> event.</li>
+<li><code>&quot;single&quot;</code>: Only one item can be selected at a time.</li>
+<li><code>&quot;multiple&quot;</code>: Multiple items can be selected using modifier-key clicks.</li>
+</ul>
 
-*Built with [StencilJS](https://stenciljs.com/)*
+**Attribute**: <code>selection</code>
+
+**Default**: <code>"none"</code>
+
+---
+
+### `sortItemsCallback: (subModel: ActionListModel) => void`
+
+<p>Callback that is executed when the action-list model is changed to order its items.</p>
+
+**Default**: <code>defaultSortItemsCallback</code>
+
+---
+
+### `translations:  ActionListTranslations`
+
+<p>Specifies the literals required for the control.</p>
+
+**Default**: <code>actionListDefaultTranslations</code>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Events
+  </summary>
+  
+### `selectedItemsChange: ActionListItemModelExtended[]`
+
+<p>Fired when the selected items change and <code>selection !== &quot;none&quot;</code></p>
+
+---
+
+### `itemClick: ActionListItemModelExtended`
+
+<p>Fired when an item is clicked and <code>selection === &quot;none&quot;</code>.
+Applies for items that have <code>type === &quot;actionable&quot;</code> or
+(<code>type === &quot;group&quot;</code> and <code>expandable === true</code>)</p>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Methods
+  </summary>
+  
+### `addItem: (itemInfo: ActionListItemModel, groupParentId: string) => void`
+
+<p>Adds an item in the control.</p>
+<p>If the item already exists, the operation is canceled.</p>
+<p>If the <code>groupParentId</code> property is specified the item is added in the
+group determined by <code>groupParentId</code>. It only works if the item to add
+has <code>type === &quot;actionable&quot;</code></p>
+
+---
+
+### `getItemsInfo: (itemsId: string[]) => ActionListItemModelExtended[]`
+
+<p>Given a list of ids, it returns an array of the items that exists in the
+given list.</p>
+
+---
+
+### `removeItem: (itemId: string) => void`
+
+<p>Remove the item and all its descendants from the control.</p>
+
+---
+
+### `updateItemProperties: (itemId: string, properties: Partial<ActionListItemModel> & { type: ActionListItemType }) => void`
+
+<p>Given an itemId and the properties to update, it updates the properties
+of the items in the list.</p>
+</details>
+
+<details open>
+  <summary>
+  
+  ## CSS Parts
+  </summary>
+  
+### `separator`
+
+<p>A horizontal divider rendered between items when the model contains an item of <code>type: &quot;separator&quot;</code>.</p>
+
+---
+
+### `item__action`
+
+<p>The clickable row element for each actionable item.</p>
+
+---
+
+### `item__caption`
+
+<p>The text caption inside an actionable item.</p>
+
+---
+
+### `item__checkbox`
+
+<p>The checkbox element rendered when <code>checkbox</code> is <code>true</code>.</p>
+
+---
+
+### `group__action`
+
+<p>The clickable header row for a group item.</p>
+
+---
+
+### `group__caption`
+
+<p>The text caption inside a group header.</p>
+
+---
+
+### `group__expandable`
+
+<p>The expandable/collapsible container for a group's children.</p>
+
+---
+
+### `disabled`
+
+<p>Present in the <code>item__action</code>, <code>item__caption</code>, <code>group__action</code>, and <code>group__caption</code> parts when the item is disabled.</p>
+
+---
+
+### `expanded`
+
+<p>Present in the <code>group__expandable</code> part when the group is expanded.</p>
+
+---
+
+### `collapsed`
+
+<p>Present in the <code>group__expandable</code> part when the group is collapsed.</p>
+
+---
+
+### `selected`
+
+<p>Present in the <code>item__action</code> and <code>group__action</code> parts when the item is selected.</p>
+
+---
+
+### `not-selected`
+
+<p>Present in the <code>item__action</code> and <code>group__action</code> parts when the item is not selected.</p>
+</details>

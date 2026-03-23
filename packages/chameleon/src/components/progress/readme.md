@@ -11,7 +11,7 @@ progress. It also supports referencing a region to describe its progress.</p>
   ## Properties
   </summary>
   
-### `accessibleName: string | undefined`
+### `accessibleName:  string | undefined`
 
 <p>Specifies a short string, typically 1 to 3 words, that authors associate
 with an element to provide users of assistive technologies with a label
@@ -23,7 +23,7 @@ for the element.</p>
 
 ---
 
-### `accessibleValueText: string | undefined`
+### `accessibleValueText:  string | undefined`
 
 <p>Assistive technologies often present the <code>value</code> as a percentage. If this
 would not be accurate use this property to make the progress bar value

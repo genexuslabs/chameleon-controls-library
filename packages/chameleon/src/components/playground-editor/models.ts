@@ -1,18 +1,9 @@
 import type { ChameleonPublicControlsTagName } from "../../typings/chameleon-components";
-import type { ThemeModel } from "../theme/theme-types";
-import type { PlaygroundJsonRenderModel } from "./typings/playground-json-render-model";
 import { chameleonRegistry } from "./chameleon-registry";
-
-const MERCURY_BUNDLES: ThemeModel = [
-  {
-    name: "Mercury",
-    url: "https://unpkg.com/@genexus/mercury@0.26.0/dist/bundles/css/all.css"
-  }
-];
+import type { PlaygroundJsonRenderModel } from "./typings/playground-json-render-model";
 
 export const playgroundEditorModels = {
   "ch-checkbox": {
-    bundles: MERCURY_BUNDLES,
     registry: chameleonRegistry,
     codegenHints: { events: { input: "checked" } },
     spec: {
@@ -50,7 +41,6 @@ export const playgroundEditorModels = {
   },
 
   "ch-code": {
-    bundles: MERCURY_BUNDLES,
     registry: chameleonRegistry,
     stateTypes: {
       value: { type: "string-multiline" as const }
@@ -76,7 +66,6 @@ export const playgroundEditorModels = {
   },
 
   "ch-image": {
-    bundles: MERCURY_BUNDLES,
     registry: chameleonRegistry,
     spec: {
       root: "root",
@@ -99,7 +88,6 @@ export const playgroundEditorModels = {
   },
 
   "ch-radio-group-render": {
-    bundles: MERCURY_BUNDLES,
     registry: chameleonRegistry,
     spec: {
       root: "root",
@@ -114,7 +102,6 @@ export const playgroundEditorModels = {
   },
 
   "ch-segmented-control-render": {
-    bundles: MERCURY_BUNDLES,
     registry: chameleonRegistry,
     spec: {
       root: "root",
@@ -129,7 +116,6 @@ export const playgroundEditorModels = {
   },
 
   "ch-slider": {
-    bundles: MERCURY_BUNDLES,
     registry: chameleonRegistry,
     codegenHints: { events: { input: "value" } },
     spec: {
@@ -163,7 +149,6 @@ export const playgroundEditorModels = {
   },
 
   "ch-switch": {
-    bundles: MERCURY_BUNDLES,
     registry: chameleonRegistry,
     codegenHints: { events: { input: "checked" } },
     spec: {
@@ -198,3 +183,4 @@ export const playgroundEditorModels = {
 } as const satisfies {
   [key in ChameleonPublicControlsTagName]?: PlaygroundJsonRenderModel;
 };
+

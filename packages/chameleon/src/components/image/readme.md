@@ -29,7 +29,7 @@ If not specified, the direct parent reference will be used.</p>
 
 ---
 
-### `getImagePathCallback: GetImagePathCallback | undefined`
+### `getImagePathCallback:  GetImagePathCallback | undefined`
 
 <p>This property specifies a callback that is executed when the path the
 image needs to be resolved.</p>
@@ -59,7 +59,7 @@ accessor is useful for SSR scenarios were the Host access is limited
 
 ---
 
-### `type: Exclude<ImageRender, "img"> | undefined`
+### `type:  Exclude<ImageRender, "img"> | undefined`
 
 <p>Specifies how the image will be rendered.</p>
 

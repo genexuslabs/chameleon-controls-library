@@ -32,7 +32,7 @@ the header, while <code>&quot;end&quot;</code> places it at the inline-end edge.
 
 ---
 
-### `getImagePathCallback: GetImagePathCallback | undefined`
+### `getImagePathCallback:  GetImagePathCallback | undefined`
 
 <p>This property specifies a callback that is executed when the path for an
 <code>startImgSrc</code> needs to be resolved. The resolution follows a fallback

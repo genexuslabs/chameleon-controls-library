@@ -119,7 +119,7 @@ property is defined.</p>
 
 ---
 
-### `startImgType: Exclude<ImageRender, "img"> | undefined`
+### `startImgType:  Exclude<ImageRender, "img"> | undefined`
 
 <p>Specifies how the start image will be rendered.</p>
 

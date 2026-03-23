@@ -297,7 +297,7 @@ declare global {
    * progress. It also supports referencing a region to describe its progress.
    *
    * @status experimental
-   */ // prettier-ignore
+   */// prettier-ignore
   interface HTMLChProgressElement extends ChProgress {
     // Extend the ChProgress class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

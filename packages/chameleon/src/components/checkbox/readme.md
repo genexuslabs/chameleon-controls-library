@@ -6,7 +6,7 @@
   ## Properties
   </summary>
   
-### `accessibleName: string | undefined`
+### `accessibleName:  string | undefined`
 
 <p>Specifies a short string, typically 1 to 3 words, that authors associate
 with an element to provide users of assistive technologies with a label
@@ -62,7 +62,7 @@ If disabled, it will not fire any user interaction related event
 
 ---
 
-### `getImagePathCallback: GetImagePathCallback | undefined`
+### `getImagePathCallback:  GetImagePathCallback | undefined`
 
 <p>This property specifies a callback that is executed when the path for an
 startImgSrc needs to be resolved.</p>
@@ -116,7 +116,7 @@ attribute for <code>input</code> elements.</p>
 
 ---
 
-### `startImgType: Exclude<ImageRender, "img">`
+### `startImgType:  Exclude<ImageRender, "img">`
 
 <p>Specifies the source of the start image.</p>
 

@@ -1,56 +1,161 @@
-# ch-action-menu
+# `ch-action-menu`
 
-## Table of Contents
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `actionGroupParent:  boolean`
 
-- [Properties](#properties)
-- [Dependencies](#dependencies)
-  - [Used by](#used-by)
-  - [Depends on](#depends-on)
-  - [Graph](#graph)
+<p>Specifies if the current parent of the item is the action-group control.</p>
 
-<!-- Auto Generated Below -->
+**Attribute**: <code>action-group-parent</code>
 
-## Properties
+**Default**: <code>false</code>
 
-| Property                   | Attribute             | Description                                                                                                                                                                               | Type                                                                                                                                                                                                                                                                                                                                                                                                                            | Default        |
-| -------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `actionGroupParent`        | `action-group-parent` | Specifies if the current parent of the item is the action-group control.                                                                                                                  | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                       | `false`        |
-| `blockAlign`               | `block-align`         | Specifies the block alignment of the dropdown menu that is placed relative to the expandable button.                                                                                      | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"`                                                                                                                                                                                                                                                                                                                                                | `"center"`     |
-| `caption`                  | `caption`             | Specifies the caption that the control will display.                                                                                                                                      | `string`                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined`    |
-| `disabled`                 | `disabled`            | This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).                                  | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                       | `false`        |
-| `endImgSrc`                | `end-img-src`         | Specifies the src of the end image.                                                                                                                                                       | `string`                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined`    |
-| `endImgType`               | `end-img-type`        | Specifies how the end image will be rendered.                                                                                                                                             | `"background" \| "img" \| "mask"`                                                                                                                                                                                                                                                                                                                                                                                               | `"background"` |
-| `expandable`               | `expandable`          | Specifies whether the item contains a subtree. `true` if the item has a subtree.                                                                                                          | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                       | `false`        |
-| `expanded`                 | `expanded`            | `true` to display the dropdown menu.                                                                                                                                                      | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                       | `false`        |
-| `getImagePathCallback`     | --                    | This property specifies a callback that is executed when the path for an startImgSrc or endImgSrc needs to be resolved.                                                                   | `(item: ActionMenuItemActionableModel, iconDirection: "start" \| "end") => GxImageMultiState`                                                                                                                                                                                                                                                                                                                                   | `undefined`    |
-| `inlineAlign`              | `inline-align`        | Specifies the inline alignment of the dropdown menu that is placed relative to the expandable button.                                                                                     | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"`                                                                                                                                                                                                                                                                                                                                                | `"center"`     |
-| `link`                     | --                    | Specifies the hyperlink properties of the item. If this property is defined, the `ch-action-menu` will render an anchor tag with this properties. Otherwise, it will render a button tag. | `{ url: string; rel?: string; target?: "_self" \| "_blank" \| "_parent" \| "_top" \| "_unfencedTop"; }`                                                                                                                                                                                                                                                                                                                         | `undefined`    |
-| `model` _(required)_       | --                    | Specifies the extended model of the control. This property is only needed to know the UI Model on each event                                                                              | `{ id?: string; caption: string; disabled?: boolean; endImgSrc?: string; endImgType?: "mask" \| "background"; expanded?: boolean; items?: ActionMenuModel; itemsBlockAlign?: ChPopoverAlign; itemsInlineAlign?: ChPopoverAlign; link?: ItemLink; parts?: string; positionTry?: "none" \| "flip-block" \| "flip-inline"; shortcut?: string; startImgSrc?: string; startImgType?: "mask" \| "background"; type?: "actionable"; }` | `undefined`    |
-| `openOnFocus`              | `open-on-focus`       | Determine if the dropdown menu should be opened when the expandable button of the control is focused. TODO: Add implementation                                                            | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                       | `false`        |
-| `parts`                    | `parts`               | Specifies a set of parts to use in every DOM element of the control.                                                                                                                      | `string`                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined`    |
-| `positionTry` _(required)_ | `position-try`        | Specifies an alternative position to try when the popover overflows the window.                                                                                                           | `"flip-block" \| "flip-inline" \| "none"`                                                                                                                                                                                                                                                                                                                                                                                       | `undefined`    |
-| `shortcut`                 | `shortcut`            | Specifies the shortcut caption that the control will display.                                                                                                                             | `string`                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined`    |
-| `startImgSrc`              | `start-img-src`       | Specifies the src for the left img.                                                                                                                                                       | `string`                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined`    |
-| `startImgType`             | `start-img-type`      | Specifies how the start image will be rendered.                                                                                                                                           | `"background" \| "img" \| "mask"`                                                                                                                                                                                                                                                                                                                                                                                               | `"background"` |
+---
 
-## Dependencies
+### `blockAlign:  ChPopoverAlign`
 
-### Used by
+<p>Specifies the block alignment of the dropdown menu that is placed
+relative to the expandable button.</p>
 
- - [ch-action-menu-render](../..)
+**Default**: <code>"center"</code>
 
-### Depends on
+---
 
-- [ch-popover](../../../popover)
+### `caption:  string | undefined`
 
-### Graph
-```mermaid
-graph TD;
-  ch-action-menu --> ch-popover
-  ch-action-menu-render --> ch-action-menu
-  style ch-action-menu fill:#f9f,stroke:#333,stroke-width:4px
-```
+<p>Specifies the caption that the control will display.</p>
 
-----------------------------------------------
+**Default**: <code>undefined</code>
 
-*Built with [StencilJS](https://stenciljs.com/)*
+---
+
+### `disabled:  boolean`
+
+<p>This attribute lets you specify if the element is disabled.
+If disabled, it will not fire any user interaction related event
+(for example, click event).</p>
+
+**Attribute**: <code>disabled</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `endImgSrc:  string | undefined`
+
+<p>Specifies the src of the end image.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `endImgType:  Exclude<ImageRender, "img">`
+
+<p>Specifies how the end image will be rendered.</p>
+
+**Default**: <code>"background"</code>
+
+---
+
+### `expandable:  boolean`
+
+<p>Specifies whether the item contains a subtree. <code>true</code> if the item has a
+subtree.</p>
+
+**Attribute**: <code>expandable</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `expanded:  boolean | undefined`
+
+<p><code>true</code> to display the dropdown menu.</p>
+
+**Default**: <code>false</code>
+
+---
+
+### `inlineAlign:  ChPopoverAlign`
+
+<p>Specifies the inline alignment of the dropdown menu that is placed
+relative to the expandable button.</p>
+
+**Default**: <code>"center"</code>
+
+---
+
+### `link:  ItemLink | undefined`
+
+<p>Specifies the hyperlink properties of the item. If this property is
+defined, the <code>ch-action-menu</code> will render an anchor tag with this
+properties. Otherwise, it will render a button tag.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `model:  ActionMenuItemActionableModel`
+
+<p>Specifies the extended model of the control. This property is only needed
+to know the UI Model on each event</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `openOnFocus:  boolean`
+
+<p>Determine if the dropdown menu should be opened when the expandable
+button of the control is focused.
+TODO: Add implementation</p>
+
+**Attribute**: <code>open-on-focus</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `parts:  string | undefined`
+
+<p>Specifies a set of parts to use in every DOM element of the control.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `positionTry:  "flip-block" | "flip-inline" | "none"`
+
+<p>Specifies an alternative position to try when the popover overflows the
+window.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `shortcut:  string | undefined`
+
+<p>Specifies the shortcut caption that the control will display.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `startImgSrc:  string | undefined`
+
+<p>Specifies the src for the left img.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `startImgType:  Exclude<ImageRender, "img">`
+
+<p>Specifies how the start image will be rendered.</p>
+
+**Default**: <code>"background"</code>
+</details>

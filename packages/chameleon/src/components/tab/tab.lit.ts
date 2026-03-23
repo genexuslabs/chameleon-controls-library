@@ -1375,3 +1375,161 @@ export class ChTabRender extends KasstorElement implements DraggableView {
   }
 }
 
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChTabRenderElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabRenderElement;
+  }
+
+  /** Type of the `ch-tab-render`'s `expandMainGroup` event. */
+  // prettier-ignore
+  type HTMLChTabRenderElementExpandMainGroupEvent = HTMLChTabRenderElementCustomEvent<
+    HTMLChTabRenderElementEventMap["expandMainGroup"]
+  >;
+
+  /** Type of the `ch-tab-render`'s `itemClose` event. */
+  // prettier-ignore
+  type HTMLChTabRenderElementItemCloseEvent = HTMLChTabRenderElementCustomEvent<
+    HTMLChTabRenderElementEventMap["itemClose"]
+  >;
+
+  /** Type of the `ch-tab-render`'s `selectedItemChange` event. */
+  // prettier-ignore
+  type HTMLChTabRenderElementSelectedItemChangeEvent = HTMLChTabRenderElementCustomEvent<
+    HTMLChTabRenderElementEventMap["selectedItemChange"]
+  >;
+
+  /** Type of the `ch-tab-render`'s `itemDragStart` event. */
+  // prettier-ignore
+  type HTMLChTabRenderElementItemDragStartEvent = HTMLChTabRenderElementCustomEvent<
+    HTMLChTabRenderElementEventMap["itemDragStart"]
+  >;
+
+  interface HTMLChTabRenderElementEventMap {
+    expandMainGroup: string;
+    itemClose: TabItemCloseInfo;
+    selectedItemChange: TabSelectedItemInfo;
+    itemDragStart: number;
+  }
+
+  interface HTMLChTabRenderElementEventTypes {
+    expandMainGroup: HTMLChTabRenderElementExpandMainGroupEvent;
+    itemClose: HTMLChTabRenderElementItemCloseEvent;
+    selectedItemChange: HTMLChTabRenderElementSelectedItemChangeEvent;
+    itemDragStart: HTMLChTabRenderElementItemDragStartEvent;
+  }
+
+  /**
+   * The `ch-tab-render` component renders a tabbed interface where each tab
+   * button switches the visible content panel.
+   *
+   * @remarks
+   * ## Features
+   *  - Tab list positioning along any edge of the container (`block-start`,
+   *    `block-end`, `inline-start`, or `inline-end`).
+   *  - Optional images, icons, captions, and close buttons per tab.
+   *  - Keyboard navigation following WAI-ARIA tab patterns (Arrow keys are
+   *    direction-aware based on `tabListPosition`; Home/End jump to first/last
+   *    tab).
+   *  - Drag-to-reorder tabs within the tab list when `sortable` is enabled.
+   *  - Drag tabs outside the component for relocation in a flexible layout
+   *    context when `dragOutside` is enabled.
+   *  - CSS containment and overflow configuration per tab panel.
+   *
+   * ## Use when
+   *  - Building a multi-panel UI where content should be switchable through
+   *    labeled tabs (settings dialogs, property inspectors, IDE-style editor
+   *    groups).
+   *  - Organizing related but independent content sections within the same
+   *    context (e.g., "Overview", "Files", "Commits").
+   *  - Users need to view one section at a time without leaving the page.
+   *
+   * ## Do not use when
+   *  - Showing or hiding a single content section -- prefer an accordion instead.
+   *  - Users must compare content across sections -- switching back and forth is
+   *    too costly.
+   *  - The sections represent different pages or routes -- prefer
+   *    `ch-navigation-list-render`.
+   *  - Content follows a sequential linear process -- prefer a stepper/wizard
+   *    pattern.
+   *  - More than 6 tabs are needed -- consider a sidebar or
+   *    `ch-navigation-list-render`.
+   *  - Confusing with `ch-segmented-control-render`: tabs switch to DIFFERENT
+   *    content sections; segmented controls switch the VIEW FORMAT of the same
+   *    data.
+   *
+   * ## Accessibility
+   *  - Implements the WAI-ARIA Tabs pattern with `role="tablist"`, `role="tab"`,
+   *    and `role="tabpanel"`.
+   *  - Supports keyboard navigation: Arrow keys to move between tabs, Home/End
+   *    to jump to first/last.
+   *  - Each tab button reflects `aria-selected` and `aria-controls` linking to
+   *    its panel.
+   *  - Close buttons carry an accessible label.
+   *
+   * @status experimental
+   *
+   * @csspart tab - The primary `<button>` element for each tab item. Also receives the `{item.id}`, position, state, and direction parts.
+   * @csspart tab-caption - The `<ch-textblock>` text label inside each tab button. Present when `showCaptions` is `true`.
+   * @csspart img - The `<img>` element rendered when a tab item uses `startImgSrc` with `startImgType = "img"`.
+   * @csspart close-button - The button that closes a tab. Rendered when `closeButton` is `true` and the item is closable.
+   * @csspart tab-list - The `<div>` that wraps all tab buttons and acts as the `role="tablist"` container.
+   * @csspart tab-list-start - The `<div>` adjacent to the start of the tab list. Used to project toolbar content via `slot={tabListPosition}`.
+   * @csspart tab-list-end - The `<div>` adjacent to the end of the tab list. Used to project toolbar content via `slot={tabListPosition}`.
+   * @csspart tab-panel - The panel `<div>` for each tab's content area. Receives `{item.id}`, position, and state parts.
+   * @csspart tab-panel-container - The outer container `<div>` that wraps all tab panels.
+   *
+   * @csspart {item.id} - Present on the `tab`, `tab-caption`, `close-button`, and `tab-panel` parts for each tab item, enabling per-tab styling.
+   *
+   * @csspart selected - Present in the `tab`, `tab-caption`, `close-button`, and `tab-panel` parts when the item is selected.
+   * @csspart not-selected - Present in the `tab`, `tab-caption`, `close-button`, and `tab-panel` parts when the item is not selected.
+   * @csspart disabled - Present in the `tab`, `tab-caption`, `close-button`, and `tab-panel` parts when the item is disabled.
+   * @csspart closable - Present in the `tab` and `tab-caption` parts when the item has a close button.
+   * @csspart not-closable - Present in the `tab` and `tab-caption` parts when the item does not have a close button.
+   * @csspart dragging - Present in the `tab`, `close-button`, and `tab-list` parts while a tab is being dragged.
+   * @csspart dragging-over-tab-list - Present in the `tab` and `close-button` parts while dragging within the tab list bounds.
+   * @csspart dragging-out-of-tab-list - Present in the `tab` and `close-button` parts while dragging outside the tab list bounds.
+   * @csspart expanded - Present in the `tab-panel-container` part when the panel container is visible.
+   * @csspart collapsed - Present in the `tab-panel-container` part when the panel container is hidden.
+   *
+   * @csspart block - Present when the tab list is oriented vertically (block direction).
+   * @csspart inline - Present when the tab list is oriented horizontally (inline direction).
+   * @csspart start - Present when the tab list is positioned at the start edge.
+   * @csspart end - Present when the tab list is positioned at the end edge.
+   *
+   * @slot {tabListPosition} - Named slot rendered adjacent to the tab list for custom toolbar content (e.g., an overflow menu or add-tab button).
+   * @slot {item.id} - Named slot for each tab panel's content, projected when the tab has been rendered at least once.
+   *
+   * @fires expandMainGroup Fired when an item of the main group is double clicked.
+   * @fires itemClose Fired the close button of an item is clicked.
+   * @fires selectedItemChange Fired when the selected item change.
+   *   This event can be default prevented to prevent the item selection.
+   * @fires itemDragStart Fired the first time a caption button is dragged outside of its tab list.
+   */
+  // prettier-ignore
+  interface HTMLChTabRenderElement extends ChTabRender {
+    // Extend the ChTabRender class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChTabRenderElementEventTypes>(type: K, listener: (this: HTMLChTabRenderElement, ev: HTMLChTabRenderElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChTabRenderElementEventTypes>(type: K, listener: (this: HTMLChTabRenderElement, ev: HTMLChTabRenderElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-tab-render": HTMLChTabRenderElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-tab-render": HTMLChTabRenderElement;
+  }
+}
+

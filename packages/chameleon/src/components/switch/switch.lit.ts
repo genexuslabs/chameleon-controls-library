@@ -254,9 +254,9 @@ declare global {
    *
    * @fires input The `input` event is emitted when a change to the element's checked state
    *   is committed by the user.
-   *
+   *   
    *   It contains the new checked state of the control.
-   *
+   *   
    *   This event is preventable.
    */
   // prettier-ignore

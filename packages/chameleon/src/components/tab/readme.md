@@ -1,158 +1,280 @@
-# ch-tab-render
+# `ch-tab-render`
 
-## Table of Contents
+<p>The <code>ch-tab-render</code> component renders a tabbed interface where each tab
+button switches the visible content panel.</p>
 
-- [Overview](#overview)
-- [Features](#features)
-- [Use when](#use-when)
-- [Do not use when](#do-not-use-when)
-- [Accessibility](#accessibility)
-- [Usage](./docs/usage.md)
-- [Properties](#properties)
-- [Events](#events)
-- [Methods](#methods)
-  - [`endDragPreview`](#enddragpreview--promisevoid)
-  - [`getDraggableViews`](#getdraggableviews--promisedraggableviewinfo)
-  - [`promoteDragPreviewToTopLayer`](#promotedragpreviewtotoplayer--promisevoid)
-  - [`removePage`](#removepagepageid-string-forcererender-boolean--promisevoid)
-- [Slots](#slots)
-- [Dependencies](#dependencies)
-  - [Used by](#used-by)
-  - [Depends on](#depends-on)
-  - [Graph](#graph)
-- [Styling](./docs/styling.md)
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `accessibleName:  string | undefined`
 
-<!-- Auto Generated Below -->
+<p>Specifies a short string, typically 1 to 3 words, that authors associate
+with an element to provide users of assistive technologies with a label
+for the element. This value is applied as the accessible name of the
+<code>role=&quot;tablist&quot;</code> element.</p>
 
-## Overview
+**Attribute**: <code>accessible-name</code>
 
-The `ch-tab-render` component renders a tabbed interface where each tab button switches the visible content panel.
+**Default**: <code>undefined</code>
 
-## Features
- - Tab list positioning along any edge of the container (`block-start`, `block-end`, `inline-start`, or `inline-end`).
- - Optional images, icons, captions, and close buttons per tab.
- - Keyboard navigation following WAI-ARIA tab patterns (Arrow keys are direction-aware based on `tabListPosition`; Home/End jump to first/last tab).
- - Drag-to-reorder tabs within the tab list when `sortable` is enabled.
- - Drag tabs outside the component for relocation in a flexible layout context when `dragOutside` is enabled.
- - CSS containment and overflow configuration per tab panel.
+---
 
-## Use when
- - Building a multi-panel UI where content should be switchable through labeled tabs (settings dialogs, property inspectors, IDE-style editor groups).
- - Organizing related but independent content sections within the same context (e.g., "Overview", "Files", "Commits").
- - Users need to view one section at a time without leaving the page.
+### `closeButton:  boolean`
 
-## Do not use when
- - Showing or hiding a single content section -- prefer an accordion instead.
- - Users must compare content across sections — switching back and forth is too costly.
- - The sections represent different pages or routes — prefer `ch-navigation-list-render`.
- - Content follows a sequential linear process — prefer a stepper/wizard pattern.
- - More than 6 tabs are needed — consider a sidebar or `ch-navigation-list-render`.
- - Confusing with `ch-segmented-control-render`: tabs switch to DIFFERENT content sections; segmented controls switch the VIEW FORMAT of the same data.
+<p><code>true</code> to display a close button for the items.</p>
 
-## Accessibility
- - Implements the WAI-ARIA Tabs pattern with `role="tablist"`, `role="tab"`, and `role="tabpanel"`.
- - Supports keyboard navigation: Arrow keys to move between tabs, Home/End to jump to first/last.
- - Each tab button reflects `aria-selected` and `aria-controls` linking to its panel.
- - Close buttons carry an accessible label.
+**Attribute**: <code>close-button</code>
 
-## Properties
+**Default**: <code>false</code>
 
-| Property                    | Attribute                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                     | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default                     |
-| --------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| `accessibleName`            | `accessible-name`              | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This value is applied as the accessible name of the `role="tablist"` element.                                                                                                                                                                                                 | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `undefined`                 |
-| `closeButton`               | `close-button`                 | `true` to display a close button for the items.                                                                                                                                                                                                                                                                                                                                                                                                 | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`                     |
-| `closeButtonAccessibleName` | `close-button-accessible-name` | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.                                                                                                                                                                                                                      | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `"Close"`                   |
-| `contain`                   | `contain`                      | Same as the contain CSS property. This property indicates that an item and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes. | `"content" \| "inline-size" \| "layout" \| "none" \| "paint" \| "size" \| "strict" \| "style"`                                                                                                                                                                                                                                                                                                                                                                                     | `"none"`                    |
-| `disabled`                  | `disabled`                     | This attribute lets you specify if all tab buttons are disabled. If disabled, tab buttons will not fire any user interaction related event (for example, click event).                                                                                                                                                                                                                                                                          | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`                     |
-| `dragOutside`               | `drag-outside`                 | When the control is sortable, the items can be dragged outside of the tab-list.  This property lets you specify if this behavior is enabled.                                                                                                                                                                                                                                                                                                    | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`                     |
-| `expanded`                  | `expanded`                     | `true` if the tab panel container is visible. When `false`, only the tab-list toolbar is displayed and all tab panels are hidden.                                                                                                                                                                                                                                                                                                               | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `true`                      |
-| `getImagePathCallback`      | --                             | This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.                                                                                                                                                                                                                                                                                                                                      | `(imageSrc: string) => GxImageMultiState`                                                                                                                                                                                                                                                                                                                                                                                                                                          | `undefined`                 |
-| `model`                     | --                             | Specifies the items of the tab control. Tab panels use lazy rendering: a panel's content slot is only rendered after the tab has been selected at least once (tracked internally via `wasRendered`).                                                                                                                                                                                                                                            | `TabItemModel[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `undefined`                 |
-| `overflow`                  | `overflow`                     | Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the item's padding box (overflows) in the horizontal and/or vertical direction.                                                                                                                                                                                                                                                         | `CssOverflowProperty \| "auto auto" \| "auto hidden" \| "auto clip" \| "auto scroll" \| "auto visible" \| "hidden auto" \| "hidden hidden" \| "hidden clip" \| "hidden scroll" \| "hidden visible" \| "clip auto" \| "clip hidden" \| "clip clip" \| "clip scroll" \| "clip visible" \| "scroll auto" \| "scroll hidden" \| "scroll clip" \| "scroll scroll" \| "scroll visible" \| "visible auto" \| "visible hidden" \| "visible clip" \| "visible scroll" \| "visible visible"` | `"visible"`                 |
-| `selectedId`                | `selected-id`                  | Specifies the selected item of the widgets array.                                                                                                                                                                                                                                                                                                                                                                                               | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `undefined`                 |
-| `showCaptions`              | `show-captions`                | `true` to show the captions of the items.                                                                                                                                                                                                                                                                                                                                                                                                       | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `true`                      |
-| `showTabListEnd`            | `show-tab-list-end`            | `true` to render a slot named "tab-list-end" to project content at the end position of the tab-list ("after" the tab buttons).                                                                                                                                                                                                                                                                                                                  | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`                     |
-| `showTabListStart`          | `show-tab-list-start`          | `true` to render a slot named "tab-list-start" to project content at the start position of the tab-list ("before" the tab buttons).                                                                                                                                                                                                                                                                                                             | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`                     |
-| `sortable`                  | `sortable`                     | `true` to enable sorting the tab buttons by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.                                                                                                                                                                                                                                                                                                          | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`                     |
-| `tabButtonHidden`           | `tab-button-hidden`            | `true` to not render the tab buttons of the control.                                                                                                                                                                                                                                                                                                                                                                                            | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`                     |
-| `tabListPosition`           | `tab-list-position`            | Specifies the position of the tab list of the `ch-tab-render`.                                                                                                                                                                                                                                                                                                                                                                                  | `"block-end" \| "block-start" \| "inline-end" \| "inline-start"`                                                                                                                                                                                                                                                                                                                                                                                                                   | `DEFAULT_TAB_LIST_POSITION` |
+---
 
-## Events
+### `closeButtonAccessibleName:  string`
 
-| Event                | Description                                                                                             | Type                                                                                           |
-| -------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `expandMainGroup`    | Fired when an item of the main group is double clicked.                                                 | `CustomEvent<string>`                                                                          |
-| `itemClose`          | Fired the close button of an item is clicked.                                                           | `CustomEvent<{ itemId: string; itemIndex: number; }>`                                          |
-| `itemDragStart`      | Fired the first time a caption button is dragged outside of its tab list.                               | `CustomEvent<number>`                                                                          |
-| `selectedItemChange` | Fired when the selected item change. This event can be default prevented to prevent the item selection. | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; }>` |
+<p>Specifies a short string, typically 1 to 3 words, that authors associate
+with an element to provide users of assistive technologies with a label
+for the element. This label is used for the close button of the captions.</p>
 
-## Methods
+**Attribute**: <code>close-button-accessible-name</code>
 
-### `endDragPreview() => Promise<void>`
+**Default**: <code>"Close"</code>
 
-Ends the preview of the dragged item. Useful for ending the preview via
-keyboard interaction.
+---
 
-#### Returns
+### `contain:  CssContainProperty | undefined`
 
-Type: `Promise<void>`
+<p>Same as the contain CSS property. This property indicates that an item
+and its contents are, as much as possible, independent from the rest of
+the document tree. Containment enables isolating a subsection of the DOM,
+providing performance benefits by limiting calculations of layout, style,
+paint, size, or any combination to a DOM subtree rather than the entire
+page.
+Containment can also be used to scope CSS counters and quotes.</p>
 
-### `getDraggableViews() => Promise<DraggableViewInfo>`
+**Attribute**: <code>contain</code>
 
-Returns the info associated to the draggable view.
+**Default**: <code>"none"</code>
 
-#### Returns
+---
 
-Type: `Promise<DraggableViewInfo>`
+### `disabled:  boolean`
 
-### `promoteDragPreviewToTopLayer() => Promise<void>`
+<p>This attribute lets you specify if all tab buttons are disabled.
+If disabled, tab buttons will not fire any user interaction related event
+(for example, click event).</p>
 
-Promotes the drag preview to the top layer. Useful to avoid z-index issues.
+**Attribute**: <code>disabled</code>
 
-#### Returns
+**Default**: <code>false</code>
 
-Type: `Promise<void>`
+---
 
-### `removePage(pageId: string, forceRerender?: boolean) => Promise<void>`
+### `dragOutside:  boolean`
 
-Given an id, remove the page from the render
+<p>When the control is sortable, the items can be dragged outside of the
+tab-list.</p>
+<p>This property lets you specify if this behavior is enabled.</p>
 
-#### Parameters
+**Attribute**: <code>drag-outside</code>
 
-| Name            | Type      | Description |
-| --------------- | --------- | ----------- |
-| `pageId`        | `string`  |             |
-| `forceRerender` | `boolean` |             |
+**Default**: <code>false</code>
 
-#### Returns
+---
 
-Type: `Promise<void>`
+### `expanded:  boolean`
 
-## Slots
+<p><code>true</code> if the tab panel container is visible. When <code>false</code>, only the
+tab-list toolbar is displayed and all tab panels are hidden.</p>
 
-| Slot                  | Description                                                                                                         |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `"{item.id}"`         | Named slot for each tab panel's content, projected when the tab has been rendered at least once.                    |
-| `"{tabListPosition}"` | Named slot rendered adjacent to the tab list for custom toolbar content (e.g., an overflow menu or add-tab button). |
+**Attribute**: <code>expanded</code>
 
-## Dependencies
+**Default**: <code>true</code>
 
-### Used by
+---
 
- - [ch-flexible-layout](../flexible-layout/internal/flexible-layout)
+### `getImagePathCallback:  GetImagePathCallback | undefined`
 
-### Depends on
+<p>This property specifies a callback that is executed when the path for an
+startImgSrc needs to be resolved.</p>
 
-- [ch-textblock](../textblock)
+**Attribute**: <code>getimagepathcallback</code>
 
-### Graph
-```mermaid
-graph TD;
-  ch-tab-render --> ch-textblock
-  ch-flexible-layout --> ch-tab-render
-  style ch-tab-render fill:#f9f,stroke:#333,stroke-width:4px
-```
+**Default**: <code>undefined</code>
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+### `model:  TabModel | undefined`
+
+<p>Specifies the items of the tab control. Tab panels use lazy rendering:
+a panel's content slot is only rendered after the tab has been selected
+at least once (tracked internally via <code>wasRendered</code>).</p>
+
+**Attribute**: <code>model</code>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `overflow:  CssOverflowProperty | `${CssOverflowProperty} ${CssOverflowProperty}``
+
+<p>Same as the overflow CSS property. This property sets the desired behavior
+when content does not fit in the item's padding box (overflows) in the
+horizontal and/or vertical direction.</p>
+
+**Attribute**: <code>overflow</code>
+
+**Default**: <code>"visible"</code>
+
+---
+
+### `selectedId:  string | undefined`
+
+<p>Specifies the selected item of the widgets array.</p>
+
+**Attribute**: <code>selected-id</code>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `showCaptions:  boolean`
+
+<p><code>true</code> to show the captions of the items.</p>
+
+**Attribute**: <code>show-captions</code>
+
+**Default**: <code>true</code>
+
+---
+
+### `showTabListEnd:  boolean`
+
+<p><code>true</code> to render a slot named &quot;tab-list-end&quot; to project content at the
+end position of the tab-list (&quot;after&quot; the tab buttons).</p>
+
+**Attribute**: <code>show-tab-list-end</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `showTabListStart:  boolean`
+
+<p><code>true</code> to render a slot named &quot;tab-list-start&quot; to project content at the
+start position of the tab-list (&quot;before&quot; the tab buttons).</p>
+
+**Attribute**: <code>show-tab-list-start</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `sortable:  boolean`
+
+<p><code>true</code> to enable sorting the tab buttons by dragging them in the tab-list.</p>
+<p>If <code>false</code>, the tab buttons can not be dragged out either.</p>
+
+**Attribute**: <code>sortable</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `tabButtonHidden:  boolean`
+
+<p><code>true</code> to not render the tab buttons of the control.</p>
+
+**Attribute**: <code>tab-button-hidden</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `tabListPosition:  TabListPosition`
+
+<p>Specifies the position of the tab list of the <code>ch-tab-render</code>.</p>
+
+**Attribute**: <code>tab-list-position</code>
+
+**Default**: <code>DEFAULT_TAB_LIST_POSITION</code>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Events
+  </summary>
+  
+### `expandMainGroup: string`
+
+<p>Fired when an item of the main group is double clicked.</p>
+
+---
+
+### `itemClose: TabItemCloseInfo`
+
+<p>Fired the close button of an item is clicked.</p>
+
+---
+
+### `selectedItemChange: TabSelectedItemInfo`
+
+<p>Fired when the selected item change.
+This event can be default prevented to prevent the item selection.</p>
+
+---
+
+### `itemDragStart: number`
+
+<p>Fired the first time a caption button is dragged outside of its tab list.</p>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Methods
+  </summary>
+  
+### `endDragPreview: () => Promise<void>`
+
+<p>Ends the preview of the dragged item. Useful for ending the preview via
+keyboard interaction.</p>
+
+---
+
+### `getDraggableViews: () => Promise<DraggableViewInfo>`
+
+<p>Returns the info associated to the draggable view.</p>
+
+---
+
+### `promoteDragPreviewToTopLayer: () => Promise<void>`
+
+<p>Promotes the drag preview to the top layer. Useful to avoid z-index issues.</p>
+
+---
+
+### `removePage: (pageId: string, forceRerender: any) => void`
+
+<p>Given an id, remove the page from the render</p>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Slots
+  </summary>
+  
+### `{tabListPosition}`
+
+<p>Named slot rendered adjacent to the tab list for custom toolbar content (e.g., an overflow menu or add-tab button).</p>
+
+---
+
+### `{item.id}`
+
+<p>Named slot for each tab panel's content, projected when the tab has been rendered at least once.</p>
+</details>

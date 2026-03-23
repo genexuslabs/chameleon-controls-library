@@ -173,7 +173,7 @@ declare global {
   /**
    * A control to display multiple images, depending on the state (focus, hover,
    * active or disabled) of a parent element.
-   */ // prettier-ignore
+   */// prettier-ignore
   interface HTMLChImageElement extends ChImage {
     // Extend the ChImage class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

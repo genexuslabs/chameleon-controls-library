@@ -28,7 +28,7 @@ If disabled, it will not fire any user interaction related event
 
 ---
 
-### `accessibleName: string | undefined`
+### `accessibleName:  string | undefined`
 
 <p>Specifies a short string, typically 1 to 3 words, that authors associate
 with an element to provide users of assistive technologies with a label
@@ -90,7 +90,7 @@ selected. Only applies when the <code>link</code> property is defined.</p>
 
 ---
 
-### `startImgType: Exclude<ImageRender, "img"> | undefined`
+### `startImgType:  Exclude<ImageRender, "img"> | undefined`
 
 <p>Specifies how the start image will be rendered.</p>
 

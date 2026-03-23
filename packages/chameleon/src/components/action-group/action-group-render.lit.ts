@@ -8,7 +8,6 @@ import type { ActionGroupDisplayedMarkers, ActionGroupModel, ItemsOverflowBehavi
 // import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
 import { IS_SERVER } from "../../development-flags";
-import { Host } from "../../utilities/host/host";
 import { ACTION_MENU_ITEM_EXPORT_PARTS } from "../../utilities/reserved-names/parts/action-menu";
 import { SyncWithRAF } from "../../utilities/sync-with-frames";
 import type { ActionMenuImagePathCallback } from "../action-menu/types";
@@ -99,16 +98,6 @@ export class ChActionGroupRender extends KasstorElement {
   @property({ attribute: false }) getImagePathCallback: ActionMenuImagePathCallback | undefined;
 
   /**
-   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
-   */
-  @property({ attribute: false }) gxImageConstructor: ((name: string) => any) | undefined;
-
-  /**
-   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
-   */
-  @property({ attribute: false }) gxSettings: any;
-
-  /**
    * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
    * to make the control responsive to changes in the width of the container of ActionGroup.
    *
@@ -176,12 +165,6 @@ export class ChActionGroupRender extends KasstorElement {
   //  */
   // @property({ type: Boolean, attribute: "open-on-focus" })
   // openOnFocus: boolean = false;
-
-  /**
-   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
-   */
-  @property({ type: Boolean, attribute: "use-gx-render" })
-  useGxRender: boolean = false;
 
   // TODO: Use the getImagePath for resolving the images
   // #getImagePath = (img: string) =>
@@ -298,8 +281,6 @@ export class ChActionGroupRender extends KasstorElement {
       return nothing;
     }
 
-    Host(this, {});
-
     return html`${this.#isResponsiveCollapse && this.collapsedItems !== 0
       ? html`<ch-action-menu-render
           role="listitem"
@@ -326,13 +307,6 @@ export class ChActionGroupRender extends KasstorElement {
     )}`;
   }
 }
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-action-group-render": ChActionGroupRender;
-  }
-}
-
 
 // ######### Auto generated below #########
 
@@ -374,7 +348,7 @@ declare global {
    * @status experimental
    *
    * @slot {name} - Named slots matching each item of `type: "slot"` in the model. These slots allow projecting custom content for individual action items and are forwarded into the overflow menu when the item collapses.
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChActionGroupRenderElement extends ChActionGroupRender {
     // Extend the ChActionGroupRender class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

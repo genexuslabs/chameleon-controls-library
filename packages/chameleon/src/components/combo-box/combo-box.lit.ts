@@ -167,13 +167,13 @@ export class ChComboBoxRender extends KasstorElement {
    * This variable is used to emulate the behavior of the native select. The
    * native select decides its min size based on the size of the largest option.
    */
-  #largestValue: string;
+  #largestValue: string | undefined;
 
   /**
    * Last value that was set correctly in the control. Useful to revert the
    * value when applying strict filters.
    */
-  #lastConfirmedValue: string;
+  #lastConfirmedValue: string | undefined;
 
   #valueToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
   #captionToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
@@ -595,7 +595,7 @@ export class ChComboBoxRender extends KasstorElement {
    */
   @property() value: string | undefined;
   @Observe("value")
-  protected valueChanged(newValue: string) {
+  protected valueChanged(newValue: string | undefined) {
     this.#setValueInForm(newValue);
 
     if (this.suggest) {
@@ -933,7 +933,7 @@ export class ChComboBoxRender extends KasstorElement {
   #shouldRenderActiveItemIcon = () =>
     !this.suggest || !this.expanded || this.suggestOptions.renderActiveItemIconOnExpand;
 
-  #setValueInForm = (value: string) => {
+  #setValueInForm = (value: string | undefined) => {
     // TODO: Add a unit test for this case
     if (!this.expanded) {
       this.#lastConfirmedValue = value;
@@ -942,7 +942,7 @@ export class ChComboBoxRender extends KasstorElement {
     this.#syncActiveDescendant();
 
     // Update form value
-    this.#internals.setFormValue(value);
+    this.#internals.setFormValue(value ?? null);
   };
 
   #syncActiveDescendant = () => {
@@ -968,11 +968,7 @@ export class ChComboBoxRender extends KasstorElement {
   override connectedCallback() {
     super.connectedCallback();
 
-    this.#findLargestValue(this.model);
-    mapValuesToItemInfo(this.model, this.#valueToItemInfo, this.#captionToItemInfo);
-
     // Accessibility
-    this.#setValueInForm(this.value);
     const labels = this.#internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 
@@ -1170,13 +1166,6 @@ export class ChComboBoxRender extends KasstorElement {
   }
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    "ch-combo-box-render": ChComboBoxRender;
-  }
-}
-
-
 // ######### Auto generated below #########
 
 declare global {
@@ -1271,17 +1260,17 @@ declare global {
    *
    * @fires input The `input` event is emitted when a change to the element's value is
    *   committed by the user.
-   *   
+   *
    *   When `suggest === true`, this event is debounced by the `suggestDebounce`
    *   value (default 250 ms). When `suggest === false`, debouncing does not
    *   apply and the event is emitted immediately on value change.
    * @fires change The `change` event is emitted when a change to the element's value is
    *   committed by the user.
    *    - In normal mode (suggest = false), it is emitted after each input event.
-   *   
+   *
    *    - In suggest mode (suggest = true), it is emitted after the popover is closed
    *   and a new value is committed by the user.
-   *   
+   *
    *   This event is NOT debounced by the `suggestDebounce` value.
    */
   // prettier-ignore

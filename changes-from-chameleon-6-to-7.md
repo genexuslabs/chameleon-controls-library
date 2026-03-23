@@ -147,6 +147,10 @@
 
 - Removed the following properties as they were only used by old GeneXus versions: `gxImageConstructor`, `gxSettings`, and `useGxRender`.
 
+## ch-action-group-render
+
+- Removed the following properties as they were only used by old GeneXus versions: `gxImageConstructor`, `gxSettings`, and `useGxRender`.
+
 ### ch-checkbox
 
 - Removed `highligtable` property. `ADD EXPLANATION...... (include the removal of the click event)`.

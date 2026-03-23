@@ -34,17 +34,11 @@ export const syncStateWithObservableAncestors = (subscriberId: string) => {
   let parentElement: Element = subscriberInfo.getSubscriberRef();
 
   // Travel all ancestors searching if there is an observable element
-  while (
-    parentElement !== document.body &&
-    !observables.has(parentElement.id)
-  ) {
+  while (parentElement !== document.body && !observables.has(parentElement.id)) {
     let nextParentElement: Element | null = parentElement.parentElement;
 
     // Check if the next parent element is a ShadowRoot
-    if (
-      nextParentElement === null &&
-      parentElement.parentNode instanceof ShadowRoot
-    ) {
+    if (nextParentElement === null && parentElement.parentNode instanceof ShadowRoot) {
       nextParentElement = parentElement.parentNode.host;
     }
 
@@ -52,15 +46,10 @@ export const syncStateWithObservableAncestors = (subscriberId: string) => {
   }
 
   // Expanded by default
-  subscriberInfo.observerCallback(
-    observables.get(parentElement.id) ?? DEFAULT_EXPAND_VALUE
-  );
+  subscriberInfo.observerCallback(observables.get(parentElement.id) ?? DEFAULT_EXPAND_VALUE);
 };
 
-export const observableIsAncestor = (
-  observableId: string,
-  subscriberRef: HTMLElement
-): boolean => {
+export const observableIsAncestor = (observableId: string, subscriberRef: HTMLElement): boolean => {
   let parentElement: Element = subscriberRef;
 
   // Travel all ancestors searching if there is a element with the observableId
@@ -68,10 +57,7 @@ export const observableIsAncestor = (
     let nextParentElement: Element | null = parentElement.parentElement;
 
     // Check if the next parent element is a ShadowRoot
-    if (
-      nextParentElement === null &&
-      parentElement.parentNode instanceof ShadowRoot
-    ) {
+    if (nextParentElement === null && parentElement.parentNode instanceof ShadowRoot) {
       nextParentElement = parentElement.parentNode.host;
     }
 
@@ -81,16 +67,12 @@ export const observableIsAncestor = (
   return parentElement !== document.body;
 };
 
-export const subscribe = (
-  subscriberId: string,
-  subscriberInfo: SubscriberInfo
-) => {
+export const subscribe = (subscriberId: string, subscriberInfo: SubscriberInfo) => {
   subscribers ??= new Map();
   subscribers.set(subscriberId, subscriberInfo);
 };
 
-export const removeSubscription = (subscriberId: string) =>
-  subscribers?.delete(subscriberId);
+export const removeSubscription = (subscriberId: string) => subscribers?.delete(subscriberId);
 
 export const notifySubscribers = (observableId: string, expanded: boolean) => {
   observables ??= new Map();
@@ -98,12 +80,8 @@ export const notifySubscribers = (observableId: string, expanded: boolean) => {
   // Update the state in the "observables" Set
   observables.set(observableId, expanded);
 
-  if (!subscribers) {
-    return;
-  }
-
   // Notify all subscribers
-  subscribers.forEach(subscriberInfo => {
+  subscribers?.forEach(subscriberInfo => {
     const subscriberRef = subscriberInfo.getSubscriberRef();
 
     if (observableIsAncestor(observableId, subscriberRef)) {
@@ -111,3 +89,4 @@ export const notifySubscribers = (observableId: string, expanded: boolean) => {
     }
   });
 };
+

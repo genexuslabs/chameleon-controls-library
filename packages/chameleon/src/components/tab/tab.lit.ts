@@ -1326,10 +1326,6 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     adoptCommonThemes(this.shadowRoot.adoptedStyleSheets);
   }
 
-  protected override firstWillUpdate(): void {
-    this.#updateRenderedPages(this.model);
-  }
-
   // - - - - - - - - - - - - - - - - - - - -
   //           Render
   // - - - - - - - - - - - - - - - - - - - -
@@ -1374,7 +1370,6 @@ export class ChTabRender extends KasstorElement implements DraggableView {
     ${draggedIndex !== -1 ? this.#renderDragPreview(draggedElement) : nothing}`;
   }
 }
-
 
 // ######### Auto generated below #########
 

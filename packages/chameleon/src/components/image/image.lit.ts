@@ -110,7 +110,11 @@ export class ChImage extends KasstorElement {
   @property({ attribute: "type", reflect: true }) type: Exclude<ImageRender, "img"> | undefined =
     "background";
 
-  #initializeComponentFromProperties = () => {
+  override firstWillUpdate() {
+    if (!IS_SERVER) {
+      this.setAttribute("aria-hidden", "true");
+    }
+
     // Initialize default getImagePathCallback
     // TODO: Improve the reactivity of this
     GET_IMAGE_PATH_CALLBACK_REGISTRY ??=
@@ -120,6 +124,7 @@ export class ChImage extends KasstorElement {
     this.#currentContainerRef = this.containerRef ?? this.parentElement;
     this.#currentContainerRef?.setAttribute(DATA_IMAGE, "");
 
+    // TODO: This call is duplicated in the Observe of the src property
     if (this.src) {
       this.srcChanged(this.src);
     }
@@ -131,22 +136,6 @@ export class ChImage extends KasstorElement {
     // ch-navigation-list-item, ch-tree-view-item, etc) as those components
     // usually don't have a imageType defined in their item's models
     this.type ??= "background";
-  };
-
-  override connectedCallback() {
-    super.connectedCallback();
-    this.setAttribute("aria-hidden", "true");
-
-    if (!this.wasServerSideRendered) {
-      this.#initializeComponentFromProperties();
-    }
-  }
-
-  override willUpdate(): void {
-    if (this.wasServerSideRendered) {
-      this.wasServerSideRendered = false;
-      this.#initializeComponentFromProperties();
-    }
   }
 
   override disconnectedCallback() {
@@ -156,6 +145,7 @@ export class ChImage extends KasstorElement {
 
   override render() {
     Host(this, {
+      // TODO: This should work with SSR
       style: this.#image?.styles
     });
   }
@@ -173,7 +163,7 @@ declare global {
   /**
    * A control to display multiple images, depending on the state (focus, hover,
    * active or disabled) of a parent element.
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChImageElement extends ChImage {
     // Extend the ChImage class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

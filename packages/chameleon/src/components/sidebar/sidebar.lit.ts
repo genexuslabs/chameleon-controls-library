@@ -4,6 +4,7 @@ import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators/property.js";
 
+import { IS_SERVER } from "../../development-flags.js";
 import {
   addObservable,
   notifySubscribers,
@@ -114,29 +115,20 @@ export class ChSidebar extends KasstorElement {
     </button>`;
   };
 
-  #initializeComponentFromProperties = () => {
-    addObservable(this.id, this.expanded);
-    notifySubscribers(this.id, this.expanded); // Must run after the ID and the observable has been configured
-  };
-
-  override connectedCallback() {
+  override connectedCallback(): void {
     super.connectedCallback();
 
-    // The ID MUST be set in this instance, because when searching for the
-    // ancestors in `syncStateWithObservableAncestors` we use the DOM id and
-    // the method could be executed before the first render of the sidebar,
-    // where we typically attach the Host attributes, in this case, the id attr
-    this.id ||= this.#sidebarId;
-
-    this.#initializeComponentFromProperties();
+    addObservable(this.id, this.expanded);
+    notifySubscribers(this.id, this.expanded); // Must run after the ID and the observable has been configured
   }
 
-  // Lit doesn't properly read properties in the connectedCallback when the
-  // component is SSRed
-  override willUpdate(): void {
-    if (this.wasServerSideRendered) {
-      this.wasServerSideRendered = false;
-      this.#initializeComponentFromProperties();
+  protected override firstWillUpdate(): void {
+    if (!IS_SERVER) {
+      // The ID MUST be set in this instance, because when searching for the
+      // ancestors in `syncStateWithObservableAncestors` we use the DOM id and
+      // the method could be executed before the first render of the sidebar,
+      // where we typically attach the Host attributes, in this case, the id attr
+      this.id ||= this.#sidebarId;
     }
   }
 

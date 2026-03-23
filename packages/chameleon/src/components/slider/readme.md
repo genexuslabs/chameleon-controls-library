@@ -117,27 +117,6 @@ committed by the user.</p>
 <details open>
   <summary>
   
-  ## Methods
-  </summary>
-  
-### `createPepe: () => void`
-
----
-
-### `createPepe2: () => string`
-
----
-
-### `createPaa: (param1: string, param2: string) => string`
-
-<p>asdasd</p>
-<p>asdasd123123
-asd.1.23--</p>
-</details>
-
-<details open>
-  <summary>
-  
   ## CSS Parts
   </summary>
   

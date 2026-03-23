@@ -110,21 +110,6 @@ export class ChSlider extends KasstorElement {
    */
   @Event() protected input!: EventEmitter<number>;
 
-  createPepe = () => {};
-
-  createPepe2 = (): string => "";
-
-  /**
-   * asdasd
-   *
-   * asdasd123123
-   * asd.1.23--
-   * @param param1
-   * @param param2 - 13123 adsasd the `change` asdasd
-   * @returns 123123asd
-   */
-  createPaa = (param1: string, param2: string): string => "";
-
   #handleChange = (event: UIEvent) => {
     event.stopPropagation();
     const value = (event.target as HTMLInputElement).value;
@@ -175,7 +160,6 @@ export class ChSlider extends KasstorElement {
     }
 
     // Accessibility
-    this.#updateFormValue();
     const labels = this.#internals.labels;
     this.#accessibleNameFromExternalLabel = getElementInternalsLabel(labels);
 

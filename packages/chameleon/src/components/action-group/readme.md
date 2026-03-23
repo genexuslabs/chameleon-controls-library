@@ -29,22 +29,6 @@ startImgSrc or endImgSrc (of an item) needs to be resolved.</p>
 
 ---
 
-### `gxImageConstructor:  ((name: string) => any) | undefined`
-
-<p>This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.</p>
-
-**Default**: <code>undefined</code>
-
----
-
-### `gxSettings:  any`
-
-<p>This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.</p>
-
-**Default**: <code>undefined</code>
-
----
-
 ### `itemsOverflowBehavior:  ItemsOverflowBehavior`
 
 <p>This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
@@ -109,16 +93,6 @@ placed relative to the &quot;more actions&quot; button.</p>
 **Attribute**: <code>more-actions-inline-align</code>
 
 **Default**: <code>"inside-start"</code>
-
----
-
-### `useGxRender:  boolean`
-
-<p>This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.</p>
-
-**Attribute**: <code>use-gx-render</code>
-
-**Default**: <code>false</code>
 </details>
 
 <details open>

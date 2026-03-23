@@ -300,7 +300,7 @@ export class ChActionMenu extends KasstorElement {
       .inlineAlign=${this.inlineAlign}
       popover="manual"
       .positionTry=${this.positionTry}
-      ?show=${true}
+      show
     >
       <slot></slot>
     </ch-popover>`;
@@ -317,10 +317,12 @@ export class ChActionMenu extends KasstorElement {
     this.setAttribute("exportparts", customParts);
   };
 
-  override connectedCallback(): void {
-    super.connectedCallback();
-
+  protected override firstUpdated(): void {
     this.setAttribute("role", "listitem");
+
+    // TODO: Add the possibility to set the parts in the Observe, even if this.parts is undefined,
+    // this feature goes in Kasstor
+    // TODO: What happens with SSR and the FOUC??
     this.#setExportparts(this.parts);
   }
 
@@ -346,7 +348,6 @@ export class ChActionMenu extends KasstorElement {
   }
 }
 
-
 // ######### Auto generated below #########
 
 declare global {
@@ -358,7 +359,7 @@ declare global {
 
   /**
    * @status experimental
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChActionMenuElement extends ChActionMenu {
     // Extend the ChActionMenu class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

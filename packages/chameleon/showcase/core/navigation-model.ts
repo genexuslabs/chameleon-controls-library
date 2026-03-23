@@ -20,6 +20,7 @@ const CATEGORIES: ComponentCategory[] = [
     caption: "Form",
     tags: [
       "ch-checkbox",
+      "ch-combo-box-render",
       "ch-edit",
       "ch-radio-group-render",
       "ch-slider",
@@ -31,7 +32,9 @@ const CATEGORIES: ComponentCategory[] = [
     tags: [
       "ch-code",
       "ch-image",
+      "ch-math-viewer",
       "ch-qr",
+      "ch-status",
       "ch-textblock",
       "ch-progress",
       "ch-tabular-grid-render"
@@ -39,14 +42,23 @@ const CATEGORIES: ComponentCategory[] = [
   },
   {
     caption: "Layout",
-    tags: ["ch-layout-splitter", "ch-sidebar"]
+    tags: [
+      "ch-accordion-render",
+      "ch-layout-splitter",
+      "ch-popover",
+      "ch-sidebar",
+      "ch-tab-render"
+    ]
   },
   {
     caption: "Navigation",
     tags: [
+      "ch-action-group-render",
+      "ch-action-list-render",
+      "ch-action-menu-render",
+      "ch-breadcrumb-render",
       "ch-navigation-list-render",
-      "ch-segmented-control-render",
-      "ch-breadcrumb-render"
+      "ch-segmented-control-render"
     ]
   },
   {

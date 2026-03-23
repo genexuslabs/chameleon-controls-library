@@ -3,24 +3,71 @@ import type { ComponentRegistry } from "../../src/components/json-render/types";
 import { html } from "lit";
 
 // Component imports (side effects — register custom elements)
-import "../../src/components/checkbox/checkbox.lit";
-import "../../src/components/radio-group/radio-group-render.lit";
-import "../../src/components/slider/slider.lit";
-import "../../src/components/switch/switch.lit";
-import "../../src/components/code/code.lit";
-import "../../src/components/image/image.lit";
-import "../../src/components/qr/qr.lit";
-import "../../src/components/textblock/textblock.lit";
-import "../../src/components/progress/progress.lit";
-import "../../src/components/tabular-grid/tabular-grid-render.lit";
-import "../../src/components/layout-splitter/layout-splitter.lit";
-import "../../src/components/sidebar/sidebar.lit";
-import "../../src/components/navigation-list/navigation-list-render.lit";
-import "../../src/components/segmented-control/segmented-control-render.lit";
+import "../../src/components/accordion/accordion.lit";
+import "../../src/components/action-group/action-group-render.lit";
+import "../../src/components/action-list/action-list-render.lit";
+import "../../src/components/action-menu/action-menu-render.lit";
 import "../../src/components/breadcrumb/breadcrumb-render.lit";
+import "../../src/components/checkbox/checkbox.lit";
+import "../../src/components/code/code.lit";
+import "../../src/components/combo-box/combo-box.lit";
+import "../../src/components/image/image.lit";
+import "../../src/components/layout-splitter/layout-splitter.lit";
+import "../../src/components/math-viewer/math-viewer.lit";
+import "../../src/components/navigation-list/navigation-list-render.lit";
+import "../../src/components/popover/popover.lit";
+import "../../src/components/progress/progress.lit";
+import "../../src/components/qr/qr.lit";
+import "../../src/components/radio-group/radio-group-render.lit";
+import "../../src/components/segmented-control/segmented-control-render.lit";
+import "../../src/components/sidebar/sidebar.lit";
+import "../../src/components/slider/slider.lit";
+import "../../src/components/status/status.lit";
+import "../../src/components/switch/switch.lit";
+import "../../src/components/tab/tab.lit";
+import "../../src/components/tabular-grid/tabular-grid-render.lit";
+import "../../src/components/textblock/textblock.lit";
 import "../../src/components/theme/theme.lit";
 
 // ---- Models for complex components ----
+
+const ACCORDION_MODEL = [
+  { id: "section-1", caption: "Section 1", expanded: true },
+  { id: "section-2", caption: "Section 2", expanded: false },
+  { id: "section-3", caption: "Section 3", expanded: false }
+];
+
+const ACTION_GROUP_MODEL = [
+  { caption: "Copy" },
+  { caption: "Paste" },
+  { caption: "Cut" }
+];
+
+const ACTION_LIST_MODEL = [
+  { id: "item-1", caption: "First item", type: "actionable" as const },
+  { id: "item-2", caption: "Second item", type: "actionable" as const },
+  { type: "separator" as const },
+  { id: "item-3", caption: "Third item", type: "actionable" as const }
+];
+
+const ACTION_MENU_MODEL = [
+  { caption: "Edit" },
+  { caption: "Duplicate" },
+  { type: "separator" as const },
+  { caption: "Delete" }
+];
+
+const COMBO_BOX_MODEL = [
+  { value: "opt-1", caption: "Option 1" },
+  { value: "opt-2", caption: "Option 2" },
+  { value: "opt-3", caption: "Option 3" }
+];
+
+const TAB_MODEL = [
+  { id: "tab-1", name: "Overview" },
+  { id: "tab-2", name: "Details" },
+  { id: "tab-3", name: "Settings" }
+];
 
 const RADIO_GROUP_MODEL = [
   { id: "s", caption: "Small" },
@@ -81,6 +128,9 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
   ChCheckbox: ({ element }) =>
     html`<ch-checkbox caption=${(element.props as any).caption ?? ""}></ch-checkbox>`,
 
+  ChComboBox: () =>
+    html`<ch-combo-box-render .model=${COMBO_BOX_MODEL} value="opt-1"></ch-combo-box-render>`,
+
   ChSwitch: ({ element }) =>
     html`<ch-switch caption=${(element.props as any).caption ?? ""}></ch-switch>`,
 
@@ -93,6 +143,12 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
   // ---- Data ----
   ChCode: () =>
     html`<ch-code language="javascript" .value=${'console.log("Hello, Chameleon!");'}></ch-code>`,
+
+  ChMathViewer: () =>
+    html`<ch-math-viewer value="E = mc^2"></ch-math-viewer>`,
+
+  ChStatus: () =>
+    html`<ch-status accessible-name="Loading content"></ch-status>`,
 
   ChImage: () =>
     html`<ch-image style="width: 160px; height: 90px; display: block;"></ch-image>`,
@@ -116,12 +172,27 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
     html`<ch-tabular-grid-render .model=${TABULAR_GRID_MODEL}></ch-tabular-grid-render>`,
 
   // ---- Layout ----
+  ChAccordion: () =>
+    html`<ch-accordion-render .model=${ACCORDION_MODEL}>
+      <div slot="section-1" style="padding: 12px; font-size: 13px;">Content for Section 1</div>
+      <div slot="section-2" style="padding: 12px; font-size: 13px;">Content for Section 2</div>
+      <div slot="section-3" style="padding: 12px; font-size: 13px;">Content for Section 3</div>
+    </ch-accordion-render>`,
+
   ChLayoutSplitter: () =>
     html`<div style="height: 140px;">
       <ch-layout-splitter .model=${LAYOUT_SPLITTER_MODEL}>
         <div slot="panel-a" style="padding: 12px; font-size: 13px;">Panel A</div>
         <div slot="panel-b" style="padding: 12px; font-size: 13px;">Panel B</div>
       </ch-layout-splitter>
+    </div>`,
+
+  ChPopover: () =>
+    html`<div style="position: relative; padding: 40px; text-align: center;">
+      <button id="popover-trigger" style="padding: 6px 12px; font-size: 13px;">Toggle Popover</button>
+      <ch-popover style="padding: 12px; font-size: 13px; border: 1px solid #e5e7eb; border-radius: 6px; background: white;">
+        Popover content
+      </ch-popover>
     </div>`,
 
   ChSidebar: () =>
@@ -132,7 +203,22 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
       <main style="padding: 16px; flex: 1; font-size: 13px;">Page content</main>
     </div>`,
 
+  ChTab: () =>
+    html`<ch-tab-render .model=${TAB_MODEL} selected-id="tab-1" style="height: 160px;">
+      <div slot="tab-1" style="padding: 12px; font-size: 13px;">Overview content</div>
+      <div slot="tab-2" style="padding: 12px; font-size: 13px;">Details content</div>
+      <div slot="tab-3" style="padding: 12px; font-size: 13px;">Settings content</div>
+    </ch-tab-render>`,
+
   // ---- Navigation ----
+  ChActionGroup: () =>
+    html`<ch-action-group-render .model=${ACTION_GROUP_MODEL}></ch-action-group-render>`,
+
+  ChActionList: () =>
+    html`<ch-action-list-render .model=${ACTION_LIST_MODEL}></ch-action-list-render>`,
+
+  ChActionMenu: () =>
+    html`<ch-action-menu-render .model=${ACTION_MENU_MODEL} button-accessible-name="Actions"></ch-action-menu-render>`,
   ChNavigationList: () =>
     html`<ch-navigation-list-render .model=${NAVIGATION_LIST_MODEL}></ch-navigation-list-render>`,
 
@@ -175,6 +261,30 @@ export const componentExamples: Partial<Record<string, ExampleDef[]>> = {
         }
       },
       code: `<ch-checkbox caption="Accept terms and conditions"></ch-checkbox>`
+    }
+  ],
+  "ch-combo-box-render": [
+    {
+      title: "Combo box",
+      description: "A dropdown list for selecting a value from a set of options.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChComboBox", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ComboBoxModel } from "@genexus/chameleon-controls-library-lit";
+
+const model: ComboBoxModel = [
+  { value: "opt-1", caption: "Option 1" },
+  { value: "opt-2", caption: "Option 2" },
+  { value: "opt-3", caption: "Option 3" }
+];
+
+// In your template:
+// <ch-combo-box-render .model=\${model} value="opt-1"></ch-combo-box-render>`
     }
   ],
   "ch-radio-group-render": [
@@ -259,6 +369,19 @@ const model: RadioGroupModel = [
 // <ch-image .src=\${"https://picsum.photos/320/180"} type="img"></ch-image>`
     }
   ],
+  "ch-math-viewer": [
+    {
+      title: "Math expression",
+      description: "Renders a LaTeX math expression using KaTeX.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChMathViewer", props: {}, children: [] }
+        }
+      },
+      code: `<ch-math-viewer value="E = mc^2"></ch-math-viewer>`
+    }
+  ],
   "ch-qr": [
     {
       title: "QR code",
@@ -270,6 +393,19 @@ const model: RadioGroupModel = [
         }
       },
       code: `<ch-qr value="https://chameleon.genexus.com" size="160"></ch-qr>`
+    }
+  ],
+  "ch-status": [
+    {
+      title: "Status indicator",
+      description: "A visual loading/status indicator.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChStatus", props: {}, children: [] }
+        }
+      },
+      code: `<ch-status accessible-name="Loading content"></ch-status>`
     }
   ],
   "ch-textblock": [
@@ -348,6 +484,34 @@ const model: TabularGridModel = {
   ],
 
   // ---- Layout ----
+  "ch-accordion-render": [
+    {
+      title: "Collapsible sections",
+      description: "A vertical stack of panels that expand and collapse independently.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChAccordion", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { AccordionModel } from "@genexus/chameleon-controls-library-lit";
+
+const model: AccordionModel = [
+  { id: "section-1", caption: "Section 1", expanded: true },
+  { id: "section-2", caption: "Section 2", expanded: false },
+  { id: "section-3", caption: "Section 3", expanded: false }
+];
+
+// In your template:
+// <ch-accordion-render .model=\${model}>
+//   <div slot="section-1">Content for Section 1</div>
+//   <div slot="section-2">Content for Section 2</div>
+//   <div slot="section-3">Content for Section 3</div>
+// </ch-accordion-render>`
+    }
+  ],
   "ch-layout-splitter": [
     {
       title: "Two-panel splitter",
@@ -378,6 +542,25 @@ const layout: LayoutSplitterModel = {
 // </ch-layout-splitter>`
     }
   ],
+  "ch-popover": [
+    {
+      title: "Anchored popover",
+      description: "A floating container that positions itself relative to an anchor element.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChPopover", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`// The popover anchors to an element and positions itself automatically.
+// <button id="trigger">Open</button>
+// <ch-popover .actionElement=\${triggerRef} block-align="outside-end" inline-align="center">
+//   Popover content here
+// </ch-popover>`
+    }
+  ],
   "ch-sidebar": [
     {
       title: "Collapsible sidebar",
@@ -399,7 +582,110 @@ const layout: LayoutSplitterModel = {
     }
   ],
 
+  "ch-tab-render": [
+    {
+      title: "Tab panel",
+      description: "A tabbed interface for switching between content panels.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChTab", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { TabModel } from "@genexus/chameleon-controls-library-lit";
+
+const model: TabModel = [
+  { id: "tab-1", name: "Overview" },
+  { id: "tab-2", name: "Details" },
+  { id: "tab-3", name: "Settings" }
+];
+
+// In your template:
+// <ch-tab-render .model=\${model} selected-id="tab-1">
+//   <div slot="tab-1">Overview content</div>
+//   <div slot="tab-2">Details content</div>
+//   <div slot="tab-3">Settings content</div>
+// </ch-tab-render>`
+    }
+  ],
+
   // ---- Navigation ----
+  "ch-action-group-render": [
+    {
+      title: "Action group",
+      description: "A horizontal group of action buttons with optional overflow handling.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChActionGroup", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ActionGroupModel } from "@genexus/chameleon-controls-library-lit";
+
+const model: ActionGroupModel = [
+  { caption: "Copy" },
+  { caption: "Paste" },
+  { caption: "Cut" }
+];
+
+// In your template:
+// <ch-action-group-render .model=\${model}></ch-action-group-render>`
+    }
+  ],
+  "ch-action-list-render": [
+    {
+      title: "Action list",
+      description: "A vertical list of actionable items with optional grouping and selection.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChActionList", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ActionListModel } from "@genexus/chameleon-controls-library-lit";
+
+const model: ActionListModel = [
+  { id: "item-1", caption: "First item", type: "actionable" },
+  { id: "item-2", caption: "Second item", type: "actionable" },
+  { type: "separator" },
+  { id: "item-3", caption: "Third item", type: "actionable" }
+];
+
+// In your template:
+// <ch-action-list-render .model=\${model}></ch-action-list-render>`
+    }
+  ],
+  "ch-action-menu-render": [
+    {
+      title: "Action menu",
+      description: "A dropdown menu triggered by a button, displaying a list of actions.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChActionMenu", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ActionMenuModel } from "@genexus/chameleon-controls-library-lit";
+
+const model: ActionMenuModel = [
+  { caption: "Edit" },
+  { caption: "Duplicate" },
+  { type: "separator" },
+  { caption: "Delete" }
+];
+
+// In your template:
+// <ch-action-menu-render .model=\${model} button-accessible-name="Actions"></ch-action-menu-render>`
+    }
+  ],
   "ch-navigation-list-render": [
     {
       title: "Navigation list",

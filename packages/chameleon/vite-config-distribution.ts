@@ -42,10 +42,7 @@ export const defineDistributionConfiguration = (
       ...logger,
       info(msg, options) {
         // Remove default Vite output for the chunk size
-        if (
-          msg.includes("dist/") &&
-          (msg.includes("kB") || msg.includes("MB"))
-        ) {
+        if (msg.includes("dist/") && (msg.includes("kB") || msg.includes("MB"))) {
           return;
         }
         // Otherwise, use the default logger
@@ -82,7 +79,7 @@ export const defineDistributionConfiguration = (
       // because types are not regenerated
       emptyOutDir: false,
       outDir: outDir,
-      sourcemap: isProduction,
+      sourcemap: !isProduction,
       target: "esnext",
       assetsInlineLimit: 0,
 
@@ -150,10 +147,7 @@ export const defineDistributionConfiguration = (
         }) as PluginOption),
 
       minifyHTML({
-        minifyHTMLLiterals: (
-          source: string,
-          options: DefaultOptions | undefined
-        ) =>
+        minifyHTMLLiterals: (source: string, options: DefaultOptions | undefined) =>
           minifyLiterals(source, {
             ...options,
             minifyOptions: {

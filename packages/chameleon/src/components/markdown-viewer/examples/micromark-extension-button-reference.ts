@@ -1,4 +1,4 @@
-import { Code, Effects, Extension, State } from "micromark-util-types";
+import type { Code, Effects, Extension, State } from "micromark-util-types";
 
 // Declare custom token types for better TypeScript integration
 declare module "micromark-util-types" {

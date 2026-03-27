@@ -1,11 +1,11 @@
-import { Literal } from "mdast";
+import type { Literal } from "mdast";
 import type {
   CompileContext,
   Extension as FromMarkdownExtension,
   Handle
 } from "mdast-util-from-markdown";
-import { Token } from "micromark-util-types";
-import { ButtonReference } from "./types";
+import type { Token } from "micromark-util-types";
+import type { ButtonReference } from "./types";
 
 /**
  * Handlers to translate micromark tokens into MDAST nodes.

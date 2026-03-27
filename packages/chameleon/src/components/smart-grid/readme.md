@@ -1,136 +1,199 @@
-# ch-smart-grid
+# `ch-smart-grid`
 
-## Table of Contents
+<p>The <code>ch-smart-grid</code> component is an accessible grid layout for data-driven applications that require infinite scrolling, virtual rendering, and dynamic content loading.</p>
 
-- [Overview](#overview)
-- [Features](#features)
-- [Use when](#use-when)
-- [Do not use when](#do-not-use-when)
-- [Accessibility](#accessibility)
-- [Usage](./docs/usage.md)
-- [Properties](#properties)
-- [Events](#events)
-- [Methods](#methods)
-  - [`removeScrollEndContentReference`](#removescrollendcontentreference--promisevoid)
-  - [`scrollEndContentToPosition`](#scrollendcontenttopositioncellid-string-options--position-start--end-behavior-scrollbehavior---promisevoid)
-- [Slots](#slots)
-- [Dependencies](#dependencies)
-  - [Used by](#used-by)
-  - [Depends on](#depends-on)
-  - [Graph](#graph)
-- [Styling](./docs/styling.md)
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `accessibleName:  string | undefined`
 
-<!-- Auto Generated Below -->
+<p>Specifies a short string, typically 1 to 3 words, that authors associate
+with an element to provide users of assistive technologies with a label
+for the element.</p>
 
-## Overview
+**Attribute**: <code>accessible-name</code>
 
-The `ch-smart-grid` component is an accessible grid layout for data-driven applications that require infinite scrolling, virtual rendering, and dynamic content loading.
+**Default**: <code>undefined</code>
 
-## Features
- - Infinite scrolling via `ch-infinite-scroll` integration with configurable thresholds.
- - Standard and inverse loading orders (newest items at the bottom or top).
- - Automatic scroll-position management to prevent layout shifts (CLS) during async content loads.
- - Anchor a specific cell at the top of the viewport with reserved space, similar to code editors (via `scrollEndContentToPosition`).
- - Auto-grow mode (`autoGrow`) to adjust size to content, or fixed size with scrollbars.
- - ARIA live-region support for accessible announcements.
- - Virtual-scroller integration for rendering only visible items.
+---
 
-## Use when
- - Building chat-like interfaces with inverse loading.
- - Displaying large, dynamically loaded data sets with virtual scrolling.
- - Infinite-scroll or paginated feeds with bottom-to-top inverse loading (e.g., chat, activity streams).
+### `autoGrow:  boolean | undefined`
 
-## Do not use when
- - Displaying static tabular data with columns and headers -- use `ch-tabular-grid` instead.
- - A fixed, non-scrollable list is sufficient -- prefer `ch-action-list-render`.
+<p>When <code>true</code>, the control size grows automatically to fit its content
+(no scrollbars). When <code>false</code>, the control has a fixed size and
+shows scrollbars if the content overflows.</p>
+<p>When <code>false</code>, the <code>ch-scrollable</code> class is applied to the host,
+enabling <code>contain: strict</code> and <code>overflow: auto</code>.</p>
+<p>Interacts with <code>inverseLoading</code>: when both <code>autoGrow</code> and
+<code>inverseLoading</code> are <code>true</code>, the CLS-avoidance opacity class is
+removed after the first render instead of waiting for the
+virtual-scroller load event.</p>
 
-## Accessibility
- - The host element uses `aria-live="polite"` to announce content changes to assistive technologies.
- - `aria-busy` is set to `"true"` during `"initial"` and `"loading"` states, preventing premature announcements.
- - The `accessibleName` property maps to `aria-label` on the host.
+**Attribute**: <code>auto-grow</code>
 
-## Properties
+**Default**: <code>false</code>
 
-| Property                  | Attribute         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Type                                                                     | Default           |
-| ------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------- |
-| `accessibleName`          | `accessible-name` | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.                                                                                                                                                                                                                                                                                                                                                   | `string`                                                                 | `undefined`       |
-| `autoGrow`                | `auto-grow`       | When `true`, the control size grows automatically to fit its content (no scrollbars). When `false`, the control has a fixed size and shows scrollbars if the content overflows.  When `false`, the `ch-scrollable` class is applied to the host, enabling `contain: strict` and `overflow: auto`.  Interacts with `inverseLoading`: when both `autoGrow` and `inverseLoading` are `true`, the CLS-avoidance opacity class is removed after the first render instead of waiting for the virtual-scroller load event. | `boolean`                                                                | `false`           |
-| `autoScroll`              | `auto-scroll`     | Specifies how the scroll position will be adjusted when the content size changes when using `inverseLoading = true`.   - "at-scroll-end": If the scroll is positioned at the end of the content,   the chat will maintain the scroll at the end while the content size   changes.   - "never": The scroll position won't be adjusted when the content size   changes.                                                                                                                                               | `"at-scroll-end" \| "never"`                                             | `"at-scroll-end"` |
-| `dataProvider`            | `data-provider`   | `true` if the control has an external data provider and therefore must implement infinite scrolling to load data progressively. When `true`, a `ch-infinite-scroll` element is rendered at the top (if `inverseLoading`) or bottom of the grid content.                                                                                                                                                                                                                                                             | `boolean`                                                                | `false`           |
-| `inverseLoading`          | `inverse-loading` | When set to `true`, the grid items will be loaded in inverse order, with the first element at the bottom and the "Loading" message (infinite-scroll) at the top.                                                                                                                                                                                                                                                                                                                                                    | `boolean`                                                                | `false`           |
-| `itemsCount` _(required)_ | `items-count`     | The current number of items (rows/cells) in the grid. This is a required property used to trigger re-renders whenever the data set changes. When `itemsCount` is `0`, the `grid-content-empty` slot is rendered instead of `grid-content`.  If not specified, grid empty and loading placeholders may not work correctly.                                                                                                                                                                                           | `number`                                                                 | `undefined`       |
-| `loadingState`            | `loading-state`   | Specifies the loading state of the grid:  - `"initial"`: First load; shows the `grid-initial-loading-placeholder`    slot.  - `"loading"`: Data is being fetched (infinite scroll triggered). The    `ch-infinite-scroll` component shows its loading indicator.  - `"loaded"`: Data fetch is complete. Normal content is rendered.  This property is mutable: the component sets it to `"loading"` when the infinite-scroll threshold is reached.                                                                  | `"all-records-loaded" \| "initial" \| "loading" \| "more-data-to-fetch"` | `"initial"`       |
-| `threshold`               | `threshold`       | The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.                                                                                                           | `string`                                                                 | `"10px"`          |
+---
 
-## Events
+### `autoScroll:  "never" | "at-scroll-end"`
 
-| Event                      | Description                                                                                                                                                                                                                                                                                                                               | Type                |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| `infiniteThresholdReached` | Emitted every time the infinite-scroll threshold is reached. The host should respond by fetching the next page of data and updating `loadingState` back to `"loaded"` when done.  Does not bubble (`bubbles: false`). Not cancelable. Payload is `void`. Before emitting, the component automatically sets `loadingState` to `"loading"`. | `CustomEvent<void>` |
+<p>Specifies how the scroll position will be adjusted when the content size
+changes when using <code>inverseLoading = true</code>.</p>
+<ul>
+<li>
+<p>&quot;at-scroll-end&quot;: If the scroll is positioned at the end of the content,
+the chat will maintain the scroll at the end while the content size
+changes.</p>
+</li>
+<li>
+<p>&quot;never&quot;: The scroll position won't be adjusted when the content size
+changes.</p>
+</li>
+</ul>
 
-## Methods
+**Attribute**: <code>auto-scroll</code>
 
-### `removeScrollEndContentReference() => Promise<void>`
+**Default**: <code>"at-scroll-end"</code>
 
-Removes the cell reference that is aligned at the start of the viewport.
+---
 
-In other words, removes the reserved space that is used to aligned
-`scrollEndContentToPosition(cellId, { position: "start" })`
+### `dataProvider:  boolean | undefined`
 
-#### Returns
+<p><code>true</code> if the control has an external data provider and therefore must
+implement infinite scrolling to load data progressively.
+When <code>true</code>, a <code>ch-infinite-scroll</code> element is rendered at the top
+(if <code>inverseLoading</code>) or bottom of the grid content.</p>
 
-Type: `Promise<void>`
+**Attribute**: <code>data-provider</code>
 
-### `scrollEndContentToPosition(cellId: string, options: { position: "start" | "end"; behavior?: ScrollBehavior; }) => Promise<void>`
+**Default**: <code>false</code>
 
-Scrolls the grid so that the cell identified by `cellId` is aligned at
-the `"start"` or `"end"` of the viewport.
+---
 
-When `position === "start"`, the component reserves extra space after
+### `inverseLoading:  boolean | undefined`
+
+<p>When set to <code>true</code>, the grid items will be loaded in inverse order, with
+the first element at the bottom and the &quot;Loading&quot; message (infinite-scroll)
+at the top.</p>
+
+**Attribute**: <code>inverse-loading</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `itemsCount:  number`
+
+<p>The current number of items (rows/cells) in the grid.
+This is a required property used to trigger re-renders whenever the
+data set changes. When <code>itemsCount</code> is <code>0</code>, the <code>grid-content-empty</code>
+slot is rendered instead of <code>grid-content</code>.</p>
+<p>If not specified, grid empty and loading placeholders may not work
+correctly.</p>
+
+**Attribute**: <code>items-count</code>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `loadingState:  SmartGridDataState`
+
+<p>Specifies the loading state of the grid:</p>
+<ul>
+<li><code>&quot;initial&quot;</code>: First load; shows the <code>grid-initial-loading-placeholder</code>
+slot.</li>
+<li><code>&quot;loading&quot;</code>: Data is being fetched (infinite scroll triggered). The
+<code>ch-infinite-scroll</code> component shows its loading indicator.</li>
+<li><code>&quot;loaded&quot;</code>: Data fetch is complete. Normal content is rendered.</li>
+</ul>
+<p>This property is mutable: the component sets it to <code>&quot;loading&quot;</code> when
+the infinite-scroll threshold is reached.</p>
+
+**Attribute**: <code>loading-state</code>
+
+**Default**: <code>"initial"</code>
+
+---
+
+### `threshold:  string`
+
+<p>The threshold distance from the bottom of the content to call the
+<code>infinite</code> output event when scrolled. The threshold value can be either a
+percent, or in pixels. For example, use the value of <code>10%</code> for the
+<code>infinite</code> output event to get called when the user has scrolled 10% from
+the bottom of the page. Use the value <code>100px</code> when the scroll is within
+100 pixels from the bottom of the page.</p>
+
+**Attribute**: <code>threshold</code>
+
+**Default**: <code>"10px"</code>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Events
+  </summary>
+  
+### `infiniteThresholdReached: void`
+
+<p>Emitted every time the infinite-scroll threshold is reached.
+The host should respond by fetching the next page of data and updating
+<code>loadingState</code> back to <code>&quot;loaded&quot;</code> when done.</p>
+<p>Does not bubble (<code>bubbles: false</code>). Not cancelable. Payload is <code>void</code>.
+Before emitting, the component automatically sets <code>loadingState</code> to
+<code>&quot;loading&quot;</code>.</p>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Methods
+  </summary>
+  
+### `scrollEndContentToPosition: (cellId: string, options: { position: "start" | "end"; behavior?: ScrollBehavior }) => void`
+
+<p>Scrolls the grid so that the cell identified by <code>cellId</code> is aligned at
+the <code>&quot;start&quot;</code> or <code>&quot;end&quot;</code> of the viewport.</p>
+<p>When <code>position === &quot;start&quot;</code>, the component reserves extra space after
 the last cell (similar to how the Monaco editor reserves space for the
 last lines) to keep the anchor cell visible at the top even when there
-is not enough content below it.
+is not enough content below it.</p>
+<p>The reserved space is automatically recalculated as cells are added or
+removed. Call <code>removeScrollEndContentReference()</code> to clear the anchor.</p>
 
-The reserved space is automatically recalculated as cells are added or
-removed. Call `removeScrollEndContentReference()` to clear the anchor.
+---
 
-#### Parameters
+### `removeScrollEndContentReference: () => void`
 
-| Name      | Type                                                         | Description |
-| --------- | ------------------------------------------------------------ | ----------- |
-| `cellId`  | `string`                                                     |             |
-| `options` | `{ position: "start" \| "end"; behavior?: ScrollBehavior; }` |             |
+<p>Removes the cell reference that is aligned at the start of the viewport.</p>
+<p>In other words, removes the reserved space that is used to aligned
+<code>scrollEndContentToPosition(cellId, { position: &quot;start&quot; })</code></p>
+</details>
 
-#### Returns
+<details open>
+  <summary>
+  
+  ## Slots
+  </summary>
+  
+### `grid-initial-loading-placeholder`
 
-Type: `Promise<void>`
+<p>Placeholder content shown during the initial loading state before any data has been fetched.</p>
 
-## Slots
+---
 
-| Slot                                 | Description                                                                                                      |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `"grid-content"`                     | Primary content slot for grid cells. Rendered when the grid has records and is not in the initial loading state. |
-| `"grid-content-empty"`               | Fallback content displayed when the grid has finished loading but contains no records.                           |
-| `"grid-initial-loading-placeholder"` | Placeholder content shown during the initial loading state before any data has been fetched.                     |
+### `grid-content`
 
-## Dependencies
+<p>Primary content slot for grid cells. Rendered when the grid has records and is not in the initial loading state.</p>
 
-### Used by
+---
 
- - [ch-chat](../chat)
+### `grid-content-empty`
 
-### Depends on
-
-- [ch-infinite-scroll](./internal/infinite-scroll)
-
-### Graph
-```mermaid
-graph TD;
-  ch-smart-grid --> ch-infinite-scroll
-  ch-chat --> ch-smart-grid
-  style ch-smart-grid fill:#f9f,stroke:#333,stroke-width:4px
-```
-
-----------------------------------------------
-
-*Built with [StencilJS](https://stenciljs.com/)*
+<p>Fallback content displayed when the grid has finished loading but contains no records.</p>
+</details>

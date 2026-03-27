@@ -1,4 +1,4 @@
-import { copyToTheClipboard } from "../../common/utils";
+import { copyToTheClipboard } from "../../utilities/clipboard.js";
 import type {
   ChatMessageFiles,
   ChatFileUploadState,

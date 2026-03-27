@@ -1,5 +1,5 @@
 import { html } from "lit";
-import { MarkdownViewerCodeRender } from "./types";
+import type { MarkdownViewerCodeRender } from "./types";
 
 export const defaultCodeRender: MarkdownViewerCodeRender = options =>
   html`<ch-code

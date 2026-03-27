@@ -1,4 +1,4 @@
-import { inBetween } from "../../common/utils";
+import { inBetween } from "../../utilities/in-between.js";
 import type { SmartGridModel } from "../smart-grid/types";
 import type { SmartGridCellVirtualSize } from "./types";
 
@@ -58,8 +58,5 @@ export const emptyItems = (items: SmartGridModel) =>
 
 export const getSmartCells = (scroller: HTMLChVirtualScrollerElement) =>
   [
-    // TODO: This is a WA to make work the ch-chat with the Lit render. We
-    // should provide a way to customize this selector
-    ...scroller.querySelectorAll(":scope>ch-chat-lit>ch-smart-grid-cell")
-    // ...scroller.querySelectorAll(":scope>ch-smart-grid-cell")
+    ...scroller.querySelectorAll(":scope>ch-smart-grid-cell")
   ] as HTMLChSmartGridCellElement[];

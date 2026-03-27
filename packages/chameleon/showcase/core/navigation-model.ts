@@ -30,10 +30,13 @@ const CATEGORIES: ComponentCategory[] = [
   {
     caption: "Data",
     tags: [
+      "ch-chat",
       "ch-code",
       "ch-image",
+      "ch-markdown-viewer",
       "ch-math-viewer",
       "ch-qr",
+      "ch-smart-grid",
       "ch-status",
       "ch-textblock",
       "ch-progress",
@@ -64,6 +67,10 @@ const CATEGORIES: ComponentCategory[] = [
   {
     caption: "Theming",
     tags: ["ch-theme"]
+  },
+  {
+    caption: "Real-time",
+    tags: ["ch-live-kit-room"]
   }
 ];
 

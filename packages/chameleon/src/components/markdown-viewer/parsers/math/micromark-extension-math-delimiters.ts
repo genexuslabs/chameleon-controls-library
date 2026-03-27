@@ -1,6 +1,6 @@
 import { factorySpace } from "micromark-factory-space";
 import { markdownLineEnding } from "micromark-util-character";
-import {
+import type {
   Code,
   Construct,
   Effects,

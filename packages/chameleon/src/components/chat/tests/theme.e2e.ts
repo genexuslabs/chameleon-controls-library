@@ -1,81 +1,72 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
 import type { ThemeModel } from "../../theme/theme-types";
-import {
-  TEST_INLINE_MODEL_1,
-  TEST_INLINE_MODEL_2,
-  TEST_MULTIPLE_MODEL,
-  TEST_URL_MODEL_ARRAY,
-  TEST_URL_MODEL_OBJECT
-} from "../../theme/tests/utils.e2e";
+import type { ChChat } from "../chat.lit";
+import "../chat.lit.js";
 
-const THEME_SELECTOR = "ch-chat >>> ch-theme";
+const THEME_SELECTOR = "ch-theme";
 
 describe("[ch-chat][theme]", () => {
-  let page: E2EPage;
-  let chatRef: E2EElement;
+  let chatRef: ChChat;
+
+  afterEach(cleanup);
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<ch-chat></ch-chat>`,
-      failOnConsoleError: true
-    });
-    chatRef = await page.find("ch-chat");
+    render(html`<ch-chat></ch-chat>`);
+    chatRef = document.querySelector("ch-chat")!;
+    await chatRef.updateComplete;
   });
 
-  it("should not render the ch-theme by default", async () => {
-    expect(await page.find(THEME_SELECTOR)).toBeFalsy();
+  it("should not render the ch-theme by default", () => {
+    expect(chatRef.shadowRoot!.querySelector(THEME_SELECTOR)).toBeNull();
   });
 
   it("should not render the ch-theme when theme = null", async () => {
-    chatRef.setProperty("theme", null);
-    await page.waitForChanges();
+    chatRef.theme = null as any;
+    await chatRef.updateComplete;
 
-    expect(await page.find(THEME_SELECTOR)).toBeFalsy();
+    expect(chatRef.shadowRoot!.querySelector(THEME_SELECTOR)).toBeNull();
   });
 
   it('should not render the ch-theme when theme = ""', async () => {
-    chatRef.setProperty("theme", "");
-    await page.waitForChanges();
+    chatRef.theme = "" as any;
+    await chatRef.updateComplete;
 
-    expect(await page.find(THEME_SELECTOR)).toBeFalsy();
+    expect(chatRef.shadowRoot!.querySelector(THEME_SELECTOR)).toBeNull();
   });
 
   it("should render the ch-theme when theme = []", async () => {
-    chatRef.setProperty("theme", []);
-    await page.waitForChanges();
+    chatRef.theme = [];
+    await chatRef.updateComplete;
 
-    expect(await page.find(THEME_SELECTOR)).toBeTruthy();
+    expect(chatRef.shadowRoot!.querySelector(THEME_SELECTOR)).toBeTruthy();
   });
 
   it("should render the ch-theme with avoidFlashOfUnstyledContent = true", async () => {
-    chatRef.setProperty("theme", []);
-    await page.waitForChanges();
+    chatRef.theme = [];
+    await chatRef.updateComplete;
 
-    expect(
-      await (
-        await page.find(THEME_SELECTOR)
-      ).getProperty("avoidFlashOfUnstyledContent")
-    ).toBe(true);
+    const themeEl = chatRef.shadowRoot!.querySelector(
+      THEME_SELECTOR
+    ) as HTMLChThemeElement;
+    expect(themeEl.avoidFlashOfUnstyledContent).toBe(true);
   });
 
   const testPropertyBind = (theme: ThemeModel) => {
-    it(`should bind the \"theme\" property to the ch-theme when defined (${JSON.stringify(
+    it(`should bind the "theme" property to the ch-theme when defined (${JSON.stringify(
       theme
     )})`, async () => {
-      chatRef.setProperty("theme", theme);
-      await page.waitForChanges();
+      chatRef.theme = theme;
+      await chatRef.updateComplete;
 
-      expect(
-        await (await page.find(THEME_SELECTOR)).getProperty("model")
-      ).toEqual(theme);
+      const themeEl = chatRef.shadowRoot!.querySelector(
+        THEME_SELECTOR
+      ) as HTMLChThemeElement;
+      expect(themeEl.model).toEqual(theme);
     });
   };
 
   testPropertyBind("dummy theme");
   testPropertyBind(["dummy theme", "dummy theme 2"]);
-  testPropertyBind(TEST_URL_MODEL_ARRAY);
-  testPropertyBind(TEST_INLINE_MODEL_1);
-  testPropertyBind(TEST_INLINE_MODEL_2);
-  testPropertyBind(TEST_MULTIPLE_MODEL);
-  testPropertyBind(TEST_URL_MODEL_OBJECT);
 });

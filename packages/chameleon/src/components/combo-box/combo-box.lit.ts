@@ -1260,17 +1260,17 @@ declare global {
    *
    * @fires input The `input` event is emitted when a change to the element's value is
    *   committed by the user.
-   *
+   *   
    *   When `suggest === true`, this event is debounced by the `suggestDebounce`
    *   value (default 250 ms). When `suggest === false`, debouncing does not
    *   apply and the event is emitted immediately on value change.
    * @fires change The `change` event is emitted when a change to the element's value is
    *   committed by the user.
    *    - In normal mode (suggest = false), it is emitted after each input event.
-   *
+   *   
    *    - In suggest mode (suggest = true), it is emitted after the popover is closed
    *   and a new value is committed by the user.
-   *
+   *   
    *   This event is NOT debounced by the `suggestDebounce` value.
    */
   // prettier-ignore

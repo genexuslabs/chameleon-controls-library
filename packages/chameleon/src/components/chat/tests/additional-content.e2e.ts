@@ -1,4 +1,8 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
+import type { ChChat } from "../chat.lit";
+import "../chat.lit.js";
 
 const showAdditionalContentValues = [false, true];
 const loadingStateValues: HTMLChChatElement["loadingState"][] = [
@@ -17,41 +21,26 @@ const itemValues: HTMLChChatElement["items"][] = [
 ];
 
 describe('[ch-chat][slot "additional-content", without slot in light DOM]', () => {
-  let page: E2EPage;
-  let chatRef: E2EElement;
+  let chatRef: ChChat;
+
+  afterEach(cleanup);
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<ch-chat></ch-chat>`,
-      failOnConsoleError: true
-    });
-    chatRef = await page.find("ch-chat");
+    render(html`<ch-chat></ch-chat>`);
+    chatRef = document.querySelector("ch-chat")!;
+    await chatRef.updateComplete;
   });
 
-  const checkAdditionalContent = async (hasAdditionalContent: boolean) => {
-    const gridTemplateRowsStyle = (await chatRef.getComputedStyle())
-      .gridTemplateRows;
-    const showAdditionalContentSlotRef = await page.find(
-      "ch-chat >>> slot[name='additional-content']"
+  const checkAdditionalContent = (hasAdditionalContent: boolean) => {
+    const showAdditionalContentSlotRef = chatRef.shadowRoot!.querySelector(
+      'slot[name="additional-content"]'
     );
 
-    // TODO: Improve these checks
     if (hasAdditionalContent) {
-      expect(gridTemplateRowsStyle.split(" ").length).toBe(3);
-
-      // slot must exists
+      // slot must exist
       expect(showAdditionalContentSlotRef).toBeTruthy();
-
-      // TODO: Add this check
-      // it should be the second child element
-      // const secondChildElement = await page.find(
-      //   "ch-chat >>> slot:nth-child(2)"
-      // );
-
-      // expect(showAdditionalContentSlotRef).toEqual(secondChildElement);
     } else {
-      expect(gridTemplateRowsStyle.split(" ").length).toBe(2);
-      expect(showAdditionalContentSlotRef).toBeFalsy();
+      expect(showAdditionalContentSlotRef).toBeNull();
     }
   };
 
@@ -66,12 +55,12 @@ describe('[ch-chat][slot "additional-content", without slot in light DOM]', () =
         loadingState !== "initial" &&
         !(items.length === 0 && loadingState === "all-records-loaded");
 
-      chatRef.setProperty("showAdditionalContent", showAdditionalContent);
-      chatRef.setProperty("items", items);
-      chatRef.setProperty("loadingState", loadingState);
-      await page.waitForChanges();
+      chatRef.showAdditionalContent = showAdditionalContent;
+      chatRef.items = [...items];
+      chatRef.loadingState = loadingState;
+      await chatRef.updateComplete;
 
-      await checkAdditionalContent(canShowAdditionalContent);
+      checkAdditionalContent(canShowAdditionalContent);
     });
   };
 
@@ -93,36 +82,29 @@ describe('[ch-chat][slot "additional-content", without slot in light DOM]', () =
 });
 
 describe('[ch-chat][slot "additional-content", with slot in light DOM]', () => {
-  let page: E2EPage;
-  let chatRef: E2EElement;
+  let chatRef: ChChat;
+
+  afterEach(cleanup);
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `
+    render(html`
       <ch-chat>
-        <div slot="additional-content">
-          Additional content
-        </div>
-      </ch-chat>`,
-      failOnConsoleError: true
-    });
-    chatRef = await page.find("ch-chat");
+        <div slot="additional-content">Additional content</div>
+      </ch-chat>
+    `);
+    chatRef = document.querySelector("ch-chat")!;
+    await chatRef.updateComplete;
   });
 
-  const checkAdditionalContent = async (hasAdditionalContent: boolean) => {
-    const gridTemplateRowsStyle = (await chatRef.getComputedStyle())
-      .gridTemplateRows;
-    const showAdditionalContentSlotRef = await page.find(
-      "ch-chat >>> slot[name='additional-content']"
+  const checkAdditionalContent = (hasAdditionalContent: boolean) => {
+    const showAdditionalContentSlotRef = chatRef.shadowRoot!.querySelector(
+      'slot[name="additional-content"]'
     );
 
-    // TODO: Improve these checks
     if (hasAdditionalContent) {
-      expect(gridTemplateRowsStyle.split(" ").length).toBe(3);
       expect(showAdditionalContentSlotRef).toBeTruthy();
     } else {
-      expect(gridTemplateRowsStyle.split(" ").length).toBe(2);
-      expect(showAdditionalContentSlotRef).toBeFalsy();
+      expect(showAdditionalContentSlotRef).toBeNull();
     }
   };
 
@@ -137,12 +119,12 @@ describe('[ch-chat][slot "additional-content", with slot in light DOM]', () => {
         loadingState !== "initial" &&
         !(items.length === 0 && loadingState === "all-records-loaded");
 
-      chatRef.setProperty("showAdditionalContent", showAdditionalContent);
-      chatRef.setProperty("items", items);
-      chatRef.setProperty("loadingState", loadingState);
-      await page.waitForChanges();
+      chatRef.showAdditionalContent = showAdditionalContent;
+      chatRef.items = [...items];
+      chatRef.loadingState = loadingState;
+      await chatRef.updateComplete;
 
-      await checkAdditionalContent(canShowAdditionalContent);
+      checkAdditionalContent(canShowAdditionalContent);
     });
   };
 

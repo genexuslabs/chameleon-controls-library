@@ -1,40 +1,64 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import {
-  testDefaultCssProperties,
-  testDefaultProperties
-} from "../../../testing/utils.e2e";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
 
-testDefaultProperties("ch-markdown-viewer", {
-  avoidFlashOfUnstyledContent: false,
-  rawHtml: false,
-  renderCode: undefined,
-  extensions: undefined,
-  showIndicator: false,
-  theme: "ch-markdown-viewer",
-  value: undefined
-});
-
-testDefaultCssProperties("ch-markdown-viewer", {
-  "--ch-markdown-viewer-indicator-color": "currentColor",
-  "--ch-markdown-viewer-inline-size": "1.125ch",
-  "--ch-markdown-viewer-block-size": "1em"
-});
+import "../markdown-viewer.lit.js";
+import type { ChMarkdownViewer } from "../markdown-viewer.lit";
 
 describe("[ch-markdown-viewer][basic]", () => {
-  let page: E2EPage;
-  let markdownViewerRef: E2EElement;
+  let markdownViewerRef: ChMarkdownViewer;
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<ch-markdown-viewer></ch-markdown-viewer>`,
-      failOnConsoleError: true
-    });
-    markdownViewerRef = await page.find("ch-markdown-viewer");
+    render(html`<ch-markdown-viewer></ch-markdown-viewer>`);
+    markdownViewerRef = document.querySelector("ch-markdown-viewer")!;
+    await markdownViewerRef.updateComplete;
   });
 
-  it("should have Shadow DOM", () =>
-    expect(markdownViewerRef.shadowRoot).toBeTruthy());
+  afterEach(cleanup);
 
-  it("should render empty by default", () =>
-    expect(markdownViewerRef.shadowRoot.innerHTML).toBeFalsy());
+  it("should have Shadow DOM", () => {
+    expect(markdownViewerRef.shadowRoot).toBeTruthy();
+  });
+
+  it("should render empty by default", () => {
+    // When no value is set, nothing should be rendered in the shadow root
+    // (aside from possible Lit comment nodes)
+    const children = Array.from(
+      markdownViewerRef.shadowRoot!.childNodes
+    ).filter(
+      node =>
+        node.nodeType !== Node.COMMENT_NODE &&
+        (node.nodeType !== Node.TEXT_NODE || node.textContent!.trim() !== "")
+    );
+    expect(children.length).toBe(0);
+  });
+
+  // Default property values
+  it("should have 'avoidFlashOfUnstyledContent' default to false", () => {
+    expect(markdownViewerRef.avoidFlashOfUnstyledContent).toBe(false);
+  });
+
+  it("should have 'extensions' default to undefined", () => {
+    expect(markdownViewerRef.extensions).toBeUndefined();
+  });
+
+  it("should have 'rawHtml' default to false", () => {
+    expect(markdownViewerRef.rawHtml).toBe(false);
+  });
+
+  it("should have 'renderCode' default to undefined", () => {
+    expect(markdownViewerRef.renderCode).toBeUndefined();
+  });
+
+  it("should have 'showIndicator' default to false", () => {
+    expect(markdownViewerRef.showIndicator).toBe(false);
+  });
+
+  it("should have 'theme' default to 'ch-markdown-viewer'", () => {
+    expect(markdownViewerRef.theme).toBe("ch-markdown-viewer");
+  });
+
+  it("should have 'value' default to undefined", () => {
+    expect(markdownViewerRef.value).toBeUndefined();
+  });
 });

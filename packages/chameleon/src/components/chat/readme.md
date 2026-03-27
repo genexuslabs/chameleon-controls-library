@@ -1,185 +1,416 @@
-# ch-chat
+# `ch-chat`
 
-## Table of Contents
+<p>The <code>ch-chat</code> component delivers a full-featured conversational interface with virtual scrolling for efficient rendering of large message histories.</p>
 
-- [Overview](#overview)
-- [Properties](#properties)
-- [Events](#events)
-- [Methods](#methods)
-  - [`addNewMessage`](#addnewmessagemessage-chatmessage--promisevoid)
-  - [`focusChatInput`](#focuschatinput--promisevoid)
-  - [`sendChatMessage`](#sendchatmessagecontent-chatmessageuser--undefined-files-file--promisevoid)
-  - [`setChatInputMessage`](#setchatinputmessagetext-string--promisevoid)
-  - [`updateChatMessage`](#updatechatmessagemessageindex-number-message-chatmessagebyrolenoidsystem--assistant-mode-concat--replace--promisevoid)
-  - [`updateLastMessage`](#updatelastmessagemessage-chatmessagebyrolenoidsystem--assistant-mode-concat--replace--promisevoid)
-- [Slots](#slots)
-- [Dependencies](#dependencies)
-  - [Depends on](#depends-on)
-  - [Graph](#graph)
-- [Usage](./docs/usage.md)
-- [Styling](./docs/styling.md)
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `autoScroll:  "never" | "at-scroll-end"`
 
-<!-- Auto Generated Below -->
+<p>Specifies how the scroll position will be adjusted when the chat messages
+are updated with the methods <code>addNewMessage</code>, <code>updateChatMessage</code> or
+<code>updateLastMessage</code>.</p>
+<ul>
+<li>
+<p>&quot;at-scroll-end&quot;: If the scroll is positioned at the end of the content,
+the chat will maintain the scroll at the end while the content of the
+messages is being updated.</p>
+</li>
+<li>
+<p>&quot;never&quot;: The scroll position won't be adjusted when the content of the
+messages is being updated.</p>
+</li>
+</ul>
 
-## Overview
+**Attribute**: <code>auto-scroll</code>
 
-The `ch-chat` component delivers a full-featured conversational interface with virtual scrolling for efficient rendering of large message histories.
+**Default**: <code>"at-scroll-end"</code>
 
-## Properties
+---
 
-| Property                       | Attribute                          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Type                                                                                                                                                                                                                                                                                                                                                                                                                                 | Default                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ------------------------------ | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `autoScroll`                   | `auto-scroll`                      | Specifies how the scroll position will be adjusted when the chat messages are updated with the methods `addNewMessage`, `updateChatMessage` or `updateLastMessage`.   - "at-scroll-end": If the scroll is positioned at the end of the content,   the chat will maintain the scroll at the end while the content of the   messages is being updated.   - "never": The scroll position won't be adjusted when the content of the   messages is being updated.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `"at-scroll-end" \| "never"`                                                                                                                                                                                                                                                                                                                                                                                                         | `"at-scroll-end"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `callbacks`                    | --                                 | Specifies the callbacks required in the control.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `{ downloadCodeBlock?: (plainText: string, language: string) => void; getChatMessageFiles?: () => File[] \| Promise<File[]>; liveMode?: Pick<LiveKitCallbacks, "activeSpeakersChanged">; sendChatMessages: (chat: ChatMessage[]) => void; stopResponse?: () => Promise<void>; validateSendChatMessage?: (chat: ChatMessage, files: File[]) => boolean \| Promise<boolean>; uploadFile?: (file: File) => Promise<ChatMessageFile>; }` | `undefined`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `disabled`                     | `disabled`                         | Specifies if all interactions are disabled                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                            | `false`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `items`                        | --                                 | Specifies the items that the chat will display.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `ChatMessage[]`                                                                                                                                                                                                                                                                                                                                                                                                                      | `[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `liveMode`                     | `live-mode`                        | Specifies if the live mode is set.  When this mode is enabled, the chat will disable sending messages by user interactions and the only way to send messages will be throughout the voice. The user will have to enable the microphone input in their Operative System and it will voice chat with the remote participants.  When any participant speaks, the transcribed conversation will be displayed as new messages in the chat (`items` property).  When the `liveMode` ends, the transcribed conversation will be pushed to the `items` of the chat.                                                                                                                                                                                                                                                                                                                                                                                         | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                            | `false`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `liveModeConfiguration`        | --                                 | Specifies the live mode configuration. The `token` and `url` are required to enable the `liveMode`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `{ url: string; token: string; localParticipant?: { microphoneEnabled?: boolean; }; }`                                                                                                                                                                                                                                                                                                                                               | `undefined`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `loadingState`                 | `loading-state`                    | Specifies if the chat is waiting for the data to be loaded.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `"all-records-loaded" \| "initial" \| "loading" \| "more-data-to-fetch"`                                                                                                                                                                                                                                                                                                                                                             | `"initial"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `markdownTheme`                | `markdown-theme`                   | Specifies the theme to be used for rendering the markdown. If `null`, no theme will be applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `string`                                                                                                                                                                                                                                                                                                                                                                                                                             | `"ch-markdown-viewer"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `newUserMessageAlignment`      | `new-user-message-alignment`       | Specifies how the messages added by the user interaction will be aligned in the chat.  If `newUserMessageAlignment === "start"` the chat will reserve the necessary space to visualize the message at the start of the content viewport if the content is not large enough. This behavior is the same as the Monaco editor does for reserving space when visualizing the last lines positioned at the top of the editor.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `"end" \| "start"`                                                                                                                                                                                                                                                                                                                                                                                                                   | `"end"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `newUserMessageScrollBehavior` | `new-user-message-scroll-behavior` | Specifies how the chat will scroll to the position of the messages added by user interaction.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `"instant" \| "smooth"`                                                                                                                                                                                                                                                                                                                                                                                                              | `"instant"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `renderItem`                   | --                                 | This property allows us to implement custom rendering of chat items.  This works by providing a custom render of the cell content in two possible ways:   1. Replacing the render of the entire cell with a function of the   message model.    2. Replacing the render of specific parts of the message by providing an   object with the specific renders of the message sections (`codeBlock`,   `contentBefore`, `content`, `contentAfter`, `files` and/or   `messageStructure`).                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `((messageModel: ChatMessageError \| ChatMessageUser \| ChatMessageAssistant) => string \| TemplateResult) \| { actions?: ChatActionsRender; codeBlock?: ChatCodeBlockRender; contentBefore?: ChatContentRender; content?: ChatContentRender; contentAfter?: ChatContentRender; file?: ChatFileRender; messageStructure?: ChatMessageStructureRender; source?: ChatSourceRender; }`                                                  | `undefined`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `sendButtonDisabled`           | `send-button-disabled`             | `true` to disable the send-button element.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                            | `false`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `sendContainerLayout`          | --                                 | Specifies the position of the elements in the `send-container` part. There are four positions for distributing elements:   - `sendContainerBefore`: Before the contents of the `send-container` part.   - `sendInputBefore`: Before the contents of the `send-input` part.   - `sendInputAfter`: After the contents of the `send-input` part.   - `sendContainerAfter`: After the contents of the `send-container` part.  At each position you can specify reserved elements, such as the `send-button` and `stop-response-button`, but can also be specified non-reserved elements, which will be projected as content slots.  If the reserved `stop-response-button` element is not specified anywhere, the send button will be replaced with the stop-response button when `waitingResponse = true` and the `stopResponse` callback is specified.  If the `send-button` is not specified in any position, it won't be rendered in the `ch-chat`. | `{ sendContainerBefore?: ChatSendContainerLayoutElement[]; sendInputBefore?: ChatSendContainerLayoutElement[]; sendInputAfter?: ChatSendContainerLayoutElement[]; sendContainerAfter?: ChatSendContainerLayoutElement[]; }`                                                                                                                                                                                                          | `{     sendContainerAfter: ["send-button"]   }`                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `sendInputDisabled`            | `send-input-disabled`              | `true` to disable the send-input element.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                            | `false`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `showAdditionalContent`        | `show-additional-content`          | `true` to render a slot named "additional-content" to project elements between the "content" slot (grid messages) and the "send-container" slot.  This slot can only be rendered if loadingState !== "initial" and (loadingState !== "all-records-loaded" && items.length > 0).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                            | `false`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `theme`                        | `theme`                            | Specifies the theme to be used for rendering the chat. If `undefined`, no theme will be applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `ThemeItemBaseModel & { styleSheet: string; } \| ThemeItemBaseModel & { url?: string; } \| ThemeItemModel[] \| string \| string[]`                                                                                                                                                                                                                                                                                                   | `undefined`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `translations`                 | --                                 | Specifies the literals required in the control.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `{ accessibleName: { clearChat: string; copyMessageContent?: string; downloadCodeButton?: string; sendButton: string; sendInput: string; stopResponseButton?: string; }; placeholder: { sendInput: string; }; text: { copyCodeButton: string; copyMessageContent?: string; downloadCodeButton?: string; processing?: string; sourceFiles?: string; stopResponseButton?: string; }; }`                                                | `{     accessibleName: {       clearChat: "Clear chat",       copyMessageContent: "Copy message content",       downloadCodeButton: "Download code",       sendButton: "Send",       sendInput: "Message",       stopResponseButton: "Stop generating answer"     },     placeholder: {       sendInput: "Ask me a question..."     },     text: {       copyCodeButton: "Copy code",       copyMessageContent: "Copy",       processing: "Processing...",       sourceFiles: "Source files:"     }   }` |
-| `virtualScrollerBufferSize`    | `virtual-scroller-buffer-size`     | Specifies the number of elements to be rendered above and below the virtual scroll.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `number`                                                                                                                                                                                                                                                                                                                                                                                                                             | `5`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `waitingResponse`              | `waiting-response`                 | `true` if the `ch-chat` is waiting for a response from the server. If so, the `sendChatMessages` won't be executed when the user tries to send a new message. Although, the `send-input` and `send-button` won't be disabled, so the user can interact with the chat.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                            | `false`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+### `callbacks:  ChatCallbacks | undefined`
 
-## Events
+<p>Specifies the callbacks required in the control.</p>
 
-| Event              | Description                                                                                                                                                                                                                                                                                                                                            | Type                                                                                                                             |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| `userMessageAdded` | Fired when a new user message is added in the chat via user interaction.  Since developers can define their own render for file attachment, this event serves to synchronize the cleanup of the `send-input` with the cleanup of the custom file attachment, or or even blocking user interactions before the `sendChatMessages` callback is executed. | `CustomEvent<{ id: string; role: "user"; content: ChatMessageContent; metadata?: any; parts?: string; transcribed?: boolean; }>` |
+**Default**: <code>undefined</code>
 
-## Methods
+---
 
-### `addNewMessage(message: ChatMessage) => Promise<void>`
+### `disabled:  boolean`
 
-Add a new message at the end of the record, performing a re-render.
+<p>Specifies if all interactions are disabled</p>
 
-#### Parameters
+**Attribute**: <code>disabled</code>
 
-| Name      | Type                                                                               | Description |
-| --------- | ---------------------------------------------------------------------------------- | ----------- |
-| `message` | `ChatMessageError \| ChatMessageSystem \| ChatMessageUser \| ChatMessageAssistant` |             |
+**Default**: <code>false</code>
 
-#### Returns
+---
 
-Type: `Promise<void>`
+### `items:  ChatMessage[]`
 
-### `focusChatInput() => Promise<void>`
+<p>Specifies the items that the chat will display.</p>
 
-Focus the chat input
+**Default**: <code>[]</code>
 
-#### Returns
+---
 
-Type: `Promise<void>`
+### `liveMode:  boolean`
 
-### `sendChatMessage(content?: ChatMessageUser | undefined, files?: File[]) => Promise<void>`
+<p>Specifies if the live mode is set.</p>
+<p>When this mode is enabled, the chat will disable sending messages by user
+interactions and the only way to send messages will be throughout the
+voice. The user will have to enable the microphone input in their Operative
+System and it will voice chat with the remote participants.</p>
+<p>When any participant speaks, the transcribed conversation will be displayed
+as new messages in the chat (<code>items</code> property).</p>
+<p>When the <code>liveMode</code> ends, the transcribed conversation will be pushed
+to the <code>items</code> of the chat.</p>
 
-Send the current message of the ch-chat's `send-input` element. This
+**Attribute**: <code>live-mode</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `liveModeConfiguration:  ChatLiveModeConfiguration | undefined`
+
+<p>Specifies the live mode configuration. The <code>token</code> and <code>url</code> are required
+to enable the <code>liveMode</code>.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `loadingState:  SmartGridDataState`
+
+<p>Specifies if the chat is waiting for the data to be loaded.</p>
+
+**Default**: <code>"initial"</code>
+
+---
+
+### `markdownTheme:  string | null`
+
+<p>Specifies the theme to be used for rendering the markdown.
+If <code>null</code>, no theme will be applied.</p>
+
+**Attribute**: <code>markdown-theme</code>
+
+**Default**: <code>"ch-markdown-viewer"</code>
+
+---
+
+### `newUserMessageAlignment:  "start" | "end"`
+
+<p>Specifies how the messages added by the user interaction will be aligned
+in the chat.</p>
+<p>If <code>newUserMessageAlignment === &quot;start&quot;</code> the chat will reserve the
+necessary space to visualize the message at the start of the content
+viewport if the content is not large enough.
+This behavior is the same as the Monaco editor does for reserving space
+when visualizing the last lines positioned at the top of the editor.</p>
+
+**Attribute**: <code>new-user-message-alignment</code>
+
+**Default**: <code>"end"</code>
+
+---
+
+### `newUserMessageScrollBehavior:  Exclude<ScrollBehavior, "auto">`
+
+<p>Specifies how the chat will scroll to the position of the messages added
+by user interaction.</p>
+
+**Attribute**: <code>new-user-message-scroll-behavior</code>
+
+**Default**: <code>"instant"</code>
+
+---
+
+### `renderItem: ChatMessageRenderByItem | ChatMessageRenderBySections | undefined`
+
+<p>This property allows us to implement custom rendering of chat items.</p>
+<p>This works by providing a custom render of the cell content in two
+possible ways:</p>
+<ol>
+<li>
+<p>Replacing the render of the entire cell with a function of the
+message model.</p>
+</li>
+<li>
+<p>Replacing the render of specific parts of the message by providing an
+object with the specific renders of the message sections (<code>codeBlock</code>,
+<code>contentBefore</code>, <code>content</code>, <code>contentAfter</code>, <code>files</code> and/or
+<code>messageStructure</code>).</p>
+</li>
+</ol>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `sendButtonDisabled:  boolean`
+
+<p><code>true</code> to disable the send-button element.</p>
+
+**Attribute**: <code>send-button-disabled</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `sendInputDisabled:  boolean`
+
+<p><code>true</code> to disable the send-input element.</p>
+
+**Attribute**: <code>send-input-disabled</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `showAdditionalContent:  boolean`
+
+<p><code>true</code> to render a slot named &quot;additional-content&quot; to project elements
+between the &quot;content&quot; slot (grid messages) and the &quot;send-container&quot; slot.</p>
+<p>This slot can only be rendered if loadingState !== &quot;initial&quot; and
+(loadingState !== &quot;all-records-loaded&quot; &amp;&amp; items.length &gt; 0).</p>
+
+**Attribute**: <code>show-additional-content</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `sendContainerLayout:  ChatSendContainerLayout`
+
+<p>Specifies the position of the elements in the <code>send-container</code> part.
+There are four positions for distributing elements:</p>
+<ul>
+<li><code>sendContainerBefore</code>: Before the contents of the <code>send-container</code> part.</li>
+<li><code>sendInputBefore</code>: Before the contents of the <code>send-input</code> part.</li>
+<li><code>sendInputAfter</code>: After the contents of the <code>send-input</code> part.</li>
+<li><code>sendContainerAfter</code>: After the contents of the <code>send-container</code> part.</li>
+</ul>
+<p>At each position you can specify reserved elements, such as the
+<code>send-button</code> and <code>stop-response-button</code>, but can also be specified
+non-reserved elements, which will be projected as content slots.</p>
+<p>If the reserved <code>stop-response-button</code> element is not specified anywhere,
+the send button will be replaced with the stop-response button
+when <code>waitingResponse = true</code> and the <code>stopResponse</code> callback is specified.</p>
+<p>If the <code>send-button</code> is not specified in any position, it won't be
+rendered in the <code>ch-chat</code>.</p>
+
+**Default**: <code>{
+    sendContainerAfter: ["send-button"]
+  }</code>
+
+---
+
+### `theme:  ThemeModel | undefined`
+
+<p>Specifies the theme to be used for rendering the chat.
+If <code>undefined</code>, no theme will be applied.</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `translations:  ChatTranslations`
+
+<p>Specifies the literals required in the control.</p>
+
+**Default**: <code>{
+    accessibleName: {
+      clearChat: "Clear chat",
+      copyMessageContent: "Copy message content",
+      downloadCodeButton: "Download code",
+      sendButton: "Send",
+      sendInput: "Message",
+      stopResponseButton: "Stop generating answer"
+    },
+    placeholder: {
+      sendInput: "Ask me a question..."
+    },
+    text: {
+      copyCodeButton: "Copy code",
+      copyMessageContent: "Copy",
+      processing: "Processing...",
+      sourceFiles: "Source files:"
+    }
+  }</code>
+
+---
+
+### `virtualScrollerBufferSize:  number`
+
+<p>Specifies the number of elements to be rendered above and below the
+virtual scroll.</p>
+
+**Attribute**: <code>virtual-scroller-buffer-size</code>
+
+**Default**: <code>5</code>
+
+---
+
+### `waitingResponse:  boolean`
+
+<p><code>true</code> if the <code>ch-chat</code> is waiting for a response from the server. If so,
+the <code>sendChatMessages</code> won't be executed when the user tries to send a new
+message. Although, the <code>send-input</code> and <code>send-button</code> won't be disabled,
+so the user can interact with the chat.</p>
+
+**Attribute**: <code>waiting-response</code>
+
+**Default**: <code>false</code>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Events
+  </summary>
+  
+### `userMessageAdded: ChatMessageByRole&lt;"user"&gt;`
+
+<p>Fired when a new user message is added in the chat via user interaction.</p>
+<p>Since developers can define their own render for file attachment, this
+event serves to synchronize the cleanup of the <code>send-input</code> with the
+cleanup of the custom file attachment, or or even blocking user
+interactions before the <code>sendChatMessages</code> callback is executed.</p>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Methods
+  </summary>
+  
+### `addNewMessage: (message: ChatMessage) => void`
+
+<p>Add a new message at the end of the record, performing a re-render.</p>
+
+---
+
+### `focusChatInput: () => void`
+
+<p>Focus the chat input</p>
+
+---
+
+### `setChatInputMessage: (text: string) => void`
+
+<p>Set the text for the chat input</p>
+
+---
+
+### `sendChatMessage: (content: ChatMessageUser | undefined, files: File[]) => void`
+
+<p>Send the current message of the ch-chat's <code>send-input</code> element. This
 method executes the same callbacks and interoperates with the same
 features as if the message were sent through user interaction. The only
-things to keep in mind are the following:
- - If the `content` parameter is provided, it will be used in replacement
-   of the input content.
+things to keep in mind are the following:</p>
+<ul>
+<li>
+<p>If the <code>content</code> parameter is provided, it will be used in replacement
+of the input content.</p>
+</li>
+<li>
+<p>If the <code>files</code> parameter is provided, the <code>getChatMessageFiles</code>
+callback won't be executed to get the current files of the chat.</p>
+</li>
+</ul>
+<p>Whether or not the <code>content</code> parameter is provided, the content of the
+<code>send-input</code> element will be cleared.</p>
 
- - If the `files` parameter is provided, the `getChatMessageFiles`
-   callback won't be executed to get the current files of the chat.
+---
 
-Whether or not the `content` parameter is provided, the content of the
-`send-input` element will be cleared.
+### `updateChatMessage: (messageIndex: number, message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => void`
 
-#### Parameters
+<p>Given the id of the message, it updates the content of the indexed message.</p>
 
-| Name      | Type                                                                                                                | Description |
-| --------- | ------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `content` | `{ id: string; role: "user"; content: ChatMessageContent; metadata?: any; parts?: string; transcribed?: boolean; }` |             |
-| `files`   | `File[]`                                                                                                            |             |
+---
 
-#### Returns
+### `updateLastMessage: (message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => void`
 
-Type: `Promise<void>`
+<p>Update the content of the last message, performing a re-render.</p>
+</details>
 
-### `setChatInputMessage(text: string) => Promise<void>`
+<details open>
+  <summary>
+  
+  ## Slots
+  </summary>
+  
+### `empty-chat`
 
-Set the text for the chat input
+<p>Displayed when all records are loaded but there are no messages.</p>
 
-#### Parameters
+---
 
-| Name   | Type     | Description |
-| ------ | -------- | ----------- |
-| `text` | `string` |             |
+### `loading-chat`
 
-#### Returns
+<p>Displayed while the chat is in the initial loading state.</p>
 
-Type: `Promise<void>`
+---
 
-### `updateChatMessage(messageIndex: number, message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => Promise<void>`
+### `additional-content`
 
-Given the id of the message, it updates the content of the indexed message.
+<p>Projected between the messages area and the send container. Rendered when <code>showAdditionalContent</code> is <code>true</code> and the chat is not in initial or empty state.</p>
+</details>
 
-#### Parameters
+<details open>
+  <summary>
+  
+  ## CSS Parts
+  </summary>
+  
+### `messages-container`
 
-| Name           | Type                                                                | Description |
-| -------------- | ------------------------------------------------------------------- | ----------- |
-| `messageIndex` | `number`                                                            |             |
-| `message`      | `Omit<ChatMessageSystem, "id"> \| Omit<ChatMessageAssistant, "id">` |             |
-| `mode`         | `"concat" \| "replace"`                                             |             |
+<p>The scrollable container that holds the chat messages.</p>
 
-#### Returns
+---
 
-Type: `Promise<void>`
+### `send-container`
 
-### `updateLastMessage(message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => Promise<void>`
+<p>The bottom area containing the input and action buttons.</p>
 
-Update the content of the last message, performing a re-render.
+---
 
-#### Parameters
+### `send-container-before`
 
-| Name      | Type                                                                | Description |
-| --------- | ------------------------------------------------------------------- | ----------- |
-| `message` | `Omit<ChatMessageSystem, "id"> \| Omit<ChatMessageAssistant, "id">` |             |
-| `mode`    | `"concat" \| "replace"`                                             |             |
+<p>Region before the send input within the send container. Rendered when <code>sendContainerLayout.sendContainerBefore</code> is defined.</p>
 
-#### Returns
+---
 
-Type: `Promise<void>`
+### `send-container-after`
 
-## Slots
+<p>Region after the send input within the send container. Rendered when <code>sendContainerLayout.sendContainerAfter</code> is defined.</p>
 
-| Slot                   | Description                                                                                                                                                |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"additional-content"` | Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state. |
-| `"empty-chat"`         | Displayed when all records are loaded but there are no messages.                                                                                           |
-| `"loading-chat"`       | Displayed while the chat is in the initial loading state.                                                                                                  |
+---
 
-## Dependencies
+### `send-input-before`
 
-### Depends on
+<p>Region before the text input inside the edit control. Rendered when <code>sendContainerLayout.sendInputBefore</code> is defined.</p>
 
-- [ch-live-kit-room](../live-kit-room)
-- [ch-smart-grid](../smart-grid)
-- [ch-virtual-scroller](../virtual-scroller)
-- [ch-theme](../theme)
-- [ch-edit](../edit)
+---
 
-### Graph
-```mermaid
-graph TD;
-  ch-chat --> ch-live-kit-room
-  ch-chat --> ch-smart-grid
-  ch-chat --> ch-virtual-scroller
-  ch-chat --> ch-theme
-  ch-chat --> ch-edit
-  ch-smart-grid --> ch-infinite-scroll
-  style ch-chat fill:#f9f,stroke:#333,stroke-width:4px
-```
+### `send-input-after`
 
-----------------------------------------------
+<p>Region after the text input inside the edit control. Rendered when <code>sendContainerLayout.sendInputAfter</code> is defined.</p>
 
-*Built with [StencilJS](https://stenciljs.com/)*
+---
+
+### `send-button`
+
+<p>The button that sends the current message.</p>
+
+---
+
+### `stop-response-button`
+
+<p>The button that stops the assistant's response generation. Rendered when <code>waitingResponse</code> is <code>true</code> and a <code>stopResponse</code> callback is provided.</p>
+</details>

@@ -1,25 +1,42 @@
-# ch-smart-grid-cell
+# `ch-smart-grid-cell`
 
-## Table of Contents
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `cellId:  string`
 
-- [Properties](#properties)
-- [Events](#events)
+<p>Specifies the ID of the cell.</p>
+<p>We use a specific property instead of the actual id attribute, because
+with this property we don't need this ID to be unique in the Shadow scope
+where this cell is rendered. In other words, if there is an element with
+<code>id=&quot;1&quot;</code>, this cell can still have <code>cellId=&quot;1&quot;</code>.</p>
 
-<!-- Auto Generated Below -->
+**Attribute**: <code>cell-id</code>
 
-## Properties
+**Default**: <code>undefined</code>
 
-| Property              | Attribute | Description                                                                                                                                                                                                                                                                                               | Type                     | Default     |
-| --------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------- |
-| `cellId` _(required)_ | `cell-id` | Specifies the ID of the cell.  We use a specific property instead of the actual id attribute, because with this property we don't need this ID to be unique in the Shadow scope where this cell is rendered. In other words, if there is an element with `id="1"`, this cell can still have `cellId="1"`. | `string`                 | `undefined` |
-| `smartGridRef`        | --        | Specifies the reference for the smart grid parent.  This property is useful to avoid the cell from queering the ch-smart-grid ref on the initial load.                                                                                                                                                    | `HTMLChSmartGridElement` | `undefined` |
+---
 
-## Events
+### `smartGridRef: HTMLChSmartGridElement | undefined`
 
-| Event              | Description                                                                                          | Type                  |
-| ------------------ | ---------------------------------------------------------------------------------------------------- | --------------------- |
-| `smartCellDidLoad` | Fired when the component and all its child did render for the first time.  It contains the `cellId`. | `CustomEvent<string>` |
+<p>Specifies the reference for the smart grid parent.</p>
+<p>This property is useful to avoid the cell from queering the ch-smart-grid
+ref on the initial load.</p>
 
-----------------------------------------------
+**Default**: <code>undefined</code>
+</details>
 
-*Built with [StencilJS](https://stenciljs.com/)*
+<details open>
+  <summary>
+  
+  ## Events
+  </summary>
+  
+### `smartCellDidLoad: string`
+
+<p>Fired when the component and all its child did render for the first time.</p>
+<p>It contains the <code>cellId</code>.</p>
+</details>

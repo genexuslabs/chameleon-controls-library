@@ -2,7 +2,7 @@ import type {
   CompileContext,
   Extension as FromMarkdownExtension
 } from "mdast-util-from-markdown";
-import { BlockMath, InlineMath } from "./types";
+import type { BlockMath, InlineMath } from "./types";
 
 /**
  * mdast-util-from-markdown extension to build math nodes from micromark tokens.

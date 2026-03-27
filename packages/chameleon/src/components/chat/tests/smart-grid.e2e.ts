@@ -1,152 +1,125 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import type { SmartGridDataState } from "../../smart-grid/internal/infinite-scroll/types";
-import { ChatMessage } from "../types";
-import {
-  EMPTY_ITEMS,
-  LOADING_STATE_VALUES,
-  ONE_ITEM,
-  TEN_ITEMS
-} from "./utils.e2e";
-
-const EMPTY_CHAT_SELECTOR = 'ch-chat >>> slot[name="empty-chat"]';
-const LOADING_SELECTOR = 'ch-chat >>> slot[name="loading-chat"]';
-const INFINITE_SCROLLER_SELECTOR =
-  "ch-chat >>> ch-smart-grid > ch-virtual-scroller";
-const SMART_GRID_SELECTOR = "ch-chat >>> ch-smart-grid";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
+import type { SmartGridDataState } from "../../infinite-scroll/types";
+import type { ChChat } from "../chat.lit";
+import "../chat.lit.js";
+import type { ChatMessage } from "../types";
+import { EMPTY_ITEMS, LOADING_STATE_VALUES, ONE_ITEM, TEN_ITEMS } from "./utils.e2e";
 
 const ITEMS_VALUE = [EMPTY_ITEMS, ONE_ITEM, TEN_ITEMS];
 const NOT_EMPTY_ITEMS_VALUE = [ONE_ITEM, TEN_ITEMS];
 
 describe("[ch-chat][smart-grid]", () => {
-  let page: E2EPage;
-  let chatRef: E2EElement;
+  let chatRef: ChChat;
+
+  afterEach(cleanup);
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<ch-chat></ch-chat>`,
-      failOnConsoleError: true
-    });
-
-    chatRef = await page.find("ch-chat");
+    render(html`<ch-chat></ch-chat>`);
+    chatRef = document.querySelector("ch-chat")!;
+    await chatRef.updateComplete;
   });
 
-  const getEmptyChatSlot = () => page.find(EMPTY_CHAT_SELECTOR);
-  const getLoadingSlot = () => page.find(LOADING_SELECTOR);
-  const getInfiniteScroller = () => page.find(INFINITE_SCROLLER_SELECTOR);
-  const getSmartGrid = () => page.find(SMART_GRID_SELECTOR);
+  const getEmptyChatSlot = () => chatRef.shadowRoot!.querySelector('slot[name="empty-chat"]');
+  const getLoadingSlot = () => chatRef.shadowRoot!.querySelector('slot[name="loading-chat"]');
+  const getSmartGrid = () => chatRef.shadowRoot!.querySelector("ch-smart-grid");
+  const getInfiniteScroller = () =>
+    chatRef.shadowRoot!.querySelector("ch-smart-grid ch-virtual-scroller");
 
-  it("should render the empty loading indicator by default", async () => {
-    expect(await getLoadingSlot()).toBeTruthy();
-    expect(await getEmptyChatSlot()).toBeFalsy();
-    expect(await getSmartGrid()).toBeFalsy();
-    expect(await getInfiniteScroller()).toBeFalsy();
+  it("should render the empty loading indicator by default", () => {
+    expect(getLoadingSlot()).toBeTruthy();
+    expect(getEmptyChatSlot()).toBeNull();
+    expect(getSmartGrid()).toBeNull();
+    expect(getInfiniteScroller()).toBeNull();
   });
 
-  const shouldRenderTheLoadingWhenLoadingIsInitialTest = (
-    items: ChatMessage[]
-  ) =>
+  const shouldRenderTheLoadingWhenLoadingIsInitialTest = (items: ChatMessage[]) =>
     it(`[items.length = ${items.length}] should render the loading slot when loadingState === "initial"`, async () => {
-      chatRef.setProperty("loadingState", "initial");
-      chatRef.setProperty("items", items);
-      await page.waitForChanges();
+      chatRef.loadingState = "initial";
+      chatRef.items = [...items];
+      await chatRef.updateComplete;
 
-      expect(await getLoadingSlot()).toBeTruthy();
-      expect(await getEmptyChatSlot()).toBeFalsy();
-      expect(await getSmartGrid()).toBeFalsy();
-      expect(await getInfiniteScroller()).toBeFalsy();
+      expect(getLoadingSlot()).toBeTruthy();
+      expect(getEmptyChatSlot()).toBeNull();
+      expect(getSmartGrid()).toBeNull();
+      expect(getInfiniteScroller()).toBeNull();
     });
 
-  ITEMS_VALUE.forEach(items =>
-    shouldRenderTheLoadingWhenLoadingIsInitialTest(items)
-  );
+  ITEMS_VALUE.forEach(items => shouldRenderTheLoadingWhenLoadingIsInitialTest(items));
 
-  it(`should render the empty-chat slot when loadingState === "all-records-loaded"`, async () => {
-    chatRef.setProperty("loadingState", "all-records-loaded");
-    await page.waitForChanges();
+  it('should render the empty-chat slot when loadingState === "all-records-loaded"', async () => {
+    chatRef.loadingState = "all-records-loaded";
+    await chatRef.updateComplete;
 
-    expect(await getLoadingSlot()).toBeFalsy();
-    expect(await getEmptyChatSlot()).toBeTruthy();
-    expect(await getSmartGrid()).toBeFalsy();
-    expect(await getInfiniteScroller()).toBeFalsy();
+    expect(getLoadingSlot()).toBeNull();
+    expect(getEmptyChatSlot()).toBeTruthy();
+    expect(getSmartGrid()).toBeNull();
+    expect(getInfiniteScroller()).toBeNull();
   });
 
-  it(`should render the empty-chat slot when loadingState === "all-records-loaded" and items.length === 0`, async () => {
-    chatRef.setProperty("loadingState", "all-records-loaded");
-    chatRef.setProperty("items", []);
-    await page.waitForChanges();
+  it('should render the empty-chat slot when loadingState === "all-records-loaded" and items.length === 0', async () => {
+    chatRef.loadingState = "all-records-loaded";
+    chatRef.items = [];
+    await chatRef.updateComplete;
 
-    expect(await getLoadingSlot()).toBeFalsy();
-    expect(await getEmptyChatSlot()).toBeTruthy();
-    expect(await getSmartGrid()).toBeFalsy();
-    expect(await getInfiniteScroller()).toBeFalsy();
+    expect(getLoadingSlot()).toBeNull();
+    expect(getEmptyChatSlot()).toBeTruthy();
+    expect(getSmartGrid()).toBeNull();
+    expect(getInfiniteScroller()).toBeNull();
   });
 
   const shouldRenderTheSmartGridWhenHasRecordsAndIsNotInitialLoadTest = (
     items: ChatMessage[],
     loadingState: SmartGridDataState
   ) =>
-    it(`[items.length = ${items.length}][loadingState = "${loadingState}"] should render the ch-smart-grid and ch-infinite-scroller when loadingState !== "initial" and has records`, async () => {
-      chatRef.setProperty("loadingState", loadingState);
-      chatRef.setProperty("items", items);
-      await page.waitForChanges();
+    it(`[items.length = ${items.length}][loadingState = "${loadingState}"] should render the ch-smart-grid and ch-virtual-scroller when loadingState !== "initial" and has records`, async () => {
+      chatRef.loadingState = loadingState;
+      chatRef.items = [...items];
+      await chatRef.updateComplete;
 
-      expect(await getLoadingSlot()).toBeFalsy();
-      expect(await getEmptyChatSlot()).toBeFalsy();
-      expect(await getSmartGrid()).toBeTruthy();
-      expect(await getInfiniteScroller()).toBeTruthy();
+      expect(getLoadingSlot()).toBeNull();
+      expect(getEmptyChatSlot()).toBeNull();
+      expect(getSmartGrid()).toBeTruthy();
+      expect(getInfiniteScroller()).toBeTruthy();
     });
 
   NOT_EMPTY_ITEMS_VALUE.forEach(items =>
     LOADING_STATE_VALUES.forEach(loadingState =>
-      shouldRenderTheSmartGridWhenHasRecordsAndIsNotInitialLoadTest(
-        items,
-        loadingState
-      )
+      shouldRenderTheSmartGridWhenHasRecordsAndIsNotInitialLoadTest(items, loadingState)
     )
   );
 
-  const dataProviderBindingTest = (
-    items: ChatMessage[],
-    loadingState: SmartGridDataState
-  ) =>
+  const dataProviderBindingTest = (items: ChatMessage[], loadingState: SmartGridDataState) =>
     it(`[items.length = ${items.length}][loadingState = "${loadingState}"] when the ch-smart-grid is rendered it should only set dataProvider = true if loadingState === "more-data-to-fetch"`, async () => {
-      chatRef.setProperty("loadingState", loadingState);
-      chatRef.setProperty("items", items);
-      await page.waitForChanges();
+      chatRef.loadingState = loadingState;
+      chatRef.items = [...items];
+      await chatRef.updateComplete;
 
-      expect(await (await getSmartGrid()).getProperty("dataProvider")).toBe(
-        loadingState === "more-data-to-fetch"
-      );
+      const smartGrid = getSmartGrid() as HTMLChSmartGridElement;
+      expect(smartGrid.dataProvider).toBe(loadingState === "more-data-to-fetch");
     });
 
   NOT_EMPTY_ITEMS_VALUE.forEach(items =>
-    LOADING_STATE_VALUES.forEach(loadingState =>
-      dataProviderBindingTest(items, loadingState)
-    )
+    LOADING_STATE_VALUES.forEach(loadingState => dataProviderBindingTest(items, loadingState))
   );
 
-  const inverseLoadingTest = (
-    items: ChatMessage[],
-    loadingState: SmartGridDataState
-  ) =>
+  const inverseLoadingTest = (items: ChatMessage[], loadingState: SmartGridDataState) =>
     it(`[items.length = ${items.length}][loadingState = "${loadingState}"] when the ch-smart-grid and ch-virtual-scroller are rendered, they should have inverseLoading === true`, async () => {
-      chatRef.setProperty("loadingState", loadingState);
-      chatRef.setProperty("items", items);
-      await page.waitForChanges();
+      chatRef.loadingState = loadingState;
+      chatRef.items = [...items];
+      await chatRef.updateComplete;
 
-      expect(
-        await (await getInfiniteScroller()).getProperty("inverseLoading")
-      ).toBe(true);
-      expect(await (await getSmartGrid()).getProperty("inverseLoading")).toBe(
-        true
-      );
+      const scroller = getInfiniteScroller() as HTMLChVirtualScrollerElement;
+      const smartGrid = getSmartGrid() as HTMLChSmartGridElement;
+      expect(scroller.inverseLoading).toBe(true);
+      expect(smartGrid.inverseLoading).toBe(true);
     });
 
   NOT_EMPTY_ITEMS_VALUE.forEach(items =>
-    LOADING_STATE_VALUES.forEach(loadingState =>
-      inverseLoadingTest(items, loadingState)
-    )
+    LOADING_STATE_VALUES.forEach(loadingState => inverseLoadingTest(items, loadingState))
   );
 
   // TODO: Add more unit test to check more property binding combinations
 });
+

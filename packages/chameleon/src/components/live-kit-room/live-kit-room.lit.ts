@@ -1,16 +1,19 @@
 import {
   Component,
-  Element,
-  Host,
-  Prop,
-  Watch,
-  forceUpdate,
-  h
-} from "@stencil/core";
+  KasstorElement
+} from "@genexus/kasstor-core/decorators/component.js";
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { html } from "lit";
+import { property } from "lit/decorators/property.js";
+import { state } from "lit/decorators/state.js";
+import { createRef, ref, type Ref } from "lit/directives/ref.js";
 import { Participant, RemoteParticipant, Room, Track } from "livekit-client";
-import { removeElement } from "../../common/array";
-import { connectToRoom } from "./connect";
-import { LiveKitCallbacks } from "./types";
+import { removeIndex } from "../../utilities/array.js";
+import { Host } from "../../utilities/host/host.js";
+import { connectToRoom } from "./connect.js";
+import type { LiveKitCallbacks } from "./types.js";
+
+import styles from "./live-kit-room.scss?inline";
 
 /**
  * The `ch-live-kit-room` component integrates with the LiveKit real-time communication platform to establish audio room connections and manage remote participants.
@@ -41,17 +44,15 @@ import { LiveKitCallbacks } from "./types";
  */
 @Component({
   tag: "ch-live-kit-room",
-  styleUrl: "live-kit-room.scss",
-  shadow: true
+  styles,
+  shadow: {}
 })
-export class ChLiveKitRoom {
-  @Element() el!: HTMLChLiveKitRoomElement;
-
-  #currentRoom: Room;
+export class ChLiveKitRoom extends KasstorElement {
+  #currentRoom!: Room;
 
   #participants: {
     participant: Participant | RemoteParticipant;
-    ref?: HTMLAudioElement;
+    ref: Ref<HTMLAudioElement>;
     shouldUpdate?: boolean;
   }[] = [];
 
@@ -66,7 +67,7 @@ export class ChLiveKitRoom {
    * `connect()` — changing it after connection has no effect until the next
    * reconnection.
    */
-  @Prop() readonly callbacks?: LiveKitCallbacks | undefined;
+  @property({ attribute: false }) callbacks?: LiveKitCallbacks | undefined;
 
   /**
    * Controls the connection state of the LiveKit room. Set to `true` to
@@ -76,10 +77,9 @@ export class ChLiveKitRoom {
    * tracking remote participants. When toggled to `false`, the room is
    * disconnected and audio tracks are detached.
    */
-  @Prop() readonly connected: boolean = false;
-
-  @Watch("connected")
-  connectedChanged() {
+  @property({ type: Boolean }) connected: boolean = false;
+  @Observe("connected")
+  protected connectedPropertyChanged() {
     if (this.connected) {
       this.#connect();
     } else {
@@ -95,10 +95,10 @@ export class ChLiveKitRoom {
    * Toggling this property immediately enables or disables the local
    * microphone track.
    */
-  @Prop() readonly microphoneEnabled: boolean = false;
-
-  @Watch("microphoneEnabled")
-  microphoneEnabledChanged() {
+  @property({ type: Boolean, attribute: "microphone-enabled" })
+  microphoneEnabled: boolean = false;
+  @Observe("microphoneEnabled")
+  protected microphoneEnabledChanged() {
     if (this.connected) {
       this.#toggleLocalParticipantMic();
     }
@@ -112,7 +112,7 @@ export class ChLiveKitRoom {
    * Changing this value while connected does not trigger a reconnection —
    * disconnect and reconnect to use a new token.
    */
-  @Prop() readonly token: string = "";
+  @property() token: string = "";
 
   /**
    * Specifies the WebSocket URL of the LiveKit server (e.g.,
@@ -122,7 +122,12 @@ export class ChLiveKitRoom {
    * Changing this value while connected does not trigger a reconnection —
    * disconnect and reconnect to use a new URL.
    */
-  @Prop() readonly url: string = "";
+  @property() url: string = "";
+
+  /**
+   * Internal counter to trigger re-renders when participants change.
+   */
+  @state() private _participantVersion = 0;
 
   #addOrRemoveParticipant = (
     participant: Participant,
@@ -132,15 +137,19 @@ export class ChLiveKitRoom {
 
     if (action === "add") {
       if (participantIndex === -1) {
-        this.#participants.push({ participant, shouldUpdate: true });
+        this.#participants.push({
+          participant,
+          ref: createRef<HTMLAudioElement>(),
+          shouldUpdate: true
+        });
       } else {
         this.#participants[participantIndex].shouldUpdate = true;
       }
     } else {
-      removeElement(this.#participants, participantIndex);
+      removeIndex(this.#participants, participantIndex);
     }
 
-    forceUpdate(this);
+    this._participantVersion++;
   };
 
   #connect = () =>
@@ -170,13 +179,15 @@ export class ChLiveKitRoom {
       this.microphoneEnabled
     );
 
-  connectedCallback() {
+  override connectedCallback() {
+    super.connectedCallback();
+
     if (this.connected) {
       this.#connect();
     }
   }
 
-  componentDidRender() {
+  override updated() {
     this.#participants.forEach(participant => {
       if (participant.shouldUpdate) {
         participant.shouldUpdate = false;
@@ -189,29 +200,83 @@ export class ChLiveKitRoom {
           const micPub = participant.participant.getTrackPublication(
             Track.Source.Microphone
           );
-          micPub?.audioTrack?.attach(participant.ref);
+          micPub?.audioTrack?.attach(participant.ref.value as HTMLMediaElement);
         }
       }
     });
   }
 
-  disconnectedCallback() {
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+
     if (this.connected) {
       this.#disconnectRoom();
     }
   }
 
-  render() {
-    return (
-      <Host>
-        <slot />
-        {this.#participants.map(participant => (
-          <audio
-            key={participant.participant.identity}
-            ref={el => (participant.ref = el)}
-          />
-        ))}
-      </Host>
-    );
+  override render() {
+    Host(this, {});
+
+    return html`<slot></slot>${this.#participants.map(
+      participant =>
+        html`<audio ${ref(participant.ref)}></audio>`
+    )}`;
   }
 }
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChLiveKitRoomElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChLiveKitRoomElement;
+  }
+
+  /**
+   * The `ch-live-kit-room` component integrates with the LiveKit real-time communication platform to establish audio room connections and manage remote participants.
+   *
+   * @remarks
+   * ## Features
+   *  - Room lifecycle management: connect, disconnect, and track remote participants via the `livekit-client` SDK.
+   *  - Automatic attachment of remote audio tracks to dynamically rendered `<audio>` elements in the shadow DOM.
+   *  - Local microphone toggle support via the `microphoneEnabled` property.
+   *  - Callbacks for transcription updates, active speaker changes, mute/unmute, and connection quality via the `callbacks` property.
+   *  - Renders a default `<slot>` for projecting custom UI (e.g., transcription display, controls).
+   *
+   * ## Use when
+   *  - Building voice-enabled conversational experiences with LiveKit.
+   *  - Adding real-time audio communication to a `ch-chat` component.
+   *
+   * ## Do not use when
+   *  - You need a full video conferencing UI — use a dedicated LiveKit UI framework instead.
+   *  - Video tracks are required — this component only handles audio tracks.
+   *
+   * ## Accessibility
+   *  - The rendered `<audio>` elements are hidden (`display: none`) and play automatically when remote tracks are attached. No keyboard interaction is required for audio playback.
+   *  - The host uses `display: contents`, so it does not affect the layout of slotted content.
+   *
+   * @slot - Default slot. Projects custom content (e.g., control buttons, transcription UI) within the component's shadow root.
+   *
+   * @status experimental
+   */// prettier-ignore
+  interface HTMLChLiveKitRoomElement extends ChLiveKitRoom {
+    // Extend the ChLiveKitRoom class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-live-kit-room": HTMLChLiveKitRoomElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-live-kit-room": HTMLChLiveKitRoomElement;
+  }
+}
+

@@ -1,13 +1,11 @@
-import type { SmartGridDataState } from "../../smart-grid/internal/infinite-scroll/types";
+import type { SmartGridDataState } from "../../infinite-scroll/types";
 import type { ChatMessage } from "../types";
 
 export const LONG_STRING =
   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione eveniet error temporibus officia, facilis ducimus doloremque. Odit, vel reiciendis nihil dicta officiis facere itaque necessitatibus molestias incidunt perferendis ea eos?";
 
 export const EMPTY_ITEMS = [];
-export const ONE_ITEM: ChatMessage[] = [
-  { id: "1", role: "assistant", content: "1" }
-];
+export const ONE_ITEM: ChatMessage[] = [{ id: "1", role: "assistant", content: "1" }];
 export const TEN_ITEMS: ChatMessage[] = [
   { id: "1", role: "assistant", content: "Content 1 " + LONG_STRING },
   { id: "2", role: "error", content: "Content 2" + LONG_STRING },
@@ -95,3 +93,4 @@ export const LOADING_STATE_VALUES: SmartGridDataState[] = [
   "more-data-to-fetch",
   "all-records-loaded"
 ];
+

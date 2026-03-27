@@ -1,6 +1,6 @@
 import { html } from "lit";
-import { MarkdownViewerExtensionRender } from "../parsers/types";
-import { ExtendedContentMapping } from "./types";
+import type { MarkdownViewerExtensionRender } from "../parsers/types";
+import type { ExtendedContentMapping } from "./types";
 
 const doSomething = (event: PointerEvent) => {
   const buttonRef = event.target as HTMLButtonElement;

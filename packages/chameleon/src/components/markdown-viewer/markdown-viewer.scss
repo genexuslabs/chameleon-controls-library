@@ -1,4 +1,4 @@
-@import "../../common/base";
+@use "../../utilities/scss/base" as *;
 
 @include button-reset();
 @include box-sizing();
@@ -23,10 +23,6 @@
   background-color: var(--ch-markdown-viewer-indicator-color);
   transform: translateY(0.125em);
   animation: twinkle 0.75s linear infinite;
-}
-
-ch-markdown-viewer-lit {
-  display: contents;
 }
 
 .ch-markdown-table-column-start {

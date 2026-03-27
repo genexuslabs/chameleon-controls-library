@@ -1,4 +1,4 @@
-import { inBetween } from "../../common/utils";
+import { inBetween } from "../../utilities/in-between.js";
 import type { SmartGridModel } from "../smart-grid/types";
 import type {
   SmartGridVirtualPosition,

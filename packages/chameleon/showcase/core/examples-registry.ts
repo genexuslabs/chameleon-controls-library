@@ -28,6 +28,10 @@ import "../../src/components/tab/tab.lit";
 import "../../src/components/tabular-grid/tabular-grid-render.lit";
 import "../../src/components/textblock/textblock.lit";
 import "../../src/components/theme/theme.lit";
+import "../../src/components/chat/chat.lit";
+import "../../src/components/markdown-viewer/markdown-viewer.lit";
+import "../../src/components/smart-grid/smart-grid.lit";
+import "../../src/components/live-kit-room/live-kit-room.lit";
 
 // ---- Models for complex components ----
 
@@ -227,6 +231,26 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
 
   ChBreadcrumb: () =>
     html`<ch-breadcrumb-render .model=${BREADCRUMB_MODEL}></ch-breadcrumb-render>`,
+
+  // ---- AI / Real-time ----
+  ChChat: () =>
+    html`<div style="height: 320px; display: block;">
+      <ch-chat></ch-chat>
+    </div>`,
+
+  ChMarkdownViewer: () =>
+    html`<ch-markdown-viewer value=${"# Hello\n\nThis is **markdown** rendered by `ch-markdown-viewer`.\n\n- Item 1\n- Item 2\n- Item 3"}></ch-markdown-viewer>`,
+
+  ChSmartGrid: () =>
+    html`<div style="height: 200px; display: block;">
+      <ch-smart-grid></ch-smart-grid>
+    </div>`,
+
+  ChLiveKitRoom: () =>
+    html`<div style="font-size: 13px; color: #374151; padding: 16px; border: 1px solid #e5e7eb; border-radius: 6px;">
+      <p style="margin: 0 0 8px; font-weight: 600;">ch-live-kit-room</p>
+      <p style="margin: 0;">Connects to a LiveKit room for real-time audio. Provide <code>url</code> and <code>token</code> props to establish a connection.</p>
+    </div>`,
 
   // ---- Theming ----
   ChTheme: () =>
@@ -767,6 +791,106 @@ const model: BreadCrumbModel = [
 
 // In your template:
 // <ch-breadcrumb-render .model=\${model}></ch-breadcrumb-render>`
+    }
+  ],
+
+  // ---- AI / Real-time ----
+  "ch-chat": [
+    {
+      title: "Basic chat",
+      description: "A conversational AI chat interface with virtual scrolling and markdown rendering.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChChat", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ChatMessage, ChatTranslations } from "@genexus/chameleon-controls-library-lit";
+
+const items: ChatMessage[] = [
+  { id: "1", role: "user",      content: "Hello!" },
+  { id: "2", role: "assistant", content: "Hi! How can I help you today?" }
+];
+
+// In your template:
+// <ch-chat .items=\${items}></ch-chat>`
+    }
+  ],
+  "ch-markdown-viewer": [
+    {
+      title: "Markdown rendering",
+      description: "Renders a Markdown string with GFM support (tables, code blocks, math, etc.).",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChMarkdownViewer", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`// In your template:
+// <ch-markdown-viewer .value=\${markdownString}></ch-markdown-viewer>
+
+const markdownString = \`
+# Hello
+
+This is **markdown** rendered by \\\`ch-markdown-viewer\\\`.
+
+- Item 1
+- Item 2
+- Item 3
+\`;`
+    }
+  ],
+  "ch-smart-grid": [
+    {
+      title: "Virtualized grid",
+      description: "A high-performance virtualized grid with infinite scroll support.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChSmartGrid", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`// ch-smart-grid works with ch-virtual-scroller to render large datasets efficiently.
+// Use the virtualItemsChanged event to update the visible slice.
+
+// In your template:
+// <ch-smart-grid>
+//   <ch-virtual-scroller slot="grid-content" .items=\${allItems}
+//     @virtualItemsChanged=\${onVirtualItemsChanged}>
+//     \${visibleItems.map(item => html\`
+//       <ch-smart-grid-cell cell-id=\${item.id}>
+//         <!-- item content -->
+//       </ch-smart-grid-cell>
+//     \`)}
+//   </ch-virtual-scroller>
+// </ch-smart-grid>`
+    }
+  ],
+  "ch-live-kit-room": [
+    {
+      title: "LiveKit room",
+      description: "Connects to a LiveKit room for real-time audio communication.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChLiveKitRoom", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`// In your template:
+// <ch-live-kit-room
+//   url="wss://your-livekit-server.io"
+//   .token=\${participantToken}
+//   microphone-enabled
+//   @liveKitCallbacks=\${handleCallbacks}
+// ></ch-live-kit-room>`
     }
   ],
 

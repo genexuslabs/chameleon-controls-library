@@ -348,7 +348,7 @@ declare global {
    * @status experimental
    *
    * @slot {name} - Named slots matching each item of `type: "slot"` in the model. These slots allow projecting custom content for individual action items and are forwarded into the overflow menu when the item collapses.
-   */ // prettier-ignore
+   */// prettier-ignore
   interface HTMLChActionGroupRenderElement extends ChActionGroupRender {
     // Extend the ChActionGroupRender class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

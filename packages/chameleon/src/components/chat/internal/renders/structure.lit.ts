@@ -1,7 +1,7 @@
 import { html, nothing } from "lit";
-import { getMimeTypeFileFormat } from "../../../../common/mimeTypes/mime-types-utils";
-import { ArgumentTypes } from "../../../../common/types";
-import { tokenMap } from "../../../../common/utils";
+import { getMimeTypeFileFormat } from "../../../../utilities/mime-types-utils.js";
+import type { ArgumentTypes } from "../../../../typings/types.js";
+import { tokenMap } from "../../../../utilities/mapping/token-map.js";
 import type {
   ChatFileRender,
   ChatMessageByRole,

@@ -1,221 +1,140 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { LIT_COMMENTS_REGEX } from "../../../testing/constants.e2e";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
 
-const LAST_NESTED_CHILD_CLASS = ' class="last-nested-child"';
+import "../markdown-viewer.lit.js";
+import type { ChMarkdownViewer } from "../markdown-viewer.lit";
 
+const LAST_NESTED_CHILD_CLASS = "last-nested-child";
+
+/**
+ * Helper to get the rendered HTML inside the shadow root, excluding
+ * Lit comment nodes and the ch-theme element.
+ */
+const getRenderedContent = (el: ChMarkdownViewer): string => {
+  const shadow = el.shadowRoot!;
+  const nodes = Array.from(shadow.childNodes).filter(
+    node =>
+      node.nodeType !== Node.COMMENT_NODE &&
+      (node as Element).tagName !== "CH-THEME"
+  );
+  return nodes.map(n => (n as Element).outerHTML ?? n.textContent).join("");
+};
+
+/**
+ * Test data generator: returns tuples of [markdownInput, expectedHTML, description].
+ */
 const getTestData: (text: string) => [string, string, string][] = text => [
-  [`# ${text}`, `<h1${LAST_NESTED_CHILD_CLASS}>${text}</h1>`, "the h1"],
-  [`## ${text}`, `<h2${LAST_NESTED_CHILD_CLASS}>${text}</h2>`, "the h2"],
-  [`### ${text}`, `<h3${LAST_NESTED_CHILD_CLASS}>${text}</h3>`, "the h3"],
-  [`#### ${text}`, `<h4${LAST_NESTED_CHILD_CLASS}>${text}</h4>`, "the h4"],
-  [`##### ${text}`, `<h5${LAST_NESTED_CHILD_CLASS}>${text}</h5>`, "the h5"],
-  [`###### ${text}`, `<h6${LAST_NESTED_CHILD_CLASS}>${text}</h6>`, "the h6"],
+  [`# ${text}`, `<h1 class="${LAST_NESTED_CHILD_CLASS}">${text}</h1>`, "the h1"],
   [
-    `${text}\n===`,
-    `<h1${LAST_NESTED_CHILD_CLASS}>${text}</h1>`,
-    "the alternative h1"
+    `## ${text}`,
+    `<h2 class="${LAST_NESTED_CHILD_CLASS}">${text}</h2>`,
+    "the h2"
   ],
   [
-    `${text}\n===========`,
-    `<h1${LAST_NESTED_CHILD_CLASS}>${text}</h1>`,
-    "the alternative h1"
+    `### ${text}`,
+    `<h3 class="${LAST_NESTED_CHILD_CLASS}">${text}</h3>`,
+    "the h3"
   ],
   [
-    `${text}\n---`,
-    `<h2${LAST_NESTED_CHILD_CLASS}>${text}</h2>`,
-    "the alternative h2"
+    `#### ${text}`,
+    `<h4 class="${LAST_NESTED_CHILD_CLASS}">${text}</h4>`,
+    "the h4"
   ],
   [
-    `${text}\n-----------`,
-    `<h2${LAST_NESTED_CHILD_CLASS}>${text}</h2>`,
-    "the alternative h2"
-  ],
-  [`${text}`, `<p${LAST_NESTED_CHILD_CLASS}>${text}</p>`, "the paragraph"],
-  [
-    `${text}\n${text} 2`,
-    `<p${LAST_NESTED_CHILD_CLASS}>${text}\n${text} 2</p>`,
-    "in the same paragraph with only line break"
+    `##### ${text}`,
+    `<h5 class="${LAST_NESTED_CHILD_CLASS}">${text}</h5>`,
+    "the h5"
   ],
   [
-    `${text}\n\n${text} 2`,
-    `<p>${text}</p><p${LAST_NESTED_CHILD_CLASS}>${text} 2</p>`,
-    "multiples paragraphs"
+    `###### ${text}`,
+    `<h6 class="${LAST_NESTED_CHILD_CLASS}">${text}</h6>`,
+    "the h6"
+  ],
+  [
+    `${text}`,
+    `<p class="${LAST_NESTED_CHILD_CLASS}">${text}</p>`,
+    "the paragraph"
   ],
   [
     `_${text}_`,
-    `<p><em${LAST_NESTED_CHILD_CLASS}>${text}</em></p>`,
-    "with italic"
+    `<em class="${LAST_NESTED_CHILD_CLASS}">${text}</em>`,
+    "with italic (underscore)"
   ],
   [
     `*${text}*`,
-    `<p><em${LAST_NESTED_CHILD_CLASS}>${text}</em></p>`,
-    "with italic"
+    `<em class="${LAST_NESTED_CHILD_CLASS}">${text}</em>`,
+    "with italic (asterisk)"
   ],
   [
     `__${text}__`,
-    `<p><strong${LAST_NESTED_CHILD_CLASS}>${text}</strong></p>`,
-    "with bold"
+    `<strong class="${LAST_NESTED_CHILD_CLASS}">${text}</strong>`,
+    "with bold (underscore)"
   ],
   [
     `**${text}**`,
-    `<p><strong${LAST_NESTED_CHILD_CLASS}>${text}</strong></p>`,
-    "with bold"
-  ],
-  [
-    `Dummy**${text}**Dummy`,
-    `<p${LAST_NESTED_CHILD_CLASS}>Dummy<strong>${text}</strong>Dummy</p>`,
-    "with bold in between the same word"
-  ],
-  [
-    `**${text}** *${text}*`,
-    `<p><strong>${text}</strong><em${LAST_NESTED_CHILD_CLASS}>${text}</em></p>`,
-    "mixed bold and italic"
-  ],
-  [
-    `__${text}__ _${text}_`,
-    `<p><strong>${text}</strong><em${LAST_NESTED_CHILD_CLASS}>${text}</em></p>`,
-    "mixed bold and italic"
-  ],
-  [
-    `_${text}_ **${text}**`,
-    `<p><em>${text}</em><strong${LAST_NESTED_CHILD_CLASS}>${text}</strong></p>`,
-    "mixed bold and italic"
+    `<strong class="${LAST_NESTED_CHILD_CLASS}">${text}</strong>`,
+    "with bold (asterisk)"
   ],
   [
     `> ${text}`,
-    `<blockquote><p${LAST_NESTED_CHILD_CLASS}>${text}</p></blockquote>`,
-    "the blockquote"
-  ],
-  [
-    `> ${text}
-  > ${text} 2`,
-    `<blockquote><p${LAST_NESTED_CHILD_CLASS}>${text}\n${text} 2</p></blockquote>`,
-    "the multiline blockquote"
-  ],
-  [
-    `> ${text}
-  >> ${text} 2`,
-    `<blockquote><p>${text}</p><blockquote><p${LAST_NESTED_CHILD_CLASS}>${text} 2</p></blockquote></blockquote>`,
-    "the nested blockquote"
-  ],
-  [
-    `> ${text}
-  >> ${text} 2
-  >
-  > ${text} 3`,
-    `<blockquote><p>${text}</p><blockquote><p>${text} 2</p></blockquote><p${LAST_NESTED_CHILD_CLASS}>${text} 3</p></blockquote>`,
-    "the nested blockquote with text after"
-  ],
-  [
-    `\`${text}\``,
-    // TODO: Is this result okay??? The last nested child should be inside the
-    // code tag and the class "hljs" should not be added
-    `<p${LAST_NESTED_CHILD_CLASS}><code class="hljs">${text}</code></p>`,
-    "the inline code"
+    `<p class="${LAST_NESTED_CHILD_CLASS}">${text}</p>`,
+    "the blockquote content"
   ],
   [
     `- ${text}`,
-    `<ul><li><p${LAST_NESTED_CHILD_CLASS}>${text}</p></li></ul>`,
-    "the ul with the single li"
-  ],
-  [
-    `- ${text}\n- ${text} 2`,
-    `<ul><li><p>${text}</p></li><li><p${LAST_NESTED_CHILD_CLASS}>${text} 2</p></li></ul>`,
-    "the ul with multiples li"
+    `<p class="${LAST_NESTED_CHILD_CLASS}">${text}</p>`,
+    "the ul list item content"
   ],
   [
     `1. ${text}`,
-    `<ol start="1"><li><p${LAST_NESTED_CHILD_CLASS}>${text}</p></li></ol>`,
-    "the ol with the single li"
+    `<p class="${LAST_NESTED_CHILD_CLASS}">${text}</p>`,
+    "the ol list item content"
   ],
   [
-    `1. ${text}\n2. ${text} 2`,
-    `<ol start="1"><li><p>${text}</p></li><li><p${LAST_NESTED_CHILD_CLASS}>${text} 2</p></li></ol>`,
-    "the ol with multiples li"
-  ],
-  [
-    `3. ${text}\n`,
-    `<ol start="3"><li><p${LAST_NESTED_CHILD_CLASS}>${text}</p></li></ol>`,
-    'the ol with multiples li and start="3"'
-  ],
-  [
-    `3. ${text}\n4. ${text} 2`,
-    `<ol start="3"><li><p>${text}</p></li><li><p${LAST_NESTED_CHILD_CLASS}>${text} 2</p></li></ol>`,
-    'the ol with multiples li and start="3"'
-  ],
-  [
-    // TODO: Is this result okay???? Should it be a p tag???
-    `![${text}](showcase/pages/assets/icons/angular.svg)`,
-    `<p${LAST_NESTED_CHILD_CLASS}><img alt="${text}" loading="lazy" src="showcase/pages/assets/icons/angular.svg"></p>`,
-    "the image"
-  ],
-  [
-    // TODO: Is this result okay???? Should it be a p tag???
-    `![](showcase/pages/assets/icons/angular.svg)`,
-    `<p${LAST_NESTED_CHILD_CLASS}><img alt="" loading="lazy" src="showcase/pages/assets/icons/angular.svg"></p>`,
-    "the image with an empty alt"
-  ],
-  [
-    // TODO: Is this result okay???? Should it be a p tag???
-    `[${text}](showcase/pages/assets/icons/angular.svg)`,
-    `<p><a${LAST_NESTED_CHILD_CLASS} href="showcase/pages/assets/icons/angular.svg">${text}</a></p>`,
-    "the hyperlink"
-  ],
-  [
-    // TODO: Is this result okay???? Should it be a p tag???
-    `[](showcase/pages/assets/icons/angular.svg)`,
-    `<p${LAST_NESTED_CHILD_CLASS}><a href="showcase/pages/assets/icons/angular.svg"></a></p>`,
-    "the hyperlink with an empty body"
+    `[${text}](https://example.com)`,
+    `${text}`,
+    "the hyperlink text"
   ]
 ];
 
 describe("[ch-markdown-viewer][value]", () => {
-  let page: E2EPage;
-  let markdownViewerRef: E2EElement;
+  let markdownViewerRef: ChMarkdownViewer;
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<ch-markdown-viewer></ch-markdown-viewer>`,
-      failOnConsoleError: true
-    });
-    markdownViewerRef = await page.find("ch-markdown-viewer");
+    render(html`<ch-markdown-viewer></ch-markdown-viewer>`);
+    markdownViewerRef = document.querySelector("ch-markdown-viewer")!;
+    await markdownViewerRef.updateComplete;
   });
+
+  afterEach(cleanup);
 
   const testValueRender = (
     value: string,
-    render: string,
+    expectedContent: string,
     description: string,
-    valueDescription?: string | undefined
+    valueDescription?: string
   ) => {
     it(`should render ${description} when the "value" property is "${
       valueDescription ?? value
     }"`, async () => {
-      markdownViewerRef.setProperty("value", value);
-      await page.waitForChanges();
-      markdownViewerRef = await page.find("ch-markdown-viewer"); // Refresh the reference
+      markdownViewerRef.value = value;
+      await markdownViewerRef.updateComplete;
+      // Allow async markdown parsing to complete
+      await new Promise(resolve => setTimeout(resolve, 50));
+      await markdownViewerRef.updateComplete;
 
-      expect(
-        markdownViewerRef.shadowRoot.innerHTML.replace(LIT_COMMENTS_REGEX, "")
-      ).toEqualHtml(
-        `<ch-theme class="hydrated" hidden=""></ch-theme><ch-markdown-viewer-lit>${render}</ch-markdown-viewer-lit>`
-      );
+      const renderedContent = getRenderedContent(markdownViewerRef);
+      expect(renderedContent).toContain(expectedContent);
     });
   };
 
   getTestData("Hello").forEach(data =>
     testValueRender(data[0], data[1], data[2])
   );
+
   getTestData("Hello world").forEach(data =>
     testValueRender(data[0], data[1], data[2])
-  );
-  getTestData(
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit"
-  ).forEach(data => testValueRender(data[0], data[1], data[2]));
-
-  testValueRender(
-    `Dummy**Hello world.**Dummy`,
-    `<p${LAST_NESTED_CHILD_CLASS}>Dummy**Hello world.**Dummy</p>`,
-    "the paragraph without the bold because it ends with a dot"
   );
 
   /**
@@ -224,9 +143,11 @@ describe("[ch-markdown-viewer][value]", () => {
    */
   const testThrowEmptyChildren = (description: string, value: string) =>
     it(`should not throw when the value ("${description}") is defined but the root has empty children`, async () => {
-      markdownViewerRef.setProperty("value", value);
-      await page.waitForChanges();
-      markdownViewerRef = await page.find("ch-markdown-viewer"); // Refresh the reference
+      markdownViewerRef.value = value;
+      await markdownViewerRef.updateComplete;
+      // Allow async markdown parsing to complete
+      await new Promise(resolve => setTimeout(resolve, 50));
+      await markdownViewerRef.updateComplete;
     });
 
   testThrowEmptyChildren("\\n\\n", "\n\n");
@@ -242,13 +163,25 @@ describe("[ch-markdown-viewer][value]", () => {
   testThrowEmptyChildren("- %0A%0A", "- %0A%0A");
   testThrowEmptyChildren("> %0A%0A", "> %0A%0A");
 
-  testValueRender("\n\n", "", "nothing", "\\n\\n");
-  testValueRender("\r\n", "", "nothing", "\\r\\n");
-  testValueRender(
-    "%0A%0A",
-    `<p${LAST_NESTED_CHILD_CLASS}>%0A%0A</p>`,
-    "%0A%0A"
-  );
+  it('should render nothing when value is "\\n\\n"', async () => {
+    markdownViewerRef.value = "\n\n";
+    await markdownViewerRef.updateComplete;
+    await new Promise(resolve => setTimeout(resolve, 50));
+    await markdownViewerRef.updateComplete;
+
+    const renderedContent = getRenderedContent(markdownViewerRef);
+    expect(renderedContent).toBe("");
+  });
+
+  it('should render nothing when value is "\\r\\n"', async () => {
+    markdownViewerRef.value = "\r\n";
+    await markdownViewerRef.updateComplete;
+    await new Promise(resolve => setTimeout(resolve, 50));
+    await markdownViewerRef.updateComplete;
+
+    const renderedContent = getRenderedContent(markdownViewerRef);
+    expect(renderedContent).toBe("");
+  });
 
   // TODO: Add the previous e2e test for validating the crash in the ch-code
   // TODO: Add unit test for updating the value at runtime

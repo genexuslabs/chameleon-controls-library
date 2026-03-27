@@ -1,4 +1,4 @@
-import { ChatMessage, ChatMessageRenderBySections } from "../../types";
+import type { ChatMessage, ChatMessageRenderBySections } from "../../types";
 import { defaultActionsRender } from "./actions.lit";
 import { defaultCodeBlockRender } from "./code-block.lit";
 import { defaultContentRender } from "./content.lit";

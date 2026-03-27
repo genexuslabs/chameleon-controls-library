@@ -46,6 +46,13 @@
     "shiki": "^3.4.2",
     "tslib": "^2.8.1"
   },
+  "dependencies": {
+    "hast-util-from-html": "^2.0.1",
+    "hast-util-sanitize": "^5.0.1",
+    "mdast-util-from-markdown": "^2.0.0",
+    "mdast-util-gfm": "^3.0.0",
+    "micromark-extension-gfm": "^3.0.0"
+  },
   "devDependencies": {
     "@genexus/vite-plugin-kasstor": "~0.2.0",
     "@genexus/vite-plugin-mercury": "~1.2.0"
@@ -62,6 +69,15 @@
       "types": "./dist/browser/development/index.d.ts",
       "development": "./dist/browser/development/index.js",
       "default": "./dist/browser/production/index.js"
+    },
+    "./components/chat.js": {
+      "node": {
+        "development": "./dist/node/development/components/chat/chat.lit.js",
+        "default": "./dist/node/production/components/chat/chat.lit.js"
+      },
+      "types": "./dist/browser/development/components/chat/chat.lit.d.ts",
+      "development": "./dist/browser/development/components/chat/chat.lit.js",
+      "default": "./dist/browser/production/components/chat/chat.lit.js"
     },
     "./components/checkbox.js": {
       "node": {
@@ -80,6 +96,24 @@
       "types": "./dist/browser/development/components/code/code.lit.d.ts",
       "development": "./dist/browser/development/components/code/code.lit.js",
       "default": "./dist/browser/production/components/code/code.lit.js"
+    },
+    "./components/live-kit-room.js": {
+      "node": {
+        "development": "./dist/node/development/components/live-kit-room/live-kit-room.lit.js",
+        "default": "./dist/node/production/components/live-kit-room/live-kit-room.lit.js"
+      },
+      "types": "./dist/browser/development/components/live-kit-room/live-kit-room.lit.d.ts",
+      "development": "./dist/browser/development/components/live-kit-room/live-kit-room.lit.js",
+      "default": "./dist/browser/production/components/live-kit-room/live-kit-room.lit.js"
+    },
+    "./components/markdown-viewer.js": {
+      "node": {
+        "development": "./dist/node/development/components/markdown-viewer/markdown-viewer.lit.js",
+        "default": "./dist/node/production/components/markdown-viewer/markdown-viewer.lit.js"
+      },
+      "types": "./dist/browser/development/components/markdown-viewer/markdown-viewer.lit.d.ts",
+      "development": "./dist/browser/development/components/markdown-viewer/markdown-viewer.lit.js",
+      "default": "./dist/browser/production/components/markdown-viewer/markdown-viewer.lit.js"
     },
     "./components/navigation-list-render.js": {
       "node": {
@@ -179,6 +213,15 @@
       "types": "./dist/browser/development/components/slider/slider.lit.d.ts",
       "development": "./dist/browser/development/components/slider/slider.lit.js",
       "default": "./dist/browser/production/components/slider/slider.lit.js"
+    },
+    "./components/smart-grid.js": {
+      "node": {
+        "development": "./dist/node/development/components/smart-grid/smart-grid.lit.js",
+        "default": "./dist/node/production/components/smart-grid/smart-grid.lit.js"
+      },
+      "types": "./dist/browser/development/components/smart-grid/smart-grid.lit.d.ts",
+      "development": "./dist/browser/development/components/smart-grid/smart-grid.lit.js",
+      "default": "./dist/browser/production/components/smart-grid/smart-grid.lit.js"
     },
     "./components/switch.js": {
       "node": {

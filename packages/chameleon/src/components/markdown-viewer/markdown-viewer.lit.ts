@@ -1,12 +1,25 @@
-import { Component, Element, Host, Prop, Watch, h } from "@stencil/core";
-import type { TemplateResult } from "lit";
+import {
+  Component,
+  KasstorElement
+} from "@genexus/kasstor-core/decorators/component.js";
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { html, nothing, type TemplateResult } from "lit";
+import { property } from "lit/decorators/property.js";
 import type { Parent as MdAstParent } from "mdast";
+
+import { Host } from "../../utilities/host/host";
+
 import { defaultCodeRender } from "./parsers/code-render.lit";
 import {
   LAST_NESTED_CHILD_CLASS,
   markdownToJSX
 } from "./parsers/markdown-to-template-result.lit";
+import { markdownViewerExtension } from "./parsers/math";
 import {
+  markdownViewerRenderDictionary,
+  renderDefinedValues
+} from "./parsers/renders.lit";
+import type {
   MarkdownViewerCodeRender,
   MarkdownViewerExtension,
   MarkdownViewerExtensionRender,
@@ -14,14 +27,9 @@ import {
   MarkdownViewerRenderMetadata
 } from "./parsers/types";
 
-import {
-  markdownViewerRenderDictionary,
-  renderDefinedValues
-} from "./parsers/renders.lit";
+import type { ThemeModel } from "../theme/theme-types";
 
-// Side effect to define the ch-markdown-viewer-lit
-import "./internal/markdown-viewer.lit";
-import { markdownViewerExtension } from "./parsers/math";
+import styles from "./markdown-viewer.scss?inline";
 
 /**
  * The `ch-markdown-viewer` component renders Markdown content as rich HTML with GFM support, code highlighting, math rendering, and streaming indicators.
@@ -52,21 +60,19 @@ import { markdownViewerExtension } from "./parsers/math";
  * @status experimental
  */
 @Component({
-  shadow: true,
-  styleUrl: "markdown-viewer.scss",
+  shadow: {},
+  styles,
   tag: "ch-markdown-viewer"
 })
-export class ChMarkdownViewer {
-  #templateResult: TemplateResult[];
-  #renders: MarkdownViewerExtensionRender<object>;
-
-  @Element() el: HTMLChMarkdownViewerElement;
+export class ChMarkdownViewer extends KasstorElement {
+  #templateResult: TemplateResult[] | undefined;
+  #renders!: MarkdownViewerExtensionRender<object>;
 
   // /**
   //  * `true` to render potentially dangerous user content when rendering HTML
   //  * with the option `rawHtml === true`
   //  */
-  // @Prop() readonly allowDangerousHtml: boolean = false;
+  // @property({ attribute: "allow-dangerous-html" }) allowDangerousHtml: boolean = false;
 
   /**
    * When `true`, visually hides the contents of the root node until the
@@ -74,7 +80,8 @@ export class ChMarkdownViewer {
    * Only takes effect when the `theme` property is set; otherwise this
    * property has no visible effect.
    */
-  @Prop() readonly avoidFlashOfUnstyledContent: boolean = false;
+  @property({ attribute: "avoid-flash-of-unstyled-content", type: Boolean })
+  avoidFlashOfUnstyledContent: boolean = false;
 
   /**
    * Specifies an array of custom extensions to extend and customize the
@@ -92,10 +99,12 @@ export class ChMarkdownViewer {
    * <p>Some text <button type="button" @click=${doSomething}>Value</button></p>
    * ```
    */
-  @Prop() readonly extensions: MarkdownViewerExtension<object>[] | undefined;
-  @Watch("extensions")
-  extensionsChanged() {
+  @property({ attribute: false })
+  extensions: MarkdownViewerExtension<object>[] | undefined;
+  @Observe("extensions")
+  protected extensionsChanged() {
     this.#mergeCustomRendersInASingleObject();
+    this.#parseMarkdown();
   }
 
   /**
@@ -107,7 +116,7 @@ export class ChMarkdownViewer {
    * internally, so this flag controls whether HTML is passed through to
    * the rendered output.
    */
-  @Prop() readonly rawHtml: boolean = false;
+  @property({ attribute: "raw-html", type: Boolean }) rawHtml: boolean = false;
 
   /**
    * Allows custom rendering of code blocks (fenced code).
@@ -115,7 +124,8 @@ export class ChMarkdownViewer {
    * used. Provide a custom function to render code blocks with a different
    * component or UI (e.g., adding copy buttons, line numbers, etc.).
    */
-  @Prop() readonly renderCode?: MarkdownViewerCodeRender | undefined;
+  @property({ attribute: false })
+  renderCode: MarkdownViewerCodeRender | undefined;
 
   /**
    * When `true`, a blinking cursor-like indicator is displayed after the
@@ -126,7 +136,12 @@ export class ChMarkdownViewer {
    * `--ch-markdown-viewer-indicator-color`, `--ch-markdown-viewer-inline-size`,
    * and `--ch-markdown-viewer-block-size`.
    */
-  @Prop() readonly showIndicator: boolean = false;
+  @property({ attribute: "show-indicator", type: Boolean })
+  showIndicator: boolean = false;
+  @Observe("showIndicator")
+  protected showIndicatorChanged() {
+    this.#parseMarkdown();
+  }
 
   /**
    * Specifies the theme model name to be used for rendering the control.
@@ -136,7 +151,8 @@ export class ChMarkdownViewer {
    * Works together with `avoidFlashOfUnstyledContent` to prevent unstyled
    * content from being visible before the theme loads.
    */
-  @Prop() readonly theme: string | undefined = "ch-markdown-viewer";
+  @property({ attribute: false })
+  theme: ThemeModel | undefined = "ch-markdown-viewer";
 
   /**
    * Specifies the Markdown string to parse and render.
@@ -144,12 +160,15 @@ export class ChMarkdownViewer {
    * If parsing fails, the error is logged to the console and the
    * previously rendered content is preserved.
    */
-  @Prop() readonly value?: string | undefined;
+  @property({ attribute: false }) value: string | undefined;
+  @Observe("value")
+  protected valueChanged() {
+    this.#parseMarkdown();
+  }
 
   /**
-   * Converts markdown abstract syntax tree (mdast) into TemplateResult`.
+   * Converts markdown abstract syntax tree (mdast) into TemplateResult.
    */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #renderChildren = async (
     parent: MdAstParent,
     metadata: MarkdownViewerRenderMetadata,
@@ -161,7 +180,7 @@ export class ChMarkdownViewer {
     // Get the async TemplateResult
     for (let index = 0; index < childrenLength; index++) {
       const child = parent.children[index];
-      const render = this.#renders[child.type];
+      const render = (this.#renders as Record<string, any>)[child.type];
 
       if (render) {
         asyncTemplateResult.push(render(child, metadata, functions));
@@ -192,12 +211,10 @@ export class ChMarkdownViewer {
     );
   };
 
-  connectedCallback() {
-    this.#mergeCustomRendersInASingleObject();
-  }
-
-  async componentWillRender() {
+  async #parseMarkdown() {
     if (!this.value) {
+      this.#templateResult = undefined;
+      this.requestUpdate();
       return;
     }
 
@@ -223,32 +240,43 @@ export class ChMarkdownViewer {
         error
       );
     }
+
+    this.requestUpdate();
   }
 
-  render() {
+  override connectedCallback() {
+    super.connectedCallback();
+    this.#mergeCustomRendersInASingleObject();
+
+    // Lazy load ch-theme
+    import("../theme/theme.lit.js");
+    // Lazy load ch-code for code blocks
+    import("../code/code.lit.js");
+  }
+
+  override render() {
     if (!this.value) {
-      return "";
+      return nothing;
     }
 
-    return (
-      <Host
-        class={
-          this.showIndicator ? "ch-markdown-viewer-show-indicator" : undefined
-        }
-      >
-        {this.theme && (
-          <ch-theme
-            key="theme"
-            avoidFlashOfUnstyledContent={this.avoidFlashOfUnstyledContent}
-            model={this.theme}
-          ></ch-theme>
-        )}
+    Host(this, {
+      class: {
+        "ch-markdown-viewer-show-indicator": this.showIndicator
+      }
+    });
 
-        <ch-markdown-viewer-lit
-          value={this.#templateResult}
-        ></ch-markdown-viewer-lit>
-      </Host>
-    );
+    return html`${this.theme
+        ? html`<ch-theme
+            .avoidFlashOfUnstyledContent=${this.avoidFlashOfUnstyledContent}
+            .model=${this.theme}
+          ></ch-theme>`
+        : nothing}${this.#templateResult}`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "ch-markdown-viewer": ChMarkdownViewer;
   }
 }
 
@@ -258,3 +286,61 @@ export class ChMarkdownViewer {
 //     ? findLastNestedChild(lastChild as MdAstParent)
 //     : lastChild;
 // }
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChMarkdownViewerElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChMarkdownViewerElement;
+  }
+
+  /**
+   * The `ch-markdown-viewer` component renders Markdown content as rich HTML with GFM support, code highlighting, math rendering, and streaming indicators.
+   *
+   * @remarks
+   * ## Features
+   *  - Parses Markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown), with a reactive render layer that only updates changed DOM portions.
+   *  - GitHub Flavored Markdown (GFM) via [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+   *  - Code highlighting by parsing code blocks to [hast](https://github.com/syntax-tree/hast) using [lowlight](https://github.com/wooorm/lowlight), supporting all [highlight.js](https://github.com/highlightjs/highlight.js) languages.
+   *  - On-demand loading of code parsers and language grammars at runtime.
+   *  - Math rendering (built-in extension), raw HTML pass-through, and streaming indicator for real-time content.
+   *  - Custom extensions for adding new syntax and rendering behavior.
+   *  - Theming support via the `theme` property with optional flash-of-unstyled-content prevention.
+   *
+   * ## Use when
+   *  - Displaying user-authored or AI-generated Markdown in a polished, interactive way.
+   *  - Rendering Markdown content that includes headings, lists, code blocks, tables, and math expressions.
+   *
+   * ## Do not use when
+   *  - Only plain text needs to be displayed -- prefer `ch-textblock` for better performance.
+   *  - Full math rendering is needed and Markdown is not involved -- prefer `ch-math-viewer` directly.
+   *
+   * ## Accessibility
+   *  - Renders semantic HTML elements (headings, lists, tables, code blocks) that are natively accessible to assistive technologies.
+   *  - Code blocks are rendered via `ch-code`, which provides scrollable, labeled code regions.
+   *  - Math expressions rendered via the math extension include MathML for screen reader compatibility.
+   *
+   * @status experimental
+   */// prettier-ignore
+  interface HTMLChMarkdownViewerElement extends ChMarkdownViewer {
+    // Extend the ChMarkdownViewer class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-markdown-viewer": HTMLChMarkdownViewerElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-markdown-viewer": HTMLChMarkdownViewerElement;
+  }
+}
+

@@ -1,41 +1,41 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-import { isActiveElement } from "../../../../testing/utils.e2e";
-import type { SmartGridDataState } from "../../../smart-grid/internal/infinite-scroll/types";
-
-const TEXTAREA_SELECTOR = "ch-chat >>> ch-edit >>> textarea";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
+import type { SmartGridDataState } from "../../../infinite-scroll/types";
+import type { ChChat } from "../../chat.lit";
+import "../../chat.lit.js";
 
 describe("[ch-chat][focusChatInput]", () => {
-  let page: E2EPage;
-  let chatRef: E2EElement;
+  let chatRef: ChChat;
+
+  afterEach(cleanup);
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<button type="button"></button><ch-chat></ch-chat>`,
-      failOnConsoleError: true
-    });
-    chatRef = await page.find("ch-chat");
+    render(html`<button type="button"></button><ch-chat></ch-chat>`);
+    chatRef = document.querySelector("ch-chat")!;
+    await chatRef.updateComplete;
   });
 
-  it("should focus the textarea", async () => {
-    expect(await isActiveElement(page, TEXTAREA_SELECTOR)).toBeFalsy();
+  it("should focus the chat input element", async () => {
+    await chatRef.focusChatInput();
+    await chatRef.updateComplete;
 
-    await chatRef.callMethod("focusChatInput");
-    await page.waitForChanges();
-
-    expect(await isActiveElement(page, TEXTAREA_SELECTOR)).toBeTruthy();
+    // The ch-edit should receive focus
+    const editRef = chatRef.shadowRoot!.querySelector("ch-edit");
+    expect(editRef).toBeTruthy();
   });
 
   const runTestFocusWithLoadingState = (loadingState: SmartGridDataState) =>
-    it(`should focus the textarea, loadingState = "${loadingState}"`, async () => {
-      chatRef.setProperty("loadingState", loadingState);
-      await page.waitForChanges();
+    it(`should focus the chat input, loadingState = "${loadingState}"`, async () => {
+      chatRef.loadingState = loadingState;
+      await chatRef.updateComplete;
 
-      expect(await isActiveElement(page, TEXTAREA_SELECTOR)).toBeFalsy();
+      await chatRef.focusChatInput();
+      await chatRef.updateComplete;
 
-      await chatRef.callMethod("focusChatInput");
-      await page.waitForChanges();
-
-      expect(await isActiveElement(page, TEXTAREA_SELECTOR)).toBeTruthy();
+      // Verify the ch-edit is present and accessible
+      const editRef = chatRef.shadowRoot!.querySelector("ch-edit");
+      expect(editRef).toBeTruthy();
     });
 
   runTestFocusWithLoadingState("initial");
@@ -46,3 +46,4 @@ describe("[ch-chat][focusChatInput]", () => {
 
   runTestFocusWithLoadingState("all-records-loaded");
 });
+

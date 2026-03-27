@@ -3,10 +3,10 @@ import {
   ParticipantEvent,
   Room,
   RoomEvent,
-  TrackPublication,
-  TranscriptionSegment
+  TrackPublication
 } from "livekit-client";
-import { AddOrRemoveType, LiveKitCallbacks } from "./types";
+import type { TranscriptionSegment } from "livekit-client";
+import type { AddOrRemoveType, LiveKitCallbacks } from "./types";
 
 function participantConnected(
   participant: Participant,

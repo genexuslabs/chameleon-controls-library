@@ -46,7 +46,13 @@ export const staticImportMap: Record<string, string> = {
   "chameleon/layout-splitter": `${SRC}/components/layout-splitter/layout-splitter.lit.ts`,
   "chameleon/dialog": `${SRC}/components/dialog/dialog.lit.ts`,
   "chameleon/popover": `${SRC}/components/popover/popover.lit.ts`,
-  "chameleon/tooltip": `${SRC}/components/tooltip/tooltip.lit.ts`
+  "chameleon/tooltip": `${SRC}/components/tooltip/tooltip.lit.ts`,
+
+  // Newly migrated components
+  "chameleon/chat": `${SRC}/components/chat/chat.lit.ts`,
+  "chameleon/live-kit-room": `${SRC}/components/live-kit-room/live-kit-room.lit.ts`,
+  "chameleon/markdown-viewer": `${SRC}/components/markdown-viewer/markdown-viewer.lit.ts`,
+  "chameleon/smart-grid": `${SRC}/components/smart-grid/smart-grid.lit.ts`
 };
 
 /**

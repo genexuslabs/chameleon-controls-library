@@ -1,6 +1,6 @@
 import { html } from "lit";
 import { when } from "lit/directives/when.js";
-import { tokenMap } from "../../../../common/utils";
+import { tokenMap } from "../../../../utilities/mapping/token-map.js";
 import type { ChatMessageSource, ChatSourceRender } from "../../types";
 
 export const defaultSourceRender: ChatSourceRender = (

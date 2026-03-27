@@ -1,72 +1,102 @@
-# ch-markdown-viewer
+# `ch-markdown-viewer`
 
-## Table of Contents
+<p>The <code>ch-markdown-viewer</code> component renders Markdown content as rich HTML with GFM support, code highlighting, math rendering, and streaming indicators.</p>
 
-- [Overview](#overview)
-- [Features](#features)
-- [Use when](#use-when)
-- [Do not use when](#do-not-use-when)
-- [Accessibility](#accessibility)
-- [Usage](./docs/usage.md)
-- [Properties](#properties)
-- [Dependencies](#dependencies)
-  - [Depends on](#depends-on)
-  - [Graph](#graph)
-- [Styling](./docs/styling.md)
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `avoidFlashOfUnstyledContent:  boolean`
 
-<!-- Auto Generated Below -->
+<p>When <code>true</code>, visually hides the contents of the root node until the
+theme stylesheet has loaded, preventing a flash of unstyled content.
+Only takes effect when the <code>theme</code> property is set; otherwise this
+property has no visible effect.</p>
 
-## Overview
+**Attribute**: <code>avoid-flash-of-unstyled-content</code>
 
-The `ch-markdown-viewer` component renders Markdown content as rich HTML with GFM support, code highlighting, math rendering, and streaming indicators.
+**Default**: <code>false</code>
 
-## Features
- - Parses Markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown), with a reactive render layer that only updates changed DOM portions.
- - GitHub Flavored Markdown (GFM) via [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
- - Code highlighting by parsing code blocks to [hast](https://github.com/syntax-tree/hast) using [lowlight](https://github.com/wooorm/lowlight), supporting all [highlight.js](https://github.com/highlightjs/highlight.js) languages.
- - On-demand loading of code parsers and language grammars at runtime.
- - Math rendering (built-in extension), raw HTML pass-through, and streaming indicator for real-time content.
- - Custom extensions for adding new syntax and rendering behavior.
- - Theming support via the `theme` property with optional flash-of-unstyled-content prevention.
+---
 
-## Use when
- - Displaying user-authored or AI-generated Markdown in a polished, interactive way.
- - Rendering Markdown content that includes headings, lists, code blocks, tables, and math expressions.
+### `extensions:  MarkdownViewerExtension<object>[] | undefined`
 
-## Do not use when
- - Only plain text needs to be displayed -- prefer `ch-textblock` for better performance.
- - Full math rendering is needed and Markdown is not involved -- prefer `ch-math-viewer` directly.
+<p>Specifies an array of custom extensions to extend and customize the
+rendered markdown language.
+There a 3 things needed to implement an extension:</p>
+<ul>
+<li>A tokenizer (the heavy part of the extension).</li>
+<li>A mapping between the custom token to the custom mdast nodes (pretty straightforward).</li>
+<li>A render of the custom mdast nodes in Lit's <code>TemplateResult</code> (pretty straightforward).</li>
+</ul>
+<p>You can see an <a href="./examples/index.ts">example here</a>, which turns syntax like
+<code>Some text [[ Value ]]</code> to:</p>
 
-## Accessibility
- - Renders semantic HTML elements (headings, lists, tables, code blocks) that are natively accessible to assistive technologies.
- - Code blocks are rendered via `ch-code`, which provides scrollable, labeled code regions.
- - Math expressions rendered via the math extension include MathML for screen reader compatibility.
+**Default**: <code>undefined</code>
 
-## Properties
+---
 
-| Property                      | Attribute                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Type                                                           | Default                |
-| ----------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------- |
-| `avoidFlashOfUnstyledContent` | `avoid-flash-of-unstyled-content` | When `true`, visually hides the contents of the root node until the theme stylesheet has loaded, preventing a flash of unstyled content. Only takes effect when the `theme` property is set; otherwise this property has no visible effect.                                                                                                                                                                                                                                                       | `boolean`                                                      | `false`                |
-| `extensions`                  | --                                | Specifies an array of custom extensions to extend and customize the rendered markdown language. There a 3 things needed to implement an extension:  - A tokenizer (the heavy part of the extension).  - A mapping between the custom token to the custom mdast nodes (pretty straightforward).  - A render of the custom mdast nodes in Lit's `TemplateResult` (pretty straightforward).  You can see an [example here](./examples/index.ts), which turns syntax like `Some text [[ Value ]]` to: | `MarkdownViewerExtension<object>[]`                            | `undefined`            |
-| `rawHtml`                     | `raw-html`                        | When `true`, raw HTML blocks in the Markdown source are rendered as actual HTML elements (with sanitization). When `false`, HTML blocks are ignored and not rendered.  Note: in the current version, `allowDangerousHtml` is always `true` internally, so this flag controls whether HTML is passed through to the rendered output.                                                                                                                                                               | `boolean`                                                      | `false`                |
-| `renderCode`                  | --                                | Allows custom rendering of code blocks (fenced code). When `undefined`, the default code renderer (which uses `ch-code`) is used. Provide a custom function to render code blocks with a different component or UI (e.g., adding copy buttons, line numbers, etc.).                                                                                                                                                                                                                               | `(options: MarkdownViewerCodeRenderOptions) => TemplateResult` | `undefined`            |
-| `showIndicator`               | `show-indicator`                  | When `true`, a blinking cursor-like indicator is displayed after the last rendered element. Useful for streaming scenarios where Markdown content is being generated in real time (e.g., AI chat responses).  The indicator's appearance is controlled by the CSS custom properties `--ch-markdown-viewer-indicator-color`, `--ch-markdown-viewer-inline-size`, and `--ch-markdown-viewer-block-size`.                                                                                            | `boolean`                                                      | `false`                |
-| `theme`                       | `theme`                           | Specifies the theme model name to be used for rendering the control. When set, a `ch-theme` element is rendered to load the theme stylesheet. If `undefined`, no theme will be applied.  Works together with `avoidFlashOfUnstyledContent` to prevent unstyled content from being visible before the theme loads.                                                                                                                                                                                 | `string`                                                       | `"ch-markdown-viewer"` |
-| `value`                       | `value`                           | Specifies the Markdown string to parse and render. When `undefined` or empty, the component renders nothing. If parsing fails, the error is logged to the console and the previously rendered content is preserved.                                                                                                                                                                                                                                                                               | `string`                                                       | `undefined`            |
+### `rawHtml:  boolean`
 
-## Dependencies
+<p>When <code>true</code>, raw HTML blocks in the Markdown source are rendered as
+actual HTML elements (with sanitization). When <code>false</code>, HTML blocks
+are ignored and not rendered.</p>
+<p>Note: in the current version, <code>allowDangerousHtml</code> is always <code>true</code>
+internally, so this flag controls whether HTML is passed through to
+the rendered output.</p>
 
-### Depends on
+**Attribute**: <code>raw-html</code>
 
-- [ch-theme](../theme)
+**Default**: <code>false</code>
 
-### Graph
-```mermaid
-graph TD;
-  ch-markdown-viewer --> ch-theme
-  style ch-markdown-viewer fill:#f9f,stroke:#333,stroke-width:4px
-```
+---
 
-----------------------------------------------
+### `renderCode:  MarkdownViewerCodeRender | undefined`
 
-*Built with [StencilJS](https://stenciljs.com/)*
+<p>Allows custom rendering of code blocks (fenced code).
+When <code>undefined</code>, the default code renderer (which uses <code>ch-code</code>) is
+used. Provide a custom function to render code blocks with a different
+component or UI (e.g., adding copy buttons, line numbers, etc.).</p>
+
+**Default**: <code>undefined</code>
+
+---
+
+### `showIndicator:  boolean`
+
+<p>When <code>true</code>, a blinking cursor-like indicator is displayed after the
+last rendered element. Useful for streaming scenarios where Markdown
+content is being generated in real time (e.g., AI chat responses).</p>
+<p>The indicator's appearance is controlled by the CSS custom properties
+<code>--ch-markdown-viewer-indicator-color</code>, <code>--ch-markdown-viewer-inline-size</code>,
+and <code>--ch-markdown-viewer-block-size</code>.</p>
+
+**Attribute**: <code>show-indicator</code>
+
+**Default**: <code>false</code>
+
+---
+
+### `theme:  ThemeModel | undefined`
+
+<p>Specifies the theme model name to be used for rendering the control.
+When set, a <code>ch-theme</code> element is rendered to load the theme stylesheet.
+If <code>undefined</code>, no theme will be applied.</p>
+<p>Works together with <code>avoidFlashOfUnstyledContent</code> to prevent unstyled
+content from being visible before the theme loads.</p>
+
+**Default**: <code>"ch-markdown-viewer"</code>
+
+---
+
+### `value:  string | undefined`
+
+<p>Specifies the Markdown string to parse and render.
+When <code>undefined</code> or empty, the component renders nothing.
+If parsing fails, the error is logged to the console and the
+previously rendered content is preserved.</p>
+
+**Default**: <code>undefined</code>
+</details>

@@ -1,7 +1,7 @@
-import { fromHTMLStringToHast } from "@genexus/markdown-parser/dist/parse-html.js";
+import { fromHTMLStringToHast } from "./html-to-hast.js";
 // import { Root, RootContent, RootContentMap } from "hast";
 import { spreadProps } from "@open-wc/lit-helpers";
-import { Element as HElement, Root, RootContentMap } from "hast";
+import type { Element as HElement, Root, RootContentMap } from "hast";
 import type { TemplateResult } from "lit";
 import { html, unsafeStatic } from "lit/static-html.js";
 import { LAST_NESTED_CHILD_CLASS } from "./markdown-to-template-result.lit";

@@ -1,14 +1,17 @@
 import {
   Component,
-  ComponentInterface,
-  Element,
-  Host,
-  Prop,
-  Watch,
-  h
-} from "@stencil/core";
-import { SmartGridDataState } from "./types";
+  KasstorElement
+} from "@genexus/kasstor-core/decorators/component.js";
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { html, nothing } from "lit";
+import { property } from "lit/decorators/property.js";
+
+import { Host } from "../../utilities/host/host.js";
+
+import type { SmartGridDataState } from "./types";
 import { getScrollableParentToAttachInfiniteScroll } from "./utils";
+
+import styles from "./infinite-scroll.scss?inline";
 
 /**
  * Due to floating point precision errors, we have to ensure a safe threshold
@@ -17,11 +20,11 @@ import { getScrollableParentToAttachInfiniteScroll } from "./utils";
 const PRECISION_OFFSET = 2;
 
 @Component({
-  shadow: true,
-  styleUrl: "infinite-scroll.scss",
+  shadow: {},
+  styles,
   tag: "ch-infinite-scroll"
 })
-export class ChInfiniteScroll implements ComponentInterface {
+export class ChInfiniteScroll extends KasstorElement {
   // Stored values
   #lastClientHeight = 0;
   #lastScrollHeight = 0;
@@ -33,12 +36,10 @@ export class ChInfiniteScroll implements ComponentInterface {
   #abortController: AbortController | undefined; // Allocated at runtime to save resources
 
   // Refs
-  #smartGridRef!: HTMLChSmartGridElement;
+  #smartGridRef!: HTMLElement;
   #scrollableParent!: Element | HTMLElement;
 
   #typeOfParentElementAttached: "ch-smart-grid" | "window" | "other" = "other";
-
-  @Element() el!: HTMLChInfiniteScrollElement;
 
   /**
    * Specifies how the scroll position will be adjusted when the content size
@@ -50,7 +51,9 @@ export class ChInfiniteScroll implements ComponentInterface {
    *  - "never": The scroll position won't be adjusted when the content size
    *   changes.
    */
-  @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
+  @property({ attribute: "auto-scroll" }) autoScroll:
+    | "never"
+    | "at-scroll-end" = "at-scroll-end";
 
   /**
    * `true` if the infinite scroll is used in a grid that has data provider.
@@ -58,9 +61,10 @@ export class ChInfiniteScroll implements ComponentInterface {
    * certain configurations the infinite scroll can be used only to implement
    * the inverse loading utility.
    */
-  @Prop() readonly dataProvider: boolean = false;
-  @Watch("dataProvider")
-  dataProviderChanged(hasDataProvider: boolean) {
+  @property({ attribute: "data-provider", type: Boolean }) dataProvider:
+    | boolean = false;
+  @Observe("dataProvider")
+  protected dataProviderChanged(hasDataProvider: boolean) {
     if (hasDataProvider) {
       // Wait until the main thread has rendered the UI
       requestAnimationFrame(this.#setInfiniteScroll);
@@ -77,9 +81,9 @@ export class ChInfiniteScroll implements ComponentInterface {
    * control has `inverseLoading`, the `dataProvider` property will re-position
    * the scrollbar when new content is added to the grid.
    */
-  @Prop() readonly disabled: boolean = false;
-  @Watch("disabled")
-  disabledChanged(isDisabled: boolean) {
+  @property({ type: Boolean }) disabled: boolean = false;
+  @Observe("disabled")
+  protected disabledChanged(isDisabled: boolean) {
     if (isDisabled) {
       this.#disconnectInfiniteScroll();
     } else {
@@ -95,7 +99,7 @@ export class ChInfiniteScroll implements ComponentInterface {
    * `loadingState` will be changed to `"loading"` and the user has to keep in
    * sync the `loadingState` of the component with the real state of the data.
    */
-  @Prop() readonly infiniteThresholdReachedCallback!: () => void;
+  @property({ attribute: false }) infiniteThresholdReachedCallback!: () => void;
 
   /**
    * If `"more-data-to-fetch"`, the infinite scroll will execute the
@@ -109,9 +113,9 @@ export class ChInfiniteScroll implements ComponentInterface {
    * useful when it is known that there is no more data that can be added, and
    * the infinite scroll is no longer needed.
    */
-  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
-  @Watch("loadingState")
-  loadingStateChanged(newValue: SmartGridDataState) {
+  @property({ attribute: "loading-state" }) loadingState!: SmartGridDataState;
+  @Observe("loadingState")
+  protected loadingStateChanged(newValue: SmartGridDataState) {
     this.#checkIfCanFetchMoreData();
 
     if (newValue === "initial") {
@@ -126,7 +130,7 @@ export class ChInfiniteScroll implements ComponentInterface {
    * The value can be either `top` or `bottom`. When `position === "top"`, the
    * control also implements inverse loading.
    */
-  @Prop() readonly position: "top" | "bottom" = "bottom";
+  @property() position: "top" | "bottom" = "bottom";
 
   /**
    * The threshold distance from the bottom of the content to call the
@@ -136,9 +140,9 @@ export class ChInfiniteScroll implements ComponentInterface {
    * the user has scrolled 10% from the bottom of the page. Use the value
    * `100px` when the scroll is within 100 pixels from the bottom of the page.
    */
-  @Prop() readonly threshold: string = "150px";
-  @Watch("threshold")
-  thresholdChanged() {
+  @property() threshold: string = "150px";
+  @Observe("threshold")
+  protected thresholdChanged() {
     this.#checkIfCanFetchMoreData();
   }
 
@@ -150,7 +154,6 @@ export class ChInfiniteScroll implements ComponentInterface {
    * has no scroll even after new items are added, the intersection observer
    * won't fire a new interruption because it is still visible in the viewport.
    */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #checkIfCanFetchMoreData = () => {
     this.#disconnectInfiniteScroll();
 
@@ -191,7 +194,7 @@ export class ChInfiniteScroll implements ComponentInterface {
         }
       }, options);
 
-      this.#ioWatcher.observe(this.el);
+      this.#ioWatcher.observe(this);
     });
   };
 
@@ -319,7 +322,7 @@ export class ChInfiniteScroll implements ComponentInterface {
     this.#resizeWatcher = undefined;
 
     // Remove scroll events in the smart grid
-    this.#abortController.abort();
+    this.#abortController?.abort();
   };
 
   #disconnectInfiniteScroll = () => {
@@ -327,9 +330,9 @@ export class ChInfiniteScroll implements ComponentInterface {
     this.#ioWatcher = undefined;
   };
 
-  componentDidLoad() {
-    this.#smartGridRef = (this.el.getRootNode() as ShadowRoot)
-      .host as HTMLChSmartGridElement;
+  override firstUpdated() {
+    this.#smartGridRef = (this.getRootNode() as ShadowRoot)
+      .host as HTMLElement;
 
     const result = getScrollableParentToAttachInfiniteScroll(
       this.#smartGridRef
@@ -343,21 +346,53 @@ export class ChInfiniteScroll implements ComponentInterface {
     requestAnimationFrame(this.#setInfiniteScroll);
   }
 
-  disconnectedCallback() {
+  override disconnectedCallback() {
+    super.disconnectedCallback();
     this.#disconnectInfiniteScroll();
     this.#disconnectInverseLoading();
   }
 
   // TODO: Ensure the ch-infinite-scroll doesn't crash when is only used by
   // itself (without a ch-smart-grid as a parent)
-  render() {
-    return (
-      <Host
-        class={this.loadingState === "loading" ? "loading" : undefined}
-        aria-hidden="true"
-      >
-        {this.loadingState === "loading" && <slot />}
-      </Host>
-    );
+  override render() {
+    Host(this, {
+      class: this.loadingState === "loading" ? "loading" : undefined,
+      properties: {
+        ariaHidden: "true"
+      }
+    });
+
+    return this.loadingState === "loading" ? html`<slot></slot>` : nothing;
   }
 }
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChInfiniteScrollElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChInfiniteScrollElement;
+  }
+
+  // prettier-ignore
+  interface HTMLChInfiniteScrollElement extends ChInfiniteScroll {
+    // Extend the ChInfiniteScroll class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-infinite-scroll": HTMLChInfiniteScrollElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-infinite-scroll": HTMLChInfiniteScrollElement;
+  }
+}
+

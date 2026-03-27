@@ -1,74 +1,90 @@
-# ch-live-kit-room
+# `ch-live-kit-room`
 
-## Table of Contents
+<p>The <code>ch-live-kit-room</code> component integrates with the LiveKit real-time communication platform to establish audio room connections and manage remote participants.</p>
 
-- [Overview](#overview)
-- [Features](#features)
-- [Use when](#use-when)
-- [Do not use when](#do-not-use-when)
-- [Accessibility](#accessibility)
-- [Usage](./docs/usage.md)
-- [Properties](#properties)
-- [Slots](#slots)
-- [Dependencies](#dependencies)
-  - [Used by](#used-by)
-  - [Graph](#graph)
-- [Styling](./docs/styling.md)
+<details open>
+  <summary>
+  
+  ## Properties
+  </summary>
+  
+### `callbacks:  LiveKitCallbacks | undefined`
 
-<!-- Auto Generated Below -->
+<p>Specifies the callback handlers for room events. Includes:</p>
+<ul>
+<li><code>activeSpeakersChanged</code>: called when the list of active speakers changes.</li>
+<li><code>updateTranscriptions</code>: called when transcription segments are received.</li>
+<li><code>muteMic</code> / <code>unmuteMic</code>: called when the local microphone is muted/unmuted.</li>
+<li><code>connectionEvents</code>: sub-callbacks for track mute/unmute, speaking state, and connection quality changes.</li>
+</ul>
+<p>When <code>undefined</code>, no callbacks are invoked. This property is read during
+<code>connect()</code> — changing it after connection has no effect until the next
+reconnection.</p>
 
-## Overview
+**Default**: <code>undefined</code>
 
-The `ch-live-kit-room` component integrates with the LiveKit real-time communication platform to establish audio room connections and manage remote participants.
+---
 
-## Features
- - Room lifecycle management: connect, disconnect, and track remote participants via the `livekit-client` SDK.
- - Automatic attachment of remote audio tracks to dynamically rendered `<audio>` elements in the shadow DOM.
- - Local microphone toggle support via the `microphoneEnabled` property.
- - Callbacks for transcription updates, active speaker changes, mute/unmute, and connection quality via the `callbacks` property.
- - Renders a default `<slot>` for projecting custom UI (e.g., transcription display, controls).
+### `connected:  boolean`
 
-## Use when
- - Building voice-enabled conversational experiences with LiveKit.
- - Adding real-time audio communication to a `ch-chat` component.
+<p>Controls the connection state of the LiveKit room. Set to <code>true</code> to
+connect using the current <code>url</code> and <code>token</code>; set to <code>false</code> to disconnect.</p>
+<p>When toggled to <code>true</code>, the component calls <code>connectToRoom()</code> and begins
+tracking remote participants. When toggled to <code>false</code>, the room is
+disconnected and audio tracks are detached.</p>
 
-## Do not use when
- - You need a full video conferencing UI — use a dedicated LiveKit UI framework instead.
- - Video tracks are required — this component only handles audio tracks.
+**Attribute**: <code>connected</code>
 
-## Accessibility
- - The rendered `<audio>` elements are hidden (`display: none`) and play automatically when remote tracks are attached. No keyboard interaction is required for audio playback.
- - The host uses `display: contents`, so it does not affect the layout of slotted content.
+**Default**: <code>false</code>
 
-## Properties
+---
 
-| Property            | Attribute            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Type                                                                                                                                                                                                                                                                                          | Default     |
-| ------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `callbacks`         | --                   | Specifies the callback handlers for room events. Includes:  - `activeSpeakersChanged`: called when the list of active speakers changes.  - `updateTranscriptions`: called when transcription segments are received.  - `muteMic` / `unmuteMic`: called when the local microphone is muted/unmuted.  - `connectionEvents`: sub-callbacks for track mute/unmute, speaking state, and connection quality changes.  When `undefined`, no callbacks are invoked. This property is read during `connect()` — changing it after connection has no effect until the next reconnection. | `{ activeSpeakersChanged?: (participant: Participant[]) => void; connectionEvents?: LiveKitConnectionListener; muteMic?: () => void; unmuteMic?: () => void; updateTranscriptions?: (segments: TranscriptionSegment[], participant?: Participant, publication?: TrackPublication) => void; }` | `undefined` |
-| `connected`         | `connected`          | Controls the connection state of the LiveKit room. Set to `true` to connect using the current `url` and `token`; set to `false` to disconnect.  When toggled to `true`, the component calls `connectToRoom()` and begins tracking remote participants. When toggled to `false`, the room is disconnected and audio tracks are detached.                                                                                                                                                                                                                                        | `boolean`                                                                                                                                                                                                                                                                                     | `false`     |
-| `microphoneEnabled` | `microphone-enabled` | Controls whether the local participant's microphone is enabled. When `true`, the local participant publishes audio; when `false`, the mic is muted. This property is only effective while `connected` is `true`.  Toggling this property immediately enables or disables the local microphone track.                                                                                                                                                                                                                                                                           | `boolean`                                                                                                                                                                                                                                                                                     | `false`     |
-| `token`             | `token`              | Specifies the LiveKit access token used to authenticate and connect to the room. The token encodes the participant identity, room name, and permissions. Must be set before `connected` is toggled to `true`.  Changing this value while connected does not trigger a reconnection — disconnect and reconnect to use a new token.                                                                                                                                                                                                                                              | `string`                                                                                                                                                                                                                                                                                      | `""`        |
-| `url`               | `url`                | Specifies the WebSocket URL of the LiveKit server (e.g., `"wss://my-livekit-server.example.com"`). Must be set before `connected` is toggled to `true`.  Changing this value while connected does not trigger a reconnection — disconnect and reconnect to use a new URL.                                                                                                                                                                                                                                                                                                      | `string`                                                                                                                                                                                                                                                                                      | `""`        |
+### `microphoneEnabled:  boolean`
 
-## Slots
+<p>Controls whether the local participant's microphone is enabled. When
+<code>true</code>, the local participant publishes audio; when <code>false</code>, the mic is
+muted. This property is only effective while <code>connected</code> is <code>true</code>.</p>
+<p>Toggling this property immediately enables or disables the local
+microphone track.</p>
 
-| Slot | Description                                                                                                         |
-| ---- | ------------------------------------------------------------------------------------------------------------------- |
-|      | Default slot. Projects custom content (e.g., control buttons, transcription UI) within the component's shadow root. |
+**Attribute**: <code>microphone-enabled</code>
 
-## Dependencies
+**Default**: <code>false</code>
 
-### Used by
+---
 
- - [ch-chat](../chat)
+### `token:  string`
 
-### Graph
-```mermaid
-graph TD;
-  ch-chat --> ch-live-kit-room
-  style ch-live-kit-room fill:#f9f,stroke:#333,stroke-width:4px
-```
+<p>Specifies the LiveKit access token used to authenticate and connect to
+the room. The token encodes the participant identity, room name, and
+permissions. Must be set before <code>connected</code> is toggled to <code>true</code>.</p>
+<p>Changing this value while connected does not trigger a reconnection —
+disconnect and reconnect to use a new token.</p>
 
-----------------------------------------------
+**Attribute**: <code>token</code>
 
-*Built with [StencilJS](https://stenciljs.com/)*
+**Default**: <code>""</code>
+
+---
+
+### `url:  string`
+
+<p>Specifies the WebSocket URL of the LiveKit server (e.g.,
+<code>&quot;wss://my-livekit-server.example.com&quot;</code>). Must be set before <code>connected</code>
+is toggled to <code>true</code>.</p>
+<p>Changing this value while connected does not trigger a reconnection —
+disconnect and reconnect to use a new URL.</p>
+
+**Attribute**: <code>url</code>
+
+**Default**: <code>""</code>
+</details>
+
+<details open>
+  <summary>
+  
+  ## Slots
+  </summary>
+  
+### `- Default slot. Projects custom content (e.g., control buttons, transcription UI) within the component's shadow root.`
+</details>

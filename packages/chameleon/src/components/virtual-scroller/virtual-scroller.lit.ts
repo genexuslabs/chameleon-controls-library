@@ -1,28 +1,29 @@
 import {
   Component,
-  ComponentInterface,
-  Element,
+  KasstorElement
+} from "@genexus/kasstor-core/decorators/component.js";
+import {
   Event,
-  EventEmitter,
-  h,
-  Host,
-  Method,
-  Prop,
-  State,
-  Watch
-} from "@stencil/core";
-import type { ChSmartGridCellCustomEvent } from "../../components";
+  type EventEmitter
+} from "@genexus/kasstor-core/decorators/event.js";
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { html } from "lit";
+import { property } from "lit/decorators/property.js";
+import { state } from "lit/decorators/state.js";
 
-import { SyncWithRAF } from "../../common/sync-with-frames";
-import type { SmartGridModel } from "../smart-grid/types";
-import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible";
-import { getNewStartAndEndIndexes } from "./get-new-start-and-end-indexes";
+import { SyncWithRAF } from "../../utilities/sync-with-frames.js";
+import { Host } from "../../utilities/host/host.js";
+import type { SmartGridModel } from "../smart-grid/types.js";
+import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible.js";
+import { getNewStartAndEndIndexes } from "./get-new-start-and-end-indexes.js";
 import type {
   SmartGridCellVirtualSize,
   VirtualScrollVirtualItems
-} from "./types";
-import { updateVirtualScrollSize } from "./update-virtual-scroll";
-import { emptyItems } from "./utils";
+} from "./types.js";
+import { updateVirtualScrollSize } from "./update-virtual-scroll.js";
+import { emptyItems } from "./utils.js";
+
+import styles from "./virtual-scroller.scss?inline";
 
 const VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX = "--ch-virtual-scroll__scroll-";
 
@@ -74,11 +75,11 @@ const VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFI
  *
  */
 @Component({
-  shadow: true,
-  styleUrl: "virtual-scroller.scss",
+  shadow: {},
+  styles,
   tag: "ch-virtual-scroller"
 })
-export class ChVirtualScroller implements ComponentInterface {
+export class ChVirtualScroller extends KasstorElement {
   #startIndex = 0;
   #endIndex = 0;
 
@@ -110,18 +111,15 @@ export class ChVirtualScroller implements ComponentInterface {
    *   </ch-smart-grid>
    * ```
    */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #smartGrid!: HTMLChSmartGridElement | undefined;
-
-  @Element() el!: HTMLChVirtualScrollerElement;
 
   /**
    * `true` if the virtual scroller is waiting for all the content to be
    * rendered.
    */
-  @State() waitingForContent = true;
-  @Watch("waitingForContent")
-  waitingForContentChanged() {
+  @state() waitingForContent = true;
+  @Observe("waitingForContent")
+  protected waitingForContentChanged() {
     this.#setVirtualScroller();
   }
 
@@ -132,7 +130,8 @@ export class ChVirtualScroller implements ComponentInterface {
    *
    * The new value is used on the next scroll or resize update.
    */
-  @Prop() readonly bufferAmount: number = 5;
+  @property({ type: Number, attribute: "buffer-amount" })
+  readonly bufferAmount: number = 5;
 
   /**
    * Specifies an estimated count of items that fit in the viewport for the
@@ -144,7 +143,8 @@ export class ChVirtualScroller implements ComponentInterface {
    * Defaults to `10`. Init-only — only used during the first render cycle.
    */
   // TODO: Ensure a min value
-  @Prop() readonly initialRenderViewportItems: number = 10;
+  @property({ type: Number, attribute: "initial-render-viewport-items" })
+  readonly initialRenderViewportItems: number = 10;
 
   /**
    * When set to `true`, the grid items will be loaded in inverse order, with
@@ -155,7 +155,8 @@ export class ChVirtualScroller implements ComponentInterface {
    * the viewport that are not visible will remain rendered to avoid flickering
    * issues.
    */
-  @Prop() readonly inverseLoading: boolean = false;
+  @property({ type: Boolean, attribute: "inverse-loading" })
+  readonly inverseLoading: boolean = false;
 
   /**
    * The array of items to be rendered in the `ch-smart-grid`. Each item must
@@ -169,9 +170,9 @@ export class ChVirtualScroller implements ComponentInterface {
    * Setting to `undefined` or an empty array emits an empty
    * `virtualItemsChanged` event.
    */
-  @Prop() readonly items!: SmartGridModel | undefined;
-  @Watch("items")
-  itemsChanged(newItems: SmartGridModel) {
+  @property({ attribute: false }) readonly items!: SmartGridModel | undefined;
+  @Observe("items")
+  protected itemsChanged(newItems: SmartGridModel) {
     this.#resetVirtualScrollerState();
     this.#setViewportItemsOnInitialRender(newItems);
   }
@@ -184,7 +185,8 @@ export class ChVirtualScroller implements ComponentInterface {
    * If `items` is reassigned as a new array reference, this property is not
    * needed since the `@Watch` on `items` will handle the reset.
    */
-  @Prop() readonly itemsCount: number;
+  @property({ type: Number, attribute: "items-count" })
+  readonly itemsCount!: number;
 
   /**
    * Specifies how the control will behave.
@@ -197,7 +199,7 @@ export class ChVirtualScroller implements ComponentInterface {
    *   load, but when the user scrolls and new items are rendered, those items
    *   that are outside of the viewport won't be removed from the DOM.
    */
-  @Prop() readonly mode: "virtual-scroll" | "lazy-render" = "virtual-scroll";
+  @property() readonly mode: "virtual-scroll" | "lazy-render" = "virtual-scroll";
 
   /**
    * Emitted when the slice of visible items changes due to scrolling, resizing,
@@ -207,15 +209,14 @@ export class ChVirtualScroller implements ComponentInterface {
    * This event is the primary mechanism for the parent `ch-smart-grid` to know
    * which cells to render.
    */
-  @Event()
-  virtualItemsChanged: EventEmitter<VirtualScrollVirtualItems>;
+  @Event() protected virtualItemsChanged!: EventEmitter<VirtualScrollVirtualItems>;
 
   /**
    * Fired once when all cells in the initial viewport have been rendered and
    * are visible. After this event, the scroller removes `opacity: 0` and
    * starts listening for scroll/resize events. This event has no payload.
    */
-  @Event() virtualScrollerDidLoad: EventEmitter;
+  @Event() protected virtualScrollerDidLoad!: EventEmitter<void>;
 
   /**
    * Adds items to the beginning or end of the `items` array without resetting
@@ -231,16 +232,15 @@ export class ChVirtualScroller implements ComponentInterface {
    * @param position - `"start"` to prepend items, `"end"` to append.
    * @param items - One or more `SmartGridModel` items to add.
    */
-  @Method()
-  async addItems(position: "start" | "end", ...items: SmartGridModel) {
+  public addItems(position: "start" | "end", ...items: SmartGridModel) {
     if (position === "start") {
-      this.items.unshift(...items);
+      this.items!.unshift(...items);
 
       const newItemsCount = items.length;
       this.#startIndex += newItemsCount;
       this.#endIndex += newItemsCount;
     } else {
-      this.items.push(...items);
+      this.items!.push(...items);
     }
 
     this.#handleSmartGridContentScroll();
@@ -250,12 +250,12 @@ export class ChVirtualScroller implements ComponentInterface {
     const makeVisible = this.#virtualEndSize !== 0;
 
     if (makeVisible) {
-      this.el.style.setProperty(VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR, "block");
+      this.style.setProperty(VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR, "block");
     }
     // The virtual size must be "destroyed" to avoid displaying and
     // unnecessary gap at the end of the scroll
     else {
-      this.el.style.removeProperty(VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR);
+      this.style.removeProperty(VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR);
     }
   };
 
@@ -264,8 +264,8 @@ export class ChVirtualScroller implements ComponentInterface {
     this.#virtualStartSize = 0;
     this.#virtualEndSize = 0;
 
-    const items = this.items;
-    const virtualSizes = this.#virtualSizes;
+    const items = this.items!;
+    const virtualSizes = this.#virtualSizes!;
     const lastIndex = items.length - 1;
 
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
@@ -337,18 +337,18 @@ export class ChVirtualScroller implements ComponentInterface {
       removedCell.style.display = "none";
     });
 
-    this.el.style.setProperty(
+    this.style.setProperty(
       VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR,
       `${this.#virtualStartSize}px`
     );
-    this.el.style.setProperty(
+    this.style.setProperty(
       VIRTUAL_SCROLL_START_DISPLAY_CUSTOM_VAR,
       // The virtual size must be "destroyed" to avoid displaying and
       // unnecessary gap at the start of the scroll
       this.#virtualStartSize === 0 ? "none" : "block"
     );
 
-    this.el.style.setProperty(
+    this.style.setProperty(
       VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR,
       `${this.#virtualEndSize}px`
     );
@@ -369,10 +369,10 @@ export class ChVirtualScroller implements ComponentInterface {
     // });
 
     const cellsToRender = getNewStartAndEndIndexes(
-      this.el,
-      this.#smartGrid,
-      this.items,
-      this.#virtualSizes,
+      this as unknown as HTMLChVirtualScrollerElement,
+      this.#smartGrid!,
+      this.items!,
+      this.#virtualSizes!,
       this.#virtualStartSize,
       this.#virtualEndSize,
       this.bufferAmount,
@@ -407,8 +407,8 @@ export class ChVirtualScroller implements ComponentInterface {
 
       const removedCells = updateVirtualScrollSize(
         cellsToRender,
-        this.#virtualSizes,
-        this.items
+        this.#virtualSizes!,
+        this.items!
       );
 
       this.#startIndex = startIndex;
@@ -420,12 +420,12 @@ export class ChVirtualScroller implements ComponentInterface {
 
   #emitVirtualItemsChange = (removedCells?: HTMLChSmartGridCellElement[]) => {
     this.#updateVirtualScrollSize(removedCells);
-    const virtualItems = this.items.slice(this.#startIndex, this.#endIndex + 1);
+    const virtualItems = this.items!.slice(this.#startIndex, this.#endIndex + 1);
 
     this.virtualItemsChanged.emit({
       startIndex: this.#startIndex,
       endIndex: this.#endIndex,
-      totalItems: this.items.length,
+      totalItems: this.items!.length,
       virtualItems
     });
   };
@@ -436,7 +436,7 @@ export class ChVirtualScroller implements ComponentInterface {
 
     // Render the last items when the scroll is inverted
     if (this.inverseLoading) {
-      const lastIndex = this.items.length - 1;
+      const lastIndex = this.items!.length - 1;
 
       this.#startIndex = lastIndex;
       this.#endIndex = lastIndex;
@@ -486,7 +486,7 @@ export class ChVirtualScroller implements ComponentInterface {
 
     const newEndIndex = Math.min(
       this.#endIndex + endShift,
-      this.items.length - 1
+      this.items!.length - 1
     );
 
     // const lastEndIndex = this.items.length - 1 === endShift;
@@ -499,7 +499,7 @@ export class ChVirtualScroller implements ComponentInterface {
       this.#startIndex === newStartIndex &&
       this.#endIndex === newEndIndex &&
       // TODO: Add a unit test for this use case
-      this.items.length > 1
+      this.items!.length > 1
     ) {
       return;
     }
@@ -518,8 +518,8 @@ export class ChVirtualScroller implements ComponentInterface {
               renderedCells,
               type: "index"
             },
-            this.#virtualSizes,
-            this.items
+            this.#virtualSizes!,
+            this.items!
           )
         : [];
 
@@ -532,23 +532,23 @@ export class ChVirtualScroller implements ComponentInterface {
     // RAF is used to avoid unnecessary check on the initial load when using
     // inverseLoading, since on the initial load the scroll will be repositioned
     requestAnimationFrame(() => {
-      this.#smartGrid.addEventListener(
+      this.#smartGrid!.addEventListener(
         "scroll",
         this.#handleSmartGridContentScroll,
         {
           passive: true,
-          signal: this.#abortController.signal
+          signal: this.#abortController!.signal
         }
       );
 
       this.#resizeObserver = new ResizeObserver(
         this.#handleSmartGridContentScroll
       );
-      this.#resizeObserver.observe(this.#smartGrid);
+      this.#resizeObserver.observe(this.#smartGrid!);
     });
   };
 
-  #handleRenderedCell = (event: ChSmartGridCellCustomEvent<string>) => {
+  #handleRenderedCell = (event: CustomEvent<string>) => {
     if (this.waitingForContent) {
       this.#checkInitialRenderVisibility();
     } else {
@@ -559,8 +559,8 @@ export class ChVirtualScroller implements ComponentInterface {
   #checkInitialRenderVisibility = () =>
     this.#syncWithRAF.perform(() => {
       const waitingForContent = !cellsInViewportAreLoadedAndVisible(
-        this.el,
-        this.#smartGrid,
+        this as unknown as HTMLChVirtualScrollerElement,
+        this.#smartGrid!,
         this.inverseLoading
       );
 
@@ -574,7 +574,7 @@ export class ChVirtualScroller implements ComponentInterface {
 
   #checkCellsRenderedAtRuntime = (cellId: string) => {
     // Delete virtual size, since the cell is now rendered
-    this.#virtualSizes.delete(cellId);
+    this.#virtualSizes!.delete(cellId);
 
     this.#updateVirtualScrollSize();
 
@@ -583,47 +583,159 @@ export class ChVirtualScroller implements ComponentInterface {
     }
   };
 
-  connectedCallback(): void {
+  override connectedCallback(): void {
+    super.connectedCallback();
+
     // Listen for the render of the smart cells
-    this.el.addEventListener("smartCellDidLoad", this.#handleRenderedCell);
+    this.addEventListener("smartCellDidLoad", this.#handleRenderedCell as EventListener);
 
     this.#resetVirtualScrollerState();
   }
 
-  componentDidLoad(): void {
-    this.#smartGrid = this.el.closest("ch-smart-grid");
-    this.#setViewportItemsOnInitialRender(this.items);
+  override firstUpdated(): void {
+    this.#smartGrid = this.closest("ch-smart-grid") as HTMLChSmartGridElement | undefined;
+    this.#setViewportItemsOnInitialRender(this.items!);
   }
 
-  disconnectedCallback(): void {
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+
     this.#resizeObserver?.disconnect();
     this.#resizeObserver = undefined;
 
-    this.#syncWithRAF.cancel();
-    this.#syncWithRAF = undefined;
+    this.#syncWithRAF?.cancel();
+    this.#syncWithRAF = undefined as unknown as SyncWithRAF;
 
     // Remove scroll events in the smart grid
-    this.#abortController.abort();
+    this.#abortController?.abort();
   }
 
-  render() {
-    return (
-      <Host
-        class={{
-          "ch-virtual-scroller--content-not-loaded": this.waitingForContent,
-          "ch-virtual-scroller--content-loaded": !this.waitingForContent,
-          "ch-virtual-scroller--virtual-scroll":
-            !this.waitingForContent && this.mode === "virtual-scroll"
-        }}
-      >
-        <slot
-          onSlotchange={
-            this.waitingForContent
-              ? this.#checkInitialRenderVisibility
-              : undefined
-          }
-        ></slot>
-      </Host>
-    );
+  override render() {
+    Host(this, {
+      class: {
+        "ch-virtual-scroller--content-not-loaded": this.waitingForContent,
+        "ch-virtual-scroller--content-loaded": !this.waitingForContent,
+        "ch-virtual-scroller--virtual-scroll":
+          !this.waitingForContent && this.mode === "virtual-scroll"
+      }
+    });
+
+    return html`<slot
+      @slotchange=${this.waitingForContent
+        ? this.#checkInitialRenderVisibility
+        : undefined}
+    ></slot>`;
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "ch-virtual-scroller": ChVirtualScroller;
+  }
+}
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChVirtualScrollerElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChVirtualScrollerElement;
+  }
+
+  /** Type of the `ch-virtual-scroller`'s `virtualItemsChanged` event. */
+  // prettier-ignore
+  type HTMLChVirtualScrollerElementVirtualItemsChangedEvent = HTMLChVirtualScrollerElementCustomEvent<
+    HTMLChVirtualScrollerElementEventMap["virtualItemsChanged"]
+  >;
+
+  /** Type of the `ch-virtual-scroller`'s `virtualScrollerDidLoad` event. */
+  // prettier-ignore
+  type HTMLChVirtualScrollerElementVirtualScrollerDidLoadEvent = HTMLChVirtualScrollerElementCustomEvent<
+    HTMLChVirtualScrollerElementEventMap["virtualScrollerDidLoad"]
+  >;
+
+  interface HTMLChVirtualScrollerElementEventMap {
+    virtualItemsChanged: VirtualScrollVirtualItems;
+    virtualScrollerDidLoad: void;
+  }
+
+  interface HTMLChVirtualScrollerElementEventTypes {
+    virtualItemsChanged: HTMLChVirtualScrollerElementVirtualItemsChangedEvent;
+    virtualScrollerDidLoad: HTMLChVirtualScrollerElementVirtualScrollerDidLoadEvent;
+  }
+
+  /**
+   * The `ch-virtual-scroller` component provides efficient virtual scrolling for large lists of items within a `ch-smart-grid`, keeping only visible items plus a configurable buffer in the DOM.
+   *
+   * @remarks
+   * ## Features
+   *  - `"virtual-scroll"` mode: removes items outside the viewport from the DOM, using CSS pseudo-element spacers (`::before` / `::after`) to maintain scroll height. Lowest memory footprint.
+   *  - `"lazy-render"` mode: lazily renders items as they scroll into view, but keeps them in the DOM once rendered. Avoids re-rendering costs at the expense of higher memory usage.
+   *  - Configurable buffer amount (`bufferAmount`) for items rendered above and below the viewport.
+   *  - Inverse loading support (`inverseLoading`) for chat-style interfaces where the newest items are at the bottom and the scroll starts at the end.
+   *  - Automatic re-rendering on scroll and resize events via `requestAnimationFrame`-synced updates.
+   *  - Emits `virtualItemsChanged` whenever the visible slice changes, enabling the parent to render only the required cells.
+   *  - Hides content with `opacity: 0` until the initial viewport cells are fully loaded, then fires `virtualScrollerDidLoad`.
+   *
+   * ## Use when
+   *  - Rendering hundreds or thousands of items inside a `ch-smart-grid`.
+   *  - Building chat interfaces that need efficient inverse-loaded virtual scrolling.
+   *
+   * ## Do not use when
+   *  - The list has fewer than ~100 items — the overhead of virtual scrolling is not justified.
+   *  - Used outside of `ch-smart-grid` — this component is designed to work exclusively with `ch-smart-grid`.
+   *
+   * ## Accessibility
+   *  - This component is structural and does not render visible interactive content. Accessibility semantics are handled by the parent `ch-smart-grid` and its cells.
+   *
+   * ```
+   *   <ch-smart-grid>
+   *     #shadow-root (open)
+   *     |  <slot name="grid-content"></slot>
+   *     <ch-virtual-scroller slot="grid-content">
+   *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
+   *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
+   *       ...
+   *     </ch-virtual-scroller>
+   *   </ch-smart-grid>
+   * ```
+   *
+   * @status experimental
+   *
+   * @slot - Default slot. The slot for `ch-smart-grid-cell` elements representing the items to be virtually scrolled.
+   *
+   *
+   * @fires virtualItemsChanged Emitted when the slice of visible items changes due to scrolling, resizing,
+   *   or programmatic updates. The payload includes `startIndex`, `endIndex`,
+   *   `totalItems`, and the `virtualItems` sub-array that should be rendered.
+   *   
+   *   This event is the primary mechanism for the parent `ch-smart-grid` to know
+   *   which cells to render.
+   * @fires virtualScrollerDidLoad Fired once when all cells in the initial viewport have been rendered and
+   *   are visible. After this event, the scroller removes `opacity: 0` and
+   *   starts listening for scroll/resize events. This event has no payload.
+   */
+  // prettier-ignore
+  interface HTMLChVirtualScrollerElement extends ChVirtualScroller {
+    // Extend the ChVirtualScroller class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChVirtualScrollerElementEventTypes>(type: K, listener: (this: HTMLChVirtualScrollerElement, ev: HTMLChVirtualScrollerElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChVirtualScrollerElementEventTypes>(type: K, listener: (this: HTMLChVirtualScrollerElement, ev: HTMLChVirtualScrollerElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-virtual-scroller": HTMLChVirtualScrollerElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-virtual-scroller": HTMLChVirtualScrollerElement;
+  }
+}
+

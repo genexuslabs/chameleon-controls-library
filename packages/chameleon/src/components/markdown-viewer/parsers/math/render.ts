@@ -1,6 +1,6 @@
 import { html } from "lit";
-import { MarkdownViewerExtensionRender } from "../types";
-import { ExtendedContentMapping } from "./types";
+import type { MarkdownViewerExtensionRender } from "../types";
+import type { ExtendedContentMapping } from "./types";
 
 export const render = {
   blockMath: element =>

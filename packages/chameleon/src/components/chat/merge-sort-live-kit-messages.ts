@@ -1,5 +1,5 @@
 import type { TranscriptionSegment } from "livekit-client";
-import { ChatMessageByRole } from "./types";
+import type { ChatMessageByRole } from "./types";
 
 const getAssistantMessageByTranscription = (
   transcription: TranscriptionSegment

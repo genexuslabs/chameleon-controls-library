@@ -2,8 +2,8 @@ import type { TemplateResult } from "lit";
 import type {
   ChMimeType,
   ChMimeTypeFormatMap
-} from "../../common/mimeTypes/mime-types";
-import { LiveKitCallbacks } from "../live-kit-room/types";
+} from "../../typings/mime-types.js";
+import type { LiveKitCallbacks } from "../live-kit-room/types";
 import type { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 
 export type ChatMessageRole = "assistant" | "error" | "system" | "user";

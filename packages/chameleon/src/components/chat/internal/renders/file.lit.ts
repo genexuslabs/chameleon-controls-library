@@ -2,8 +2,8 @@ import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { when } from "lit/directives/when.js";
 
-import type { ChMimeTypeFormatMap } from "../../../../common/mimeTypes/mime-types";
-import { tokenMap } from "../../../../common/utils";
+import type { ChMimeTypeFormatMap } from "../../../../typings/mime-types.js";
+import { tokenMap } from "../../../../utilities/mapping/token-map.js";
 import type { ChatFileRender, ChatMessageFile } from "../../types";
 import { DEFAULT_FILE_UPLOAD_STATE } from "../../utils";
 

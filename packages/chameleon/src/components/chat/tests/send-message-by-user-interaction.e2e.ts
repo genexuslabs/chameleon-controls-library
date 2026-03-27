@@ -1,52 +1,34 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
-
-const SEND_BUTTON = "ch-chat >>> [part*='send-button']";
-const TEXTAREA_SELECTOR = "ch-chat >>> ch-edit >>> textarea";
-const EDIT_SELECTOR = "ch-chat >>> ch-edit";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
+import type { ChChat } from "../chat.lit";
+import "../chat.lit.js";
 
 // TODO: Refactor these test when we have migrated to Playwright
-describe.skip("[ch-chat][send-message-by-user-interaction]", () => {
-  let page: E2EPage;
-  let chatRef: E2EElement;
-  let getChatMessageFiles = 0;
-  let sendChatMessages = 0;
+describe("[ch-chat][send-message-by-user-interaction]", () => {
+  let chatRef: ChChat;
+  let getChatMessageFiles: number;
+  let sendChatMessages: number;
+
+  afterEach(cleanup);
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<button type="button"></button><ch-chat></ch-chat>`,
-      failOnConsoleError: true
-    });
-
-    // This is a dummy way to WA the issue of Puppeteer not working with Jest mock
     getChatMessageFiles = 0;
     sendChatMessages = 0;
 
-    chatRef = await page.find("ch-chat");
-    chatRef.setProperty("callbacks", {
+    render(html`<button type="button"></button><ch-chat></ch-chat>`);
+    chatRef = document.querySelector("ch-chat")!;
+    chatRef.callbacks = {
       getChatMessageFiles: () => {
         getChatMessageFiles++;
-
         return [];
       },
       sendChatMessages: () => {
         sendChatMessages++;
       }
-    } satisfies HTMLChChatElement["callbacks"]);
-    await page.waitForChanges();
+    };
+    await chatRef.updateComplete;
   });
-
-  const setEditContent = async (content: string) =>
-    (await page.find(EDIT_SELECTOR)).setProperty("value", content);
-
-  const performSendAction = async (
-    sendMessageAction: "send-input keyboard enter" | "send-button click"
-  ) => {
-    if (sendMessageAction === "send-input keyboard enter") {
-      await (await page.find(TEXTAREA_SELECTOR)).press("Enter");
-    } else {
-      await (await page.find(SEND_BUTTON)).press("Enter");
-    }
-  };
 
   const canTryToSendMessage = (
     disabled: boolean,
@@ -62,8 +44,7 @@ describe.skip("[ch-chat][send-message-by-user-interaction]", () => {
       loadingState === "loading"
     );
 
-  const runTestFocusWithLoadingState = (
-    sendMessageAction: "send-input keyboard enter" | "send-button click",
+  const runTestWithLoadingState = (
     disabled: boolean,
     waitingResponse: boolean,
     liveMode: boolean,
@@ -73,21 +54,24 @@ describe.skip("[ch-chat][send-message-by-user-interaction]", () => {
     if (
       !canTryToSendMessage(disabled, waitingResponse, liveMode, loadingState)
     ) {
-      it(`[${sendMessageAction}][disabled = ${disabled}][waitingResponse = ${waitingResponse}][liveMode = ${liveMode}][loadingState = "${loadingState}"][send-input content = "${sendInputContent}"] should not send any message and should not execute any callback`, async () => {
+      it(`[disabled = ${disabled}][waitingResponse = ${waitingResponse}][liveMode = ${liveMode}][loadingState = "${loadingState}"][send-input content = "${sendInputContent}"] should not send any message and should not execute any callback`, async () => {
         // TODO: We should test this without any items
-        chatRef.setProperty("items", [
+        chatRef.items = [
           { id: "Test 1", role: "assistant", content: "assistant content" }
-        ]);
-        chatRef.setProperty("disabled", disabled);
-        chatRef.setProperty("waitingResponse", waitingResponse);
-        chatRef.setProperty("liveMode", liveMode);
-        chatRef.setProperty("loadingState", loadingState);
-        await setEditContent(sendInputContent);
+        ];
+        chatRef.disabled = disabled;
+        chatRef.waitingResponse = waitingResponse;
+        chatRef.liveMode = liveMode;
+        chatRef.loadingState = loadingState;
+        await chatRef.updateComplete;
 
-        await page.waitForChanges();
-
-        await performSendAction(sendMessageAction);
-        await page.waitForChanges();
+        // Attempt to send a message using the public method
+        await chatRef.sendChatMessage({
+          id: "user-msg",
+          role: "user",
+          content: sendInputContent
+        });
+        await chatRef.updateComplete;
 
         expect(getChatMessageFiles).toBe(0);
         expect(sendChatMessages).toBe(0);
@@ -95,24 +79,9 @@ describe.skip("[ch-chat][send-message-by-user-interaction]", () => {
     }
   };
 
-  runTestFocusWithLoadingState(
-    "send-input keyboard enter",
-    false,
-    false,
-    false,
-    "loading",
-    "Hola"
-  );
-
-  // it(`[focusChatInput] should focus the textarea, loadingState = "${loadingState}"`, async () => {
-  //   chatRef.setProperty("loadingState", loadingState);
-  //   await page.waitForChanges();
-
-  //   expect(await isActiveElement(page, TEXTAREA_SELECTOR)).toBeFalsy();
-
-  //   await chatRef.callMethod("focusChatInput");
-  //   await page.waitForChanges();
-
-  //   expect(await isActiveElement(page, TEXTAREA_SELECTOR)).toBeTruthy();
-  // });
+  runTestWithLoadingState(false, false, false, "loading", "Hola");
+  runTestWithLoadingState(true, false, false, "all-records-loaded", "Hola");
+  runTestWithLoadingState(false, true, false, "all-records-loaded", "Hola");
+  runTestWithLoadingState(false, false, true, "all-records-loaded", "Hola");
+  runTestWithLoadingState(false, false, false, "initial", "Hola");
 });

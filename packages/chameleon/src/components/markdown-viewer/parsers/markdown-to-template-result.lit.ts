@@ -1,9 +1,9 @@
-import { markdownToMdAST } from "@genexus/markdown-parser";
+import { markdownToMdAST } from "./markdown-ast.js";
 import { nothing, type TemplateResult } from "lit";
-import { Parent as MdAstParent, Root } from "mdast";
+import type { Parent as MdAstParent, Root } from "mdast";
 
 import { clearLinkDefinitions } from "./link-resolver";
-import {
+import type {
   MarkdownViewerExtension,
   MarkdownViewerRenderFunctions,
   MarkdownViewerRenderMetadata

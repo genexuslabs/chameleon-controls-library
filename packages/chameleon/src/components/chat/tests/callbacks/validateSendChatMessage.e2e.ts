@@ -1,129 +1,114 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
 import type { ChatMessage } from "../../types";
+import type { ChChat } from "../../chat.lit";
+import "../../chat.lit.js";
 
 // TODO: Simplify unit tests
 describe("[ch-chat][callbacks]", () => {
-  let page: E2EPage;
-  let chatRef: E2EElement;
+  let chatRef: ChChat;
+
+  afterEach(cleanup);
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      html: `<button type="button"></button><ch-chat></ch-chat>`,
-      failOnConsoleError: true
-    });
-    chatRef = await page.find("ch-chat");
+    render(html`<button type="button"></button><ch-chat></ch-chat>`);
+    chatRef = document.querySelector("ch-chat")!;
+    await chatRef.updateComplete;
   });
-
-  const getChEditRef = () => page.find("ch-chat >>> ch-edit");
-  const getSendButtonRef = () => page.find("ch-chat >>> [part='send-button']");
 
   const setBasicProperties = async (
     setCallbacks = true,
     validateCallback = false
   ) => {
-    chatRef.setProperty("items", []);
-    chatRef.setProperty("loadingState", "all-records-loaded");
+    chatRef.items = [];
+    chatRef.loadingState = "all-records-loaded";
 
     // TODO: Add unit tests for async validateSendChatMessage
     if (setCallbacks) {
       if (validateCallback) {
-        await page.evaluate(() => {
-          document.querySelector("ch-chat").callbacks = {
-            validateSendChatMessage: (chat: ChatMessage) =>
-              chat.content !== "error",
-            sendChatMessages: () => {}
-          } satisfies HTMLChChatElement["callbacks"];
-        });
+        chatRef.callbacks = {
+          validateSendChatMessage: (chat: ChatMessage) =>
+            chat.content !== "error",
+          sendChatMessages: () => {}
+        } satisfies HTMLChChatElement["callbacks"];
       } else {
-        await page.evaluate(() => {
-          document.querySelector("ch-chat").callbacks = {
-            sendChatMessages: () => {}
-          } satisfies HTMLChChatElement["callbacks"];
-        });
+        chatRef.callbacks = {
+          sendChatMessages: () => {}
+        } satisfies HTMLChChatElement["callbacks"];
       }
     }
-    await page.waitForChanges();
+    await chatRef.updateComplete;
   };
 
   it("[sendChat] should not send the message when the ch-edit is empty", async () => {
     await setBasicProperties();
 
-    const buttonRef = await getSendButtonRef();
-    await buttonRef.press("Space");
-    await page.waitForChanges();
+    // Try to send via the public API with no content
+    await chatRef.sendChatMessage();
+    await chatRef.updateComplete;
 
     // TODO: Check that the sendChat callback is not called
-    expect(await chatRef.getProperty("items")).toEqual([]);
+    expect(chatRef.items).toEqual([]);
   });
 
   it("[validateSendChatMessage] should send the message when the callbacks property is not defined and the ch-edit has content", async () => {
     await setBasicProperties(false);
 
-    const editRef = await getChEditRef();
-    editRef.setProperty("value", "Hola");
-    await page.waitForChanges();
-
-    const buttonRef = await getSendButtonRef();
-    await buttonRef.press("Space");
-    await page.waitForChanges();
-
-    const chatItems = await chatRef.getProperty("items");
+    // Send a message via public API
+    await chatRef.sendChatMessage({
+      id: "msg-1",
+      role: "user",
+      content: "Hola"
+    });
+    await chatRef.updateComplete;
 
     // TODO: Check that the sendChat callback is called
-    expect(chatItems).toHaveLength(1);
-    expect(chatItems[0].content).toBe("Hola");
+    expect(chatRef.items).toHaveLength(1);
+    expect(chatRef.items[0].content).toBe("Hola");
   });
 
   it("[validateSendChatMessage] should send the message when the validateSendChatMessage callback is not defined and the ch-edit has content", async () => {
     await setBasicProperties();
 
-    const editRef = await getChEditRef();
-    editRef.setProperty("value", "Hola");
-    await page.waitForChanges();
-
-    const buttonRef = await getSendButtonRef();
-    await buttonRef.press("Space");
-    await page.waitForChanges();
-
-    const chatItems = await chatRef.getProperty("items");
+    await chatRef.sendChatMessage({
+      id: "msg-1",
+      role: "user",
+      content: "Hola"
+    });
+    await chatRef.updateComplete;
 
     // TODO: Check that the sendChat callback is called
-    expect(chatItems).toHaveLength(1);
-    expect(chatItems[0].content).toBe("Hola");
+    expect(chatRef.items).toHaveLength(1);
+    expect(chatRef.items[0].content).toBe("Hola");
   });
 
   it("[validateSendChatMessage] should send the message when the validateSendChatMessage is true and the ch-edit has content", async () => {
     await setBasicProperties(true, true);
 
-    const editRef = await getChEditRef();
-    editRef.setProperty("value", "Hola");
-    await page.waitForChanges();
-
-    const buttonRef = await getSendButtonRef();
-    await buttonRef.press("Space");
-    await page.waitForChanges();
-
-    const chatItems = await chatRef.getProperty("items");
+    await chatRef.sendChatMessage({
+      id: "msg-1",
+      role: "user",
+      content: "Hola"
+    });
+    await chatRef.updateComplete;
 
     // TODO: Check that the sendChat callback is called
-    expect(chatItems).toHaveLength(1);
-    expect(chatItems[0].content).toBe("Hola");
+    expect(chatRef.items).toHaveLength(1);
+    expect(chatRef.items[0].content).toBe("Hola");
   });
 
-  it("[validateSendChatMessage] should send the message when the validateSendChatMessage is false and the ch-edit has content", async () => {
+  it("[validateSendChatMessage] should not send the message when the validateSendChatMessage returns false", async () => {
     await setBasicProperties(true, true);
 
-    const editRef = await getChEditRef();
-    editRef.setProperty("value", "error");
-    await page.waitForChanges();
-
-    const buttonRef = await getSendButtonRef();
-    await buttonRef.press("Space");
-    await page.waitForChanges();
-
-    const chatItems = await chatRef.getProperty("items");
+    await chatRef.sendChatMessage({
+      id: "msg-1",
+      role: "user",
+      content: "error"
+    });
+    await chatRef.updateComplete;
 
     // TODO: Check that the sendChat callback is called
-    expect(chatItems).toHaveLength(0);
+    expect(chatRef.items).toHaveLength(0);
   });
 });

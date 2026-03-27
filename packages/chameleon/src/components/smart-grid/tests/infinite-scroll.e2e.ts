@@ -1,29 +1,12 @@
-import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
+import { html } from "lit";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render } from "vitest-browser-lit";
+import type { ChSmartGrid } from "../smart-grid.lit";
+import "../smart-grid.lit.js";
+// Ensure ch-infinite-scroll is defined
+import "../../infinite-scroll/infinite-scroll.lit.js";
+
 import type { SmartGridDataState } from "../../infinite-scroll/types";
-
-const INFINITE_SCROLL_SELECTOR = "ch-smart-grid >>> ch-infinite-scroll";
-
-const INITIAL_LOAD_CONTENT = `<slot name="grid-initial-loading-placeholder"></slot>`;
-const EMPTY_ITEMS_CONTENT_SLOT = `<slot name="grid-content-empty"></slot>`;
-const CONTENT_SLOT = `<slot name="grid-content"></slot>`;
-const CONTENT_WITH_INFINITE_SCROLL_TOP = (
-  loading: boolean
-) => `<ch-infinite-scroll aria-hidden="true" class="hydrated${
-  loading ? " loading" : ""
-}"></ch-infinite-scroll>
-<slot name="grid-content"></slot>`;
-
-const CONTENT_WITH_INFINITE_SCROLL_BOTTOM = (loading: boolean) => `<slot name="grid-content"></slot>
-<ch-infinite-scroll aria-hidden="true" class="hydrated${
-  loading ? " loading" : ""
-}"></ch-infinite-scroll>`;
-
-const DATA_PROVIDER_VALUES = [false, true];
-const INVERSE_LOADING_VALUES = [false, true];
-
-const ITEM_COUNT_VALUES = [0, -1, -10, 1, 10];
-const NON_POSITIVE_ITEM_COUNT_VALUES = [0, -1, -10];
-const POSITIVE_ITEM_COUNT_VALUES = [1, 10];
 
 const LOADING_STATE_VALUES: SmartGridDataState[] = [
   "loading",
@@ -31,200 +14,191 @@ const LOADING_STATE_VALUES: SmartGridDataState[] = [
   "all-records-loaded"
 ];
 
+const POSITIVE_ITEM_COUNT_VALUES = [1, 10];
+const NON_POSITIVE_ITEM_COUNT_VALUES = [0, -1, -10];
+
 describe("[ch-smart-grid][infinite scroll]", () => {
-  let page: E2EPage;
-  let smartGridRef: E2EElement;
+  let smartGridRef: ChSmartGrid;
+
+  afterEach(cleanup);
 
   beforeEach(async () => {
-    page = await newE2EPage({
-      // TODO: Add unit tests without the slot="grid-content" div
-      html: `<ch-smart-grid><div slot="grid-content"></div></ch-smart-grid>`,
-      failOnConsoleError: true
-    });
-
-    smartGridRef = await page.find("ch-smart-grid");
+    render(
+      html`<ch-smart-grid
+        ><div slot="grid-content"></div
+      ></ch-smart-grid>`
+    );
+    smartGridRef = document.querySelector("ch-smart-grid")!;
+    await smartGridRef.updateComplete;
   });
 
-  const getInfiniteScroll = () => page.find(INFINITE_SCROLL_SELECTOR);
+  it("should only render the initial loading placeholder slot by default", () => {
+    const slot = smartGridRef.shadowRoot!.querySelector(
+      'slot[name="grid-initial-loading-placeholder"]'
+    );
+    expect(slot).toBeTruthy();
 
-  it("should only render a slot by default", () =>
-    expect(smartGridRef.shadowRoot).toEqualHtml(INITIAL_LOAD_CONTENT));
+    const infiniteScroll =
+      smartGridRef.shadowRoot!.querySelector("ch-infinite-scroll");
+    expect(infiniteScroll).toBeNull();
+  });
 
-  const shouldOnlyRenderASlotTest = (
-    itemsCount: number,
-    dataProvider: boolean,
-    inverseLoading: boolean
-  ) =>
-    it(`[itemsCount = ${itemsCount}][dataProvider = ${dataProvider}][inverseLoading = ${inverseLoading}] should only render a slot by default because it has loadingState === "initial"`, async () => {
-      smartGridRef.setProperty("itemsCount", itemsCount);
-      smartGridRef.setProperty("dataProvider", dataProvider);
-      smartGridRef.setProperty("inverseLoading", inverseLoading);
-      await page.waitForChanges();
+  // When loadingState is "initial", only the initial loading placeholder should be shown
+  // regardless of other property values
+  for (const itemsCount of [0, 1, 10]) {
+    for (const dataProvider of [false, true]) {
+      for (const inverseLoading of [false, true]) {
+        it(`[itemsCount=${itemsCount}][dataProvider=${dataProvider}][inverseLoading=${inverseLoading}] should only render initial loading placeholder when loadingState is "initial"`, async () => {
+          smartGridRef.itemsCount = itemsCount;
+          smartGridRef.dataProvider = dataProvider;
+          smartGridRef.inverseLoading = inverseLoading;
+          await smartGridRef.updateComplete;
 
-      // Refresh the reference
-      smartGridRef = await page.find("ch-smart-grid");
+          const slot = smartGridRef.shadowRoot!.querySelector(
+            'slot[name="grid-initial-loading-placeholder"]'
+          );
+          expect(slot).toBeTruthy();
 
-      expect(smartGridRef.shadowRoot).toEqualHtml(INITIAL_LOAD_CONTENT);
-    });
+          const contentSlot = smartGridRef.shadowRoot!.querySelector(
+            'slot[name="grid-content"]'
+          );
+          expect(contentSlot).toBeNull();
+        });
+      }
+    }
+  }
 
-  ITEM_COUNT_VALUES.forEach(itemsCount =>
-    DATA_PROVIDER_VALUES.forEach(dataProvider =>
-      INVERSE_LOADING_VALUES.forEach(inverseLoading =>
-        shouldOnlyRenderASlotTest(itemsCount, dataProvider, inverseLoading)
-      )
-    )
-  );
+  // When there are no records and loadingState !== "initial", should render empty slot
+  for (const itemsCount of NON_POSITIVE_ITEM_COUNT_VALUES) {
+    for (const loadingState of LOADING_STATE_VALUES) {
+      for (const dataProvider of [false, true]) {
+        for (const inverseLoading of [false, true]) {
+          it(`[itemsCount=${itemsCount}][loadingState="${loadingState}"][dataProvider=${dataProvider}][inverseLoading=${inverseLoading}] should render grid-content-empty slot when no records`, async () => {
+            smartGridRef.itemsCount = itemsCount;
+            smartGridRef.loadingState = loadingState;
+            smartGridRef.dataProvider = dataProvider;
+            smartGridRef.inverseLoading = inverseLoading;
+            await smartGridRef.updateComplete;
 
-  const shouldOnlyRenderAnSlotWhenEmptyTest = (
-    itemsCount: number,
-    loadingState: SmartGridDataState,
-    dataProvider: boolean,
-    inverseLoading: boolean
-  ) =>
-    it(`[itemsCount = ${itemsCount}][loadingState = "${loadingState}"][dataProvider = ${dataProvider}][inverseLoading = ${inverseLoading}] should only render a slot since it doesn't have records and loadingState !== "initial"`, async () => {
-      smartGridRef.setProperty("itemsCount", itemsCount);
-      smartGridRef.setProperty("loadingState", loadingState);
-      smartGridRef.setProperty("dataProvider", dataProvider);
-      smartGridRef.setProperty("inverseLoading", inverseLoading);
-      await page.waitForChanges();
+            const emptySlot = smartGridRef.shadowRoot!.querySelector(
+              'slot[name="grid-content-empty"]'
+            );
+            expect(emptySlot).toBeTruthy();
+          });
+        }
+      }
+    }
+  }
 
-      // Refresh the reference
-      smartGridRef = await page.find("ch-smart-grid");
+  // When there are records and no dataProvider/inverseLoading, only render the content slot
+  for (const itemsCount of POSITIVE_ITEM_COUNT_VALUES) {
+    for (const loadingState of LOADING_STATE_VALUES) {
+      it(`[itemsCount=${itemsCount}][loadingState="${loadingState}"] should render only grid-content slot when no dataProvider and no inverseLoading`, async () => {
+        smartGridRef.itemsCount = itemsCount;
+        smartGridRef.loadingState = loadingState;
+        smartGridRef.dataProvider = false;
+        smartGridRef.inverseLoading = false;
+        await smartGridRef.updateComplete;
 
-      expect(smartGridRef.shadowRoot).toEqualHtml(EMPTY_ITEMS_CONTENT_SLOT);
-    });
+        const contentSlot = smartGridRef.shadowRoot!.querySelector(
+          'slot[name="grid-content"]'
+        );
+        expect(contentSlot).toBeTruthy();
 
-  NON_POSITIVE_ITEM_COUNT_VALUES.forEach(itemsCount =>
-    LOADING_STATE_VALUES.forEach(loadingState =>
-      DATA_PROVIDER_VALUES.forEach(dataProvider =>
-        INVERSE_LOADING_VALUES.forEach(inverseLoading =>
-          shouldOnlyRenderAnSlotWhenEmptyTest(
-            itemsCount,
-            loadingState,
-            dataProvider,
-            inverseLoading
-          )
-        )
-      )
-    )
-  );
+        const infiniteScroll =
+          smartGridRef.shadowRoot!.querySelector("ch-infinite-scroll");
+        expect(infiniteScroll).toBeNull();
+      });
+    }
+  }
 
-  const shouldOnlyRenderAnSlotForTheContentTest = (
-    itemsCount: number,
-    loadingState: SmartGridDataState
-  ) =>
-    it(`[itemsCount = ${itemsCount}][loadingState = "${loadingState}"] should only render a slot for the content since it has records and loadingState !== "initial", but no dataProvider and inverseLoading`, async () => {
-      smartGridRef.setProperty("itemsCount", itemsCount);
-      smartGridRef.setProperty("loadingState", loadingState);
-      smartGridRef.setProperty("dataProvider", false);
-      smartGridRef.setProperty("inverseLoading", false);
-      await page.waitForChanges();
+  // When inverseLoading is true and there are records, ch-infinite-scroll should be at the top
+  for (const itemsCount of POSITIVE_ITEM_COUNT_VALUES) {
+    for (const loadingState of LOADING_STATE_VALUES) {
+      for (const dataProvider of [false, true]) {
+        it(`[itemsCount=${itemsCount}][loadingState="${loadingState}"][dataProvider=${dataProvider}] should render ch-infinite-scroll before content slot when inverseLoading`, async () => {
+          smartGridRef.itemsCount = itemsCount;
+          smartGridRef.loadingState = loadingState;
+          smartGridRef.dataProvider = dataProvider;
+          smartGridRef.inverseLoading = true;
+          await smartGridRef.updateComplete;
 
-      // Refresh the reference
-      smartGridRef = await page.find("ch-smart-grid");
+          const infiniteScroll =
+            smartGridRef.shadowRoot!.querySelector("ch-infinite-scroll");
+          expect(infiniteScroll).toBeTruthy();
 
-      expect(smartGridRef.shadowRoot).toEqualHtml(CONTENT_SLOT);
-    });
+          const contentSlot = smartGridRef.shadowRoot!.querySelector(
+            'slot[name="grid-content"]'
+          );
+          expect(contentSlot).toBeTruthy();
 
-  POSITIVE_ITEM_COUNT_VALUES.forEach(itemsCount =>
-    LOADING_STATE_VALUES.forEach(loadingState =>
-      shouldOnlyRenderAnSlotForTheContentTest(itemsCount, loadingState)
-    )
-  );
+          // Verify ch-infinite-scroll comes before the content slot in DOM order
+          const children = Array.from(smartGridRef.shadowRoot!.children);
+          const infiniteScrollIndex = children.indexOf(infiniteScroll!);
+          const contentSlotIndex = children.indexOf(contentSlot!);
+          expect(infiniteScrollIndex).toBeLessThan(contentSlotIndex);
+        });
+      }
+    }
+  }
 
-  const shouldRenderInfiniteScrollAndSlotWhenContentAndInverseLoadingTest = (
-    itemsCount: number,
-    loadingState: SmartGridDataState,
-    dataProvider: boolean
-  ) =>
-    it(`[itemsCount = ${itemsCount}][loadingState = "${loadingState}"][dataProvider = ${dataProvider}] should render the ch-infinite-scroll and then a slot for the content since it has records, loadingState !== "initial" and inverseLoading`, async () => {
-      smartGridRef.setProperty("itemsCount", itemsCount);
-      smartGridRef.setProperty("loadingState", loadingState);
-      smartGridRef.setProperty("dataProvider", dataProvider);
-      smartGridRef.setProperty("inverseLoading", true);
-      await page.waitForChanges();
+  // When dataProvider is true, inverseLoading is false, and there are records,
+  // ch-infinite-scroll should be at the bottom
+  for (const itemsCount of POSITIVE_ITEM_COUNT_VALUES) {
+    for (const loadingState of LOADING_STATE_VALUES) {
+      it(`[itemsCount=${itemsCount}][loadingState="${loadingState}"] should render ch-infinite-scroll after content slot when dataProvider and no inverseLoading`, async () => {
+        smartGridRef.itemsCount = itemsCount;
+        smartGridRef.loadingState = loadingState;
+        smartGridRef.dataProvider = true;
+        smartGridRef.inverseLoading = false;
+        await smartGridRef.updateComplete;
 
-      // Refresh the reference
-      smartGridRef = await page.find("ch-smart-grid");
+        const infiniteScroll =
+          smartGridRef.shadowRoot!.querySelector("ch-infinite-scroll");
+        expect(infiniteScroll).toBeTruthy();
 
-      expect(smartGridRef.shadowRoot).toEqualHtml(
-        CONTENT_WITH_INFINITE_SCROLL_TOP(loadingState === "loading")
-      );
-    });
+        const contentSlot = smartGridRef.shadowRoot!.querySelector(
+          'slot[name="grid-content"]'
+        );
+        expect(contentSlot).toBeTruthy();
 
-  POSITIVE_ITEM_COUNT_VALUES.forEach(itemsCount =>
-    LOADING_STATE_VALUES.forEach(loadingState =>
-      DATA_PROVIDER_VALUES.forEach(dataProvider =>
-        shouldRenderInfiniteScrollAndSlotWhenContentAndInverseLoadingTest(
-          itemsCount,
-          loadingState,
-          dataProvider
-        )
-      )
-    )
-  );
+        // Verify content slot comes before ch-infinite-scroll in DOM order
+        const children = Array.from(smartGridRef.shadowRoot!.children);
+        const infiniteScrollIndex = children.indexOf(infiniteScroll!);
+        const contentSlotIndex = children.indexOf(contentSlot!);
+        expect(contentSlotIndex).toBeLessThan(infiniteScrollIndex);
+      });
+    }
+  }
 
-  const shouldRenderSlotAndInfiniteScrollWhenContentHasDataProviderButNotInverseLoadingTest = (
-    itemsCount: number,
-    loadingState: SmartGridDataState
-  ) =>
-    it(`[itemsCount = ${itemsCount}][loadingState = "${loadingState}"] should render a slot for the content and then the ch-infinite-scroll since it has records, loadingState !== "initial", dataProvider but no inverseLoading`, async () => {
-      smartGridRef.setProperty("itemsCount", itemsCount);
-      smartGridRef.setProperty("loadingState", loadingState);
-      smartGridRef.setProperty("dataProvider", true);
-      smartGridRef.setProperty("inverseLoading", false);
-      await page.waitForChanges();
+  // Check dataProvider property binding on ch-infinite-scroll
+  for (const itemsCount of POSITIVE_ITEM_COUNT_VALUES) {
+    for (const loadingState of LOADING_STATE_VALUES) {
+      for (const dataProvider of [false, true]) {
+        for (const inverseLoading of [false, true]) {
+          // Only run when ch-infinite-scroll is rendered
+          if (dataProvider || inverseLoading) {
+            it(`[itemsCount=${itemsCount}][loadingState="${loadingState}"][dataProvider=${dataProvider}][inverseLoading=${inverseLoading}] should properly bind the dataProvider property in ch-infinite-scroll`, async () => {
+              smartGridRef.itemsCount = itemsCount;
+              smartGridRef.loadingState = loadingState;
+              smartGridRef.dataProvider = dataProvider;
+              smartGridRef.inverseLoading = inverseLoading;
+              await smartGridRef.updateComplete;
 
-      // Refresh the reference
-      smartGridRef = await page.find("ch-smart-grid");
+              const infiniteScroll =
+                smartGridRef.shadowRoot!.querySelector("ch-infinite-scroll");
+              expect(infiniteScroll).toBeTruthy();
+              expect((infiniteScroll as any).dataProvider).toBe(
+                // When inverseLoading, the dataProvider binding passes the actual value;
+                // when only dataProvider (bottom position), it's always true
+                inverseLoading ? dataProvider : true
+              );
+            });
+          }
+        }
+      }
+    }
+  }
 
-      expect(smartGridRef.shadowRoot).toEqualHtml(
-        CONTENT_WITH_INFINITE_SCROLL_BOTTOM(loadingState === "loading")
-      );
-    });
-
-  POSITIVE_ITEM_COUNT_VALUES.forEach(itemsCount =>
-    LOADING_STATE_VALUES.forEach(loadingState =>
-      shouldRenderSlotAndInfiniteScrollWhenContentHasDataProviderButNotInverseLoadingTest(
-        itemsCount,
-        loadingState
-      )
-    )
-  );
-
-  const checkDataProviderBindingInfiniteScroll = (
-    itemsCount: number,
-    loadingState: SmartGridDataState,
-    dataProvider: boolean,
-    inverseLoading: boolean
-  ) =>
-    // Only run the test when the ch-infinite-scroll is rendered
-    (dataProvider || inverseLoading) &&
-    it(`[itemsCount = ${itemsCount}][loadingState = "${loadingState}"][dataProvider = ${dataProvider}][inverseLoading = ${inverseLoading}] should properly bind the dataProvider property in the ch-infinite-scroll when it's rendered`, async () => {
-      smartGridRef.setProperty("itemsCount", itemsCount);
-      smartGridRef.setProperty("loadingState", loadingState);
-      smartGridRef.setProperty("dataProvider", dataProvider);
-      smartGridRef.setProperty("inverseLoading", inverseLoading);
-      await page.waitForChanges();
-
-      expect(await (await getInfiniteScroll()).getProperty("dataProvider")).toBe(dataProvider);
-    });
-
-  POSITIVE_ITEM_COUNT_VALUES.forEach(itemsCount =>
-    LOADING_STATE_VALUES.forEach(loadingState =>
-      DATA_PROVIDER_VALUES.forEach(dataProvider =>
-        INVERSE_LOADING_VALUES.forEach(inverseLoading =>
-          checkDataProviderBindingInfiniteScroll(
-            itemsCount,
-            loadingState,
-            dataProvider,
-            inverseLoading
-          )
-        )
-      )
-    )
-  );
-
-  // TODO: Add more unit test to check more property binding combinations
+  // TODO: Add more unit tests to check more property binding combinations
 });
-

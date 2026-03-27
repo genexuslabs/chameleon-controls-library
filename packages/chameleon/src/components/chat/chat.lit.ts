@@ -1,48 +1,56 @@
-import {
-  Component,
-  Element,
-  Event,
-  EventEmitter,
-  Host,
-  Method,
-  Prop,
-  State,
-  Watch,
-  forceUpdate,
-  h
-} from "@stencil/core";
-import type { ChMimeType } from "../../common/mimeTypes/mime-types";
-import { adoptCommonThemes } from "../../common/theme";
+import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
+import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { html, nothing } from "lit";
+import { property } from "lit/decorators/property.js";
+import { state } from "lit/decorators/state.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { createRef, ref, type Ref } from "lit/directives/ref.js";
+import { repeat } from "lit/directives/repeat.js";
+import type { TranscriptionSegment } from "livekit-client";
 
-import { TranscriptionSegment } from "livekit-client";
-import type {
-  ChVirtualScrollerCustomEvent,
-  VirtualScrollVirtualItems
-} from "../../components";
-import { EMPTY_LIVE_KIT_ROOM_MESSAGE } from "../live-kit-room/constants";
-import type { LiveKitCallbacks } from "../live-kit-room/types";
-import type { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
+import type { ChMimeType } from "../../typings/mime-types.js";
+import { Host } from "../../utilities/host/host.js";
+import { tokenMap } from "../../utilities/mapping/token-map.js";
+import { adoptCommonThemes } from "../../utilities/theme.js";
+
+import type { SmartGridDataState } from "../infinite-scroll/types";
+import { EMPTY_LIVE_KIT_ROOM_MESSAGE } from "../live-kit-room/constants.js";
+import type { LiveKitCallbacks } from "../live-kit-room/types.js";
 import type { ThemeModel } from "../theme/theme-types";
-import type { ChChatLit } from "./internal/chat.lit";
-import { mergeSortedArrays } from "./merge-sort-live-kit-messages";
-import type { ChatTranslations } from "./translations";
+import type { VirtualScrollVirtualItems } from "../virtual-scroller/types.js";
+import { renderContentBySections } from "./internal/renders/renders.lit.js";
+import { mergeSortedArrays } from "./merge-sort-live-kit-messages.js";
+import type { ChatTranslations } from "./translations.js";
 import type {
   ChatCallbacks,
   ChatLiveModeConfiguration,
   ChatMessage,
+  ChatMessageAssistant,
   ChatMessageByRole,
   ChatMessageByRoleNoId,
+  ChatMessageError,
   ChatMessageFiles,
   ChatMessageRenderByItem,
   ChatMessageRenderBySections,
   ChatMessageUser,
   ChatSendContainerLayout,
   ChatSendContainerLayoutElement
-} from "./types";
-import { getMessageContent, getMessageFiles } from "./utils";
+} from "./types.js";
+import {
+  DEFAULT_ASSISTANT_STATUS,
+  getMessageContent,
+  getMessageFiles,
+  getMessageFilesAndSources
+} from "./utils.js";
 
-// Side effect to define the ch-chat-lit custom element
-import "./internal/chat.lit";
+import styles from "./chat.scss?inline";
+
+// Lazy-load child components
+import("../smart-grid/smart-grid.lit.js");
+import("../virtual-scroller/virtual-scroller.lit.js");
+import("../markdown-viewer/markdown-viewer.lit.js");
+import("../live-kit-room/live-kit-room.lit.js");
 
 const ENTER_KEY = "Enter";
 
@@ -54,19 +62,11 @@ const createLiveKitMessagesStore = (): {
   user: new Map()
 });
 
-const stopResponseButtonHasAPosition = (
-  sendContainerLayout: ChatSendContainerLayout
-) =>
-  (sendContainerLayout.sendContainerBefore ?? []).includes(
-    "stop-response-button"
-  ) ||
-  (sendContainerLayout.sendInputBefore ?? []).includes(
-    "stop-response-button"
-  ) ||
+const stopResponseButtonHasAPosition = (sendContainerLayout: ChatSendContainerLayout) =>
+  (sendContainerLayout.sendContainerBefore ?? []).includes("stop-response-button") ||
+  (sendContainerLayout.sendInputBefore ?? []).includes("stop-response-button") ||
   (sendContainerLayout.sendInputAfter ?? []).includes("stop-response-button") ||
-  (sendContainerLayout.sendContainerAfter ?? []).includes(
-    "stop-response-button"
-  );
+  (sendContainerLayout.sendContainerAfter ?? []).includes("stop-response-button");
 
 const sendContainerLayoutPositionToPartName = {
   sendContainerBefore: "send-container-before",
@@ -78,12 +78,12 @@ const sendContainerLayoutPositionToPartName = {
 /**
  * Returns the slot name to be used in the `ch-edit` element.
  */
-const getSendInputSlotRename = (
-  slotToRename: "sendInputAfter" | "sendInputBefore"
-) =>
-  slotToRename === "sendInputBefore"
-    ? "additional-content-before"
-    : "additional-content-after";
+const getSendInputSlotRename = (slotToRename: "sendInputAfter" | "sendInputBefore") =>
+  slotToRename === "sendInputBefore" ? "additional-content-before" : "additional-content-after";
+
+const getAriaBusyValue = (
+  status?: "complete" | "waiting" | "streaming" | undefined
+): "true" | "false" => (status === "streaming" ? "true" : "false");
 
 /**
  * The `ch-chat` component delivers a full-featured conversational interface with virtual scrolling for efficient rendering of large message histories.
@@ -133,16 +133,15 @@ const getSendInputSlotRename = (
  * @slot additional-content - Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state.
  */
 @Component({
-  tag: "ch-chat",
-  styleUrl: "chat.scss",
-  shadow: true
+  shadow: {},
+  styles,
+  tag: "ch-chat"
 })
-export class ChChat {
+export class ChChat extends KasstorElement {
   /**
    * Specifies the ID of the cell that is aligned to the start of the scroll
    * position.
    */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #cellIdAlignedWhenRendered: string | undefined;
 
   /**
@@ -155,7 +154,6 @@ export class ChChat {
    * div to avoid destroying the DOM and thus causing some side effects on
    * elements whose state the chat can not control.
    */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #cellHasToReserveSpace: Set<string> | undefined;
 
   #liveKitTranscriptions:
@@ -168,7 +166,7 @@ export class ChChat {
 
   #liveKitCallbacks: LiveKitCallbacks = {
     activeSpeakersChanged: participant =>
-      this.callbacks?.liveMode?.activeSpeakersChanged(participant),
+      this.callbacks?.liveMode?.activeSpeakersChanged!(participant),
 
     updateTranscriptions: (segments, participant) => {
       let lastSegmentWithContent: TranscriptionSegment | undefined;
@@ -176,10 +174,7 @@ export class ChChat {
       for (let index = 0; index < segments.length; index++) {
         const segment = segments[index];
 
-        if (
-          segment.text.trim() !== "" &&
-          segment.text !== EMPTY_LIVE_KIT_ROOM_MESSAGE
-        ) {
+        if (segment.text.trim() !== "" && segment.text !== EMPTY_LIVE_KIT_ROOM_MESSAGE) {
           lastSegmentWithContent = segment;
         }
       }
@@ -189,31 +184,28 @@ export class ChChat {
         return;
       }
 
-      const messageRole = participant.isLocal ? "user" : "assistant";
+      const messageRole = participant!.isLocal ? "user" : "assistant";
 
-      this.#liveKitTranscriptions[messageRole].set(
+      this.#liveKitTranscriptions![messageRole].set(
         lastSegmentWithContent.id,
         lastSegmentWithContent
       );
 
-      this.#liveKitMessages = mergeSortedArrays(this.#liveKitTranscriptions);
-      forceUpdate(this);
+      this.#liveKitMessages = mergeSortedArrays(this.#liveKitTranscriptions!);
+      this.requestUpdate();
     }
   };
 
   #mustReplaceSendButtonWithStopResponse = true;
 
   // Refs
-  #chatLitRef: ChChatLit | undefined;
-  #editRef!: HTMLChEditElement;
-  #smartGridRef: HTMLChSmartGridElement | undefined;
-  #virtualScrollRef: HTMLChVirtualScrollerElement | undefined;
+  #editRef: Ref<HTMLChEditElement> = createRef();
+  #smartGridRef: Ref<HTMLChSmartGridElement> = createRef();
+  #virtualScrollRef: Ref<HTMLChVirtualScrollerElement> = createRef();
 
-  @Element() el!: HTMLChChatElement;
+  @state() uploadingFiles = 0;
 
-  @State() uploadingFiles = 0;
-
-  @State() virtualItems: ChatMessage[] = [];
+  @state() virtualItems: ChatMessage[] = [];
 
   /**
    * `true` if a message was added by user interaction or one of the following
@@ -226,7 +218,7 @@ export class ChChat {
    * end, so we only take into account the `autoScroll` value after the first
    * message is added by the host of the component.
    */
-  @State() initialLoadHasEnded = false;
+  @state() initialLoadHasEnded = false;
 
   /**
    * Specifies how the scroll position will be adjusted when the chat messages
@@ -239,25 +231,25 @@ export class ChChat {
    *  - "never": The scroll position won't be adjusted when the content of the
    *   messages is being updated.
    */
-  @Prop() readonly autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
+  @property({ attribute: "auto-scroll" }) autoScroll: "never" | "at-scroll-end" = "at-scroll-end";
 
   /**
    * Specifies the callbacks required in the control.
    */
-  @Prop() readonly callbacks?: ChatCallbacks | undefined;
+  @property({ attribute: false }) callbacks?: ChatCallbacks | undefined;
 
   /**
    * Specifies if all interactions are disabled
    */
-  @Prop() readonly disabled: boolean = false;
+  @property({ type: Boolean }) disabled: boolean = false;
 
   // TODO: Add support for undefined messages.
   /**
    * Specifies the items that the chat will display.
    */
-  @Prop({ mutable: true }) items: ChatMessage[] = [];
-  @Watch("items")
-  itemsChanged() {
+  @property({ attribute: false }) items: ChatMessage[] = [];
+  @Observe("items")
+  protected itemsChanged() {
     this.#cellIdAlignedWhenRendered = undefined;
     this.initialLoadHasEnded = false;
 
@@ -268,7 +260,7 @@ export class ChChat {
     // TODO: This is a WA to remove the anchor cell when the model changes. We
     // should find a better way to remove the reserved space for the anchor
     // cell
-    this.#smartGridRef?.removeScrollEndContentReference();
+    this.#smartGridRef.value?.removeScrollEndContentReference();
   }
 
   /**
@@ -285,14 +277,14 @@ export class ChChat {
    * When the `liveMode` ends, the transcribed conversation will be pushed
    * to the `items` of the chat.
    */
-  @Prop() readonly liveMode: boolean = false;
-  @Watch("liveMode")
-  liveModeChanged() {
+  @property({ attribute: "live-mode", type: Boolean }) liveMode: boolean = false;
+  @Observe("liveMode")
+  protected liveModeChanged() {
     if (this.liveMode) {
       this.#liveKitTranscriptions = createLiveKitMessagesStore();
       this.#liveKitMessages = [];
     } else {
-      this.#virtualScrollRef?.addItems("end", ...this.#liveKitMessages);
+      this.#virtualScrollRef.value?.addItems("end", ...(this.#liveKitMessages ?? []));
 
       this.#liveKitTranscriptions = undefined;
 
@@ -308,18 +300,18 @@ export class ChChat {
    * Specifies the live mode configuration. The `token` and `url` are required
    * to enable the `liveMode`.
    */
-  @Prop() readonly liveModeConfiguration: ChatLiveModeConfiguration | undefined;
+  @property({ attribute: false }) liveModeConfiguration: ChatLiveModeConfiguration | undefined;
 
   /**
    * Specifies if the chat is waiting for the data to be loaded.
    */
-  @Prop({ mutable: true }) loadingState: SmartGridDataState = "initial";
+  @property({ attribute: false }) loadingState: SmartGridDataState = "initial";
 
   /**
    * Specifies the theme to be used for rendering the markdown.
    * If `null`, no theme will be applied.
    */
-  @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
+  @property({ attribute: "markdown-theme" }) markdownTheme?: string | null = "ch-markdown-viewer";
 
   /**
    * Specifies how the messages added by the user interaction will be aligned
@@ -331,9 +323,10 @@ export class ChChat {
    * This behavior is the same as the Monaco editor does for reserving space
    * when visualizing the last lines positioned at the top of the editor.
    */
-  @Prop() readonly newUserMessageAlignment: "start" | "end" = "end";
-  @Watch("newUserMessageAlignment")
-  newUserMessageAlignmentChanged() {
+  @property({ attribute: "new-user-message-alignment" })
+  newUserMessageAlignment: "start" | "end" = "end";
+  @Observe("newUserMessageAlignment")
+  protected newUserMessageAlignmentChanged() {
     if (this.newUserMessageAlignment === "end") {
       this.#cellIdAlignedWhenRendered = undefined;
 
@@ -347,10 +340,8 @@ export class ChChat {
    * Specifies how the chat will scroll to the position of the messages added
    * by user interaction.
    */
-  @Prop() readonly newUserMessageScrollBehavior: Exclude<
-    ScrollBehavior,
-    "auto"
-  > = "instant";
+  @property({ attribute: "new-user-message-scroll-behavior" })
+  newUserMessageScrollBehavior: Exclude<ScrollBehavior, "auto"> = "instant";
 
   /**
    * This property allows us to implement custom rendering of chat items.
@@ -365,7 +356,7 @@ export class ChChat {
    *   `contentBefore`, `content`, `contentAfter`, `files` and/or
    *   `messageStructure`).
    */
-  @Prop() readonly renderItem?:
+  @property({ attribute: false }) renderItem?:
     | ChatMessageRenderByItem
     | ChatMessageRenderBySections
     | undefined;
@@ -373,12 +364,14 @@ export class ChChat {
   /**
    * `true` to disable the send-button element.
    */
-  @Prop() readonly sendButtonDisabled: boolean = false;
+  @property({ attribute: "send-button-disabled", type: Boolean })
+  sendButtonDisabled: boolean = false;
 
   /**
    * `true` to disable the send-input element.
    */
-  @Prop() readonly sendInputDisabled: boolean = false;
+  @property({ attribute: "send-input-disabled", type: Boolean })
+  sendInputDisabled: boolean = false;
 
   /**
    * `true` to render a slot named "additional-content" to project elements
@@ -387,7 +380,8 @@ export class ChChat {
    * This slot can only be rendered if loadingState !== "initial" and
    * (loadingState !== "all-records-loaded" && items.length > 0).
    */
-  @Prop() readonly showAdditionalContent: boolean = false;
+  @property({ attribute: "show-additional-content", type: Boolean })
+  showAdditionalContent: boolean = false;
 
   /**
    * Specifies the position of the elements in the `send-container` part.
@@ -430,25 +424,26 @@ export class ChChat {
    * </ch-chat>
    * ```
    */
-  @Prop() readonly sendContainerLayout: ChatSendContainerLayout = {
+  @property({ attribute: false }) sendContainerLayout: ChatSendContainerLayout = {
     sendContainerAfter: ["send-button"]
   };
-  @Watch("sendContainerLayout")
-  sendContainerLayoutChanged() {
-    this.#mustReplaceSendButtonWithStopResponse =
-      !stopResponseButtonHasAPosition(this.sendContainerLayout);
+  @Observe("sendContainerLayout")
+  protected sendContainerLayoutChanged() {
+    this.#mustReplaceSendButtonWithStopResponse = !stopResponseButtonHasAPosition(
+      this.sendContainerLayout
+    );
   }
 
   /**
    * Specifies the theme to be used for rendering the chat.
    * If `undefined`, no theme will be applied.
    */
-  @Prop() readonly theme?: ThemeModel | undefined;
+  @property({ attribute: false }) theme?: ThemeModel | undefined;
 
   /**
    * Specifies the literals required in the control.
    */
-  @Prop() readonly translations: ChatTranslations = {
+  @property({ attribute: false }) translations: ChatTranslations = {
     accessibleName: {
       clearChat: "Clear chat",
       copyMessageContent: "Copy message content",
@@ -472,7 +467,8 @@ export class ChChat {
    * Specifies the number of elements to be rendered above and below the
    * virtual scroll.
    */
-  @Prop() readonly virtualScrollerBufferSize: number = 5;
+  @property({ attribute: "virtual-scroller-buffer-size", type: Number })
+  virtualScrollerBufferSize: number = 5;
 
   /**
    * `true` if the `ch-chat` is waiting for a response from the server. If so,
@@ -480,7 +476,8 @@ export class ChChat {
    * message. Although, the `send-input` and `send-button` won't be disabled,
    * so the user can interact with the chat.
    */
-  @Prop() readonly waitingResponse?: boolean = false;
+  @property({ attribute: "waiting-response", type: Boolean })
+  waitingResponse?: boolean = false;
 
   /**
    * Fired when a new user message is added in the chat via user interaction.
@@ -490,13 +487,16 @@ export class ChChat {
    * cleanup of the custom file attachment, or or even blocking user
    * interactions before the `sendChatMessages` callback is executed.
    */
-  @Event() userMessageAdded: EventEmitter<ChatMessageByRole<"user">>;
+  @Event() protected userMessageAdded!: EventEmitter<ChatMessageByRole<"user">>;
+
+  // - - - - - - - - - - - - - - - - - - - -
+  //             Public methods
+  // - - - - - - - - - - - - - - - - - - - -
 
   /**
    * Add a new message at the end of the record, performing a re-render.
    */
-  @Method()
-  async addNewMessage(message: ChatMessage) {
+  public async addNewMessage(message: ChatMessage) {
     this.initialLoadHasEnded = true;
 
     if (this.newUserMessageAlignment === "start") {
@@ -510,18 +510,16 @@ export class ChChat {
   /**
    * Focus the chat input
    */
-  @Method()
-  async focusChatInput() {
-    this.#editRef?.focus();
+  public async focusChatInput() {
+    this.#editRef.value?.focus();
   }
 
   /**
    * Set the text for the chat input
    */
-  @Method()
-  async setChatInputMessage(text: string) {
-    if (this.#editRef) {
-      this.#editRef.value = text;
+  public async setChatInputMessage(text: string) {
+    if (this.#editRef.value) {
+      this.#editRef.value.value = text;
     }
   }
 
@@ -539,16 +537,14 @@ export class ChChat {
    * Whether or not the `content` parameter is provided, the content of the
    * `send-input` element will be cleared.
    */
-  @Method()
-  async sendChatMessage(content?: ChatMessageUser | undefined, files?: File[]) {
+  public async sendChatMessage(content?: ChatMessageUser | undefined, files?: File[]) {
     return this.#sendMessage(content, files);
   }
 
   /**
    * Given the id of the message, it updates the content of the indexed message.
    */
-  @Method()
-  async updateChatMessage(
+  public async updateChatMessage(
     messageIndex: number,
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
@@ -572,7 +568,7 @@ export class ChChat {
       this.virtualItems[virtualItemIndex] = updatedMessage;
     }
 
-    forceUpdate(this);
+    this.requestUpdate();
   }
 
   // TODO: Add unit tests to validate how the chat message should be copied
@@ -581,8 +577,7 @@ export class ChChat {
   /**
    * Update the content of the last message, performing a re-render.
    */
-  @Method()
-  async updateLastMessage(
+  public async updateLastMessage(
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
@@ -596,20 +591,24 @@ export class ChChat {
     this.#updateMessage(this.items.length - 1, message, mode);
 
     // Sync the last virtual item with the real item that is updated
-    this.virtualItems[this.virtualItems.length - 1] = this.items.at(-1);
+    this.virtualItems[this.virtualItems.length - 1] = this.items.at(-1)!;
 
-    forceUpdate(this);
+    this.requestUpdate();
   }
+
+  // - - - - - - - - - - - - - - - - - - - -
+  //           Private helpers
+  // - - - - - - - - - - - - - - - - - - - -
 
   #pushMessage = async (message: ChatMessage) => {
     // We should also check for the virtual-scroller to be defined, because the
     // user can add two messages at once, without waiting for the
     // virtual-scroller to be defined
-    if (this.items.length === 0 || !this.#virtualScrollRef) {
+    if (this.items.length === 0 || !this.#virtualScrollRef.value) {
       this.items.push(message);
-      forceUpdate(this);
+      this.requestUpdate();
     } else {
-      await this.#virtualScrollRef.addItems("end", message);
+      await this.#virtualScrollRef.value.addItems("end", message);
     }
   };
 
@@ -619,13 +618,11 @@ export class ChChat {
     mode: "concat" | "replace"
   ) => {
     if (mode === "concat") {
-      const messageInIndex = this.items[messageIndex] as ChatMessageByRole<
-        "system" | "assistant"
-      >;
+      const messageInIndex = this.items[messageIndex] as ChatMessageByRole<"system" | "assistant">;
 
       // Temporal store for the new message content
       const newMessageContent =
-        getMessageContent(messageInIndex) + getMessageContent(message);
+        (getMessageContent(messageInIndex) ?? "") + (getMessageContent(message) ?? "");
 
       // Temporal store for the new message files
       const newMessageFiles: ChatMessageFiles = getMessageFiles(messageInIndex);
@@ -663,11 +660,10 @@ export class ChChat {
     this.#sendMessage();
   };
 
-  #addUserMessageToRecordAndFocusInput = async (
-    userMessage: ChatMessageByRole<"user">
-  ) => {
-    this.#editRef.value = "";
-    this.#editRef.click(); // TODO: Should it be focus???
+  #addUserMessageToRecordAndFocusInput = async (userMessage: ChatMessageByRole<"user">) => {
+    const editEl = this.#editRef.value;
+    editEl!.value = "";
+    editEl!.click(); // TODO: Should it be focus???
 
     await this.#pushMessage(userMessage);
     this.userMessageAdded.emit(userMessage);
@@ -688,22 +684,6 @@ export class ChChat {
     return this.liveMode && config && !!config.url && !!config.token;
   };
 
-  #renderLiveKitRoom = () => {
-    const config = this.liveModeConfiguration;
-
-    return (
-      this.#liveModeIsDisplayed() && (
-        <ch-live-kit-room
-          callbacks={this.#liveKitCallbacks}
-          connected
-          microphoneEnabled={config.localParticipant?.microphoneEnabled ?? true}
-          token={config.token}
-          url={config.url}
-        ></ch-live-kit-room>
-      )
-    );
-  };
-
   #uploadFiles = (
     userMessageToAdd: ChatMessageByRole<"user">,
     sendInputValue: string | undefined,
@@ -713,9 +693,7 @@ export class ChChat {
 
     if (!callbacks) {
       // eslint-disable-next-line no-console
-      return console.warn(
-        'The "callbacks" property is not defined, so files can not be uploaded'
-      );
+      return console.warn('The "callbacks" property is not defined, so files can not be uploaded');
     }
     if (!callbacks.uploadFile) {
       // eslint-disable-next-line no-console
@@ -726,7 +704,7 @@ export class ChChat {
 
     const chatFiles: ChatMessageFiles = [];
     userMessageToAdd.content = {
-      message: sendInputValue,
+      message: sendInputValue ?? "",
       files: chatFiles
     };
 
@@ -770,7 +748,7 @@ export class ChChat {
   };
 
   #sendChat = () => {
-    const lastCell = this.items.at(-1);
+    const lastCell = this.items.at(-1)!;
     this.#cellIdAlignedWhenRendered = lastCell.id;
 
     if (this.newUserMessageAlignment === "start") {
@@ -803,23 +781,22 @@ export class ChChat {
     }
 
     const filesToUpload = files ?? (await this.#getChatFiles());
-    const sendInputValue = content
-      ? getMessageContent(content)
-      : this.#editRef.value;
+    const sendInputValue = content ? getMessageContent(content) : this.#editRef.value?.value;
     const hasFiles = filesToUpload.length !== 0;
-    const emptySendInput =
-      (!sendInputValue || sendInputValue.trim() === "") && !hasFiles;
+    const emptySendInput = (!sendInputValue || sendInputValue.trim() === "") && !hasFiles;
 
     if (emptySendInput) {
       return;
     }
 
     // Message
-    const userMessageToAdd: ChatMessageByRole<"user"> = content ?? {
-      id: `${new Date().getTime()}`,
-      role: "user",
-      content: sendInputValue
-    };
+    const userMessageToAdd: ChatMessageByRole<"user"> =
+      content ??
+      ({
+        id: `${new Date().getTime()}`,
+        role: "user",
+        content: sendInputValue
+      } as ChatMessageByRole<"user">);
 
     // Validate message with callback
     if (!(await this.#chatMessageCanBeSent(userMessageToAdd, filesToUpload))) {
@@ -841,7 +818,7 @@ export class ChChat {
     }
 
     // Queue a new re-render
-    forceUpdate(this);
+    this.requestUpdate();
   };
 
   #sendMessageWithSendButton = () => this.#sendMessage();
@@ -851,92 +828,144 @@ export class ChChat {
     this.callbacks!.stopResponse!();
   };
 
-  #virtualItemsChanged = (
-    event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
-  ) => {
+  #virtualItemsChanged = (event: CustomEvent<VirtualScrollVirtualItems>) => {
     this.virtualItems = event.detail.virtualItems as ChatMessage[];
   };
 
   // - - - - - - - - - - - - - - - - - - - -
-  //                 Renders
+  //         Message rendering
+  //  (merged from internal/chat.lit.ts)
+  // - - - - - - - - - - - - - - - - - - - -
+
+  #alignCellWhenRendered = () =>
+    // TODO: This is a WA to avoid a type error in runtime
+    (this.#smartGridRef.value as any as HTMLChSmartGridElement).scrollEndContentToPosition(
+      this.#cellIdAlignedWhenRendered!,
+      {
+        position: this.newUserMessageAlignment,
+        behavior: this.newUserMessageScrollBehavior
+      }
+    );
+
+  #getMessageRenderedContent = (
+    message: ChatMessageUser | ChatMessageAssistant | ChatMessageError
+  ) => {
+    // Default render
+    if (!this.renderItem) {
+      return renderContentBySections(message, this as any, {});
+    }
+
+    return typeof this.renderItem === "function"
+      ? this.renderItem(message)
+      : renderContentBySections(message, this as any, this.renderItem); // The custom render is separated by sections
+  };
+
+  #renderMessageItem = (message: ChatMessage) => {
+    if (message.role === "system") {
+      return "";
+    }
+
+    const isAssistantMessage = message.role === "assistant";
+    const filesAndSources = getMessageFilesAndSources(message);
+
+    const parts = tokenMap({
+      [`message ${message.role} ${message.id}`]: true,
+      "has-content": (getMessageContent(message) ?? "").trim() !== "",
+      "has-files": filesAndSources.files.length !== 0,
+      "has-sources": filesAndSources.sources.length !== 0,
+      [message.parts as string]: !!message.parts,
+      [(message as ChatMessageByRole<"assistant">).status ?? DEFAULT_ASSISTANT_STATUS]:
+        isAssistantMessage
+    });
+
+    const renderedContent = this.#getMessageRenderedContent(message);
+
+    const messageIsCellAlignedAtTheStart = message.id === this.#cellIdAlignedWhenRendered;
+
+    const hasToRenderAnExtraDiv =
+      this.#cellHasToReserveSpace !== undefined && this.#cellHasToReserveSpace.has(message.id);
+
+    return html`<ch-smart-grid-cell
+      .cellId=${message.id}
+      aria-live=${ifDefined(isAssistantMessage ? "polite" : undefined)}
+      aria-busy=${
+        // Wait until all changes are made to prevents assistive
+        // technologies from announcing changes before updates are done
+        ifDefined(isAssistantMessage ? getAriaBusyValue(message.status) : undefined)
+      }
+      part=${ifDefined(hasToRenderAnExtraDiv ? undefined : parts)}
+      .smartGridRef=${
+        // TODO: This is a WA to avoid a type error in runtime
+        this.#smartGridRef.value as any as HTMLChSmartGridElement
+      }
+      @smartCellDidLoad=${messageIsCellAlignedAtTheStart ? this.#alignCellWhenRendered : undefined}
+    >
+      ${hasToRenderAnExtraDiv ? html`<div part=${parts}>${renderedContent}</div>` : renderedContent}
+    </ch-smart-grid-cell>`;
+  };
+
+  #renderMessages = () =>
+    html`${repeat(this.virtualItems, item => item.id, this.#renderMessageItem)}${this
+      .#liveKitMessages
+      ? repeat(this.#liveKitMessages, item => item.id, this.#renderMessageItem)
+      : nothing}`;
+
+  // - - - - - - - - - - - - - - - - - - - -
+  //              Layout renders
   // - - - - - - - - - - - - - - - - - - - -
   #renderChatOrEmpty = () =>
-    this.loadingState === "all-records-loaded" && this.items.length === 0 ? (
-      <slot name="empty-chat"></slot>
-    ) : (
-      <ch-smart-grid
-        autoScroll={
-          // We have to bind the property this way to make sure the scroll is
-          // positioned correctly at the initial load. Otherwise, if really
-          // hard to position the scroll if we don't know somehow when the
-          // initial load has finished
-          this.initialLoadHasEnded ? this.autoScroll : "at-scroll-end"
-        }
-        dataProvider={this.loadingState === "more-data-to-fetch"}
-        loadingState={
-          this.virtualItems.length === 0 ? "initial" : this.loadingState
-        }
-        inverseLoading
-        itemsCount={this.virtualItems.length}
-        onInfiniteThresholdReached={this.#loadMoreItems}
-        ref={el => (this.#smartGridRef = el as HTMLChSmartGridElement)}
-      >
-        <ch-virtual-scroller
-          role="row"
-          slot="grid-content"
-          class="grid-content"
-          part="messages-container"
-          bufferAmount={this.virtualScrollerBufferSize}
-          inverseLoading
-          // mode="lazy-render"
-          items={this.items}
-          itemsCount={this.items.length}
-          onVirtualItemsChanged={this.#virtualItemsChanged}
-          ref={el =>
-            (this.#virtualScrollRef = el as HTMLChVirtualScrollerElement)
+    this.loadingState === "all-records-loaded" && this.items.length === 0
+      ? html`<slot name="empty-chat"></slot>`
+      : html`<ch-smart-grid
+          .autoScroll=${
+            // We have to bind the property this way to make sure the scroll is
+            // positioned correctly at the initial load. Otherwise, if really
+            // hard to position the scroll if we don't know somehow when the
+            // initial load has finished
+            this.initialLoadHasEnded ? this.autoScroll : "at-scroll-end"
           }
+          .dataProvider=${this.loadingState === "more-data-to-fetch"}
+          .loadingState=${this.virtualItems.length === 0 ? "initial" : this.loadingState}
+          .inverseLoading=${true}
+          .itemsCount=${this.virtualItems.length}
+          @infiniteThresholdReached=${this.#loadMoreItems}
+          ${ref(this.#smartGridRef)}
         >
-          <ch-chat-lit
-            cellHasToReserveSpace={this.#cellHasToReserveSpace}
-            cellIdAlignedWhenRendered={this.#cellIdAlignedWhenRendered}
-            chatRef={this.el}
-            newUserMessageAlignment={this.newUserMessageAlignment}
-            newUserMessageScrollBehavior={this.newUserMessageScrollBehavior}
-            renderItem={this.renderItem}
-            smartGridRef={this.#smartGridRef}
-            virtualItems={this.virtualItems}
-            ref={el => (this.#chatLitRef = el)}
-          ></ch-chat-lit>
-        </ch-virtual-scroller>
-      </ch-smart-grid>
-    );
+          <ch-virtual-scroller
+            role="row"
+            slot="grid-content"
+            class="grid-content"
+            part="messages-container"
+            .bufferAmount=${this.virtualScrollerBufferSize}
+            .inverseLoading=${true}
+            .items=${this.items}
+            .itemsCount=${this.items.length}
+            @virtualItemsChanged=${this.#virtualItemsChanged}
+            ${ref(this.#virtualScrollRef)}
+          >
+            ${this.#renderMessages()}
+          </ch-virtual-scroller>
+        </ch-smart-grid>`;
 
   #renderStopResponseButton = () => {
     const { accessibleName, text } = this.translations;
 
     const ariaLabel =
       accessibleName.stopResponseButton !== text.stopResponseButton
-        ? accessibleName.stopResponseButton ?? text.stopResponseButton
+        ? (accessibleName.stopResponseButton ?? text.stopResponseButton)
         : undefined;
 
-    return (
-      this.waitingResponse &&
-      this.callbacks?.stopResponse && (
-        <button
-          // TODO: Add a unit test for this. Also, without the undefined, when
-          // the DOM is reused (by switching between the send and stop-response
-          // button), the aria-label is not be removed and the stop-response
-          // button can end up having the send button aria-label
-          aria-label={ariaLabel}
-          title={ariaLabel}
+    return this.waitingResponse && this.callbacks?.stopResponse
+      ? html`<button
+          aria-label=${ifDefined(ariaLabel)}
+          title=${ifDefined(ariaLabel)}
           part="stop-response-button"
           type="button"
-          onClick={this.#stopResponse}
+          @click=${this.#stopResponse}
         >
-          {text.stopResponseButton}
-        </button>
-      )
-    );
+          ${text.stopResponseButton}
+        </button>`
+      : nothing;
   };
 
   #renderSendOrStopResponseButton = () =>
@@ -955,32 +984,24 @@ export class ChChat {
       this.loadingState === "initial" ||
       this.#liveModeIsDisplayed();
 
-    return (
-      <button
-        aria-label={accessibleName.sendButton}
-        title={accessibleName.sendButton}
-        part="send-button"
-        disabled={sendButtonDisabled}
-        type="button"
-        onClick={
-          sendButtonDisabled ? undefined : this.#sendMessageWithSendButton
-        }
-      ></button>
-    );
+    return html`<button
+      aria-label=${accessibleName.sendButton}
+      title=${accessibleName.sendButton}
+      part="send-button"
+      ?disabled=${sendButtonDisabled}
+      type="button"
+      @click=${sendButtonDisabled ? undefined : this.#sendMessageWithSendButton}
+    ></button>`;
   };
 
-  #renderSendContainerLayoutElement = (
-    elementName: ChatSendContainerLayoutElement
-  ) => {
+  #renderSendContainerLayoutElement = (elementName: ChatSendContainerLayoutElement) => {
     if (elementName === "send-button") {
       return this.#renderSendOrStopResponseButton();
     }
 
-    return elementName === "stop-response-button" ? (
-      this.#renderStopResponseButton()
-    ) : (
-      <slot name={elementName}></slot>
-    );
+    return elementName === "stop-response-button"
+      ? this.#renderStopResponseButton()
+      : html`<slot name=${elementName}></slot>`;
   };
 
   #renderSendContainerOrSendInputSlots = (
@@ -989,7 +1010,7 @@ export class ChChat {
   ) => {
     // No elements in the container position
     if (containerElements === undefined || containerElements.length === 0) {
-      return undefined;
+      return nothing;
     }
 
     // The container only had the stop-response-button, but it is not rendered,
@@ -999,26 +1020,36 @@ export class ChChat {
       containerElements[0] === "stop-response-button" &&
       (!this.waitingResponse || this.callbacks?.stopResponse === undefined)
     ) {
-      return undefined;
+      return nothing;
     }
 
     const partName = sendContainerLayoutPositionToPartName[containerName];
 
-    return (
-      <div
-        // Project the send-input slots if necessary
-        slot={
-          containerName === "sendInputAfter" ||
-          containerName === "sendInputBefore"
-            ? getSendInputSlotRename(containerName)
-            : undefined
-        }
-        class={`additional-content-container ${partName}`}
-        part={partName}
-      >
-        {containerElements.map(this.#renderSendContainerLayoutElement)}
-      </div>
-    );
+    return html`<div
+      slot=${ifDefined(
+        containerName === "sendInputAfter" || containerName === "sendInputBefore"
+          ? getSendInputSlotRename(containerName)
+          : undefined
+      )}
+      class=${`additional-content-container ${partName}`}
+      part=${partName}
+    >
+      ${containerElements.map(el => this.#renderSendContainerLayoutElement(el))}
+    </div>`;
+  };
+
+  #renderLiveKitRoom = () => {
+    const config = this.liveModeConfiguration;
+
+    return this.#liveModeIsDisplayed()
+      ? html`<ch-live-kit-room
+          .callbacks=${this.#liveKitCallbacks}
+          .connected=${true}
+          .microphoneEnabled=${config!.localParticipant?.microphoneEnabled ?? true}
+          .token=${config!.token}
+          .url=${config!.url}
+        ></ch-live-kit-room>`
+      : nothing;
   };
 
   #loadMoreItems = () => {
@@ -1056,38 +1087,35 @@ export class ChChat {
             }
       );
 
-      this.#virtualScrollRef.addItems("start", ...newItems);
+      this.#virtualScrollRef.value!.addItems("start", ...newItems);
 
       this.loadingState = "more-data-to-fetch";
     }, 10);
   };
 
-  connectedCallback() {
+  // - - - - - - - - - - - - - - - - - - - -
+  //             Lifecycle
+  // - - - - - - - - - - - - - - - - - - - -
+
+  override connectedCallback() {
+    super.connectedCallback();
+
     // Scrollbar styles
-    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+    adoptCommonThemes(this.shadowRoot!.adoptedStyleSheets);
 
     if (this.liveMode) {
       this.#liveKitTranscriptions = createLiveKitMessagesStore();
       this.#liveKitMessages = [];
     }
 
-    this.#mustReplaceSendButtonWithStopResponse =
-      !stopResponseButtonHasAPosition(this.sendContainerLayout);
+    this.#mustReplaceSendButtonWithStopResponse = !stopResponseButtonHasAPosition(
+      this.sendContainerLayout
+    );
   }
 
-  componentDidUpdate() {
-    // At this moment, for safety we should always re-render the ch-chat-lit
-    // when the ch-chat is re-rendered
-    this.#chatLitRef?.requestUpdate();
-  }
-
-  render() {
-    const {
-      sendContainerBefore,
-      sendInputAfter,
-      sendInputBefore,
-      sendContainerAfter
-    } = this.sendContainerLayout;
+  override render() {
+    const { sendContainerBefore, sendInputAfter, sendInputBefore, sendContainerAfter } =
+      this.sendContainerLayout;
 
     const canShowAdditionalContent =
       this.showAdditionalContent &&
@@ -1098,71 +1126,150 @@ export class ChChat {
 
     const liveModeIsDisplayed = this.#liveModeIsDisplayed();
 
-    const sendInputDisabled =
-      this.sendInputDisabled || this.disabled || liveModeIsDisplayed;
+    const sendInputDisabled = this.sendInputDisabled || this.disabled || liveModeIsDisplayed;
 
-    return (
-      <Host
-        class={
-          canShowAdditionalContent ? "ch-chat--additional-content" : undefined
-        }
-      >
-        {this.theme && <ch-theme model={this.theme}></ch-theme>}
+    Host(this, {
+      class: {
+        "ch-chat--additional-content": canShowAdditionalContent
+      }
+    });
 
-        {this.loadingState === "initial" ? (
-          <slot name="loading-chat"></slot>
-        ) : (
-          this.#renderChatOrEmpty()
-        )}
+    return html`
+      ${this.theme
+        ? html`<ch-theme .model=${this.theme} .avoidFlashOfUnstyledContent=${true}></ch-theme>`
+        : nothing}
+      ${this.loadingState === "initial"
+        ? html`<slot name="loading-chat"></slot>`
+        : this.#renderChatOrEmpty()}
+      ${canShowAdditionalContent ? html`<slot name="additional-content"></slot>` : nothing}
 
-        {canShowAdditionalContent && <slot name="additional-content" />}
+      <div class="send-container" part="send-container">
+        ${this.#renderSendContainerOrSendInputSlots("sendContainerBefore", sendContainerBefore)}
 
-        <div class="send-container" part="send-container">
-          {this.#renderSendContainerOrSendInputSlots(
-            "sendContainerBefore",
-            sendContainerBefore
-          )}
+        <ch-edit
+          class="send-input"
+          .accessibleName=${this.translations.accessibleName.sendInput}
+          .autoGrow=${true}
+          ?disabled=${sendInputDisabled}
+          .hostParts=${"send-input"}
+          .multiline=${true}
+          .placeholder=${this.translations.placeholder.sendInput}
+          .preventEnterInInputEditorMode=${true}
+          .showAdditionalContentAfter=${sendInputAfter !== undefined && sendInputAfter.length !== 0}
+          .showAdditionalContentBefore=${sendInputBefore !== undefined &&
+          sendInputBefore.length !== 0}
+          @keydown=${sendInputDisabled || this.liveMode ? undefined : this.#sendMessageKeyboard}
+          ${ref(this.#editRef)}
+        >
+          ${this.#renderSendContainerOrSendInputSlots("sendInputBefore", sendInputBefore)}
+          ${this.#renderSendContainerOrSendInputSlots("sendInputAfter", sendInputAfter)}
+        </ch-edit>
 
-          <ch-edit
-            class="send-input"
-            accessibleName={this.translations.accessibleName.sendInput}
-            autoGrow
-            disabled={sendInputDisabled}
-            hostParts="send-input"
-            multiline
-            placeholder={this.translations.placeholder.sendInput}
-            preventEnterInInputEditorMode
-            showAdditionalContentAfter={
-              sendInputAfter !== undefined && sendInputAfter.length !== 0
-            }
-            showAdditionalContentBefore={
-              sendInputBefore !== undefined && sendInputBefore.length !== 0
-            }
-            onKeyDown={
-              sendInputDisabled || this.liveMode
-                ? undefined
-                : this.#sendMessageKeyboard
-            }
-            ref={el => (this.#editRef = el as HTMLChEditElement)}
-          >
-            {this.#renderSendContainerOrSendInputSlots(
-              "sendInputBefore",
-              sendInputBefore
-            )}
-            {this.#renderSendContainerOrSendInputSlots(
-              "sendInputAfter",
-              sendInputAfter
-            )}
-          </ch-edit>
+        ${this.#renderSendContainerOrSendInputSlots("sendContainerAfter", sendContainerAfter)}
+      </div>
 
-          {this.#renderSendContainerOrSendInputSlots(
-            "sendContainerAfter",
-            sendContainerAfter
-          )}
-        </div>
-
-        {this.#renderLiveKitRoom()}
-      </Host>
-    );
+      ${this.#renderLiveKitRoom()}
+    `;
   }
 }
+
+// ######### Auto generated below #########
+
+declare global {
+  // prettier-ignore
+  interface HTMLChChatElementCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChChatElement;
+  }
+
+  /** Type of the `ch-chat`'s `userMessageAdded` event. */
+  // prettier-ignore
+  type HTMLChChatElementUserMessageAddedEvent = HTMLChChatElementCustomEvent<
+    HTMLChChatElementEventMap["userMessageAdded"]
+  >;
+
+  interface HTMLChChatElementEventMap {
+    userMessageAdded: ChatMessageByRole<"user">;
+  }
+
+  interface HTMLChChatElementEventTypes {
+    userMessageAdded: HTMLChChatElementUserMessageAddedEvent;
+  }
+
+  /**
+   * The `ch-chat` component delivers a full-featured conversational interface with virtual scrolling for efficient rendering of large message histories.
+   *
+   * @remarks
+   * ## Features
+   *  - Text messaging with file uploads and markdown rendering.
+   *  - Real-time voice conversations via LiveKit integration.
+   *  - Virtual scrolling for large message histories with configurable buffer size.
+   *  - Auto-scrolling behavior configurable as `"at-scroll-end"` or `"never"`.
+   *  - Fully customizable send-container layout with four slot positions.
+   *  - Programmatic message management: add, update, and send messages via public methods.
+   *  - Custom rendering of chat items through flexible render callbacks.
+   *  - Stop-response button for cancelling assistant response generation.
+   *
+   * ## Use when
+   *  - Building AI-powered chat or assistant interfaces.
+   *  - Implementing conversational UIs with file attachment and voice support.
+   *  - Building AI-powered conversational interfaces where the interaction model is back-and-forth dialogue.
+   *  - The system needs to ask clarifying questions or produce streaming responses.
+   *
+   * ## Do not use when
+   *  - Displaying a simple message list without interactivity — use `ch-smart-grid` instead.
+   *  - A standard form would be faster and more precise for collecting structured data (e.g., address forms).
+   *  - Displaying a simple non-interactive message list — prefer `ch-smart-grid` directly.
+   *
+   * ## Accessibility
+   *  - Integrates with `ch-virtual-scroller` to maintain DOM structure suitable for assistive technology during virtual scrolling.
+   *  - The send button and stop-response button carry accessible labels via the `translations` property.
+   *  - New messages should be announced to screen readers via `aria-live="polite"` on the messages container.
+   *  - All action buttons (send, stop-response) must have descriptive labels via the `translations` property.
+   *  - Color and alignment alone must not be the only way to distinguish user messages from AI messages.
+   *
+   * @status experimental
+   *
+   * @part messages-container - The scrollable container that holds the chat messages.
+   * @part send-container - The bottom area containing the input and action buttons.
+   * @part send-container-before - Region before the send input within the send container. Rendered when `sendContainerLayout.sendContainerBefore` is defined.
+   * @part send-container-after - Region after the send input within the send container. Rendered when `sendContainerLayout.sendContainerAfter` is defined.
+   * @part send-input-before - Region before the text input inside the edit control. Rendered when `sendContainerLayout.sendInputBefore` is defined.
+   * @part send-input-after - Region after the text input inside the edit control. Rendered when `sendContainerLayout.sendInputAfter` is defined.
+   * @part send-button - The button that sends the current message.
+   * @part stop-response-button - The button that stops the assistant's response generation. Rendered when `waitingResponse` is `true` and a `stopResponse` callback is provided.
+   *
+   * @slot empty-chat - Displayed when all records are loaded but there are no messages.
+   * @slot loading-chat - Displayed while the chat is in the initial loading state.
+   * @slot additional-content - Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state.
+   *
+   * @fires userMessageAdded Fired when a new user message is added in the chat via user interaction.
+   *   
+   *   Since developers can define their own render for file attachment, this
+   *   event serves to synchronize the cleanup of the `send-input` with the
+   *   cleanup of the custom file attachment, or or even blocking user
+   *   interactions before the `sendChatMessages` callback is executed.
+   */
+  // prettier-ignore
+  interface HTMLChChatElement extends ChChat {
+    // Extend the ChChat class redefining the event listener methods to improve type safety when using them
+    addEventListener<K extends keyof HTMLChChatElementEventTypes>(type: K, listener: (this: HTMLChChatElement, ev: HTMLChChatElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+    
+    removeEventListener<K extends keyof HTMLChChatElementEventTypes>(type: K, listener: (this: HTMLChChatElement, ev: HTMLChChatElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+    removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+  }
+
+  interface IntrinsicElements {
+    "ch-chat": HTMLChChatElement;
+  }
+
+  interface HTMLElementTagNameMap {
+    "ch-chat": HTMLChChatElement;
+  }
+}
+

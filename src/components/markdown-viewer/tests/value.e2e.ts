@@ -197,7 +197,7 @@ describe("[ch-markdown-viewer][value]", () => {
       expect(
         markdownViewerRef.shadowRoot.innerHTML.replace(LIT_COMMENTS_REGEX, "")
       ).toEqualHtml(
-        `<ch-theme class="hydrated" hidden=""></ch-theme><ch-markdown-viewer-lit>${render}</ch-markdown-viewer-lit>`
+        `<ch-theme class="hydrated" data-ch-theme-loading hidden=""></ch-theme><ch-markdown-viewer-lit>${render}</ch-markdown-viewer-lit>`
       );
     });
   };

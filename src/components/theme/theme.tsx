@@ -19,7 +19,9 @@ import {
   ThemeModel
 } from "./theme-types";
 
-const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
+const LOADING_ATTRIBUTE = "data-ch-theme-loading";
+
+const STYLE_TO_AVOID_FOUC = `:host,:has(>ch-theme[${LOADING_ATTRIBUTE}]){visibility:hidden !important}`;
 
 /**
  * The `ch-theme` component loads and manages named stylesheets that can be shared and reused across the Document or any Shadow Root via the `adoptedStyleSheets` API.
@@ -124,6 +126,7 @@ export class ChTheme {
 
   connectedCallback() {
     this.el.hidden = true;
+    this.#toggleLoadingAttribute();
     this.#loadModel();
   }
 
@@ -147,6 +150,7 @@ export class ChTheme {
         success: this.#successThemes.map(successTheme => successTheme.name)
       });
       this.loaded = true;
+      this.#toggleLoadingAttribute();
 
       const rejected = results.filter(result => result.status === "rejected");
       if (rejected.length > 0) {
@@ -154,6 +158,14 @@ export class ChTheme {
         console.error("Failed to load themes:", rejected);
       }
     });
+  };
+
+  #toggleLoadingAttribute = () => {
+    if (this.loaded) {
+      this.el.removeAttribute(LOADING_ATTRIBUTE);
+    } else {
+      this.el.setAttribute(LOADING_ATTRIBUTE, "");
+    }
   };
 
   #normalizeModel = (): ThemeItemModel[] => {

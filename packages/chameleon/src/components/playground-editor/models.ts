@@ -182,6 +182,46 @@ export const playgroundEditorModels = {
     }
   },
 
+  "ch-chat": {
+    registry: chameleonRegistry,
+    stateTypes: {
+      autoScroll: {
+        type: "enum" as const,
+        options: ["never", "at-scroll-end"]
+      },
+      newUserMessageAlignment: {
+        type: "enum" as const,
+        options: ["start", "end"]
+      }
+    },
+    spec: {
+      root: "root",
+      state: {
+        autoScroll: "at-scroll-end",
+        disabled: false,
+        newUserMessageAlignment: "end",
+        sendButtonDisabled: false,
+        sendInputDisabled: false,
+        waitingResponse: false
+      },
+      elements: {
+        root: {
+          type: "ch-chat",
+          props: {
+            autoScroll: { $bindState: "/autoScroll" },
+            disabled: { $bindState: "/disabled" },
+            newUserMessageAlignment: {
+              $bindState: "/newUserMessageAlignment"
+            },
+            sendButtonDisabled: { $bindState: "/sendButtonDisabled" },
+            sendInputDisabled: { $bindState: "/sendInputDisabled" },
+            waitingResponse: { $bindState: "/waitingResponse" }
+          }
+        }
+      }
+    }
+  },
+
   "ch-code": {
     registry: chameleonRegistry,
     stateTypes: {
@@ -277,6 +317,32 @@ export const playgroundEditorModels = {
           type: "ch-math-viewer",
           props: {
             displayMode: { $bindState: "/displayMode" },
+            value: { $bindState: "/value" }
+          }
+        }
+      }
+    }
+  },
+
+  "ch-markdown-viewer": {
+    registry: chameleonRegistry,
+    stateTypes: {
+      value: { type: "string-multiline" as const }
+    },
+    spec: {
+      root: "root",
+      state: {
+        rawHtml: false,
+        showIndicator: false,
+        value:
+          "# Hello\n\nThis is **markdown** rendered by `ch-markdown-viewer`.\n\n- Item 1\n- Item 2\n- Item 3\n\n| Column A | Column B |\n|----------|----------|\n| Cell 1   | Cell 2   |"
+      },
+      elements: {
+        root: {
+          type: "ch-markdown-viewer",
+          props: {
+            rawHtml: { $bindState: "/rawHtml" },
+            showIndicator: { $bindState: "/showIndicator" },
             value: { $bindState: "/value" }
           }
         }

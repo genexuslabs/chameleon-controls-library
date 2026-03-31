@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ch-confirmation - Interactive Demo</title>
+
+    <!-- Import the component - adjust path as needed for your build setup -->
+    <script type="module" src="../confirmation.lit.js"></script>
+
+    <style>
+      /*
+       * Base page styles
+       */
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 2rem;
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+      }
+
+      .intro {
+        margin-bottom: 3rem;
+        color: #555;
+      }
+
+      .demo-section {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 0.5rem;
+      }
+
+      .demo-section h3 {
+        color: #34495e;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .demo-description {
+        background: #f8f9fa;
+        border-left: 4px solid #3498db;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 4px;
+      }
+
+      .demo-description code {
+        background: #e9ecef;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+
+      .controls {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+      }
+
+      .controls button {
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
+
+      .controls button:hover {
+        background: #f0f0f0;
+        border-color: #999;
+      }
+
+      .controls button:active {
+        transform: translateY(1px);
+      }
+
+      .code-example {
+        background: #282c34;
+        color: #abb2bf;
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin-top: 1rem;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.9rem;
+      }
+
+      .code-example .tag {
+        color: #e06c75;
+      }
+
+      .code-example .attr {
+        color: #d19a66;
+      }
+
+      .code-example .value {
+        color: #98c379;
+      }
+
+      /*
+       * ch-confirmation styling via CSS Parts
+       * This demonstrates how users can style the component
+       */
+
+      /* Example 1: Default styling */
+      #example1::part(container) {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 8px;
+        padding: 1.5rem;
+      }
+
+      #example1::part(title) {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #856404;
+        margin-bottom: 0.5rem;
+      }
+
+      #example1::part(message) {
+        color: #856404;
+        margin-bottom: 1rem;
+      }
+
+      #example1::part(actions) {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      #example1::part(button-approve) {
+        background: #28a745;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      #example1::part(button-approve):hover {
+        background: #218838;
+      }
+
+      #example1::part(button-reject) {
+        background: #dc3545;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      #example1::part(button-reject):hover {
+        background: #c82333;
+      }
+
+      /* Example 2: Success state styling */
+      #example2::part(container) {
+        background: #d4edda;
+        border: 2px solid #28a745;
+        border-radius: 8px;
+        padding: 1.5rem;
+      }
+
+      #example2::part(title) {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #155724;
+      }
+
+      #example2::part(message) {
+        color: #155724;
+      }
+
+      /* Example 3: Danger state styling */
+      #example3::part(container) {
+        background: #f8d7da;
+        border: 2px solid #dc3545;
+        border-radius: 8px;
+        padding: 1.5rem;
+      }
+
+      #example3::part(title) {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #721c24;
+      }
+
+      #example3::part(message) {
+        color: #721c24;
+      }
+
+      /* Interactive Example: State-based styling */
+      #interactive::part(container) {
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        transition: all 0.3s;
+      }
+
+      #interactive::part(container approval-requested) {
+        background: #fff3cd;
+        border-color: #ffc107;
+      }
+
+      #interactive::part(container approval-responded),
+      #interactive::part(container output-available) {
+        background: #d4edda;
+        border-color: #28a745;
+      }
+
+      #interactive::part(container output-denied) {
+        background: #f8d7da;
+        border-color: #dc3545;
+      }
+
+      #interactive::part(title) {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      #interactive::part(message) {
+        margin-bottom: 1rem;
+        font-size: 1rem;
+      }
+
+      #interactive::part(actions) {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      #interactive::part(button-approve) {
+        background: #28a745;
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      #interactive::part(button-approve):hover {
+        background: #218838;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+      }
+
+      #interactive::part(button-reject) {
+        background: #dc3545;
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      #interactive::part(button-reject):hover {
+        background: #c82333;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+      }
+
+      /* Internationalization Example */
+      #i18n-example::part(container) {
+        background: #e7f3ff;
+        border: 2px solid #2196f3;
+        border-radius: 8px;
+        padding: 1.5rem;
+      }
+
+      #i18n-example::part(title) {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #0d47a1;
+      }
+
+      #i18n-example::part(message) {
+        color: #1565c0;
+      }
+
+      #i18n-example::part(button-approve) {
+        background: #2196f3;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      #i18n-example::part(button-reject) {
+        background: #f44336;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .event-log {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+        min-height: 60px;
+      }
+
+      .event-log h4 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        color: #495057;
+      }
+
+      .event-log .event-item {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        background: white;
+        border-left: 3px solid #3498db;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 0.9rem;
+      }
+
+      .event-log .event-item.approve {
+        border-left-color: #28a745;
+      }
+
+      .event-log .event-item.reject {
+        border-left-color: #dc3545;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>🎯 ch-confirmation Component Demo</h1>
+    <p class="intro">
+      Interactive demonstration of the <code>ch-confirmation</code> component
+      with various states, styling examples, and event handling.
+    </p>
+
+    <!-- ============================================ -->
+    <!-- Example 1: Approval Requested State -->
+    <!-- ============================================ -->
+    <section class="demo-section">
+      <h2>Example 1: Approval Requested State</h2>
+      <div class="demo-description">
+        This example shows the component in the <code>approval-requested</code>
+        state with both Approve and Reject buttons visible.
+      </div>
+
+      <ch-confirmation
+        id="example1"
+        state="approval-requested"
+        title="Approval Required"
+        request-message="Do you want to approve this document for publication?"
+        accepted-message="Document approved successfully!"
+        rejected-message="Document approval was rejected."
+      ></ch-confirmation>
+
+      <div class="code-example">
+        <span class="tag">&lt;ch-confirmation</span><br />
+        &nbsp;&nbsp;<span class="attr">state</span>=<span class="value"
+          >"approval-requested"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">title</span>=<span class="value"
+          >"Approval Required"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">request-message</span>=<span
+          class="value"
+          >"Do you want to approve this document for publication?"</span
+        ><br />
+        <span class="tag">&gt;&lt;/ch-confirmation&gt;</span>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- Example 2: Approval Responded (Approved) -->
+    <!-- ============================================ -->
+    <section class="demo-section">
+      <h2>Example 2: Approval Responded (Approved)</h2>
+      <div class="demo-description">
+        This example shows the component in the
+        <code>approval-responded</code> state after approval. No action buttons
+        are shown.
+      </div>
+
+      <ch-confirmation
+        id="example2"
+        state="approval-responded"
+        title="✓ Approved"
+        accepted-message="Your request has been approved and is now being processed."
+      ></ch-confirmation>
+
+      <div class="code-example">
+        <span class="tag">&lt;ch-confirmation</span><br />
+        &nbsp;&nbsp;<span class="attr">state</span>=<span class="value"
+          >"approval-responded"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">title</span>=<span class="value"
+          >"✓ Approved"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">accepted-message</span>=<span
+          class="value"
+          >"Your request has been approved..."</span
+        ><br />
+        <span class="tag">&gt;&lt;/ch-confirmation&gt;</span>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- Example 3: Output Denied (Rejected) -->
+    <!-- ============================================ -->
+    <section class="demo-section">
+      <h2>Example 3: Output Denied (Rejected)</h2>
+      <div class="demo-description">
+        This example shows the component in the <code>output-denied</code> state
+        after rejection. No action buttons are shown.
+      </div>
+
+      <ch-confirmation
+        id="example3"
+        state="output-denied"
+        title="✗ Rejected"
+        rejected-message="Your request was rejected. Please review and submit again."
+      ></ch-confirmation>
+
+      <div class="code-example">
+        <span class="tag">&lt;ch-confirmation</span><br />
+        &nbsp;&nbsp;<span class="attr">state</span>=<span class="value"
+          >"output-denied"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">title</span>=<span class="value"
+          >"✗ Rejected"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">rejected-message</span>=<span
+          class="value"
+          >"Your request was rejected..."</span
+        ><br />
+        <span class="tag">&gt;&lt;/ch-confirmation&gt;</span>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- Interactive Example: Full Workflow -->
+    <!-- ============================================ -->
+    <section class="demo-section">
+      <h2>Interactive Example: Full Workflow Simulation</h2>
+      <div class="demo-description">
+        This example demonstrates the complete approval workflow. Click the
+        buttons to change states and observe the events being fired.
+      </div>
+
+      <ch-confirmation
+        id="interactive"
+        state="approval-requested"
+        title="Action Requires Approval"
+        request-message="This action requires your approval. Would you like to proceed?"
+        accepted-message="✓ Action approved! The process will continue."
+        rejected-message="✗ Action rejected. No changes have been made."
+      ></ch-confirmation>
+
+      <div class="controls">
+        <h3>Manual State Controls:</h3>
+        <button onclick="setInteractiveState('approval-requested')">
+          Reset to Approval Requested
+        </button>
+        <button onclick="setInteractiveState('approval-responded')">
+          Set to Approved
+        </button>
+        <button onclick="setInteractiveState('output-denied')">
+          Set to Rejected
+        </button>
+        <button onclick="setInteractiveState('output-available')">
+          Set to Output Available
+        </button>
+      </div>
+
+      <div class="event-log">
+        <h4>Event Log:</h4>
+        <div id="event-log-content">
+          <em style="color: #6c757d">No events yet. Interact with the component to see events.</em>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- Internationalization Example -->
+    <!-- ============================================ -->
+    <section class="demo-section">
+      <h2>Example 5: Internationalization (i18n)</h2>
+      <div class="demo-description">
+        This example demonstrates how to customize button labels for different
+        languages using the <code>approve-button-label</code> and
+        <code>reject-button-label</code> properties.
+      </div>
+
+      <ch-confirmation
+        id="i18n-example"
+        state="approval-requested"
+        title="Confirmación Requerida"
+        request-message="¿Deseas aprobar esta acción?"
+        accepted-message="¡Acción aprobada!"
+        rejected-message="Acción rechazada."
+        approve-button-label="Aprobar"
+        reject-button-label="Rechazar"
+      ></ch-confirmation>
+
+      <div class="code-example">
+        <span class="tag">&lt;ch-confirmation</span><br />
+        &nbsp;&nbsp;<span class="attr">state</span>=<span class="value"
+          >"approval-requested"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">title</span>=<span class="value"
+          >"Confirmación Requerida"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">request-message</span>=<span
+          class="value"
+          >"¿Deseas aprobar esta acción?"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">approve-button-label</span>=<span
+          class="value"
+          >"Aprobar"</span
+        ><br />
+        &nbsp;&nbsp;<span class="attr">reject-button-label</span>=<span
+          class="value"
+          >"Rechazar"</span
+        ><br />
+        <span class="tag">&gt;&lt;/ch-confirmation&gt;</span>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CSS Parts Documentation -->
+    <!-- ============================================ -->
+    <section class="demo-section">
+      <h2>CSS Parts Reference</h2>
+      <div class="demo-description">
+        The component exposes the following CSS parts for styling:
+      </div>
+
+      <h3>Static Parts (always present):</h3>
+      <ul>
+        <li>
+          <code>::part(container)</code> - Main wrapper element (also includes
+          state-specific parts)
+        </li>
+        <li><code>::part(title)</code> - Title element (if title is provided)</li>
+        <li><code>::part(message)</code> - Message container</li>
+        <li>
+          <code>::part(actions)</code> - Actions container (only in
+          approval-requested state)
+        </li>
+        <li>
+          <code>::part(button-approve)</code> - Approve button (only in
+          approval-requested state)
+        </li>
+        <li>
+          <code>::part(button-reject)</code> - Reject button (only in
+          approval-requested state)
+        </li>
+      </ul>
+
+      <h3>State-specific Parts (on container):</h3>
+      <ul>
+        <li>
+          <code>::part(container approval-requested)</code> - When state is
+          'approval-requested'
+        </li>
+        <li>
+          <code>::part(container approval-responded)</code> - When state is
+          'approval-responded'
+        </li>
+        <li>
+          <code>::part(container output-denied)</code> - When state is
+          'output-denied'
+        </li>
+        <li>
+          <code>::part(container output-available)</code> - When state is
+          'output-available'
+        </li>
+      </ul>
+
+      <h3>CSS Custom Properties:</h3>
+      <ul>
+        <li>
+          <code>--ch-confirmation-gap</code> - Gap between elements (default:
+          0.75rem)
+        </li>
+        <li>
+          <code>--ch-confirmation-padding</code> - Container padding (default:
+          1rem)
+        </li>
+        <li>
+          <code>--ch-confirmation-actions-gap</code> - Gap between buttons
+          (default: 0.5rem)
+        </li>
+      </ul>
+    </section>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+      // Get references to interactive elements
+      const interactiveComponent = document.getElementById("interactive");
+      const eventLogContent = document.getElementById("event-log-content");
+      let eventCount = 0;
+
+      // Function to log events
+      function logEvent(eventName, detail) {
+        eventCount++;
+        const timestamp = new Date().toLocaleTimeString();
+        const eventItem = document.createElement("div");
+        eventItem.className = `event-item ${eventName}`;
+        eventItem.innerHTML = `
+          <strong>#${eventCount} [${timestamp}]</strong> 
+          <span style="color: ${eventName === "approve" ? "#28a745" : "#dc3545"}">
+            ${eventName}
+          </span> 
+          → approvalId: <em>${detail.approvalId || "undefined"}</em>
+        `;
+
+        // Insert at the beginning
+        if (eventLogContent.querySelector("em")) {
+          eventLogContent.innerHTML = "";
+        }
+        eventLogContent.insertBefore(eventItem, eventLogContent.firstChild);
+
+        // Keep only last 5 events
+        while (eventLogContent.children.length > 5) {
+          eventLogContent.removeChild(eventLogContent.lastChild);
+        }
+      }
+
+      // Listen to approve event
+      interactiveComponent.addEventListener("approve", (event) => {
+        console.log("Approve event fired:", event.detail);
+        logEvent("approve", event.detail);
+
+        // Simulate workflow: change to approved state
+        setTimeout(() => {
+          interactiveComponent.setAttribute("state", "approval-responded");
+        }, 500);
+      });
+
+      // Listen to reject event
+      interactiveComponent.addEventListener("reject", (event) => {
+        console.log("Reject event fired:", event.detail);
+        logEvent("reject", event.detail);
+
+        // Simulate workflow: change to rejected state
+        setTimeout(() => {
+          interactiveComponent.setAttribute("state", "output-denied");
+        }, 500);
+      });
+
+      // Function to manually set state
+      function setInteractiveState(state) {
+        interactiveComponent.setAttribute("state", state);
+        console.log("State manually changed to:", state);
+      }
+
+      // Add event listeners to static examples for demonstration
+      document.getElementById("example1").addEventListener("approve", (e) => {
+        alert(
+          "Approve event fired!\n\nIn a real application, you would handle this event to update your application state."
+        );
+        console.log("Example 1 - Approve:", e.detail);
+      });
+
+      document.getElementById("example1").addEventListener("reject", (e) => {
+        alert(
+          "Reject event fired!\n\nIn a real application, you would handle this event to update your application state."
+        );
+        console.log("Example 1 - Reject:", e.detail);
+      });
+
+      // Log component loaded
+      console.log("ch-confirmation demo page loaded");
+      console.log(
+        "All ch-confirmation components:",
+        document.querySelectorAll("ch-confirmation")
+      );
+    </script>
+  </body>
+</html>

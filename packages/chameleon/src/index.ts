@@ -1,5 +1,6 @@
 export { defineCustomElements } from "./utilities/bootstrap/define-custom-elements";
 
+export { ChReasoning } from "./components/reasoning/reasoning.lit";
 export { ChConfirmation } from "./components/confirmation/confirmation.lit";
 export type {
   ConfirmationState,

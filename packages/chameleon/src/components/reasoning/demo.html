@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ch-reasoning - Interactive Demo</title>
+  
+  <style>
+    /* Base styles */
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+    
+    h1 {
+      margin-top: 0;
+      color: #1a1a1a;
+    }
+    
+    h2 {
+      margin-top: 2rem;
+      color: #2a2a2a;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 0.5rem;
+    }
+    
+    .demo-section {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: #f9f9f9;
+      border-radius: 4px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .control-group label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: #555;
+    }
+    
+    button {
+      padding: 0.5rem 1rem;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    
+    button:hover {
+      background: #0052a3;
+    }
+    
+    button:active {
+      background: #003d7a;
+    }
+    
+    button.secondary {
+      background: #6c757d;
+    }
+    
+    button.secondary:hover {
+      background: #5a6268;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.875rem;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    input[type="number"] {
+      width: 80px;
+    }
+    
+    .info {
+      padding: 1rem;
+      background: #e7f3ff;
+      border-left: 4px solid #0066cc;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+    
+    code {
+      background: #f4f4f4;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+    }
+    
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.875rem;
+    }
+    
+    /* 
+      EXAMPLE 1: Default styling - minimal white-label approach 
+      ch-reasoning has no visual styles by default
+    */
+    
+    /* 
+      EXAMPLE 2: Customizing via CSS Parts 
+      Style the accordion header (trigger button)
+    */
+    #demo2 ch-reasoning::part(header) {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+    
+    #demo2 ch-reasoning::part(header):hover {
+      transform: translateY(-2px);
+    }
+    
+    #demo2 ch-reasoning::part(section) {
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    #demo2 ch-reasoning::part(panel) {
+      padding: 1.5rem;
+      background: #f8f9ff;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* 
+      EXAMPLE 3: Customizing animations via CSS custom properties 
+    */
+    #demo3 ch-reasoning {
+      --ch-reasoning-pulse-duration: 0.8s;
+      --ch-reasoning-pulse-opacity-min: 0.6;
+      --ch-reasoning-pulse-opacity-max: 1;
+    }
+    
+    #demo3 ch-reasoning::part(header) {
+      background: #ff6b6b;
+      color: white;
+      padding: 1rem;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    
+    #demo3 ch-reasoning::part(panel) {
+      padding: 1rem;
+      background: #fff5f5;
+      border: 1px solid #ff6b6b;
+      border-top: none;
+    }
+    
+    /* 
+      EXAMPLE 4: Dark theme example 
+    */
+    #demo4 {
+      background: #1a1a1a;
+      color: #e0e0e0;
+      padding: 2rem;
+      border-radius: 8px;
+    }
+    
+    #demo4 ch-reasoning::part(header) {
+      background: #2d2d2d;
+      color: #00ff88;
+      padding: 1rem 1.5rem;
+      border: 1px solid #00ff88;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    #demo4 ch-reasoning::part(panel) {
+      background: #242424;
+      color: #e0e0e0;
+      padding: 1.5rem;
+      border: 1px solid #00ff88;
+      border-top: none;
+      font-family: 'Courier New', monospace;
+      line-height: 1.8;
+    }
+    
+    /* 
+      EXAMPLE 5: Interactive playground 
+    */
+    #demo5 ch-reasoning::part(header) {
+      background: #4CAF50;
+      color: white;
+      padding: 1rem;
+      border-radius: 4px 4px 0 0;
+    }
+    
+    #demo5 ch-reasoning::part(panel) {
+      padding: 1rem;
+      background: #f1f8f4;
+      border: 2px solid #4CAF50;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 ch-reasoning - Interactive Demo</h1>
+  
+  <div class="info">
+    <strong>About this component:</strong> <code>&lt;ch-reasoning&gt;</code> is a Chameleon web component that displays AI reasoning steps in a collapsible accordion. 
+    It supports streaming content with a typewriter effect and pulse animations. The component is fully white-label and customizable via CSS parts and custom properties.
+  </div>
+
+  <!-- EXAMPLE 1: Basic Usage -->
+  <section class="demo-section">
+    <h2>Example 1: Basic Usage (Default Styles)</h2>
+    <p>A simple reasoning component with completed thought. Notice it has minimal default styling (white-label design).</p>
+    
+    <!-- 
+      USAGE: 
+      - content: The reasoning text to display
+      - duration: Duration in seconds
+      - open: Whether the accordion is expanded (default: false)
+    -->
+    <ch-reasoning 
+      id="demo1"
+      content="After analyzing the problem, I determined that the optimal approach is to use a binary search algorithm. This reduces time complexity from O(n) to O(log n), significantly improving performance for large datasets."
+      duration="3"
+      open>
+    </ch-reasoning>
+  </section>
+
+  <!-- EXAMPLE 2: Styled with CSS Parts -->
+  <section class="demo-section" id="demo2">
+    <h2>Example 2: Custom Styling via CSS Parts</h2>
+    <p>Same component, but styled using <code>::part()</code> selectors. Check the CSS to see how header, section, and panel parts are styled.</p>
+    
+    <!-- 
+      CSS PARTS AVAILABLE:
+      - header: The accordion trigger button
+      - section: The accordion section wrapper
+      - panel: The content panel
+      - expanded: Applied when accordion is expanded
+      - collapsed: Applied when accordion is collapsed
+      - disabled: Applied when accordion is disabled
+    -->
+    <ch-reasoning 
+      content="I've evaluated three different architectural patterns: MVC, MVVM, and Clean Architecture. After considering scalability, testability, and team familiarity, Clean Architecture emerges as the best choice for this project."
+      duration="5"
+      thought-message="Analysis complete in {duration}s"
+      open>
+    </ch-reasoning>
+  </section>
+
+  <!-- EXAMPLE 3: Streaming State -->
+  <section class="demo-section" id="demo3">
+    <h2>Example 3: Streaming State with Pulse Animation</h2>
+    <p>This example shows the streaming state. Notice the pulse animation on the header and the typewriter effect on the content.</p>
+    
+    <div class="controls">
+      <button id="toggleStreamingBtn">Toggle Streaming</button>
+      <button class="secondary" id="changeContentBtn">Change Content</button>
+    </div>
+    
+    <!-- 
+      STREAMING PROPERTIES:
+      - is-streaming: Boolean attribute that activates streaming mode
+      - thinking-message: Message shown during streaming (default: "Thinking...")
+      - streaming-speed: Speed of typewriter effect in ms per character (default: 20)
+    -->
+    <ch-reasoning 
+      id="demo3-reasoning"
+      is-streaming
+      content="First, I'll analyze the user requirements. Then, I'll design the database schema. Next, I'll implement the API endpoints. Finally, I'll create the frontend components. Each step builds upon the previous one to create a cohesive solution."
+      thinking-message="AI is analyzing"
+      streaming-speed="30">
+    </ch-reasoning>
+  </section>
+
+  <!-- EXAMPLE 4: Dark Theme -->
+  <section class="demo-section" id="demo4">
+    <h2>Example 4: Dark Theme Terminal Style</h2>
+    <p>Custom styled dark theme resembling a terminal output.</p>
+    
+    <ch-reasoning 
+      content="$ analyzing_code --verbose
+> Found 3 optimization opportunities
+> Refactoring loop structure... DONE
+> Applying memoization... DONE  
+> Removing redundant calculations... DONE
+> Performance improved by 340%"
+      duration="2"
+      thought-message="[COMPLETED] Execution time: {duration}s"
+      open>
+    </ch-reasoning>
+  </section>
+
+  <!-- EXAMPLE 5: Interactive Playground -->
+  <section class="demo-section" id="demo5">
+    <h2>Example 5: Interactive Playground</h2>
+    <p>Experiment with all properties dynamically:</p>
+    
+    <div class="controls">
+      <div class="control-group">
+        <label for="contentInput">Content:</label>
+        <textarea id="contentInput">Let me break down this complex problem into smaller, manageable steps. First, we need to understand the core requirements. Second, identify the constraints. Third, design a solution that addresses both.</textarea>
+      </div>
+      
+      <div class="control-group">
+        <label for="durationInput">Duration (seconds):</label>
+        <input type="number" id="durationInput" value="4" min="0" max="999" />
+      </div>
+      
+      <div class="control-group">
+        <label for="thinkingMsgInput">Thinking Message:</label>
+        <input type="text" id="thinkingMsgInput" value="Processing" />
+      </div>
+      
+      <div class="control-group">
+        <label for="thoughtMsgInput">Thought Message Template:</label>
+        <input type="text" id="thoughtMsgInput" value="Completed in {duration} seconds" />
+      </div>
+      
+      <div class="control-group">
+        <label for="speedInput">Streaming Speed (ms):</label>
+        <input type="number" id="speedInput" value="20" min="1" max="1000" />
+      </div>
+      
+      <div class="control-group">
+        <label>&nbsp;</label>
+        <button id="applyBtn">Apply Changes</button>
+      </div>
+      
+      <div class="control-group">
+        <label>&nbsp;</label>
+        <button class="secondary" id="toggleOpenBtn">Toggle Open/Close</button>
+      </div>
+      
+      <div class="control-group">
+        <label>&nbsp;</label>
+        <button class="secondary" id="startStreamingBtn">Start Streaming</button>
+      </div>
+    </div>
+    
+    <ch-reasoning id="playground"></ch-reasoning>
+    
+    <h3>Event Log:</h3>
+    <pre id="eventLog" style="background: #2d2d2d; color: #00ff88; padding: 1rem; min-height: 100px; max-height: 200px; overflow-y: auto;"></pre>
+  </section>
+
+  <!-- EXAMPLE 6: Custom Animation Speed -->
+  <section class="demo-section">
+    <h2>Example 6: Custom CSS Properties</h2>
+    <p>Customize the pulse animation via CSS custom properties:</p>
+    
+    <pre><code>ch-reasoning {
+  --ch-reasoning-pulse-duration: 0.8s;
+  --ch-reasoning-pulse-opacity-min: 0.6;
+  --ch-reasoning-pulse-opacity-max: 1;
+}</code></pre>
+    
+    <div style="--ch-reasoning-pulse-duration: 2s; --ch-reasoning-pulse-opacity-min: 0.3;">
+      <ch-reasoning 
+        is-streaming
+        content="This example has a slower pulse animation (2s cycle) with lower minimum opacity (0.3)."
+        thinking-message="Slow pulsing"
+        style="margin-top: 1rem;">
+      </ch-reasoning>
+    </div>
+  </section>
+
+  <!-- 
+    IMPORTANT: Import the component
+    In a real application, you would build the component and import from dist/
+    For this demo, we're importing directly from the source .ts file
+  -->
+  <script type="module">
+    // Import the component (this registers the custom element)
+    import './reasoning.lit.js';
+    
+    // EXAMPLE 3: Toggle streaming
+    const demo3Reasoning = document.getElementById('demo3-reasoning');
+    const toggleStreamingBtn = document.getElementById('toggleStreamingBtn');
+    const changeContentBtn = document.getElementById('changeContentBtn');
+    
+    const sampleContents = [
+      "First, I'll analyze the user requirements. Then, I'll design the database schema. Next, I'll implement the API endpoints. Finally, I'll create the frontend components. Each step builds upon the previous one to create a cohesive solution.",
+      "Breaking down the algorithm: Step 1 - Initialize data structures. Step 2 - Process input validation. Step 3 - Execute main logic. Step 4 - Handle edge cases. Step 5 - Return optimized results.",
+      "Evaluating three approaches: Approach A uses recursion (elegant but may cause stack overflow). Approach B uses iteration (more verbose but safer). Approach C uses dynamic programming (optimal for this case)."
+    ];
+    let contentIndex = 0;
+    
+    toggleStreamingBtn.addEventListener('click', () => {
+      demo3Reasoning.isStreaming = !demo3Reasoning.isStreaming;
+      toggleStreamingBtn.textContent = demo3Reasoning.isStreaming ? 'Stop Streaming' : 'Start Streaming';
+    });
+    
+    changeContentBtn.addEventListener('click', () => {
+      contentIndex = (contentIndex + 1) % sampleContents.length;
+      demo3Reasoning.content = sampleContents[contentIndex];
+      demo3Reasoning.isStreaming = true;
+      toggleStreamingBtn.textContent = 'Stop Streaming';
+    });
+    
+    // EXAMPLE 5: Interactive playground
+    const playground = document.getElementById('playground');
+    const contentInput = document.getElementById('contentInput');
+    const durationInput = document.getElementById('durationInput');
+    const thinkingMsgInput = document.getElementById('thinkingMsgInput');
+    const thoughtMsgInput = document.getElementById('thoughtMsgInput');
+    const speedInput = document.getElementById('speedInput');
+    const applyBtn = document.getElementById('applyBtn');
+    const toggleOpenBtn = document.getElementById('toggleOpenBtn');
+    const startStreamingBtn = document.getElementById('startStreamingBtn');
+    const eventLog = document.getElementById('eventLog');
+    
+    // Initialize playground with default values
+    playground.content = contentInput.value;
+    playground.duration = parseInt(durationInput.value);
+    playground.thinkingMessage = thinkingMsgInput.value;
+    playground.thoughtMessage = thoughtMsgInput.value;
+    playground.streamingSpeed = parseInt(speedInput.value);
+    
+    function logEvent(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      eventLog.textContent += `[${timestamp}] ${message}\n`;
+      eventLog.scrollTop = eventLog.scrollHeight;
+    }
+    
+    applyBtn.addEventListener('click', () => {
+      playground.content = contentInput.value;
+      playground.duration = parseInt(durationInput.value);
+      playground.thinkingMessage = thinkingMsgInput.value;
+      playground.thoughtMessage = thoughtMsgInput.value;
+      playground.streamingSpeed = parseInt(speedInput.value);
+      logEvent('Properties updated');
+    });
+    
+    toggleOpenBtn.addEventListener('click', () => {
+      playground.open = !playground.open;
+      logEvent(`Accordion ${playground.open ? 'opened' : 'closed'}`);
+    });
+    
+    startStreamingBtn.addEventListener('click', () => {
+      playground.isStreaming = true;
+      logEvent('Streaming started');
+      
+      // Auto-stop after content is fully displayed
+      setTimeout(() => {
+        playground.isStreaming = false;
+        logEvent('Streaming stopped');
+      }, contentInput.value.length * parseInt(speedInput.value) + 500);
+    });
+    
+    // Listen to openChange event
+    playground.addEventListener('openChange', (event) => {
+      logEvent(`openChange event fired: expanded=${event.detail.expanded}`);
+    });
+    
+    logEvent('Playground initialized');
+  </script>
+  
+  <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e0e0e0; color: #666; font-size: 0.875rem;">
+    <p><strong>Documentation:</strong> See <code>readme.md</code> for full API documentation and usage guidelines.</p>
+    <p><strong>Repository:</strong> Chameleon Controls Library - A white-label web components design system</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+@use "../../utilities/scss/base" as *;
+
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-reasoning-pulse-duration:
+   * Specifies the duration of the pulse animation displayed during streaming/thinking state.
+   * @default 1.5s
+   */
+  --ch-reasoning-pulse-duration: 1.5s;
+
+  /**
+   * @prop --ch-reasoning-pulse-opacity-min:
+   * Specifies the minimum opacity value for the pulse animation.
+   * @default 0.5
+   */
+  --ch-reasoning-pulse-opacity-min: 0.5;
+
+  /**
+   * @prop --ch-reasoning-pulse-opacity-max:
+   * Specifies the maximum opacity value for the pulse animation.
+   * @default 1
+   */
+  --ch-reasoning-pulse-opacity-max: 1;
+
+  // White-label design: minimal layout styles only
+  // All visual styling should be done via CSS parts or inherited from the accordion
+  display: block;
+}
+
+// Pulse animation for thinking state
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: var(--ch-reasoning-pulse-opacity-max);
+  }
+  50% {
+    opacity: var(--ch-reasoning-pulse-opacity-min);
+  }
+}
+
+// Shimmer animation for thinking - opacity pulse
+@keyframes thinking-pulse {
+  0%,
+  100% {
+    opacity: var(--ch-reasoning-pulse-opacity-max);
+  }
+  50% {
+    opacity: var(--ch-reasoning-pulse-opacity-min);
+  }
+}
+
+// Gradient shimmer animation
+@keyframes thinking-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+// Apply thinking animation when streaming
+.reasoning--streaming ::part(header) {
+  background-size: 200% 200%;
+  animation: 
+    thinking-pulse var(--ch-reasoning-pulse-duration) ease-in-out infinite,
+    thinking-gradient calc(var(--ch-reasoning-pulse-duration) * 2) ease infinite;
+}

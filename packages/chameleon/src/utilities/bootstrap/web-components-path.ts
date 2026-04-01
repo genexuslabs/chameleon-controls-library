@@ -27,6 +27,7 @@ const webComponentsPaths = {
   qr: () => import("../../components/qr/qr.lit"),
   "radio-group-render": () =>
     import("../../components/radio-group/radio-group-render.lit"),
+  reasoning: () => import("../../components/reasoning/reasoning.lit"),
   "segmented-control-render": () =>
     import("../../components/segmented-control/segmented-control-render.lit"),
   "showcase-api": () =>
@@ -62,6 +63,7 @@ const chameleonComponentToBundleMapping = {
   "ch-progress": webComponentsPaths.progress,
   "ch-qr": webComponentsPaths.qr,
   "ch-radio-group-render": webComponentsPaths["radio-group-render"],
+  "ch-reasoning": webComponentsPaths.reasoning,
   "ch-router": webComponentsPaths.router,
   "ch-segmented-control-render": webComponentsPaths["segmented-control-render"],
   "ch-sidebar": webComponentsPaths.sidebar,

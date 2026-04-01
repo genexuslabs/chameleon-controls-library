@@ -169,6 +169,15 @@
       "development": "./dist/browser/development/components/radio-group/radio-group-render.lit.js",
       "default": "./dist/browser/production/components/radio-group/radio-group-render.lit.js"
     },
+    "./components/reasoning.js": {
+      "node": {
+        "development": "./dist/node/development/components/reasoning/reasoning.lit.js",
+        "default": "./dist/node/production/components/reasoning/reasoning.lit.js"
+      },
+      "types": "./dist/browser/development/components/reasoning/reasoning.lit.d.ts",
+      "development": "./dist/browser/development/components/reasoning/reasoning.lit.js",
+      "default": "./dist/browser/production/components/reasoning/reasoning.lit.js"
+    },
     "./components/router.js": {
       "node": {
         "development": "./dist/node/development/components/router/router.lit.js",

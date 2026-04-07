@@ -70,6 +70,15 @@
       "development": "./dist/browser/development/index.js",
       "default": "./dist/browser/production/index.js"
     },
+    "./components/json-render.js": {
+      "node": {
+        "development": "./dist/node/development/components/json-render/json-render.lit.js",
+        "default": "./dist/node/production/components/json-render/json-render.lit.js"
+      },
+      "types": "./dist/browser/development/components/json-render/json-render.lit.d.ts",
+      "development": "./dist/browser/development/components/json-render/json-render.lit.js",
+      "default": "./dist/browser/production/components/json-render/json-render.lit.js"
+    },
     "./components/chat.js": {
       "node": {
         "development": "./dist/node/development/components/chat/chat.lit.js",

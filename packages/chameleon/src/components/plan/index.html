@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ch-plan Demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.6;
+      }
+
+      h1 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 0.5rem;
+      }
+
+      .demo-section {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f9f9f9;
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        color: #333;
+      }
+
+      ch-plan {
+        display: block;
+        margin: 1rem 0;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 1rem;
+        background: white;
+      }
+
+      /* Custom styling example */
+      .custom-styled::part(title) {
+        color: #0066cc;
+        font-size: 1.5rem;
+      }
+
+      .custom-styled::part(step) {
+        padding: 1rem;
+        background: #f0f8ff;
+        border-left: 3px solid #0066cc;
+        margin-bottom: 0.5rem;
+      }
+
+      .custom-styled::part(step-title) {
+        color: #0066cc;
+      }
+
+      .custom-styled::part(substep) {
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ch-plan Component Demo</h1>
+
+    <div class="demo-section">
+      <h2>Example 1: Basic Plan (Collapsed by Default)</h2>
+      <ch-plan id="plan1"></ch-plan>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 2: Streaming Plan (with Shimmer)</h2>
+      <ch-plan id="plan2" isStreaming></ch-plan>
+      <button id="stopStreaming">Stop Streaming & Load Content</button>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 3: Pre-expanded Plan</h2>
+      <ch-plan id="plan3" defaultOpen></ch-plan>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 4: Plan with Actions</h2>
+      <ch-plan id="plan4" defaultOpen></ch-plan>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 5: Custom Styled Plan (Using CSS Parts)</h2>
+      <ch-plan id="plan5" class="custom-styled" defaultOpen></ch-plan>
+    </div>
+
+    <script type="module">
+      // Import the component
+      import "./plan.lit.js";
+
+      // Example 1: Basic plan
+      const plan1 = document.getElementById("plan1");
+      plan1.title = "Website Redesign Project";
+      plan1.description = "Complete redesign of the company website with modern UI/UX";
+      plan1.steps = [
+        {
+          id: "1",
+          title: "Research & Planning",
+          description: "Gather requirements and create project roadmap",
+          subtasks: [
+            "Conduct user interviews",
+            "Analyze competitor websites",
+            "Define project scope and timeline",
+          ],
+          status: "completed",
+        },
+        {
+          id: "2",
+          title: "Design Phase",
+          description: "Create visual designs and prototypes",
+          subtasks: [
+            "Create wireframes",
+            "Design mockups in Figma",
+            "Build interactive prototype",
+            "Conduct usability testing",
+          ],
+          status: "in-progress",
+        },
+        {
+          id: "3",
+          title: "Development",
+          subtasks: [
+            "Set up development environment",
+            "Implement frontend components",
+            "Integrate with backend APIs",
+            "Write unit and integration tests",
+          ],
+          status: "pending",
+        },
+      ];
+
+      // Example 2: Streaming plan (initially empty with isStreaming=true)
+      const plan2 = document.getElementById("plan2");
+      // Start with empty content - shimmer will be shown
+      plan2.title = "";
+      plan2.description = "";
+      plan2.steps = [];
+
+      // Simulate progressive streaming
+      let streamingInterval;
+      let currentStepIndex = 0;
+      
+      const streamSteps = [
+        {
+          id: "1",
+          title: "Data Preparation",
+          subtasks: ["Collect raw data", "Clean and preprocess", "Split into train/test sets"],
+          status: "completed",
+        },
+        {
+          id: "2",
+          title: "Model Training",
+          description: "Train multiple model architectures",
+          subtasks: ["Configure hyperparameters", "Train models", "Evaluate performance"],
+          status: "in-progress",
+        },
+        {
+          id: "3",
+          title: "Model Evaluation",
+          description: "Evaluate model performance",
+          subtasks: ["Test on validation set", "Calculate metrics", "Compare with baseline"],
+          status: "pending",
+        },
+      ];
+
+      // Simulate streaming with progressive loading
+      document.getElementById("stopStreaming").addEventListener("click", () => {
+        // Start progressive streaming simulation
+        setTimeout(() => {
+          // First, load title (shimmer still visible for description and steps)
+          plan2.title = "AI Model Training Pipeline";
+        }, 500);
+
+        setTimeout(() => {
+          // Then, load description (shimmer still visible for steps)
+          plan2.description = "End-to-end pipeline for training and deploying ML models";
+        }, 1000);
+        
+        // Start adding steps progressively after 1500ms
+        setTimeout(() => {
+          streamingInterval = setInterval(() => {
+            if (currentStepIndex < streamSteps.length) {
+              plan2.steps = [...plan2.steps, streamSteps[currentStepIndex]];
+              currentStepIndex++;
+            } else {
+              // All steps loaded, stop streaming to hide all shimmers
+              plan2.isStreaming = false;
+              clearInterval(streamingInterval);
+            }
+          }, 800); // Add a new step every 800ms
+        }, 1500);
+      });
+
+      // Example 3: Pre-expanded plan
+      const plan3 = document.getElementById("plan3");
+      plan3.title = "Security Audit Checklist";
+      plan3.description = "Comprehensive security review for the application";
+      plan3.steps = [
+        {
+          id: "1",
+          title: "Code Review",
+          subtasks: [
+            "Check for SQL injection vulnerabilities",
+            "Review authentication logic",
+            "Verify input validation",
+          ],
+          status: "completed",
+        },
+        {
+          id: "2",
+          title: "Infrastructure Review",
+          subtasks: ["Audit server configurations", "Review firewall rules", "Check SSL/TLS setup"],
+          status: "completed",
+        },
+        {
+          id: "3",
+          title: "Penetration Testing",
+          subtasks: ["Run automated security scans", "Manual penetration testing", "Document findings"],
+          status: "completed",
+        },
+      ];
+
+      // Example 4: Plan with actions
+      const plan4 = document.getElementById("plan4");
+      plan4.title = "Deployment Pipeline";
+      plan4.description = "Automated deployment workflow for production release";
+      plan4.steps = [
+        {
+          id: "1",
+          title: "Build Application",
+          subtasks: ["Install dependencies", "Run build process", "Optimize assets"],
+          status: "completed",
+        },
+        {
+          id: "2",
+          title: "Run Tests",
+          subtasks: ["Unit tests", "Integration tests", "E2E tests"],
+          status: "completed",
+        },
+        {
+          id: "3",
+          title: "Deploy to Production",
+          subtasks: ["Upload to server", "Update DNS", "Verify deployment"],
+          status: "pending",
+        },
+      ];
+      plan4.actions = [
+        {
+          id: "cancel",
+          label: "Cancel",
+          primary: false,
+        },
+        {
+          id: "execute",
+          label: "Execute Deployment",
+          primary: true,
+        },
+      ];
+
+      // Listen to action clicks
+      plan4.addEventListener("actionClick", (e) => {
+        console.log(`Action clicked:`, e.detail);
+        alert(`Action "${e.detail.action.label}" clicked!`);
+      });
+
+      // Example 5: Custom styled plan
+      const plan5 = document.getElementById("plan5");
+      plan5.title = "Mobile App Development";
+      plan5.description = "Build cross-platform mobile application";
+      plan5.steps = [
+        {
+          id: "1",
+          title: "Setup Project",
+          subtasks: ["Initialize React Native project", "Configure build tools", "Set up CI/CD"],
+        },
+        {
+          id: "2",
+          title: "Implement Features",
+          description: "Core application features",
+          subtasks: [
+            "User authentication",
+            "Home screen and navigation",
+            "Data synchronization",
+            "Push notifications",
+          ],
+        },
+      ];
+
+      // Listen to expanded change events
+      document.querySelectorAll("ch-plan").forEach((plan) => {
+        plan.addEventListener("expandedChange", (e) => {
+          console.log(`Plan expanded state changed:`, e.detail);
+        });
+      });
+    </script>
+  </body>
+</html>

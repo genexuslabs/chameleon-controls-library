@@ -1,0 +1,277 @@
+:host {
+  display: block;
+  box-sizing: border-box;
+}
+
+/* CSS Reset for internal elements */
+:host *,
+:host *::before,
+:host *::after {
+  box-sizing: border-box;
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ch-plan-header-gap, 0.5rem);
+}
+
+.plan-title {
+  margin: 0;
+  font-size: var(--ch-plan-title-font-size, 1.25rem);
+  font-weight: var(--ch-plan-title-font-weight, 600);
+  color: var(--ch-plan-title-color, inherit);
+}
+
+.plan-description {
+  margin: 0;
+  font-size: var(--ch-plan-description-font-size, 0.875rem);
+  color: var(--ch-plan-description-color, inherit);
+}
+
+.plan-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ch-plan-steps-gap, 1rem);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ch-plan-step-gap, 0.5rem);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ch-plan-step-header-gap, 0.5rem);
+}
+
+.step-title {
+  margin: 0;
+  font-size: var(--ch-plan-step-title-font-size, 1rem);
+  font-weight: var(--ch-plan-step-title-font-weight, 500);
+  color: var(--ch-plan-step-title-color, inherit);
+}
+
+.step-description {
+  margin: 0;
+  font-size: var(--ch-plan-step-description-font-size, 0.875rem);
+  color: var(--ch-plan-step-description-color, inherit);
+}
+
+.substeps {
+  margin: 0;
+  padding-inline-start: var(--ch-plan-substeps-padding, 1.5rem);
+  list-style-type: var(--ch-plan-substeps-list-style, disc);
+}
+
+.substep {
+  font-size: var(--ch-plan-substep-font-size, 0.875rem);
+  color: var(--ch-plan-substep-color, inherit);
+  margin-block: var(--ch-plan-substep-margin, 0.25rem);
+}
+
+/* Shimmer loading states */
+.shimmer-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ch-plan-shimmer-gap, 0.75rem);
+  animation: fadeIn var(--ch-plan-fade-duration, 0.3s) ease-in;
+}
+
+.shimmer-line {
+  height: var(--ch-plan-shimmer-line-height, 1rem);
+  background: linear-gradient(
+    90deg,
+    var(--ch-plan-shimmer-color-start, #f0f0f0) 25%,
+    var(--ch-plan-shimmer-color-middle, #e0e0e0) 50%,
+    var(--ch-plan-shimmer-color-end, #f0f0f0) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--ch-plan-shimmer-border-radius, 0.25rem);
+  animation: shimmer var(--ch-plan-shimmer-duration, 1.5s) infinite;
+}
+
+.shimmer-line--title {
+  width: var(--ch-plan-shimmer-title-width, 60%);
+  height: var(--ch-plan-shimmer-title-height, 1.5rem);
+}
+
+.shimmer-line--description {
+  width: var(--ch-plan-shimmer-description-width, 80%);
+  height: var(--ch-plan-shimmer-description-height, 1rem);
+}
+
+.shimmer-line--step {
+  width: var(--ch-plan-shimmer-step-width, 90%);
+  height: var(--ch-plan-shimmer-step-height, 1rem);
+}
+
+.shimmer-line--short {
+  width: var(--ch-plan-shimmer-short-width, 50%);
+}
+
+.shimmer-line--medium {
+  width: var(--ch-plan-shimmer-medium-width, 70%);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--ch-plan-fade-translate, 8px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth transitions for content updates */
+.steps-container {
+  animation: fadeIn var(--ch-plan-fade-duration, 0.3s) ease-in;
+}
+
+.step {
+  animation: fadeIn var(--ch-plan-fade-duration, 0.3s) ease-in;
+}
+
+.plan-title,
+.plan-description {
+  transition: opacity var(--ch-plan-fade-duration, 0.3s) ease-in;
+}
+
+/* Status-based step styling */
+.step[part*="step-completed"] {
+  opacity: var(--ch-plan-step-completed-opacity, 0.7);
+}
+
+.step[part*="step-failed"] {
+  color: var(--ch-plan-step-failed-color, inherit);
+}
+
+.step[part*="step-in-progress"] {
+  font-weight: var(--ch-plan-step-in-progress-font-weight, inherit);
+}
+
+/* Plan footer and actions */
+.plan-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ch-plan-footer-gap, 1rem);
+  margin-block-start: var(--ch-plan-footer-margin-top, 1rem);
+  padding-block-start: var(--ch-plan-footer-padding-top, 1rem);
+  border-block-start: var(--ch-plan-footer-border-top, 1px solid transparent);
+}
+
+.plan-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ch-plan-actions-gap, 0.75rem);
+  flex-wrap: wrap;
+}
+
+.plan-action {
+  /* Reset button styles */
+  appearance: none;
+  border: none;
+  background: none;
+  margin: 0;
+  font-family: inherit;
+  cursor: pointer;
+
+  /* Base button styles */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ch-plan-action-gap, 0.5rem);
+  padding: var(--ch-plan-action-padding, 0.5rem 1rem);
+  border-radius: var(--ch-plan-action-border-radius, 0.375rem);
+  font-size: var(--ch-plan-action-font-size, 0.875rem);
+  font-weight: var(--ch-plan-action-font-weight, 500);
+  line-height: 1.5;
+  transition: all var(--ch-plan-action-transition-duration, 0.2s) ease-in-out;
+
+  /* Prevent text selection on buttons */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.plan-action:focus-visible {
+  outline: var(--ch-plan-action-focus-outline, 2px solid currentColor);
+  outline-offset: var(--ch-plan-action-focus-outline-offset, 2px);
+}
+
+/* Primary action button */
+.plan-action--primary {
+  background-color: var(--ch-plan-action-primary-bg, #000);
+  color: var(--ch-plan-action-primary-color, #fff);
+  border: var(--ch-plan-action-primary-border, 1px solid transparent);
+}
+
+.plan-action--primary:hover:not(:disabled) {
+  background-color: var(--ch-plan-action-primary-hover-bg, #333);
+  transform: var(--ch-plan-action-hover-transform, translateY(-1px));
+  box-shadow: var(--ch-plan-action-hover-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.plan-action--primary:active:not(:disabled) {
+  transform: var(--ch-plan-action-active-transform, translateY(0));
+  box-shadow: var(--ch-plan-action-active-shadow, none);
+}
+
+/* Secondary action button */
+.plan-action--secondary {
+  background-color: var(--ch-plan-action-secondary-bg, transparent);
+  color: var(--ch-plan-action-secondary-color, inherit);
+  border: var(--ch-plan-action-secondary-border, 1px solid currentColor);
+}
+
+.plan-action--secondary:hover:not(:disabled) {
+  background-color: var(--ch-plan-action-secondary-hover-bg, rgba(0, 0, 0, 0.05));
+  transform: var(--ch-plan-action-hover-transform, translateY(-1px));
+  box-shadow: var(--ch-plan-action-hover-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.plan-action--secondary:active:not(:disabled) {
+  transform: var(--ch-plan-action-active-transform, translateY(0));
+  box-shadow: var(--ch-plan-action-active-shadow, none);
+}
+
+/* Disabled state */
+.plan-action:disabled {
+  opacity: var(--ch-plan-action-disabled-opacity, 0.5);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Action label and icon */
+.plan-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--ch-plan-action-icon-size, 1rem);
+}
+
+.plan-action-label {
+  display: inline-block;
+}

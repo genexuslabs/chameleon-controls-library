@@ -20,6 +20,15 @@ export { ChSwitch } from "./components/switch/switch.lit";
 export type { TabularGridModel } from "./components/tabular-grid/types";
 export { ChTextBlock } from "./components/textblock/textblock.lit";
 export { ChTheme } from "./components/theme/theme.lit";
+export { ChTool } from "./components/tool/tool.lit";
+export type {
+  ToolState,
+  ToolInput,
+  ToolOutput,
+  ToolApproveEvent,
+  ToolRejectEvent,
+  ToolExpandedChangeEvent
+} from "./components/tool/types";
 
 export { playgroundEditorModels } from "./components/playground-editor/models";
 

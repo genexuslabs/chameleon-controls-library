@@ -1,0 +1,170 @@
+@use "../../utilities/scss/base" as *;
+
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-tool-gap:
+   * Specifies the gap between sections (parameters, result, error, confirmation).
+   * @default 1rem
+   */
+  --ch-tool-gap: 1rem;
+
+  /**
+   * @prop --ch-tool-section-gap:
+   * Specifies the gap between section title and content.
+   * @default 0.5rem
+   */
+  --ch-tool-section-gap: 0.5rem;
+
+  /**
+   * @prop --ch-tool-header-gap:
+   * Specifies the gap between badge and tool name in the header.
+   * @default 0.5rem
+   */
+  --ch-tool-header-gap: 0.5rem;
+
+  /**
+   * @prop --ch-tool-badge-padding:
+   * Specifies the padding inside the badge.
+   * @default 0.25rem 0.5rem
+   */
+  --ch-tool-badge-padding: 0.25rem 0.5rem;
+
+  /**
+   * @prop --ch-tool-badge-border-radius:
+   * Specifies the border radius of the badge.
+   * @default 0.25rem
+   */
+  --ch-tool-badge-border-radius: 0.25rem;
+
+  /**
+   * @prop --ch-tool-badge-font-size:
+   * Specifies the font size of the badge text.
+   * @default 0.75rem
+   */
+  --ch-tool-badge-font-size: 0.75rem;
+
+  /**
+   * @prop --ch-tool-section-title-font-weight:
+   * Specifies the font weight of section titles.
+   * @default 600
+   */
+  --ch-tool-section-title-font-weight: 600;
+
+  /**
+   * @prop --ch-tool-section-title-font-size:
+   * Specifies the font size of section titles.
+   * @default 0.875rem
+   */
+  --ch-tool-section-title-font-size: 0.875rem;
+
+  display: block;
+}
+
+// Main tool container
+.tool {
+  display: block;
+}
+
+// Tool header (inside accordion header slot)
+.tool__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ch-tool-header-gap);
+}
+
+// Tool badge (state indicator)
+.tool__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--ch-tool-badge-padding);
+  border-radius: var(--ch-tool-badge-border-radius);
+  font-size: var(--ch-tool-badge-font-size);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  
+  // White-label: colors provided via CSS custom properties
+  background-color: var(--ch-tool-badge-bg, #e0e0e0);
+  color: var(--ch-tool-badge-color, inherit);
+}
+
+// State-specific badge variants (default neutral colors, fully customizable)
+.tool__badge--pending {
+  background-color: var(--ch-tool-badge-pending-bg, #f0f0f0);
+  color: var(--ch-tool-badge-pending-color, #666);
+}
+
+.tool__badge--running {
+  background-color: var(--ch-tool-badge-running-bg, #e3f2fd);
+  color: var(--ch-tool-badge-running-color, #1976d2);
+}
+
+.tool__badge--awaiting-approval {
+  background-color: var(--ch-tool-badge-awaiting-approval-bg, #fff3e0);
+  color: var(--ch-tool-badge-awaiting-approval-color, #f57c00);
+}
+
+.tool__badge--responded {
+  background-color: var(--ch-tool-badge-responded-bg, #e8f5e9);
+  color: var(--ch-tool-badge-responded-color, #388e3c);
+}
+
+.tool__badge--completed {
+  background-color: var(--ch-tool-badge-completed-bg, #e8f5e9);
+  color: var(--ch-tool-badge-completed-color, #2e7d32);
+}
+
+.tool__badge--error {
+  background-color: var(--ch-tool-badge-error-bg, #ffebee);
+  color: var(--ch-tool-badge-error-color, #c62828);
+}
+
+.tool__badge--denied {
+  background-color: var(--ch-tool-badge-denied-bg, #fce4ec);
+  color: var(--ch-tool-badge-denied-color, #c2185b);
+}
+
+// Tool name
+.tool__name {
+  font-weight: var(--ch-tool-name-font-weight, 500);
+  font-size: var(--ch-tool-name-font-size, 1rem);
+  color: var(--ch-tool-name-color, inherit);
+}
+
+// Content wrapper
+.tool__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ch-tool-gap);
+}
+
+// Section (parameters, result, error)
+.tool__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ch-tool-section-gap);
+}
+
+// Section title
+.tool__section-title {
+  font-weight: var(--ch-tool-section-title-font-weight);
+  font-size: var(--ch-tool-section-title-font-size);
+  color: var(--ch-tool-section-title-color, inherit);
+}
+
+// Error section specific styling
+.tool__section--error {
+  // Placeholder for error-specific styling
+  // All visual customization via CSS custom properties
+}
+
+// Error text
+.tool__error-text {
+  font-family: var(--ch-tool-error-font-family, monospace);
+  font-size: var(--ch-tool-error-font-size, 0.875rem);
+  color: var(--ch-tool-error-color, inherit);
+  white-space: pre-wrap;
+  word-break: break-word;
+}

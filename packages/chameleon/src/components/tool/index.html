@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ch-tool Demo</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.6;
+        background: #fafafa;
+      }
+
+      h1 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 0.5rem;
+        color: #222;
+      }
+
+      .demo-section {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        color: #333;
+        font-size: 1.25rem;
+      }
+
+      .demo-section p {
+        color: #666;
+        margin-bottom: 1rem;
+      }
+
+      ch-tool {
+        display: block;
+        margin: 1rem 0;
+      }
+
+      .event-log {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f0f0f0;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.875rem;
+        max-height: 150px;
+        overflow-y: auto;
+      }
+
+      .event-log h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.875rem;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+
+      .event-log pre {
+        margin: 0.25rem 0;
+        color: #333;
+      }
+
+      /* Custom styling examples using CSS Parts */
+      .custom-styled::part(header-badge) {
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .custom-styled::part(tool-name) {
+        color: #0066cc;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      /* State-specific custom styling */
+      .custom-styled::part(state-output-available) {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .custom-styled::part(state-output-error) {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+      }
+
+      /* Custom properties example */
+      .themed-tool {
+        --ch-tool-badge-padding: 0.5rem 1rem;
+        --ch-tool-badge-border-radius: 12px;
+        --ch-tool-badge-font-size: 0.875rem;
+        --ch-tool-badge-completed-bg: #10b981;
+        --ch-tool-badge-completed-color: white;
+        --ch-tool-badge-running-bg: #3b82f6;
+        --ch-tool-badge-running-color: white;
+        --ch-tool-badge-error-bg: #ef4444;
+        --ch-tool-badge-error-color: white;
+        --ch-tool-badge-awaiting-approval-bg: #f59e0b;
+        --ch-tool-badge-awaiting-approval-color: white;
+        --ch-tool-name-font-size: 1rem;
+        --ch-tool-name-font-weight: 600;
+        --ch-tool-name-color: #1f2937;
+        --ch-tool-gap: 1.5rem;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        background: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+      }
+
+      button:hover {
+        background: #0052a3;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ch-tool Component Demo</h1>
+
+    <div class="demo-section">
+      <h2>Example 1: Pending State (input-streaming)</h2>
+      <p>Tool is receiving input parameters but hasn't started execution yet.</p>
+      <ch-tool id="tool1"></ch-tool>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 2: Running State (input-available)</h2>
+      <p>Tool has received all input parameters and is currently executing.</p>
+      <ch-tool id="tool2"></ch-tool>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 3: Completed State (output-available)</h2>
+      <p>Tool execution completed successfully with output results.</p>
+      <ch-tool id="tool3" class="themed-tool"></ch-tool>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 4: Error State (output-error)</h2>
+      <p>Tool execution failed with an error message.</p>
+      <ch-tool id="tool4" class="themed-tool"></ch-tool>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 5: Approval Workflow (approval-requested)</h2>
+      <p>Tool requires user approval before executing a potentially dangerous operation.</p>
+      <ch-tool id="tool5"></ch-tool>
+      <div class="event-log" id="approvalLog">
+        <h3>Event Log:</h3>
+        <div id="approvalLogContent"></div>
+      </div>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 6: Responded State (approval-responded)</h2>
+      <p>User has responded to the approval request.</p>
+      <ch-tool id="tool6"></ch-tool>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 7: Denied State (output-denied)</h2>
+      <p>Tool execution was denied by the user.</p>
+      <ch-tool id="tool7"></ch-tool>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 8: Custom Styled Tool (Using CSS Parts)</h2>
+      <p>Demonstrating customization with CSS parts and custom properties.</p>
+      <ch-tool id="tool8" class="custom-styled themed-tool" defaultOpen></ch-tool>
+    </div>
+
+    <div class="demo-section">
+      <h2>Example 9: Interactive State Transitions</h2>
+      <p>Click buttons to simulate tool execution lifecycle.</p>
+      <ch-tool id="tool9"></ch-tool>
+      <div class="button-group">
+        <button id="startTool">Start Tool</button>
+        <button id="completeTool">Complete Tool</button>
+        <button id="errorTool">Simulate Error</button>
+        <button id="requestApproval">Request Approval</button>
+        <button id="resetTool">Reset</button>
+      </div>
+      <div class="event-log" id="stateLog">
+        <h3>State Change Log:</h3>
+        <div id="stateLogContent"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Import the component
+      import "./tool.lit.js";
+
+      // Example 1: Pending state (input-streaming)
+      const tool1 = document.getElementById("tool1");
+      tool1.toolName = "web_search";
+      tool1.state = "input-streaming";
+      tool1.input = {
+        query: "latest AI research papers",
+        maxResults: 10,
+        dateRange: "last-month"
+      };
+
+      // Example 2: Running state (input-available)
+      const tool2 = document.getElementById("tool2");
+      tool2.toolName = "database_query";
+      tool2.type = "function";
+      tool2.state = "input-available";
+      tool2.defaultOpen = true;
+      tool2.input = {
+        sql: "SELECT * FROM users WHERE active = true",
+        database: "production",
+        timeout: 30
+      };
+
+      // Example 3: Completed state (output-available)
+      const tool3 = document.getElementById("tool3");
+      tool3.toolName = "api_request";
+      tool3.state = "output-available";
+      tool3.defaultOpen = true;
+      tool3.input = {
+        url: "https://api.example.com/data",
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer token123",
+          "Content-Type": "application/json"
+        }
+      };
+      tool3.output = {
+        status: 200,
+        data: {
+          results: [
+            { id: 1, name: "Item 1", value: 100 },
+            { id: 2, name: "Item 2", value: 200 },
+            { id: 3, name: "Item 3", value: 300 }
+          ],
+          total: 3,
+          timestamp: "2026-04-07T13:30:00Z"
+        }
+      };
+
+      // Example 4: Error state (output-error)
+      const tool4 = document.getElementById("tool4");
+      tool4.toolName = "file_operations";
+      tool4.state = "output-error";
+      tool4.defaultOpen = true;
+      tool4.input = {
+        operation: "delete",
+        path: "/var/data/important.txt",
+        force: true
+      };
+      tool4.errorText = "Permission denied: insufficient privileges to delete file at path /var/data/important.txt";
+
+      // Example 5: Approval workflow (approval-requested)
+      const tool5 = document.getElementById("tool5");
+      tool5.toolName = "execute_command";
+      tool5.state = "approval-requested";
+      tool5.defaultOpen = true;
+      tool5.toolCallId = "call-dangerous-001";
+      tool5.input = {
+        command: "rm -rf /tmp/cache/*",
+        shell: "bash",
+        sudo: true
+      };
+      tool5.approvalMessage = "This command will delete all cached files. Do you want to proceed?";
+      tool5.acceptedMessage = "Command execution approved";
+      tool5.rejectedMessage = "Command execution denied";
+
+      // Event listeners for approval workflow
+      const approvalLogContent = document.getElementById("approvalLogContent");
+      
+      tool5.addEventListener("approve", (e) => {
+        const log = document.createElement("pre");
+        log.textContent = `✅ APPROVED - toolCallId: ${e.detail.toolCallId}`;
+        log.style.color = "#10b981";
+        approvalLogContent.appendChild(log);
+        
+        // Simulate state change after approval
+        setTimeout(() => {
+          tool5.state = "approval-responded";
+          const log2 = document.createElement("pre");
+          log2.textContent = `State changed to: approval-responded`;
+          log2.style.color = "#6b7280";
+          approvalLogContent.appendChild(log2);
+        }, 500);
+      });
+
+      tool5.addEventListener("reject", (e) => {
+        const log = document.createElement("pre");
+        log.textContent = `❌ REJECTED - toolCallId: ${e.detail.toolCallId}`;
+        log.style.color = "#ef4444";
+        approvalLogContent.appendChild(log);
+        
+        // Simulate state change after rejection
+        setTimeout(() => {
+          tool5.state = "output-denied";
+          tool5.errorText = "Operation cancelled by user";
+          const log2 = document.createElement("pre");
+          log2.textContent = `State changed to: output-denied`;
+          log2.style.color = "#6b7280";
+          approvalLogContent.appendChild(log2);
+        }, 500);
+      });
+
+      // Example 6: Responded state (approval-responded)
+      const tool6 = document.getElementById("tool6");
+      tool6.toolName = "system_backup";
+      tool6.state = "approval-responded";
+      tool6.input = {
+        source: "/var/www/app",
+        destination: "/backups/app-2026-04-07",
+        compress: true
+      };
+
+      // Example 7: Denied state (output-denied)
+      const tool7 = document.getElementById("tool7");
+      tool7.toolName = "data_export";
+      tool7.state = "output-denied";
+      tool7.input = {
+        format: "csv",
+        includePersonalData: true,
+        records: 10000
+      };
+      tool7.errorText = "Export denied: user rejected data export request";
+
+      // Example 8: Custom styled tool
+      const tool8 = document.getElementById("tool8");
+      tool8.toolName = "machine_learning_inference";
+      tool8.state = "output-available";
+      tool8.input = {
+        model: "gpt-4",
+        prompt: "Explain quantum computing in simple terms",
+        temperature: 0.7,
+        maxTokens: 500
+      };
+      tool8.output = {
+        response: "Quantum computing is a type of computing that uses quantum mechanical phenomena...",
+        tokensUsed: 342,
+        latency: 1250,
+        model: "gpt-4-turbo"
+      };
+
+      // Example 9: Interactive state transitions
+      const tool9 = document.getElementById("tool9");
+      tool9.toolName = "interactive_tool";
+      tool9.state = "input-streaming";
+      tool9.input = {
+        parameter1: "value1",
+        parameter2: "value2"
+      };
+
+      const stateLogContent = document.getElementById("stateLogContent");
+      
+      function logState(state) {
+        const log = document.createElement("pre");
+        log.textContent = `[${new Date().toLocaleTimeString()}] State: ${state}`;
+        stateLogContent.appendChild(log);
+        stateLogContent.scrollTop = stateLogContent.scrollHeight;
+      }
+
+      // Initial state
+      logState(tool9.state);
+
+      document.getElementById("startTool").addEventListener("click", () => {
+        tool9.state = "input-available";
+        logState("input-available (Running)");
+      });
+
+      document.getElementById("completeTool").addEventListener("click", () => {
+        tool9.state = "output-available";
+        tool9.output = {
+          success: true,
+          result: "Operation completed successfully",
+          timestamp: new Date().toISOString()
+        };
+        logState("output-available (Completed)");
+      });
+
+      document.getElementById("errorTool").addEventListener("click", () => {
+        tool9.state = "output-error";
+        tool9.errorText = "Simulated error: connection timeout after 30 seconds";
+        logState("output-error (Error)");
+      });
+
+      document.getElementById("requestApproval").addEventListener("click", () => {
+        tool9.state = "approval-requested";
+        tool9.toolCallId = "call-interactive-" + Date.now();
+        tool9.approvalMessage = "Do you want to proceed with this operation?";
+        logState("approval-requested (Awaiting Approval)");
+      });
+
+      document.getElementById("resetTool").addEventListener("click", () => {
+        tool9.state = "input-streaming";
+        tool9.output = null;
+        tool9.errorText = "";
+        logState("input-streaming (Reset to Pending)");
+      });
+
+      // Listen to expandedChange events on tool9
+      tool9.addEventListener("expandedChange", (e) => {
+        const log = document.createElement("pre");
+        log.textContent = `Accordion ${e.detail.expanded ? 'expanded' : 'collapsed'}`;
+        log.style.color = "#6b7280";
+        stateLogContent.appendChild(log);
+      });
+
+      // Listen to approve/reject on tool9
+      tool9.addEventListener("approve", (e) => {
+        logState("approval-responded (Approved by user)");
+        setTimeout(() => {
+          tool9.state = "approval-responded";
+        }, 100);
+      });
+
+      tool9.addEventListener("reject", (e) => {
+        logState("output-denied (Rejected by user)");
+        setTimeout(() => {
+          tool9.state = "output-denied";
+          tool9.errorText = "Operation cancelled by user";
+        }, 100);
+      });
+    </script>
+  </body>
+</html>

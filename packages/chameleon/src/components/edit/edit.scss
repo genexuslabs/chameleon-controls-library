@@ -1,5 +1,5 @@
-@import "../../common/base";
-@import "../../common/icons";
+@use "../../utilities/scss/base" as *;
+@use "../../utilities/scss/icons" as *;
 
 // Used to change the placeholder color in the input controls
 // Opacity property is necessary, because some browsers (e.g., mozilla) change this value

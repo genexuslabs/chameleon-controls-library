@@ -11,6 +11,7 @@ import "../../src/components/breadcrumb/breadcrumb-render.lit";
 import "../../src/components/checkbox/checkbox.lit";
 import "../../src/components/code/code.lit";
 import "../../src/components/combo-box/combo-box.lit";
+import "../../src/components/edit/edit.lit";
 import "../../src/components/image/image.lit";
 import "../../src/components/layout-splitter/layout-splitter.lit";
 import "../../src/components/math-viewer/math-viewer.lit";
@@ -131,6 +132,15 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
   // ---- Form ----
   ChCheckbox: ({ element }) =>
     html`<ch-checkbox caption=${(element.props as any).caption ?? ""}></ch-checkbox>`,
+
+  ChEdit: ({ element }) =>
+    html`<ch-edit
+      placeholder=${(element.props as any).placeholder ?? ""}
+      type=${(element.props as any).type ?? "text"}
+      ?multiline=${(element.props as any).multiline ?? false}
+      ?disabled=${(element.props as any).disabled ?? false}
+      ?readonly=${(element.props as any).readonly ?? false}
+    ></ch-edit>`,
 
   ChComboBox: () =>
     html`<ch-combo-box-render .model=${COMBO_BOX_MODEL} value="opt-1"></ch-combo-box-render>`,
@@ -285,6 +295,63 @@ export const componentExamples: Partial<Record<string, ExampleDef[]>> = {
         }
       },
       code: `<ch-checkbox caption="Accept terms and conditions"></ch-checkbox>`
+    }
+  ],
+  "ch-edit": [
+    {
+      title: "Text input",
+      description: "A basic single-line text field.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChEdit", props: { placeholder: "Type here..." }, children: [] }
+        }
+      },
+      code: `<ch-edit placeholder="Type here..."></ch-edit>`
+    },
+    {
+      title: "Password input",
+      description: "A password field with a toggle button to reveal the value.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChEdit", props: { type: "password", placeholder: "Enter password" }, children: [] }
+        }
+      },
+      code: `<ch-edit type="password" show-password-button placeholder="Enter password"></ch-edit>`
+    },
+    {
+      title: "Multiline (textarea)",
+      description: "A multiline text area for longer content.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChEdit", props: { multiline: true, placeholder: "Write something..." }, children: [] }
+        }
+      },
+      code: `<ch-edit multiline placeholder="Write something..."></ch-edit>`
+    },
+    {
+      title: "Search input",
+      description: "A search field with a clear button when a value is present.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChEdit", props: { type: "search", placeholder: "Search..." }, children: [] }
+        }
+      },
+      code: `<ch-edit type="search" placeholder="Search..."></ch-edit>`
+    },
+    {
+      title: "Disabled input",
+      description: "A disabled text field that cannot be edited.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChEdit", props: { disabled: true, placeholder: "Disabled" }, children: [] }
+        }
+      },
+      code: `<ch-edit disabled placeholder="Disabled"></ch-edit>`
     }
   ],
   "ch-combo-box-render": [

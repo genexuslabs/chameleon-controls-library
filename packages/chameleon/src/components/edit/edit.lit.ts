@@ -549,8 +549,8 @@ export class ChEdit extends KasstorElement {
         ? TEXTAREA_INLINE_CLASSES
         : TEXTAREA_FLOATING_CLASSES}
       ?disabled=${this.disabled}
-      .maxLength=${this.maxLength ?? -1}
-      placeholder=${this.placeholder || nothing}
+      maxlength=${this.maxLength ?? nothing}
+      placeholder=${this.placeholder ?? nothing}
       ?readonly=${this.readonly}
       .spellcheck=${this.spellcheck}
       .value=${this.value ?? ""}
@@ -740,11 +740,11 @@ export class ChEdit extends KasstorElement {
               })}
               ?disabled=${this.disabled}
               inputmode=${this.mode || nothing}
-              .maxLength=${this.maxLength ?? -1}
+              maxlength=${this.maxLength ?? nothing}
               max=${MAX_DATE_VALUE[this.type] || nothing}
               min=${MIN_DATE_VALUE[this.type] || nothing}
               pattern=${this.pattern || nothing}
-              placeholder=${this.placeholder || nothing}
+              placeholder=${this.placeholder ?? nothing}
               ?readonly=${this.readonly}
               .spellcheck=${this.spellcheck}
               step=${isDateType ? "1" : nothing}
@@ -879,22 +879,21 @@ declare global {
    *   necessarily fired for each change to an element's value but when the
    *   control loses focus.
    *   This event is _NOT_ debounced by the `debounce` property.
-   *
    * @fires input Fired synchronously when the value is changed.
    *   This event is debounced by the `debounce` property.
-   *
    * @fires passwordVisibilityChange Fired when the visibility of the password (when using `type="password"`)
    *   is changed by clicking on the show password button.
-   *
+   *   
    *   The detail contains the new value of the `showPassword` property.
    */
   // prettier-ignore
   interface HTMLChEditElement extends ChEdit {
+    // Extend the ChEdit class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof HTMLChEditElementEventTypes>(type: K, listener: (this: HTMLChEditElement, ev: HTMLChEditElementEventTypes[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
     addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
     addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-
+    
     removeEventListener<K extends keyof HTMLChEditElementEventTypes>(type: K, listener: (this: HTMLChEditElement, ev: HTMLChEditElementEventTypes[K]) => unknown, options?: boolean | EventListenerOptions): void;
     removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
     removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
@@ -909,3 +908,4 @@ declare global {
     "ch-edit": HTMLChEditElement;
   }
 }
+

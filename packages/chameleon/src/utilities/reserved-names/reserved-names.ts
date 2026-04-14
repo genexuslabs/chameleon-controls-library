@@ -10,8 +10,12 @@ import {
 export const EDIT_PARTS_DICTIONARY = {
   DATE_PLACEHOLDER: "date-placeholder",
   CLEAR_BUTTON: "clear-button",
+  SHOW_PASSWORD: "show-password",
 
-  DISABLED: "disabled" // CLEAR_BUTTON
+  // States
+  DISABLED: "disabled",
+  PASSWORD_DISPLAYED: "password-displayed",
+  PASSWORD_HIDDEN: "password-hidden"
 } as const;
 
 export const EDIT_EXPORT_PARTS = joinParts(EDIT_PARTS_DICTIONARY);

@@ -40,7 +40,7 @@ The undo/redo system allows users to reverse and re-apply edit operations. It op
 - BR-7: The grid SHALL clear the redo stack when a new edit is committed after one or more undo operations.
 - BR-8: The grid SHALL expose a read-only `undoStack` property as an array of pending undo operation descriptors.
 - BR-9: The grid SHALL fire `undoAvailable` and `redoAvailable` change events whenever the availability of undo or redo operations changes.
-- BR-10: The grid SHALL respect keyboard shortcut remapping configured via F-14.15; if Ctrl+Z is remapped, the default binding SHALL be deactivated.
+- BR-10: The grid SHALL respect keyboard shortcut remapping configured via F-14.14; if Ctrl+Z is remapped, the default binding SHALL be deactivated.
 
 **Keyboard Interaction**
 | Key | Action | Mode |
@@ -58,7 +58,7 @@ The undo/redo system allows users to reverse and re-apply edit operations. It op
 
 **Chameleon 6 Status**: New feature
 
-**Interactions**: FD-03 (editability model — Escape/Ctrl+Z in edit mode), F-07.7 (batch editing — undone as single transaction via F-17.3), F-17.2 (shared undo stack), F-17.3 (transaction grouping), F-17.4 (stack configuration), F-14.15 (keyboard shortcut customization)
+**Interactions**: FD-03 (editability model — Escape/Ctrl+Z in edit mode), F-07.7 (batch editing — undone as single transaction via F-17.3), F-17.2 (shared undo stack), F-17.3 (transaction grouping), F-17.4 (stack configuration), F-14.14 (keyboard shortcut customization)
 
 ---
 
@@ -172,7 +172,7 @@ The undo/redo system allows users to reverse and re-apply edit operations. It op
 - BR-4: The grid SHALL accept `undoEnabled: boolean` (default: `true`); when `false`, the grid SHALL not push operations to the undo stack and SHALL not intercept Ctrl+Z or Ctrl+Y.
 - BR-5: The grid SHALL expose `grid.clearUndoStack()` which empties both the undo and redo stacks immediately.
 - BR-6: After `grid.clearUndoStack()` is called, the grid SHALL fire `undoAvailable` and `redoAvailable` change events reflecting the now-empty stacks.
-- BR-7: Keyboard shortcut customization configured via F-14.15 SHALL apply to undo/redo bindings; remapped shortcuts SHALL replace the defaults.
+- BR-7: Keyboard shortcut customization configured via F-14.14 SHALL apply to undo/redo bindings; remapped shortcuts SHALL replace the defaults.
 - BR-8: The grid SHALL expose a read-only `undoStackDepth` getter reflecting the current count of entries in the undo stack (distinct from the configuration property of the same name).
 - BR-9: `undoEnabled` MAY be changed at runtime; disabling it while operations are on the stack SHALL preserve existing entries but prevent new ones from being added; re-enabling it SHALL resume normal stack behavior.
 
@@ -191,7 +191,7 @@ The undo/redo system allows users to reverse and re-apply edit operations. It op
 
 **Chameleon 6 Status**: New feature
 
-**Interactions**: F-17.1 (stack depth affects cell edit history), F-17.2 (structural changes occupy stack slots), F-17.3 (committed transactions occupy one stack slot regardless of operation count), F-14.15 (keyboard shortcut remapping applies to Ctrl+Z / Ctrl+Y)
+**Interactions**: F-17.1 (stack depth affects cell edit history), F-17.2 (structural changes occupy stack slots), F-17.3 (committed transactions occupy one stack slot regardless of operation count), F-14.14 (keyboard shortcut remapping applies to Ctrl+Z / Ctrl+Y)
 
 ---
 

@@ -187,15 +187,17 @@ The following example shows a three-level file browser tree grid. Every required
 
 ```html
 <!--
-  aria-rowcount: total number of data rows currently rendered (excluding header).
+  aria-rowcount: total number of rows in the full logical dataset, including
+  the header row and any rows hidden due to collapsed parents. This is the
+  total count of rows that WOULD be visible if the entire tree were expanded,
+  not just the currently rendered subset. If the total count is unknown
+  (e.g., lazy-loaded branches not yet fetched), use aria-rowcount="-1".
   aria-colcount: total number of columns.
-  In virtual scrolling, aria-rowcount reflects the total known row count,
-  not just the rendered subset.
 -->
 <div
   role="treegrid"
   aria-label="File Browser"
-  aria-rowcount="8"
+  aria-rowcount="12"
   aria-colcount="3"
 >
 
@@ -349,8 +351,8 @@ The following example shows a three-level file browser tree grid. Every required
 
 **Notes on the example:**
 
-- `aria-rowcount="8"` includes the header row (index 1) plus 7 data rows — however, `aria-rowcount` on `role="treegrid"` counts only the currently **rendered** rows. If "Projects/" were expanded and its children were virtual/unrendered, `aria-rowcount` would remain 7 until those rows enter the DOM.
-- The "Projects/" node (rowindex 4) is collapsed; its children do not appear in the DOM. When expanded, new rows with `aria-level="3"` would be inserted after rowindex 4, and `aria-rowcount` would increase accordingly.
+- `aria-rowcount="12"` reflects the total logical row count across the entire tree: 1 header row + 6 currently visible data rows + 5 hidden rows in collapsed branches (2 children under "Projects/" and 3 children under "Pictures"). Per the ARIA specification, `aria-rowcount` MUST represent the total number of rows available in the full dataset, not just the currently rendered subset. This allows assistive technology to communicate the true size of the data to the user (e.g., "row 3 of 12"). If the total count is unknown (e.g., lazy-loaded branches), use `aria-rowcount="-1"`.
+- The "Projects/" node (rowindex 4) is collapsed; its children do not appear in the DOM. When expanded, new rows with `aria-level="3"` would be inserted after rowindex 4. The `aria-rowcount` value remains unchanged because it already accounts for those hidden rows.
 - `tabindex="0"` appears on exactly one row at a time (roving tabindex). All other interactive rows use `tabindex="-1"`.
 
 ---
@@ -372,7 +374,7 @@ When navigating between rows, `tabindex="0"` is on the `role="row"` element. Cel
 | Arrow Right (collapsed parent) | Expand the node; focus stays on the row element |
 | Arrow Right (expanded parent or leaf) | Move focus to the first cell (`aria-colindex="1"`) in the current row |
 | Enter | Move focus to first cell (or enter edit mode if row is editable) |
-| Space | Toggle row selection (if selection is enabled; see F-02) |
+| Space | Toggle row selection (if selection is enabled; see F-08) |
 
 Row-focus mode is the default state when the user first enters the treegrid via Tab, and after pressing Arrow Left to return from cell navigation.
 
@@ -494,21 +496,21 @@ The following table is the normative keyboard specification for the Tree Grid va
 | Enter | Row | Move focus to first cell; or enter edit mode if row is directly editable |
 | Enter | Cell — editable | Enter edit mode for the cell |
 | Enter | Cell — read-only | No action (or activate if cell contains a link/button) |
-| Escape | Edit mode | Commit or cancel edit (per F-05 editing rules); return focus to cell |
+| Escape | Edit mode | Commit or cancel edit (per F-07 editing rules); return focus to cell |
 | Home | Row or Cell | Move focus to first cell of current row |
 | End | Row or Cell | Move focus to last cell of current row |
 | Ctrl+Home | Any | Move focus to first visible data row, first cell |
 | Ctrl+End | Any | Move focus to last visible data row, last cell |
 | Page Up | Any | Move focus up by approximately one visible page of rows |
 | Page Down | Any | Move focus down by approximately one visible page of rows |
-| Space | Row* | Toggle row selection (requires row selection enabled; see F-02) |
+| Space | Row* | Toggle row selection (requires row selection enabled; see F-08) |
 | Space | Cell* | Toggle cell selection or activate cell action |
 | Shift+Space | Row* | Extend range selection to this row |
 | Ctrl+A | Any* | Select all rows (requires multi-select enabled) |
 | * (Asterisk) | Row | Expand all sibling rows at the same level under the same parent |
 | + (Plus) | Row | Expand the current node (same as Arrow Right on collapsed parent) |
 | - (Minus) | Row | Collapse the current node (same as Arrow Left on expanded parent) |
-| F2 | Cell | Toggle cell edit mode on/off (alternate to Enter; see F-05) |
+| F2 | Cell | Toggle cell edit mode on/off (alternate to Enter; see F-07) |
 | Tab | Grid | Move focus to the next focusable element outside the treegrid |
 | Shift+Tab | Grid | Move focus to the previous focusable element outside the treegrid |
 
@@ -585,7 +587,7 @@ The following requirements apply to any implementation of the Chameleon 7 Tree G
 | ID | Requirement |
 |----|-------------|
 | TG-01 | The treegrid container element MUST have `role="treegrid"`. |
-| TG-02 | The treegrid container MUST have `aria-rowcount` reflecting the total count of rendered data rows (excluding header rows). In virtual scrolling mode, `aria-rowcount` MUST reflect the total known row count across the entire dataset. |
+| TG-02 | The treegrid container MUST have `aria-rowcount` reflecting the total number of rows in the full logical dataset (including the header row and rows hidden due to collapsed parents). This is the count of rows that would exist if the entire tree were expanded. When the total count is unknown (e.g., lazy-loaded branches not yet fetched), `aria-rowcount` MUST be set to `-1`. |
 | TG-03 | The treegrid container MUST have `aria-colcount` reflecting the total number of columns. |
 | TG-04 | The treegrid container MUST have an accessible name provided via `aria-label` or `aria-labelledby`. |
 

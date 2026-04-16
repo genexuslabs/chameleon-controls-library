@@ -97,8 +97,8 @@ Developer experience features cover TypeScript support, SSR compatibility, the e
 
 **Behavioral Requirements**
 - BR-1: All events SHALL be `CustomEvent` instances with `bubbles: true` and `composed: true` (to cross shadow DOM boundaries).
-- BR-2: Cell events SHALL include: `ch-cell-click`, `ch-cell-dblclick`, `ch-cell-mouseenter`, `ch-cell-mouseleave`, `ch-cell-focus`, `ch-cell-blur`, `ch-cell-contextmenu`.
-- BR-3: Row events SHALL include: `ch-row-click`, `ch-row-dblclick`, `ch-row-select`, `ch-row-deselect`, `ch-row-expand`, `ch-row-collapse`.
+- BR-2: Cell events SHALL include: `ch-cell-click`, `ch-cell-dbl-click`, `ch-cell-mouseenter`, `ch-cell-mouseleave`, `ch-cell-focus`, `ch-cell-blur`, `ch-cell-contextmenu`.
+- BR-3: Row events SHALL include: `ch-row-click`, `ch-row-dbl-click`, `ch-row-select`, `ch-row-deselect`, `ch-row-expand`, `ch-row-collapse`.
 - BR-4: Column events SHALL include: `ch-column-resize`, `ch-column-reorder`, `ch-column-pin`, `ch-column-hide`, `ch-column-show`, `ch-column-sort`, `ch-column-filter`.
 - BR-5: Grid lifecycle events SHALL include: `ch-grid-ready`, `ch-data-change`, `ch-state-change`, `ch-scroll-end`.
 - BR-6: Edit events SHALL include: `ch-before-edit` (cancelable), `ch-after-edit`, `ch-cell-value-change`, `ch-before-commit` (cancelable), `ch-after-commit`.

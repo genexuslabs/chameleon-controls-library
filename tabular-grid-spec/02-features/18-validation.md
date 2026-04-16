@@ -79,7 +79,7 @@ Validation rules are only evaluated for editable cells. Read-only cells and comp
 | Escape | Cancel edit, restore previous value, clear error, release focus | Edit mode with validation error |
 
 **Accessibility**
-- **ARIA**: The cell editor input SHALL have `aria-invalid="true"` while a synchronous error is active. The error message element SHALL have `role="tooltip"` with an `id` referenced by `aria-describedby` on the input.
+- **ARIA**: The cell editor input SHALL have `aria-invalid="true"` while a synchronous error is active. The error message element SHALL have `role="tooltip"` with an `id` referenced by `aria-describedby` on the input. In ARIA 1.2+ environments, `aria-errormessage` is preferred over `aria-describedby` for error associations (see BR-2 in F-18.4 for the dual-attribute strategy).
 - **Screen Reader**: SR: "Error: [column name] — [error message]" announced via an assertive ARIA live region when the error first appears.
 - **WCAG**: 3.3.1 Error Identification (Level A), 3.3.3 Error Suggestion (Level AA).
 - **Visual**: The cell editor SHALL display a non-color indicator (e.g., error icon, thickened border) alongside any color change to satisfy WCAG 1.4.1.
@@ -151,7 +151,7 @@ Validation rules are only evaluated for editable cells. Read-only cells and comp
 
 **Behavioral Requirements**
 - BR-1: Invalid cells SHALL display a non-color visual indicator (e.g., error icon, pattern border, or shape) in addition to any color change to satisfy WCAG 1.4.1.
-- BR-2: The error message SHALL be rendered in a popover element with `role="tooltip"` and a unique `id`, linked to the cell's editor input via `aria-describedby`.
+- BR-2: The error message SHALL be rendered in a popover element with `role="tooltip"` and a unique `id`, linked to the cell's editor input via `aria-describedby`. When targeting ARIA 1.2+ environments, `aria-errormessage` on the input referencing the error element's `id` is the preferred pattern, as it semantically distinguishes error messages from general descriptions. The `role="tooltip"` with `aria-describedby` approach SHOULD be retained as a fallback for broader assistive technology compatibility, and implementations MAY use both attributes simultaneously (`aria-errormessage` and `aria-describedby` pointing to the same element).
 - BR-3: The cell's editor input SHALL have `aria-invalid="true"` when the cell is invalid.
 - BR-4: The grid SHALL maintain an assertive ARIA live region (`aria-live="assertive"`) outside the grid table; when a cell becomes invalid, the grid SHALL inject "Error: [column name] — [error message]" into this region.
 - BR-5: When a cell transitions from invalid to valid, the grid SHALL inject "Error cleared" into the assertive live region and remove `aria-invalid`.
@@ -162,7 +162,7 @@ Validation rules are only evaluated for editable cells. Read-only cells and comp
 - BR-10: The error popover SHALL be associated with the triggering cell via a stable DOM relationship, not solely via visual proximity.
 
 **Accessibility**
-- **ARIA**: Invalid cells SHALL have `aria-invalid="true"` on the editor input. Error message containers SHALL use `role="tooltip"` linked via `aria-describedby`. The assertive live region SHALL have `aria-atomic="true"` to ensure full message announcement.
+- **ARIA**: Invalid cells SHALL have `aria-invalid="true"` on the editor input. Error message containers SHALL use `role="tooltip"` linked via `aria-describedby`. In ARIA 1.2+ environments, `aria-errormessage` on the input is the preferred semantic association for error messages; `role="tooltip"` with `aria-describedby` remains as a fallback for broader AT support. Implementations MAY apply both `aria-errormessage` and `aria-describedby` to the same input referencing the same error element. The assertive live region SHALL have `aria-atomic="true"` to ensure full message announcement.
 - **Screen Reader**: SR: "Error: [column name] — [error message]" on cell becoming invalid. SR: "Error cleared" on cell becoming valid.
 - **WCAG**: 1.4.1 Use of Color (Level A), 1.4.3 Contrast — Minimum (Level AA), 3.3.1 Error Identification (Level A), 3.3.3 Error Suggestion (Level AA).
 - **Visual**: The non-color indicator (icon or border style) SHALL remain visible in Windows High Contrast Mode and forced-colors environments.

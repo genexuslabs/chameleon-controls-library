@@ -546,7 +546,7 @@ Filter changes alter the total row count, requiring the virtualizer (F-11) to re
 | FR-26 | Gantt Chart filters MUST apply to the task list only; timeline bars reflect filtered state. | MUST | F-03.1, F-03.3, F-03.4, F-03.5 |
 | FR-27 | The grid MUST emit `filterChanged` events for both UI-driven and programmatic filter changes. | MUST | F-03.1, F-03.4 |
 | FR-28 | The grid MUST apply filter-then-sort execution order. | MUST | F-03 (cross-cutting) |
-| FR-29 | Ancestor rows shown for context in Tree Grid MUST NOT be counted in "N rows shown" announcements. | SHOULD | F-03 (cross-cutting) |
+| FR-29 | Ancestor rows shown for context in Tree Grid SHOULD NOT be counted in "N rows shown" announcements. | SHOULD | F-03 (cross-cutting) |
 | FR-30 | Filter evaluation on large datasets SHOULD be performed off the main thread. | SHOULD | F-03 (cross-cutting) |
 
 ---

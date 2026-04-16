@@ -199,7 +199,7 @@ The checkbox column occupies the first track in `grid-template-columns`. Its wid
 **Accessibility**
 - **ARIA**: Each row checkbox MUST have `role="checkbox"` (or be an `<input type="checkbox">`) with `aria-checked="true"` or `aria-checked="false"`. The header checkbox MUST support `aria-checked="mixed"` for the indeterminate state. Each checkbox MUST have an accessible label: row checkboxes via `aria-label="Select row [identifier]"`, header checkbox via `aria-label="Select all rows"`.
 - **Screen Reader**: SR: "Select row [Name], checkbox, not checked" when navigating to an unchecked row selector. SR: "Select all rows, checkbox, mixed, [N] of [M] selected" for the header checkbox in mixed state.
-- **WCAG**: 1.3.1 (checkbox state is programmatically determinable), 2.1.1 (checkbox is keyboard-operable via Space), 2.5.5 (touch target size meets 24x24 minimum), 4.1.2 (checkbox has accessible name and state).
+- **WCAG**: 1.3.1 (checkbox state is programmatically determinable), 2.1.1 (checkbox is keyboard-operable via Space), 2.5.8 (touch target size meets 24x24 minimum), 4.1.2 (checkbox has accessible name and state).
 - **Visual**: Checkboxes MUST have visible checked, unchecked, and indeterminate states. The indeterminate state MUST be visually distinct from both checked and unchecked (typically a horizontal dash). Checkbox visuals MUST meet WCAG 1.4.11 (3:1 contrast ratio for the checkbox border and check mark against the background).
 
 **Chameleon 6 Status**: Existed. `richRowSelector: boolean` property enables the checkbox column. Event: `columnSelectorClicked`. Chameleon 7 adds tri-state header checkbox ARIA, group-level checkboxes, and configurable `selectOnRowClick`.

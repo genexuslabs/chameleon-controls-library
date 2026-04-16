@@ -171,7 +171,7 @@ The Timeline region uses `role="application"`, which means the browser delegates
 
 | Key | Action | Mode | Notes / Context |
 |-----|--------|------|-----------------|
-| Arrow Left | Move the focused task bar's start date earlier by 1 zoom unit | Navigation | The zoom unit varies by current zoom level (e.g., 1 day, 1 hour) |
+| Arrow Left | Move the focused task bar's start date earlier by 1 zoom unit | Navigation | The zoom unit varies by current zoom level (e.g., 1 day, 1 week) |
 | Arrow Right | Move the focused task bar's start date later by 1 zoom unit | Navigation | The zoom unit varies by current zoom level |
 | Shift+Arrow Left | Move the focused task bar's end date earlier by 1 zoom unit (shorten task) | Navigation | Only the end date changes; start date is not affected |
 | Shift+Arrow Right | Move the focused task bar's end date later by 1 zoom unit (extend task) | Navigation | Only the end date changes; start date is not affected |

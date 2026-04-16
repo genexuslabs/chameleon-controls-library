@@ -67,7 +67,7 @@ None. Localized strings are content within existing grid cells and chrome elemen
 - F-03 (Filtering): filter input placeholders, operator labels, and "no results" messages use localized strings.
 - F-04 (Grouping): group header templates use localized strings with interpolation tokens.
 - F-08 (Selection): selection count announcements use localized strings.
-- F-09.6 (Column Menu): all menu item labels use localized strings.
+- F-09.9 (Column Menu): all menu item labels use localized strings.
 - F-10 (Row Management): "No rows to display" empty-state message uses localized string.
 - F-13.4 (Multi-Language Packs): packs provide pre-built `GridLocalization` objects.
 - F-14 (Keyboard Navigation): keyboard shortcut descriptions in any help UI use localized strings.

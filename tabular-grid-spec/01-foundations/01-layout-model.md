@@ -47,7 +47,7 @@ The `ch-tabular-grid-render` host element establishes the grid context that all 
 ```
 ch-tabular-grid-render            ← display: grid
   div.rowgroup[role="rowgroup"]   ← header rowgroup (subgrid)
-    div.column-row[role="row"]    ← header row (see 1.5 for display:contents exception)
+    div.column-row                ← header row wrapper (display:contents, see 1.5.2)
       ch-tabular-grid-column      ← columnheader cells
   div.body.rowgroup[role="rowgroup"]  ← body rowgroup (subgrid, overflow: auto)
     div.row[role="row"]           ← data row (subgrid)

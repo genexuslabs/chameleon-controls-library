@@ -23,7 +23,9 @@ export type ChatTranslations = {
     // retryFileUpload?: string;
     // retryImageUpload?: string;
     // retryVideoUpload?: string;
+    sendButton?: string;
     sourceFiles?: string;
     stopResponseButton?: string;
   };
 };
+

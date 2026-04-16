@@ -42,7 +42,9 @@ const webComponentsPaths = {
   textblock: () => import("../../components/textblock/textblock.lit"),
   theme: () => import("../../components/theme/theme.lit"),
   "breadcrumb-render": () =>
-    import("../../components/breadcrumb/breadcrumb-render.lit")
+    import("../../components/breadcrumb/breadcrumb-render.lit"),
+  "ch-chat": () => import("../../components/chat/chat.lit"),
+  "ch-edit": () => import("../../components/edit/edit"),
 } as const;
 
 const chameleonComponentToBundleMapping = {
@@ -75,7 +77,9 @@ const chameleonComponentToBundleMapping = {
   "ch-tabular-grid-render": webComponentsPaths.textblock,
   "ch-textblock": webComponentsPaths.textblock,
   "ch-theme": webComponentsPaths.theme,
-  "ch-breadcrumb-render": webComponentsPaths["breadcrumb-render"]
+  "ch-breadcrumb-render": webComponentsPaths["breadcrumb-render"],
+  "ch-chat": webComponentsPaths["ch-chat"],
+  "ch-edit": webComponentsPaths["ch-edit"],
 } as const satisfies Record<
   ChameleonPublicControlsTagName,
   () => Promise<unknown>

@@ -11,7 +11,8 @@ import type {
 } from "../../types";
 import {
   DEFAULT_ASSISTANT_STATUS,
-  getMessageFilesAndSources
+  getMessageFilesAndSources,
+  getMessageSpecialComponents
 } from "../../utils";
 
 type ChatMessageNoSystem = ChatMessageByRole<
@@ -85,13 +86,29 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
           )}</ul>`
       : nothing;
 
+    // Render special components (plan, tool, confirmation, reasoning)
+  const { plan, tool, confirmation, reasoning } =
+    getMessageSpecialComponents(message);
+
+  const planRender = plan ? renders.plan(plan, chatRef) : nothing;
+
+  const toolRender = tool ? renders.tool(tool, chatRef) : nothing;
+
+  const confirmationRender = confirmation
+    ? renders.confirmation(confirmation, chatRef)
+    : nothing;
+
+  const reasoningRender = reasoning
+    ? renders.reasoning(reasoning, chatRef)
+    : nothing;
+
   return html`<div
     part=${tokenMap({
       [`content-container ${message.role} ${message.id}`]: true,
       [assistantStatus]: !!assistantStatus,
       [message.parts]: !!message.parts
     })}
-  >${contentBefore}${content}${contentAfter}${filesRender}${sourcesRender}${renders.actions(
+  >${contentBefore}${content}${contentAfter}${filesRender}${sourcesRender}${planRender}${toolRender}${confirmationRender}${reasoningRender}${renders.actions(
       message,
       chatRef
     )}</div>`;

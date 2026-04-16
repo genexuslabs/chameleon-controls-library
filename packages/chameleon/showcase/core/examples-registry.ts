@@ -22,6 +22,7 @@ import "../../src/components/qr/qr.lit";
 import "../../src/components/radio-group/radio-group-render.lit";
 import "../../src/components/segmented-control/segmented-control-render.lit";
 import "../../src/components/sidebar/sidebar.lit";
+import "../../src/components/smart-grid/internal/smart-grid-cell/smart-grid-cell.lit";
 import "../../src/components/slider/slider.lit";
 import "../../src/components/status/status.lit";
 import "../../src/components/switch/switch.lit";
@@ -33,6 +34,13 @@ import "../../src/components/chat/chat.lit";
 import "../../src/components/markdown-viewer/markdown-viewer.lit";
 import "../../src/components/smart-grid/smart-grid.lit";
 import "../../src/components/live-kit-room/live-kit-room.lit";
+import type { ChatMessage } from "../../src/components/chat/types";
+import "../../src/components/edit/edit.lit";
+
+import "../../src/components/plan/plan.lit";
+import "../../src/components/confirmation/confirmation.lit";
+import "../../src/components/reasoning/reasoning.lit";
+import "../../src/components/tool/tool.lit";
 
 // ---- Models for complex components ----
 
@@ -125,6 +133,273 @@ const LAYOUT_SPLITTER_MODEL = {
     { id: "panel-b", size: "1fr" as const }
   ]
 };
+
+const CHAT_MODEL: ChatMessage[] = [
+  {
+    id: "msg-1",
+    role: "user",
+    content: "Hello! How can I use the chat component?"
+  },
+  {
+    id: "msg-2",
+    role: "assistant",
+    content: "Hello! The `ch-chat` component is a full-featured conversational interface. You can:\n\n- Send text messages\n- Upload files\n- Use markdown formatting\n- Enable voice conversations with LiveKit\n\nWould you like to know more about any specific feature?"
+  },
+  {
+    id: "msg-3",
+    role: "user",
+    content: "That sounds great! Can you show me an example with markdown?"
+  },
+  {
+    id: "msg-4",
+    role: "assistant",
+    content: "Of course! Here's an example:\n\n## Features\n- **Virtual scrolling** for large message histories\n- *Markdown rendering* built-in\n- `Code highlighting` support\n\n```javascript\nconst chat = document.querySelector('ch-chat');\nchat.addNewMessage({ role: 'user', content: 'Hello!' });\n```"
+  }
+];
+
+const CHAT_WITH_PLAN_MODEL: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "Create a migration plan for moving our app to the cloud" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: {
+      message: "Here's a comprehensive migration plan:",
+      plan: {
+        title: "Cloud Migration Plan",
+        description: "Step-by-step plan to migrate the application to AWS",
+        defaultOpen: true,
+        steps: [
+          {
+            id: "step-1",
+            title: "Assessment & Planning",
+            description: "Evaluate current infrastructure and dependencies",
+            status: "completed" as const,
+            subtasks: [
+              "Inventory all services and databases",
+              "Identify dependencies and integrations",
+              "Estimate resource requirements"
+            ]
+          },
+          {
+            id: "step-2",
+            title: "Set up cloud infrastructure",
+            status: "in-progress" as const,
+            subtasks: [
+              "Configure VPC and networking",
+              "Set up security groups and IAM roles",
+              "Provision compute and storage resources"
+            ]
+          },
+          {
+            id: "step-3",
+            title: "Migrate databases",
+            status: "pending" as const
+          },
+          {
+            id: "step-4",
+            title: "Deploy application",
+            status: "pending" as const
+          }
+        ],
+        actions: [
+          { id: "approve", label: "Approve Plan", primary: true },
+          { id: "modify", label: "Request Changes" }
+        ]
+      }
+    }
+  }
+];
+
+const CHAT_WITH_CONFIRMATION_MODEL: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "Delete all old backup files" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: {
+      message: "I will delete 47 backup files older than 30 days (2.3 GB total).",
+      confirmation: {
+        state: "approval-requested" as const,
+        approval: {
+          id: "delete-backups-001"
+        }
+      }
+    }
+  }
+];
+
+const CHAT_WITH_REASONING_MODEL: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "What's the best approach to optimize this database query?" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: {
+      message: "Based on my analysis, I recommend adding a composite index. Here's why:",
+      reasoning: {
+        content: `Let me think through this step by step:
+
+1. **Query Pattern Analysis**: The query filters on \`user_id\` and \`created_at\`, then sorts by \`created_at DESC\`.
+
+2. **Current Performance**: Without an index, this requires a full table scan (O(n) complexity).
+
+3. **Index Consideration**: A composite index on \`(user_id, created_at)\` would:
+   - Allow direct lookup by user_id (O(log n))
+   - Enable efficient range scan on created_at
+   - Avoid sorting overhead since data is already ordered
+
+4. **Trade-offs**:
+   - Pros: 100-1000x faster for this query pattern
+   - Cons: ~10% slower writes, additional 5-10MB disk space
+
+5. **Conclusion**: The read performance gain far outweighs the minor write penalty for this use case.`,
+        isStreaming: true,
+        thinkingMessage: "Analyzing query patterns...",
+        thoughtMessageTemplate: "Analyzed in {duration}s",
+        streamingSpeedMs: 10
+      }
+    }
+  }
+];
+
+const CHAT_WITH_TOOL_MODEL: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "What's the current weather in San Francisco?" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: {
+      message: "Let me check the current weather for you.",
+      tool: {
+        toolName: "get_weather",
+        state: "output-available" as const,
+        input: {
+          location: "San Francisco, CA",
+          units: "fahrenheit"
+        },
+        output: {
+          temperature: 68,
+          conditions: "Partly Cloudy",
+          humidity: 65,
+          wind_speed: 12,
+          forecast: "Clear skies expected this evening"
+        }
+      }
+    }
+  },
+  {
+    id: "3",
+    role: "assistant",
+    content: "It's currently 68°F in San Francisco with partly cloudy skies. The humidity is at 65% and there's a light breeze at 12 mph. Expect clear skies this evening!"
+  }
+];
+
+const CHAT_WITH_MULTIPLE_COMPONENTS_MODEL: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "Analyze our API performance and suggest optimizations" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: {
+      message: "I'll analyze your API performance metrics.",
+      tool: {
+        toolName: "fetch_api_metrics",
+        state: "output-available" as const,
+        input: { 
+          timeRange: "24h",
+          endpoints: ["*"]
+        },
+        output: { 
+          avgLatency: 450,
+          p95Latency: 1200,
+          errorRate: 2.3,
+          totalRequests: 125000
+        }
+      }
+    }
+  },
+  {
+    id: "3",
+    role: "assistant",
+    content: {
+      message: "Based on the metrics, here's my analysis:",
+      reasoning: {
+        content: `Analyzing the performance data:
+
+1. **P95 latency of 1200ms is high** - suggests some requests are significantly slower
+2. **2.3% error rate** - above the 1% threshold for production APIs
+3. **Most errors occur on /api/search** - likely a database bottleneck
+
+Root cause: Complex JOIN queries without proper indexing.`,
+        thoughtMessageTemplate: "Analyzed in {duration}s",
+        streamingSpeedMs: 15,
+        isStreaming:true
+      }
+    }
+  },
+  {
+    id: "4",
+    role: "assistant",
+    content: {
+      message: "I've created an optimization plan:",
+      plan: {
+        title: "API Performance Optimization",
+        defaultOpen: true,
+        steps: [
+          {
+            id: "add-indexes",
+            title: "Add database indexes",
+            status: "pending" as const,
+            subtasks: [
+              "Create composite index on users(email, status)",
+              "Add covering index for search queries"
+            ]
+          },
+          {
+            id: "cache-layer",
+            title: "Implement Redis caching",
+            status: "pending" as const
+          },
+          {
+            id: "query-optimization",
+            title: "Refactor slow queries",
+            status: "pending" as const
+          }
+        ],
+        actions: [
+          { id: "execute", label: "Execute Plan", primary: true }
+        ]
+      }
+    }
+  },
+  {
+    id: "5",
+    role: "assistant",
+    content: {
+      message: "May I proceed with creating the database indexes? This will briefly lock the tables.",
+      confirmation: {
+        state: "approval-requested" as const,
+        approval: { id: "create-indexes-001" }
+      }
+    }
+  }
+];
 
 // ---- Shared registry for all component examples ----
 
@@ -242,10 +517,34 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
   ChBreadcrumb: () =>
     html`<ch-breadcrumb-render .model=${BREADCRUMB_MODEL}></ch-breadcrumb-render>`,
 
-  // ---- AI / Real-time ----
   ChChat: () =>
-    html`<div style="height: 320px; display: block;">
-      <ch-chat></ch-chat>
+    html`<div style="height: 320px; width: 100%; display: block;">
+      <ch-chat style="height: 100%; width: 100%;" .items=${CHAT_MODEL} .loadingState=${"all-records-loaded"} .markdownTheme=${null}></ch-chat>
+    </div>`,
+
+  ChChatWithPlan: () =>
+    html`<div style="height: 400px; width: 100%; display: block;">
+      <ch-chat style="height: 100%; width: 100%;" .items=${CHAT_WITH_PLAN_MODEL} .loadingState=${"all-records-loaded"} .markdownTheme=${null}></ch-chat>
+    </div>`,
+
+  ChChatWithConfirmation: () =>
+    html`<div style="height: 320px; width: 100%; display: block;">
+      <ch-chat style="height: 100%; width: 100%;" .items=${CHAT_WITH_CONFIRMATION_MODEL} .loadingState=${"all-records-loaded"} .markdownTheme=${null}></ch-chat>
+    </div>`,
+
+  ChChatWithReasoning: () =>
+    html`<div style="height: 400px; width: 100%; display: block;">
+      <ch-chat style="height: 100%; width: 100%;" .items=${CHAT_WITH_REASONING_MODEL} .loadingState=${"all-records-loaded"} .markdownTheme=${null}></ch-chat>
+    </div>`,
+
+  ChChatWithTool: () =>
+    html`<div style="height: 400px; width: 100%; display: block;">
+      <ch-chat style="height: 100%; width: 100%;" .items=${CHAT_WITH_TOOL_MODEL} .loadingState=${"all-records-loaded"} .markdownTheme=${null}></ch-chat>
+    </div>`,
+
+  ChChatWithMultipleComponents: () =>
+    html`<div style="height: 600px; width: 100%; display: block;">
+      <ch-chat style="height: 100%; width: 100%;" .items=${CHAT_WITH_MULTIPLE_COMPONENTS_MODEL} .loadingState=${"all-records-loaded"} .markdownTheme=${null}></ch-chat>
     </div>`,
 
   ChMarkdownViewer: () =>
@@ -879,6 +1178,322 @@ const model: BreadCrumbModel = [
 const items: ChatMessage[] = [
   { id: "1", role: "user",      content: "Hello!" },
   { id: "2", role: "assistant", content: "Hi! How can I help you today?" }
+];
+
+// In your template:
+// <ch-chat .items=\${items}></ch-chat>`
+    },
+    {
+      title: "Chat with ch-plan",
+      description: "A chat message containing a plan with multiple steps and actions.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChChatWithPlan", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
+
+const items: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "Create a migration plan for moving our app to the cloud" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: "Here's a comprehensive migration plan:",
+    plan: {
+      title: "Cloud Migration Plan",
+      description: "Step-by-step plan to migrate the application to AWS",
+      defaultOpen: true,
+      steps: [
+        {
+          id: "step-1",
+          title: "Assessment & Planning",
+          description: "Evaluate current infrastructure and dependencies",
+          status: "completed",
+          subtasks: [
+            "Inventory all services and databases",
+            "Identify dependencies and integrations",
+            "Estimate resource requirements"
+          ]
+        },
+        {
+          id: "step-2",
+          title: "Set up cloud infrastructure",
+          status: "in-progress",
+          subtasks: [
+            "Configure VPC and networking",
+            "Set up security groups and IAM roles",
+            "Provision compute and storage resources"
+          ]
+        },
+        {
+          id: "step-3",
+          title: "Migrate databases",
+          status: "pending"
+        },
+        {
+          id: "step-4",
+          title: "Deploy application",
+          status: "pending"
+        },
+        {
+          id: "step-5",
+          title: "Testing & validation",
+          status: "pending"
+        }
+      ],
+      actions: [
+        { id: "approve", label: "Approve Plan", primary: true },
+        { id: "modify", label: "Request Changes" }
+      ]
+    }
+  }
+];
+
+// In your template:
+// <ch-chat .items=\${items}></ch-chat>`
+    },
+    {
+      title: "Chat with ch-confirmation",
+      description: "A chat message requesting user approval for an action.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChChatWithConfirmation", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
+
+const items: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "Delete all old backup files" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: "I will delete 47 backup files older than 30 days (2.3 GB total).",
+    confirmation: {
+      state: "approval-requested",
+      approval: {
+        id: "delete-backups-001"
+      }
+    }
+  }
+];
+
+// Listen to approval events:
+// chatElement.addEventListener('confirmationApprove', (e) => {
+//   console.log('Approved:', e.detail.approvalId);
+// });
+// chatElement.addEventListener('confirmationReject', (e) => {
+//   console.log('Rejected:', e.detail.approvalId);
+// });
+
+// In your template:
+// <ch-chat .items=\${items}></ch-chat>`
+    },
+    {
+      title: "Chat with ch-reasoning",
+      description: "A chat message showing AI reasoning process (chain of thought).",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChChatWithReasoning", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
+
+const items: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "What's the best approach to optimize this database query?" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: "Based on my analysis, I recommend adding a composite index. Here's why:",
+    reasoning: \`Let me think through this step by step:
+
+1. **Query Pattern Analysis**: The query filters on \\\`user_id\\\` and \\\`created_at\\\`, then sorts by \\\`created_at DESC\\\`.
+
+2. **Current Performance**: Without an index, this requires a full table scan (O(n) complexity).
+
+3. **Index Consideration**: A composite index on \\\`(user_id, created_at)\\\` would:
+   - Allow direct lookup by user_id (O(log n))
+   - Enable efficient range scan on created_at
+   - Avoid sorting overhead since data is already ordered
+
+4. **Trade-offs**:
+   - Pros: 100-1000x faster for this query pattern
+   - Cons: ~10% slower writes, additional 5-10MB disk space
+
+5. **Conclusion**: The read performance gain far outweighs the minor write penalty for this use case.\`
+  }
+];
+
+// In your template:
+// <ch-chat .items=\${items}></ch-chat>`
+    },
+    {
+      title: "Chat with ch-tool",
+      description: "A chat message showing tool/function invocation with input and output.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChChatWithTool", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
+
+const items: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "What's the current weather in San Francisco?" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: "Let me check the current weather for you.",
+    tools: [
+      {
+        id: "tool-call-123",
+        name: "get_weather",
+        state: "output-available",
+        input: {
+          location: "San Francisco, CA",
+          units: "fahrenheit"
+        },
+        output: {
+          temperature: 68,
+          conditions: "Partly Cloudy",
+          humidity: 65,
+          wind_speed: 12,
+          forecast: "Clear skies expected this evening"
+        }
+      }
+    ]
+  },
+  {
+    id: "3",
+    role: "assistant",
+    content: "It's currently 68�F in San Francisco with partly cloudy skies. The humidity is at 65% and there's a light breeze at 12 mph. Expect clear skies this evening!"
+  }
+];
+
+// In your template:
+// <ch-chat .items=\${items}></ch-chat>`
+    },
+    {
+      title: "Chat with multiple special components",
+      description: "A complete workflow combining plan, reasoning, tool, and confirmation components.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChChatWithMultipleComponents", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
+
+const items: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "Analyze our API performance and suggest optimizations" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: "I'll analyze your API performance metrics.",
+    tools: [
+      {
+        id: "analyze-metrics",
+        name: "fetch_api_metrics",
+        state: "output-available",
+        input: { 
+          timeRange: "24h",
+          endpoints: ["*"]
+        },
+        output: { 
+          avgLatency: 450,
+          p95Latency: 1200,
+          errorRate: 2.3,
+          totalRequests: 125000
+        }
+      }
+    ]
+  },
+  {
+    id: "3",
+    role: "assistant",
+    content: "Based on the metrics, here's my analysis:",
+    reasoning: \`Analyzing the performance data:
+
+1. **P95 latency of 1200ms is high** - suggests some requests are significantly slower
+2. **2.3% error rate** - above the 1% threshold for production APIs
+3. **Most errors occur on /api/search** - likely a database bottleneck
+
+Root cause: Complex JOIN queries without proper indexing.\`
+  },
+  {
+    id: "4",
+    role: "assistant",
+    content: "I've created an optimization plan:",
+    plan: {
+      title: "API Performance Optimization",
+      defaultOpen: true,
+      steps: [
+        {
+          id: "add-indexes",
+          title: "Add database indexes",
+          status: "pending",
+          subtasks: [
+            "Create composite index on users(email, status)",
+            "Add covering index for search queries"
+          ]
+        },
+        {
+          id: "cache-layer",
+          title: "Implement Redis caching",
+          status: "pending"
+        },
+        {
+          id: "query-optimization",
+          title: "Refactor slow queries",
+          status: "pending"
+        }
+      ],
+      actions: [
+        { id: "execute", label: "Execute Plan", primary: true }
+      ]
+    }
+  },
+  {
+    id: "5",
+    role: "assistant",
+    content: "May I proceed with creating the database indexes? This will briefly lock the tables.",
+    confirmation: {
+      state: "approval-requested",
+      approval: { id: "create-indexes-001" }
+    }
+  }
 ];
 
 // In your template:

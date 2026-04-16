@@ -4,7 +4,11 @@ import type {
   ChatFileUploadState,
   ChatMessageAssistant,
   ChatMessageNoId,
-  ChatMessageSources
+  ChatMessageSources,
+  ChatMessagePlan,
+  ChatMessageTool,
+  ChatMessageConfirmation,
+  ChatMessageReasoning
 } from "./types";
 
 export const getMessageContent = (message: ChatMessageNoId) =>
@@ -34,6 +38,46 @@ export const getMessageFilesAndSources = (
         sources: message.content.sources ?? []
       }
     : { files: [], sources: [] };
+
+export const getMessagePlan = (
+  message: ChatMessageNoId
+): ChatMessagePlan | undefined =>
+  typeof message.content === "object" ? message.content.plan : undefined;
+
+export const getMessageTool = (
+  message: ChatMessageNoId
+): ChatMessageTool | undefined =>
+  typeof message.content === "object" ? message.content.tool : undefined;
+
+export const getMessageConfirmation = (
+  message: ChatMessageNoId
+): ChatMessageConfirmation | undefined =>
+  typeof message.content === "object"
+    ? message.content.confirmation
+    : undefined;
+
+export const getMessageReasoning = (
+  message: ChatMessageNoId
+): ChatMessageReasoning | undefined =>
+  typeof message.content === "object" ? message.content.reasoning : undefined;
+
+export const getMessageSpecialComponents = (
+  message: ChatMessageNoId
+): {
+  plan?: ChatMessagePlan;
+  tool?: ChatMessageTool;
+  confirmation?: ChatMessageConfirmation;
+  reasoning?: ChatMessageReasoning;
+} =>
+  typeof message.content === "object"
+    ? {
+        plan: message.content.plan,
+        tool: message.content.tool,
+        confirmation: message.content.confirmation,
+        reasoning: message.content.reasoning
+      }
+    : {};
+
 
 export const DEFAULT_ASSISTANT_STATUS =
   "complete" satisfies ChatMessageAssistant["status"];

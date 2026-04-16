@@ -105,6 +105,8 @@ export class ChReasoning extends KasstorElement {
       this.#stopStreaming();
       this.#stopDotsAnimation();
       this.displayedContent = this.content;
+      // Update accordion model to show thoughtMessageTemplate
+      this.#updateAccordionModel();
       // Close the accordion when streaming stops (but not on initial load)
       if (oldValue !== undefined) {
         this.open = false;
@@ -116,6 +118,11 @@ export class ChReasoning extends KasstorElement {
    * Duration in seconds that the reasoning took. Used in the thought message template (e.g., "Thought for 4 seconds").
    */
   @property({ type: Number }) duration: number = 0;
+  @Observe("duration")
+  protected durationChanged() {
+    // Update accordion model when duration changes
+    this.#updateAccordionModel();
+  }
 
   /**
    * Custom message displayed in the accordion trigger while isStreaming is true.
@@ -127,8 +134,13 @@ export class ChReasoning extends KasstorElement {
    * Custom template message displayed in the accordion trigger after streaming completes.
    * Use {duration} placeholder to insert the duration value.
    */
-  @property({ type: String, attribute: "thought-message" })
-  thoughtMessage: string = DEFAULT_THOUGHT_MESSAGE_TEMPLATE;
+  @property({ type: String, attribute: "thought-message-template" })
+  thoughtMessageTemplate: string = DEFAULT_THOUGHT_MESSAGE_TEMPLATE;
+  @Observe("thoughtMessageTemplate")
+  protected thoughtMessageTemplateChanged() {
+    // Update accordion model when template changes
+    this.#updateAccordionModel();
+  }
 
   /**
    * Controls whether the accordion is expanded or collapsed. Can be used for manual control.
@@ -143,8 +155,8 @@ export class ChReasoning extends KasstorElement {
   /**
    * Streaming speed in milliseconds per character for the typewriter effect.
    */
-  @property({ type: Number, attribute: "streaming-speed" })
-  streamingSpeed: number = DEFAULT_STREAMING_SPEED_MS;
+  @property({ type: Number, attribute: "streaming-speed-ms" })
+  streamingSpeedMs: number = DEFAULT_STREAMING_SPEED_MS;
 
   /**
    * Internal state for the displayed content (used for typewriter effect)
@@ -155,6 +167,11 @@ export class ChReasoning extends KasstorElement {
    * Internal state for animated dots in thinking message
    */
   @state() animatedDots: string = "";
+
+  /**
+   * Internal state for the accordion model
+   */
+  @state() #accordionModel: AccordionItemModel[] = [];
 
   /**
    * Fired when the accordion is expanded or collapsed. The payload is { expanded: boolean }.
@@ -176,10 +193,15 @@ export class ChReasoning extends KasstorElement {
       } else {
         this.#stopStreaming();
         this.#stopDotsAnimation();
-        // Close the accordion when typewriter finishes
-        this.open = false;
+        // Calculate duration if not already set (based on content length and streaming speed)
+        if (this.duration === 0) {
+          const totalMs = this.content.length * this.streamingSpeedMs;
+          this.duration = Math.round(totalMs / 100) / 10; // Convert to seconds, round to 1 decimal
+        }
+        // Mark streaming as complete
+        this.isStreaming = false;
       }
-    }, this.streamingSpeed);
+    }, this.streamingSpeedMs);
   }
 
   /**
@@ -226,13 +248,12 @@ export class ChReasoning extends KasstorElement {
     if (this.isStreaming) {
       return this.thinkingMessage + this.animatedDots;
     }
-    return this.thoughtMessage.replace(DURATION_PLACEHOLDER, String(this.duration));
+    return this.thoughtMessageTemplate.replace(DURATION_PLACEHOLDER, String(this.duration));
   }
 
   /**
-   * Creates the accordion model for the internal ch-accordion-render
+   * Updates the accordion model for the internal ch-accordion-render
    */
-  #accordionModel: AccordionItemModel[] = [];
 
   #updateAccordionModel() {
     this.#accordionModel = [

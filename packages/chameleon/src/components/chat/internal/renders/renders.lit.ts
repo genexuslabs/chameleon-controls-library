@@ -1,10 +1,14 @@
 import type { ChatMessage, ChatMessageRenderBySections } from "../../types";
 import { defaultActionsRender } from "./actions.lit";
 import { defaultCodeBlockRender } from "./code-block.lit";
+import { defaultConfirmationRender } from "./confirmation.lit";
 import { defaultContentRender } from "./content.lit";
 import { defaultFileRender } from "./file.lit";
+import { defaultPlanRender } from "./plan.lit";
+import { defaultReasoningRender } from "./reasoning.lit";
 import { defaultSourceRender } from "./source.lit";
 import { defaultMessageStructureRender } from "./structure.lit";
+import { defaultToolRender } from "./tool.lit";
 
 export const renderContentBySections = (
   message: ChatMessage,
@@ -26,6 +30,11 @@ export const renderContentBySections = (
         image: rendersBySections.file?.image ?? defaultFileRender.image,
         video: rendersBySections.file?.video ?? defaultFileRender.video
       },
-      source: rendersBySections.source ?? defaultSourceRender
+      source: rendersBySections.source ?? defaultSourceRender,
+      plan: rendersBySections.plan ?? defaultPlanRender,
+      tool: rendersBySections.tool ?? defaultToolRender,
+      confirmation:
+        rendersBySections.confirmation ?? defaultConfirmationRender,
+      reasoning: rendersBySections.reasoning ?? defaultReasoningRender
     }
   );

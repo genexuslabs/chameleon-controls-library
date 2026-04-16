@@ -52,6 +52,15 @@ import("../virtual-scroller/virtual-scroller.lit.js");
 import("../markdown-viewer/markdown-viewer.lit.js");
 import("../live-kit-room/live-kit-room.lit.js");
 
+
+// Lazy-load special components for chat integration
+import("../plan/plan.lit.js");
+import("../tool/tool.lit.js");
+import("../confirmation/confirmation.lit.js");
+import("../reasoning/reasoning.lit.js");
+
+import ("../edit/edit.lit.js");
+
 const ENTER_KEY = "Enter";
 
 const createLiveKitMessagesStore = (): {

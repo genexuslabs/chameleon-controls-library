@@ -5,6 +5,9 @@ import type {
 } from "../../typings/mime-types.js";
 import type { LiveKitCallbacks } from "../live-kit-room/types";
 import type { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
+import type { PlanStepModel, PlanActionModel } from "../plan/types";
+import type { ToolState, ToolInput, ToolOutput } from "../tool/types";
+import type { ConfirmationApproval, ConfirmationState } from "../confirmation/types";
 
 export type ChatMessageRole = "assistant" | "error" | "system" | "user";
 
@@ -188,6 +191,27 @@ export type ChatMessageContentFilesAndSources = {
   message?: string;
   files?: ChatMessageFiles;
   sources?: ChatMessageSources;
+
+    
+  /**
+   * Optional plan component to render within the message.
+   */
+  plan?: ChatMessagePlan;
+  
+  /**
+   * Optional tool component to render within the message.
+   */
+  tool?: ChatMessageTool;
+  
+  /**
+   * Optional confirmation component to render within the message.
+   */
+  confirmation?: ChatMessageConfirmation;
+  
+  /**
+   * Optional reasoning component to render within the message.
+   */
+  reasoning?: ChatMessageReasoning;
 };
 
 export type ChatMessageFiles = ChatMessageFile[];
@@ -248,6 +272,186 @@ export type ChatMessageSource = {
   parts?: string;
 
   url: string;
+};
+
+
+/**
+ * Represents a plan component to be rendered within a chat message.
+ * Based on the props of the ch-plan component.
+ */
+export type ChatMessagePlan = {
+  /**
+   * The main title of the plan
+   */
+  title: string;
+
+  /**
+   * Optional description providing context about the plan
+   */
+  description?: string;
+
+  /**
+   * Array of steps that make up the plan
+   */
+  steps: PlanStepModel[];
+
+  /**
+   * Optional array of action buttons to display in the plan footer
+   */
+  actions?: PlanActionModel[];
+
+  /**
+   * Whether the plan content is currently being streamed
+   */
+  isStreaming?: boolean;
+
+  /**
+   * Whether the plan should be expanded by default
+   */
+  defaultOpen?: boolean;
+
+  /**
+   * Parts for the plan container.
+   */
+  parts?: string;
+};
+
+/**
+ * Represents a tool component to be rendered within a chat message.
+ * Based on the props of the ch-tool component.
+ */
+export type ChatMessageTool = {
+  /**
+   * The name of the tool being invoked.
+   */
+  toolName: string;
+
+  /**
+   * The type of the tool (optional metadata).
+   */
+  type?: string;
+
+  /**
+   * The current state of the tool invocation.
+   */
+  state: ToolState;
+
+  /**
+   * Input parameters for the tool invocation.
+   */
+  input?: ToolInput | null;
+
+  /**
+   * Output result from the tool execution.
+   */
+  output?: ToolOutput | null;
+
+  /**
+   * Error message when the tool execution fails.
+   */
+  errorText?: string;
+
+  /**
+   * Controls whether the accordion is expanded by default.
+   */
+  defaultOpen?: boolean;
+
+  /**
+   * Message shown when approval is requested.
+   */
+  approvalMessage?: string;
+
+  /**
+   * Message shown when approval is accepted.
+   */
+  acceptedMessage?: string;
+
+  /**
+   * Message shown when approval is rejected.
+   */
+  rejectedMessage?: string;
+
+  /**
+   * Parts for the tool container.
+   */
+  parts?: string;
+};
+
+/**
+ * Represents a confirmation component to be rendered within a chat message.
+ * Based on the props of the ch-confirmation component.
+ */
+export type ChatMessageConfirmation = {
+  /**
+   * The approval object containing the approval request information.
+   */
+  approval?: ConfirmationApproval;
+
+  /**
+   * The current state of the confirmation workflow.
+   */
+  state: ConfirmationState;
+
+  /**
+   * Optional title for the confirmation alert.
+   */
+  title?: string;
+
+  /**
+   * Message to display when in 'approval-requested' state.
+   */
+  requestMessage?: string;
+
+  /**
+   * Message to display when in 'approval-responded' or 'output-available' state.
+   */
+  acceptedMessage?: string;
+
+  /**
+   * Message to display when in 'output-denied' state.
+   */
+  rejectedMessage?: string;
+
+  /**
+   * Parts for the confirmation container.
+   */
+  parts?: string;
+};
+
+/**
+ * Represents a reasoning component to be rendered within a chat message.
+ * Based on the props of the ch-reasoning component.
+ */
+export type ChatMessageReasoning = {
+  /**
+   * The reasoning text content to display.
+   */
+  content: string;
+
+  /**
+   * Controls the streaming state.
+   */
+  isStreaming?: boolean;
+
+  /**
+   * Message displayed while thinking/streaming.
+   */
+  thinkingMessage?: string;
+
+  /**
+   * Template for the thought duration message.
+   */
+  thoughtMessageTemplate?: string;
+
+  /**
+   * Speed of the typewriter effect in milliseconds.
+   */
+  streamingSpeedMs?: number;
+
+  /**
+   * Parts for the reasoning container.
+   */
+  parts?: string;
 };
 
 export type ChatCallbacks = {
@@ -378,6 +582,35 @@ export type ChatMessageRenderBySections = {
    * If `undefined`, a default render for the sources will be used.
    */
   source?: ChatSourceRender;
+
+  
+  /**
+   * Render for the plan component within the message.
+   *
+   * If `undefined`, a default render for the plan will be used.
+   */
+  plan?: ChatPlanRender;
+
+  /**
+   * Render for the tool component within the message.
+   *
+   * If `undefined`, a default render for the tool will be used.
+   */
+  tool?: ChatToolRender;
+
+  /**
+   * Render for the confirmation component within the message.
+   *
+   * If `undefined`, a default render for the confirmation will be used.
+   */
+  confirmation?: ChatConfirmationRender;
+
+  /**
+   * Render for the reasoning component within the message.
+   *
+   * If `undefined`, a default render for the reasoning will be used.
+   */
+  reasoning?: ChatReasoningRender;
 };
 
 export type ChatActionsRender = (
@@ -414,6 +647,27 @@ export type ChatMessageStructureRender = (
 
 export type ChatSourceRender = (
   source: ChatMessageSource,
+  chatRef: HTMLChChatElement
+) => TemplateResult | string;
+
+
+export type ChatPlanRender = (
+  plan: ChatMessagePlan,
+  chatRef: HTMLChChatElement
+) => TemplateResult | string;
+
+export type ChatToolRender = (
+  tool: ChatMessageTool,
+  chatRef: HTMLChChatElement
+) => TemplateResult | string;
+
+export type ChatConfirmationRender = (
+  confirmation: ChatMessageConfirmation,
+  chatRef: HTMLChChatElement
+) => TemplateResult | string;
+
+export type ChatReasoningRender = (
+  reasoning: ChatMessageReasoning,
   chatRef: HTMLChChatElement
 ) => TemplateResult | string;
 

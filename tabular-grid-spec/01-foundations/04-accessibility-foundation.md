@@ -102,10 +102,11 @@ The Data Grid uses `<div>` elements (not `<table>`) because the CSS subgrid layo
     <!-- Additional rows... -->
   </div>
 
-  <!-- Live region: OUTSIDE the grid role hierarchy (see 4.6) -->
-  <div aria-live="polite" aria-atomic="true" class="sr-only"
-       id="grid-live-region"></div>
 </div>
+
+<!-- Live region: OUTSIDE the role="grid" subtree (see 4.6) -->
+<div aria-live="polite" aria-atomic="true" class="sr-only"
+     id="grid-live-region"></div>
 ```
 
 ### 4.1.2 Role Hierarchy Rules
@@ -136,7 +137,7 @@ Any `<div>` or `<span>` inserted for layout purposes between semantic elements (
 
 | Attribute | Element | Value | Purpose |
 |-----------|---------|-------|---------|
-| `aria-rowcount` | `grid` | Total data rows (including header rows) | Enables AT to announce "row N of M" even under virtualization |
+| `aria-rowcount` | `grid` | Total rows across all rowgroups (including header rows) | Enables AT to announce "row N of M" even under virtualization |
 | `aria-colcount` | `grid` | Total columns (including hidden/virtualized) | Enables AT to announce "column N of M" |
 | `aria-rowindex` | `row` | 1-based position in the full dataset | MUST be continuous; header row = 1, first data row = 2 |
 | `aria-colindex` | `columnheader`, `rowheader`, `gridcell` | 1-based position in the full column set | MUST be continuous across frozen and scrollable panes |
@@ -397,8 +398,7 @@ A live region provides asynchronous announcements to screen readers without movi
 <div id="grid-live-region"
      aria-live="polite"
      aria-atomic="true"
-     class="sr-only"
-     role="log">
+     class="sr-only">
 </div>
 
 <!-- Alert region: for critical errors only -->

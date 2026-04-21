@@ -65,6 +65,10 @@
 
 - Perf: Each `ch-checkbox` now renders with 1 less DOM node, that means, it's even more lighter! `IMPROVE EXPLANATION............`
 
+### ch-chat
+
+- Added support for the text.sendButton translation, so the send-button element can render a text.
+
 ### ch-code
 
 - A11y: Reduced the flickering on the initial load, since in the initial render the component now renders the code block visually hidden and without waiting for the lazy language to be downloaded. When the JavaScript for the language is downloaded, the code block is highlighted and the visibility is restored. `IMPROVE EXPLANATION AND CHECK IF THIS IS ACCOMPLISHED......`

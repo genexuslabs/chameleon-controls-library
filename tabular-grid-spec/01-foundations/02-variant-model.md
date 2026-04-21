@@ -344,7 +344,7 @@ The following table summarizes the normative (MUST/SHOULD/MAY) requirements esta
 | VR-14 | Pivot Table grand total headers MUST contain explicit "Grand Total" text. | MUST |
 | VR-15 | If no variant is specified, the component MUST default to Data Grid. | MUST |
 | VR-16 | The variant SHOULD NOT change at runtime after initialization. | SHOULD |
-| VR-17 | Timeline task bars SHOULD expose task name, date range, completion, and assignee via `aria-label`. | SHOULD |
+| VR-17 | Timeline task bars MUST expose task name, date range, completion, and assignee via `aria-label`. | MUST |
 | VR-18 | Timeline scale changes SHOULD be announced via `aria-live`. | SHOULD |
 | VR-19 | The Gantt Chart's today marker SHOULD use `aria-current="date"`. | SHOULD |
 | VR-20 | Tree Grid sorting MAY apply within each level or globally, but MUST preserve parent-child relationships. | MUST |

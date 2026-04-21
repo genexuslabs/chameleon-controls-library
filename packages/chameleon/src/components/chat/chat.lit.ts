@@ -985,7 +985,7 @@ export class ChChat extends KasstorElement {
       : this.#renderSendButton();
 
   #renderSendButton = () => {
-    const { accessibleName } = this.translations;
+    const { accessibleName, text } = this.translations;
 
     const sendButtonDisabled =
       this.sendButtonDisabled ||
@@ -994,13 +994,17 @@ export class ChChat extends KasstorElement {
       this.#liveModeIsDisplayed();
 
     return html`<button
-      aria-label=${accessibleName.sendButton}
+      aria-label=${accessibleName.sendButton === text.sendButton
+        ? undefined
+        : accessibleName.sendButton}
       title=${accessibleName.sendButton}
       part="send-button"
       ?disabled=${sendButtonDisabled}
       type="button"
       @click=${sendButtonDisabled ? undefined : this.#sendMessageWithSendButton}
-    ></button>`;
+    >
+      ${text.sendButton}
+    </button>`;
   };
 
   #renderSendContainerLayoutElement = (elementName: ChatSendContainerLayoutElement) => {
@@ -1253,7 +1257,7 @@ declare global {
    * @slot additional-content - Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state.
    *
    * @fires userMessageAdded Fired when a new user message is added in the chat via user interaction.
-   *   
+   *
    *   Since developers can define their own render for file attachment, this
    *   event serves to synchronize the cleanup of the `send-input` with the
    *   cleanup of the custom file attachment, or or even blocking user

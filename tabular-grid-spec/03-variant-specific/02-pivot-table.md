@@ -139,14 +139,14 @@ The following example models a pivot table with:
       </div>
 
       <!--
-        Year group header — spans Q1 and Q2 columns (aria-colspan="2").
+        Year group header — spans Q1, Q2, and 2024 Total columns (aria-colspan="3").
         id="col-2024" is used by lower-level quarter cells and data cells.
       -->
       <div
         role="columnheader"
         id="col-2024"
         aria-colindex="2"
-        aria-colspan="2"
+        aria-colspan="3"
       >
         2024
       </div>
@@ -197,6 +197,16 @@ The following example models a pivot table with:
       >
         Q2
       </div>
+
+      <!-- 2024 Total sub-total header. -->
+      <div
+        role="columnheader"
+        id="col-2024-total"
+        aria-colindex="4"
+        aria-sort="none"
+      >
+        2024 Total
+      </div>
     </div>
 
   </div><!-- /rowgroup (headers) -->
@@ -245,6 +255,15 @@ The following example models a pivot table with:
         $1,450
       </div>
 
+      <!-- North America × 2024 Total (sub-total) -->
+      <div
+        role="gridcell"
+        aria-colindex="4"
+        headers="row-na col-2024 col-2024-total"
+      >
+        $2,650
+      </div>
+
       <!-- North America Grand Total -->
       <div
         role="gridcell"
@@ -267,6 +286,7 @@ The following example models a pivot table with:
       </div>
       <div role="gridcell" aria-colindex="2" headers="row-eu col-2024 col-q1">$980</div>
       <div role="gridcell" aria-colindex="3" headers="row-eu col-2024 col-q2">$1,100</div>
+      <div role="gridcell" aria-colindex="4" headers="row-eu col-2024 col-2024-total">$2,080</div>
       <div role="gridcell" aria-colindex="5" headers="row-eu col-grand-total">$2,080</div>
     </div>
 
@@ -282,6 +302,7 @@ The following example models a pivot table with:
       </div>
       <div role="gridcell" aria-colindex="2" headers="row-grand-total col-2024 col-q1">$2,180</div>
       <div role="gridcell" aria-colindex="3" headers="row-grand-total col-2024 col-q2">$2,550</div>
+      <div role="gridcell" aria-colindex="4" headers="row-grand-total col-2024 col-2024-total">$4,730</div>
       <div role="gridcell" aria-colindex="5" headers="row-grand-total col-grand-total">$4,730</div>
     </div>
 

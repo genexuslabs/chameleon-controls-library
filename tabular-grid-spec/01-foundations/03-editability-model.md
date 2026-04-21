@@ -35,7 +35,7 @@ Edit Mode is entered when the user activates an editable cell. The grid relinqui
 | Tab / Shift+Tab | Cycle between widgets within the cell (if multiple), or commit and advance to the next editable cell (configurable) |
 | Escape | Cancel the edit, revert to the original value, return to Navigation Mode |
 | Enter | Commit the edit, return to Navigation Mode (or advance to the next row, configurable in F-07) |
-| F2 | Toggle between Navigation Mode and Edit Mode |
+| F2 | Enter Edit Mode (from Navigation Mode) or commit the edit and return to Navigation Mode (from Edit Mode) |
 | Keystroke handling | Passed to the editor widget; grid navigation shortcuts are suspended |
 
 ### 1.3 Visual Mode Indicator
@@ -63,7 +63,7 @@ Requirements:
 | Navigation | Edit | **Double-click** on an editable cell | Focus moves to editor; cursor placed at click position |
 | Edit | Navigation | **Escape** | Cancel edit, revert to original value, focus returns to the `gridcell` |
 | Edit | Navigation | **Enter** | Commit edit, focus returns to the `gridcell` (or moves to next row per F-07 configuration) |
-| Edit | Navigation | **F2** | Commit edit, focus returns to the `gridcell` (toggle behavior) |
+| Edit | Navigation | **F2** | Commit edit, focus returns to the `gridcell` |
 | Edit | Edit (next cell) | **Tab** | Commit current edit, move focus to the next editable cell in reading order, enter Edit Mode on that cell |
 | Edit | Edit (prev cell) | **Shift+Tab** | Commit current edit, move focus to the previous editable cell in reading order, enter Edit Mode on that cell |
 | Navigation | Navigation | Any arrow key, Home, End, Page Up, Page Down | Standard grid navigation per [F-14](../02-features/14-keyboard-navigation.md) |
@@ -92,7 +92,7 @@ Editability is determined by a layered system of conditions. Each layer can inde
 
 ### 3.1 Grid-Level Editability
 
-The grid itself MAY be marked as read-only. When `aria-readonly="true"` is set on the `grid` element, ALL cells inherit read-only status unless explicitly overridden at a lower level.
+The grid itself MAY be marked as read-only. When `aria-readonly="true"` is set on the `grid` element, ALL cells are read-only regardless of column-level, row-level, or cell-level settings (because ALL layers must permit editing for a cell to be editable).
 
 ### 3.2 Column-Level Editability
 
@@ -325,7 +325,7 @@ CancelEditEvent {
 ### 6.5 Lifecycle Diagram
 
 ```
-User action (Enter / F2 / key / dblclick)
+User action (Enter / F2 / key / double-click)
           |
           v
    +------------------+

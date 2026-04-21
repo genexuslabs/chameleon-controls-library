@@ -70,7 +70,7 @@ The grid SHALL expose `--ch-grid-cell-editing-bg`, `--ch-grid-cell-editing-borde
 **Use Cases**
 - UC-1: A consumer applies `ch-tabular-grid::part(header-cell) { text-transform: uppercase; letter-spacing: 0.05em; }` to enforce title-case header styling across the design system without any JavaScript.
 - UC-2: A financial dashboard uses `ch-tabular-grid::part(sorted-column) { background: var(--color-sorted-col-highlight); }` to give the active sort column a persistent tinted background.
-- UC-3: A consumer uses `ch-tabular-grid::part(last-row last-cell) { border-radius: 0 0 8px 0; }` to round the bottom-right corner of the grid without setting a border-radius on the grid container (which would clip the scrollbar).
+- UC-3: A consumer uses `ch-tabular-grid::part(last-row last-cell) { border-radius: 0 0 8px 0; }` to round the bottom-right corner of the grid without setting a border-radius on the grid container (which would clip the scrollbar). **Note**: The `::part()` compound selector `::part(last-row last-cell)` matches a single element that carries BOTH the `last-row` and `last-cell` parts simultaneously. This means cells in the last row must also carry the `last-row` part (not just their parent row element). The grid implementation MUST propagate positional row parts (`first-row`, `last-row`, `odd-row`, `even-row`) to the cell elements as well as the row elements, so that compound part selectors combining row-position and cell-position parts work correctly.
 - UC-4: A hover-aware design uses `ch-tabular-grid::part(column-hover) { background: rgba(0,0,0,0.04); }` to shade an entire column when any cell in it is hovered.
 
 **Conditions of Use**
@@ -136,7 +136,7 @@ The grid SHALL expose `--ch-grid-cell-editing-bg`, `--ch-grid-cell-editing-borde
 
 **Use Cases**
 - UC-1: A price-list grid applies `colClass: 'col--numeric'` to all numeric columns in the column definition so that `.col--numeric { font-variant-numeric: tabular-nums; text-align: end; }` automatically applies to every price and quantity cell.
-- UC-2: A report grid uses `data-col-id` attribute selectors — `ch-tabular-grid [data-col-id="revenue"] { color: var(--color-revenue); }` — to color all revenue column cells without a callback.
+- UC-2: A report grid uses `data-col-id` attribute selectors to color all revenue column cells without a callback. **Note**: Since `data-col-id` is set on elements inside the shadow DOM, the light-DOM descendant selector `ch-tabular-grid [data-col-id="revenue"]` cannot penetrate the shadow boundary. Instead, consumers should use `colClass` on the column definition (e.g., `colClass: 'col--revenue'`) and style via `ch-tabular-grid::part(cell).col--revenue`, or use the `colStyle` property to apply inline styles directly. The `data-col-id` attribute selector is intended for use within the component's own internal shadow stylesheet or in CSS injected via `adoptedStyleSheets`.
 - UC-3: A risk-assessment grid sets `colStyle: { background: 'rgba(255,200,0,0.1)' }` on a "Risk Score" column to give the entire column a yellow tint distinguishing it from informational columns.
 - UC-4: A Pivot Table consumer applies column-level classes to value columns based on their measure type (currency vs percentage vs count) by mapping column definitions at pivot generation time.
 

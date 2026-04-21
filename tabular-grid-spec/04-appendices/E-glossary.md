@@ -50,7 +50,7 @@ An interactive widget — text input, select, date picker, checkbox, rich-text e
 A GeneXus-originated pattern where clicking or interacting with one cell activates or modifies a logically related cell. The canonical example is clicking the row label cell to toggle the selection checkbox cell. The click event is forwarded programmatically so that accessibility attributes and state still reflect the checkbox cell. See FD-03.
 
 **Cell range**
-A rectangular selection of cells spanning one or more rows and one or more columns. Defined by an anchor cell (where selection began) and an active cell (the current extent). Extended with Shift+Arrow or Shift+Click. See F-05.
+A rectangular selection of cells spanning one or more rows and one or more columns. Defined by an anchor cell (where selection began) and an active cell (the current extent). Extended with Shift+Arrow or Shift+Click. See F-08.
 
 **Column**
 A vertical series of cells sharing a common column header and data semantics. Columns have an identity (field name or ID), a data type, and display properties (width, visibility, pinning, alignment). Columns are defined in the grid's column definition model.
@@ -65,7 +65,7 @@ A cell in the header row that labels a column. Participates in sort activation (
 The ARIA role applied to column header cells (`<th scope="col">` equivalent in ARIA grid). Announces the column label to screen readers when a gridcell in that column receives focus. See FD-04.
 
 **Critical path**
-In a Gantt chart, the sequence of tasks that determines the shortest possible project completion duration. Tasks on the critical path have zero float; any delay directly delays the project end date. Critical path tasks are typically highlighted with a distinct color or pattern. See F-22 (Gantt variant).
+In a Gantt chart, the sequence of tasks that determines the shortest possible project completion duration. Tasks on the critical path have zero float; any delay directly delays the project end date. Critical path tasks are typically highlighted with a distinct color or pattern. See VS-01 (Gantt variant).
 
 **CSS Subgrid**
 A CSS feature using the `subgrid` keyword for `grid-template-columns` and/or `grid-template-rows`, allowing a grid item's children to participate in the parent grid's track sizing. Used in the tabular grid to align cell content across rows without repeating column-width calculations in every row element. See FD-01.
@@ -78,7 +78,7 @@ A CSS feature using the `subgrid` keyword for `grid-template-columns` and/or `gr
 The base variant of the tabular grid. Uses `role="grid"`, supports flat rows and optional row grouping. Does not impose a hierarchy on the data model. The foundation on which Tree Grid, Pivot Table, and Gantt Chart variants are built. See F-01.
 
 **Dependency (Gantt)**
-A constraint between two Gantt tasks specifying that one task must begin or finish before another can begin or finish. The four standard dependency types are Finish-to-Start (FS), Start-to-Start (SS), Finish-to-Finish (FF), and Start-to-Finish (SF). Rendered as connector lines on the timeline. See F-22.
+A constraint between two Gantt tasks specifying that one task must begin or finish before another can begin or finish. The four standard dependency types are Finish-to-Start (FS), Start-to-Start (SS), Finish-to-Finish (FF), and Start-to-Finish (SF). Rendered as connector lines on the timeline. See VS-01.
 
 **DOM recycling**
 The technique of reusing existing DOM elements for new row data when the user scrolls, instead of creating new elements and destroying off-screen ones. A performance optimization that reduces garbage collection pressure and layout reflow cost. Works together with virtualization. See FD-02.
@@ -101,7 +101,7 @@ The set of rules governing which cells can be edited, the conditions under which
 A UI control — typically a small square rendered at the corner of the active selection — that the user drags to extend a value or pattern across adjacent cells. Analogous to the fill handle in spreadsheet applications. Requires mouse or touch drag; keyboard alternative is available via a context menu action. See F-08.
 
 **Filter model**
-A data structure representing all currently active filter conditions across columns. In server-side row mode, the filter model is passed to the datasource `getRows` callback so the server can apply filtering before returning results. The structure includes field name, filter type, and filter value(s) for each active filter. See F-03, FD-05.
+A data structure representing all currently active filter conditions across columns. In server-side row mode, the filter model is passed to the datasource `getRows` callback so the server can apply filtering before returning results. The structure includes field name, filter type, and filter value(s) for each active filter. See F-03, F-20.
 
 **Frozen column**
 A column that remains horizontally fixed and always visible while the user scrolls the grid body to the right. Implemented via `position: sticky` with a calculated `left` (or `right` for right-frozen columns) offset. Also called a pinned column. See F-09.
@@ -114,13 +114,13 @@ The strategy for controlling which DOM element holds keyboard focus within the c
 ## G
 
 **Gantt Chart**
-A variant of the tabular grid that combines a task-list grid on the left with a graphical horizontal timeline on the right. The left grid uses `role="grid"` for task data; the timeline region uses `role="application"` with full keyboard support for task bar manipulation. Supports dependencies, milestones, and critical path display. See F-22 (Gantt variant specification).
+A variant of the tabular grid that combines a task-list grid on the left with a graphical horizontal timeline on the right. The left grid uses `role="grid"` for task data; the timeline region uses `role="application"` with full keyboard support for task bar manipulation. Supports dependencies, milestones, and critical path display. See VS-01 (Gantt variant specification).
 
 **Gridcell (role)**
 The ARIA role applied to data cells in a grid or treegrid. When a gridcell receives focus, screen readers announce the column header, row header (if any), and cell value. Required on all non-header cells in the grid body. See FD-04.
 
 **Group row**
-A row that represents an aggregated group of data rows, displaying a group label and optional aggregate values (sum, count, average). Has expand/collapse behavior to show or hide the child data rows. Carries `aria-expanded` and typically `aria-level` attributes. See F-11.
+A row that represents an aggregated group of data rows, displaying a group label and optional aggregate values (sum, count, average). Has expand/collapse behavior to show or hide the child data rows. Carries `aria-expanded` and typically `aria-level` attributes. See F-04.
 
 ---
 
@@ -134,14 +134,14 @@ The mechanism by which a data cell is programmatically linked to its column head
 ## I
 
 **Infinite scroll**
-A data-loading pattern where additional rows are automatically fetched and appended as the user scrolls near the bottom of the visible content. Creates the appearance of an endlessly long list. Contrasts with pagination, which divides data into discrete pages. Compatible with the `infinite` row model. See F-16.
+A data-loading pattern where additional rows are automatically fetched and appended as the user scrolls near the bottom of the visible content. Creates the appearance of an endlessly long list. Contrasts with pagination, which divides data into discrete pages. Compatible with the `infinite` row model. See F-11.
 
 ---
 
 ## L
 
 **Lazy loading**
-The pattern of fetching child node data only when the user expands a parent node, rather than loading the entire tree up-front. Triggers a datasource `getRows` call for the children of the expanded node. The parent row is shown in a loading state until children arrive. See F-12 (Tree Grid variant), FD-05.
+The pattern of fetching child node data only when the user expands a parent node, rather than loading the entire tree up-front. Triggers a datasource `getRows` call for the children of the expanded node. The parent row is shown in a loading state until children arrive. See F-06, F-20.
 
 **Live region**
 An ARIA region marked with `aria-live="polite"` or `aria-live="assertive"` that causes screen readers to announce content changes without requiring keyboard focus to move to the changed element. Used in the grid to announce sort and filter state changes, row count updates, validation errors, and data load completions. See FD-04.
@@ -151,13 +151,13 @@ An ARIA region marked with `aria-live="polite"` or `aria-live="assertive"` that 
 ## M
 
 **Marking (row mark)**
-An independent visual and programmatic state on a row that is distinct from selection. Marking and selection can coexist on the same row simultaneously. Marks are typically used to flag rows for later action (e.g., "mark for deletion"), while selection tracks the current interactive context. Both states are exposed via ARIA. See F-06.
+An independent visual and programmatic state on a row that is distinct from selection. Marking and selection can coexist on the same row simultaneously. Marks are typically used to flag rows for later action (e.g., "mark for deletion"), while selection tracks the current interactive context. Both states are exposed via ARIA. See F-10.
 
 **Master-detail**
-A layout pattern where a data row can be expanded to reveal a detail panel below it containing related content (a nested grid, a form, a chart, etc.). The detail panel is part of the row's expanded region. The row carries `aria-expanded`. See F-13.
+A layout pattern where a data row can be expanded to reveal a detail panel below it containing related content (a nested grid, a form, a chart, etc.). The detail panel is part of the row's expanded region. The row carries `aria-expanded`. See F-10.
 
 **Milestone (Gantt)**
-A zero-duration point in time on the Gantt timeline representing a significant project event (e.g., release date, review deadline). Rendered as a distinct shape (diamond or circle) rather than a bar. Carries accessible text describing the milestone name and date. See F-22.
+A zero-duration point in time on the Gantt timeline representing a significant project event (e.g., release date, review deadline). Rendered as a distinct shape (diamond or circle) rather than a bar. Carries accessible text describing the milestone name and date. See VS-01.
 
 ---
 
@@ -174,10 +174,10 @@ A specification statement that implementors MUST fulfill. Normative requirements
 ## P
 
 **Pagination**
-The division of the grid's rows into discrete pages for display. Client-side pagination loads all data and slices it in the browser. Server-side pagination requests one page at a time from the server, passing `startRow`/`endRow` or `page`/`pageSize` parameters to the datasource. See F-16.
+The division of the grid's rows into discrete pages for display. Client-side pagination loads all data and slices it in the browser. Server-side pagination requests one page at a time from the server, passing `startRow`/`endRow` or `page`/`pageSize` parameters to the datasource. See F-20.
 
 **Pivot table**
-A variant of the tabular grid that aggregates source data across two axes: row dimension headers (left) and column dimension headers (top). The intersection cells contain aggregated values. Uses `role="grid"` with `aria-roledescription="pivot table"`. Column headers are dynamically generated from data values and may change as pivot configuration changes. See F-23 (Pivot variant specification).
+A variant of the tabular grid that aggregates source data across two axes: row dimension headers (left) and column dimension headers (top). The intersection cells contain aggregated values. Uses `role="grid"` with `aria-roledescription="pivot table"`. Column headers are dynamically generated from data values and may change as pivot configuration changes. See VS-02 (Pivot variant specification).
 
 **Pinned column**
 Synonym for frozen column. A column fixed to the left or right edge of the scrollable grid body so it remains visible during horizontal scroll. See frozen column.
@@ -196,14 +196,14 @@ A horizontal series of cells representing a single data record. Carries `role="r
 A focus management technique for composite widgets where only one element in the group has `tabindex="0"` at any time, and all others have `tabindex="-1"`. When focus moves to a new element, `tabindex="0"` is transferred to it and the previous element is set to `tabindex="-1"`. Allows Tab to enter and exit the composite widget while Arrow keys move within it. See FD-04. Contrast with aria-activedescendant.
 
 **Row model**
-The configuration that describes how row data is loaded and managed. Three models are supported: `client` (all rows loaded into memory at once), `serverSide` (rows fetched on demand with full server-side sort/filter/group support), and `infinite` (rows fetched in blocks as the user scrolls). The row model determines datasource API shape and virtualization behavior. See FD-05.
+The configuration that describes how row data is loaded and managed. Three models are supported: `client` (all rows loaded into memory at once), `serverSide` (rows fetched on demand with full server-side sort/filter/group support), and `infinite` (rows fetched in blocks as the user scrolls). The row model determines datasource API shape and virtualization behavior. See F-20.
 
 ---
 
 ## S
 
 **Sort model**
-A data structure representing the current column sort state: an ordered list of `{ field, direction }` pairs supporting multi-column sort. In server-side row mode, the sort model is passed to the datasource `getRows` callback. The order of entries determines sort priority (first entry is primary sort). See F-02, FD-05.
+A data structure representing the current column sort state: an ordered list of `{ field, direction }` pairs supporting multi-column sort. In server-side row mode, the sort model is passed to the datasource `getRows` callback. The order of entries determines sort priority (first entry is primary sort). See F-02, F-20.
 
 **Sticky header**
 A column header row (or multi-level header group) that remains visible at the top of the viewport while the grid body scrolls vertically. Implemented via `position: sticky; top: 0`. The sticky header must not obscure the focused cell (see WCAG 2.4.12). See FD-01, FD-04.
@@ -216,10 +216,10 @@ See CSS Subgrid. In the context of this specification, also refers to the body c
 ## T
 
 **Treegrid**
-The ARIA `role` applied to the grid element when the grid displays hierarchical parent-child data. Requires rows to carry `aria-level`, `aria-setsize`, and `aria-posinset`. Expandable rows carry `aria-expanded`. Screen readers announce tree structure context when navigating rows. See FD-04, F-12.
+The ARIA `role` applied to the grid element when the grid displays hierarchical parent-child data. Requires rows to carry `aria-level`, `aria-setsize`, and `aria-posinset`. Expandable rows carry `aria-expanded`. Screen readers announce tree structure context when navigating rows. See FD-04, F-06.
 
 **Tree Grid**
-A variant of the tabular grid designed for hierarchical parent-child data where rows can have child rows. Uses `role="treegrid"` on the container and `role="row"` with hierarchy attributes on each row. Supports lazy loading of child rows. See F-12.
+A variant of the tabular grid designed for hierarchical parent-child data where rows can have child rows. Uses `role="treegrid"` on the container and `role="row"` with hierarchy attributes on each row. Supports lazy loading of child rows. See VS-03.
 
 **Transaction**
 A group of data operations that are committed or rolled back as a single atomic unit. Used in batch editing (a set of cell edits) and undo/redo (an undoable action that may span multiple cells or rows). Transactions allow the grid to maintain a consistent data state and expose a clean undo history. See FD-03, F-17.

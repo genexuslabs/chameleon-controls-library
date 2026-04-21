@@ -20,7 +20,7 @@ All four variants (Data Grid, Tree Grid, Pivot Table, Gantt Chart) support cell 
 - UC-1: A user double-clicks a "Name" cell in a contacts Data Grid to correct a misspelling, types the fix, and presses Enter to commit.
 - UC-2: A user clicks a "Status" cell in a Tree Grid to change a task's status from "In Progress" to "Done" using a dropdown editor.
 - UC-3: A project manager edits a "Start Date" cell in a Gantt Chart task list; the timeline bar repositions to reflect the updated date.
-- UC-4: An analyst corrects a data-entry error in a Pivot Table value cell; the aggregated totals recalculate after commit.
+- UC-4: An analyst corrects a data-entry error in a Pivot Table value cell that represents a single source record (non-aggregated); the aggregated totals recalculate after commit.
 
 **Conditions of Use**
 - The cell MUST be editable per the layered editability evaluation in [FD-03](../01-foundations/03-editability-model.md), Section 3 (grid-level, column-level, row-level, and cell-level checks all permit editing).
@@ -43,7 +43,7 @@ All four variants (Data Grid, Tree Grid, Pivot Table, Gantt Chart) support cell 
 | Variant | Difference |
 |---------|------------|
 | Tree Grid | The editor widget MUST be positioned to the right of the expand/collapse control and indentation spacing. Indentation MUST NOT collapse when the editor is active. Editing a parent cell MUST NOT affect the collapsed/expanded state of its children. |
-| Pivot Table | Only value cells (data intersections) are typically editable. Dimension header cells (row/column labels that define the pivot axes) are NOT editable by default. Editing a value cell SHOULD trigger recalculation of affected aggregates via the `commit` lifecycle hook. |
+| Pivot Table | Aggregated pivot cells (cells whose value is computed from multiple source records) MUST NOT be editable. Only value cells representing a single source record (non-aggregated intersections) are editable. Dimension header cells (row/column labels that define the pivot axes) are NOT editable by default. Editing a non-aggregated value cell SHOULD trigger recalculation of affected aggregates via the `commit` lifecycle hook. |
 | Gantt Chart | Editing a date cell (start date, end date, duration) in the task list MUST cause the corresponding timeline bar to update its position and width to reflect the new dates. |
 
 **CSS Subgrid Implications**
@@ -56,7 +56,7 @@ The editor widget MUST fit within the cell's CSS grid area without altering colu
 |-----|--------|------|
 | Enter | Commit edit, return to Navigation Mode | Edit Mode |
 | Escape | Cancel edit, revert value, return to Navigation Mode | Edit Mode |
-| F2 | Toggle between Navigation Mode and Edit Mode | Both |
+| F2 | Enter Edit Mode (from Navigation) or commit edit and return to Navigation Mode (from Edit) | Both |
 | Tab | Commit edit, move to next editable cell, enter Edit Mode | Edit Mode |
 | Shift+Tab | Commit edit, move to previous editable cell, enter Edit Mode | Edit Mode |
 
@@ -717,7 +717,7 @@ When the grid operates in server-side mode (F-20), committed edits MUST be sent 
 | ID | Requirement | Level | Feature |
 |----|-------------|-------|---------|
 | CE-01 | The grid MUST transition to Edit Mode when the user activates an editable cell via the configured trigger. | MUST | F-07.1 |
-| CE-02 | Only one cell MAY be in Edit Mode at a time (single-cell mode). | MUST | F-07.1 |
+| CE-02 | Only one cell MUST be in Edit Mode at a time (single-cell mode). | MUST | F-07.1 |
 | CE-03 | The editor MUST receive the raw data value, not the formatted display value. | MUST | F-07.1 |
 | CE-04 | Escape MUST always cancel the edit and return to Navigation Mode. | MUST | F-07.1 |
 | CE-05 | Editable cells MUST have `aria-readonly="false"`. | MUST | F-07.1, F-07.9 |

@@ -31,7 +31,7 @@ All four variants (Data Grid, Tree Grid, Pivot Table, Gantt Chart) support expor
 **Behavioral Requirements**
 - BR-1: The exported CSV file MUST conform to RFC 4180: comma-delimited fields, CRLF line endings, fields containing commas/quotes/newlines enclosed in double quotes, and double quotes escaped by doubling.
 - BR-2: The first row of the CSV MUST be a header row containing the display names (visible labels) of all exported columns, in the current column order.
-- BR-3: By default, the export MUST include only visible columns in their current display order. Hidden columns (F-09.4) MUST be excluded unless the developer explicitly includes them via `options.includeHiddenColumns: true`.
+- BR-3: By default, the export MUST include only visible columns in their current display order. Hidden columns (F-09.5) MUST be excluded unless the developer explicitly includes them via `options.includeHiddenColumns: true`.
 - BR-4: By default, the export MUST include only visible (non-filtered) rows. The developer MAY override this via `options.allData: true` to export the full unfiltered dataset.
 - BR-5: The export MUST respect the current sort order. Exported rows MUST appear in the same order as displayed in the grid.
 - BR-6: The developer MUST be able to choose between exporting raw data values or formatted display values via `options.useFormattedValues: boolean`. The default SHOULD be raw values for CSV (per F-01 BR-5).

@@ -29,7 +29,7 @@ Server-side operations delegate sorting, filtering, grouping, and pagination to 
 **Behavioral Requirements**
 - BR-1: The grid SHALL call `datasource.getRows(params)` on initial load, passing `startRow: 0`, `endRow: initialPageSize`, empty `sortModel` and `filterModel`, and empty `groupKeys`.
 - BR-2: The grid SHALL call `datasource.getRows(params)` whenever the visible data window changes due to scrolling, sort change, filter change, group expansion, or pagination navigation.
-- BR-3: The grid SHALL display skeleton loading rows (F-01.11) in the range `[startRow, endRow)` while a `getRows` call is pending.
+- BR-3: The grid SHALL display skeleton loading rows (F-01.13) in the range `[startRow, endRow)` while a `getRows` call is pending.
 - BR-4: Rows in a pending loading state SHALL carry `aria-busy="true"`. The attribute MUST be removed once data arrives and the rows are populated.
 - BR-5: If `RowDataResult.totalRowCount` is provided, the grid SHALL use it to set `aria-rowcount` on the grid element for correct screen reader row count announcements.
 - BR-6: If `totalRowCount` is not provided, the grid SHALL set `aria-rowcount="-1"` to indicate an unknown total, per the ARIA specification.
@@ -57,7 +57,7 @@ Skeleton rows rendered during loading MUST use `grid-template-columns: subgrid` 
 
 **Chameleon 6 Status**: Partially existed — server-side fetching existed but without a formal datasource contract, `aria-rowcount` management, or skeleton row integration.
 
-**Interactions**: F-01.11 (Skeleton Rows), F-20.2 (Server-Side Sorting), F-20.3 (Server-Side Filtering), F-20.4 (Server-Side Grouping), F-20.5 (Server-Side Pagination), F-20.6 (Infinite Row Model), F-11.1 (Row Virtualization — coordinates scroll position with fetch window), FD-04 (Accessibility Foundation)
+**Interactions**: F-01.13 (Skeleton Rows), F-20.2 (Server-Side Sorting), F-20.3 (Server-Side Filtering), F-20.4 (Server-Side Grouping), F-20.5 (Server-Side Pagination), F-20.6 (Infinite Row Model), F-11.1 (Row Virtualization — coordinates scroll position with fetch window), FD-04 (Accessibility Foundation)
 
 ---
 
@@ -272,7 +272,7 @@ Group header rows returned by the server MUST use `grid-template-columns: subgri
 
 **Behavioral Requirements**
 - BR-1: The grid SHALL trigger a `getRows` call when the user's scroll position reaches within a configurable number of rows (`infiniteInitialRowCount` default: `cacheBlockSize * 2`) of the last loaded row.
-- BR-2: While a block is loading, the grid SHALL render skeleton rows for the pending row range (per F-01.11) and set `aria-busy="true"` on those rows.
+- BR-2: While a block is loading, the grid SHALL render skeleton rows for the pending row range (per F-01.13) and set `aria-busy="true"` on those rows.
 - BR-3: When a block load completes, the grid SHALL append the rows to the dataset, update the virtual scroller's total row count and scroll height, remove skeleton rows, and set `aria-busy="false"` on the newly populated rows.
 - BR-4: If `RowDataResult.lastRow` is provided and equals the last row in the response, the grid SHALL recognize that all data has been loaded and SHALL NOT trigger further `getRows` calls.
 - BR-5: When `maxBlocksInCache` is exceeded, the grid SHALL evict the oldest block, replace its rows with skeleton rows in the DOM, and re-fetch the block when the user scrolls back to it.
@@ -302,7 +302,7 @@ Skeleton rows for pending blocks MUST use `grid-template-columns: subgrid` per F
 
 **Chameleon 6 Status**: Partially existed — basic infinite scroll existed via `ch-virtual-scroller` integration but lacked block caching, eviction, skeleton row integration, and standardized `lastRow` signaling.
 
-**Interactions**: F-01.11 (Skeleton Rows), F-11.1 (Row Virtualization — virtualization operates on the set of loaded rows; block fetch expands that set), F-20.1 (Server-Side Row Model — shares datasource `getRows` contract), F-20.5 (Server-Side Pagination — mutually exclusive; infinite scroll has no page controls), F-20.2 (Server-Side Sorting — sort change invalidates and re-fetches all cached blocks), F-20.3 (Server-Side Filtering — filter change invalidates and re-fetches all cached blocks)
+**Interactions**: F-01.13 (Skeleton Rows), F-11.1 (Row Virtualization — virtualization operates on the set of loaded rows; block fetch expands that set), F-20.1 (Server-Side Row Model — shares datasource `getRows` contract), F-20.5 (Server-Side Pagination — mutually exclusive; infinite scroll has no page controls), F-20.2 (Server-Side Sorting — sort change invalidates and re-fetches all cached blocks), F-20.3 (Server-Side Filtering — filter change invalidates and re-fetches all cached blocks)
 
 ---
 
@@ -406,7 +406,7 @@ In pessimistic mode, a cell that is awaiting server confirmation MUST NOT be edi
 | Variant definitions | [FD-02: Variant Model](../01-foundations/02-variant-model.md) |
 | Editability model (pessimistic edit blocking) | [FD-03: Editability Model](../01-foundations/03-editability-model.md) |
 | Accessibility foundation (aria-busy, live regions) | [FD-04: Accessibility Foundation](../01-foundations/04-accessibility-foundation.md) |
-| Skeleton / loading rows | F-01: Data Display & Rendering (F-01.11) |
+| Skeleton / loading rows | F-01: Data Display & Rendering (F-01.13) |
 | Sorting (sort model, multi-sort, indicators) | F-02: Sorting |
 | Filtering (filter model, global search) | F-03: Filtering |
 | Grouping and aggregation | F-04: Grouping & Aggregation |

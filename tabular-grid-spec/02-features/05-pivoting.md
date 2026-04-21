@@ -116,7 +116,7 @@ Multi-level column headers require multiple header rows in the DOM, each partici
 - F-05.5 (Dimension Configuration): configuration specifies the ordered list of row and column dimensions.
 - F-05.6 (Pivot Field Selector Panel): drag-and-drop reordering of dimensions changes the nesting hierarchy.
 - F-05.7 (Dynamic Column Reconfiguration): adding or removing a dimension triggers structural reconfiguration.
-- F-01.7 (Multi-Level Column Headers): the pivot's nested column headers reuse the multi-level header rendering infrastructure.
+- F-01.8 (Multi-Level Column Headers): the pivot's nested column headers reuse the multi-level header rendering infrastructure.
 - F-14 (Keyboard Navigation): navigation through multi-level headers follows the structural hierarchy.
 
 ---
@@ -482,7 +482,7 @@ The dimension configuration (which fields are in rows, columns, values, filters,
 | Dimension-level filtering | F-03: Filtering |
 | Shared aggregation engine with row grouping | F-04: Grouping & Aggregation |
 | Cell rendering and formatters for aggregated values | F-01: Data Display & Rendering |
-| Multi-level column headers infrastructure | F-01.7: Multi-Level Column Headers |
+| Multi-level column headers infrastructure | F-01.8: Multi-Level Column Headers |
 | Column management for auto-generated columns | F-09: Column Management |
 | Row and column virtualization for large pivots | F-11: Virtualization & Performance |
 | Export of pivoted view | F-12: Export & Import |

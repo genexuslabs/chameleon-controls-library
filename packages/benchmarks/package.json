@@ -23,7 +23,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@genexus/chameleon-controls-library": "6.33.1",
     "@genexus/chameleon-controls-library-lit": "*"
   },
   "devDependencies": {

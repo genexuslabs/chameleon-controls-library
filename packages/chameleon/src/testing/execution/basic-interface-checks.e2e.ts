@@ -125,6 +125,14 @@ export const testConfiguration = {
     }
   },
 
+  "ch-custom-render": {
+    interface: {
+      content: undefined,
+      exportParts: undefined,
+      theme: undefined
+    }
+  },
+
   "ch-image": {
     interface: {
       containerRef: undefined,
@@ -154,24 +162,18 @@ export const testConfiguration = {
       caption: undefined,
       disabled: undefined,
       expandable: false,
-      expandableButton: "decorative",
-      expandableButtonPosition: "start",
       expanded: undefined,
       // Don't use the NAVIGATION_LIST_ITEM_EXPORT_PARTS, as this value can
       // change depending on the implementation and the test will not notice
       // this change
       exportparts: "",
-      getImagePathCallback: undefined,
       level: 0,
       link: undefined,
       model: undefined,
-      navigationListExpanded: true,
       selected: false,
-      selectedLinkIndicator: false,
-      showCaptionOnCollapse: "inline",
+      sharedState: undefined,
       startImgSrc: undefined,
-      startImgType: undefined,
-      tooltipDelay: 100
+      startImgType: undefined
     },
     options: {}
   },
@@ -179,6 +181,7 @@ export const testConfiguration = {
   "ch-navigation-list-render": {
     interface: {
       autoGrow: false,
+      customRenders: undefined,
       expandableButton: "decorative",
       expandableButtonPosition: "start",
       expanded: true,
@@ -186,10 +189,7 @@ export const testConfiguration = {
       getImagePathCallback: undefined,
       model: undefined,
       renderItem: undefined,
-      selectedLink: {
-        link: { url: undefined }
-      },
-      selectedLinkIndicator: false,
+      selectedLink: undefined,
       showCaptionOnCollapse: "inline",
       tooltipDelay: 100
     }

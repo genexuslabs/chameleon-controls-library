@@ -1,5 +1,5 @@
-import { signal } from "@genexus/kasstor-signals/core.js";
-import { computed } from "@genexus/kasstor-signals/core.js";
+import { computed } from "@genexus/kasstor-signals/core/computed.js";
+import { signal } from "@genexus/kasstor-signals/core/signal.js";
 import type { GetImagePathCallback } from "../../typings/multi-state-images";
 
 /**

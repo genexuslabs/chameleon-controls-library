@@ -1,4 +1,5 @@
-import { computed, signal } from "@genexus/kasstor-signals/core.js";
+import { computed } from "@genexus/kasstor-signals/core/computed.js";
+import { signal } from "@genexus/kasstor-signals/core/signal.js";
 
 const STORAGE_KEY = "chameleon-showcase-code-theme";
 

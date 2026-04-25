@@ -1,6 +1,13 @@
 import type { Spec } from "@json-render/core";
+import { html, type TemplateResult } from "lit";
+import { ref } from "lit/directives/ref.js";
 import type { ComponentRegistry } from "../../src/components/json-render/types";
-import { html } from "lit";
+import type { ChNavigationListRender } from "../../src/components/navigation-list/navigation-list-render.lit";
+import type {
+  NavigationListCustomRender,
+  NavigationListItemModel,
+  NavigationListModel
+} from "../../src/components/navigation-list/types";
 
 // Component imports (side effects — register custom elements)
 import "../../src/components/accordion/accordion.lit";
@@ -8,12 +15,16 @@ import "../../src/components/action-group/action-group-render.lit";
 import "../../src/components/action-list/action-list-render.lit";
 import "../../src/components/action-menu/action-menu-render.lit";
 import "../../src/components/breadcrumb/breadcrumb-render.lit";
+import "../../src/components/chat/chat.lit";
 import "../../src/components/checkbox/checkbox.lit";
 import "../../src/components/code/code.lit";
 import "../../src/components/combo-box/combo-box.lit";
+import "../../src/components/custom-render/custom-render.lit";
 import "../../src/components/edit/edit.lit";
 import "../../src/components/image/image.lit";
 import "../../src/components/layout-splitter/layout-splitter.lit";
+import "../../src/components/live-kit-room/live-kit-room.lit";
+import "../../src/components/markdown-viewer/markdown-viewer.lit";
 import "../../src/components/math-viewer/math-viewer.lit";
 import "../../src/components/navigation-list/navigation-list-render.lit";
 import "../../src/components/popover/popover.lit";
@@ -23,16 +34,13 @@ import "../../src/components/radio-group/radio-group-render.lit";
 import "../../src/components/segmented-control/segmented-control-render.lit";
 import "../../src/components/sidebar/sidebar.lit";
 import "../../src/components/slider/slider.lit";
+import "../../src/components/smart-grid/smart-grid.lit";
 import "../../src/components/status/status.lit";
 import "../../src/components/switch/switch.lit";
 import "../../src/components/tab/tab.lit";
 import "../../src/components/tabular-grid/tabular-grid-render.lit";
 import "../../src/components/textblock/textblock.lit";
 import "../../src/components/theme/theme.lit";
-import "../../src/components/chat/chat.lit";
-import "../../src/components/markdown-viewer/markdown-viewer.lit";
-import "../../src/components/smart-grid/smart-grid.lit";
-import "../../src/components/live-kit-room/live-kit-room.lit";
 
 // ---- Models for complex components ----
 
@@ -42,11 +50,7 @@ const ACCORDION_MODEL = [
   { id: "section-3", caption: "Section 3", expanded: false }
 ];
 
-const ACTION_GROUP_MODEL = [
-  { caption: "Copy" },
-  { caption: "Paste" },
-  { caption: "Cut" }
-];
+const ACTION_GROUP_MODEL = [{ caption: "Copy" }, { caption: "Paste" }, { caption: "Cut" }];
 
 const ACTION_LIST_MODEL = [
   { id: "item-1", caption: "First item", type: "actionable" as const },
@@ -81,8 +85,8 @@ const RADIO_GROUP_MODEL = [
 ];
 
 const SEGMENTED_CONTROL_MODEL = [
-  { id: "day",   caption: "Day"   },
-  { id: "week",  caption: "Week"  },
+  { id: "day", caption: "Day" },
+  { id: "week", caption: "Week" },
   { id: "month", caption: "Month" }
 ];
 
@@ -98,22 +102,283 @@ const NAVIGATION_LIST_MODEL = [
     expanded: true,
     items: [
       { id: "checkbox", caption: "Checkbox", link: { url: "/components/checkbox" } },
-      { id: "switch",   caption: "Switch",   link: { url: "/components/switch"   } }
+      { id: "switch", caption: "Switch", link: { url: "/components/switch" } }
     ]
   }
 ];
 
+// ---- Console-style navigation list (icons + status badge via custom render) ----
+
+// Inline SVG icons (Lucide-inspired, monochrome, stroke-based) keyed by id
+const consoleIcon = (path: TemplateResult) => html`
+  <svg
+    class="console-nav-icon"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    ${path}
+  </svg>
+`;
+
+const CONSOLE_ICONS: Record<string, TemplateResult> = {
+  chat: consoleIcon(
+    html`<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>`
+  ),
+  inbox: consoleIcon(html`
+    <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+    <path
+      d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"
+    ></path>
+  `),
+  "scheduled-tasks": consoleIcon(html`
+    <circle cx="12" cy="12" r="9"></circle>
+    <polyline points="12 7 12 12 15 14"></polyline>
+  `),
+  agents: consoleIcon(html`
+    <path
+      d="M20 7h-4V4a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM10 5h4v2h-4z"
+    ></path>
+  `),
+  integrations: consoleIcon(
+    html`<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>`
+  ),
+  skills: consoleIcon(html`
+    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+  `),
+  endpoints: consoleIcon(html`
+    <circle cx="12" cy="12" r="9"></circle>
+    <line x1="3" y1="12" x2="21" y2="12"></line>
+    <path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"></path>
+  `),
+  analytics: consoleIcon(html`
+    <line x1="6" y1="20" x2="6" y2="12"></line>
+    <line x1="12" y1="20" x2="12" y2="6"></line>
+    <line x1="18" y1="20" x2="18" y2="14"></line>
+  `),
+  "session-activity": consoleIcon(
+    html`<polyline points="3 12 6 12 9 4 15 20 18 12 21 12"></polyline>`
+  ),
+  traces: consoleIcon(html`
+    <circle cx="6" cy="6" r="2.5"></circle>
+    <circle cx="6" cy="18" r="2.5"></circle>
+    <circle cx="18" cy="12" r="2.5"></circle>
+    <path d="M8 8c2 4 6 4 8 4"></path>
+    <path d="M8 16c2-4 6-4 8-4"></path>
+  `),
+  health: consoleIcon(html`<polyline points="3 12 7 12 10 5 14 19 17 12 21 12"></polyline>`),
+  alerts: consoleIcon(html`
+    <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2v1h16v-1z"></path>
+    <path d="M10 21a2 2 0 0 0 4 0"></path>
+  `),
+  memory: consoleIcon(html`
+    <circle cx="12" cy="12" r="3"></circle>
+    <circle cx="12" cy="4.5" r="1.5"></circle>
+    <circle cx="12" cy="19.5" r="1.5"></circle>
+    <circle cx="5.5" cy="8" r="1.5"></circle>
+    <circle cx="18.5" cy="8" r="1.5"></circle>
+    <circle cx="5.5" cy="16" r="1.5"></circle>
+    <circle cx="18.5" cy="16" r="1.5"></circle>
+    <line x1="12" y1="6" x2="12" y2="9"></line>
+    <line x1="12" y1="15" x2="12" y2="18"></line>
+    <line x1="7" y1="9" x2="9.5" y2="10.5"></line>
+    <line x1="17" y1="9" x2="14.5" y2="10.5"></line>
+    <line x1="7" y1="15" x2="9.5" y2="13.5"></line>
+    <line x1="17" y1="15" x2="14.5" y2="13.5"></line>
+  `),
+  solutions: consoleIcon(html`
+    <circle cx="12" cy="12" r="9"></circle>
+    <line x1="5" y1="5" x2="19" y2="19"></line>
+  `),
+  taxonomies: consoleIcon(html`
+    <path d="M20.59 13.41l-7.18 7.18a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"></path>
+    <line x1="7" y1="7" x2="7.01" y2="7"></line>
+  `)
+};
+
+type ConsoleBadge = "BETA" | "EXP" | "Soon";
+
+const CONSOLE_BADGES: Record<string, ConsoleBadge> = {
+  chat: "BETA",
+  inbox: "EXP",
+  "scheduled-tasks": "EXP",
+  agents: "EXP",
+  integrations: "EXP",
+  skills: "EXP",
+  analytics: "BETA",
+  traces: "BETA",
+  alerts: "BETA",
+  memory: "EXP",
+  solutions: "Soon",
+  taxonomies: "Soon"
+};
+
+const NAVIGATION_LIST_CONSOLE_MODEL: NavigationListModel = [
+  { id: "chat", caption: "Chat", link: { url: "#chat" } },
+  { id: "inbox", caption: "Inbox", link: { url: "#inbox" } },
+  { id: "scheduled-tasks", caption: "Scheduled Tasks", link: { url: "#scheduled-tasks" } },
+  { id: "agents", caption: "Agents", link: { url: "#agents" } },
+  { id: "integrations", caption: "Integrations", link: { url: "#integrations" } },
+  { id: "skills", caption: "Skills", link: { url: "#skills" } },
+  { id: "endpoints", caption: "Endpoints", link: { url: "#endpoints" } },
+  { id: "analytics", caption: "Analytics", link: { url: "#analytics" } },
+  { id: "session-activity", caption: "Session Activity", link: { url: "#session-activity" } },
+  { id: "traces", caption: "Traces", link: { url: "#traces" } },
+  { id: "health", caption: "Health", link: { url: "#health" } },
+  { id: "alerts", caption: "Alerts", link: { url: "#alerts" } },
+  { id: "memory", caption: "Memory", link: { url: "#memory" } },
+  { id: "solutions", caption: "Solutions", link: { url: "#solutions" }, disabled: true },
+  { id: "taxonomies", caption: "Taxonomies", link: { url: "#taxonomies" }, disabled: true }
+];
+
+// ch-custom-render places `content` into its own shadow root, so styles for
+// the icon/caption/badge layout must be included inside the rendered content
+// (light-DOM CSS cannot pierce that shadow tree).
+const consoleItemStyles = `
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      inline-size: 100%;
+      min-inline-size: 0;
+    }
+    .icon { flex-shrink: 0; display: inline-flex; }
+    .caption {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .badge {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      line-height: 1;
+    }
+    .badge--beta { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .badge--exp  { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+    .badge--soon { background: rgba(120, 130, 150, 0.18); color: #8a93a6; }`;
+
+// Stylesheet adopted directly into ch-navigation-list-render's shadow root so
+// it can target the action `::part` (which is exported by ch-navigation-list-
+// item to its parent's shadow but is not reachable from outside the render).
+const consoleNavSheet = (() => {
+  const sheet = new CSSStyleSheet();
+  sheet.replaceSync(`
+    ::part(item__action) {
+      padding-block: 6px;
+      padding-inline: 12px;
+      block-size: 32px;
+      box-sizing: border-box;
+      color: #b9c0cc;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-block-end: 2px;
+      cursor: pointer;
+      background: transparent;
+    }
+    ::part(item__action):hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #e2e6ee;
+    }
+    ::part(item__action selected) {
+      background: #1c2230;
+      color: #f3f5f9;
+    }
+    ::part(item__action selected):hover {
+      background: #1c2230;
+      color: #f3f5f9;
+    }
+    ::part(item__action disabled) {
+      background: transparent;
+      color: #5a6072;
+      cursor: not-allowed;
+    }
+    ::part(item__action disabled):hover {
+      background: transparent;
+      color: #5a6072;
+    }
+  `);
+  return sheet;
+})();
+
+const attachConsoleNavStyles = (el: Element | undefined) => {
+  if (!el) {
+    return;
+  }
+  const nav = el as ChNavigationListRender;
+  nav.updateComplete.then(() => {
+    const root = nav.shadowRoot;
+    if (root && !root.adoptedStyleSheets.includes(consoleNavSheet)) {
+      root.adoptedStyleSheets = [...root.adoptedStyleSheets, consoleNavSheet];
+    }
+  });
+};
+
+const renderConsoleItem = (item: NavigationListItemModel) => {
+  const icon = CONSOLE_ICONS[item.id];
+  const badge = CONSOLE_BADGES[item.id];
+
+  return html`
+    <span class="row">
+      <span class="icon">${icon ?? html``}</span>
+      <span class="caption">${item.caption}</span>
+      ${badge ? html`<span class=${"badge badge--" + badge.toLowerCase()}>${badge}</span>` : ""}
+    </span>
+  `;
+};
+
+const NAVIGATION_LIST_CONSOLE_CUSTOM_RENDERS: NavigationListCustomRender = {
+  itemContent: item => ({ content: renderConsoleItem(item), stylesheet: consoleItemStyles })
+};
+
+// Light-DOM styles for the dark preview frame. Only descendants outside any
+// shadow tree are reachable from here.
+// ch-navigation-list-render has no intrinsic size, so we explicitly reserve
+// space for it on both axes.
+const NAVIGATION_LIST_CONSOLE_STYLES = html`
+  <style>
+    .console-nav-preview {
+      background: #0b0d12;
+      color: #d6dbe5;
+      padding: 16px 8px;
+      border-radius: 8px;
+      inline-size: 240px;
+      block-size: 600px;
+      overflow: auto;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    .console-nav-preview ch-navigation-list-render {
+      inline-size: 100%;
+      block-size: 100%;
+    }
+  </style>
+`;
+
 const BREADCRUMB_MODEL = [
-  { id: "home",       caption: "Home",       link: { url: "/" } },
+  { id: "home", caption: "Home", link: { url: "/" } },
   { id: "components", caption: "Components", link: { url: "/components" } },
   { id: "breadcrumb", caption: "Breadcrumb" }
 ];
 
 const TABULAR_GRID_MODEL = {
   columns: [
-    { id: "name",  caption: "Name"  },
+    { id: "name", caption: "Name" },
     { id: "email", caption: "Email" },
-    { id: "role",  caption: "Role"  }
+    { id: "role", caption: "Role" }
   ]
 };
 
@@ -148,8 +413,7 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
   ChSwitch: ({ element }) =>
     html`<ch-switch caption=${(element.props as any).caption ?? ""}></ch-switch>`,
 
-  ChSlider: () =>
-    html`<ch-slider value="40" min="0" max="100"></ch-slider>`,
+  ChSlider: () => html`<ch-slider value="40" min="0" max="100"></ch-slider>`,
 
   ChRadioGroup: () =>
     html`<ch-radio-group-render .model=${RADIO_GROUP_MODEL} value="m"></ch-radio-group-render>`,
@@ -158,20 +422,19 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
   ChCode: () =>
     html`<ch-code language="javascript" .value=${'console.log("Hello, Chameleon!");'}></ch-code>`,
 
-  ChMathViewer: () =>
-    html`<ch-math-viewer value="E = mc^2"></ch-math-viewer>`,
+  ChMathViewer: () => html`<ch-math-viewer value="E = mc^2"></ch-math-viewer>`,
 
-  ChStatus: () =>
-    html`<ch-status accessible-name="Loading content"></ch-status>`,
+  ChStatus: () => html`<ch-status accessible-name="Loading content"></ch-status>`,
 
-  ChImage: () =>
-    html`<ch-image style="width: 160px; height: 90px; display: block;"></ch-image>`,
+  ChImage: () => html`<ch-image style="width: 160px; height: 90px; display: block;"></ch-image>`,
 
   ChQr: ({ element }) =>
-    html`<ch-qr value=${(element.props as any).value ?? ""} size=${(element.props as any).size ?? 128}></ch-qr>`,
+    html`<ch-qr
+      value=${(element.props as any).value ?? ""}
+      size=${(element.props as any).size ?? 128}
+    ></ch-qr>`,
 
-  ChTextblockText: () =>
-    html`<ch-textblock caption="Hello, world!"></ch-textblock>`,
+  ChTextblockText: () => html`<ch-textblock caption="Hello, world!"></ch-textblock>`,
 
   ChTextblockHtml: () =>
     html`<ch-textblock format="HTML">Welcome to <strong>Chameleon</strong>!</ch-textblock>`,
@@ -203,14 +466,20 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
 
   ChPopover: () =>
     html`<div style="position: relative; padding: 40px; text-align: center;">
-      <button id="popover-trigger" style="padding: 6px 12px; font-size: 13px;">Toggle Popover</button>
-      <ch-popover style="padding: 12px; font-size: 13px; border: 1px solid #e5e7eb; border-radius: 6px; background: white;">
+      <button id="popover-trigger" style="padding: 6px 12px; font-size: 13px;">
+        Toggle Popover
+      </button>
+      <ch-popover
+        style="padding: 12px; font-size: 13px; border: 1px solid #e5e7eb; border-radius: 6px; background: white;"
+      >
         Popover content
       </ch-popover>
     </div>`,
 
   ChSidebar: () =>
-    html`<div style="display: flex; height: 160px; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden;">
+    html`<div
+      style="display: flex; height: 160px; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden;"
+    >
       <ch-sidebar show-expand-button style="border-inline-end: 1px solid #e5e7eb;">
         <nav style="padding: 8px; font-size: 13px;">Navigation links</nav>
       </ch-sidebar>
@@ -232,12 +501,29 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
     html`<ch-action-list-render .model=${ACTION_LIST_MODEL}></ch-action-list-render>`,
 
   ChActionMenu: () =>
-    html`<ch-action-menu-render .model=${ACTION_MENU_MODEL} button-accessible-name="Actions"></ch-action-menu-render>`,
+    html`<ch-action-menu-render
+      .model=${ACTION_MENU_MODEL}
+      button-accessible-name="Actions"
+    ></ch-action-menu-render>`,
   ChNavigationList: () =>
     html`<ch-navigation-list-render .model=${NAVIGATION_LIST_MODEL}></ch-navigation-list-render>`,
 
+  ChNavigationListConsole: () =>
+    html`<div class="console-nav-preview">
+      ${NAVIGATION_LIST_CONSOLE_STYLES}
+      <ch-navigation-list-render
+        ${ref(attachConsoleNavStyles)}
+        .model=${NAVIGATION_LIST_CONSOLE_MODEL}
+        .customRenders=${NAVIGATION_LIST_CONSOLE_CUSTOM_RENDERS}
+        selected-link="scheduled-tasks"
+      ></ch-navigation-list-render>
+    </div>`,
+
   ChSegmentedControl: () =>
-    html`<ch-segmented-control-render .model=${SEGMENTED_CONTROL_MODEL} selected-id="week"></ch-segmented-control-render>`,
+    html`<ch-segmented-control-render
+      .model=${SEGMENTED_CONTROL_MODEL}
+      selected-id="week"
+    ></ch-segmented-control-render>`,
 
   ChBreadcrumb: () =>
     html`<ch-breadcrumb-render .model=${BREADCRUMB_MODEL}></ch-breadcrumb-render>`,
@@ -249,7 +535,9 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
     </div>`,
 
   ChMarkdownViewer: () =>
-    html`<ch-markdown-viewer value=${"# Hello\n\nThis is **markdown** rendered by `ch-markdown-viewer`.\n\n- Item 1\n- Item 2\n- Item 3"}></ch-markdown-viewer>`,
+    html`<ch-markdown-viewer
+      value=${"# Hello\n\nThis is **markdown** rendered by `ch-markdown-viewer`.\n\n- Item 1\n- Item 2\n- Item 3"}
+    ></ch-markdown-viewer>`,
 
   ChSmartGrid: () =>
     html`<div style="height: 200px; display: block;">
@@ -257,15 +545,22 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
     </div>`,
 
   ChLiveKitRoom: () =>
-    html`<div style="font-size: 13px; color: #374151; padding: 16px; border: 1px solid #e5e7eb; border-radius: 6px;">
+    html`<div
+      style="font-size: 13px; color: #374151; padding: 16px; border: 1px solid #e5e7eb; border-radius: 6px;"
+    >
       <p style="margin: 0 0 8px; font-weight: 600;">ch-live-kit-room</p>
-      <p style="margin: 0;">Connects to a LiveKit room for real-time audio. Provide <code>url</code> and <code>token</code> props to establish a connection.</p>
+      <p style="margin: 0;">
+        Connects to a LiveKit room for real-time audio. Provide <code>url</code> and
+        <code>token</code> props to establish a connection.
+      </p>
     </div>`,
 
   // ---- Theming ----
   ChTheme: () =>
     html`<div style="font-size: 13px; color: #374151; line-height: 1.6;">
-      <p style="margin: 0 0 12px;">The Mercury theme styles all Chameleon components. For example:</p>
+      <p style="margin: 0 0 12px;">
+        The Mercury theme styles all Chameleon components. For example:
+      </p>
       <ch-checkbox caption="Checkbox with Mercury styles"></ch-checkbox>
     </div>`
 };
@@ -291,7 +586,11 @@ export const componentExamples: Partial<Record<string, ExampleDef[]>> = {
       spec: {
         root: "root",
         elements: {
-          root: { type: "ChCheckbox", props: { caption: "Accept terms and conditions" }, children: [] }
+          root: {
+            type: "ChCheckbox",
+            props: { caption: "Accept terms and conditions" },
+            children: []
+          }
         }
       },
       code: `<ch-checkbox caption="Accept terms and conditions"></ch-checkbox>`
@@ -315,7 +614,11 @@ export const componentExamples: Partial<Record<string, ExampleDef[]>> = {
       spec: {
         root: "root",
         elements: {
-          root: { type: "ChEdit", props: { type: "password", placeholder: "Enter password" }, children: [] }
+          root: {
+            type: "ChEdit",
+            props: { type: "password", placeholder: "Enter password" },
+            children: []
+          }
         }
       },
       code: `<ch-edit type="password" show-password-button placeholder="Enter password"></ch-edit>`
@@ -326,7 +629,11 @@ export const componentExamples: Partial<Record<string, ExampleDef[]>> = {
       spec: {
         root: "root",
         elements: {
-          root: { type: "ChEdit", props: { multiline: true, placeholder: "Write something..." }, children: [] }
+          root: {
+            type: "ChEdit",
+            props: { multiline: true, placeholder: "Write something..." },
+            children: []
+          }
         }
       },
       code: `<ch-edit multiline placeholder="Write something..."></ch-edit>`
@@ -337,7 +644,11 @@ export const componentExamples: Partial<Record<string, ExampleDef[]>> = {
       spec: {
         root: "root",
         elements: {
-          root: { type: "ChEdit", props: { type: "search", placeholder: "Search..." }, children: [] }
+          root: {
+            type: "ChEdit",
+            props: { type: "search", placeholder: "Search..." },
+            children: []
+          }
         }
       },
       code: `<ch-edit type="search" placeholder="Search..."></ch-edit>`
@@ -365,8 +676,7 @@ export const componentExamples: Partial<Record<string, ExampleDef[]>> = {
         }
       },
       language: "typescript",
-      code:
-`import type { ComboBoxModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { ComboBoxModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: ComboBoxModel = [
   { value: "opt-1", caption: "Option 1" },
@@ -389,8 +699,7 @@ const model: ComboBoxModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { RadioGroupModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { RadioGroupModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: RadioGroupModel = [
   { id: "s", caption: "Small" },
@@ -455,8 +764,7 @@ const model: RadioGroupModel = [
         }
       },
       language: "typescript",
-      code:
-`// In your Lit template:
+      code: `// In your Lit template:
 // <ch-image .src=\${"https://picsum.photos/320/180"} type="img"></ch-image>`
     }
   ],
@@ -480,7 +788,11 @@ const model: RadioGroupModel = [
       spec: {
         root: "root",
         elements: {
-          root: { type: "ChQr", props: { value: "https://chameleon.genexus.com", size: 160 }, children: [] }
+          root: {
+            type: "ChQr",
+            props: { value: "https://chameleon.genexus.com", size: 160 },
+            children: []
+          }
         }
       },
       code: `<ch-qr value="https://chameleon.genexus.com" size="160"></ch-qr>`
@@ -558,8 +870,7 @@ const model: RadioGroupModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { TabularGridModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { TabularGridModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: TabularGridModel = {
   columns: [
@@ -586,8 +897,7 @@ const model: TabularGridModel = {
         }
       },
       language: "typescript",
-      code:
-`import type { AccordionModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { AccordionModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: AccordionModel = [
   { id: "section-1", caption: "Section 1", expanded: true },
@@ -614,8 +924,7 @@ const model: AccordionModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { LayoutSplitterModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { LayoutSplitterModel } from "@genexus/chameleon-controls-library-lit";
 
 const layout: LayoutSplitterModel = {
   id: "root",
@@ -644,8 +953,7 @@ const layout: LayoutSplitterModel = {
         }
       },
       language: "typescript",
-      code:
-`// The popover anchors to an element and positions itself automatically.
+      code: `// The popover anchors to an element and positions itself automatically.
 // <button id="trigger">Open</button>
 // <ch-popover .actionElement=\${triggerRef} block-align="outside-end" inline-align="center">
 //   Popover content here
@@ -663,8 +971,7 @@ const layout: LayoutSplitterModel = {
           root: { type: "ChSidebar", props: {}, children: [] }
         }
       },
-      code:
-`<div style="display: flex; block-size: 400px;">
+      code: `<div style="display: flex; block-size: 400px;">
   <ch-sidebar show-expand-button>
     <nav>Navigation links here</nav>
   </ch-sidebar>
@@ -684,8 +991,7 @@ const layout: LayoutSplitterModel = {
         }
       },
       language: "typescript",
-      code:
-`import type { TabModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { TabModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: TabModel = [
   { id: "tab-1", name: "Overview" },
@@ -714,8 +1020,7 @@ const model: TabModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { ActionGroupModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { ActionGroupModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: ActionGroupModel = [
   { caption: "Copy" },
@@ -738,8 +1043,7 @@ const model: ActionGroupModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { ActionListModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { ActionListModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: ActionListModel = [
   { id: "item-1", caption: "First item", type: "actionable" },
@@ -763,8 +1067,7 @@ const model: ActionListModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { ActionMenuModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { ActionMenuModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: ActionMenuModel = [
   { caption: "Edit" },
@@ -788,8 +1091,7 @@ const model: ActionMenuModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { NavigationListModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { NavigationListModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: NavigationListModel = [
   {
@@ -810,6 +1112,75 @@ const model: NavigationListModel = [
 
 // In your template:
 // <ch-navigation-list-render .model=\${model}></ch-navigation-list-render>`
+    },
+    {
+      title: "Console-style with icons and status badges",
+      description:
+        "Use a custom item render to project an icon next to the caption and a trailing status badge (BETA, EXP, Soon). Items can also be marked as disabled. The selected hyperlink is driven by the `selected-link` attribute, which receives the item id.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChNavigationListConsole", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code: `import { html } from "lit";
+import type {
+  NavigationListCustomRender,
+  NavigationListItemModel,
+  NavigationListModel
+} from "@genexus/chameleon-controls-library-lit";
+
+// 1. Map each item id to its icon and (optional) status badge.
+const ICONS: Record<string, ReturnType<typeof html>> = {
+  chat: html\`<svg ...></svg>\`,
+  inbox: html\`<svg ...></svg>\`,
+  "scheduled-tasks": html\`<svg ...></svg>\`
+  // ...one per item
+};
+
+const BADGES: Record<string, "BETA" | "EXP" | "Soon"> = {
+  chat: "BETA",
+  inbox: "EXP",
+  "scheduled-tasks": "EXP",
+  solutions: "Soon"
+};
+
+// 2. Build a flat model of hyperlink items. \`disabled\` items act as
+//    "Soon" entries that cannot be activated.
+const model: NavigationListModel = [
+  { id: "chat",            caption: "Chat",            link: { url: "#chat" } },
+  { id: "inbox",           caption: "Inbox",           link: { url: "#inbox" } },
+  { id: "scheduled-tasks", caption: "Scheduled Tasks", link: { url: "#scheduled-tasks" } },
+  { id: "agents",          caption: "Agents",          link: { url: "#agents" } },
+  { id: "solutions",       caption: "Solutions",       link: { url: "#solutions" }, disabled: true }
+  // ...
+];
+
+// 3. Provide the custom render. \`itemContent\` returns the inner content of
+//    each item; the navigation list still renders the surrounding <a> / <button>.
+const customRenders: NavigationListCustomRender = {
+  itemContent: (item: NavigationListItemModel) => ({
+    content: html\`
+      <span class="row">
+        <span class="icon">\${ICONS[item.id]}</span>
+        <span class="caption">\${item.caption}</span>
+        \${BADGES[item.id]
+          ? html\`<span class=\${"badge badge--" + BADGES[item.id].toLowerCase()}>
+              \${BADGES[item.id]}
+            </span>\`
+          : ""}
+      </span>
+    \`
+  })
+};
+
+// 4. In your template — \`selected-link\` is the id of the active hyperlink.
+// <ch-navigation-list-render
+//   .model=\${model}
+//   .customRenders=\${customRenders}
+//   selected-link="scheduled-tasks"
+// ></ch-navigation-list-render>`
     }
   ],
   "ch-segmented-control-render": [
@@ -823,8 +1194,7 @@ const model: NavigationListModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { SegmentedControlModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { SegmentedControlModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: SegmentedControlModel = [
   { id: "day",   caption: "Day"   },
@@ -847,8 +1217,7 @@ const model: SegmentedControlModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { BreadCrumbModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { BreadCrumbModel } from "@genexus/chameleon-controls-library-lit";
 
 const model: BreadCrumbModel = [
   { id: "home",       caption: "Home",       link: { url: "/" } },
@@ -865,7 +1234,8 @@ const model: BreadCrumbModel = [
   "ch-chat": [
     {
       title: "Basic chat",
-      description: "A conversational AI chat interface with virtual scrolling and markdown rendering.",
+      description:
+        "A conversational AI chat interface with virtual scrolling and markdown rendering.",
       spec: {
         root: "root",
         elements: {
@@ -873,8 +1243,7 @@ const model: BreadCrumbModel = [
         }
       },
       language: "typescript",
-      code:
-`import type { ChatMessage, ChatTranslations } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { ChatMessage, ChatTranslations } from "@genexus/chameleon-controls-library-lit";
 
 const items: ChatMessage[] = [
   { id: "1", role: "user",      content: "Hello!" },
@@ -896,8 +1265,7 @@ const items: ChatMessage[] = [
         }
       },
       language: "typescript",
-      code:
-`// In your template:
+      code: `// In your template:
 // <ch-markdown-viewer .value=\${markdownString}></ch-markdown-viewer>
 
 const markdownString = \`
@@ -922,8 +1290,7 @@ This is **markdown** rendered by \\\`ch-markdown-viewer\\\`.
         }
       },
       language: "typescript",
-      code:
-`// ch-smart-grid works with ch-virtual-scroller to render large datasets efficiently.
+      code: `// ch-smart-grid works with ch-virtual-scroller to render large datasets efficiently.
 // Use the virtualItemsChanged event to update the visible slice.
 
 // In your template:
@@ -950,8 +1317,7 @@ This is **markdown** rendered by \\\`ch-markdown-viewer\\\`.
         }
       },
       language: "typescript",
-      code:
-`// In your template:
+      code: `// In your template:
 // <ch-live-kit-room
 //   url="wss://your-livekit-server.io"
 //   .token=\${participantToken}
@@ -974,8 +1340,7 @@ This is **markdown** rendered by \\\`ch-markdown-viewer\\\`.
         }
       },
       language: "typescript",
-      code:
-`import type { ThemeModel } from "@genexus/chameleon-controls-library-lit";
+      code: `import type { ThemeModel } from "@genexus/chameleon-controls-library-lit";
 
 const bundles: ThemeModel = [
   {
@@ -989,3 +1354,4 @@ const bundles: ThemeModel = [
     }
   ]
 };
+

@@ -13,8 +13,12 @@ import {
   NAVIGATION_LIST_ITEM_EXPORT_PARTS,
   NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
 } from "../../../../utilities/reserved-names/parts/navigation-list";
-import type ChNavigationListRender from "../../navigation-list-render.lit";
-import type { NavigationListItemModel, NavigationListSharedState } from "../../types";
+import type { ChNavigationListRender } from "../../navigation-list-render.lit";
+import type {
+  NavigationListItemCustomRender,
+  NavigationListItemModel,
+  NavigationListSharedState
+} from "../../types";
 import { NAVIGATION_LIST_INITIAL_LEVEL, NAVIGATION_LIST_NO_ATTRIBUTE } from "../../utils";
 import { getNavigationListItemLevelPart } from "./utils";
 
@@ -38,6 +42,8 @@ let GET_IMAGE_PATH_CALLBACK_REGISTRY: ChNavigationListRender["getImagePathCallba
   tag: "ch-navigation-list-item"
 })
 export class ChNavigationListItem extends KasstorElement {
+  #customRenderContent: ReturnType<NavigationListItemCustomRender> | undefined;
+
   /**
    * Specifies the caption of the control
    */
@@ -67,7 +73,7 @@ export class ChNavigationListItem extends KasstorElement {
    * Otherwise, setting this attribute on the client would provoke FOUC and/or
    * visual flickering.
    */
-  @property({ reflect: true }) exportparts: string = NAVIGATION_LIST_ITEM_EXPORT_PARTS;
+  @property({ reflect: true }) exportparts: string | undefined;
 
   /**
    * Specifies at which level of the navigation list is rendered the control.
@@ -105,22 +111,42 @@ export class ChNavigationListItem extends KasstorElement {
 
   #renderCaption = (navigationListCollapsed: boolean, levelParts: string) => {
     return navigationListCollapsed && this.sharedState.showCaptionOnCollapse === "tooltip"
-      ? html`<ch-tooltip
-          .actionElement=${
-            // We can't use this because in not a focusable element. Non
-            // focusable elements generate issue with the "mouseleave" and
-            // "focusout" events
-            null
-          }
-          .actionElementAccessibleName=${this.caption}
-          block-align="center"
-          inline-align="outside-end"
-          .delay=${this.sharedState.tooltipDelay}
-          exportparts=${tokenMapExportParts(
-            {
+      ? html` ${this.#renderImage()}
+          <ch-tooltip
+            .actionElement=${
+              // We can't use this because in not a focusable element. Non
+              // focusable elements generate issue with the "mouseleave" and
+              // "focusout" events
+              null
+            }
+            .actionElementAccessibleName=${this.caption}
+            block-align="center"
+            inline-align="outside-end"
+            .delay=${this.sharedState.tooltipDelay}
+            exportparts=${tokenMapExportParts(
+              {
+                [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
+                [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]: true,
+                [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.TOOLTIP]: true,
+
+                [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+
+                [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
+                [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
+
+                [levelParts]: true
+              },
+              "window"
+            )}
+            >${this.caption}</ch-tooltip
+          >`
+      : html`${this.#renderImage()}
+          <span
+            class="caption"
+            part=${tokenMap({
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
-              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]: true,
-              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.TOOLTIP]: true,
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
+                navigationListCollapsed,
 
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
 
@@ -128,27 +154,9 @@ export class ChNavigationListItem extends KasstorElement {
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
 
               [levelParts]: true
-            },
-            "window"
-          )}
-          >${this.caption}</ch-tooltip
-        >`
-      : html`<span
-          class="caption"
-          part=${tokenMap({
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
-              navigationListCollapsed,
-
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
-
-            [levelParts]: true
-          })}
-          >${this.caption}</span
-        >`;
+            })}
+            >${this.caption}</span
+          >`;
   };
 
   #renderImage = () =>
@@ -161,6 +169,20 @@ export class ChNavigationListItem extends KasstorElement {
           .type=${this.startImgType ?? nothing}
         ></ch-image>`
       : nothing;
+
+  #renderItemContent = (navigationListCollapsed: boolean, levelParts: string): TemplateResult => {
+    const { customRenders } = this.sharedState;
+
+    const customContent = customRenders?.itemContent(this.model, this.sharedState, this.level);
+
+    return customRenders
+      ? html`<ch-custom-render
+          .content=${customContent?.content}
+          .exportParts=${customContent?.exportParts}
+          .theme=${customContent?.stylesheet}
+        ></ch-custom-render>`
+      : this.#renderCaption(navigationListCollapsed, levelParts);
+  };
 
   #renderContent = (
     levelParts: string,
@@ -178,8 +200,9 @@ export class ChNavigationListItem extends KasstorElement {
 
       [DISABLED_CLASS]: !!disabled,
 
-      [`expandable-button ${this.expanded ? "expanded" : "collapsed"} expandable-button--${expandableButtonPosition}`]:
-        hasExpandableButton
+      [`expandable-button ${
+        this.expanded ? "expanded" : "collapsed"
+      } expandable-button--${expandableButtonPosition}`]: hasExpandableButton
     };
 
     // We heavily use nothing to avoid bindings to improve rendering performance
@@ -218,7 +241,7 @@ export class ChNavigationListItem extends KasstorElement {
             (!disabled && this.link.target) || nothing
           }
         >
-          ${this.#renderImage()} ${this.#renderCaption(navigationListCollapsed, levelParts)}
+          ${this.#renderItemContent(navigationListCollapsed, levelParts)}
         </a>`
       : html`<button
           class=${tokenMap(classes)}
@@ -241,9 +264,11 @@ export class ChNavigationListItem extends KasstorElement {
           ?disabled=${disabled}
           type="button"
         >
-          ${this.#renderImage()} ${this.#renderCaption(navigationListCollapsed, levelParts)}
+          ${this.#renderItemContent(navigationListCollapsed, levelParts)}
         </button>`;
   };
+
+  #getLevelPart = () => `level-${this.level}` as const;
 
   // Lit doesn't properly read properties in the connectedCallback when the
   // component is SSRed
@@ -263,6 +288,25 @@ export class ChNavigationListItem extends KasstorElement {
       "getImagePathCallback",
       "ch-navigation-list-render"
     );
+  }
+
+  override willUpdate() {
+    const currentCustomRender = this.sharedState.customRenders?.itemContent(
+      this.model,
+      this.sharedState,
+      this.level
+    );
+    const currentParts = currentCustomRender?.exportParts;
+    const lastExportParts = this.#customRenderContent?.exportParts;
+
+    if (this.exportparts === undefined || currentParts !== lastExportParts) {
+      this.exportparts =
+        currentParts === undefined
+          ? `${NAVIGATION_LIST_ITEM_EXPORT_PARTS},${this.#getLevelPart()}`
+          : `${NAVIGATION_LIST_ITEM_EXPORT_PARTS},${this.#getLevelPart()},${currentParts}`;
+    }
+
+    this.#customRenderContent = currentCustomRender;
   }
 
   override render() {
@@ -286,15 +330,6 @@ export class ChNavigationListItem extends KasstorElement {
       expandableButtonPosition,
       isInitialLevel
     )}
-    ${this.selected && sharedState.selectedLinkIndicator
-      ? html`<div
-          class="indicator"
-          part=${tokenMap({
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.INDICATOR]: true,
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
-          })}
-        ></div>`
-      : nothing}
     ${this.expandable
       ? html`<div
           role="list"
@@ -320,6 +355,7 @@ export class ChNavigationListItem extends KasstorElement {
       : nothing}`;
   }
 }
+
 
 // ######### Auto generated below #########
 

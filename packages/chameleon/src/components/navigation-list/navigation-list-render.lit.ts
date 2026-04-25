@@ -1,5 +1,6 @@
 import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
+import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import { html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
@@ -7,36 +8,35 @@ import { repeat } from "lit/directives/repeat.js";
 
 import { IS_SERVER } from "../../development-flags";
 import type { ChameleonControlsTagName } from "../../typings/chameleon-components";
-import type { ItemLink } from "../../typings/hyperlinks";
 import type { GxImageMultiState } from "../../typings/multi-state-images";
 import { DEFAULT_NAVIGATION_LIST_GET_IMAGE_PATH_CALLBACK } from "../../utilities/constants/navigation-list";
 import {
-  getControlRegisterProperty,
-  registryControlProperty
+    getControlRegisterProperty,
+    registryControlProperty
 } from "../../utilities/register-properties/registry-properties";
 import { SCROLLABLE_CLASS } from "../../utilities/reserved-names/common";
 import { adoptCommonThemes } from "../../utilities/theme.js";
 import {
-  removeSubscription,
-  subscribe,
-  syncStateWithObservableAncestors
+    removeSubscription,
+    subscribe,
+    syncStateWithObservableAncestors
 } from "../sidebar/expanded-change-observables";
 import type {
-  NavigationListHyperlinkClickEvent,
-  NavigationListItemModel,
-  NavigationListModel,
-  NavigationListSharedState
+    NavigationListCustomRender,
+    NavigationListHyperlinkClickEvent,
+    NavigationListItemModel,
+    NavigationListModel,
+    NavigationListSharedState
 } from "./types";
 import {
-  NAVIGATION_LIST_INITIAL_LEVEL,
-  NAVIGATION_LIST_ITEM_WAS_EXPANDED,
-  NAVIGATION_LIST_NO_ATTRIBUTE
+    NAVIGATION_LIST_INITIAL_LEVEL,
+    NAVIGATION_LIST_ITEM_WAS_EXPANDED,
+    NAVIGATION_LIST_NO_ATTRIBUTE
 } from "./utils";
 
 // Side-effect to define the navigation list item
 import { ChNavigationListItem } from "./internal/navigation-list-item/navigation-list-item.lit";
 
-import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
 import styles from "./navigation-list-render.scss?inline";
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -59,10 +59,7 @@ const registerDefaultGetImagePathCallback = () =>
   );
 
 const isSelectedLink = (item: NavigationListItemModel, sharedState: NavigationListSharedState) =>
-  !!item.link &&
-  !!sharedState.selectedLink?.link?.url &&
-  sharedState.selectedLink.link.url === item.link.url &&
-  sharedState.selectedLink.id === item.id;
+  !!item.link && sharedState.selectedLink !== undefined && sharedState.selectedLink === item.id;
 
 let autoId = 0;
 const NAVIGATION_LIST_ITEM = "ch-navigation-list-item" satisfies ChameleonControlsTagName;
@@ -109,6 +106,11 @@ export class ChNavigationListRender extends KasstorElement {
    */
   @property({ type: Boolean, attribute: "auto-grow", reflect: true })
   autoGrow: boolean = false;
+
+  /**
+   * Specifies the custom renders for the navigation list.
+   */
+  @property({ attribute: false }) customRenders?: NavigationListCustomRender | undefined;
 
   /**
    * Specifies what kind of expandable button is displayed in the items by
@@ -171,26 +173,15 @@ export class ChNavigationListRender extends KasstorElement {
     | undefined;
 
   /**
-   * Specifies the current selected hyperlink.
+   * Specifies the id of the current selected hyperlink item.
    */
-  @property(NAVIGATION_LIST_NO_ATTRIBUTE) selectedLink?: {
-    id?: string;
-    link: ItemLink;
-  } = {
-    link: { url: undefined }
-  };
+  @property({ attribute: "selected-link" }) selectedLink: string | undefined;
   @Observe("selectedLink")
   protected selectedLinkChanged() {
     if (this.#mustExpandNewSelectedLink()) {
       this.#expandNewSelectedLink(this.model!);
     }
   }
-
-  /**
-   * Specifies if the selected item indicator is displayed (only work for hyperlink)
-   */
-  @property({ type: Boolean, attribute: "selected-link-indicator" })
-  selectedLinkIndicator: boolean = false;
 
   /**
    * Specifies how the caption of the items will be displayed when the control
@@ -219,21 +210,22 @@ export class ChNavigationListRender extends KasstorElement {
   protected hyperlinkClick!: EventEmitter<NavigationListHyperlinkClickEvent>;
 
   @Observe([
+    "customRenders",
     "expanded",
     "expandableButton",
     "expandableButtonPosition",
     "getImagePathCallback",
-    "selectedLinkIndicator",
+    "selectedLink",
     "showCaptionOnCollapse",
     "tooltipDelay"
   ])
   protected sharedStateChanged() {
     this.sharedState = {
+      customRenders: this.customRenders,
       expandableButton: this.expandableButton,
       expandableButtonPosition: this.expandableButtonPosition,
       navigationListExpanded: this.expanded,
       getImagePathCallback: this.getImagePathCallback,
-      selectedLinkIndicator: this.selectedLinkIndicator,
       selectedLink: this.selectedLink,
       showCaptionOnCollapse: this.showCaptionOnCollapse!,
       tooltipDelay: this.tooltipDelay
@@ -296,7 +288,7 @@ export class ChNavigationListRender extends KasstorElement {
       }
 
       // Update the selected link
-      this.selectedLink = { id: itemUIModel.id, link: itemUIModel.link };
+      this.selectedLink = itemUIModel.id;
     } else {
       const eventInfo = this.buttonClick.emit(itemUIModel);
 

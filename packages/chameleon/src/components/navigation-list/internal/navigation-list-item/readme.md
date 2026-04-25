@@ -48,7 +48,7 @@ If disabled, it will not fire any user interaction related event
 
 ---
 
-### `exportparts:  string`
+### `exportparts:  string | undefined`
 
 <p>This property works the same as the exportparts attribute. It is defined
 as a property just to reflect the default value, which avoids FOUC when
@@ -58,7 +58,7 @@ visual flickering.</p>
 
 **Attribute**: <code>exportparts</code>
 
-**Default**: <code>NAVIGATION_LIST_ITEM_EXPORT_PARTS</code>
+**Default**: <code>undefined</code>
 
 ---
 

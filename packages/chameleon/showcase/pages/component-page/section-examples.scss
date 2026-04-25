@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 32px 0 12px;
+  color: var(--showcase-heading-color, #111827);
+
+  &:first-of-type {
+    margin-block-start: 0;
+  }
+}
+
+p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--showcase-text-color, #374151);
+  margin: 0 0 16px;
+}
+
+.example-card {
+  margin-block-end: 32px;
+}
+
+.example-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--showcase-heading-color, #111827);
+}
+
+.example-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--showcase-text-color, #374151);
+  margin: 0 0 10px;
+}
+
+/* Two-column layout: code on the left, preview on the right.
+   Stacks vertically on narrow viewports. */
+.example-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+  margin-block-end: 12px;
+}
+
+@media (max-width: 900px) {
+  .example-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.example-code {
+  min-inline-size: 0;
+  display: flex;
+
+  ch-code {
+    flex: 1;
+    min-inline-size: 0;
+  }
+}
+
+.example-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border: 1px solid var(--showcase-border-color, #e5e7eb);
+  border-radius: 6px;
+  background: #fff;
+  /* Reserve space so previews of components without intrinsic size
+     (e.g. ch-navigation-list-render) do not collapse to zero. */
+  min-block-size: 320px;
+  overflow: auto;
+}
+
+.example-playground-link {
+  margin-block-start: 8px;
+}
+
+.example-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--showcase-accent-color, #2563eb);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.empty-state {
+  font-size: 14px;
+  color: var(--showcase-text-color, #6b7280);
+}

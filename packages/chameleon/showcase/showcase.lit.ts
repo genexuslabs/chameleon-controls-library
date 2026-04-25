@@ -23,6 +23,7 @@ import "./pages/json-render/json-render-showcase.lit";
 
 // Section components
 import "./pages/component-page/section-overview.lit";
+import "./pages/component-page/section-examples.lit";
 import "./pages/component-page/section-api.lit";
 import "./pages/component-page/section-style.lit";
 import "./pages/component-page/section-accessibility.lit";
@@ -72,6 +73,13 @@ function buildRouterModel(): RouterModel {
             <showcase-section-overview
               component-name=${tagName}
             ></showcase-section-overview>
+          `
+        },
+        examples: {
+          render: () => html`
+            <showcase-section-examples
+              component-name=${tagName}
+            ></showcase-section-examples>
           `
         },
         api: {

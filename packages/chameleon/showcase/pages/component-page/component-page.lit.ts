@@ -18,6 +18,7 @@ import styles from "./component-page.scss?inline";
 
 const SECTIONS = [
   { id: "overview", caption: "Overview" },
+  { id: "examples", caption: "Examples" },
   { id: "api", caption: "API" },
   { id: "style", caption: "Style" },
   { id: "accessibility", caption: "Accessibility" },

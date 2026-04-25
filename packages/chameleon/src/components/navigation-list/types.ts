@@ -1,12 +1,13 @@
+import type { nothing, TemplateResult } from "lit/html.js";
 import type { ItemLink } from "../../typings/hyperlinks";
 import type { ImageRender } from "../../typings/multi-state-images";
-import type ChNavigationListRender from "./navigation-list-render.lit";
+import type { ChNavigationListRender } from "./navigation-list-render.lit";
 import type { NAVIGATION_LIST_ITEM_WAS_EXPANDED } from "./utils";
 
 export type NavigationListModel = NavigationListItemModel[];
 
 export type NavigationListItemModel = {
-  id?: string;
+  id: string;
   caption: string;
   disabled?: boolean;
   expanded?: boolean;
@@ -18,11 +19,30 @@ export type NavigationListItemModel = {
   [NAVIGATION_LIST_ITEM_WAS_EXPANDED]?: boolean;
 };
 
+export type NavigationListCustomRender = {
+  itemContent: NavigationListItemCustomRender;
+};
+
+export type NavigationListItemCustomRender = (
+  item: NavigationListItemModel,
+  sharedState: NavigationListSharedState,
+  level: number
+) => {
+  content: TemplateResult | undefined | null | typeof nothing | string;
+  exportParts?: string;
+  stylesheet?: string;
+};
+
 export type NavigationListHyperlinkClickEvent = {
   item: NavigationListItemModel;
 };
 
 export type NavigationListSharedState = {
+  /**
+   * Specifies the custom renders for the navigation list.
+   */
+  customRenders: NavigationListCustomRender | undefined;
+
   /**
    * Specifies what kind of expandable button is displayed in the items by
    * default.
@@ -49,12 +69,6 @@ export type NavigationListSharedState = {
    * Specifies if the navigation-list parent is expanded or collapsed.
    */
   navigationListExpanded: ChNavigationListRender["expanded"];
-
-  /**
-   * Specifies if the selected item indicator is displayed when the item is
-   * selected. Only applies when the `link` property is defined.
-   */
-  selectedLinkIndicator: ChNavigationListRender["selectedLinkIndicator"];
 
   selectedLink: ChNavigationListRender["selectedLink"];
 

@@ -181,6 +181,12 @@
 
 - Removed the `gxImageConstructor`, `gxSettings` and `useGxRender` (`COMPLETE............`) properties. `ADD EXPLANATION......`
 
+- The selectedLink property is now a string property, which matches the selectedLink by the item's id.
+
+- The selected link algorithm has been updated to match the selected link by the item's id. Only applies if the item has a link.
+
+- Removed selectedLinkIndicator property.
+
 ### ch-switch
 
 - The `value` property is now `"on"` by default, instead of `null`.

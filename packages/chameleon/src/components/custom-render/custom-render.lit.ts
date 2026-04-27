@@ -90,10 +90,7 @@ export class ChCustomRender extends KasstorElement {
   #adoptedTheme: string | undefined;
 
   @Observe("theme")
-  protected themeChanged(
-    newTheme: string | undefined,
-    _oldTheme: string | undefined
-  ) {
+  protected themeChanged(newTheme: string | undefined) {
     if (IS_SERVER) {
       return;
     }
@@ -201,4 +198,3 @@ declare global {
     "ch-custom-render": HTMLChCustomRenderElement;
   }
 }
-

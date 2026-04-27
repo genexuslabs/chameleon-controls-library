@@ -7,13 +7,11 @@ import type { ItemLink } from "../../../../typings/hyperlinks";
 import type { ImageRender } from "../../../../typings/multi-state-images";
 import { tokenMap } from "../../../../utilities/mapping/token-map";
 import { tokenMapExportParts } from "../../../../utilities/mapping/token-map-export-parts";
-import { getControlRegisterProperty } from "../../../../utilities/register-properties/registry-properties";
 import { DISABLED_CLASS } from "../../../../utilities/reserved-names/common";
 import {
   NAVIGATION_LIST_ITEM_EXPORT_PARTS,
   NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
 } from "../../../../utilities/reserved-names/parts/navigation-list";
-import type { ChNavigationListRender } from "../../navigation-list-render.lit";
 import type {
   NavigationListItemCustomRender,
   NavigationListItemModel,
@@ -24,6 +22,9 @@ import { getNavigationListItemLevelPart } from "./utils";
 
 import styles from "./navigation-list-item.scss?inline";
 
+// Side-effect to define the custom-render component
+import "../../../custom-render/custom-render.lit";
+
 // In the server we need to preload the ch-image just in case to properly
 // render it, because Lit doesn't support async rendering in the server.
 // In the client we can lazy load the ch-image, since not all ch-checkbox will
@@ -31,8 +32,6 @@ import styles from "./navigation-list-item.scss?inline";
 if (IS_SERVER) {
   await import("../../../image/image.lit");
 }
-
-let GET_IMAGE_PATH_CALLBACK_REGISTRY: ChNavigationListRender["getImagePathCallback"];
 
 /**
  * @status experimental
@@ -163,8 +162,7 @@ export class ChNavigationListItem extends KasstorElement {
     this.startImgSrc
       ? html`<ch-image
           .disabled=${this.disabled}
-          .getImagePathCallback=${this.sharedState.getImagePathCallback ??
-          GET_IMAGE_PATH_CALLBACK_REGISTRY}
+          .getImagePathCallback=${this.sharedState.getImagePathCallback}
           .src=${this.model}
           .type=${this.startImgType ?? nothing}
         ></ch-image>`
@@ -282,12 +280,6 @@ export class ChNavigationListItem extends KasstorElement {
     // TODO: Check if this attribute is removed when the component is moved in
     // the DOM. It should not be removed...
     this.setAttribute("role", "listitem");
-
-    // Initialize default getImagePathCallback
-    GET_IMAGE_PATH_CALLBACK_REGISTRY ??= getControlRegisterProperty(
-      "getImagePathCallback",
-      "ch-navigation-list-render"
-    );
   }
 
   override willUpdate() {
@@ -299,6 +291,8 @@ export class ChNavigationListItem extends KasstorElement {
     const currentParts = currentCustomRender?.exportParts;
     const lastExportParts = this.#customRenderContent?.exportParts;
 
+    // TODO: Add unit tests for this
+    // Update the exportparts using the custom render parts if necessary
     if (this.exportparts === undefined || currentParts !== lastExportParts) {
       this.exportparts =
         currentParts === undefined
@@ -356,7 +350,6 @@ export class ChNavigationListItem extends KasstorElement {
   }
 }
 
-
 // ######### Auto generated below #########
 
 declare global {
@@ -368,7 +361,7 @@ declare global {
 
   /**
    * @status experimental
-   */// prettier-ignore
+   */ // prettier-ignore
   interface HTMLChNavigationListItemElement extends ChNavigationListItem {
     // Extend the ChNavigationListItem class redefining the event listener methods to improve type safety when using them
     addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
@@ -388,4 +381,3 @@ declare global {
     "ch-navigation-list-item": HTMLChNavigationListItemElement;
   }
 }
-

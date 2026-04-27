@@ -1,10 +1,10 @@
-import type { RegistryGetImagePathCallback } from "../utilities/register-properties/types";
+import type { ChameleonDefaultPropertyManager } from "../managers/property-defaults/types";
 
 declare global {
-  // eslint-disable-next-line no-var
+  var chameleonControlsLibraryDefaultManager: Readonly<ChameleonDefaultPropertyManager> | undefined;
+
   var chameleonControlsLibrary:
     | {
-        getImagePathCallback?: Partial<RegistryGetImagePathCallback>;
         reports?: {
           accessibility: boolean;
           performance?: boolean;

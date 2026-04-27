@@ -1,6 +1,7 @@
 import { Component, KasstorElement } from "@genexus/kasstor-core/decorators/component.js";
 import { Event, type EventEmitter } from "@genexus/kasstor-core/decorators/event.js";
 import { Observe } from "@genexus/kasstor-core/decorators/observe.js";
+import { effect } from "@genexus/kasstor-signals/core.js";
 import { html, nothing, type TemplateResult } from "lit";
 import { property } from "lit/decorators/property.js";
 import { state } from "lit/decorators/state.js";
@@ -9,34 +10,30 @@ import { repeat } from "lit/directives/repeat.js";
 import { IS_SERVER } from "../../development-flags";
 import type { ChameleonControlsTagName } from "../../typings/chameleon-components";
 import type { GxImageMultiState } from "../../typings/multi-state-images";
-import { DEFAULT_NAVIGATION_LIST_GET_IMAGE_PATH_CALLBACK } from "../../utilities/constants/navigation-list";
-import {
-    getControlRegisterProperty,
-    registryControlProperty
-} from "../../utilities/register-properties/registry-properties";
 import { SCROLLABLE_CLASS } from "../../utilities/reserved-names/common";
 import { adoptCommonThemes } from "../../utilities/theme.js";
 import {
-    removeSubscription,
-    subscribe,
-    syncStateWithObservableAncestors
+  removeSubscription,
+  subscribe,
+  syncStateWithObservableAncestors
 } from "../sidebar/expanded-change-observables";
 import type {
-    NavigationListCustomRender,
-    NavigationListHyperlinkClickEvent,
-    NavigationListItemModel,
-    NavigationListModel,
-    NavigationListSharedState
+  NavigationListCustomRender,
+  NavigationListHyperlinkClickEvent,
+  NavigationListItemModel,
+  NavigationListModel,
+  NavigationListSharedState
 } from "./types";
 import {
-    NAVIGATION_LIST_INITIAL_LEVEL,
-    NAVIGATION_LIST_ITEM_WAS_EXPANDED,
-    NAVIGATION_LIST_NO_ATTRIBUTE
+  NAVIGATION_LIST_INITIAL_LEVEL,
+  NAVIGATION_LIST_ITEM_WAS_EXPANDED,
+  NAVIGATION_LIST_NO_ATTRIBUTE
 } from "./utils";
 
 // Side-effect to define the navigation list item
 import { ChNavigationListItem } from "./internal/navigation-list-item/navigation-list-item.lit";
 
+import { getDefaultPropertyManager } from "../../managers/property-defaults/property-defaults-manager";
 import styles from "./navigation-list-render.scss?inline";
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -45,18 +42,6 @@ import styles from "./navigation-list-render.scss?inline";
 // This callback will be registered by default. If it is used in GeneXus, all
 // tree views will have the same state, so the parameters used of the treeState
 // are "shared" across all tree view instances
-
-// TODO: FOR LIT USE A CONTEXT to share the getImagePathCallback implementation!
-
-// TODO: For some reason, this module import is different when an external
-// library imports the registryControlProperty function. We should de-dup this
-// to fix issues related with double initialization of the registry
-const registerDefaultGetImagePathCallback = () =>
-  registryControlProperty(
-    "getImagePathCallback",
-    "ch-navigation-list-render",
-    DEFAULT_NAVIGATION_LIST_GET_IMAGE_PATH_CALLBACK
-  );
 
 const isSelectedLink = (item: NavigationListItemModel, sharedState: NavigationListSharedState) =>
   !!item.link && sharedState.selectedLink !== undefined && sharedState.selectedLink === item.id;
@@ -79,11 +64,20 @@ export class ChNavigationListRender extends KasstorElement {
     super();
     // TODO: Conditional add this event
     this.addEventListener("click", this.#handleItemClick);
+
+    // TODO: Add unit tests for this
+    effect(() => {
+      this.#defaultGetImagePathCallback =
+        getDefaultPropertyManager().getImagePathCallback["ch-navigation-list-render"]();
+      this.sharedStateChanged(); // Update the shared state
+    });
   }
 
-  @state() protected sharedState!: NavigationListSharedState;
-
   // TODO: Test how many times this callbacks is triggered on the initial load
+
+  #defaultGetImagePathCallback:
+    | ((item: NavigationListItemModel) => GxImageMultiState | undefined)
+    | undefined;
 
   /**
    * This ID is used to identify the Navigation List. Necessary to subscribe
@@ -99,6 +93,8 @@ export class ChNavigationListRender extends KasstorElement {
    * hydration mismatches.
    */
   #shouldReRenderAfterFirstRender = false;
+
+  @state() protected sharedState!: NavigationListSharedState;
 
   /**
    * If `false` the overflowing content of the control will be clipped to the
@@ -225,7 +221,7 @@ export class ChNavigationListRender extends KasstorElement {
       expandableButton: this.expandableButton,
       expandableButtonPosition: this.expandableButtonPosition,
       navigationListExpanded: this.expanded,
-      getImagePathCallback: this.getImagePathCallback,
+      getImagePathCallback: this.getImagePathCallback ?? this.#defaultGetImagePathCallback,
       selectedLink: this.selectedLink,
       showCaptionOnCollapse: this.showCaptionOnCollapse!,
       tooltipDelay: this.tooltipDelay
@@ -378,11 +374,6 @@ export class ChNavigationListRender extends KasstorElement {
       this.#expandNewSelectedLink(this.model!);
     }
 
-    // If the getImagePathCallback was not previously registered
-    if (!getControlRegisterProperty("getImagePathCallback", "ch-navigation-list-render")) {
-      registerDefaultGetImagePathCallback();
-    }
-
     // The following methods only works in the Browser, so we must not execute
     // them in the server
     if (IS_SERVER) {
@@ -506,4 +497,3 @@ declare global {
     "ch-navigation-list-render": HTMLChNavigationListRenderElement;
   }
 }
-

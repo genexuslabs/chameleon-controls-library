@@ -1,10 +1,7 @@
 import type { FilterKeys } from "./types";
 
 // Filter custom elements that start with "ch-"
-export type ChameleonControlsTagName = FilterKeys<
-  HTMLElementTagNameMap,
-  `ch-${string}`
->;
+export type ChameleonControlsTagName = FilterKeys<HTMLElementTagNameMap, `ch-${string}`>;
 
 export type ChameleonPublicControlsTagName = Exclude<
   ChameleonControlsTagName,
@@ -27,23 +24,3 @@ export type ChameleonControls = {
 export type ChameleonPublicControls = {
   [key in ChameleonPublicControlsTagName]: HTMLElementTagNameMap[key];
 };
-
-export type ChameleonImagePathCallbackControlsTagName = Extract<
-  ChameleonControlsTagName,
-  | "ch-accordion-render"
-  | "ch-action-list-render"
-  | "ch-action-menu-render"
-  | "ch-checkbox"
-  | "ch-combo-box-render"
-  | "ch-edit"
-  | "ch-image"
-  | "ch-navigation-list-render"
-  | "ch-tab-render"
-  | "ch-tree-view-render"
-  | "ch-breadcrumb-render"
->;
-
-export type ChameleonImagePathCallbackControls = {
-  [key in ChameleonImagePathCallbackControlsTagName]: ChameleonControls[key];
-};
-

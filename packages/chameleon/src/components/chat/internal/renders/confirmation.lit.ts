@@ -19,6 +19,7 @@ export const defaultConfirmationRender: ChatConfirmationRender = (
       "confirmation-container": true,
       [confirmation.parts]: !!confirmation.parts
     })}
+    exportparts="container, title, message, actions, button-approve, button-reject, approval-requested, approval-responded, output-denied, output-available"
     .approval=${ifDefined(confirmation.approval)}
     .state=${confirmation.state}
     .title=${ifDefined(confirmation.title)}

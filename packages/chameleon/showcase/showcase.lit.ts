@@ -20,6 +20,11 @@ import "./pages/getting-started/showcase-getting-started.lit";
 import "./pages/component-page/component-page.lit";
 import "./playground/global-playground.lit";
 import "./pages/json-render/json-render-showcase.lit";
+import "./pages/styling-design-system/chat-showcase.lit";
+import "./pages/styling-design-system/reasoning-chat-showcase.lit";
+import "./pages/styling-design-system/plan-chat-showcase.lit";
+import "./pages/styling-design-system/confirmation-showcase.lit";
+import "./pages/styling-design-system/tool-showcase.lit";
 
 // Section components
 import "./pages/component-page/section-overview.lit";
@@ -127,6 +132,31 @@ function buildRouterModel(): RouterModel {
     // json-render examples
     "json-render": {
       render: () => html`<showcase-json-render></showcase-json-render>`
+    },
+
+    // Styling & Design System examples
+    "styling-design-system": {
+      render: (child?: TemplateResult | typeof nothing) => child ?? nothing,
+      children: {
+        "": {
+          render: () => html`<showcase-chat-styling></showcase-chat-styling>`
+        },
+        chat: {
+          render: () => html`<showcase-chat-styling></showcase-chat-styling>`
+        },
+        reasoning: {
+          render: () => html`<showcase-reasoning-chat-styling></showcase-reasoning-chat-styling>`
+        },
+        plan: {
+          render: () => html`<showcase-plan-chat-styling></showcase-plan-chat-styling>`
+        },
+        confirmation: {
+          render: () => html`<showcase-confirmation-styling></showcase-confirmation-styling>`
+        },
+        tool: {
+          render: () => html`<showcase-tool-styling></showcase-tool-styling>`
+        }
+      }
     },
 
     // Component pages

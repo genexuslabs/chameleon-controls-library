@@ -142,7 +142,9 @@ const getAriaBusyValue = (
  * @slot additional-content - Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state.
  */
 @Component({
-  shadow: {},
+  shadow: {
+    exportparts: "container, title, message, actions, button-approve, button-reject, approval-requested, approval-responded, output-denied, output-available"
+  },
   styles,
   tag: "ch-chat"
 })
@@ -1257,7 +1259,7 @@ declare global {
    * @slot additional-content - Projected between the messages area and the send container. Rendered when `showAdditionalContent` is `true` and the chat is not in initial or empty state.
    *
    * @fires userMessageAdded Fired when a new user message is added in the chat via user interaction.
-   *
+   *   
    *   Since developers can define their own render for file attachment, this
    *   event serves to synchronize the cleanup of the `send-input` with the
    *   cleanup of the custom file attachment, or or even blocking user

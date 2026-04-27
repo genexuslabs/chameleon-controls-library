@@ -1,0 +1,439 @@
+// Chat Showcase Styles
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.chat-showcase-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  background-color: #f5f5f5;
+  padding: 2rem;
+  box-sizing: border-box;
+  gap: 2rem;
+}
+
+// Showcase Header Section
+.showcase-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// Chat Wrapper - Contains the actual chat component
+.chat-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+// Styling the ch-chat component using shadow parts
+.styled-chat {
+  // Host element styling
+  width: 100%;
+  block-size: 600px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+
+  // Messages Container - Scrollable area with messages
+  &::part(messages-container) {
+    background-color: #ffffff;
+    padding: 1.5rem 1rem;
+  }
+
+  // Send Container - Bottom input area
+  &::part(send-container) {
+    background-color: #ffffff;
+    border-block-start: 1px solid #e5e5e5;
+    padding: 1rem 1.25rem;
+    gap: 0.75rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  // Send Input
+  &::part(send-input) {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 24px;
+    padding-inline: 1rem;
+    padding-block: 0.625rem;
+    font-size: 0.9375rem;
+    color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    transition: all 0.15s ease;
+    flex: 1;
+
+    &:focus-within {
+      border-color: #3b82f6;
+      background-color: #ffffff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  // Region after the input
+  &::part(send-input-after) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding-inline-end: 0.25rem;
+  }
+
+  // Send Button
+  &::part(send-button) {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    inline-size: 2rem;
+    block-size: 2rem;
+    min-inline-size: 2rem;
+    min-block-size: 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: #2563eb;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      background-color: #d1d5db;
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+    }
+  }
+
+  // Stop Response Button
+  &::part(stop-response-button) {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    inline-size: 2rem;
+    block-size: 2rem;
+    min-inline-size: 2rem;
+    min-block-size: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: #dc2626;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  // Message bubbles - User messages only on content-container
+  &::part(content-container user) {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    border-radius: 18px;
+    border-bottom-right-radius: 4px;
+    padding: 0.75rem 1rem;
+    margin-block: 0.5rem;
+    margin-inline-start: 25%;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  // Message bubbles - Assistant messages only on content-container
+  &::part(content-container assistant) {
+    background-color: #f7f7f8;
+    color: #1a1a1a;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    padding: 0.75rem 1rem;
+    margin-block: 0.5rem;
+    margin-inline-end: 25%;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  // Copy button for messages
+  &::part(copy-message-content) {
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 0.375rem 0.625rem;
+    margin-block-start: 0.25rem;
+    font-size: 0.8125rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #e8e8e8;
+      color: #1a1a1a;
+    }
+
+    &:active {
+      background-color: #d8d8d8;
+    }
+  }
+
+  // Confirmation container
+  &::part(confirmation-container) {
+    margin-block: 0.75rem;
+  }
+
+  // Confirmation inner container with state-based styling
+  &::part(container) {
+    padding: 1rem;
+    background-color: #fef9f3;
+    border: 1px solid #f3e8dc;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  // Confirmation title
+  &::part(title) {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-block-end: 0.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+  }
+
+  // Confirmation message
+  &::part(message) {
+    font-size: 0.9375rem;
+    color: #4a4a4a;
+    line-height: 1.6;
+    margin-block-end: 0.75rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+  }
+
+  // Actions container
+  &::part(actions) {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-block-start: 1rem;
+  }
+
+  // Approve button
+  &::part(button-approve) {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+
+    &:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #10b981;
+      outline-offset: 2px;
+    }
+  }
+
+  // Reject button
+  &::part(button-reject) {
+    background-color: #ffffff;
+    color: #ef4444;
+    border: 1.5px solid #ef4444;
+    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #fef2f2;
+      border-color: #dc2626;
+      color: #dc2626;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(239, 68, 68, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
+      background-color: #fee2e2;
+      box-shadow: 0 1px 2px rgba(239, 68, 68, 0.1);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #ef4444;
+      outline-offset: 2px;
+    }
+  }
+
+  // Styling for different confirmation states
+  &::part(approval-requested) {
+    border-left: 4px solid #f59e0b;
+  }
+
+  &::part(approval-responded) {
+    border-left: 4px solid #10b981;
+    background-color: #f0fdf4;
+    border-color: #d1fae5;
+  }
+
+  &::part(output-denied) {
+    border-left: 4px solid #ef4444;
+    background-color: #fef2f2;
+    border-color: #fecaca;
+  }
+
+  &::part(output-available) {
+    border-left: 4px solid #3b82f6;
+    background-color: #eff6ff;
+    border-color: #dbeafe;
+  }
+}
+
+// Showcase Footer Section
+.showcase-footer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 1rem 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    li {
+      font-size: 0.9375rem;
+      color: #666;
+      line-height: 1.6;
+      padding: 0.375rem 0;
+      position: relative;
+      padding-left: 1.5rem;
+
+      &::before {
+        content: "\2713";
+        position: absolute;
+        left: 0;
+        color: #3b82f6;
+        font-weight: bold;
+      }
+
+      code {
+        background-color: #f3f4f6;
+        padding: 0.125rem 0.375rem;
+        border-radius: 3px;
+        font-size: 0.875rem;
+        color: #1a1a1a;
+        font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono",
+          Consolas, "Courier New", monospace;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .chat-showcase-container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .showcase-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .showcase-header p {
+    font-size: 0.875rem;
+  }
+
+  .styled-chat {
+    block-size: 500px;
+  }
+
+  .showcase-footer {
+    padding: 1rem;
+  }
+}

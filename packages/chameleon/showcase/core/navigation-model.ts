@@ -87,6 +87,38 @@ export function buildNavigationModel(): NavigationListModel {
       link: { url: "/getting-started" }
     },
     {
+      id: "styling-design-system",
+      caption: "Styling & Design System",
+      expanded: true,
+      items: [
+        {
+          id: "styling-chat",
+          caption: "Chat Messages",
+          link: { url: "/styling-design-system/chat" }
+        },
+        {
+          id: "styling-reasoning",
+          caption: "Chat with Reasoning",
+          link: { url: "/styling-design-system/reasoning" }
+        },
+        {
+          id: "styling-plan",
+          caption: "Chat with Plan",
+          link: { url: "/styling-design-system/plan" }
+        },
+        {
+          id: "styling-confirmation",
+          caption: "Chat with Confirmation",
+          link: { url: "/styling-design-system/confirmation" }
+        },
+        {
+          id: "styling-tool",
+          caption: "Chat with Tool",
+          link: { url: "/styling-design-system/tool" }
+        }
+      ]
+    },
+    {
       id: "json-render",
       caption: "ch-json-render",
       link: { url: "/json-render" }

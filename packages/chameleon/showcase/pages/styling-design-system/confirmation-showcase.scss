@@ -1,0 +1,486 @@
+// Confirmation Chat Showcase Styles
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.confirmation-showcase-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  background-color: #f5f5f5;
+  padding: 2rem;
+  box-sizing: border-box;
+  gap: 2rem;
+}
+
+// Showcase Header Section
+.showcase-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+// Chat Wrapper
+.chat-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+// Styling the ch-chat component with confirmation
+.styled-confirmation-chat {
+  width: 100%;
+  block-size: 700px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+
+  // Messages Container
+  &::part(messages-container) {
+    background-color: #ffffff;
+    padding: 1.5rem 1rem;
+  }
+
+  // Send Container
+  &::part(send-container) {
+    background-color: #ffffff;
+    border-block-start: 1px solid #e5e5e5;
+    padding: 1rem 1.25rem;
+    gap: 0.75rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  // Send Input
+  &::part(send-input) {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 24px;
+    padding-inline: 1rem;
+    padding-block: 0.625rem;
+    font-size: 0.9375rem;
+    color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    transition: all 0.15s ease;
+    flex: 1;
+
+    &:focus-within {
+      border-color: #3b82f6;
+      background-color: #ffffff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  // Region after the input
+  &::part(send-input-after) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding-inline-end: 0.25rem;
+  }
+
+  // Send Button
+  &::part(send-button) {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    inline-size: 2rem;
+    block-size: 2rem;
+    min-inline-size: 2rem;
+    min-block-size: 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: #2563eb;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      background-color: #d1d5db;
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+    }
+  }
+
+  // Stop Response Button
+  &::part(stop-response-button) {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    inline-size: 2rem;
+    block-size: 2rem;
+    min-inline-size: 2rem;
+    min-block-size: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: #dc2626;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  // Message bubbles - User messages
+  &::part(content-container user) {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    border-radius: 18px;
+    border-bottom-right-radius: 4px;
+    padding: 0.75rem 1rem;
+    margin-block: 0.5rem;
+    margin-inline-start: 25%;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  // Message bubbles - Assistant messages
+  &::part(content-container assistant) {
+    background-color: #f7f7f8;
+    color: #1a1a1a;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    padding: 0.75rem 1rem;
+    margin-block: 0.5rem;
+    margin-inline-end: 25%;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  // Copy button for messages
+  &::part(copy-message-content) {
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 0.375rem 0.625rem;
+    margin-block-start: 0.25rem;
+    font-size: 0.8125rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #e8e8e8;
+      color: #1a1a1a;
+    }
+
+    &:active {
+      background-color: #d8d8d8;
+    }
+  }
+}
+
+// Confirmation component styling through ch-chat exportparts
+.styled-confirmation-chat {
+  // Confirmation root container
+  &::part(container) {
+    background: linear-gradient(to bottom, #ffffff 0%, #fefefe 100%);
+    border: 1.5px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: visible;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      0 1px 4px rgba(0, 0, 0, 0.04);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 2px 6px rgba(0, 0, 0, 0.06);
+      border-color: #d1d5db;
+    }
+  }
+
+  // Confirmation title
+  &::part(title) {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 0.875rem 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+  }
+
+  // Confirmation message
+  &::part(message) {
+    font-size: 0.9375rem;
+    color: #4b5563;
+    line-height: 1.65;
+    margin: 0 0 1.25rem 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+  }
+
+  // Actions container
+  &::part(actions) {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-block-start: 0.25rem;
+  }
+
+  // Approve button - Modern green gradient with icon support
+  &::part(button-approve) {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border: none;
+    box-shadow:
+      0 1px 3px rgba(16, 185, 129, 0.3),
+      0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+
+    // Subtle shine effect
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: left 0.5s;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      box-shadow:
+        0 4px 12px rgba(16, 185, 129, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px) scale(1.02);
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+      transform: translateY(0) scale(0.98);
+      box-shadow:
+        0 1px 2px rgba(16, 185, 129, 0.3),
+        0 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow:
+        0 4px 12px rgba(16, 185, 129, 0.4),
+        0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+  }
+
+  // Reject button - Modern subtle design
+  &::part(button-reject) {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    color: #374151;
+    border: 1.5px solid #d1d5db;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      border-color: #9ca3af;
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px) scale(1.02);
+      color: #1f2937;
+    }
+
+    &:active {
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      transform: translateY(0) scale(0.98);
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.05) inset;
+      border-color: #6b7280;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        0 0 0 3px rgba(59, 130, 246, 0.15);
+      border-color: #3b82f6;
+    }
+  }
+
+  // State-specific styling with modern gradients
+  // Approval Requested state - Warm yellow/amber
+  &::part(approval-requested) {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border-color: #fbbf24;
+    border-width: 1.5px;
+    box-shadow:
+      0 2px 8px rgba(251, 191, 36, 0.15),
+      0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  // Approval Responded state (approved) - Fresh green
+  &::part(approval-responded) {
+    background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+    border-color: #34d399;
+    border-width: 1.5px;
+    box-shadow:
+      0 2px 8px rgba(52, 211, 153, 0.2),
+      0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  // Output Denied state (rejected) - Soft red
+  &::part(output-denied) {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    border-color: #f87171;
+    border-width: 1.5px;
+    box-shadow:
+      0 2px 8px rgba(248, 113, 113, 0.2),
+      0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  // Output Available state (completed) - Success green
+  &::part(output-available) {
+    background: linear-gradient(135deg, #ecfdf5 0%, #a7f3d0 100%);
+    border-color: #10b981;
+    border-width: 1.5px;
+    box-shadow:
+      0 2px 8px rgba(16, 185, 129, 0.25),
+      0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Showcase Footer Section
+.showcase-footer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 1rem 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    li {
+      padding: 0.375rem 0;
+      color: #4b5563;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      position: relative;
+      padding-left: 1.5rem;
+
+      &::before {
+        content: "•";
+        position: absolute;
+        left: 0.5rem;
+        color: #3b82f6;
+        font-weight: bold;
+      }
+
+      code {
+        background-color: #f3f4f6;
+        color: #1f2937;
+        padding: 0.125rem 0.375rem;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+        font-size: 0.875rem;
+      }
+    }
+  }
+}

@@ -58,6 +58,7 @@ import("../plan/plan.lit.js");
 import("../tool/tool.lit.js");
 import("../confirmation/confirmation.lit.js");
 import("../reasoning/reasoning.lit.js");
+import("../chain-of-thought/chain-of-thought.lit.js");
 
 import ("../edit/edit.lit.js");
 

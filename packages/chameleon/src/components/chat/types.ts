@@ -212,6 +212,11 @@ export type ChatMessageContentFilesAndSources = {
    * Optional reasoning component to render within the message.
    */
   reasoning?: ChatMessageReasoning;
+  
+  /**
+   * Optional chain of thought component to render within the message.
+   */
+  chainOfThought?: ChatMessageChainOfThought;
 };
 
 export type ChatMessageFiles = ChatMessageFile[];
@@ -454,6 +459,63 @@ export type ChatMessageReasoning = {
   parts?: string;
 };
 
+/**
+ * Represents a chain of thought component to be rendered within a chat message.
+ * Based on the props of the ch-chain-of-thought component.
+ */
+export type ChatMessageChainOfThought = {
+  /**
+   * Optional icon to display before the caption in the header.
+   * Can be a data URI or URL string.
+   */
+  headerIcon?: string;
+
+  /**
+   * Array of steps in the chain of thought reasoning process.
+   */
+  steps?: Array<{
+    id: string;
+    label: string;
+    description?: string;
+    icon?: string;
+    status: "complete" | "active" | "pending";
+  }>;
+
+  /**
+   * Array of search results to display.
+   */
+  searchResults?: Array<{
+    id: string;
+    url: string;
+    label?: string;
+  }>;
+
+  /**
+   * Array of images to display with captions.
+   */
+  images?: Array<{
+    id: string;
+    src: string;
+    caption?: string;
+    alt: string;
+  }>;
+
+  /**
+   * Controls whether the accordion is expanded by default.
+   */
+  defaultOpen?: boolean;
+
+  /**
+   * Controls whether the accordion is expanded or collapsed.
+   */
+  open?: boolean;
+
+  /**
+   * Parts for the chain of thought container.
+   */
+  parts?: string;
+};
+
 export type ChatCallbacks = {
   /**
    * Specifies a callback that is executed when the user wants to download the
@@ -611,6 +673,13 @@ export type ChatMessageRenderBySections = {
    * If `undefined`, a default render for the reasoning will be used.
    */
   reasoning?: ChatReasoningRender;
+
+  /**
+   * Render for the chain of thought component within the message.
+   *
+   * If `undefined`, a default render for the chain of thought will be used.
+   */
+  chainOfThought?: ChatChainOfThoughtRender;
 };
 
 export type ChatActionsRender = (
@@ -668,6 +737,11 @@ export type ChatConfirmationRender = (
 
 export type ChatReasoningRender = (
   reasoning: ChatMessageReasoning,
+  chatRef: HTMLChChatElement
+) => TemplateResult | string;
+
+export type ChatChainOfThoughtRender = (
+  chainOfThought: ChatMessageChainOfThought,
   chatRef: HTMLChChatElement
 ) => TemplateResult | string;
 

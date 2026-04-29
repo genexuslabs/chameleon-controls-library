@@ -86,8 +86,8 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
           )}</ul>`
       : nothing;
 
-    // Render special components (plan, tool, confirmation, reasoning)
-  const { plan, tool, confirmation, reasoning } =
+    // Render special components (plan, tool, confirmation, reasoning, chainOfThought)
+  const { plan, tool, confirmation, reasoning, chainOfThought } =
     getMessageSpecialComponents(message);
 
   const planRender = plan ? renders.plan(plan, chatRef) : nothing;
@@ -102,13 +102,17 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
     ? renders.reasoning(reasoning, chatRef)
     : nothing;
 
+  const chainOfThoughtRender = chainOfThought
+    ? renders.chainOfThought(chainOfThought, chatRef)
+    : nothing;
+
   return html`<div
     part=${tokenMap({
       [`content-container ${message.role} ${message.id}`]: true,
       [assistantStatus]: !!assistantStatus,
       [message.parts]: !!message.parts
     })}
-  >${contentBefore}${content}${contentAfter}${filesRender}${sourcesRender}${planRender}${toolRender}${confirmationRender}${reasoningRender}${renders.actions(
+  >${contentBefore}${content}${contentAfter}${filesRender}${sourcesRender}${planRender}${toolRender}${confirmationRender}${reasoningRender}${chainOfThoughtRender}${renders.actions(
       message,
       chatRef
     )}</div>`;

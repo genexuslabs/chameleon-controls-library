@@ -115,6 +115,11 @@ export function buildNavigationModel(): NavigationListModel {
           id: "styling-tool",
           caption: "Chat with Tool",
           link: { url: "/styling-design-system/tool" }
+        },
+        {
+          id: "styling-chain-of-thought",
+          caption: "Chat with Chain of Thought",
+          link: { url: "/styling-design-system/chain-of-thought" }
         }
       ]
     },

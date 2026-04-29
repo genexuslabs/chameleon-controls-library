@@ -1,0 +1,190 @@
+@use "../../utilities/scss/base" as *;
+
+@include box-sizing();
+
+:host {
+  display: block;
+  background: #ffffff;
+  padding: 8px 12px;
+}
+
+// - - - - - - - - - - - - - - - -
+//          Content area
+// - - - - - - - - - - - - - - - -
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// - - - - - - - - - - - - - - - -
+//     Timeline Steps Container
+// - - - - - - - - - - - - - - - -
+.steps-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+// - - - - - - - - - - - - - - - -
+//        Individual Step
+// - - - - - - - - - - - - - - - -
+.step {
+  display: flex;
+  flex-direction: row;
+  padding-block-end: 16px;
+  
+  &:last-child {
+    padding-block-end: 0;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//   Icon Column (fixed width)
+// - - - - - - - - - - - - - - - -
+.step-icon {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  inline-size: 32px;
+  flex-shrink: 0;
+  padding-block-start: 2px;
+  
+  // The actual icon
+  > * {
+    inline-size: 16px;
+    block-size: 16px;
+    color: #6c6c6c;
+    position: relative;
+    z-index: 2;
+  }
+
+  img {
+    max-inline-size: 100%;
+    max-block-size: 100%;
+  }
+  
+  // Vertical timeline line
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 24px;
+    bottom: -16px;
+    width: 1px;
+    background: #e5e5e5;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+  
+  // Hide line on last step
+  .step:last-child &::before {
+    display: none;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//        Content Column
+// - - - - - - - - - - - - - - - -
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-inline-start: 8px;
+}
+
+.step-label {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #4a4a4a;
+  margin: 0;
+}
+
+.step-description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4a4a4a;
+  margin: 0;
+  
+  // Support for bullet lists
+  ul {
+    margin: 0;
+    padding-inline-start: 16px;
+    
+    li {
+      margin-block: 4px;
+      line-height: 1.5;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//   Search Results Pills/Tags
+// - - - - - - - - - - - - - - - -
+.search-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block-start: 8px;
+}
+
+.search-result {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: #f5f5f5;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #595959;
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: none;
+  
+  // Avoid zooming on double tap on iOS devices
+  touch-action: manipulation;
+
+  &:hover {
+    background: #e8e9eb;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//            Images
+// - - - - - - - - - - - - - - - -
+.images-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.image-container {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 12px;
+  margin-block-start: 8px;
+}
+
+.image {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  block-size: auto;
+  border-radius: 8px;
+  display: block;
+}
+
+.image-caption {
+  font-size: 12px;
+  color: #7a7a7a;
+  margin-block-start: 8px;
+  line-height: 1.4;
+  align-self: flex-start;
+  inline-size: 100%;
+}

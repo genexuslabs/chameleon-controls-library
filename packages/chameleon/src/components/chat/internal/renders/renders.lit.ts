@@ -1,5 +1,6 @@
 import type { ChatMessage, ChatMessageRenderBySections } from "../../types";
 import { defaultActionsRender } from "./actions.lit";
+import { defaultChainOfThoughtRender } from "./chain-of-thought.lit";
 import { defaultCodeBlockRender } from "./code-block.lit";
 import { defaultConfirmationRender } from "./confirmation.lit";
 import { defaultContentRender } from "./content.lit";
@@ -35,6 +36,8 @@ export const renderContentBySections = (
       tool: rendersBySections.tool ?? defaultToolRender,
       confirmation:
         rendersBySections.confirmation ?? defaultConfirmationRender,
-      reasoning: rendersBySections.reasoning ?? defaultReasoningRender
+      reasoning: rendersBySections.reasoning ?? defaultReasoningRender,
+      chainOfThought:
+        rendersBySections.chainOfThought ?? defaultChainOfThoughtRender
     }
   );

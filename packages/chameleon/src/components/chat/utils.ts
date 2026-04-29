@@ -8,7 +8,8 @@ import type {
   ChatMessagePlan,
   ChatMessageTool,
   ChatMessageConfirmation,
-  ChatMessageReasoning
+  ChatMessageReasoning,
+  ChatMessageChainOfThought
 } from "./types";
 
 export const getMessageContent = (message: ChatMessageNoId) =>
@@ -68,13 +69,15 @@ export const getMessageSpecialComponents = (
   tool?: ChatMessageTool;
   confirmation?: ChatMessageConfirmation;
   reasoning?: ChatMessageReasoning;
+  chainOfThought?: ChatMessageChainOfThought;
 } =>
   typeof message.content === "object"
     ? {
         plan: message.content.plan,
         tool: message.content.tool,
         confirmation: message.content.confirmation,
-        reasoning: message.content.reasoning
+        reasoning: message.content.reasoning,
+        chainOfThought: message.content.chainOfThought
       }
     : {};
 

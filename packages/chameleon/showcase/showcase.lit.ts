@@ -25,6 +25,7 @@ import "./pages/styling-design-system/reasoning-chat-showcase.lit";
 import "./pages/styling-design-system/plan-chat-showcase.lit";
 import "./pages/styling-design-system/confirmation-showcase.lit";
 import "./pages/styling-design-system/tool-showcase.lit";
+import "./pages/styling-design-system/chain-of-thought-showcase.lit";
 
 // Section components
 import "./pages/component-page/section-overview.lit";
@@ -155,6 +156,9 @@ function buildRouterModel(): RouterModel {
         },
         tool: {
           render: () => html`<showcase-tool-styling></showcase-tool-styling>`
+        },
+        "chain-of-thought": {
+          render: () => html`<showcase-chain-of-thought-styling></showcase-chain-of-thought-styling>`
         }
       }
     },

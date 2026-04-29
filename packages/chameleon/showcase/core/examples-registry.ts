@@ -307,6 +307,80 @@ const CHAT_WITH_TOOL_MODEL: ChatMessage[] = [
   }
 ];
 
+const CHAT_WITH_CHAIN_OF_THOUGHT_MODEL: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "Can you explain how you would solve a complex problem?" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: {
+      message: "Let me walk you through my reasoning process step by step:",
+      chainOfThought: {
+        steps: [
+          {
+            id: "step-1",
+            label: "Understand the problem",
+            description: "Break down the problem into smaller components and identify key constraints",
+            status: "complete" as const
+          },
+          {
+            id: "step-2",
+            label: "Gather information",
+            description: "Search for relevant documentation, examples, and best practices",
+            status: "complete" as const
+          },
+          {
+            id: "step-3",
+            label: "Analyze solutions",
+            description: "Evaluate different approaches and their trade-offs",
+            status: "active" as const
+          },
+          {
+            id: "step-4",
+            label: "Implement and validate",
+            description: "Apply the chosen solution and verify it meets all requirements",
+            status: "pending" as const
+          }
+        ],
+        searchResults: [
+          {
+            id: "result-1",
+            url: "https://developer.mozilla.org/en-US/docs/Web/API",
+            label: "MDN Web API Documentation"
+          },
+          {
+            id: "result-2",
+            url: "https://web.dev/patterns/",
+            label: "Web.dev Patterns & Best Practices"
+          },
+          {
+            id: "result-3",
+            url: "https://www.patterns.dev/",
+            label: "Modern Web App Patterns"
+          }
+        ],
+        images: [
+          {
+            id: "img-1",
+            src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect fill='%23f0f4f8' width='320' height='180'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' fill='%23334155'%3EProblem-Solving Framework%3C/text%3E%3C/svg%3E",
+            alt: "Problem-solving framework diagram",
+            caption: "A systematic approach to breaking down and solving complex problems"
+          }
+        ],
+        defaultOpen: true
+      }
+    }
+  },
+  {
+    id: "3",
+    role: "assistant",
+    content: "This structured approach helps ensure thorough analysis and leads to more robust solutions. Each step builds on the previous one, creating a clear path from problem to solution."
+  }
+];
+
 const CHAT_WITH_MULTIPLE_COMPONENTS_MODEL: ChatMessage[] = [
   { 
     id: "1", 
@@ -540,6 +614,11 @@ export const chameleonExamplesRegistry: ComponentRegistry = {
   ChChatWithTool: () =>
     html`<div style="height: 400px; width: 100%; display: block;">
       <ch-chat style="height: 100%; width: 100%;" .items=${CHAT_WITH_TOOL_MODEL} .loadingState=${"all-records-loaded"} .markdownTheme=${null}></ch-chat>
+    </div>`,
+
+  ChChatWithChainOfThought: () =>
+    html`<div style="height: 500px; width: 100%; display: block;">
+      <ch-chat style="height: 100%; width: 100%;" .items=${CHAT_WITH_CHAIN_OF_THOUGHT_MODEL} .loadingState=${"all-records-loaded"} .markdownTheme=${null}></ch-chat>
     </div>`,
 
   ChChatWithMultipleComponents: () =>
@@ -1400,6 +1479,50 @@ const items: ChatMessage[] = [
 // <ch-chat .items=\${items}></ch-chat>`
     },
     {
+      title: "Chat with ch-chain-of-thought",
+      description: "A chat message displaying a structured reasoning process with steps, search results, and images.",
+      spec: {
+        root: "root",
+        elements: {
+          root: { type: "ChChatWithChainOfThought", props: {}, children: [] }
+        }
+      },
+      language: "typescript",
+      code:
+`import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
+
+const items: ChatMessage[] = [
+  { 
+    id: "1", 
+    role: "user", 
+    content: "Can you explain how you would solve a complex problem?" 
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: {
+      message: "Let me walk you through my reasoning process:",
+      chainOfThought: {
+        steps: [
+          { id: "step-1", label: "Understand the problem", status: "complete" },
+          { id: "step-2", label: "Gather information", status: "complete" },
+          { id: "step-3", label: "Analyze solutions", status: "active" },
+          { id: "step-4", label: "Implement and validate", status: "pending" }
+        ],
+        searchResults: [
+          { id: "r1", url: "https://developer.mozilla.org", label: "MDN" },
+          { id: "r2", url: "https://web.dev/patterns/", label: "Web.dev" }
+        ],
+        defaultOpen: true
+      }
+    }
+  }
+];
+
+// In your template:
+// <ch-chat .items=\${items}></ch-chat>`
+    },
+    {
       title: "Chat with multiple special components",
       description: "A complete workflow combining plan, reasoning, tool, and confirmation components.",
       spec: {
@@ -1604,3 +1727,4 @@ const bundles: ThemeModel = [
     }
   ]
 };
+

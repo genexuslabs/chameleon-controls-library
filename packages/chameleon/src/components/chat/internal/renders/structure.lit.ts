@@ -1,42 +1,84 @@
 import { html, nothing } from "lit";
-import { getMimeTypeFileFormat } from "../../../../utilities/mime-types-utils.js";
 import type { ArgumentTypes } from "../../../../typings/types.js";
-import { tokenMap } from "../../../../utilities/mapping/token-map.js";
 import type {
-  ChatFileRender,
-  ChatMessageByRole,
-  ChatMessageFile,
-  ChatMessageRole,
+  AGUIActivityMessage,
+  AGUIInputContent,
+  AGUIMessage
+} from "../../typesAGUI.js";
+import type {
+  ChatInputContentRender,
   ChatMessageStructureRender
-} from "../../types";
-import {
-  DEFAULT_ASSISTANT_STATUS,
-  getMessageFilesAndSources,
-  getMessageSpecialComponents
-} from "../../utils";
+} from "./types.js";
 
-type ChatMessageNoSystem = ChatMessageByRole<
-  Exclude<ChatMessageRole, "system">
->;
+/**
+ * Map an `AGUIInputContent` part type to the `ChatInputContentRender`
+ * bucket that should render it.
+ */
+const inputContentRenderKey = (
+  part: AGUIInputContent
+): keyof Required<ChatInputContentRender> | undefined => {
+  switch (part.type) {
+    case "image":
+      return "image";
+    case "audio":
+      return "audio";
+    case "video":
+      return "video";
+    case "document":
+      return "file";
+    case "text":
+      return undefined;
+  }
+};
 
-const applyFileRenders = (
-  file: ChatMessageFile,
+/**
+ * Render the multimodal `AGUIInputContent[]` parts of a user message
+ * (image / audio / video / document). Text parts are skipped here and
+ * rendered through the `content` section instead.
+ */
+const renderInputContent = (
+  parts: AGUIInputContent[],
   chatRef: HTMLChChatElement,
-  renders: Required<ChatFileRender>
-) => renders[getMimeTypeFileFormat(file.mimeType)](file, chatRef);
+  renders: Required<ChatInputContentRender>
+) => {
+  const fileParts = parts.filter(p => inputContentRenderKey(p) !== undefined);
+  if (fileParts.length === 0) {
+    return nothing;
+  }
+  return html`<ul
+    class="files-container"
+    part=${`files-container user`}
+  >
+    ${fileParts.map(part => renders[inputContentRenderKey(part)!](part, chatRef))}
+  </ul>`;
+};
 
+/**
+ * Default per-message structure render. Dispatches by AG-UI role.
+ *
+ * - `user`: text content + multimodal parts (`AGUIInputContent[]`).
+ * - `assistant`: text content + tool calls (rendered via `tool` render,
+ *   with the matching `AGUIToolMessage` looked up on `chatRef`).
+ * - `tool`: not rendered as its own row; surfaced through the originating
+ *   assistant message.
+ * - `reasoning`: rendered through the `reasoning` render.
+ * - `activity`: dispatched by `activityType` to `plan` / `confirmation` /
+ *   `chainOfThought`.
+ * - `system` / `developer`: not rendered by default.
+ */
 export const defaultMessageStructureRender: ChatMessageStructureRender = (
-  message: ChatMessageNoSystem,
-  chatRef: HTMLChChatElement,
+  message,
+  chatRef,
   renders: ArgumentTypes<ChatMessageStructureRender>[2]
 ) => {
-  const assistantStatus =
-    message.role === "assistant"
-      ? message.status ?? DEFAULT_ASSISTANT_STATUS
-      : undefined;
-
-  const { files, sources } = getMessageFilesAndSources(message);
-  const { sourceFiles } = chatRef.translations.text;
+  // System / developer / tool messages produce no row of their own
+  if (
+    message.role === "system" ||
+    message.role === "developer" ||
+    message.role === "tool"
+  ) {
+    return nothing;
+  }
 
   const contentBefore = renders.contentBefore
     ? renders.contentBefore(message, chatRef, renders.codeBlock)
@@ -48,72 +90,75 @@ export const defaultMessageStructureRender: ChatMessageStructureRender = (
     ? renders.contentAfter(message, chatRef, renders.codeBlock)
     : nothing;
 
-  const filesRender =
-    files.length !== 0
-      ? html`<ul
-          class="files-container"
-          part=${tokenMap({
-            [`files-container ${message.role} ${message.id}`]: true,
-            [assistantStatus]: !!assistantStatus,
-            [message.parts]: !!message.parts
-          })}
-        >${files.map(file => applyFileRenders(file, chatRef, renders.file))}</ul>`
-      : nothing;
+  // ── Reasoning ───────────────────────────────────────────────────────
+  if (message.role === "reasoning") {
+    return html`<div part=${`content-container reasoning ${message.id}`}>
+      ${contentBefore}${renders.reasoning(message, chatRef)}${contentAfter}
+    </div>`;
+  }
 
-  const sourcesCaption = sourceFiles
-    ? // TODO: Test the accessibility of this span
-      html`<span
-        part=${tokenMap({
-          [`sources-caption ${message.role} ${message.id}`]: true,
-          [assistantStatus]: !!assistantStatus,
-          [message.parts]: !!message.parts
-        })}
-        >${sourceFiles}</span
-      >`
-    : nothing;
+  // ── Activity (plan / confirmation / chain-of-thought) ───────────────
+  if (message.role === "activity") {
+    return html`<div part=${`content-container activity ${message.id}`}>
+      ${contentBefore}${renderActivity(message, chatRef, renders)}${contentAfter}
+    </div>`;
+  }
 
-  const sourcesRender =
-    sources.length !== 0
-      ? html`<ul
-          class="sources-container"
-          part=${tokenMap({
-            [`sources-container ${message.role} ${message.id}`]: true,
-            [assistantStatus]: !!assistantStatus,
-            [message.parts]: !!message.parts
-          })}
-        >${sourcesCaption}${sources.map(source =>
-            renders.source(source, chatRef)
-          )}</ul>`
-      : nothing;
+  // ── User ────────────────────────────────────────────────────────────
+  if (message.role === "user") {
+    const filesRender =
+      typeof message.content === "string"
+        ? nothing
+        : renderInputContent(message.content, chatRef, renders.inputContent);
 
-    // Render special components (plan, tool, confirmation, reasoning, chainOfThought)
-  const { plan, tool, confirmation, reasoning, chainOfThought } =
-    getMessageSpecialComponents(message);
+    return html`<div part=${`content-container user ${message.id}`}>
+      ${contentBefore}${content}${contentAfter}${filesRender}${renders.actions(
+        message,
+        chatRef
+      )}
+    </div>`;
+  }
 
-  const planRender = plan ? renders.plan(plan, chatRef) : nothing;
+  // ── Assistant ───────────────────────────────────────────────────────
+  // Tool calls are looked up against the chat's tool-result map. Falling
+  // back to an empty map keeps this render stand-alone-renderable.
+  const toolResults = (chatRef as HTMLChChatElement & {
+    toolResultsByCallId?: Map<
+      string,
+      Extract<AGUIMessage, { role: "tool" }>
+    >;
+  }).toolResultsByCallId;
 
-  const toolRender = tool ? renders.tool(tool, chatRef) : nothing;
+  const toolCalls = message.toolCalls ?? [];
+  const toolCallsRender = toolCalls.map(call =>
+    renders.tool(call, toolResults?.get(call.id), chatRef)
+  );
 
-  const confirmationRender = confirmation
-    ? renders.confirmation(confirmation, chatRef)
-    : nothing;
-
-  const reasoningRender = reasoning
-    ? renders.reasoning(reasoning, chatRef)
-    : nothing;
-
-  const chainOfThoughtRender = chainOfThought
-    ? renders.chainOfThought(chainOfThought, chatRef)
-    : nothing;
-
-  return html`<div
-    part=${tokenMap({
-      [`content-container ${message.role} ${message.id}`]: true,
-      [assistantStatus]: !!assistantStatus,
-      [message.parts]: !!message.parts
-    })}
-  >${contentBefore}${content}${contentAfter}${filesRender}${sourcesRender}${planRender}${toolRender}${confirmationRender}${reasoningRender}${chainOfThoughtRender}${renders.actions(
+  return html`<div part=${`content-container assistant ${message.id}`}>
+    ${contentBefore}${content}${contentAfter}${toolCallsRender}${renders.actions(
       message,
       chatRef
-    )}</div>`;
+    )}
+  </div>`;
+};
+
+/**
+ * Dispatch an activity message to the matching renderer based on
+ * `activityType`. Unknown activity types fall through to `nothing`.
+ */
+const renderActivity = (
+  activity: AGUIActivityMessage,
+  chatRef: HTMLChChatElement,
+  renders: ArgumentTypes<ChatMessageStructureRender>[2]
+) => {
+  switch (activity.activityType) {
+    case "plan":
+      return renders.plan(activity, chatRef);
+    case "confirmation":
+      return renders.confirmation(activity, chatRef);
+    case "chain-of-thought":
+      return renders.chainOfThought(activity, chatRef);
+    default:
+      return nothing;
+  }
 };

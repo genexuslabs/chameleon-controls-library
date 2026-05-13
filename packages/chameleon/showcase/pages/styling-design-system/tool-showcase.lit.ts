@@ -7,19 +7,45 @@ import { state } from "lit/decorators/state.js";
 import styles from "./tool-showcase.scss?inline";
 import type {
   ChatCallbacks,
-  ChatMessage,
-  ChatTranslations
-} from "../../../src/components/chat/types.js";
-import type { ToolModel } from "../../../src/components/tool/types.js";
+  ChatMessageRenderBySections
+} from "../../../src/components/chat/internal/renders/types.js";
+import type { AGUIMessage } from "../../../src/components/chat/typesAGUI.js";
+import type { ChatTranslations } from "../../../src/components/chat/translations.js";
+import type { ToolInput, ToolState } from "../../../src/components/tool/types.js";
 import "../../../src/components/chat/chat.lit.js";
 import "../../../src/components/tool/tool.lit.js";
+
+/**
+ * Tool call IDs that should render expanded by default. AG-UI's
+ * `AGUIToolCall` / `AGUIToolMessage` carry no per-call open flag, so the
+ * showcase decides the open policy at the render layer.
+ */
+const TOOL_CALLS_OPEN_BY_DEFAULT = new Set<string>(["call-getWeather-1"]);
+
+const parseToolArgs = (args: string): ToolInput | undefined => {
+  if (!args) return undefined;
+  try {
+    return JSON.parse(args) as ToolInput;
+  } catch {
+    return undefined;
+  }
+};
+
+const deriveToolState = (
+  result: { error?: string } | undefined
+): ToolState =>
+  result === undefined
+    ? "input-available"
+    : result.error !== undefined
+    ? "output-error"
+    : "output-available";
 
 @Component({
   styles,
   tag: "showcase-tool-styling"
 })
 export class ShowcaseToolStyling extends KasstorElement {
-  @state() private chatItems: ChatMessage[] = [
+  @state() private chatItems: AGUIMessage[] = [
     {
       id: "1",
       role: "user",
@@ -28,84 +54,93 @@ export class ShowcaseToolStyling extends KasstorElement {
     {
       id: "2",
       role: "assistant",
-      content: "I'll search for the latest AI trends for you."
+      content: "I'll search for the latest AI trends for you.",
+      toolCalls: [
+        {
+          id: "call-webSearch-1",
+          type: "function",
+          function: {
+            name: "webSearch",
+            arguments: JSON.stringify({
+              query: "latest AI trends 2026",
+              maxResults: 10,
+              filters: ["news", "technology"]
+            })
+          }
+        }
+      ]
+    },
+    {
+      id: "2-tool",
+      role: "tool",
+      toolCallId: "call-webSearch-1",
+      content: JSON.stringify({
+        results: [
+          {
+            title: "AI Agents Revolutionize Software Development",
+            url: "https://example.com/ai-agents",
+            snippet:
+              "AI-powered coding assistants are transforming how developers work..."
+          },
+          {
+            title: "Multimodal AI Models Breakthrough",
+            url: "https://example.com/multimodal",
+            snippet:
+              "New models can understand and generate text, images, and audio..."
+          },
+          {
+            title: "Enterprise AI Adoption Accelerates",
+            url: "https://example.com/enterprise-ai",
+            snippet:
+              "Companies are deploying AI at scale for business automation..."
+          }
+        ],
+        totalResults: 10
+      })
     },
     {
       id: "3",
-      role: "assistant",
-      content: {
-        message: "",
-        tool: {
-          toolName: "webSearch",
-          state: "output-available",
-          input: {
-            query: "latest AI trends 2026",
-            maxResults: 10,
-            filters: ["news", "technology"]
-          },
-          output: {
-            results: [
-              {
-                title: "AI Agents Revolutionize Software Development",
-                url: "https://example.com/ai-agents",
-                snippet:
-                  "AI-powered coding assistants are transforming how developers work..."
-              },
-              {
-                title: "Multimodal AI Models Breakthrough",
-                url: "https://example.com/multimodal",
-                snippet:
-                  "New models can understand and generate text, images, and audio..."
-              },
-              {
-                title: "Enterprise AI Adoption Accelerates",
-                url: "https://example.com/enterprise-ai",
-                snippet:
-                  "Companies are deploying AI at scale for business automation..."
-              }
-            ],
-            totalResults: 10
-          },
-          defaultOpen: true
-        } as ToolModel
-      }
-    },
-    {
-      id: "4",
       role: "assistant",
       content:
         "Based on the search results, here are the latest AI trends:\n\n1. **AI Agents** are revolutionizing software development with intelligent coding assistants\n2. **Multimodal AI Models** can now understand and generate multiple types of content\n3. **Enterprise AI Adoption** is accelerating with focus on practical business applications"
     },
     {
-      id: "5",
+      id: "4",
       role: "user",
       content: "Can you also check the weather in San Francisco?"
     },
     {
-      id: "6",
+      id: "5",
       role: "assistant",
-      content: {
-        message: "I'll fetch the current weather for San Francisco:",
-        tool: {
-          toolName: "getWeather",
-          state: "output-available",
-          input: {
-            location: "San Francisco, CA",
-            units: "fahrenheit"
-          },
-          output: {
-            temperature: 62,
-            condition: "Partly Cloudy",
-            humidity: 65,
-            windSpeed: 12,
-            forecast: "Mild temperatures with occasional clouds throughout the day"
-          },
-          defaultOpen: true
-        } as ToolModel
-      }
+      content: "I'll fetch the current weather for San Francisco:",
+      toolCalls: [
+        {
+          id: "call-getWeather-1",
+          type: "function",
+          function: {
+            name: "getWeather",
+            arguments: JSON.stringify({
+              location: "San Francisco, CA",
+              units: "fahrenheit"
+            })
+          }
+        }
+      ]
     },
     {
-      id: "7",
+      id: "5-tool",
+      role: "tool",
+      toolCallId: "call-getWeather-1",
+      content: JSON.stringify({
+        temperature: 62,
+        condition: "Partly Cloudy",
+        humidity: 65,
+        windSpeed: 12,
+        forecast: "Mild temperatures with occasional clouds throughout the day"
+      })
+    },
+    {
+      id: "6",
       role: "assistant",
       content:
         "The weather in San Francisco is currently 62°F and partly cloudy. It's a pleasant day with mild temperatures!"
@@ -128,62 +163,87 @@ export class ShowcaseToolStyling extends KasstorElement {
       copyCodeButton: "Copy code",
       copyMessageContent: "Copy",
       processing: "Processing...",
-      sendButton: "\u2191",
+      sendButton: "↑",
       sourceFiles: "Source files:",
       stopResponseButton: "Stop"
     }
   };
 
   private chatCallbacks: ChatCallbacks = {
-    onSendMessage: async (message: string) => {
-      console.log("Message sent:", message);
+    sendChatMessages: (messages: AGUIMessage[]) => {
+      console.log("Messages sent:", messages);
 
-      // Add user message
-      this.chatItems = [
-        ...this.chatItems,
-        {
-          id: Date.now().toString(),
-          role: "user",
-          content: message
-        }
-      ];
+      this.chatItems = messages;
 
       // Simulate assistant response with a tool after a delay
       setTimeout(() => {
+        const baseId = Date.now() + 1;
+        const callId = `call-executeTask-${baseId}`;
+        const lastUser = [...messages]
+          .reverse()
+          .find(m => m.role === "user");
+        const taskInput =
+          lastUser && typeof lastUser.content === "string"
+            ? lastUser.content
+            : "demo task";
+
         this.chatItems = [
           ...this.chatItems,
           {
-            id: (Date.now() + 1).toString(),
+            id: baseId.toString(),
             role: "assistant",
-            content: {
-              message: "Let me help you with that:",
-              tool: {
-                toolName: "executeTask",
-                state: "output-available",
-                input: {
-                  task: message,
-                  priority: "high"
-                },
-                output: {
-                  status: "completed",
-                  result:
-                    "Task executed successfully. This is a demo response showing how tools can be integrated in chat conversations.",
-                  timestamp: new Date().toISOString()
-                },
-                defaultOpen: true
-              } as ToolModel
-            }
+            content: "Let me help you with that:",
+            toolCalls: [
+              {
+                id: callId,
+                type: "function",
+                function: {
+                  name: "executeTask",
+                  arguments: JSON.stringify({
+                    task: taskInput,
+                    priority: "high"
+                  })
+                }
+              }
+            ]
+          },
+          {
+            id: `${baseId}-tool`,
+            role: "tool",
+            toolCallId: callId,
+            content: JSON.stringify({
+              status: "completed",
+              result:
+                "Task executed successfully. This is a demo response showing how tools can be integrated in chat conversations.",
+              timestamp: new Date().toISOString()
+            })
           }
         ];
       }, 1000);
     },
 
-    onStopResponse: () => {
+    stopResponse: async () => {
       console.log("Stop response requested");
     }
   };
 
-  render() {
+  // Custom render: opens only the tool calls listed in
+  // TOOL_CALLS_OPEN_BY_DEFAULT, keeping the rest collapsed.
+  private chatRenderItem: ChatMessageRenderBySections = {
+    tool: (toolCall, toolResult) => html`<ch-tool
+      class="tool-container"
+      part="tool-container"
+      .toolName=${toolCall.function.name}
+      .type=${toolCall.type}
+      .state=${deriveToolState(toolResult)}
+      .input=${parseToolArgs(toolCall.function.arguments)}
+      .output=${toolResult?.content}
+      .errorText=${toolResult?.error}
+      .defaultOpen=${TOOL_CALLS_OPEN_BY_DEFAULT.has(toolCall.id)}
+    ></ch-tool>`
+  };
+
+  override render() {
     return html`
       <div class="tool-showcase-container">
         <div class="showcase-header">
@@ -200,7 +260,8 @@ export class ShowcaseToolStyling extends KasstorElement {
             .items=${this.chatItems}
             .callbacks=${this.chatCallbacks}
             .translations=${this.chatTranslations}
-            .loadingState=${"loaded"}
+            .loadingState=${"all-records-loaded"}
+            .renderItem=${this.chatRenderItem}
             .sendContainerLayout=${{
               sendContainerAfter: ["send-button"]
             }}

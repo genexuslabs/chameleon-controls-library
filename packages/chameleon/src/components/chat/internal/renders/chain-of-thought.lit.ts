@@ -1,29 +1,46 @@
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-import { tokenMap } from "../../../../utilities/mapping/token-map.js";
 import type {
-  ChatChainOfThoughtRender,
-  ChatMessageChainOfThought
-} from "../../types";
+  ChainOfThoughtImage,
+  ChainOfThoughtSearchResult,
+  ChainOfThoughtStep
+} from "../../../chain-of-thought/types.js";
+import type { AGUIActivityMessage } from "../../typesAGUI.js";
 
 /**
- * Default render function for ch-chain-of-thought component within chat messages.
- * Renders a chain of thought reasoning process with steps, search results, and images.
+ * Application-level schema for the `content` field of an AG-UI activity
+ * message whose `activityType === "chain-of-thought"`.
+ *
+ * `steps` may carry their own nested `searchResults` and `images`. The
+ * top-level `searchResults` / `images` are step-independent collections.
+ *
+ * `defaultOpen` lets the app decide whether a given chain of thought
+ * should start expanded — useful when a chat shows multiple of them and
+ * only the current focus should reveal its contents.
  */
-export const defaultChainOfThoughtRender: ChatChainOfThoughtRender = (
-  chainOfThought: ChatMessageChainOfThought
-): any =>
-  html`<ch-chain-of-thought
+export type ChainOfThoughtActivityContent = {
+  headerIcon?: string;
+  steps?: ChainOfThoughtStep[];
+  searchResults?: ChainOfThoughtSearchResult[];
+  images?: ChainOfThoughtImage[];
+  defaultOpen?: boolean;
+};
+
+/**
+ * Default render for `ch-chain-of-thought` driven by an AG-UI activity
+ * message.
+ */
+export const defaultChainOfThoughtRender = (
+  activity: AGUIActivityMessage
+) => {
+  const content = activity.content as ChainOfThoughtActivityContent;
+  return html`<ch-chain-of-thought
     class="chain-of-thought-container"
-    part=${tokenMap({
-      "chain-of-thought-container": true,
-      [chainOfThought.parts]: !!chainOfThought.parts
-    })}
+    part="chain-of-thought-container"
     exportparts="header, panel, section, disabled, expanded, collapsed, step, step-icon, step-content, step-label, step-description, step-status, search-results, search-result, image-container, image, image-caption"
-    .headerIcon=${ifDefined(chainOfThought.headerIcon)}
-    .steps=${ifDefined(chainOfThought.steps)}
-    .searchResults=${ifDefined(chainOfThought.searchResults)}
-    .images=${ifDefined(chainOfThought.images)}
-    .defaultOpen=${ifDefined(chainOfThought.defaultOpen)}
-    .open=${ifDefined(chainOfThought.open)}
+    .headerIcon=${content.headerIcon}
+    .steps=${content.steps ?? []}
+    .searchResults=${content.searchResults ?? []}
+    .images=${content.images ?? []}
+    .defaultOpen=${content.defaultOpen ?? false}
   ></ch-chain-of-thought>`;
+};

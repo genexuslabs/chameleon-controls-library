@@ -18,7 +18,7 @@ import type { ReasoningItemExpandedChangeEvent } from "./types";
 import styles from "./reasoning.scss?inline";
 
 // Lazy load the accordion component
-import("../accordion/accordion.lit");
+import "../accordion/accordion.lit";
 
 const REASONING_ITEM_ID = "reasoning-item";
 
@@ -171,7 +171,7 @@ export class ChReasoning extends KasstorElement {
   /**
    * Internal state for the accordion model
    */
-  @state() #accordionModel: AccordionItemModel[] = [];
+  _accordionModel: AccordionItemModel[] = [];
 
   /**
    * Fired when the accordion is expanded or collapsed. The payload is { expanded: boolean }.
@@ -256,7 +256,7 @@ export class ChReasoning extends KasstorElement {
    */
 
   #updateAccordionModel() {
-    this.#accordionModel = [
+    this._accordionModel = [
       {
         id: REASONING_ITEM_ID,
         caption: this.#getCaption(),
@@ -288,7 +288,7 @@ export class ChReasoning extends KasstorElement {
     return html`
       <div class=${this.isStreaming ? "reasoning--streaming" : ""}>
         <ch-accordion-render
-          .model=${this.#accordionModel}
+          .model=${this._accordionModel}
           @expandedChange=${this.#handleExpandedChange}
           exportparts=${ACCORDION_EXPORT_PARTS}
         >

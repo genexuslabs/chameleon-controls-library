@@ -157,7 +157,7 @@ describe("[ch-reasoning][accessibility]", () => {
         html`<ch-reasoning
           content="Test content"
           thinking-message="AI is thinking..."
-          thought-message="Thought complete"
+          thought-message-template="Thought complete"
         ></ch-reasoning>`
       );
       reasoningRef = result.container.querySelector("ch-reasoning")!;
@@ -181,7 +181,7 @@ describe("[ch-reasoning][accessibility]", () => {
           is-streaming
           content="Test"
           thinking-message="Thinking..."
-          thought-message="Done"
+          thought-message-template="Done"
         ></ch-reasoning>`
       );
       reasoningRef = result.container.querySelector("ch-reasoning")!;

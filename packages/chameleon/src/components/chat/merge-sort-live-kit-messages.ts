@@ -1,30 +1,30 @@
 import type { TranscriptionSegment } from "livekit-client";
-import type { ChatMessageByRole } from "./types";
+import type {
+  AGUIAssistantMessage,
+  AGUIUserMessage
+} from "./typesAGUI.js";
 
 const getAssistantMessageByTranscription = (
   transcription: TranscriptionSegment
-): ChatMessageByRole<"assistant"> => ({
+): AGUIAssistantMessage => ({
   id: transcription.id,
-  content: transcription.text,
   role: "assistant",
-  status: transcription.final ? "complete" : "streaming",
-  transcribed: true
+  content: transcription.text
 });
 
 const getUserMessageByTranscription = (
   transcription: TranscriptionSegment
-): ChatMessageByRole<"user"> => ({
+): AGUIUserMessage => ({
   id: transcription.id,
-  content: transcription.text,
   role: "user",
-  transcribed: true
+  content: transcription.text
 });
 
 export const mergeSortedArrays = (liveKitMessages: {
   user: Map<string, TranscriptionSegment>;
   assistant: Map<string, TranscriptionSegment>;
 }) => {
-  const sortedMessages: ChatMessageByRole<"user" | "assistant">[] = [];
+  const sortedMessages: (AGUIUserMessage | AGUIAssistantMessage)[] = [];
   const assistantMessages = [...liveKitMessages.assistant.values()];
   const userMessages = [...liveKitMessages.user.values()];
 
@@ -60,7 +60,7 @@ export const mergeSortedArrays = (liveKitMessages: {
     return sortedMessages;
   }
 
-  const messagesCollapsed: ChatMessageByRole<"user" | "assistant">[] = [
+  const messagesCollapsed: (AGUIUserMessage | AGUIAssistantMessage)[] = [
     sortedMessages[0]
   ];
 
@@ -68,16 +68,19 @@ export const mergeSortedArrays = (liveKitMessages: {
   // transcription is separated into multiple messages.
   for (let index = 1; index < sortedMessages.length; index++) {
     const message = sortedMessages[index];
-    const lastCollapsedMessage = messagesCollapsed.at(-1);
+    const lastCollapsedMessage = messagesCollapsed.at(-1)!;
 
-    // Messages have the same role, we can try to merge the content of them
+    // Messages have the same role, we can try to merge the content of them.
+    // Both user and assistant carry string content here (live transcription
+    // is always plain text), so concatenation is safe.
     if (lastCollapsedMessage.role === message.role) {
-      lastCollapsedMessage.content += ("\n" + message.content) as string;
-
-      if (message.role === "assistant") {
-        (lastCollapsedMessage as ChatMessageByRole<"assistant">).status =
-          message.status;
-      }
+      const oldText =
+        typeof lastCollapsedMessage.content === "string"
+          ? lastCollapsedMessage.content
+          : "";
+      const newText =
+        typeof message.content === "string" ? message.content : "";
+      lastCollapsedMessage.content = oldText + "\n" + newText;
     }
     // Messages have different role, we can't merge the content of them
     else {

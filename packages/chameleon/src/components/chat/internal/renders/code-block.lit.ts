@@ -1,8 +1,9 @@
 import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { when } from "lit/directives/when.js";
-import type { MarkdownViewerCodeRenderOptions } from "../../../markdown-viewer/parsers/types";
-import type { ChatCallbacks, ChatCodeBlockRender } from "../../types";
-import { copy } from "../../utils";
+import type { MarkdownViewerCodeRenderOptions } from "../../../markdown-viewer/parsers/types.js";
+import { copy } from "../../utils.js";
+import type { ChatCallbacks, ChatCodeBlockRender } from "./types.js";
 
 const downloadCodeBlockCallback =
   (
@@ -11,7 +12,7 @@ const downloadCodeBlockCallback =
     downloadCodeBlock: ChatCallbacks["downloadCodeBlock"]
   ) =>
   () =>
-    downloadCodeBlock(plainText, language);
+    downloadCodeBlock!(plainText, language);
 
 export const defaultCodeBlockRender: ChatCodeBlockRender =
   (chatRef: HTMLChChatElement) =>
@@ -35,15 +36,15 @@ export const defaultCodeBlockRender: ChatCodeBlockRender =
           ${when(
             chatRef.callbacks?.downloadCodeBlock,
             () => html`<button
-              aria-label=${
+              aria-label=${ifDefined(
                 // TODO: Don't set aria-label if it equals to the caption
                 accessibleName.downloadCodeButton
-              }
+              )}
               part="code-block__download-code-button"
               @click=${downloadCodeBlockCallback(
                 options.plainText,
                 options.language,
-                chatRef.callbacks.downloadCodeBlock
+                chatRef.callbacks!.downloadCodeBlock
               )}
             >
               ${text.downloadCodeButton}

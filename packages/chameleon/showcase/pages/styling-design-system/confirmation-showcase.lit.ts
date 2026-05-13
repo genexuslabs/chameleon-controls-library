@@ -5,12 +5,9 @@ import {
 import { html } from "lit";
 import { state } from "lit/decorators/state.js";
 import styles from "./confirmation-showcase.scss?inline";
-import type {
-  ChatCallbacks,
-  ChatMessage,
-  ChatTranslations
-} from "../../../src/components/chat/types.js";
-import type { ConfirmationModel } from "../../../src/components/confirmation/types.js";
+import type { ChatCallbacks } from "../../../src/components/chat/internal/renders/types.js";
+import type { AGUIMessage } from "../../../src/components/chat/typesAGUI.js";
+import type { ChatTranslations } from "../../../src/components/chat/translations.js";
 import "../../../src/components/chat/chat.lit.js";
 import "../../../src/components/confirmation/confirmation.lit.js";
 
@@ -19,48 +16,44 @@ import "../../../src/components/confirmation/confirmation.lit.js";
   tag: "showcase-confirmation-styling"
 })
 export class ShowcaseConfirmationStyling extends KasstorElement {
-  @state() private chatItems: ChatMessage[] = [
+  @state() private chatItems: AGUIMessage[] = [
     {
       id: "1",
       role: "user",
       content: "Can you delete all the temporary files in my project?"
     },
     {
-      id: "2",
-      role: "assistant",
+      id: "2-confirmation",
+      role: "activity",
+      activityType: "confirmation",
       content: {
-        message: "I found 127 temporary files. I need your permission to delete them:",
-        confirmation: {
-          title: "Delete Temporary Files?",
-          state: "approval-requested",
-          requestMessage:
-            "This will permanently delete 127 temporary files (about 45 MB). This action cannot be undone.",
-          approveButtonLabel: "Delete Files",
-          rejectButtonLabel: "Cancel"
-        } as ConfirmationModel
+        state: "approval-requested",
+        approval: {
+          id: "delete-temp-files-001"
+        },
+        title: "Delete temporary files",
+        requestMessage:
+          "I found 127 temporary files (45 MB total). Do you want me to delete them?"
       }
     },
     {
-      id: "3",
-      role: "user",
-      content: "Yes, please delete them."
-    },
-    {
-      id: "4",
-      role: "assistant",
+      id: "4-confirmation",
+      role: "activity",
+      activityType: "confirmation",
       content: {
-        message: "",
-        confirmation: {
-          title: "Delete Temporary Files?",
-          state: "approval-responded",
-          acceptedMessage: "Deletion approved. Removing temporary files..."
-        } as ConfirmationModel
+        state: "approval-responded",
+        approval: {
+          id: "delete-temp-files-001"
+        },
+        title: "Delete temporary files",
+        acceptedMessage: "Approval granted — deletion in progress..."
       }
     },
     {
       id: "5",
       role: "assistant",
-      content: "Successfully deleted 127 temporary files and freed 45 MB of disk space!"
+      content:
+        "Successfully deleted 127 temporary files and freed 45 MB of disk space!"
     },
     {
       id: "6",
@@ -68,42 +61,37 @@ export class ShowcaseConfirmationStyling extends KasstorElement {
       content: "Can you also reset my database to the initial state?"
     },
     {
-      id: "7",
-      role: "assistant",
+      id: "7-confirmation",
+      role: "activity",
+      activityType: "confirmation",
       content: {
-        message: "⚠️ This is a destructive action. Here's what will happen:",
-        confirmation: {
-          title: "⚠️ Reset Database?",
-          state: "approval-requested",
-          requestMessage:
-            "This will DROP all tables and recreate them with seed data. All current data will be permanently lost. This action cannot be undone.",
-          approveButtonLabel: "Yes, Reset Database",
-          rejectButtonLabel: "No, Keep Current Data"
-        } as ConfirmationModel
+        state: "approval-requested",
+        approval: {
+          id: "reset-database-001"
+        },
+        title: "⚠️ Reset database",
+        requestMessage:
+          "This is a destructive action — all current data will be erased and replaced with the initial seed. This cannot be undone. Are you sure you want to proceed?"
       }
     },
     {
-      id: "8",
-      role: "user",
-      content: "No, don't do that. I need to keep my data."
-    },
-    {
-      id: "9",
-      role: "assistant",
+      id: "9-confirmation",
+      role: "activity",
+      activityType: "confirmation",
       content: {
-        message: "",
-        confirmation: {
-          title: "⚠️ Reset Database?",
-          state: "output-denied",
-          rejectedMessage:
-            "Database reset was cancelled. Your data remains safe and unchanged."
-        } as ConfirmationModel
+        state: "output-denied",
+        approval: {
+          id: "reset-database-001"
+        },
+        title: "Reset database",
+        rejectedMessage: "Action cancelled — no changes were made."
       }
     },
     {
       id: "10",
       role: "assistant",
-      content: "Good choice! Your database data is safe. Is there anything else I can help you with?"
+      content:
+        "Good choice! Your database data is safe. Is there anything else I can help you with?"
     }
   ];
 
@@ -123,168 +111,132 @@ export class ShowcaseConfirmationStyling extends KasstorElement {
       copyCodeButton: "Copy code",
       copyMessageContent: "Copy",
       processing: "Processing...",
-      sendButton: "\u2191",
+      sendButton: "↑",
       sourceFiles: "Source files:",
       stopResponseButton: "Stop"
     }
   };
 
   private chatCallbacks: ChatCallbacks = {
-    onSendMessage: async (message: string) => {
-      console.log("Message sent:", message);
+    sendChatMessages: (messages: AGUIMessage[]) => {
+      console.log("Messages sent:", messages);
 
-      // Add user message
-      this.chatItems = [
-        ...this.chatItems,
-        {
-          id: Date.now().toString(),
-          role: "user",
-          content: message
-        }
-      ];
+      this.chatItems = messages;
 
       // Simulate assistant response with a confirmation after a delay
       setTimeout(() => {
+        const baseId = Date.now() + 1;
         this.chatItems = [
           ...this.chatItems,
           {
-            id: (Date.now() + 1).toString(),
+            id: baseId.toString(),
             role: "assistant",
+            content: "I need your permission to proceed:"
+          },
+          {
+            id: `${baseId}-confirmation`,
+            role: "activity",
+            activityType: "confirmation",
             content: {
-              message: "I need your permission to proceed:",
-              confirmation: {
-                title: "Execute Action?",
-                state: "approval-requested",
-                requestMessage:
-                  "This action requires your confirmation. Do you want to proceed with this request?",
-                approveButtonLabel: "Approve",
-                rejectButtonLabel: "Reject"
-              } as ConfirmationModel
+              state: "approval-requested",
+              approval: {
+                id: `execute-action-${baseId}`
+              }
             }
           }
         ];
       }, 1000);
     },
 
-    onStopResponse: () => {
+    stopResponse: async () => {
       console.log("Stop response requested");
     }
   };
 
-  // Handle approve action
+  // Handle approve action — flip the matching confirmation activity to
+  // "approval-responded".
   private handleApprove = (messageId: string) => {
     console.log("Approve clicked for message:", messageId);
 
-    // Find the message with confirmation
-    const messageIndex = this.chatItems.findIndex((item) => item.id === messageId);
+    const messageIndex = this.chatItems.findIndex(item => item.id === messageId);
     if (messageIndex === -1) return;
 
     const message = this.chatItems[messageIndex];
-    if (typeof message.content !== "object" || !message.content.confirmation) return;
+    if (message.role !== "activity" || message.activityType !== "confirmation") {
+      return;
+    }
 
-    // Update the confirmation state to approval-responded
     const updatedItems = [...this.chatItems];
     updatedItems[messageIndex] = {
       ...message,
       content: {
         ...message.content,
-        confirmation: {
-          ...message.content.confirmation,
-          state: "approval-responded",
-          acceptedMessage: "Approval granted. Executing the action..."
-        }
+        state: "approval-responded"
       }
     };
 
     this.chatItems = updatedItems;
 
-    // Add user confirmation message
+    // Follow-up assistant message — the user's decision is already captured
+    // by the confirmation state flip; no synthetic user message is needed.
     setTimeout(() => {
       this.chatItems = [
         ...this.chatItems,
         {
           id: Date.now().toString(),
-          role: "user",
-          content: "Yes, please proceed."
+          role: "assistant",
+          content:
+            "✅ Action completed successfully! The operation has been executed as requested."
         }
       ];
-
-      // Add assistant success message
-      setTimeout(() => {
-        this.chatItems = [
-          ...this.chatItems,
-          {
-            id: (Date.now() + 1).toString(),
-            role: "assistant",
-            content: "✅ Action completed successfully! The operation has been executed as requested."
-          }
-        ];
-      }, 500);
-    }, 300);
+    }, 500);
   };
 
-  // Handle reject action
+  // Handle reject action — flip the matching confirmation activity to
+  // "output-denied".
   private handleReject = (messageId: string) => {
     console.log("Reject clicked for message:", messageId);
 
-    // Find the message with confirmation
-    const messageIndex = this.chatItems.findIndex((item) => item.id === messageId);
+    const messageIndex = this.chatItems.findIndex(item => item.id === messageId);
     if (messageIndex === -1) return;
 
     const message = this.chatItems[messageIndex];
-    if (typeof message.content !== "object" || !message.content.confirmation) return;
+    if (message.role !== "activity" || message.activityType !== "confirmation") {
+      return;
+    }
 
-    // Update the confirmation state to output-denied
     const updatedItems = [...this.chatItems];
     updatedItems[messageIndex] = {
       ...message,
       content: {
         ...message.content,
-        confirmation: {
-          ...message.content.confirmation,
-          state: "output-denied",
-          rejectedMessage: "Action cancelled. The operation will not be executed."
-        }
+        state: "output-denied"
       }
     };
 
     this.chatItems = updatedItems;
 
-    // Add user rejection message
     setTimeout(() => {
       this.chatItems = [
         ...this.chatItems,
         {
           id: Date.now().toString(),
-          role: "user",
-          content: "No, please cancel that."
+          role: "assistant",
+          content:
+            "Understood. The action has been cancelled. Your data remains unchanged."
         }
       ];
-
-      // Add assistant acknowledgment message
-      setTimeout(() => {
-        this.chatItems = [
-          ...this.chatItems,
-          {
-            id: (Date.now() + 1).toString(),
-            role: "assistant",
-            content: "Understood. The action has been cancelled. Your data remains unchanged."
-          }
-        ];
-      }, 500);
-    }, 300);
+    }, 500);
   };
 
   override firstUpdated() {
-    // Listen to approve/reject events from ch-confirmation components
     this.addEventListener("approve", ((event: CustomEvent) => {
       console.log("Approve event caught:", event);
-      // Find the message that contains this confirmation
-      // We need to find which message has state "approval-requested"
       const messageWithConfirmation = this.chatItems.find(
-        (item) =>
-          typeof item.content === "object" &&
-          item.content.confirmation?.state === "approval-requested"
+        item =>
+          item.role === "activity" &&
+          item.activityType === "confirmation" &&
+          (item.content as { state?: string })?.state === "approval-requested"
       );
       if (messageWithConfirmation) {
         this.handleApprove(messageWithConfirmation.id);
@@ -293,11 +245,11 @@ export class ShowcaseConfirmationStyling extends KasstorElement {
 
     this.addEventListener("reject", ((event: CustomEvent) => {
       console.log("Reject event caught:", event);
-      // Find the message that contains this confirmation
       const messageWithConfirmation = this.chatItems.find(
-        (item) =>
-          typeof item.content === "object" &&
-          item.content.confirmation?.state === "approval-requested"
+        item =>
+          item.role === "activity" &&
+          item.activityType === "confirmation" &&
+          (item.content as { state?: string })?.state === "approval-requested"
       );
       if (messageWithConfirmation) {
         this.handleReject(messageWithConfirmation.id);
@@ -305,7 +257,7 @@ export class ShowcaseConfirmationStyling extends KasstorElement {
     }) as EventListener);
   }
 
-  render() {
+  override render() {
     return html`
       <div class="confirmation-showcase-container">
         <div class="showcase-header">
@@ -322,7 +274,7 @@ export class ShowcaseConfirmationStyling extends KasstorElement {
             .items=${this.chatItems}
             .callbacks=${this.chatCallbacks}
             .translations=${this.chatTranslations}
-            .loadingState=${"loaded"}
+            .loadingState=${"all-records-loaded"}
             .sendContainerLayout=${{
               sendContainerAfter: ["send-button"]
             }}

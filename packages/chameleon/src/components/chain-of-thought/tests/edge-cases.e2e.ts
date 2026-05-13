@@ -111,7 +111,7 @@ describe("[ch-chain-of-thought][edge-cases]", () => {
       expect(description).toBeFalsy();
     });
 
-    it("should render step without icon", async () => {
+    it("should render step without icon using bullet fallback", async () => {
       const result = await render(
         html`<ch-chain-of-thought
           .steps=${[
@@ -124,7 +124,12 @@ describe("[ch-chain-of-thought][edge-cases]", () => {
 
       const icon = componentRef.shadowRoot!.querySelector(".step-icon");
       expect(icon).toBeTruthy(); // Icon container should exist
-      expect(icon!.textContent?.trim()).toBe(""); // But should be empty
+      // When the step has no icon, a bullet "•" is rendered as fallback so
+      // the visual grid alignment is preserved across steps.
+      expect(icon!.textContent?.trim()).toBe("•");
+      const fallback = icon!.querySelector(".step-icon-fallback");
+      expect(fallback).toBeTruthy();
+      expect(fallback!.getAttribute("aria-hidden")).toBe("true");
     });
 
     it("should render search result without label", async () => {

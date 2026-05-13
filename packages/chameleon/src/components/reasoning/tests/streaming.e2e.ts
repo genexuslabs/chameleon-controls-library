@@ -80,7 +80,7 @@ describe("[ch-reasoning][streaming]", () => {
         html`<ch-reasoning
           is-streaming
           content="Progressive text"
-          streaming-speed="10"
+          streaming-speed-ms="10"
         ></ch-reasoning>`
       );
       reasoningRef = result.container.querySelector("ch-reasoning")!;
@@ -167,13 +167,13 @@ describe("[ch-reasoning][streaming]", () => {
         html`<ch-reasoning
           is-streaming
           content="Test"
-          streaming-speed="100"
+          streaming-speed-ms="100"
         ></ch-reasoning>`
       );
       reasoningRef = result.container.querySelector("ch-reasoning")!;
       await reasoningRef.updateComplete;
 
-      expect(reasoningRef.streamingSpeed).toBe(100);
+      expect(reasoningRef.streamingSpeedMs).toBe(100);
     });
   });
 

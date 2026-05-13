@@ -1,157 +1,67 @@
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-import { when } from "lit/directives/when.js";
+import type {
+  AGUIAudioInputContent,
+  AGUIDocumentInputContent,
+  AGUIImageInputContent,
+  AGUIInputContentSource,
+  AGUIVideoInputContent
+} from "../../typesAGUI.js";
+import type { ChatInputContentRender } from "./types.js";
 
-import type { ChMimeTypeFormatMap } from "../../../../typings/mime-types.js";
-import { tokenMap } from "../../../../utilities/mapping/token-map.js";
-import type { ChatFileRender, ChatMessageFile } from "../../types";
-import { DEFAULT_FILE_UPLOAD_STATE } from "../../utils";
+/**
+ * Resolve an `AGUIInputContentSource` to a renderable URL. Inline `data`
+ * sources are wrapped in a `data:` URI using the source's `mimeType`.
+ */
+const resolveSourceUrl = (source: AGUIInputContentSource): string =>
+  source.type === "url"
+    ? source.value
+    : `data:${source.mimeType};base64,${source.value}`;
 
-const fileSkeleton = (
-  file: ChatMessageFile,
-  fileFormat: keyof ChMimeTypeFormatMap
-) =>
-  when(
-    file.uploadState === "in-progress",
-    () => html`<div
-      part=${tokenMap({
-        [`file-skeleton format-${fileFormat} ${file.mimeType} ${
-          file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-        }`]: true,
-        [file.extension]: !!file.extension,
-        [file.parts]: !!file.parts
-      })}
-    ></div>`
-  );
-
-// const retryFileUpload = (
-//   file: ChatFile,
-//   fileFormat: keyof ChMimeTypeFormatMap,
-//   chatRef: HTMLChChatElement
-// ) =>
-//   file.uploadState === "failed" && (
-//     <button
-//       part={`file-retry-upload format-${fileFormat} ${
-//         file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-//       }${file.extension ? " " + file.extension : ""}`}
-//     ></button>
-//   );
-
-const getFileContainerParts = (
-  file: ChatMessageFile,
-  fileFormat: keyof ChMimeTypeFormatMap
-) =>
-  tokenMap({
-    [`file-container format-${fileFormat} ${file.mimeType} ${
-      file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-    }`]: true,
-    [file.extension]: !!file.extension,
-    [file.parts]: !!file.parts
-  });
-
-const getFileParts = (
-  file: ChatMessageFile,
-  fileFormat: keyof ChMimeTypeFormatMap
-) =>
-  tokenMap({
-    [`file format-${fileFormat} ${file.mimeType} ${
-      file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-    }`]: true,
-    [file.extension]: !!file.extension,
-    [file.parts]: !!file.parts
-  });
-
-// TODO: Improve accessibility by exposing progress or spin states while
-// uploading
-export const defaultFileRender: ChatFileRender = {
-  audio: (file: ChatMessageFile) =>
-    html`<li
-      class="file-container"
-      part=${getFileContainerParts(file, "audio")}
-    >
+export const defaultFileRender: ChatInputContentRender = {
+  audio: part => {
+    const audioPart = part as AGUIAudioInputContent;
+    return html`<li class="file-container" part="file-container format-audio ${audioPart.source.mimeType}">
       <audio
-        aria-label=${file.accessibleName}
-        part=${getFileParts(file, "audio")}
-        src=${ifDefined(
-          file.uploadState === "in-progress" ? undefined : file.url
-        )}
+        part="file format-audio ${audioPart.source.mimeType}"
+        src=${resolveSourceUrl(audioPart.source)}
         controls
       ></audio>
+    </li>`;
+  },
 
-      ${fileSkeleton(file, "audio")}
-    </li>`,
-  video: (file: ChatMessageFile) =>
-    html`<li
-      class="file-container"
-      part=${getFileContainerParts(file, "video")}
-    >
+  video: part => {
+    const videoPart = part as AGUIVideoInputContent;
+    return html`<li class="file-container" part="file-container format-video ${videoPart.source.mimeType}">
       <video
-        aria-label=${file.accessibleName}
-        part=${getFileParts(file, "video")}
-        src=${ifDefined(
-          file.uploadState === "in-progress" ? undefined : file.url
-        )}
+        part="file format-video ${videoPart.source.mimeType}"
+        src=${resolveSourceUrl(videoPart.source)}
         controls
       ></video>
+    </li>`;
+  },
 
-      ${fileSkeleton(file, "video")}
-    </li>`,
-
-  image: (file: ChatMessageFile) =>
-    html`<li class="file-container" part={getFileContainerParts(file, "image")}>
+  image: part => {
+    const imagePart = part as AGUIImageInputContent;
+    return html`<li class="file-container" part="file-container format-image ${imagePart.source.mimeType}">
       <img
-        aria-label=${file.accessibleName}
-        part=${getFileParts(file, "image")}
-        src=${file.url}
-        alt=${
-          // TODO: Should we add a default alt attr?
-          file.alternativeText ?? file.accessibleName ?? ""
-        }
+        part="file format-image ${imagePart.source.mimeType}"
+        src=${resolveSourceUrl(imagePart.source)}
+        alt=""
         loading="lazy"
       />
+    </li>`;
+  },
 
-      ${fileSkeleton(file, "image")}
-    </li>`,
-
-  file: (file: ChatMessageFile) => {
-    const disabledWhileUploading = file.uploadState === "in-progress";
-
-    return html`<li
-      class="file-container"
-      part=${getFileContainerParts(file, "file")}
-    >
+  file: part => {
+    const docPart = part as AGUIDocumentInputContent;
+    return html`<li class="file-container" part="file-container format-file ${docPart.source.mimeType}">
       <a
-        aria-label=${file.accessibleName}
-        role=${ifDefined(disabledWhileUploading ? "link" : undefined)}
-        aria-disabled=${ifDefined(disabledWhileUploading ? "true" : undefined)}
-        part=${getFileParts(file, "file")}
-        href=${ifDefined(disabledWhileUploading ? undefined : file.url)}
+        part="file format-file ${docPart.source.mimeType}"
+        href=${resolveSourceUrl(docPart.source)}
         target="_blank"
       >
-        ${when(
-          file.caption,
-          () =>
-            html`<span
-              part=${`file-caption format-file ${file.mimeType} ${
-                file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-              }`}
-            >
-              ${file.caption}
-            </span>`
-        )}
-        ${when(
-          file.caption && file.extension,
-          () => html`<span
-            part=${`file-extension format-file ${file.mimeType} ${
-              file.uploadState ?? DEFAULT_FILE_UPLOAD_STATE
-            }`}
-          >
-            ${file.extension}
-          </span>`
-        )}
+        ${docPart.source.mimeType}
       </a>
-
-      ${fileSkeleton(file, "file")}
     </li>`;
   }
 };

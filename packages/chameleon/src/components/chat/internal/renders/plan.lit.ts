@@ -1,25 +1,38 @@
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-import { tokenMap } from "../../../../utilities/mapping/token-map.js";
-import type { ChatMessagePlan, ChatPlanRender } from "../../types";
+import type {
+  PlanActionModel,
+  PlanStepModel
+} from "../../../plan/types.js";
+import type { AGUIActivityMessage } from "../../typesAGUI.js";
 
 /**
- * Default render function for ch-plan component within chat messages.
- * Renders a plan with title, description, steps, and optional actions.
+ * Application-level schema for the `content` field of an AG-UI activity
+ * message whose `activityType === "plan"`.
+ *
+ * `defaultOpen` lets the app decide whether a given plan should start
+ * expanded — useful when a chat shows multiple plans and only one is the
+ * current focus.
  */
-export const defaultPlanRender: ChatPlanRender = (
-  plan: ChatMessagePlan
-): any =>
-  html`<ch-plan
+export type PlanActivityContent = {
+  title: string;
+  description?: string;
+  steps: PlanStepModel[];
+  actions?: PlanActionModel[];
+  defaultOpen?: boolean;
+};
+
+/**
+ * Default render for `ch-plan` driven by an AG-UI activity message.
+ */
+export const defaultPlanRender = (activity: AGUIActivityMessage) => {
+  const content = activity.content as PlanActivityContent;
+  return html`<ch-plan
     class="plan-container"
-    part=${tokenMap({
-      "plan-container": true,
-      [plan.parts]: !!plan.parts
-    })}
-    .title=${plan.title}
-    .description=${ifDefined(plan.description)}
-    .steps=${plan.steps}
-    .actions=${ifDefined(plan.actions)}
-    .isStreaming=${ifDefined(plan.isStreaming)}
-    .defaultOpen=${ifDefined(plan.defaultOpen)}
+    part="plan-container"
+    .title=${content.title}
+    .description=${content.description}
+    .steps=${content.steps}
+    .actions=${content.actions}
+    .defaultOpen=${content.defaultOpen ?? false}
   ></ch-plan>`;
+};

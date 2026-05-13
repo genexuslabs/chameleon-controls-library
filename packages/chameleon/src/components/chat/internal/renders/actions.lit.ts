@@ -1,33 +1,30 @@
 import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { when } from "lit/directives/when.js";
+import { copy, getMessageSerializedContentAll } from "../../utils.js";
+import type { ChatActionsRender } from "./types.js";
 
-import { tokenMap } from "../../../../utilities/mapping/token-map.js";
-import type { ChatActionsRender, ChatMessage } from "../../types";
-import { copy, getMessageSerializedContentAll } from "../../utils";
-
+/**
+ * Default actions row. Currently exposes a "copy message content" button,
+ * shown only for `assistant` messages (the only role with replyable text
+ * worth copying in the AG-UI model).
+ */
 export const defaultActionsRender: ChatActionsRender = (
-  message: ChatMessage,
-  chatRef: HTMLChChatElement
-): any => {
+  message,
+  chatRef
+) => {
   const { accessibleName, text } = chatRef.translations;
 
   return when(
-    message.role === "assistant" &&
-      (message.status === "complete" || !message.status),
+    message.role === "assistant",
     () => html`<button
-      aria-label=${
+      aria-label=${ifDefined(
         // TODO: Don't set aria-label if it equals to the caption
         accessibleName.copyMessageContent
-      }
-      part=${tokenMap({
-        [`assistant copy-message-content ${message.id}`]: true,
-        [message.parts]: !!message.parts
-      })}
+      )}
+      part=${`assistant copy-message-content ${message.id}`}
       type="button"
-      @click=${
-        // We use the whole message to support copying the files and/or sources
-        copy(getMessageSerializedContentAll(message))
-      }
+      @click=${copy(getMessageSerializedContentAll(message))}
     >
       ${text.copyMessageContent}
     </button>`

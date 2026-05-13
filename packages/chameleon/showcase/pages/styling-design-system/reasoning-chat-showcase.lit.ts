@@ -5,11 +5,9 @@ import {
 import { html } from "lit";
 import { state } from "lit/decorators/state.js";
 import styles from "./reasoning-chat-showcase.scss?inline";
-import type {
-  ChatCallbacks,
-  ChatMessage,
-  ChatTranslations
-} from "../../../src/components/chat/types.js";
+import type { ChatCallbacks } from "../../../src/components/chat/internal/renders/types.js";
+import type { AGUIMessage } from "../../../src/components/chat/typesAGUI.js";
+import type { ChatTranslations } from "../../../src/components/chat/translations.js";
 import "../../../src/components/chat/chat.lit.js";
 
 @Component({
@@ -17,7 +15,7 @@ import "../../../src/components/chat/chat.lit.js";
   tag: "showcase-reasoning-chat-styling"
 })
 export class ShowcaseReasoningChatStyling extends KasstorElement {
-  @state() private chatItems: ChatMessage[] = [
+  @state() private chatItems: AGUIMessage[] = [
     {
       id: "1",
       role: "user",
@@ -26,10 +24,13 @@ export class ShowcaseReasoningChatStyling extends KasstorElement {
     {
       id: "2",
       role: "assistant",
-      content: {
-        message: "Based on my analysis, I recommend adding a composite index. Here's why:",
-        reasoning: {
-          content: `Let me think through this step by step:
+      content:
+        "Based on my analysis, I recommend adding a composite index. Here's why:"
+    },
+    {
+      id: "2-reasoning",
+      role: "reasoning",
+      content: `Let me think through this step by step:
 
 1. **Query Pattern Analysis**: The query filters on \`user_id\` and \`created_at\`, then sorts by \`created_at DESC\`.
 
@@ -44,13 +45,7 @@ export class ShowcaseReasoningChatStyling extends KasstorElement {
    - Pros: 100-1000x faster for this query pattern
    - Cons: ~10% slower writes, additional 5-10MB disk space
 
-5. **Conclusion**: The read performance gain far outweighs the minor write penalty for this use case.`,
-          isStreaming: true,
-          thinkingMessage: "Analyzing query patterns...",
-          thoughtMessageTemplate: "Analyzed in {duration}s",
-          streamingSpeedMs: 10
-        }
-      }
+5. **Conclusion**: The read performance gain far outweighs the minor write penalty for this use case.`
     },
     {
       id: "3",
@@ -60,21 +55,17 @@ export class ShowcaseReasoningChatStyling extends KasstorElement {
     {
       id: "4",
       role: "assistant",
-      content: {
-        message: "Here's the SQL command to create the composite index:",
-        reasoning: {
-          content: `Considering the best practices for index creation:
+      content: "Here's the SQL command to create the composite index:"
+    },
+    {
+      id: "4-reasoning",
+      role: "reasoning",
+      content: `Considering the best practices for index creation:
 
 1. **Naming Convention**: Use descriptive names that indicate the columns involved
 2. **Column Order**: Place the equality filter (user_id) before the range filter (created_at)
 3. **Index Type**: B-tree is optimal for this combination of equality and range queries
-4. **Concurrent Creation**: Use CONCURRENTLY to avoid locking the table during creation`,
-          isStreaming: true,
-          thinkingMessage: "Formulating index creation strategy...",
-          thoughtMessageTemplate: "Thought for {duration}s",
-          streamingSpeedMs: 15
-        }
-      }
+4. **Concurrent Creation**: Use CONCURRENTLY to avoid locking the table during creation`
     }
   ];
 
@@ -94,55 +85,45 @@ export class ShowcaseReasoningChatStyling extends KasstorElement {
       copyCodeButton: "Copy code",
       copyMessageContent: "Copy",
       processing: "Processing...",
-      sendButton: "\u2191",
+      sendButton: "↑",
       sourceFiles: "Source files:",
       stopResponseButton: "Stop"
     }
   };
 
   private chatCallbacks: ChatCallbacks = {
-    onSendMessage: async (message: string) => {
-      console.log("Message sent:", message);
+    sendChatMessages: (messages: AGUIMessage[]) => {
+      console.log("Messages sent:", messages);
 
-      // Add user message
-      this.chatItems = [
-        ...this.chatItems,
-        {
-          id: Date.now().toString(),
-          role: "user",
-          content: message
-        }
-      ];
+      this.chatItems = messages;
 
       // Simulate assistant response with reasoning after a delay
       setTimeout(() => {
+        const baseId = Date.now() + 1;
         this.chatItems = [
           ...this.chatItems,
           {
-            id: (Date.now() + 1).toString(),
+            id: baseId.toString(),
             role: "assistant",
-            content: {
-              message: "That's an interesting question! Let me think about it carefully.",
-              reasoning: {
-                content:
-                  "This query requires careful analysis of multiple perspectives. I'm considering the technical aspects, practical implications, and potential edge cases. The solution should be both elegant and robust.",
-                isStreaming: true,
-                thinkingMessage: "Thinking...",
-                thoughtMessageTemplate: "Thought for {duration}s",
-                streamingSpeedMs: 12
-              }
-            }
+            content:
+              "That's an interesting question! Let me think about it carefully."
+          },
+          {
+            id: `${baseId}-reasoning`,
+            role: "reasoning",
+            content:
+              "This query requires careful analysis of multiple perspectives. I'm considering the technical aspects, practical implications, and potential edge cases. The solution should be both elegant and robust."
           }
         ];
       }, 1000);
     },
 
-    onStopResponse: () => {
+    stopResponse: async () => {
       console.log("Stop response requested");
     }
   };
 
-  render() {
+  override render() {
     return html`
       <div class="reasoning-showcase-container">
         <div class="showcase-header">
@@ -158,7 +139,7 @@ export class ShowcaseReasoningChatStyling extends KasstorElement {
             .items=${this.chatItems}
             .callbacks=${this.chatCallbacks}
             .translations=${this.chatTranslations}
-            .loadingState=${"loaded"}
+            .loadingState=${"all-records-loaded"}
             .sendContainerLayout=${{
               sendContainerAfter: ["send-button"]
             }}

@@ -17,7 +17,7 @@ import type {
 import styles from "./chain-of-thought.scss?inline";
 
 // Lazy load the accordion component
-import("../accordion/accordion.lit");
+import "../accordion/accordion.lit";
 
 const CHAIN_OF_THOUGHT_ITEM_ID = "chain-of-thought-item";
 
@@ -143,9 +143,15 @@ export class ChChainOfThought extends KasstorElement {
   }
 
   /**
-   * Internal state for the accordion model
+   * Internal state for the accordion model.
+   *
+   * Not decorated with `@state()` — reactivity is driven by the public
+   * properties (`open`, `headerIcon`, `caption`, …) whose observers call
+   * `#updateAccordionModel()` and `requestUpdate()`. Adding `@state()` here
+   * would cause a re-render chain when this field is reassigned from
+   * inside those observers.
    */
-  @state() #accordionModel: AccordionItemModel[] = [];
+  _accordionModel: AccordionItemModel[] = [];
 
   /**
    * Fired when the accordion is expanded or collapsed. The payload is { open: boolean }.
@@ -161,7 +167,7 @@ export class ChChainOfThought extends KasstorElement {
       ? html`<img src="${this.headerIcon}" alt="" style="width: 1rem; height: 1rem; margin-right: 0.375rem; display: inline-block; vertical-align: middle;" /><span style="display: inline-block; vertical-align: middle;">${this.caption}</span>`
       : this.caption;
     
-    this.#accordionModel = [
+    this._accordionModel = [
       {
         id: CHAIN_OF_THOUGHT_ITEM_ID,
         caption: captionContent,
@@ -191,36 +197,30 @@ export class ChChainOfThought extends KasstorElement {
         class="step"
         part="step step-status step-status--${step.status}"
       >
-        ${step.icon
-          ? html`<div class="step-icon" part="step-icon">
-              ${typeof step.icon === "string"
-                ? step.icon.startsWith("data:") || step.icon.startsWith("http")
-                  ? html`<img src=${step.icon} alt="" />`
-                  : html`<span>${step.icon}</span>`
-                : step.icon}
-            </div>`
-          : nothing}
+        <div class="step-icon" part="step-icon">
+          ${step.icon
+            ? typeof step.icon === "string"
+              ? step.icon.startsWith("data:") || step.icon.startsWith("http")
+                ? html`<img src=${step.icon} alt="" />`
+                : html`<span>${step.icon}</span>`
+              : step.icon
+            : html`<span class="step-icon-fallback" part="step-icon-fallback" aria-hidden="true">&bull;</span>`}
+        </div>
         <div class="step-content" part="step-content">
           <div class="step-label" part="step-label">${step.label}</div>
           ${step.description
-            ? html`<div class="step-description" part="step-description">
-                ${step.description}
-              </div>`
+            ? html`<div class="step-description" part="step-description">${step.description}</div>`
             : nothing}
           ${step.searchResults && step.searchResults.length > 0
             ? html`<div class="search-results" part="search-results">
                 ${step.searchResults.map(
-                  result => html`
-                    <a
-                      href=${result.url}
-                      class="search-result"
-                      part="search-result"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      ${result.label || result.url}
-                    </a>
-                  `
+                  result => html`<a
+                    href=${result.url}
+                    class="search-result"
+                    part="search-result"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >${result.label || result.url}</a>`
                 )}
               </div>`
             : nothing}
@@ -236,9 +236,7 @@ export class ChChainOfThought extends KasstorElement {
                         part="image"
                       />
                       ${image.caption
-                        ? html`<figcaption class="image-caption" part="image-caption">
-                            ${image.caption}
-                          </figcaption>`
+                        ? html`<figcaption class="image-caption" part="image-caption">${image.caption}</figcaption>`
                         : nothing}
                     </figure>
                   `
@@ -276,17 +274,13 @@ export class ChChainOfThought extends KasstorElement {
     return html`
       <div class="search-results" part="search-results">
         ${this.searchResults.map(
-          result => html`
-            <a
-              href=${result.url}
-              class="search-result"
-              part="search-result"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              ${result.label || result.url}
-            </a>
-          `
+          result => html`<a
+            href=${result.url}
+            class="search-result"
+            part="search-result"
+            target="_blank"
+            rel="noopener noreferrer"
+          >${result.label || result.url}</a>`
         )}
       </div>
     `;
@@ -312,9 +306,7 @@ export class ChChainOfThought extends KasstorElement {
                 part="image"
               />
               ${image.caption
-                ? html`<figcaption class="image-caption" part="image-caption">
-                    ${image.caption}
-                  </figcaption>`
+                ? html`<figcaption class="image-caption" part="image-caption">${image.caption}</figcaption>`
                 : nothing}
             </figure>
           `
@@ -337,7 +329,7 @@ export class ChChainOfThought extends KasstorElement {
 
     return html`
       <ch-accordion-render
-        .model=${this.#accordionModel}
+        .model=${this._accordionModel}
         @expandedChange=${this.#handleExpandedChange}
         exportparts=${ACCORDION_EXPORT_PARTS}
       >

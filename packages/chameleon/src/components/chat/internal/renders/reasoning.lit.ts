@@ -1,24 +1,21 @@
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-import { tokenMap } from "../../../../utilities/mapping/token-map.js";
-import type { ChatMessageReasoning, ChatReasoningRender } from "../../types";
+import type { AGUIReasoningMessage } from "../../typesAGUI.js";
 
 /**
- * Default render function for ch-reasoning component within chat messages.
- * Renders AI reasoning process with streaming support and thinking states.
+ * Default render for `ch-reasoning` driven by an AG-UI reasoning message.
+ *
+ * AG-UI carries no streaming flag on the data — `REASONING_MESSAGE_START` /
+ * `REASONING_MESSAGE_CONTENT` / `REASONING_MESSAGE_END` events orchestrate
+ * streaming at the chat level. The renderer enables the typewriter effect
+ * by default so reasoning text reveals incrementally whether it arrives
+ * via real streaming or is fed in fully-formed. Apps that want a static
+ * reveal can override `renderItem.reasoning`.
  */
-export const defaultReasoningRender: ChatReasoningRender = (
-  reasoning: ChatMessageReasoning
-): any =>
+export const defaultReasoningRender = (reasoning: AGUIReasoningMessage) =>
   html`<ch-reasoning
     class="reasoning-container"
-    part=${tokenMap({
-      "reasoning-container": true,
-      [reasoning.parts]: !!reasoning.parts
-    })}
+    part="reasoning-container"
     .content=${reasoning.content}
-    .isStreaming=${ifDefined(reasoning.isStreaming)}
-    .thinkingMessage=${ifDefined(reasoning.thinkingMessage)}
-    .thoughtMessageTemplate=${ifDefined(reasoning.thoughtMessageTemplate)}
-    .streamingSpeedMs=${ifDefined(reasoning.streamingSpeedMs)}
+    .isStreaming=${true}
+    .streamingSpeedMs=${10}
   ></ch-reasoning>`;

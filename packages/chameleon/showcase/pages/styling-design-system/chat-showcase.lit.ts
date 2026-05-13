@@ -5,12 +5,9 @@ import {
 import { html } from "lit";
 import { state } from "lit/decorators/state.js";
 import styles from "./chat-showcase.scss?inline";
-import type {
-  ChatCallbacks,
-  ChatMessage,
-  ChatTranslations
-} from "../../../src/components/chat/types.js";
-import type { ConfirmationModel } from "../../../src/components/confirmation/types.js";
+import type { ChatCallbacks } from "../../../src/components/chat/internal/renders/types.js";
+import type { AGUIMessage } from "../../../src/components/chat/typesAGUI.js";
+import type { ChatTranslations } from "../../../src/components/chat/translations.js";
 import "../../../src/components/chat/chat.lit.js";
 
 @Component({
@@ -18,28 +15,24 @@ import "../../../src/components/chat/chat.lit.js";
   tag: "showcase-chat-styling"
 })
 export class ShowcaseChatStyling extends KasstorElement {
-  @state() private chatItems: ChatMessage[] = [
+  @state() private chatItems: AGUIMessage[] = [
     {
       id: "1",
       role: "assistant",
       content:
-        "Hello! I'm your AI assistant. I can help you with various tasks, answer questions, and have conversations. What would you like to know?",
-      metadata: {}
+        "Hello! I'm your AI assistant. I can help you with various tasks, answer questions, and have conversations. What would you like to know?"
     },
     {
       id: "2",
       role: "user",
-      content: "Can you help me understand how to style the chat component?",
-      metadata: {}
+      content: "Can you help me understand how to style the chat component?"
     },
     {
       id: "3",
       role: "assistant",
       content:
-        "Of course! The ch-chat component is white-label and highly customizable using CSS shadow parts. You can style the messages container, input area, send button, and more. Each part gives you full control over the appearance.",
-      metadata: {}
-    },
-
+        "Of course! The ch-chat component is white-label and highly customizable using CSS shadow parts. You can style the messages container, input area, send button, and more. Each part gives you full control over the appearance."
+    }
   ];
 
   private chatTranslations: ChatTranslations = {
@@ -58,26 +51,17 @@ export class ShowcaseChatStyling extends KasstorElement {
       copyCodeButton: "Copy code",
       copyMessageContent: "Copy",
       processing: "Processing...",
-      sendButton: "\u2191",
+      sendButton: "↑",
       sourceFiles: "Source files:",
       stopResponseButton: "Stop"
     }
   };
 
   private chatCallbacks: ChatCallbacks = {
-    onSendMessage: async (message: string) => {
-      console.log("Message sent:", message);
-      
-      // Add user message
-      this.chatItems = [
-        ...this.chatItems,
-        {
-          id: Date.now().toString(),
-          role: "user",
-          content: message,
-          metadata: {}
-        }
-      ];
+    sendChatMessages: (messages: AGUIMessage[]) => {
+      console.log("Messages sent:", messages);
+
+      this.chatItems = messages;
 
       // Simulate assistant response after a delay
       setTimeout(() => {
@@ -87,88 +71,75 @@ export class ShowcaseChatStyling extends KasstorElement {
             id: (Date.now() + 1).toString(),
             role: "assistant",
             content:
-              "This is a demo response. In a real application, this would be connected to an AI service or backend API. The styling you see here is achieved purely through CSS shadow parts!",
-            metadata: {}
+              "This is a demo response. In a real application, this would be connected to an AI service or backend API. The styling you see here is achieved purely through CSS shadow parts!"
           }
         ];
       }, 1000);
     },
 
-    onStopResponse: () => {
+    stopResponse: async () => {
       console.log("Stop response requested");
     }
   };
 
-  // Handle approve action
+  // Handle approve action — locates the active confirmation activity message
+  // and flips its state. Confirmation activities are now separate AG-UI
+  // messages with role: "activity" and activityType: "confirmation".
   private handleApprove = (messageId: string) => {
     console.log("Approve clicked for message:", messageId);
 
-    const messageIndex = this.chatItems.findIndex((item) => item.id === messageId);
+    const messageIndex = this.chatItems.findIndex(item => item.id === messageId);
     if (messageIndex === -1) return;
 
     const message = this.chatItems[messageIndex];
-    if (typeof message.content !== "object" || !message.content.confirmation) return;
+    if (message.role !== "activity" || message.activityType !== "confirmation") {
+      return;
+    }
 
     const updatedItems = [...this.chatItems];
     updatedItems[messageIndex] = {
       ...message,
       content: {
         ...message.content,
-        confirmation: {
-          ...message.content.confirmation,
-          state: "approval-responded",
-          acceptedMessage: "Approval granted! Executing the operation..."
-        } as ConfirmationModel
+        state: "approval-responded"
       }
     };
 
     this.chatItems = updatedItems;
 
+    // Follow-up assistant message — the user's decision is already captured
+    // by the confirmation state flip; no synthetic user message is needed.
     setTimeout(() => {
       this.chatItems = [
         ...this.chatItems,
         {
           id: Date.now().toString(),
-          role: "user",
-          content: "Yes, go ahead!",
-          metadata: {}
+          role: "assistant",
+          content:
+            "Perfect! The operation has been completed successfully. Everything is working as expected."
         }
       ];
-
-      setTimeout(() => {
-        this.chatItems = [
-          ...this.chatItems,
-          {
-            id: (Date.now() + 1).toString(),
-            role: "assistant",
-            content: "Perfect! The operation has been completed successfully. Everything is working as expected.",
-            metadata: {}
-          }
-        ];
-      }, 500);
-    }, 300);
+    }, 500);
   };
 
-  // Handle reject action
+  // Handle reject action — flips the confirmation activity to output-denied.
   private handleReject = (messageId: string) => {
     console.log("Reject clicked for message:", messageId);
 
-    const messageIndex = this.chatItems.findIndex((item) => item.id === messageId);
+    const messageIndex = this.chatItems.findIndex(item => item.id === messageId);
     if (messageIndex === -1) return;
 
     const message = this.chatItems[messageIndex];
-    if (typeof message.content !== "object" || !message.content.confirmation) return;
+    if (message.role !== "activity" || message.activityType !== "confirmation") {
+      return;
+    }
 
     const updatedItems = [...this.chatItems];
     updatedItems[messageIndex] = {
       ...message,
       content: {
         ...message.content,
-        confirmation: {
-          ...message.content.confirmation,
-          state: "output-denied",
-          rejectedMessage: "Operation cancelled. No changes were made."
-        } as ConfirmationModel
+        state: "output-denied"
       }
     };
 
@@ -179,33 +150,22 @@ export class ShowcaseChatStyling extends KasstorElement {
         ...this.chatItems,
         {
           id: Date.now().toString(),
-          role: "user",
-          content: "No, please don't do that.",
-          metadata: {}
+          role: "assistant",
+          content:
+            "Understood. The operation has been cancelled. No changes have been made to your data."
         }
       ];
-
-      setTimeout(() => {
-        this.chatItems = [
-          ...this.chatItems,
-          {
-            id: (Date.now() + 1).toString(),
-            role: "assistant",
-            content: "Understood. The operation has been cancelled. No changes have been made to your data.",
-            metadata: {}
-          }
-        ];
-      }, 500);
-    }, 300);
+    }, 500);
   };
 
   override firstUpdated() {
     this.addEventListener("approve", ((event: CustomEvent) => {
       console.log("Approve event caught:", event);
       const messageWithConfirmation = this.chatItems.find(
-        (item) =>
-          typeof item.content === "object" &&
-          item.content.confirmation?.state === "approval-requested"
+        item =>
+          item.role === "activity" &&
+          item.activityType === "confirmation" &&
+          (item.content as { state?: string })?.state === "approval-requested"
       );
       if (messageWithConfirmation) {
         this.handleApprove(messageWithConfirmation.id);
@@ -215,9 +175,10 @@ export class ShowcaseChatStyling extends KasstorElement {
     this.addEventListener("reject", ((event: CustomEvent) => {
       console.log("Reject event caught:", event);
       const messageWithConfirmation = this.chatItems.find(
-        (item) =>
-          typeof item.content === "object" &&
-          item.content.confirmation?.state === "approval-requested"
+        item =>
+          item.role === "activity" &&
+          item.activityType === "confirmation" &&
+          (item.content as { state?: string })?.state === "approval-requested"
       );
       if (messageWithConfirmation) {
         this.handleReject(messageWithConfirmation.id);
@@ -225,7 +186,7 @@ export class ShowcaseChatStyling extends KasstorElement {
     }) as EventListener);
   }
 
-  render() {
+  override render() {
     return html`
       <div class="chat-showcase-container">
         <div class="showcase-header">
@@ -241,7 +202,7 @@ export class ShowcaseChatStyling extends KasstorElement {
             .items=${this.chatItems}
             .callbacks=${this.chatCallbacks}
             .translations=${this.chatTranslations}
-            .loadingState=${"loaded"}
+            .loadingState=${"all-records-loaded"}
             .sendContainerLayout=${{
               sendContainerAfter: ["send-button"]
             }}

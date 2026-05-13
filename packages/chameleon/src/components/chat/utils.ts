@@ -1,91 +1,68 @@
 import { copyToTheClipboard } from "../../utilities/clipboard.js";
-import type {
-  ChatMessageFiles,
-  ChatFileUploadState,
-  ChatMessageAssistant,
-  ChatMessageNoId,
-  ChatMessageSources,
-  ChatMessagePlan,
-  ChatMessageTool,
-  ChatMessageConfirmation,
-  ChatMessageReasoning,
-  ChatMessageChainOfThought
-} from "./types";
+import type { AGUIInputContent, AGUIMessage } from "./typesAGUI.js";
 
-export const getMessageContent = (message: ChatMessageNoId) =>
-  typeof message.content === "string"
-    ? message.content
-    : message.content.message;
-
-export const getMessageSerializedContentAll = (message: ChatMessageNoId) =>
-  typeof message.content === "string"
-    ? message.content
-    : JSON.stringify(message.content, undefined, 2);
-
-export const getMessageFiles = (message: ChatMessageNoId): ChatMessageFiles =>
-  typeof message.content === "object" ? message.content.files ?? [] : [];
-
-export const getMessageSources = (
-  message: ChatMessageNoId
-): ChatMessageSources =>
-  typeof message.content === "object" ? message.content.sources ?? [] : [];
-
-export const getMessageFilesAndSources = (
-  message: ChatMessageNoId
-): { files: ChatMessageFiles; sources: ChatMessageSources } =>
-  typeof message.content === "object"
-    ? {
-        files: message.content.files ?? [],
-        sources: message.content.sources ?? []
+/**
+ * Extract a human-readable text representation of an AG-UI message's
+ * content.
+ *
+ * - String content → returned as-is.
+ * - Multimodal user content (`AGUIInputContent[]`) → text parts joined
+ *   with newlines. Returns `undefined` if no text parts are present.
+ * - `activity` messages have structured content with no canonical text
+ *   form, so they return `undefined`.
+ */
+export const getMessageContent = (
+  message: AGUIMessage
+): string | undefined => {
+  switch (message.role) {
+    case "user": {
+      if (typeof message.content === "string") {
+        return message.content;
       }
-    : { files: [], sources: [] };
+      const textParts = message.content.filter(
+        (part): part is Extract<AGUIInputContent, { type: "text" }> =>
+          part.type === "text"
+      );
+      return textParts.length === 0
+        ? undefined
+        : textParts.map(p => p.text).join("\n");
+    }
+    case "assistant":
+      return message.content;
+    case "system":
+    case "developer":
+    case "reasoning":
+    case "tool":
+      return message.content;
+    case "activity":
+      return undefined;
+  }
+};
 
-export const getMessagePlan = (
-  message: ChatMessageNoId
-): ChatMessagePlan | undefined =>
-  typeof message.content === "object" ? message.content.plan : undefined;
-
-export const getMessageTool = (
-  message: ChatMessageNoId
-): ChatMessageTool | undefined =>
-  typeof message.content === "object" ? message.content.tool : undefined;
-
-export const getMessageConfirmation = (
-  message: ChatMessageNoId
-): ChatMessageConfirmation | undefined =>
-  typeof message.content === "object"
-    ? message.content.confirmation
-    : undefined;
-
-export const getMessageReasoning = (
-  message: ChatMessageNoId
-): ChatMessageReasoning | undefined =>
-  typeof message.content === "object" ? message.content.reasoning : undefined;
-
-export const getMessageSpecialComponents = (
-  message: ChatMessageNoId
-): {
-  plan?: ChatMessagePlan;
-  tool?: ChatMessageTool;
-  confirmation?: ChatMessageConfirmation;
-  reasoning?: ChatMessageReasoning;
-  chainOfThought?: ChatMessageChainOfThought;
-} =>
-  typeof message.content === "object"
-    ? {
-        plan: message.content.plan,
-        tool: message.content.tool,
-        confirmation: message.content.confirmation,
-        reasoning: message.content.reasoning,
-        chainOfThought: message.content.chainOfThought
-      }
-    : {};
-
-
-export const DEFAULT_ASSISTANT_STATUS =
-  "complete" satisfies ChatMessageAssistant["status"];
-
-export const DEFAULT_FILE_UPLOAD_STATE =
-  "uploaded" satisfies ChatFileUploadState;
+/**
+ * Serialize a message's content for "copy to clipboard" UX.
+ *
+ * - Plain string content → returned as-is.
+ * - Multimodal / structured content → pretty-printed JSON.
+ */
+export const getMessageSerializedContentAll = (
+  message: AGUIMessage
+): string => {
+  switch (message.role) {
+    case "user":
+      return typeof message.content === "string"
+        ? message.content
+        : JSON.stringify(message.content, undefined, 2);
+    case "activity":
+      return JSON.stringify(message.content, undefined, 2);
+    case "assistant":
+      return message.content ?? "";
+    case "system":
+    case "developer":
+    case "reasoning":
+    case "tool":
+      return message.content;
+  }
+};
 
 export const copy = (text: string) => () => copyToTheClipboard(text);

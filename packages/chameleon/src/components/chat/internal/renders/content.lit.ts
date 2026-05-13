@@ -1,86 +1,55 @@
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { when } from "lit/directives/when.js";
-import { tokenMap } from "../../../../utilities/mapping/token-map.js";
-import type {
-  ChatCodeBlockRender,
-  ChatContentRender,
-  ChatMessage,
-  ChatMessageByRole,
-  ChatMessageRole
-} from "../../types";
-import { DEFAULT_ASSISTANT_STATUS, getMessageContent } from "../../utils";
+import { getMessageContent } from "../../utils.js";
+import type { AGUIMessage } from "../../typesAGUI.js";
+import type { ChatCodeBlockRender, ChatContentRender } from "./types.js";
 
-const defaultAssistantContentRender: ChatContentRender = (
-  message: ChatMessageByRole<"assistant">,
+const defaultAssistantContentRender = (
+  message: Extract<AGUIMessage, { role: "assistant" }>,
   chatRef: HTMLChChatElement,
   codeBlockRender: ChatCodeBlockRender
-) => {
-  const messageContent = getMessageContent(message);
+) =>
+  when(
+    message.content,
+    () => html`<ch-markdown-viewer
+      part=${`assistant content ${message.id}`}
+      .renderCode=${codeBlockRender(chatRef)}
+      .theme=${chatRef.markdownTheme ?? undefined}
+      .value=${message.content}
+    ></ch-markdown-viewer>`
+  );
 
-  return message.status === "waiting"
-    ? html`<div
-        class="assistant-loading"
-        part=${tokenMap({
-          [`assistant content waiting ${message.id}`]: true,
-          [message.parts]: !!message.parts
-        })}
-      >
-        ${messageContent}
-      </div>`
-    : when(
-        messageContent,
-        () => html`<ch-markdown-viewer
-          part=${tokenMap({
-            [`assistant content ${message.id} ${
-              message.status ?? DEFAULT_ASSISTANT_STATUS
-            }`]: true,
-            [message.parts]: !!message.parts
-          })}
-          .renderCode=${codeBlockRender(chatRef)}
-          .showIndicator=${message.status === "streaming"}
-          .theme=${chatRef.markdownTheme}
-          .value=${messageContent}
-        ></ch-markdown-viewer>`
-      );
-};
+const defaultUserContentRender = (
+  message: Extract<AGUIMessage, { role: "user" }>
+) => getMessageContent(message) ?? nothing;
 
-const defaultErrorContentRender: ChatContentRender = (
-  message: ChatMessageByRole<"error">,
-  chatRef: HTMLChChatElement,
+/**
+ * Default content render. Dispatches per AG-UI role.
+ *
+ * - `assistant` → markdown viewer.
+ * - `user` → plain text (extracted from string content or text parts of
+ *   `AGUIInputContent[]`).
+ * - `system` / `developer` → not rendered (no chat-visible content by
+ *   default).
+ * - `tool` / `reasoning` / `activity` → rendered by their dedicated
+ *   renderers (`tool`, `reasoning`, `plan`, `confirmation`,
+ *   `chainOfThought`), not by this section.
+ */
+export const defaultContentRender: ChatContentRender = (
+  message,
+  chatRef,
   codeBlockRender
 ) => {
-  const errorContent = getMessageContent(message);
-
-  return when(
-    errorContent,
-    () =>
-      html`<ch-markdown-viewer
-        part=${tokenMap({
-          [`error content ${message.id}`]: true,
-          [message.parts]: !!message.parts
-        })}
-        .renderCode=${codeBlockRender(chatRef)}
-        .theme=${chatRef.markdownTheme}
-        .value=${errorContent}
-      ></ch-markdown-viewer>`
-  );
+  switch (message.role) {
+    case "assistant":
+      return defaultAssistantContentRender(message, chatRef, codeBlockRender);
+    case "user":
+      return defaultUserContentRender(message);
+    case "system":
+    case "developer":
+    case "tool":
+    case "reasoning":
+    case "activity":
+      return nothing;
+  }
 };
-
-const defaultUserContentRender: ChatContentRender = (
-  messageModel: ChatMessageByRole<"error">
-) => getMessageContent(messageModel);
-
-const defaultSystemContentRender: ChatContentRender = () => null;
-
-const contentRenderByRole = {
-  assistant: defaultAssistantContentRender,
-  error: defaultErrorContentRender,
-  system: defaultSystemContentRender,
-  user: defaultUserContentRender
-} as const satisfies { [key in ChatMessageRole]: ChatContentRender };
-
-export const defaultContentRender: ChatContentRender = (
-  message: ChatMessage,
-  chatRef: HTMLChChatElement,
-  codeBlockRender: ChatCodeBlockRender
-) => contentRenderByRole[message.role](message, chatRef, codeBlockRender);

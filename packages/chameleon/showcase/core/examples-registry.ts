@@ -34,7 +34,7 @@ import "../../src/components/chat/chat.lit";
 import "../../src/components/markdown-viewer/markdown-viewer.lit";
 import "../../src/components/smart-grid/smart-grid.lit";
 import "../../src/components/live-kit-room/live-kit-room.lit";
-import type { ChatMessage } from "../../src/components/chat/types";
+import type { AGUIMessage } from "../../src/components/chat/typesAGUI.js";
 import "../../src/components/edit/edit.lit";
 
 import "../../src/components/plan/plan.lit";
@@ -134,7 +134,7 @@ const LAYOUT_SPLITTER_MODEL = {
   ]
 };
 
-const CHAT_MODEL: ChatMessage[] = [
+const CHAT_MODEL: AGUIMessage[] = [
   {
     id: "msg-1",
     role: "user",
@@ -157,97 +157,105 @@ const CHAT_MODEL: ChatMessage[] = [
   }
 ];
 
-const CHAT_WITH_PLAN_MODEL: ChatMessage[] = [
-  { 
-    id: "1", 
-    role: "user", 
-    content: "Create a migration plan for moving our app to the cloud" 
+const CHAT_WITH_PLAN_MODEL: AGUIMessage[] = [
+  {
+    id: "1",
+    role: "user",
+    content: "Create a migration plan for moving our app to the cloud"
   },
   {
     id: "2",
     role: "assistant",
-    content: {
-      message: "Here's a comprehensive migration plan:",
-      plan: {
-        title: "Cloud Migration Plan",
-        description: "Step-by-step plan to migrate the application to AWS",
-        defaultOpen: true,
-        steps: [
-          {
-            id: "step-1",
-            title: "Assessment & Planning",
-            description: "Evaluate current infrastructure and dependencies",
-            status: "completed" as const,
-            subtasks: [
-              "Inventory all services and databases",
-              "Identify dependencies and integrations",
-              "Estimate resource requirements"
-            ]
-          },
-          {
-            id: "step-2",
-            title: "Set up cloud infrastructure",
-            status: "in-progress" as const,
-            subtasks: [
-              "Configure VPC and networking",
-              "Set up security groups and IAM roles",
-              "Provision compute and storage resources"
-            ]
-          },
-          {
-            id: "step-3",
-            title: "Migrate databases",
-            status: "pending" as const
-          },
-          {
-            id: "step-4",
-            title: "Deploy application",
-            status: "pending" as const
-          }
-        ],
-        actions: [
-          { id: "approve", label: "Approve Plan", primary: true },
-          { id: "modify", label: "Request Changes" }
-        ]
-      }
-    }
-  }
-];
-
-const CHAT_WITH_CONFIRMATION_MODEL: ChatMessage[] = [
-  { 
-    id: "1", 
-    role: "user", 
-    content: "Delete all old backup files" 
+    content: "Here's a comprehensive migration plan:"
   },
   {
-    id: "2",
-    role: "assistant",
+    id: "3",
+    role: "activity",
+    activityType: "plan",
     content: {
-      message: "I will delete 47 backup files older than 30 days (2.3 GB total).",
-      confirmation: {
-        state: "approval-requested" as const,
-        approval: {
-          id: "delete-backups-001"
+      title: "Cloud Migration Plan",
+      description: "Step-by-step plan to migrate the application to AWS",
+      steps: [
+        {
+          id: "step-1",
+          title: "Assessment & Planning",
+          description: "Evaluate current infrastructure and dependencies",
+          status: "completed",
+          subtasks: [
+            "Inventory all services and databases",
+            "Identify dependencies and integrations",
+            "Estimate resource requirements"
+          ]
+        },
+        {
+          id: "step-2",
+          title: "Set up cloud infrastructure",
+          status: "in-progress",
+          subtasks: [
+            "Configure VPC and networking",
+            "Set up security groups and IAM roles",
+            "Provision compute and storage resources"
+          ]
+        },
+        {
+          id: "step-3",
+          title: "Migrate databases",
+          status: "pending"
+        },
+        {
+          id: "step-4",
+          title: "Deploy application",
+          status: "pending"
         }
+      ],
+      actions: [
+        { id: "approve", label: "Approve Plan", primary: true },
+        { id: "modify", label: "Request Changes" }
+      ]
+    }
+  }
+];
+
+const CHAT_WITH_CONFIRMATION_MODEL: AGUIMessage[] = [
+  {
+    id: "1",
+    role: "user",
+    content: "Delete all old backup files"
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: "I will delete 47 backup files older than 30 days (2.3 GB total)."
+  },
+  {
+    id: "3",
+    role: "activity",
+    activityType: "confirmation",
+    content: {
+      state: "approval-requested",
+      approval: {
+        id: "delete-backups-001"
       }
     }
   }
 ];
 
-const CHAT_WITH_REASONING_MODEL: ChatMessage[] = [
-  { 
-    id: "1", 
-    role: "user", 
-    content: "What's the best approach to optimize this database query?" 
+const CHAT_WITH_REASONING_MODEL: AGUIMessage[] = [
+  {
+    id: "1",
+    role: "user",
+    content: "What's the best approach to optimize this database query?"
   },
   {
     id: "2",
     role: "assistant",
-    content: {
-      message: "Based on my analysis, I recommend adding a composite index. Here's why:",
-      reasoning: {
-        content: `Let me think through this step by step:
+    content:
+      "Based on my analysis, I recommend adding a composite index. Here's why:"
+  },
+  {
+    id: "3",
+    role: "reasoning",
+    content: `Let me think through this step by step:
 
 1. **Query Pattern Analysis**: The query filters on \`user_id\` and \`created_at\`, then sorts by \`created_at DESC\`.
 
@@ -262,52 +270,55 @@ const CHAT_WITH_REASONING_MODEL: ChatMessage[] = [
    - Pros: 100-1000x faster for this query pattern
    - Cons: ~10% slower writes, additional 5-10MB disk space
 
-5. **Conclusion**: The read performance gain far outweighs the minor write penalty for this use case.`,
-        isStreaming: true,
-        thinkingMessage: "Analyzing query patterns...",
-        thoughtMessageTemplate: "Analyzed in {duration}s",
-        streamingSpeedMs: 10
-      }
-    }
+5. **Conclusion**: The read performance gain far outweighs the minor write penalty for this use case.`
   }
 ];
 
-const CHAT_WITH_TOOL_MODEL: ChatMessage[] = [
-  { 
-    id: "1", 
-    role: "user", 
-    content: "What's the current weather in San Francisco?" 
+const CHAT_WITH_TOOL_MODEL: AGUIMessage[] = [
+  {
+    id: "1",
+    role: "user",
+    content: "What's the current weather in San Francisco?"
   },
   {
     id: "2",
     role: "assistant",
-    content: {
-      message: "Let me check the current weather for you.",
-      tool: {
-        toolName: "get_weather",
-        state: "output-available" as const,
-        input: {
-          location: "San Francisco, CA",
-          units: "fahrenheit"
-        },
-        output: {
-          temperature: 68,
-          conditions: "Partly Cloudy",
-          humidity: 65,
-          wind_speed: 12,
-          forecast: "Clear skies expected this evening"
+    content: "Let me check the current weather for you.",
+    toolCalls: [
+      {
+        id: "call-weather-1",
+        type: "function",
+        function: {
+          name: "get_weather",
+          arguments: JSON.stringify({
+            location: "San Francisco, CA",
+            units: "fahrenheit"
+          })
         }
       }
-    }
+    ]
   },
   {
     id: "3",
+    role: "tool",
+    toolCallId: "call-weather-1",
+    content: JSON.stringify({
+      temperature: 68,
+      conditions: "Partly Cloudy",
+      humidity: 65,
+      wind_speed: 12,
+      forecast: "Clear skies expected this evening"
+    })
+  },
+  {
+    id: "4",
     role: "assistant",
-    content: "It's currently 68°F in San Francisco with partly cloudy skies. The humidity is at 65% and there's a light breeze at 12 mph. Expect clear skies this evening!"
+    content:
+      "It's currently 68°F in San Francisco with partly cloudy skies. The humidity is at 65% and there's a light breeze at 12 mph. Expect clear skies this evening!"
   }
 ];
 
-const CHAT_WITH_CHAIN_OF_THOUGHT_MODEL: ChatMessage[] = [
+const CHAT_WITH_CHAIN_OF_THOUGHT_MODEL: AGUIMessage[] = [
   { 
     id: "1", 
     role: "user", 
@@ -316,161 +327,177 @@ const CHAT_WITH_CHAIN_OF_THOUGHT_MODEL: ChatMessage[] = [
   {
     id: "2",
     role: "assistant",
-    content: {
-      message: "Let me walk you through my reasoning process step by step:",
-      chainOfThought: {
-        steps: [
-          {
-            id: "step-1",
-            label: "Understand the problem",
-            description: "Break down the problem into smaller components and identify key constraints",
-            status: "complete" as const
-          },
-          {
-            id: "step-2",
-            label: "Gather information",
-            description: "Search for relevant documentation, examples, and best practices",
-            status: "complete" as const
-          },
-          {
-            id: "step-3",
-            label: "Analyze solutions",
-            description: "Evaluate different approaches and their trade-offs",
-            status: "active" as const
-          },
-          {
-            id: "step-4",
-            label: "Implement and validate",
-            description: "Apply the chosen solution and verify it meets all requirements",
-            status: "pending" as const
-          }
-        ],
-        searchResults: [
-          {
-            id: "result-1",
-            url: "https://developer.mozilla.org/en-US/docs/Web/API",
-            label: "MDN Web API Documentation"
-          },
-          {
-            id: "result-2",
-            url: "https://web.dev/patterns/",
-            label: "Web.dev Patterns & Best Practices"
-          },
-          {
-            id: "result-3",
-            url: "https://www.patterns.dev/",
-            label: "Modern Web App Patterns"
-          }
-        ],
-        images: [
-          {
-            id: "img-1",
-            src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect fill='%23f0f4f8' width='320' height='180'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' fill='%23334155'%3EProblem-Solving Framework%3C/text%3E%3C/svg%3E",
-            alt: "Problem-solving framework diagram",
-            caption: "A systematic approach to breaking down and solving complex problems"
-          }
-        ],
-        defaultOpen: true
-      }
-    }
+    content: "Let me walk you through my reasoning process step by step:"
   },
   {
     id: "3",
-    role: "assistant",
-    content: "This structured approach helps ensure thorough analysis and leads to more robust solutions. Each step builds on the previous one, creating a clear path from problem to solution."
-  }
-];
-
-const CHAT_WITH_MULTIPLE_COMPONENTS_MODEL: ChatMessage[] = [
-  { 
-    id: "1", 
-    role: "user", 
-    content: "Analyze our API performance and suggest optimizations" 
-  },
-  {
-    id: "2",
-    role: "assistant",
+    role: "activity",
+    activityType: "chain-of-thought",
     content: {
-      message: "I'll analyze your API performance metrics.",
-      tool: {
-        toolName: "fetch_api_metrics",
-        state: "output-available" as const,
-        input: { 
-          timeRange: "24h",
-          endpoints: ["*"]
+      steps: [
+        {
+          id: "step-1",
+          label: "Understand the problem",
+          description:
+            "Break down the problem into smaller components and identify key constraints",
+          status: "complete"
         },
-        output: { 
-          avgLatency: 450,
-          p95Latency: 1200,
-          errorRate: 2.3,
-          totalRequests: 125000
+        {
+          id: "step-2",
+          label: "Gather information",
+          description:
+            "Search for relevant documentation, examples, and best practices",
+          status: "complete"
+        },
+        {
+          id: "step-3",
+          label: "Analyze solutions",
+          description: "Evaluate different approaches and their trade-offs",
+          status: "active"
+        },
+        {
+          id: "step-4",
+          label: "Implement and validate",
+          description:
+            "Apply the chosen solution and verify it meets all requirements",
+          status: "pending"
         }
-      }
-    }
-  },
-  {
-    id: "3",
-    role: "assistant",
-    content: {
-      message: "Based on the metrics, here's my analysis:",
-      reasoning: {
-        content: `Analyzing the performance data:
-
-1. **P95 latency of 1200ms is high** - suggests some requests are significantly slower
-2. **2.3% error rate** - above the 1% threshold for production APIs
-3. **Most errors occur on /api/search** - likely a database bottleneck
-
-Root cause: Complex JOIN queries without proper indexing.`,
-        thoughtMessageTemplate: "Analyzed in {duration}s",
-        streamingSpeedMs: 15,
-        isStreaming:true
-      }
+      ],
+      searchResults: [
+        {
+          id: "result-1",
+          url: "https://developer.mozilla.org/en-US/docs/Web/API",
+          label: "MDN Web API Documentation"
+        },
+        {
+          id: "result-2",
+          url: "https://web.dev/patterns/",
+          label: "Web.dev Patterns & Best Practices"
+        },
+        {
+          id: "result-3",
+          url: "https://www.patterns.dev/",
+          label: "Modern Web App Patterns"
+        }
+      ],
+      images: [
+        {
+          id: "img-1",
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect fill='%23f0f4f8' width='320' height='180'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' fill='%23334155'%3EProblem-Solving Framework%3C/text%3E%3C/svg%3E",
+          alt: "Problem-solving framework diagram",
+          caption:
+            "A systematic approach to breaking down and solving complex problems"
+        }
+      ]
     }
   },
   {
     id: "4",
     role: "assistant",
-    content: {
-      message: "I've created an optimization plan:",
-      plan: {
-        title: "API Performance Optimization",
-        defaultOpen: true,
-        steps: [
-          {
-            id: "add-indexes",
-            title: "Add database indexes",
-            status: "pending" as const,
-            subtasks: [
-              "Create composite index on users(email, status)",
-              "Add covering index for search queries"
-            ]
-          },
-          {
-            id: "cache-layer",
-            title: "Implement Redis caching",
-            status: "pending" as const
-          },
-          {
-            id: "query-optimization",
-            title: "Refactor slow queries",
-            status: "pending" as const
-          }
-        ],
-        actions: [
-          { id: "execute", label: "Execute Plan", primary: true }
-        ]
+    content:
+      "This structured approach helps ensure thorough analysis and leads to more robust solutions. Each step builds on the previous one, creating a clear path from problem to solution."
+  }
+];
+
+const CHAT_WITH_MULTIPLE_COMPONENTS_MODEL: AGUIMessage[] = [
+  {
+    id: "1",
+    role: "user",
+    content: "Analyze our API performance and suggest optimizations"
+  },
+  {
+    id: "2",
+    role: "assistant",
+    content: "I'll analyze your API performance metrics.",
+    toolCalls: [
+      {
+        id: "call-metrics-1",
+        type: "function",
+        function: {
+          name: "fetch_api_metrics",
+          arguments: JSON.stringify({
+            timeRange: "24h",
+            endpoints: ["*"]
+          })
+        }
       }
-    }
+    ]
+  },
+  {
+    id: "3",
+    role: "tool",
+    toolCallId: "call-metrics-1",
+    content: JSON.stringify({
+      avgLatency: 450,
+      p95Latency: 1200,
+      errorRate: 2.3,
+      totalRequests: 125000
+    })
+  },
+  {
+    id: "4",
+    role: "assistant",
+    content: "Based on the metrics, here's my analysis:"
   },
   {
     id: "5",
+    role: "reasoning",
+    content: `Analyzing the performance data:
+
+1. **P95 latency of 1200ms is high** - suggests some requests are significantly slower
+2. **2.3% error rate** - above the 1% threshold for production APIs
+3. **Most errors occur on /api/search** - likely a database bottleneck
+
+Root cause: Complex JOIN queries without proper indexing.`
+  },
+  {
+    id: "6",
     role: "assistant",
+    content: "I've created an optimization plan:"
+  },
+  {
+    id: "7",
+    role: "activity",
+    activityType: "plan",
     content: {
-      message: "May I proceed with creating the database indexes? This will briefly lock the tables.",
-      confirmation: {
-        state: "approval-requested" as const,
-        approval: { id: "create-indexes-001" }
-      }
+      title: "API Performance Optimization",
+      steps: [
+        {
+          id: "add-indexes",
+          title: "Add database indexes",
+          status: "pending",
+          subtasks: [
+            "Create composite index on users(email, status)",
+            "Add covering index for search queries"
+          ]
+        },
+        {
+          id: "cache-layer",
+          title: "Implement Redis caching",
+          status: "pending"
+        },
+        {
+          id: "query-optimization",
+          title: "Refactor slow queries",
+          status: "pending"
+        }
+      ],
+      actions: [{ id: "execute", label: "Execute Plan", primary: true }]
+    }
+  },
+  {
+    id: "8",
+    role: "assistant",
+    content:
+      "May I proceed with creating the database indexes? This will briefly lock the tables."
+  },
+  {
+    id: "9",
+    role: "activity",
+    activityType: "confirmation",
+    content: {
+      state: "approval-requested",
+      approval: { id: "create-indexes-001" }
     }
   }
 ];
@@ -1254,7 +1281,7 @@ const model: BreadCrumbModel = [
       code:
 `import type { ChatMessage, ChatTranslations } from "@genexus/chameleon-controls-library-lit";
 
-const items: ChatMessage[] = [
+const items: AGUIMessage[] = [
   { id: "1", role: "user",      content: "Hello!" },
   { id: "2", role: "assistant", content: "Hi! How can I help you today?" }
 ];
@@ -1275,7 +1302,7 @@ const items: ChatMessage[] = [
       code:
 `import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
 
-const items: ChatMessage[] = [
+const items: AGUIMessage[] = [
   { 
     id: "1", 
     role: "user", 
@@ -1351,7 +1378,7 @@ const items: ChatMessage[] = [
       code:
 `import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
 
-const items: ChatMessage[] = [
+const items: AGUIMessage[] = [
   { 
     id: "1", 
     role: "user", 
@@ -1394,7 +1421,7 @@ const items: ChatMessage[] = [
       code:
 `import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
 
-const items: ChatMessage[] = [
+const items: AGUIMessage[] = [
   { 
     id: "1", 
     role: "user", 
@@ -1439,7 +1466,7 @@ const items: ChatMessage[] = [
       code:
 `import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
 
-const items: ChatMessage[] = [
+const items: AGUIMessage[] = [
   { 
     id: "1", 
     role: "user", 
@@ -1491,7 +1518,7 @@ const items: ChatMessage[] = [
       code:
 `import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
 
-const items: ChatMessage[] = [
+const items: AGUIMessage[] = [
   { 
     id: "1", 
     role: "user", 
@@ -1535,7 +1562,7 @@ const items: ChatMessage[] = [
       code:
 `import type { ChatMessage } from "@genexus/chameleon-controls-library-lit";
 
-const items: ChatMessage[] = [
+const items: AGUIMessage[] = [
   { 
     id: "1", 
     role: "user", 

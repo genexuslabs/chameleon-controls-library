@@ -44,16 +44,16 @@ describe("[ch-reasoning][basic]", () => {
       expect(reasoningRef.thinkingMessage).toBe("Thinking...");
     });
 
-    it('the "thoughtMessage" property should contain "{duration}" placeholder by default', () => {
-      expect(reasoningRef.thoughtMessage).toContain("{duration}");
+    it('the "thoughtMessageTemplate" property should contain "{duration}" placeholder by default', () => {
+      expect(reasoningRef.thoughtMessageTemplate).toContain("{duration}");
     });
 
     it('the "open" property should be false by default', () => {
       expect(reasoningRef.open).toBe(false);
     });
 
-    it('the "streamingSpeed" property should be 20 by default', () => {
-      expect(reasoningRef.streamingSpeed).toBe(20);
+    it('the "streamingSpeedMs" property should be 20 by default', () => {
+      expect(reasoningRef.streamingSpeedMs).toBe(20);
     });
   });
 
@@ -133,7 +133,7 @@ describe("[ch-reasoning][basic]", () => {
         html`<ch-reasoning
           content="Done"
           duration="5"
-          thought-message="Completed in {duration} seconds"
+          thought-message-template="Completed in {duration} seconds"
         ></ch-reasoning>`
       );
       reasoningRef = result.container.querySelector("ch-reasoning")!;
@@ -142,7 +142,7 @@ describe("[ch-reasoning][basic]", () => {
       // The accordion caption should show "Completed in 5 seconds"
       // This is tested indirectly through the accordion model
       expect(reasoningRef.duration).toBe(5);
-      expect(reasoningRef.thoughtMessage).toBe(
+      expect(reasoningRef.thoughtMessageTemplate).toBe(
         "Completed in {duration} seconds"
       );
     });
@@ -164,23 +164,23 @@ describe("[ch-reasoning][basic]", () => {
     it("should accept custom thought message template", async () => {
       const result = await render(
         html`<ch-reasoning
-          thought-message="Done in {duration}s"
+          thought-message-template="Done in {duration}s"
         ></ch-reasoning>`
       );
       reasoningRef = result.container.querySelector("ch-reasoning")!;
       await reasoningRef.updateComplete;
 
-      expect(reasoningRef.thoughtMessage).toBe("Done in {duration}s");
+      expect(reasoningRef.thoughtMessageTemplate).toBe("Done in {duration}s");
     });
 
     it("should accept custom streaming speed", async () => {
       const result = await render(
-        html`<ch-reasoning streaming-speed="50"></ch-reasoning>`
+        html`<ch-reasoning streaming-speed-ms="50"></ch-reasoning>`
       );
       reasoningRef = result.container.querySelector("ch-reasoning")!;
       await reasoningRef.updateComplete;
 
-      expect(reasoningRef.streamingSpeed).toBe(50);
+      expect(reasoningRef.streamingSpeedMs).toBe(50);
     });
   });
 });

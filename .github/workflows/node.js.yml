@@ -36,3 +36,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - run: npm run validate.ci
+        env:
+          # Increase Node.js heap size to avoid "JavaScript heap out of memory"
+          # during the chained Stencil/Monaco/Vite build in CI.
+          NODE_OPTIONS: --max-old-space-size=6144

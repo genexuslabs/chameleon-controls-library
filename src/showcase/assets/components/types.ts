@@ -169,6 +169,7 @@ export type ChameleonStories = {
   "color-field": ShowcaseStory<HTMLChColorFieldElement>;
   "color-picker": ShowcaseStory<HTMLChColorPickerElement>;
   "combo-box": ShowcaseStory<HTMLChComboBoxRenderElement>;
+  counter: ShowcaseStory<HTMLChCounterElement>;
   dialog: ShowcaseStory<HTMLChDialogElement>;
   edit: ShowcaseStory<HTMLChEditElement>;
   image: ShowcaseStory<HTMLChImageElement>;
